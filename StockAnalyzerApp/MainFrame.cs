@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-using StockAnalyzer;
+﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -39,7 +24,21 @@ using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings.Properties;
 using StockNeuralNetwork;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Mail;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace StockAnalyzerApp
 {
