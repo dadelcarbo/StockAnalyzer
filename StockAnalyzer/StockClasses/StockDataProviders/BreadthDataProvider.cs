@@ -64,21 +64,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private bool GenerateBreadthData(string rootFolder, StockSerie stockSerie)
         {
             string [] row = stockSerie.StockName.Split('.');
-            int index = row[0].IndexOfAny(new char [] { '0' ,'1', '2', '3', '4', '5', '6', '7', '8', '9'});
-            if (index != -1)
-            {
-                row[0] = row[0].Remove(index);
-            }
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
-            switch (row[0])
+            switch (row[0].Split('_')[0])
             {
                 case "AD":
                     return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "TB":
                     return stockDictionary.GenerateHigherThanTrailVolSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                case "HL":
-                   return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "ROCEX":
+                   return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+               case "HLEMA20":
+                   return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Bar_1_EMA20, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+               case "ROCEX":
                     return stockDictionary.GenerateBullishROCEXSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "MM":
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
