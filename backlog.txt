@@ -1,0 +1,83 @@
+Defects:
+========
+
+Finish automatic drawings.
+ - Terminate trend line when it's been broken (option ?)
+
+Intraday download for Google data
+
+Update site.
+
+Manage archive end date, and archiving data monthly
+
+Manage dirty pattern for analysis file saving (event from control graphs)
+
+Remove unused graph from display
+
+Breadth generation => Move generation to refresh button.
+
+Volume patterns (NoD, NoS, ...)
+
+Topmost tool windows
+
+Remove COT management
+
+Dictionary config files download management
+
+
+
+
+New features:
+=============
+
+Download Management:
+	- AAII
+	- COT
+	- Harpex
+	
+Windows to configure StockProvider *.cfg input
+
+Plug-in framework
+ - Check plug-in availability
+
+Buy/Sell signal "text" from strategy
+
+- Implement wining strategies.
+
+- Support multiple analysis files.
+
+- Send screen shots using email
+- Publish analysis on web site
+
+Strategy to define the list of inputs (Indicators, decorators, SR, Paint bars...)
+Strategy tuning.
+
+
+Automatic trend line
+
+COT:
+	COT as indicator (Commercial, Large and Small Speculators)
+
+Time series:
+	Support weekly,daily for all
+	Intraday, range, tick for SBF120.
+	
+
+Generate reporting:
+  Sectorial rotation
+  Breadth indicator
+  Ratios
+  
+Rydex data mining (find the Nova/Ursa ratio) and other ???
+
+Graphic framework:
+ - Indicator owner draw
+ 
+Global indicator:
+  - Summary indicator of VIX trend, OSC, PCR,..., BREADTH
+
+Drawing:
+Support drawing on indicators
+Support drawing item styles
+
+Implement generic event based trailing stop.

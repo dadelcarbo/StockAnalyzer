@@ -1,0 +1,117 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="StockAnalyzerSettings.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="EventFilterMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EventAll</Value>
+    </Setting>
+    <Setting Name="InputDataFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data</Value>
+    </Setting>
+    <Setting Name="AnalysisFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SelectedGroup" Type="System.String" Scope="User">
+      <Value Profile="(Default)">INDICES</Value>
+    </Setting>
+    <Setting Name="PortofolioFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">OrderFile.xml</Value>
+    </Setting>
+    <Setting Name="ShowSummaryOrders" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowOrders" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowDrawings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DownloadData" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowEventMarquee" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SelectedEvents" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EventMarquees" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EventMarqueeMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EventAll</Value>
+    </Setting>
+    <Setting Name="SelectedTheme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default</Value>
+    </Setting>
+    <Setting Name="RootFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DownloadStartDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2012-01-01</Value>
+    </Setting>
+    <Setting Name="BarType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SupportIntraday" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GenerateBreadth" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ThemeToolbarLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">-1, -1</Value>
+    </Setting>
+    <Setting Name="StockToolbarLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">-1, -1</Value>
+    </Setting>
+    <Setting Name="drawingToolbarLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">-1, -1</Value>
+    </Setting>
+    <Setting Name="CustomColors" Type="System.String" Scope="User">
+      <Value Profile="(Default)">16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215</Value>
+    </Setting>
+    <Setting Name="LoggingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowStatusBar" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UserId" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MachineID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DrawingPen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1:255:0:0:0:Solid</Value>
+    </Setting>
+    <Setting Name="ShowVariation" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DefaultBarNumber" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="ShowCommentMarquee" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UserEMail" Type="System.String" Scope="User">
+      <Value Profile="(Default)">david.carbonel@free.fr</Value>
+    </Setting>
+    <Setting Name="UserSMTP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">smtp.free.fr</Value>
+    </Setting>
+    <Setting Name="SupportShortSelling" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StrategyStartDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2011-01-03</Value>
+    </Setting>
+    <Setting Name="PortofolioValue" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">16000</Value>
+    </Setting>
+    <Setting Name="MomentumIndicator" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ROCEX3(200,100,50,10,20)</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
