@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using StockAnalyzer.StockClasses;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockStrategyClasses;
-using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerSettings.Properties;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -183,7 +180,7 @@ namespace StockAnalyzerApp.CustomControl
          if (previousFilterIndicator == filterIndicatorTextBox.Text) return;
          previousFilterIndicator = filterIndicatorTextBox.Text;
          IStockViewableSeries filterIndicator = StockIndicatorManager.CreateIndicator(this.filterIndicatorTextBox.Text);
-         
+
          if (StockIndicatorManager.Supports(this.filterIndicatorTextBox.Text))
          {
             filterIndicator = StockIndicatorManager.CreateIndicator(this.filterIndicatorTextBox.Text);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -75,15 +74,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          for (int i = period; i < stockSerie.Count; i++)
          {
 
-                int puke = 0;
+            int puke = 0;
             for (int j = i - period; j <= i; j++)
             {
                StockDailyValue dv = values[j];
                float range = dv.CLOSE - dv.PreviousClose;
-                    if (range >= atrSerie[j]) puke++;
-                    else if (range <= -atrSerie[j]) puke--;
+               if (range >= atrSerie[j]) puke++;
+               else if (range <= -atrSerie[j]) puke--;
             }
-                pukeSerie[i] = puke;
+            pukeSerie[i] = puke;
          }
 
          if (smoothing > 1)

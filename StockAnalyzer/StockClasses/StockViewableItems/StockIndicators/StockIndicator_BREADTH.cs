@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockMath;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public float Max
       {
-         get {return 1.0f; }
+         get { return 1.0f; }
       }
 
       public float Min

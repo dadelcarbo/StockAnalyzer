@@ -2,11 +2,11 @@
 
 namespace StockAnalyzerApp
 {
-    public partial class GroupAnalysisDlg : Form
-    {
-        public GroupAnalysisDlg()
-        {
-            InitializeComponent();
-        }
-    }
+   public partial class GroupAnalysisDlg : Form
+   {
+      public GroupAnalysisDlg()
+      {
+         InitializeComponent();
+      }
+   }
 }

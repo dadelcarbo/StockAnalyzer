@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockMath;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses
 {

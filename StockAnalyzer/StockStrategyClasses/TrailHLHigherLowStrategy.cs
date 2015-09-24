@@ -1,102 +1,100 @@
-﻿using System;
-using System.Linq;
-using StockAnalyzer.StockClasses;
+﻿using System.Linq;
 using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzer.StockStrategyClasses
 {
-    public class _TrailHLHigherLowStrategy : StockStrategyBase
-    {
-        #region StockStrategy Properties
-        override public string Description
-        {
-            get { return "This strategy buys and sells on Higher low and sells on next High detected"; }
-        }
-        #endregion
-        #region StockStrategy Methods
+   public class _TrailHLHigherLowStrategy : StockStrategyBase
+   {
+      #region StockStrategy Properties
+      override public string Description
+      {
+         get { return "This strategy buys and sells on Higher low and sells on next High detected"; }
+      }
+      #endregion
+      #region StockStrategy Methods
 
-        private IStockIndicator SRIndicator;
+      private IStockIndicator SRIndicator;
 
-        private float previousLow = float.MaxValue;
-        private float previousHigh = float.MaxValue;
+      private float previousLow = float.MaxValue;
+      private float previousHigh = float.MaxValue;
 
-        private int higherLowEventIndex;
-        private int lowerHightEventIndex;
+      private int higherLowEventIndex;
+      private int lowerHightEventIndex;
 
-        private int resistanceEventIndex;
-        private int supportEventIndex;
+      private int resistanceEventIndex;
+      private int supportEventIndex;
 
-        public _TrailHLHigherLowStrategy()
-        {
-            this.TriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(3)");
-            SRIndicator = (IStockIndicator)this.TriggerIndicator;
+      public _TrailHLHigherLowStrategy()
+      {
+         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(3)");
+         SRIndicator = (IStockIndicator)this.TriggerIndicator;
 
-            higherLowEventIndex = SRIndicator.EventNames.ToList().IndexOf("HigherLow");
-            lowerHightEventIndex = SRIndicator.EventNames.ToList().IndexOf("LowerHigh");
+         higherLowEventIndex = SRIndicator.EventNames.ToList().IndexOf("HigherLow");
+         lowerHightEventIndex = SRIndicator.EventNames.ToList().IndexOf("LowerHigh");
 
-            supportEventIndex = SRIndicator.EventNames.ToList().IndexOf("SupportDetected");
-            resistanceEventIndex = SRIndicator.EventNames.ToList().IndexOf("ResistanceDetected");
+         supportEventIndex = SRIndicator.EventNames.ToList().IndexOf("SupportDetected");
+         resistanceEventIndex = SRIndicator.EventNames.ToList().IndexOf("ResistanceDetected");
 
-        }
+      }
 
 
-        override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)
-        {
-            benchmark = dailyValue.CLOSE;
+      override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)
+      {
+         benchmark = dailyValue.CLOSE;
 
-            if (this.SRIndicator == null)
-            { return null; }
+         if (this.SRIndicator == null)
+         { return null; }
 
-            #region Create Buy
+         #region Create Buy
 
-            if (this.SupportShortSelling)
-            {
-                // If higher Low Detected
-                if (this.SRIndicator.Events[lowerHightEventIndex][index])
-                {
-                    return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, true);
-                }
-            }
+         if (this.SupportShortSelling)
+         {
             // If higher Low Detected
-            if (this.SRIndicator.Events[higherLowEventIndex][index])
+            if (this.SRIndicator.Events[lowerHightEventIndex][index])
             {
-                return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, false);
+               return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, true);
             }
+         }
+         // If higher Low Detected
+         if (this.SRIndicator.Events[higherLowEventIndex][index])
+         {
+            return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, false);
+         }
 
-            #endregion
-            return null;
-        }
+         #endregion
+         return null;
+      }
 
-        public override StockOrder TryToSell(StockDailyValue dailyValue, int index, int number, ref float benchmark)
-        {
-            benchmark = dailyValue.CLOSE;
+      public override StockOrder TryToSell(StockDailyValue dailyValue, int index, int number, ref float benchmark)
+      {
+         benchmark = dailyValue.CLOSE;
 
-            #region Create Sell Order
+         #region Create Sell Order
 
-            if (LastBuyOrder.IsShortOrder)
+         if (LastBuyOrder.IsShortOrder)
+         {
+            // Sell in case of Support detected
+            if (this.SRIndicator.Events[supportEventIndex][index])
             {
-                // Sell in case of Support detected
-                if (this.SRIndicator.Events[supportEventIndex][index])
-                {
-                    return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
-                        dailyValue.DATE.AddDays(30), number, true);
-                }
+               return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
+                   dailyValue.DATE.AddDays(30), number, true);
             }
-            else
+         }
+         else
+         {
+            // Sell in case of Resistance detected
+            if (this.SRIndicator.Events[resistanceEventIndex][index])
             {
-                // Sell in case of Resistance detected
-                if (this.SRIndicator.Events[resistanceEventIndex][index])
-                {
-                    return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
-                        dailyValue.DATE.AddDays(30), number, false);
-                }
+               return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
+                   dailyValue.DATE.AddDays(30), number, false);
             }
+         }
 
-            #endregion
-            return null;
-        }
-        #endregion
-    }
+         #endregion
+         return null;
+      }
+      #endregion
+   }
 }

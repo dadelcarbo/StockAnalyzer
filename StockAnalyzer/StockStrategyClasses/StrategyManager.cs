@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockStrategyClasses
@@ -23,10 +23,10 @@ namespace StockAnalyzer.StockStrategyClasses
          {
             strategyList = new List<string>();
             StrategyManager sm = new StrategyManager();
-                foreach (Type t in sm.GetType().Assembly.GetTypes().Where(t => t.GetInterface("IStockStrategy") != null && !t.IsInterface && !t.IsAbstract))
-               {
-                  strategyList.Add(t.Name);
-               }
+            foreach (Type t in sm.GetType().Assembly.GetTypes().Where(t => t.GetInterface("IStockStrategy") != null && !t.IsInterface && !t.IsAbstract))
+            {
+               strategyList.Add(t.Name);
+            }
             strategyList.AddRange(GetFilteredStrategyList(true));
          }
 
@@ -37,27 +37,27 @@ namespace StockAnalyzer.StockStrategyClasses
       public static IStockStrategy CreateStrategy(string name, StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
       {
          IStockStrategy strategy = null;
-            try
-            {
-                if (name.StartsWith("@"))
-                    return CreateFilteredStrategy(name, stockSerie, lastBuyOrder, supportShortSelling);
-         if (strategyList == null)
+         try
          {
-            GetStrategyList();
-         }
-         if (strategyList.Contains(name))
-         {
-            StrategyManager sm = new StrategyManager();
-            strategy =
-                        (IStockStrategy)
-                            sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockStrategyClasses." + name);
-            strategy.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
-         }
-            }
-            catch (Exception ex)
+            if (name.StartsWith("@"))
+               return CreateFilteredStrategy(name, stockSerie, lastBuyOrder, supportShortSelling);
+            if (strategyList == null)
             {
-                throw new StockAnalyzerException("Failed to create strategy " + name, ex);
+               GetStrategyList();
             }
+            if (strategyList.Contains(name))
+            {
+               StrategyManager sm = new StrategyManager();
+               strategy =
+                           (IStockStrategy)
+                               sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockStrategyClasses." + name);
+               strategy.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
+            }
+         }
+         catch (Exception ex)
+         {
+            throw new StockAnalyzerException("Failed to create strategy " + name, ex);
+         }
          return strategy;
       }
 

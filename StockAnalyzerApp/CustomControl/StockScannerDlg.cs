@@ -4,225 +4,224 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
-using System.Windows.Threading;
+using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
 {
-    public partial class StockScannerDlg : Form
-    {
-        private StockDictionary stockDictionary;
-        private StockSerie.StockBarDuration barDuration;
+   public partial class StockScannerDlg : Form
+   {
+      private StockDictionary stockDictionary;
+      private StockSerie.StockBarDuration barDuration;
 
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
+      public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+      public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
 
-        public IEnumerable<string> SelectedStocks
-        {
-            get
+      public IEnumerable<string> SelectedStocks
+      {
+         get
+         {
+            return this.selectedStockListBox.Items.Cast<string>();
+         }
+      }
+
+      public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockSerie.StockBarDuration barDuration, Dictionary<string, List<string>> theme)
+      {
+         InitializeComponent();
+
+         this.stockDictionary = stockDictionary;
+         this.barDuration = barDuration;
+
+         // Initialise group combo box
+         groupComboBox.Items.AddRange(this.stockDictionary.GetValidGroupNames().ToArray());
+         groupComboBox.SelectedItem = stockGroup.ToString();
+         groupComboBox.SelectedValueChanged += new EventHandler(groupComboBox_SelectedValueChanged);
+
+         periodComboBox.SelectedIndex = 0;
+         completeBarCheckBox.Checked = true;
+
+         OnThemeChanged(theme);
+         OnBarDurationChanged(barDuration);
+
+         oneRadioButton.Checked = true;
+      }
+      public void OnThemeChanged(Dictionary<string, List<string>> theme)
+      {
+         if (this.IsDisposed) return;
+         // Initialise treeview
+         eventTreeView.Nodes.Clear();
+         selectedStockListBox.Items.Clear();
+
+         foreach (string entry in theme.Keys)
+         {
+            try
             {
-                return this.selectedStockListBox.Items.Cast<string>();
-            }
-        }
-
-        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockSerie.StockBarDuration barDuration, Dictionary<string, List<string>> theme)
-        {
-            InitializeComponent();
-
-            this.stockDictionary = stockDictionary;
-            this.barDuration = barDuration;
-
-            // Initialise group combo box
-            groupComboBox.Items.AddRange(this.stockDictionary.GetValidGroupNames().ToArray());
-            groupComboBox.SelectedItem = stockGroup.ToString();
-            groupComboBox.SelectedValueChanged += new EventHandler(groupComboBox_SelectedValueChanged);
-
-            periodComboBox.SelectedIndex = 0;
-            completeBarCheckBox.Checked = true;
-
-            OnThemeChanged(theme);
-            OnBarDurationChanged(barDuration);
-
-            oneRadioButton.Checked = true;
-        }
-        public void OnThemeChanged(Dictionary<string, List<string>> theme)
-        {
-            if (this.IsDisposed) return;
-            // Initialise treeview
-            eventTreeView.Nodes.Clear();
-            selectedStockListBox.Items.Clear();
-
-            foreach (string entry in theme.Keys)
-            {
-                try
-                {
-                    foreach (string line in theme[entry])
-                    {
-                        string[] fields = line.Split('|');
-                        switch (fields[0].ToUpper())
+               foreach (string line in theme[entry])
+               {
+                  string[] fields = line.Split('|');
+                  switch (fields[0].ToUpper())
+                  {
+                     case "PAINTBAR":
+                        break;
+                     case "TRAILSTOP":
+                     case "INDICATOR":
                         {
-                            case "PAINTBAR":
-                                break;
-                            case "TRAILSTOP":
-                            case "INDICATOR":
-                                {
-                                    IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
-                                    IStockEvent stockEvent = viewableSerie as IStockEvent;
-                                    if (stockEvent != null)
-                                    {
-                                        bool nodeAlreadyExists = false;
-                                        foreach (TreeNode node in eventTreeView.Nodes)
-                                        {
-                                            if (node.Text == viewableSerie.Name)
-                                            {
-                                                nodeAlreadyExists = true;
-                                                break;
-                                            }
-                                        }
-                                        if (nodeAlreadyExists) break;
+                           IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
+                           IStockEvent stockEvent = viewableSerie as IStockEvent;
+                           if (stockEvent != null)
+                           {
+                              bool nodeAlreadyExists = false;
+                              foreach (TreeNode node in eventTreeView.Nodes)
+                              {
+                                 if (node.Text == viewableSerie.Name)
+                                 {
+                                    nodeAlreadyExists = true;
+                                    break;
+                                 }
+                              }
+                              if (nodeAlreadyExists) break;
 
                               if (stockEvent.EventCount != 0)
                               {
-                                        TreeNode treeNode = new TreeNode(fields[1]);
-                                        eventTreeView.Nodes.Add(treeNode);
-                                        for (int i = 0; i < stockEvent.EventCount; i++)
-                                        {
-                                            treeNode.Nodes.Add(new TreeNode(stockEvent.EventNames[i]) { Tag = stockEvent });
-                                            eventTreeView.Refresh();
-                                        }
-                                    }
-                                }
+                                 TreeNode treeNode = new TreeNode(fields[1]);
+                                 eventTreeView.Nodes.Add(treeNode);
+                                 for (int i = 0; i < stockEvent.EventCount; i++)
+                                 {
+                                    treeNode.Nodes.Add(new TreeNode(stockEvent.EventNames[i]) { Tag = stockEvent });
+                                    eventTreeView.Refresh();
+                                 }
+                              }
+                           }
                         }
-                                break;
-                            case "DECORATOR":
-                                {
-                                    IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
-                                    if (viewableSerie is IStockEvent)
-                                    {
-                                        // Search for parent node
-                                        IStockDecorator decorator = viewableSerie as IStockDecorator;
-                                        TreeNode parentNode = null;
-                                        foreach (TreeNode node in eventTreeView.Nodes)
-                                        {
-                                            if (node.Text == decorator.DecoratedItem)
-                                            {
-                                                parentNode = node;
-                                                break;
-                                            }
-                                        }
-                                        if (parentNode == null)
-                                        {
-                                            break;
-                                        }
+                        break;
+                     case "DECORATOR":
+                        {
+                           IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
+                           if (viewableSerie is IStockEvent)
+                           {
+                              // Search for parent node
+                              IStockDecorator decorator = viewableSerie as IStockDecorator;
+                              TreeNode parentNode = null;
+                              foreach (TreeNode node in eventTreeView.Nodes)
+                              {
+                                 if (node.Text == decorator.DecoratedItem)
+                                 {
+                                    parentNode = node;
+                                    break;
+                                 }
+                              }
+                              if (parentNode == null)
+                              {
+                                 break;
+                              }
 
-                                        // Create sub nodes
-                                        if (decorator.SeriesCount != 0)
-                                        {
-                                            TreeNode treeNode = new TreeNode(fields[1]);
-                                            parentNode.Nodes.Add(treeNode);
-                                            for (int i = 0; i < decorator.SeriesCount; i++)
-                                            {
-                                                treeNode.Nodes.Add(new TreeNode(decorator.SerieNames[i]) { Tag = decorator });
-                                                eventTreeView.Refresh();
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            case "TRAIL":
-                                {
-                                    IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
-                                    if (viewableSerie is IStockEvent)
-                                    {
-                                        // Search for parent node
-                                        IStockTrail trail = viewableSerie as IStockTrail;
-                                        TreeNode parentNode = null;
-                                        foreach (TreeNode node in eventTreeView.Nodes)
-                                        {
-                                            if (node.Text == trail.TrailedItem)
-                                            {
-                                                parentNode = node;
-                                                break;
-                                            }
-                                        }
-                                        if (parentNode == null)
-                                        {
-                                            break;
-                                        }
-
-                                        // Create sub nodes
-                                        if (trail.SeriesCount != 0)
-                                        {
-                                            TreeNode treeNode = new TreeNode(fields[1]);
-                                            parentNode.Nodes.Add(treeNode);
-
-                                            for (int i = 0; i < trail.EventCount; i++)
-                                            {
-                                                treeNode.Nodes.Add(new TreeNode(trail.EventNames[i]) { Tag = trail });
-                                                eventTreeView.Refresh();
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            default:
-                                continue;
+                              // Create sub nodes
+                              if (decorator.SeriesCount != 0)
+                              {
+                                 TreeNode treeNode = new TreeNode(fields[1]);
+                                 parentNode.Nodes.Add(treeNode);
+                                 for (int i = 0; i < decorator.SeriesCount; i++)
+                                 {
+                                    treeNode.Nodes.Add(new TreeNode(decorator.SerieNames[i]) { Tag = decorator });
+                                    eventTreeView.Refresh();
+                                 }
+                              }
+                           }
                         }
-                    }
-                }
-                catch { }
-            }
+                        break;
+                     case "TRAIL":
+                        {
+                           IStockViewableSeries viewableSerie = StockViewableItemsManager.GetViewableItem(line);
+                           if (viewableSerie is IStockEvent)
+                           {
+                              // Search for parent node
+                              IStockTrail trail = viewableSerie as IStockTrail;
+                              TreeNode parentNode = null;
+                              foreach (TreeNode node in eventTreeView.Nodes)
+                              {
+                                 if (node.Text == trail.TrailedItem)
+                                 {
+                                    parentNode = node;
+                                    break;
+                                 }
+                              }
+                              if (parentNode == null)
+                              {
+                                 break;
+                              }
 
-            eventTreeView.ExpandAll();
-        }
-        public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
-        {
-            this.barDuration = barDuration;
-        }
+                              // Create sub nodes
+                              if (trail.SeriesCount != 0)
+                              {
+                                 TreeNode treeNode = new TreeNode(fields[1]);
+                                 parentNode.Nodes.Add(treeNode);
 
-        void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (SelectStockGroupChanged != null)
-            {
-                SelectStockGroupChanged(groupComboBox.SelectedItem.ToString());
+                                 for (int i = 0; i < trail.EventCount; i++)
+                                 {
+                                    treeNode.Nodes.Add(new TreeNode(trail.EventNames[i]) { Tag = trail });
+                                    eventTreeView.Refresh();
+                                 }
+                              }
+                           }
+                        }
+                        break;
+                     default:
+                        continue;
+                  }
+               }
             }
-        }
-        /// <summary>
-        /// Returns a value indicating whether the specified TreeNode has checked child nodes.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private bool HasCheckedChildNodes(TreeNode node)
-        {
-            if (node.Nodes.Count == 0) return false;
-            foreach (TreeNode childNode in node.Nodes)
-            {
-                if (childNode.Checked) return true;
-                // Recursively check the children of the current child node.
-                if (HasCheckedChildNodes(childNode)) return true;
-            }
-            return false;
-        } /// <summary>
-        /// Returns a value indicating whether the specified TreeNode has checked child nodes.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private List<TreeNode> GetCheckedChildNodes(TreeNode node)
-        {
-            List<TreeNode> nodes = new List<TreeNode>();
-            if (node.Nodes.Count == 0) return nodes;
-            foreach (TreeNode childNode in node.Nodes)
-            {
-                if (childNode.Checked && childNode.Tag != null) nodes.Add(childNode);
-                // Recursively check the children of the current child node.
-                nodes.AddRange(GetCheckedChildNodes(childNode));
-            }
-            return nodes;
-        }
+            catch { }
+         }
+
+         eventTreeView.ExpandAll();
+      }
+      public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
+      {
+         this.barDuration = barDuration;
+      }
+
+      void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
+      {
+         if (SelectStockGroupChanged != null)
+         {
+            SelectStockGroupChanged(groupComboBox.SelectedItem.ToString());
+         }
+      }
+      /// <summary>
+      /// Returns a value indicating whether the specified TreeNode has checked child nodes.
+      /// </summary>
+      /// <param name="node"></param>
+      /// <returns></returns>
+      private bool HasCheckedChildNodes(TreeNode node)
+      {
+         if (node.Nodes.Count == 0) return false;
+         foreach (TreeNode childNode in node.Nodes)
+         {
+            if (childNode.Checked) return true;
+            // Recursively check the children of the current child node.
+            if (HasCheckedChildNodes(childNode)) return true;
+         }
+         return false;
+      } /// <summary>
+      /// Returns a value indicating whether the specified TreeNode has checked child nodes.
+      /// </summary>
+      /// <param name="node"></param>
+      /// <returns></returns>
+      private List<TreeNode> GetCheckedChildNodes(TreeNode node)
+      {
+         List<TreeNode> nodes = new List<TreeNode>();
+         if (node.Nodes.Count == 0) return nodes;
+         foreach (TreeNode childNode in node.Nodes)
+         {
+            if (childNode.Checked && childNode.Tag != null) nodes.Add(childNode);
+            // Recursively check the children of the current child node.
+            nodes.AddRange(GetCheckedChildNodes(childNode));
+         }
+         return nodes;
+      }
 
       enum ProgressStatus
       {
@@ -238,64 +237,64 @@ namespace StockAnalyzerApp.CustomControl
       private System.Windows.Forms.Timer processTimer;
 
       Cursor cursor;
-        private void selectButton_Click(object sender, EventArgs e)
-        {
+      private void selectButton_Click(object sender, EventArgs e)
+      {
          startDate = DateTime.Now;
-        //    ForceCheckNodes();
-        //    DumpCheckNodes();
-            eventTreeView.Refresh();
+         //    ForceCheckNodes();
+         //    DumpCheckNodes();
+         eventTreeView.Refresh();
 
          var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
 
-                selectedStockListBox.Items.Clear();
-                selectedStockListBox.Refresh();
+         selectedStockListBox.Items.Clear();
+         selectedStockListBox.Refresh();
 
-                if (progressBar != null)
-                {
-                    progressBar.Minimum = 0;
-                    progressBar.Maximum = stockInGroupList.Count();
-                    progressBar.Value = 0;
-                }
+         if (progressBar != null)
+         {
+            progressBar.Minimum = 0;
+            progressBar.Maximum = stockInGroupList.Count();
+            progressBar.Value = 0;
+         }
          allCriteria = allRadioButton.Checked;
 
-                // Build EventMatchList
+         // Build EventMatchList
          eventMatches = new List<StockSerie.EventMatch>();
 
-                foreach (TreeNode treeNode in eventTreeView.Nodes)
-                {
-                    List<TreeNode> checkedNodes = GetCheckedChildNodes(treeNode);
+         foreach (TreeNode treeNode in eventTreeView.Nodes)
+         {
+            List<TreeNode> checkedNodes = GetCheckedChildNodes(treeNode);
 
             if (checkedNodes.Count == 0)
             {
                continue;
             }
-                    IStockEvent stockEvent = null;
-                    IStockDecorator stockDecorator = null;
+            IStockEvent stockEvent = null;
+            IStockDecorator stockDecorator = null;
 
-                    foreach (TreeNode childNode in checkedNodes)
-                    {
-                        if (childNode.Tag is IStockDecorator) // Decorator
-                        {
-                            IStockViewableSeries decoratorSerie = (IStockViewableSeries)childNode.Tag;
-                            eventMatches.Add(new StockSerie.EventMatch()
-                            {
-                                ViewableSerie = decoratorSerie,
-                                EventIndex = decoratorSerie.SerieNames.ToList().IndexOf(childNode.Text)
-                            });                            
-                        }
-                        else // Indicator or Trail
-                        {
-                            IStockEvent eventSerie = (IStockEvent)childNode.Tag;
-                            eventMatches.Add(new StockSerie.EventMatch()
-                            {
-                                ViewableSerie = (IStockViewableSeries)eventSerie,
-                                EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
-                            });
-                        }
-                    }
-                }
+            foreach (TreeNode childNode in checkedNodes)
+            {
+               if (childNode.Tag is IStockDecorator) // Decorator
+               {
+                  IStockViewableSeries decoratorSerie = (IStockViewableSeries)childNode.Tag;
+                  eventMatches.Add(new StockSerie.EventMatch()
+                  {
+                     ViewableSerie = decoratorSerie,
+                     EventIndex = decoratorSerie.SerieNames.ToList().IndexOf(childNode.Text)
+                  });
+               }
+               else // Indicator or Trail
+               {
+                  IStockEvent eventSerie = (IStockEvent)childNode.Tag;
+                  eventMatches.Add(new StockSerie.EventMatch()
+                  {
+                     ViewableSerie = (IStockViewableSeries)eventSerie,
+                     EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
+                  });
+               }
+            }
+         }
 
-                if (eventMatches.Count == 0) return;
+         if (eventMatches.Count == 0) return;
 
          cursor = Cursor;
          Cursor = Cursors.WaitCursor;
@@ -548,27 +547,27 @@ namespace StockAnalyzerApp.CustomControl
             }
 
             if (eventMatches.Count == 0) return;
-                foreach (StockSerie stockSerie in stockInGroupList)
-                {
-                    progressLabel.Text = stockSerie.StockName;
-                    progressLabel.Refresh();
+            foreach (StockSerie stockSerie in stockInGroupList)
+            {
+               progressLabel.Text = stockSerie.StockName;
+               progressLabel.Refresh();
 
-                    if (this.refreshDataCheckBox.Checked)
-                    {
-                        stockSerie.IsInitialised = false;
-                        StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-                    }
+               if (this.refreshDataCheckBox.Checked)
+               {
+                  stockSerie.IsInitialised = false;
+                  StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+               }
 
                if (!stockSerie.Initialise())
                {
                   continue;
                }
 
-                    stockSerie.BarDuration = barDuration;
-                    int lastIndex = completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                    int firstIndex = lastIndex + 1 - (int)periodComboBox.SelectedItem;
+               stockSerie.BarDuration = barDuration;
+               int lastIndex = completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
+               int firstIndex = lastIndex + 1 - (int)periodComboBox.SelectedItem;
 
-                    // Check event matching
+               // Check event matching
                bool selected =
                   false;
                for (int i = lastIndex; i >= firstIndex && !selected; i--)
@@ -577,368 +576,368 @@ namespace StockAnalyzerApp.CustomControl
                      ? stockSerie.MatchEventsAnd(i, eventMatches)
                      : stockSerie.MatchEventsOr(i, eventMatches);
                }
-                    if (selected)
-                    {
-                        selectedStockListBox.Items.Add(stockSerie.StockName);
-                        selectedStockListBox.Refresh();
-                    }
-                    if (progressBar != null)
-                    {
-                        progressBar.Value++;
-                    }
-                }
+               if (selected)
+               {
+                  selectedStockListBox.Items.Add(stockSerie.StockName);
+                  selectedStockListBox.Refresh();
+               }
+               if (progressBar != null)
+               {
+                  progressBar.Value++;
+               }
             }
-            catch (Exception exception)
+         }
+         catch (Exception exception)
+         {
+            MessageBox.Show(exception.Message, "Script Error !!!");
+         }
+         finally
+         {
+            if (progressBar != null)
             {
-                MessageBox.Show(exception.Message, "Script Error !!!");
-            }
-            finally
-            {
-                if (progressBar != null)
-                {
-                    progressBar.Value = 0;
-                    progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
-                }
-                Cursor = cursor;
-            }
-         Console.WriteLine((DateTime.Now - startDate).ToString());
-        }
-
-        void clearButton_Click(object sender, EventArgs e)
-        {
-            selectedStockListBox.Items.Clear(); 
-            
-            //ForceCheckNodes();
-            eventTreeView.Refresh();
-        }
-
-        void selectedStockListBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (SelectedStockChanged != null && selectedStockListBox.SelectedItem != null)
-            {
-                SelectedStockChanged(selectedStockListBox.SelectedItem.ToString(), true);
-            }
-            Focus();
-        }
-
-        private void eventTreeView_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            if (e.Action != TreeViewAction.Unknown)
-            {
-                CheckChildNodes(e.Node);
-                eventTreeView.Refresh();
-            }
-        }
-        void DumpCheckNodes()
-        {
-         // Console.WriteLine();
-            foreach (var node in GetCheckedChildNodes(eventTreeView.TopNode))
-            {
-            // Console.WriteLine(node.FullPath);
-            }
-        }
-
-        //private void ForceCheckNodes()
-        //{
-        //    foreach (TreeNode childNode in eventTreeView.Nodes)
-        //    {
-        //        ForceCheckNodes(childNode);
-        //    }
-        //}
-        //private void ForceCheckNodes(TreeNode node)
-        //{
-        //    bool isChecked = node.Checked;
-        //    node.Checked = !isChecked;
-        //    node.Checked = isChecked;
-
-        //    eventTreeView.Refresh();
-        //    if (node.Nodes == null) return;
-        //    foreach (TreeNode childNode in node.Nodes)
-        //    {
-        //        ForceCheckNodes(childNode);
-        //    }
-        //}
-
-        private void CheckChildNodes(TreeNode node)
-        {
-            if (node.Nodes == null) return;
-            foreach (TreeNode childNode in node.Nodes)
-            {
-                childNode.Checked = node.Checked;
-                eventTreeView.Refresh();
-                CheckChildNodes(childNode);
-            }
-        }
-
-        private void reloadButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                StockSplashScreen.FadeInOutSpeed = 0.25;
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = 100;
-                StockSplashScreen.ProgressMin = 0;
-                StockSplashScreen.ShowSplashScreen();
-
-                var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
-                foreach (StockSerie stockSerie in stockInGroupList)
-                {
-                    stockSerie.IsInitialised = false;
-                    StockSplashScreen.ProgressText = "Downloading " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Unable to download selected stock data...", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                StockSplashScreen.CloseForm(true);
-            }
-        }
-
-        private void statisticsButton_Click(object sender, EventArgs e)
-        {
-            Cursor cursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            List<StockSerie.StockAlertDef> alertDefs = new List<StockSerie.StockAlertDef>();
-            alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
-            alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B_3D, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
-
-            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
-            try
-            {
-                selectedStockListBox.Items.Clear();
-                selectedStockListBox.Refresh();
-
-                if (progressBar != null)
-                {
-                    progressBar.Minimum = 0;
-                    progressBar.Maximum = stockInGroupList.Count();
-                    progressBar.Value = 0;
-                }
-                bool conditionMatching = false;
-
-                foreach (StockSerie stockSerie in stockInGroupList)
-                {
-                    progressLabel.Text = stockSerie.StockName;
-                    progressLabel.Refresh();
-
-                    if (!stockSerie.Initialise()) { continue; }
-
-                    conditionMatching = stockSerie.MatchEventsAnd(alertDefs);
-                    if (conditionMatching)
-                    {
-                        selectedStockListBox.Items.Add(stockSerie.StockName);
-                        selectedStockListBox.Refresh();
-                        conditionMatching = false;
-                    }
-                    if (progressBar != null)
-                    {
-                        progressBar.Value++;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Script Error !!!");
-            }
-            finally
-            {
-                if (progressBar != null)
-                {
-                    progressBar.Value = 0;
-                    progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
-                }
-                Cursor = cursor;
-            }
-        }
-        private void statisticsButton_Click_old(object sender, EventArgs e)
-        {
-            Cursor cursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            int period = 20;
-
-            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
-            try
-            {
-                selectedStockListBox.Items.Clear();
-                selectedStockListBox.Refresh();
-
-                if (progressBar != null)
-                {
-                    progressBar.Minimum = 0;
-                    progressBar.Maximum = stockInGroupList.Count();
-                    progressBar.Value = 0;
-                }
-                bool conditionMatching = false;
-                bool allCriteria = allRadioButton.Checked;
-
-                int[] ups = new int[period];
-                int[] downs = new int[period];
-                float[] upVariations = new float[period];
-                float[] downVariations = new float[period];
-
-                foreach (StockSerie stockSerie in stockInGroupList)
-                {
-                    progressLabel.Text = stockSerie.StockName;
-                    progressLabel.Refresh();
-
-                    conditionMatching = allCriteria;
-                    if (!stockSerie.Initialise()) { continue; }
-
-                    stockSerie.BarDuration = barDuration;
-
-                    var values = stockSerie.ValueArray;
-
-                    int lastIndex = (completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex) - period;
-                    int firstIndex = period;
-
-                    for (int index = firstIndex; index < lastIndex; index++)
-                    {
-                        foreach (TreeNode treeNode in eventTreeView.Nodes)
-                        {
-                            if (!HasCheckedChildNodes(treeNode))
-                            {
-                                continue;
-                            }
-                            int eventIndex = 0;
-                            int decoratorEventIndex = 0;
-                            IStockEvent stockEvent = null;
-                            IStockDecorator stockDecorator = null;
-
-
-                            foreach (TreeNode childNode in treeNode.Nodes)
-                            {
-                                if (childNode.Tag == null)
-                                {
-                                    if (childNode.Checked)
-                                    {
-                                        if (stockEvent == null)
-                                        {
-                                            IStockViewableSeries viewableSerie = (IStockViewableSeries)treeNode.Tag;
-                                            if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
-                                            {
-                                                stockEvent =
-                                                    (IStockEvent)
-                                                        StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
-                                                            stockSerie);
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                        }
-
-                                        // TODO Manage multiple
-                                        bool eventDetected = eventDetected = stockEvent.Events[eventIndex][index];
-
-                                        if (allCriteria && !eventDetected)
-                                        {
-                                            conditionMatching = false;
-                                            break;
-                                        }
-
-                                        if (!allCriteria && eventDetected)
-                                        {
-                                            conditionMatching = true;
-                                            break;
-                                        }
-                                    }
-                                    eventIndex++;
-                                }
-                                else
-                                {
-                                    if (childNode.Checked)
-                                    {
-                                        if (stockDecorator == null)
-                                        {
-                                            IStockDecorator viewableSerie = (IStockDecorator)childNode.Tag;
-                                            if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
-                                            {
-                                                stockDecorator =
-                                                    (IStockDecorator)
-                                                        StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
-                                                            stockSerie);
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                        }
-
-                                        // TODO Manage multiple
-                                        bool eventDetected = stockDecorator.Series[decoratorEventIndex][index];
-
-                                        if (allCriteria && !eventDetected)
-                                        {
-                                            conditionMatching = false;
-                                            break;
-                                        }
-
-                                        if (!allCriteria && eventDetected)
-                                        {
-                                            conditionMatching = true;
-                                            break;
-                                        }
-                                    }
-                                    decoratorEventIndex++;
-                                }
-                            }
-
-                        }
-                        if (conditionMatching)
-                        {
-                            //  Generate statistics
-                            for (int i = 0; i < period; i++)
-                            {
-                                var val = values[i + index];
-                                if (val.VARIATION >= 0.0f)
-                                {
-                                    ups[i] += 1;
-                                    upVariations[i] += val.VARIATION;
-                                }
-                                else
-                                {
-                                    downs[i] -= 1;
-                                    downVariations[i] += val.VARIATION;
-                                }
-                            }
-                            conditionMatching = false;
-                        }
-                    } // Foreach index
-                    if (progressBar != null)
-                    {
-                        progressBar.Value++;
-                    }
-                } // Foreach StockSerie
-
-                // dump results
-                string buffer = "Ups\tDowns\tUpVariation\tDownVariations" + Environment.NewLine;
-
-                for (int i = 0; i < period; i++)
-                {
-                    buffer += ups[i] + "\t" + downs[i] + "\t" + upVariations[i] + "\t" + downVariations[i] + Environment.NewLine;
-                }
-
-                Clipboard.SetText(buffer);
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Script Error !!!");
-            }
-            finally
-            {
-                if (progressBar != null)
-                {
-                    progressBar.Value = 0;
-                    progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
-                }
+               progressBar.Value = 0;
+               progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
             }
             Cursor = cursor;
-        }
-    }
+         }
+         Console.WriteLine((DateTime.Now - startDate).ToString());
+      }
+
+      void clearButton_Click(object sender, EventArgs e)
+      {
+         selectedStockListBox.Items.Clear();
+
+         //ForceCheckNodes();
+         eventTreeView.Refresh();
+      }
+
+      void selectedStockListBox_SelectedValueChanged(object sender, EventArgs e)
+      {
+         if (SelectedStockChanged != null && selectedStockListBox.SelectedItem != null)
+         {
+            SelectedStockChanged(selectedStockListBox.SelectedItem.ToString(), true);
+         }
+         Focus();
+      }
+
+      private void eventTreeView_AfterCheck(object sender, TreeViewEventArgs e)
+      {
+         if (e.Action != TreeViewAction.Unknown)
+         {
+            CheckChildNodes(e.Node);
+            eventTreeView.Refresh();
+         }
+      }
+      void DumpCheckNodes()
+      {
+         // Console.WriteLine();
+         foreach (var node in GetCheckedChildNodes(eventTreeView.TopNode))
+         {
+            // Console.WriteLine(node.FullPath);
+         }
+      }
+
+      //private void ForceCheckNodes()
+      //{
+      //    foreach (TreeNode childNode in eventTreeView.Nodes)
+      //    {
+      //        ForceCheckNodes(childNode);
+      //    }
+      //}
+      //private void ForceCheckNodes(TreeNode node)
+      //{
+      //    bool isChecked = node.Checked;
+      //    node.Checked = !isChecked;
+      //    node.Checked = isChecked;
+
+      //    eventTreeView.Refresh();
+      //    if (node.Nodes == null) return;
+      //    foreach (TreeNode childNode in node.Nodes)
+      //    {
+      //        ForceCheckNodes(childNode);
+      //    }
+      //}
+
+      private void CheckChildNodes(TreeNode node)
+      {
+         if (node.Nodes == null) return;
+         foreach (TreeNode childNode in node.Nodes)
+         {
+            childNode.Checked = node.Checked;
+            eventTreeView.Refresh();
+            CheckChildNodes(childNode);
+         }
+      }
+
+      private void reloadButton_Click(object sender, EventArgs e)
+      {
+         try
+         {
+            StockSplashScreen.FadeInOutSpeed = 0.25;
+            StockSplashScreen.ProgressVal = 0;
+            StockSplashScreen.ProgressMax = 100;
+            StockSplashScreen.ProgressMin = 0;
+            StockSplashScreen.ShowSplashScreen();
+
+            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+            foreach (StockSerie stockSerie in stockInGroupList)
+            {
+               stockSerie.IsInitialised = false;
+               StockSplashScreen.ProgressText = "Downloading " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+               StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+            }
+         }
+         catch (Exception ex)
+         {
+            MessageBox.Show(ex.Message, "Unable to download selected stock data...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+         finally
+         {
+            StockSplashScreen.CloseForm(true);
+         }
+      }
+
+      private void statisticsButton_Click(object sender, EventArgs e)
+      {
+         Cursor cursor = Cursor;
+         Cursor = Cursors.WaitCursor;
+
+         List<StockSerie.StockAlertDef> alertDefs = new List<StockSerie.StockAlertDef>();
+         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
+         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B_3D, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
+
+         var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+         try
+         {
+            selectedStockListBox.Items.Clear();
+            selectedStockListBox.Refresh();
+
+            if (progressBar != null)
+            {
+               progressBar.Minimum = 0;
+               progressBar.Maximum = stockInGroupList.Count();
+               progressBar.Value = 0;
+            }
+            bool conditionMatching = false;
+
+            foreach (StockSerie stockSerie in stockInGroupList)
+            {
+               progressLabel.Text = stockSerie.StockName;
+               progressLabel.Refresh();
+
+               if (!stockSerie.Initialise()) { continue; }
+
+               conditionMatching = stockSerie.MatchEventsAnd(alertDefs);
+               if (conditionMatching)
+               {
+                  selectedStockListBox.Items.Add(stockSerie.StockName);
+                  selectedStockListBox.Refresh();
+                  conditionMatching = false;
+               }
+               if (progressBar != null)
+               {
+                  progressBar.Value++;
+               }
+            }
+         }
+         catch (Exception exception)
+         {
+            MessageBox.Show(exception.Message, "Script Error !!!");
+         }
+         finally
+         {
+            if (progressBar != null)
+            {
+               progressBar.Value = 0;
+               progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
+            }
+            Cursor = cursor;
+         }
+      }
+      private void statisticsButton_Click_old(object sender, EventArgs e)
+      {
+         Cursor cursor = Cursor;
+         Cursor = Cursors.WaitCursor;
+
+         int period = 20;
+
+         var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+         try
+         {
+            selectedStockListBox.Items.Clear();
+            selectedStockListBox.Refresh();
+
+            if (progressBar != null)
+            {
+               progressBar.Minimum = 0;
+               progressBar.Maximum = stockInGroupList.Count();
+               progressBar.Value = 0;
+            }
+            bool conditionMatching = false;
+            bool allCriteria = allRadioButton.Checked;
+
+            int[] ups = new int[period];
+            int[] downs = new int[period];
+            float[] upVariations = new float[period];
+            float[] downVariations = new float[period];
+
+            foreach (StockSerie stockSerie in stockInGroupList)
+            {
+               progressLabel.Text = stockSerie.StockName;
+               progressLabel.Refresh();
+
+               conditionMatching = allCriteria;
+               if (!stockSerie.Initialise()) { continue; }
+
+               stockSerie.BarDuration = barDuration;
+
+               var values = stockSerie.ValueArray;
+
+               int lastIndex = (completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex) - period;
+               int firstIndex = period;
+
+               for (int index = firstIndex; index < lastIndex; index++)
+               {
+                  foreach (TreeNode treeNode in eventTreeView.Nodes)
+                  {
+                     if (!HasCheckedChildNodes(treeNode))
+                     {
+                        continue;
+                     }
+                     int eventIndex = 0;
+                     int decoratorEventIndex = 0;
+                     IStockEvent stockEvent = null;
+                     IStockDecorator stockDecorator = null;
+
+
+                     foreach (TreeNode childNode in treeNode.Nodes)
+                     {
+                        if (childNode.Tag == null)
+                        {
+                           if (childNode.Checked)
+                           {
+                              if (stockEvent == null)
+                              {
+                                 IStockViewableSeries viewableSerie = (IStockViewableSeries)treeNode.Tag;
+                                 if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
+                                 {
+                                    stockEvent =
+                                        (IStockEvent)
+                                            StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
+                                                stockSerie);
+                                 }
+                                 else
+                                 {
+                                    continue;
+                                 }
+                              }
+
+                              // TODO Manage multiple
+                              bool eventDetected = eventDetected = stockEvent.Events[eventIndex][index];
+
+                              if (allCriteria && !eventDetected)
+                              {
+                                 conditionMatching = false;
+                                 break;
+                              }
+
+                              if (!allCriteria && eventDetected)
+                              {
+                                 conditionMatching = true;
+                                 break;
+                              }
+                           }
+                           eventIndex++;
+                        }
+                        else
+                        {
+                           if (childNode.Checked)
+                           {
+                              if (stockDecorator == null)
+                              {
+                                 IStockDecorator viewableSerie = (IStockDecorator)childNode.Tag;
+                                 if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
+                                 {
+                                    stockDecorator =
+                                        (IStockDecorator)
+                                            StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
+                                                stockSerie);
+                                 }
+                                 else
+                                 {
+                                    continue;
+                                 }
+                              }
+
+                              // TODO Manage multiple
+                              bool eventDetected = stockDecorator.Series[decoratorEventIndex][index];
+
+                              if (allCriteria && !eventDetected)
+                              {
+                                 conditionMatching = false;
+                                 break;
+                              }
+
+                              if (!allCriteria && eventDetected)
+                              {
+                                 conditionMatching = true;
+                                 break;
+                              }
+                           }
+                           decoratorEventIndex++;
+                        }
+                     }
+
+                  }
+                  if (conditionMatching)
+                  {
+                     //  Generate statistics
+                     for (int i = 0; i < period; i++)
+                     {
+                        var val = values[i + index];
+                        if (val.VARIATION >= 0.0f)
+                        {
+                           ups[i] += 1;
+                           upVariations[i] += val.VARIATION;
+                        }
+                        else
+                        {
+                           downs[i] -= 1;
+                           downVariations[i] += val.VARIATION;
+                        }
+                     }
+                     conditionMatching = false;
+                  }
+               } // Foreach index
+               if (progressBar != null)
+               {
+                  progressBar.Value++;
+               }
+            } // Foreach StockSerie
+
+            // dump results
+            string buffer = "Ups\tDowns\tUpVariation\tDownVariations" + Environment.NewLine;
+
+            for (int i = 0; i < period; i++)
+            {
+               buffer += ups[i] + "\t" + downs[i] + "\t" + upVariations[i] + "\t" + downVariations[i] + Environment.NewLine;
+            }
+
+            Clipboard.SetText(buffer);
+         }
+         catch (Exception exception)
+         {
+            MessageBox.Show(exception.Message, "Script Error !!!");
+         }
+         finally
+         {
+            if (progressBar != null)
+            {
+               progressBar.Value = 0;
+               progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
+            }
+         }
+         Cursor = cursor;
+      }
+   }
 }

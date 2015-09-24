@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockStrategyClasses;
 
 namespace StockAnalyzerApp.CustomControl

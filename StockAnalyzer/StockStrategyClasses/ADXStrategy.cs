@@ -1,51 +1,50 @@
-﻿using System;
-using System.Linq;
-using StockAnalyzer.StockClasses;
+﻿using System.Linq;
 using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 
 namespace StockAnalyzer.StockStrategyClasses
 {
-    public class _ADXStrategy : StockStrategyBase
-    {
-        #region StockStrategy Properties
-        override public string Description
-        {
-            get { return "This strategy buys and sells on ADX Signals"; }
-        }
-        #endregion
-        #region StockStrategy Methods
+   public class _ADXStrategy : StockStrategyBase
+   {
+      #region StockStrategy Properties
+      override public string Description
+      {
+         get { return "This strategy buys and sells on ADX Signals"; }
+      }
+      #endregion
+      #region StockStrategy Methods
 
-        private IStockIndicator adxIndicator;
+      private IStockIndicator adxIndicator;
       private IStockDecorator adxDecorator;
-        private IStockTrailStop SRTrailStop;
+      private IStockTrailStop SRTrailStop;
 
-        private float previousLow = float.MaxValue;
-        private float previousHigh = float.MaxValue;
+      private float previousLow = float.MaxValue;
+      private float previousHigh = float.MaxValue;
 
-        private int upTrendIndex;
-        private int downTrendIndex;
+      private int upTrendIndex;
+      private int downTrendIndex;
 
 
       private int exhaustionSellIndex;
 
 
-        public int brokenDownEventIndex { get; set; }
+      public int brokenDownEventIndex { get; set; }
 
-        private int brokenUpEventIndex;
-        private int supportEventIndex;
+      private int brokenUpEventIndex;
+      private int supportEventIndex;
 
-        private int upTrendEventIndex;
+      private int upTrendEventIndex;
 
       private string triggerName = "ADX(30,25,6)";
       private string trailName = "TRAILHL(4)";
 
-        public _ADXStrategy()
-        {
+      public _ADXStrategy()
+      {
          this.TriggerIndicator = StockIndicatorManager.CreateIndicator(triggerName);
-            adxIndicator = (IStockIndicator)this.TriggerIndicator;
+         adxIndicator = (IStockIndicator)this.TriggerIndicator;
 
          this.adxDecorator = StockDecoratorManager.CreateDecorator("DIV(1)", triggerName);
          exhaustionSellIndex = adxDecorator.SerieNames.ToList().IndexOf("ExhaustionBottom");
@@ -55,78 +54,78 @@ namespace StockAnalyzer.StockStrategyClasses
          upTrendIndex = SRTrailStop.EventNames.ToList().IndexOf("UpTrend");
          downTrendIndex = SRTrailStop.EventNames.ToList().IndexOf("DownTrend");
 
-            brokenUpEventIndex = SRTrailStop.EventNames.ToList().IndexOf("BrokenUp");
-            brokenDownEventIndex = SRTrailStop.EventNames.ToList().IndexOf("BrokenDown");
-        }
+         brokenUpEventIndex = SRTrailStop.EventNames.ToList().IndexOf("BrokenUp");
+         brokenDownEventIndex = SRTrailStop.EventNames.ToList().IndexOf("BrokenDown");
+      }
 
-        public override void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
-        {
-            base.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
+      public override void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
+      {
+         base.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
          this.SRTrailStop = stockSerie.GetTrailStop(trailName);
 
          this.adxDecorator = stockSerie.GetDecorator("DIV(1)", ((IStockIndicator)TriggerIndicator).Name);
-        }
+      }
 
 
-        override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)
-        {
-            benchmark = dailyValue.CLOSE;
+      override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)
+      {
+         benchmark = dailyValue.CLOSE;
 
-            if (this.adxIndicator == null)
-            { return null; }
+         if (this.adxIndicator == null)
+         { return null; }
 
-            #region Create Buy
+         #region Create Buy
 
-         if (this.adxDecorator.Series[this.exhaustionSellIndex][index-1])
+         if (this.adxDecorator.Series[this.exhaustionSellIndex][index - 1])
          {
             if (this.SupportShortSelling)
             {
                //if (this.adxIndicator.Events[downTrendIndex][index])
                if (this.SRTrailStop.Events[downTrendIndex][index])
-                {
+               {
                   return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                      dailyValue.DATE.AddDays(60), amount, true);
-                }
+               }
             }
             if (this.SRTrailStop.Events[upTrendIndex][index])
             {
                return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                   dailyValue.DATE.AddDays(60), amount, false);
             }
-            }
+         }
 
-            #endregion
-            return null;
-        }
+         #endregion
+         return null;
+      }
 
       public override StockOrder TryToSell(StockDailyValue dailyValue, int index, int number, ref float benchmark)
-        {
-            benchmark = dailyValue.CLOSE;
+      {
+         benchmark = dailyValue.CLOSE;
 
-            #region Create Sell Order
+         #region Create Sell Order
 
-            if (LastBuyOrder.IsShortOrder)
+         if (LastBuyOrder.IsShortOrder)
+         {
+            // Sell in case of Support detected
+            if (this.SRTrailStop.Events[brokenUpEventIndex][index])
             {
-                // Sell in case of Support detected
-                if (this.SRTrailStop.Events[brokenUpEventIndex][index])
-                {
-                    return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
-                   dailyValue.DATE.AddDays(60), number, true);
-                }
+               return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
+              dailyValue.DATE.AddDays(60), number, true);
             }
-            else
+         }
+         else
+         {
+            // Sell in case of Resistance detected
+            if (this.SRTrailStop.Events[brokenDownEventIndex][index])
             {
-                // Sell in case of Resistance detected
-                if (this.SRTrailStop.Events[brokenDownEventIndex][index])
-                {
-                    return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
-                   dailyValue.DATE.AddDays(60), number, false);
-                }
+               return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
+              dailyValue.DATE.AddDays(60), number, false);
             }
+         }
 
-            #endregion
-            return null;
-        }
-        #endregion
-    }
+         #endregion
+         return null;
+      }
+      #endregion
+   }
 }

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -12,12 +11,12 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockStrategyClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 
 namespace StockAnalyzer.StockClasses
 {

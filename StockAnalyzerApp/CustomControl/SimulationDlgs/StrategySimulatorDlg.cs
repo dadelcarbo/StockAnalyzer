@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockStrategyClasses;
 

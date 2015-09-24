@@ -1,235 +1,235 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
-using StockAnalyzer.StockLogging;
+using System.Linq;
 using System.Net;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using System.Windows.Forms;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class GoogleDataProvider : StockDataProviderBase, IConfigDialog
-    {
-        static private string FOLDER = @"\data\daily\Google";
-        static private string ARCHIVE_FOLDER = @"\data\archive\daily\Google";
+   public class GoogleDataProvider : StockDataProviderBase, IConfigDialog
+   {
+      static private string FOLDER = @"\data\daily\Google";
+      static private string ARCHIVE_FOLDER = @"\data\archive\daily\Google";
 
-        static private string CONFIG_FILE = @"\GoogleDownload.cfg";
-        static private string CONFIG_FILE_USER = @"\GoogleDownload.user.cfg";
-        public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
+      static private string CONFIG_FILE = @"\GoogleDownload.cfg";
+      static private string CONFIG_FILE_USER = @"\GoogleDownload.user.cfg";
+      public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
 
 
-        public override bool SupportsIntradayDownload
-        {
-            get { return false; }
-        }
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
-        {
-            // Parse Google.cfg file// Create data folder if not existing
-            if (!Directory.Exists(rootFolder + FOLDER))
+      public override bool SupportsIntradayDownload
+      {
+         get { return false; }
+      }
+      public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+      {
+         // Parse Google.cfg file// Create data folder if not existing
+         if (!Directory.Exists(rootFolder + FOLDER))
+         {
+            Directory.CreateDirectory(rootFolder + FOLDER);
+         }
+         if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
+         {
+            Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
+         }
+
+         // Parse GoogleDownload.cfg file
+         InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
+         InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
+      }
+
+      private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
+      {
+         string line;
+         if (File.Exists(fileName))
+         {
+            using (StreamReader sr = new StreamReader(fileName, true))
             {
-                Directory.CreateDirectory(rootFolder + FOLDER);
+               sr.ReadLine(); // Skip first line
+               while (!sr.EndOfStream)
+               {
+                  line = sr.ReadLine();
+                  if (!line.StartsWith("#"))
+                  {
+                     string[] row = line.Split(',');
+
+                     string shortName = row[0].Contains(':') ? row[0].Split(':')[1] : row[0];
+                     StockSerie stockSerie = new StockSerie(row[1], shortName, (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Google);
+
+                     if (!stockDictionary.ContainsKey(row[1]))
+                     {
+                        stockDictionary.Add(row[1], stockSerie);
+                     }
+                     else
+                     {
+                        StockLog.Write("Google Entry: " + row[1] + " already in stockDictionary");
+                     }
+                     if (download && this.needDownload)
+                     {
+                        this.DownloadDailyData(rootFolder, stockSerie);
+                     }
+                  }
+               }
             }
-            if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
+         }
+      }
+      public override bool LoadData(string rootFolder, StockSerie stockSerie)
+      {
+         // Read archive first
+         bool res = false;
+         string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
+         string[] files = System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName);
+         foreach (string archiveFileName in files)
+         {
+            res |= ParseCSVFile(stockSerie, archiveFileName);
+         }
+
+         fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+         return ParseCSVFile(stockSerie, fileName) || res;
+      }
+
+      public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+      {
+         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+         {
+            string shortName = stockSerie.ShortName;
+            if (stockSerie.BelongsToGroup(StockSerie.Groups.FTSE100))
             {
-                Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
+               shortName = "LON:" + shortName;
             }
-
-            // Parse GoogleDownload.cfg file
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
-        }
-
-        private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
-        {
-            string line;
-            if (File.Exists(fileName))
+            else if (stockSerie.BelongsToGroup(StockSerie.Groups.DAX30))
             {
-                using (StreamReader sr = new StreamReader(fileName, true))
-                {
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#"))
-                        {
-                            string[] row = line.Split(',');
-                            
-                            string shortName = row[0].Contains(':')? row[0].Split(':')[1] : row[0];
-                            StockSerie stockSerie = new StockSerie(row[1], shortName, (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Google);
-
-                            if (!stockDictionary.ContainsKey(row[1]))
-                            {
-                                stockDictionary.Add(row[1], stockSerie);
-                            }
-                            else
-                            {
-                                StockLog.Write("Google Entry: " + row[1] + " already in stockDictionary");
-                            }
-                            if (download && this.needDownload)
-                            {
-                                this.DownloadDailyData(rootFolder, stockSerie);
-                            }
-                        }
-                    }
-                }
+               shortName = "ETR:" + shortName;
             }
-        }
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
-        {
-            // Read archive first
-            bool res = false;
-            string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
-            string[] files = System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName);
-            foreach (string archiveFileName in files)
+
+            bool isUpTodate = false;
+            stockSerie.Initialise();
+            if (stockSerie.Count > 0)
             {
-                res |= ParseCSVFile(stockSerie, archiveFileName);
+               // This serie already exist, download just the missing data.
+               DateTime lastDate = stockSerie.Keys.Last();
+
+               isUpTodate = (lastDate >= DateTime.Today) ||
+                   (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 2 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.UtcNow.Hour < 20)) ||
+                   (lastDate >= DateTime.Today.AddDays(-1) && DateTime.UtcNow.Hour < 20);
+
+               NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);
+               if (!isUpTodate)
+               {
+                  if (lastDate.Year < DateTime.Today.Year)
+                  {
+                     // Happy new year !!! it's time to archive old data...
+                     if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv"))
+                     {
+                        this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv", new DateTime(lastDate.Year, 1, 1), new DateTime(lastDate.Year, 12, 31), shortName);
+                     }
+                  }
+                  DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
+                  string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+                  this.DownloadFileFromGoogle(rootFolder + FOLDER, fileName, startDate, DateTime.Today, shortName);
+
+                  if (stockSerie.StockName == "ADIDAS") // Check if something new has been downloaded using ANGLO AMERICAN as the reference for all downloads
+                  {
+                     this.ParseCSVFile(stockSerie, rootFolder + FOLDER + "\\" + fileName);
+                     if (lastDate == stockSerie.Keys.Last())
+                     {
+                        this.needDownload = false;
+                     }
+                  }
+               }
+               else
+               {
+                  if (stockSerie.StockName == "ADIDAS")
+                  {
+                     this.needDownload = false;
+                  }
+               }
+               stockSerie.IsInitialised = isUpTodate;
             }
-
-            fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            return ParseCSVFile(stockSerie, fileName) || res;
-        }
-
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
-        {
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            else
             {
-                string shortName = stockSerie.ShortName;
-                if (stockSerie.BelongsToGroup(StockSerie.Groups.FTSE100))
-                {
-                    shortName = "LON:" + shortName;
-                }
-                else if (stockSerie.BelongsToGroup(StockSerie.Groups.DAX30))
-                {
-                    shortName = "ETR:" + shortName;
-                }
-
-                bool isUpTodate = false;
-                stockSerie.Initialise();
-                if (stockSerie.Count > 0)
-                {
-                    // This serie already exist, download just the missing data.
-                    DateTime lastDate = stockSerie.Keys.Last();
-
-                    isUpTodate = (lastDate >= DateTime.Today)||
-                        (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 2 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.UtcNow.Hour < 20)) ||
-                        (lastDate >= DateTime.Today.AddDays(-1) && DateTime.UtcNow.Hour < 20);
-
-                    NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);
-                    if (!isUpTodate)
-                    {
-                        if (lastDate.Year < DateTime.Today.Year)
-                        {
-                            // Happy new year !!! it's time to archive old data...
-                            if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv"))
-                            {
-                                this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv", new DateTime(lastDate.Year, 1, 1), new DateTime(lastDate.Year, 12, 31), shortName);
-                            }
-                        }
-                        DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
-                        string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                        this.DownloadFileFromGoogle(rootFolder + FOLDER, fileName, startDate, DateTime.Today, shortName);
-
-                        if (stockSerie.StockName == "ADIDAS") // Check if something new has been downloaded using ANGLO AMERICAN as the reference for all downloads
-                        {
-                            this.ParseCSVFile(stockSerie, rootFolder + FOLDER + "\\" + fileName);
-                            if (lastDate == stockSerie.Keys.Last())
-                            {
-                                this.needDownload = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (stockSerie.StockName == "ADIDAS")
-                        {
-                            this.needDownload = false;
-                        }
-                    }
-                    stockSerie.IsInitialised = isUpTodate;
-                }
-                else
-                {
-                    NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
-                    DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
-                    for (int i = lastDate.Year - 1; i > 1990; i--)
-                    {
-                        if (!this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), shortName))
-                        {
-                            break;
-                        }
-                    }
-                    this.DownloadFileFromGoogle(rootFolder + FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, shortName);
-                }
+               NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
+               DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
+               for (int i = lastDate.Year - 1; i > 1990; i--)
+               {
+                  if (!this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), shortName))
+                  {
+                     break;
+                  }
+               }
+               this.DownloadFileFromGoogle(rootFolder + FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, shortName);
             }
-            return true;
-        }
+         }
+         return true;
+      }
 
-        public bool DownloadFileFromGoogle(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
-        {
-            string url = @"http://www.google.co.uk/finance/historical?q=$NAME&startdate=$START_MONTH+$START_DAY%2C+$START_YEAR&enddate=$END_MONTH+$END_DAY%2C+$END_YEAR&histperiod=daily&output=csv";
+      public bool DownloadFileFromGoogle(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
+      {
+         string url = @"http://www.google.co.uk/finance/historical?q=$NAME&startdate=$START_MONTH+$START_DAY%2C+$START_YEAR&enddate=$END_MONTH+$END_DAY%2C+$END_YEAR&histperiod=daily&output=csv";
 
-            // Build URL
-            url = url.Replace("$NAME", stockName);
-            url = url.Replace("$START_DAY", startDate.Day.ToString());
-            url = url.Replace("$START_MONTH", startDate.ToString("MMM", usCulture));
-            url = url.Replace("$START_YEAR", startDate.Year.ToString());
-            url = url.Replace("$END_DAY", endDate.Day.ToString());
-            url = url.Replace("$END_MONTH", endDate.ToString("MMM", usCulture));
-            url = url.Replace("$END_YEAR", endDate.Year.ToString());
+         // Build URL
+         url = url.Replace("$NAME", stockName);
+         url = url.Replace("$START_DAY", startDate.Day.ToString());
+         url = url.Replace("$START_MONTH", startDate.ToString("MMM", usCulture));
+         url = url.Replace("$START_YEAR", startDate.Year.ToString());
+         url = url.Replace("$END_DAY", endDate.Day.ToString());
+         url = url.Replace("$END_MONTH", endDate.ToString("MMM", usCulture));
+         url = url.Replace("$END_YEAR", endDate.Year.ToString());
 
 
-            int nbTries = 2;
-            while (nbTries > 0)
+         int nbTries = 2;
+         while (nbTries > 0)
+         {
+            try
             {
-                try
-                {
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+               using (WebClient wc = new WebClient())
+               {
+                  wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                        string fileContent = wc.DownloadString(url);
+                  string fileContent = wc.DownloadString(url);
 
-                        if (fileContent.Length <= 40 || fileContent.StartsWith("<!DOCTYPE", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            // Save content to file
-                            using (StreamWriter writer = new StreamWriter(destFolder + "\\" + fileName))
-                            {
-                                writer.Write(fileContent);
-                                StockLog.Write("Download succeeded: " + destFolder + "\\" + fileName);
-                            }
-                        }
+                  if (fileContent.Length <= 40 || fileContent.StartsWith("<!DOCTYPE", StringComparison.CurrentCultureIgnoreCase))
+                  {
+                     return false;
+                  }
+                  else
+                  {
+                     // Save content to file
+                     using (StreamWriter writer = new StreamWriter(destFolder + "\\" + fileName))
+                     {
+                        writer.Write(fileContent);
+                        StockLog.Write("Download succeeded: " + destFolder + "\\" + fileName);
+                     }
+                  }
 
-                        StockLog.Write("Download succeeded: " + stockName);
-                        return true;
-                    }
-                }
-                catch (SystemException e)
-                {
-                    StockLog.Write(e);
-                    nbTries--;
-                }
+                  StockLog.Write("Download succeeded: " + stockName);
+                  return true;
+               }
             }
-            if (nbTries <= 0)
+            catch (SystemException e)
             {
-                return false;
+               StockLog.Write(e);
+               nbTries--;
             }
-            return true;
-        }
+         }
+         if (nbTries <= 0)
+         {
+            return false;
+         }
+         return true;
+      }
 
 
-        public DialogResult ShowDialog(StockDictionary stockDico)
-        {
-            GoogleDataProviderConfigDlg configDlg = new GoogleDataProviderConfigDlg(stockDico);
-            return configDlg.ShowDialog();
-        }
+      public DialogResult ShowDialog(StockDictionary stockDico)
+      {
+         GoogleDataProviderConfigDlg configDlg = new GoogleDataProviderConfigDlg(stockDico);
+         return configDlg.ShowDialog();
+      }
 
-        public string DisplayName
-        {
-            get { return "Google"; }
-        }
-    }
+      public string DisplayName
+      {
+         get { return "Google"; }
+      }
+   }
 }

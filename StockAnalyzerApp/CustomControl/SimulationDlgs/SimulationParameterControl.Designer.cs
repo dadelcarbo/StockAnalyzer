@@ -1,33 +1,33 @@
 ﻿namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
-    partial class SimulationParameterControl
-    {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+   partial class SimulationParameterControl
+   {
+      /// <summary> 
+      /// Required designer variable.
+      /// </summary>
+      private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+      /// <summary> 
+      /// Clean up any resources being used.
+      /// </summary>
+      /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+      protected override void Dispose(bool disposing)
+      {
+         if (disposing && (components != null))
+         {
+            components.Dispose();
+         }
+         base.Dispose(disposing);
+      }
 
-        #region Component Designer generated code
+      #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+      /// <summary> 
+      /// Required method for Designer support - do not modify 
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          this.displayPendingOrdersCheckBox = new System.Windows.Forms.CheckBox();
          this.groupBox2 = new System.Windows.Forms.GroupBox();
          this.shortSellingCheckBox = new System.Windows.Forms.CheckBox();
@@ -368,36 +368,36 @@
          this.ResumeLayout(false);
          this.PerformLayout();
 
-        }
-        #endregion
+      }
+      #endregion
 
-        private System.Windows.Forms.CheckBox displayPendingOrdersCheckBox;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.CheckBox amendOrdersCheckBox;
-        private System.Windows.Forms.TextBox sellFallLimitTextBox;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox reinvestCheckBox;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox amountTextBox;
-        private System.Windows.Forms.TextBox buyGrowLimitTextBox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DateTimePicker endDatePicker;
-        private System.Windows.Forms.DateTimePicker startDatePicker;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox taxRateTextBox;
-        private System.Windows.Forms.TextBox fixedFeeTextBox;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.CheckBox removePendingOrdersCheckBox;
-        private System.Windows.Forms.ComboBox strategyComboBox;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox shortSellingCheckBox;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox takeProfitCheckBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox profitRateTextBox;
-    }
+      private System.Windows.Forms.CheckBox displayPendingOrdersCheckBox;
+      private System.Windows.Forms.GroupBox groupBox2;
+      private System.Windows.Forms.CheckBox amendOrdersCheckBox;
+      private System.Windows.Forms.TextBox sellFallLimitTextBox;
+      private System.Windows.Forms.Label label5;
+      private System.Windows.Forms.GroupBox groupBox1;
+      private System.Windows.Forms.CheckBox reinvestCheckBox;
+      private System.Windows.Forms.Label label7;
+      private System.Windows.Forms.TextBox amountTextBox;
+      private System.Windows.Forms.TextBox buyGrowLimitTextBox;
+      private System.Windows.Forms.Label label4;
+      private System.Windows.Forms.DateTimePicker endDatePicker;
+      private System.Windows.Forms.DateTimePicker startDatePicker;
+      private System.Windows.Forms.Label label2;
+      private System.Windows.Forms.Label label1;
+      private System.Windows.Forms.Label label8;
+      private System.Windows.Forms.Label label6;
+      private System.Windows.Forms.TextBox taxRateTextBox;
+      private System.Windows.Forms.TextBox fixedFeeTextBox;
+      private System.Windows.Forms.GroupBox groupBox4;
+      private System.Windows.Forms.CheckBox removePendingOrdersCheckBox;
+      private System.Windows.Forms.ComboBox strategyComboBox;
+      private System.Windows.Forms.Label label10;
+      private System.Windows.Forms.CheckBox shortSellingCheckBox;
+      private System.Windows.Forms.GroupBox groupBox3;
+      private System.Windows.Forms.CheckBox takeProfitCheckBox;
+      private System.Windows.Forms.Label label3;
+      private System.Windows.Forms.TextBox profitRateTextBox;
+   }
 }
