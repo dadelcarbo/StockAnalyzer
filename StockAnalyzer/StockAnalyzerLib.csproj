@@ -132,6 +132,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BREADTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_POSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQE.cs" />
