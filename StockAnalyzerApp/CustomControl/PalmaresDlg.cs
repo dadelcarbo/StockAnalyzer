@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl
       {
          InitializeComponent();
 
-         this.barDuration = barDuration;
+         this.barDuration = duration;
 
          // Initialize dico
          StockDico = stockDico;

@@ -47,8 +47,6 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         float bandValue;
-
          #region Create Buy
 
          if (this.SupportShortSelling)

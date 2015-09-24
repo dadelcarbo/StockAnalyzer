@@ -17,9 +17,6 @@ namespace StockAnalyzer.StockStrategyClasses
 
       private IStockIndicator SRIndicator;
 
-      private float previousLow = float.MaxValue;
-      private float previousHigh = float.MaxValue;
-
       private int higherLowEventIndex;
       private int lowerHightEventIndex;
 

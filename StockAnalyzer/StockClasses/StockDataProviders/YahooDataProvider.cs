@@ -302,7 +302,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   return true;
                }
             }
-            catch (SystemException e)
+            catch (SystemException)
             {
                //StockLog.Write(e);
                nbTries--;

@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeFloat(0.0f, 0.1f), new ParamRangeFloat(0.0001f, 0.1f) }; }
+         get { return new ParamRange[] { new ParamRangeFloat(0.0f, 0.1f), new ParamRangeFloat(0.0f, 0.1f) }; }
       }
       public override string[] ParameterNames
       {
@@ -60,7 +60,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
          if (indicator != null && indicator.Series[0].Count > 0)
          {
             FloatSerie indicatorSerie = indicator.Series[0];
-            FloatSerie trailSerie = indicatorSerie.CalculateSARTrail((float)this.parameters[0] * 100f, (float)this.parameters[1] * 100f);
+            FloatSerie trailSerie = indicatorSerie.CalculateSARTrail((float)this.parameters[0], (float)this.parameters[1]);
             this.Series[0] = trailSerie;
 
             // Detecting events

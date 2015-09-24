@@ -268,8 +268,6 @@ namespace StockAnalyzerApp.CustomControl
             {
                continue;
             }
-            IStockEvent stockEvent = null;
-            IStockDecorator stockDecorator = null;
 
             foreach (TreeNode childNode in checkedNodes)
             {
@@ -520,8 +518,6 @@ namespace StockAnalyzerApp.CustomControl
                {
                   continue;
                }
-               IStockEvent stockEvent = null;
-               IStockDecorator stockDecorator = null;
 
                foreach (TreeNode childNode in checkedNodes)
                {
@@ -753,191 +749,6 @@ namespace StockAnalyzerApp.CustomControl
             }
             Cursor = cursor;
          }
-      }
-      private void statisticsButton_Click_old(object sender, EventArgs e)
-      {
-         Cursor cursor = Cursor;
-         Cursor = Cursors.WaitCursor;
-
-         int period = 20;
-
-         var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
-         try
-         {
-            selectedStockListBox.Items.Clear();
-            selectedStockListBox.Refresh();
-
-            if (progressBar != null)
-            {
-               progressBar.Minimum = 0;
-               progressBar.Maximum = stockInGroupList.Count();
-               progressBar.Value = 0;
-            }
-            bool conditionMatching = false;
-            bool allCriteria = allRadioButton.Checked;
-
-            int[] ups = new int[period];
-            int[] downs = new int[period];
-            float[] upVariations = new float[period];
-            float[] downVariations = new float[period];
-
-            foreach (StockSerie stockSerie in stockInGroupList)
-            {
-               progressLabel.Text = stockSerie.StockName;
-               progressLabel.Refresh();
-
-               conditionMatching = allCriteria;
-               if (!stockSerie.Initialise()) { continue; }
-
-               stockSerie.BarDuration = barDuration;
-
-               var values = stockSerie.ValueArray;
-
-               int lastIndex = (completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex) - period;
-               int firstIndex = period;
-
-               for (int index = firstIndex; index < lastIndex; index++)
-               {
-                  foreach (TreeNode treeNode in eventTreeView.Nodes)
-                  {
-                     if (!HasCheckedChildNodes(treeNode))
-                     {
-                        continue;
-                     }
-                     int eventIndex = 0;
-                     int decoratorEventIndex = 0;
-                     IStockEvent stockEvent = null;
-                     IStockDecorator stockDecorator = null;
-
-
-                     foreach (TreeNode childNode in treeNode.Nodes)
-                     {
-                        if (childNode.Tag == null)
-                        {
-                           if (childNode.Checked)
-                           {
-                              if (stockEvent == null)
-                              {
-                                 IStockViewableSeries viewableSerie = (IStockViewableSeries)treeNode.Tag;
-                                 if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
-                                 {
-                                    stockEvent =
-                                        (IStockEvent)
-                                            StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
-                                                stockSerie);
-                                 }
-                                 else
-                                 {
-                                    continue;
-                                 }
-                              }
-
-                              // TODO Manage multiple
-                              bool eventDetected = eventDetected = stockEvent.Events[eventIndex][index];
-
-                              if (allCriteria && !eventDetected)
-                              {
-                                 conditionMatching = false;
-                                 break;
-                              }
-
-                              if (!allCriteria && eventDetected)
-                              {
-                                 conditionMatching = true;
-                                 break;
-                              }
-                           }
-                           eventIndex++;
-                        }
-                        else
-                        {
-                           if (childNode.Checked)
-                           {
-                              if (stockDecorator == null)
-                              {
-                                 IStockDecorator viewableSerie = (IStockDecorator)childNode.Tag;
-                                 if (stockSerie.HasVolume || !viewableSerie.RequiresVolumeData)
-                                 {
-                                    stockDecorator =
-                                        (IStockDecorator)
-                                            StockViewableItemsManager.CreateInitialisedFrom(viewableSerie,
-                                                stockSerie);
-                                 }
-                                 else
-                                 {
-                                    continue;
-                                 }
-                              }
-
-                              // TODO Manage multiple
-                              bool eventDetected = stockDecorator.Series[decoratorEventIndex][index];
-
-                              if (allCriteria && !eventDetected)
-                              {
-                                 conditionMatching = false;
-                                 break;
-                              }
-
-                              if (!allCriteria && eventDetected)
-                              {
-                                 conditionMatching = true;
-                                 break;
-                              }
-                           }
-                           decoratorEventIndex++;
-                        }
-                     }
-
-                  }
-                  if (conditionMatching)
-                  {
-                     //  Generate statistics
-                     for (int i = 0; i < period; i++)
-                     {
-                        var val = values[i + index];
-                        if (val.VARIATION >= 0.0f)
-                        {
-                           ups[i] += 1;
-                           upVariations[i] += val.VARIATION;
-                        }
-                        else
-                        {
-                           downs[i] -= 1;
-                           downVariations[i] += val.VARIATION;
-                        }
-                     }
-                     conditionMatching = false;
-                  }
-               } // Foreach index
-               if (progressBar != null)
-               {
-                  progressBar.Value++;
-               }
-            } // Foreach StockSerie
-
-            // dump results
-            string buffer = "Ups\tDowns\tUpVariation\tDownVariations" + Environment.NewLine;
-
-            for (int i = 0; i < period; i++)
-            {
-               buffer += ups[i] + "\t" + downs[i] + "\t" + upVariations[i] + "\t" + downVariations[i] + Environment.NewLine;
-            }
-
-            Clipboard.SetText(buffer);
-         }
-         catch (Exception exception)
-         {
-            MessageBox.Show(exception.Message, "Script Error !!!");
-         }
-         finally
-         {
-            if (progressBar != null)
-            {
-               progressBar.Value = 0;
-               progressLabel.Text = selectedStockListBox.Items.Count + "/" + stockInGroupList.Count();
-            }
-         }
-         Cursor = cursor;
       }
    }
 }

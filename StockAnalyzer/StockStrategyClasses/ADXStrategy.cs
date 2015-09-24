@@ -21,9 +21,6 @@ namespace StockAnalyzer.StockStrategyClasses
       private IStockDecorator adxDecorator;
       private IStockTrailStop SRTrailStop;
 
-      private float previousLow = float.MaxValue;
-      private float previousHigh = float.MaxValue;
-
       private int upTrendIndex;
       private int downTrendIndex;
 
@@ -34,9 +31,6 @@ namespace StockAnalyzer.StockStrategyClasses
       public int brokenDownEventIndex { get; set; }
 
       private int brokenUpEventIndex;
-      private int supportEventIndex;
-
-      private int upTrendEventIndex;
 
       private string triggerName = "ADX(30,25,6)";
       private string trailName = "TRAILHL(4)";

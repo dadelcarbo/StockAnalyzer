@@ -52,7 +52,6 @@ namespace StockAnalyzer.StockPortfolioStrategy
          var sortedList = variations.Where(p => p.Value > 0).OrderByDescending(p => p.Value);
 
          // Sell stock not listed as best performers
-         const float ratioTrigger = 0.05f;
          float targetPositionValue = portfolioValue / (float)this.Series.Count;
 
          List<StockPosition> trashList = new List<StockPosition>();

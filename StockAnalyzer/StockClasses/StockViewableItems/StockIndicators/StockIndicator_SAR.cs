@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeFloat(0.0001f, 10.0f), new ParamRangeFloat(0.0001f, 10.0f), new ParamRangeFloat(0.01f, 100.0f) }; }
+         get { return new ParamRange[] { new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f) }; }
       }
 
       public override string[] SerieNames

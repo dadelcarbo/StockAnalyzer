@@ -67,7 +67,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          for (int i = 1; i < stockSerie.Count; i++)
          {
-            float low = 0.0f, high = 0.0f;
             upLine[i] = highSerie.GetMax(Math.Max(0, i - period - 1), i - 1);
             downLine[i] = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
             midLine[i] = (upLine[i] + downLine[i]) / 2.0f;

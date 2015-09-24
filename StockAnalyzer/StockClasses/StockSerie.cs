@@ -4602,9 +4602,6 @@ namespace StockAnalyzer.StockClasses
             FloatSerie supportSerie = hlTrailSR.Series[0];
             FloatSerie resistanceSerie = hlTrailSR.Series[1];
 
-            float latestHighValue;
-            float latestLowValue;
-
             Segment2D latestResistanceLine = new Segment2D(startIndex - 1, highSerie[startIndex], startIndex,
                 highSerie[startIndex]);
             Segment2D latestSupportLine = new Segment2D(startIndex - 1, lowSerie[startIndex], startIndex,
@@ -5551,7 +5548,6 @@ namespace StockAnalyzer.StockClasses
          stockSerie.IsPortofolioSerie = false;
 
          // Calculate ratio foreach values
-         float ratio = float.NaN;
          DateTime lastDate = this.Keys.Last();
          for (DateTime date = this.Keys.First(); date <= lastDate; date = date.AddDays(1))
          {
@@ -5856,7 +5852,6 @@ namespace StockAnalyzer.StockClasses
                   break;
                default:
                   throw new System.NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
-                  break;
             }
          }
          return newBarList;

@@ -18,8 +18,6 @@ namespace StockAnalyzer.StockStrategyClasses
       IStockIndicator SAR;
       private int sarBrokenUpEventIndex;
       private int sarBrokenDownEventIndex;
-      private int sarUpTrendEventIndex;
-      private int sarDownTrendEventIndex;
 
       public SARFilteredStrategy()
       {
