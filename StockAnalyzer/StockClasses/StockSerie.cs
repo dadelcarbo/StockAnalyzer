@@ -4937,68 +4937,33 @@ namespace StockAnalyzer.StockClasses
                #region Process Pending Orders
                if (stockOrder != null)
                {
-                  // Get bar from daily values
-                  StockDailyValue dailyValue = dailyValues.First(v => v.DATE >= barValue.DATE);
-                  stockOrder.ProcessOrder(dailyValue);
-                  switch (stockOrder.State)
+                  if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
                   {
-                     case StockOrder.OrderStatus.Executed:
-                        if (stockOrder.IsBuyOrder())
+                     if (supportShortSelling && (!stockOrder.IsBuyOrder() && stockOrder.IsShortOrder) || (stockOrder.IsBuyOrder() && !stockOrder.IsShortOrder)) // Closing position
+                     { // Try to reverse 
+                        if (stockOrder.IsShortOrder)
                         {
-                           remainingCash = amount - stockOrder.TotalCost;
-                           if (takeProfit)
-                           {
-                              // Create take profit order
-                              takeProfitOrder = StockOrder.CreateSellAtLimitStockOrder(stockOrder.StockName,
-                                 dailyValue.DATE, DateTime.MaxValue, stockOrder.Number / 2, stockOrder.Value * profitTarget,
-                                 dailyValue, false);
-                           }
-
-                           nbOpenPosition = stockOrder.Number;
+                           // Try to go long
+                           stockOrder = strategy.TryToBuy(barValue, currentIndex-1, amount, ref benchmark);
+                           strategy.LastBuyOrder = stockOrder;
                         }
                         else
                         {
-                           if (reinvest)
+                           // Try to go short
+                           stockOrder = strategy.TryToSell(barValue, currentIndex-1, nbOpenPosition, ref benchmark);
+                        }
+                        if (stockOrder != null)
+                        {
+                           if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
                            {
-                              // Calculate the new amount to invest
-                              amount = remainingCash + stockOrder.TotalCost;
-                              if (amount < fixedFee)
-                              {
-                                 MessageBox.Show("You lost everything", "Game Over");
-                                 break;  // Exit the loop
-                              }
-                           }
-                           takeProfitOrder = null;
-                           nbOpenPosition -= stockOrder.Number;
-                           if (nbOpenPosition != 0)
-                           {
-                              Console.WriteLine("Error is position calculation");
+                              stockOrder = null;
                            }
                         }
-                        lookingForBuying = !lookingForBuying;
-                        if (!portofolio.OrderList.Contains(stockOrder))
-                        {
-                           portofolio.OrderList.Add(stockOrder);
-                        }
+                     }
+                     else
+                     {
                         stockOrder = null;
-                        benchmark = float.NaN;
-                        break;
-                     case StockOrder.OrderStatus.Pending:
-                        if (stockOrder.IsBuyOrder())
-                        {
-                           benchmark = Math.Min(barValue.LOW, benchmark);
-                        }
-                        else
-                        {
-                           benchmark = Math.Max(barValue.HIGH, benchmark);
-                        }
-                        break;
-                     case StockOrder.OrderStatus.Expired:
-                        stockOrder = null;
-                        benchmark = float.NaN;
-                        break;
-                     default:
-                        break;
+                     }
                   }
                }
                else
@@ -5103,6 +5068,72 @@ namespace StockAnalyzer.StockClasses
             previousValue = barValue;
             currentIndex++;
          }
+      }
+
+      private static StockOrder.OrderStatus ProcessPendingOrder(ref float amount, bool reinvest, bool takeProfit, float profitTarget, float fixedFee, StockPortofolio portofolio, StockOrder stockOrder, ref bool lookingForBuying, ref float remainingCash, ref float benchmark, ref int nbOpenPosition, List<StockDailyValue> dailyValues, ref StockOrder takeProfitOrder, StockDailyValue barValue)
+      {
+         // Get bar from daily values
+         StockDailyValue dailyValue = dailyValues.First(v => v.DATE >= barValue.DATE);
+         stockOrder.ProcessOrder(dailyValue);
+         switch (stockOrder.State)
+         {
+            case StockOrder.OrderStatus.Executed:
+               if (stockOrder.IsBuyOrder())
+               {
+                  remainingCash = amount - stockOrder.TotalCost;
+                  if (takeProfit)
+                  {
+                     // Create take profit order
+                     takeProfitOrder = StockOrder.CreateSellAtLimitStockOrder(stockOrder.StockName,
+                        dailyValue.DATE, DateTime.MaxValue, stockOrder.Number / 2, stockOrder.Value * profitTarget,
+                        dailyValue, false);
+                  }
+
+                  nbOpenPosition = stockOrder.Number;
+               }
+               else
+               {
+                  if (reinvest)
+                  {
+                     // Calculate the new amount to invest
+                     amount = remainingCash + stockOrder.TotalCost;
+                     if (amount < fixedFee)
+                     {
+                        MessageBox.Show("You lost everything", "Game Over");
+                        break;  // Exit the loop
+                     }
+                  }
+                  takeProfitOrder = null;
+                  nbOpenPosition -= stockOrder.Number;
+                  if (nbOpenPosition != 0)
+                  {
+                     Console.WriteLine("Error is position calculation");
+                  }
+               }
+               lookingForBuying = !lookingForBuying;
+               if (!portofolio.OrderList.Contains(stockOrder))
+               {
+                  portofolio.OrderList.Add(stockOrder);
+               }
+               benchmark = float.NaN;
+               break;
+            case StockOrder.OrderStatus.Pending:
+               if (stockOrder.IsBuyOrder())
+               {
+                  benchmark = Math.Min(barValue.LOW, benchmark);
+               }
+               else
+               {
+                  benchmark = Math.Max(barValue.HIGH, benchmark);
+               }
+               break;
+            case StockOrder.OrderStatus.Expired:
+               benchmark = float.NaN;
+               throw ( new Exception("We don't deal with Expired orders"));
+            default:
+               break;
+         }
+         return stockOrder.State;
       }
 
       #endregion

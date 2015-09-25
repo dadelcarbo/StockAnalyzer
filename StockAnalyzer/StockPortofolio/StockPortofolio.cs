@@ -165,7 +165,9 @@ namespace StockAnalyzer.Portofolio
                   }
                   else
                   {
-                     throw new System.Exception("Sell order found on non bought stock");
+                     //throw new System.Exception("Sell order found on non bought stock");
+                     // @@@@ Need to have proper error manegement otherwise the applications crashes.
+                     return referenceSerie;
                   }
                }
             }

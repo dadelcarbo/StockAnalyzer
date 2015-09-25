@@ -184,7 +184,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          if (LastBuyOrder.IsShortOrder)
          {
-            if (this.FilterIndicator.Events[this.OkToBuyFilterEventIndex][index])
+            if (this.TriggerIndicator.Events[this.BuyTriggerEventIndex][index])
             {
                return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                    dailyValue.DATE.AddDays(30), number, true);

@@ -56,8 +56,16 @@ namespace StockAnalyzer.StockClasses
          if (this.Keys.Contains(referenceStockName))
          {
             portofolio.Initialize(this);
-            this.Add(portofolio.Name, portofolio.GeneratePortfolioStockSerie(portofolio.Name, this[referenceStockName], portofolio.Group));
-            // this[portofolio.Name].Initialise();
+            try
+            {
+               StockSerie portfolioSerie = portofolio.GeneratePortfolioStockSerie(portofolio.Name, this[referenceStockName], portofolio.Group);
+               this.Add(portofolio.Name, portfolioSerie);
+               // this[portofolio.Name].Initialise();
+            }
+            catch (Exception e)
+            {
+               StockAnalyzerException.MessageBox(e);
+            }
          }
       }
 
