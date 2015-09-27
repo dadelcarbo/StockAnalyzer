@@ -441,11 +441,11 @@ namespace StockAnalyzer.Portofolio
             StockLog.Write("This order has already been executed");
             return;
          }
-         if (HasExpired(dailyValue.DATE))
-         {
-            this.State = OrderStatus.Expired;
-            return;
-         }
+         //if (HasExpired(dailyValue.DATE))
+         //{
+         //   this.State = OrderStatus.Expired;
+         //   return;
+         //}
          switch (this.Type)
          {
             case OrderType.BuyAtMarketOpen:

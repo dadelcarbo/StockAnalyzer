@@ -58,19 +58,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-         for (int i = 1; i < TRUESerie.Count; i++)
+         int i = 0;
+         foreach(StockDailyValue value in stockSerie.Values)
          {
             this.eventSeries[0][i] = true;
             this.eventSeries[1][i] = false;
+
+            this.eventSeries[2][i] = value.VARIATION>0f;
+            this.eventSeries[3][i] = value.VARIATION<0f;
+            i++;
          }
       }
 
-      static string[] eventNames = new string[] { "True", "False" };
+      static string[] eventNames = new string[] { "True", "False", "HigherClose", "LowerClose" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { false, false };
+      static readonly bool[] isEvent = new bool[] { false, false, true, true, };
       public override bool[] IsEvent
       {
          get { return isEvent; }

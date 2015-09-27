@@ -24,8 +24,8 @@ namespace StockAnalyzer.StockStrategyClasses
          this.TriggerIndicator = StockIndicatorManager.CreateIndicator("SAR(.02,.2)");
          SAR = (IStockIndicator)this.TriggerIndicator;
 
-         sarBrokenUpEventIndex = SAR.EventNames.ToList().IndexOf("BrokenUp");
-         sarBrokenDownEventIndex = SAR.EventNames.ToList().IndexOf("BrokenDown");
+         sarBrokenUpEventIndex = SAR.EventNames.ToList().IndexOf("SupportDetected");
+         sarBrokenDownEventIndex = SAR.EventNames.ToList().IndexOf("ResistanceDetected");
       }
 
       override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)

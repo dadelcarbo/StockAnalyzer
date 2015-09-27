@@ -84,6 +84,22 @@ namespace StockAnalyzer.Portofolio
          this.IsSimulation = true;
          this.IsVirtual = true;
       }
+      class PositionValues
+      {
+         public int Position { get; set; }
+         public List<StockDailyValue> Values { get; set; }
+
+         public PositionValues(int position, List<StockDailyValue> values)
+         {
+            this.Position = position;
+            this.Values = values;
+         }
+
+         public StockDailyValue AtDate(DateTime date)
+         {
+            return Values.FirstOrDefault(v => v.DATE == date);
+         }
+      }
       public StockSerie GeneratePortfolioStockSerie(string name, StockSerie referenceSerie, StockSerie.Groups group)
       {
          StockSerie stockSerie = new StockSerie(name, name, group, StockDataProvider.Portofolio);
@@ -100,7 +116,7 @@ namespace StockAnalyzer.Portofolio
          int volume = 1;
          float cash = TotalDeposit;
 
-         Dictionary<string, int> stockCountDico = new Dictionary<string, int>();
+         Dictionary<string, PositionValues> stockPositionDico = new Dictionary<string, PositionValues>();
 
          foreach (DateTime date in referenceSerie.GetValues(StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
          {
@@ -108,22 +124,21 @@ namespace StockAnalyzer.Portofolio
             open = cash;
             low1 = cash;
             high1 = cash;
-            foreach (KeyValuePair<string, int> pair in stockCountDico)
+            foreach (KeyValuePair<string, PositionValues> pair in stockPositionDico)
             {
-               if (stockDictionary[pair.Key].ContainsKey(date))
+               StockDailyValue currentValue = pair.Value.AtDate(date);
+               if (currentValue != null)
                {
-                  StockDailyValue currentValue = stockDictionary[pair.Key][date];
-
-                  open += currentValue.OPEN * pair.Value;
-                  if (pair.Value > 0)
+                  open += currentValue.OPEN * pair.Value.Position;
+                  if (pair.Value.Position > 0)
                   {
-                     low1 += currentValue.LOW * pair.Value;
-                     high1 += currentValue.HIGH * pair.Value;
+                     low1 += currentValue.LOW * pair.Value.Position;
+                     high1 += currentValue.HIGH * pair.Value.Position;
                   }
                   else
                   {
-                     low1 += currentValue.HIGH * pair.Value;
-                     high1 += currentValue.LOW * pair.Value;
+                     low1 += currentValue.HIGH * pair.Value.Position;
+                     high1 += currentValue.LOW * pair.Value.Position;
                   }
                }
             }
@@ -140,27 +155,27 @@ namespace StockAnalyzer.Portofolio
                if (stockOrder.IsBuyOrder())
                {
                   cash -= stockOrder.TotalCost;
-                  if (stockCountDico.ContainsKey(stockOrder.StockName))
+                  if (stockPositionDico.ContainsKey(stockOrder.StockName))
                   {
-                     stockCountDico[stockOrder.StockName] = stockCountDico[stockOrder.StockName] + numberOfShare;
+                     stockPositionDico[stockOrder.StockName].Position += numberOfShare;
                   }
                   else
                   {
-                     stockCountDico.Add(stockOrder.StockName, numberOfShare);
+                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockDictionary[stockOrder.StockName].GetValues(StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Daily)));
                   }
                }
                else
                {
                   cash += stockOrder.TotalCost;
-                  if (stockCountDico.ContainsKey(stockOrder.StockName))
+                  if (stockPositionDico.ContainsKey(stockOrder.StockName))
                   {
-                     if (stockCountDico[stockOrder.StockName] == numberOfShare)
+                     if (stockPositionDico[stockOrder.StockName].Position == numberOfShare)
                      {
-                        stockCountDico.Remove(stockOrder.StockName);
+                        stockPositionDico.Remove(stockOrder.StockName);
                      }
                      else
                      {
-                        stockCountDico[stockOrder.StockName] = stockCountDico[stockOrder.StockName] - numberOfShare;
+                        stockPositionDico[stockOrder.StockName].Position -= numberOfShare;
                      }
                   }
                   else
@@ -176,23 +191,21 @@ namespace StockAnalyzer.Portofolio
             low2 = cash;
             high2 = cash;
             close = cash;
-            foreach (KeyValuePair<string, int> pair in stockCountDico)
+            foreach (KeyValuePair<string, PositionValues> pair in stockPositionDico)
             {
-               if (stockDictionary[pair.Key].ContainsKey(date))
-               {
-                  StockDailyValue currentValue = stockDictionary[pair.Key][date];
+               StockDailyValue currentValue = pair.Value.AtDate(date);
+               if (currentValue != null)
 
-                  close += currentValue.CLOSE * pair.Value;
-                  if (pair.Value > 0)
-                  {
-                     low2 += currentValue.LOW * pair.Value;
-                     high2 += currentValue.HIGH * pair.Value;
-                  }
-                  else
-                  {  // We are facing a short order, everything is reversed
-                     low2 += currentValue.HIGH * pair.Value;
-                     high2 += currentValue.LOW * pair.Value;
-                  }
+                  close += currentValue.CLOSE * pair.Value.Position;
+               if (pair.Value.Position > 0)
+               {
+                  low2 += currentValue.LOW * pair.Value.Position;
+                  high2 += currentValue.HIGH * pair.Value.Position;
+               }
+               else
+               {  // We are facing a short order, everything is reversed
+                  low2 += currentValue.HIGH * pair.Value.Position;
+                  high2 += currentValue.LOW * pair.Value.Position;
                }
             }
 

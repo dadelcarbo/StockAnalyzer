@@ -163,7 +163,7 @@
          this.executionDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          this.executionDateTimePicker.Location = new System.Drawing.Point(391, 95);
          this.executionDateTimePicker.MaxDate = System.DateTime.MaxValue;
-         this.executionDateTimePicker.MinDate = new System.DateTime(2009, 1, 1, 0, 0, 0, 0);
+         this.executionDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.executionDateTimePicker.Name = "executionDateTimePicker";
          this.executionDateTimePicker.Size = new System.Drawing.Size(103, 20);
          this.executionDateTimePicker.TabIndex = 4;
@@ -297,7 +297,7 @@
          this.creationDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          this.creationDateTimePicker.Location = new System.Drawing.Point(90, 97);
          this.creationDateTimePicker.MaxDate = System.DateTime.MaxValue;
-         this.creationDateTimePicker.MinDate = new System.DateTime(2009, 1, 1, 0, 0, 0, 0);
+         this.creationDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.creationDateTimePicker.Name = "creationDateTimePicker";
          this.creationDateTimePicker.Size = new System.Drawing.Size(103, 20);
          this.creationDateTimePicker.TabIndex = 4;

@@ -4939,19 +4939,10 @@ namespace StockAnalyzer.StockClasses
                {
                   if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
                   {
-                     if (supportShortSelling && (!stockOrder.IsBuyOrder() && stockOrder.IsShortOrder) || (stockOrder.IsBuyOrder() && !stockOrder.IsShortOrder)) // Closing position
+                     if (supportShortSelling && !stockOrder.IsBuyOrder()) // Closing position
                      { // Try to reverse 
-                        if (stockOrder.IsShortOrder)
-                        {
-                           // Try to go long
-                           stockOrder = strategy.TryToBuy(barValue, currentIndex-1, amount, ref benchmark);
-                           strategy.LastBuyOrder = stockOrder;
-                        }
-                        else
-                        {
-                           // Try to go short
-                           stockOrder = strategy.TryToSell(barValue, currentIndex-1, nbOpenPosition, ref benchmark);
-                        }
+                        stockOrder = strategy.TryToBuy(barValue, currentIndex - 1, amount, ref benchmark);
+                        strategy.LastBuyOrder = stockOrder;
                         if (stockOrder != null)
                         {
                            if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
@@ -5129,7 +5120,7 @@ namespace StockAnalyzer.StockClasses
                break;
             case StockOrder.OrderStatus.Expired:
                benchmark = float.NaN;
-               throw ( new Exception("We don't deal with Expired orders"));
+               throw (new Exception("We don't deal with Expired orders"));
             default:
                break;
          }

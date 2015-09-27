@@ -141,7 +141,7 @@ namespace StockAnalyzerApp.CustomControl
                if (stockSerie.Initialise())
                {
                   stockSerie.BarDuration = barDuration;
-                  if (stockSerie.Values.Last().DATE < this.fromDateTimePicker.Value)
+                  if (stockSerie.Values.Count == 0 || stockSerie.Values.Last().DATE < this.fromDateTimePicker.Value)
                   {
                      continue;
                   }

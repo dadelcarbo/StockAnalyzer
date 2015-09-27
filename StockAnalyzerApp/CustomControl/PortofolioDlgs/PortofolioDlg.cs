@@ -78,7 +78,16 @@ namespace StockAnalyzerApp.CustomControl
          }
          else
          {
-            this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, this.stockDictionary.Values.First(), this.stockDictionary.Values.First().StockGroup));
+            StockSerie serie;
+            string stockName = this.stockPortofolio.Name.Remove(this.stockPortofolio.Name.Length-2);
+            if (this.stockDictionary.ContainsKey(stockName)){
+               serie = this.stockDictionary[stockName];
+            }
+            else
+            {
+               serie = this.stockDictionary["CAC40"];
+            }
+            this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, serie, serie.StockGroup));
          }
          StockSerie portofoglioSerie = this.stockDictionary[this.stockPortofolio.Name];
          if (portofoglioSerie.Count > 2)

@@ -131,7 +131,7 @@
          // 
          this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          resources.ApplyResources(this.fromDateTimePicker, "fromDateTimePicker");
-         this.fromDateTimePicker.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
+         this.fromDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.fromDateTimePicker.Name = "fromDateTimePicker";
          this.fromDateTimePicker.Value = new System.DateTime(2006, 1, 1, 0, 0, 0, 0);
          // 
@@ -157,7 +157,7 @@
          // 
          this.untilDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          resources.ApplyResources(this.untilDateTimePicker, "untilDateTimePicker");
-         this.untilDateTimePicker.MinDate = new System.DateTime(2006, 1, 1, 0, 0, 0, 0);
+         this.untilDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.untilDateTimePicker.Name = "untilDateTimePicker";
          this.untilDateTimePicker.Value = new System.DateTime(2006, 1, 1, 0, 0, 0, 0);
          // 

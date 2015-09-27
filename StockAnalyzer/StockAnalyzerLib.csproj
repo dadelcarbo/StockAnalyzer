@@ -336,11 +336,11 @@
     <Compile Include="StockStrategyClasses\BBSTOCKStrategy.cs" />
     <Compile Include="StockStrategyClasses\DONCHIANStrategy.cs" />
     <Compile Include="StockStrategyClasses\SARFilteredStrategy.cs" />
+    <Compile Include="StockStrategyClasses\SimBuyWithCloseDirection.cs" />
     <Compile Include="StockStrategyClasses\StockFilteredStrategyBase.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLow2Strategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLowStrategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLStrategy.cs" />
-    <Compile Include="StockStrategyClasses\StockSimpleStrategy.cs" />
     <Compile Include="StockStrategyClasses\MyOSCSimpleStrategy.cs" />
     <Compile Include="StockStrategyClasses\HilbertAdvStrategy.cs" />
     <Compile Include="StockStrategyClasses\HilbertStopStrategy.cs" />

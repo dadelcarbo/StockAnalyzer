@@ -69,6 +69,7 @@ namespace StockAnalyzerApp.CustomControl
          this.progressBar.Value = 0;
          foreach (StockSerie stockSerie in tmpList)
          {
+            Console.WriteLine("Processing: " + stockSerie.StockName);
             stockSerie.BarDuration = this.BarDuration;
             GenerateSimulation(stockSerie);
             // 
@@ -82,7 +83,7 @@ namespace StockAnalyzerApp.CustomControl
          }
 
          float totalValue = 0f;
-         foreach (StockSerie stockSerie in tmpList)
+         foreach (StockSerie stockSerie in tmpList.Where(s => s.Values.Count > 0))
          {
             StockSerie serie = this.stockDictionary[stockSerie.StockName + "_P"];
             totalValue += serie.Values.Last().CLOSE;

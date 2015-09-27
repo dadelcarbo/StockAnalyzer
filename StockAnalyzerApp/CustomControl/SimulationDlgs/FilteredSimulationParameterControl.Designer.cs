@@ -84,8 +84,8 @@
          // shortSellingCheckBox
          // 
          this.shortSellingCheckBox.AutoSize = true;
-         this.shortSellingCheckBox.Checked = true;
-         this.shortSellingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+         this.shortSellingCheckBox.Checked = false;
+         this.shortSellingCheckBox.CheckState = System.Windows.Forms.CheckState.Unchecked;
          this.shortSellingCheckBox.Location = new System.Drawing.Point(3, 61);
          this.shortSellingCheckBox.Name = "shortSellingCheckBox";
          this.shortSellingCheckBox.Size = new System.Drawing.Size(85, 17);
