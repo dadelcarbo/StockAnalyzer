@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzer.StockPortfolioStrategy
 {

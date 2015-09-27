@@ -49,7 +49,7 @@ namespace StockAnalyzerApp.CustomControl
 
          if (this.generateReportCheckBox.Checked)
          {
-            this.simulationParameterControl.GenerateReportHeader("BatchReport_" + SelectedStrategy + ".csv", false);
+            this.simulationParameterControl.GenerateReportHeader("BatchReport_" + SelectedStrategy +  "_" + this.BarDuration + ".csv", false);
          }
 
          // Count the stock to simulate to initialise the progress bar

@@ -97,7 +97,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return -100.0f; }
       }
 
-      static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearsish" };
+      static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }

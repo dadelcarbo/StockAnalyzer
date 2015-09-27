@@ -321,6 +321,8 @@ namespace StockAnalyzerApp.CustomControl
 
          filteredStrategy.Save(Settings.Default.RootFolder);
          this.simulationParameterControl.LoadStrategies(filteredStrategy.Name);
+
+         StrategyManager.ResetStrategyList();
       }
 
 

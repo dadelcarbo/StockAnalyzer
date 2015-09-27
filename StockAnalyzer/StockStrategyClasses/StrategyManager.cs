@@ -16,7 +16,10 @@ namespace StockAnalyzer.StockStrategyClasses
       private StrategyManager()
       {
       }
-
+      public static void ResetStrategyList()
+      {
+         strategyList = null;
+      }
       public static List<string> GetStrategyList()
       {
          if (strategyList == null)
