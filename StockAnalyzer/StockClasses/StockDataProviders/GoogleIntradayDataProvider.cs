@@ -104,7 +104,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   if (File.Exists(durationFileName) &&
                       File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date) break; // Only cache once a day.
                   stockSerie.BarDuration = duration;
-                  stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(30).Date);
+                  stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(-5).Date);
                }
 
                // Set back to previous duration.
