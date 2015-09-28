@@ -95,14 +95,22 @@ namespace StockAnalyzer.StockClasses
          TLB_3D_EMA3,
          TLB_6D_EMA3,
          TLB_9D_EMA3,
+         TLB_27D_EMA3,
          TLB_EMA6,
          TLB_3D_EMA6,
          TLB_6D_EMA6,
          TLB_9D_EMA6,
+         TLB_27D_EMA6,
+         TLB_EMA12,
+         TLB_3D_EMA12,
+         TLB_6D_EMA12,
+         TLB_9D_EMA12,
+         TLB_27D_EMA12,
          TLB_EMA20,
          TLB_3D_EMA20,
          TLB_6D_EMA20,
          TLB_9D_EMA20,
+         TLB_27D_EMA20,
          ThreeLineBreak,
          Range_1,
          Range_2,
@@ -131,7 +139,8 @@ namespace StockAnalyzer.StockClasses
       public CotSerie CotSerie { get; set; }
       public StockSerie SecondarySerie { get; set; }
       public bool HasVolume { get; private set; }
-      public bool HasOptix { get { return !string.IsNullOrEmpty(OptixURL); } }
+      //public bool HasOptix { get { return !string.IsNullOrEmpty(OptixURL); } }
+      public bool HasOptix { get { return false; } }
 
       public string OptixURL { get; set; }
       public FloatSerie Optix { get; set; }
@@ -5764,6 +5773,24 @@ namespace StockAnalyzer.StockClasses
                case StockBarDuration.TLB_9D_EMA6:
                   newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 6);
                   break;
+               case StockBarDuration.TLB_27D_EMA6:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 6);
+                  break;
+               case StockBarDuration.TLB_EMA12:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 12);
+                  break;
+               case StockBarDuration.TLB_3D_EMA12:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_3D), 12);
+                  break;
+               case StockBarDuration.TLB_6D_EMA12:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_6D), 12);
+                  break;
+               case StockBarDuration.TLB_9D_EMA12:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 12);
+                  break;
+               case StockBarDuration.TLB_27D_EMA12:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 12);
+                  break;
                case StockBarDuration.TLB_EMA20:
                   newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 20);
                   break;
@@ -5775,6 +5802,9 @@ namespace StockAnalyzer.StockClasses
                   break;
                case StockBarDuration.TLB_9D_EMA20:
                   newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 20);
+                  break;
+               case StockBarDuration.TLB_27D_EMA20:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 20);
                   break;
                case StockBarDuration.ThreeLineBreak:
                   newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);

@@ -2283,10 +2283,6 @@ namespace StockAnalyzerApp
             if (NotifyBarDurationChanged != null)
             {
                this.NotifyBarDurationChanged(barDuration);
-               if (batchStrategySimulatorDlg != null)
-               {
-                  batchStrategySimulatorDlg.BarDuration = barDuration;
-               }
             }
          }
       }
@@ -2832,15 +2828,13 @@ namespace StockAnalyzerApp
       {
          if (palmaresDlg == null)
          {
-            palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar, (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem);
+            palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar);
             palmaresDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
             palmaresDlg.SelectedPortofolioChanged += new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
             palmaresDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
 
             palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
             palmaresDlg.StockWatchListsChanged += new StockWatchListsChangedEventHandler(OnWatchListsChanged);
-
-            this.NotifyBarDurationChanged += palmaresDlg.OnBarDurationChanged;
 
             if (sender is SimulationParameterControl)
             {
@@ -3454,6 +3448,8 @@ namespace StockAnalyzerApp
          {
             batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.selectedGroup, (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem, this.progressBar);
             batchStrategySimulatorDlg.SimulationCompleted += new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
+
+            this.NotifyBarDurationChanged += batchStrategySimulatorDlg.OnBarDurationChanged;
          }
          else
          {

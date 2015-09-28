@@ -30,13 +30,9 @@ namespace StockAnalyzerApp.CustomControl
       private DateTime previousFromDate;
       private DateTime previousUntilDate;
 
-      private StockSerie.StockBarDuration barDuration;
-
-      public PalmaresDlg(StockDictionary stockDico, List<StockWatchList> watchLists, StockSerie.Groups selectedGroup, ToolStripProgressBar progressBar, StockSerie.StockBarDuration duration)
+      public PalmaresDlg(StockDictionary stockDico, List<StockWatchList> watchLists, StockSerie.Groups selectedGroup, ToolStripProgressBar progressBar)
       {
          InitializeComponent();
-
-         this.barDuration = duration;
 
          // Initialize dico
          StockDico = stockDico;
@@ -84,11 +80,7 @@ namespace StockAnalyzerApp.CustomControl
 
          this.TopLevel = true;
       }
-      public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
-      {
-         this.barDuration = barDuration;
-         this.InitializeListView();
-      }
+
       public void InitializeListView()
       {
          if (this.IsDisposed) return;
@@ -140,7 +132,7 @@ namespace StockAnalyzerApp.CustomControl
             {
                if (stockSerie.Initialise())
                {
-                  stockSerie.BarDuration = barDuration;
+                  stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
                   if (stockSerie.Values.Count == 0 || stockSerie.Values.Last().DATE < this.fromDateTimePicker.Value)
                   {
                      continue;

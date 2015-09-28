@@ -41,6 +41,11 @@ namespace StockAnalyzerApp.CustomControl
 
       }
 
+      public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
+      {
+         this.BarDuration = barDuration;
+      }
+
       private void simulateTradingBtn_Click(object sender, EventArgs e)
       {
          this.simulationParameterControl.ValidateInputParameters();
