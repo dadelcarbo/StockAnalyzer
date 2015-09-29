@@ -87,6 +87,9 @@ namespace StockAnalyzer.StockClasses
          HeikinAshi2B_9D,
          HeikinAshi2B_27D,
          TwoLineBreaks,
+         TwoLineBreaks_BIS,
+         TwoLineBreaks_TER,
+         TwoLineBreaks_TER_6D,
          TwoLineBreaks_3D,
          TwoLineBreaks_6D,
          TwoLineBreaks_9D,
@@ -5737,6 +5740,15 @@ namespace StockAnalyzer.StockClasses
                case StockBarDuration.TwoLineBreaks:
                   newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
                   break;
+               case StockBarDuration.TwoLineBreaks_BIS:
+                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(dailyValueList, 2), 2);
+                  break;
+               case StockBarDuration.TwoLineBreaks_TER:
+                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(dailyValueList, 2), 2), 2);
+                  break;
+               case StockBarDuration.TwoLineBreaks_TER_6D:
+                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2), 2), 2);
+                  break;
                case StockBarDuration.TwoLineBreaks_3D:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
                   break;
@@ -5760,6 +5772,9 @@ namespace StockAnalyzer.StockClasses
                   break;
                case StockBarDuration.TLB_9D_EMA3:
                   newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 3);
+                  break;
+               case StockBarDuration.TLB_27D_EMA3:
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 3);
                   break;
                case StockBarDuration.TLB_EMA6:
                   newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 6);
