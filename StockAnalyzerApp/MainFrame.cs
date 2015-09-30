@@ -689,10 +689,13 @@ namespace StockAnalyzerApp
             {
                this.StockDictionary.Remove(stockName);
             }
-            this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio); if (!this.stockNameComboBox.Items.Contains(stockName))
+            this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio);
+            if (!this.stockNameComboBox.Items.Contains(stockName))
             {
                this.stockNameComboBox.Items.Insert(this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
             }
+
+            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
          }
          if (!this.stockNameComboBox.Items.Contains(stockName))
          {

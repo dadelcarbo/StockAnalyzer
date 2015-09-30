@@ -142,10 +142,9 @@ namespace StockAnalyzer.Portofolio
          float maxLoss = float.MinValue;
          float totalReturn = 0f;
 
-         foreach (DateTime date in referenceSerie.GetExactValues().Select(v => v.DATE))
+         foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
          {
             // Calculate open value
-            open = cash;
             
             // Retrieve orders for this date/time
             List<StockOrder> orderList = this.OrderList.FindAll(order => order.ExecutionDate == date);
@@ -165,7 +164,7 @@ namespace StockAnalyzer.Portofolio
                   }
                   else
                   {
-                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetExactValues()));
+                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
                   }
                }
                else // Closing Position
@@ -222,14 +221,15 @@ namespace StockAnalyzer.Portofolio
             low = cash;
             high = cash;
             close = cash;
+            open = cash;
             if (stockPositionDico.Count != 0)
             {
                foreach (PositionValues position in stockPositionDico.Values)
                {
                   StockDailyValue currentValue = position.AtDate(date);
-                  if (currentValue != null)
 
                      close += currentValue.CLOSE * position.Position;
+                     open += currentValue.OPEN * position.Position;
                   if (position.Position > 0)
                   {
                      position.MaxValue = Math.Max(position.MaxValue, currentValue.HIGH);

@@ -125,8 +125,8 @@ namespace StockAnalyzerApp.CustomControl
                this.stockDictionary.Remove(this.stockPortofolio.Name);
             }
 
-            StockSerie referenceStock = this.stockDictionary[this.stockPortofolio.OrderList.First().StockName];
-            this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, referenceStock, referenceStock.StockGroup));
+            //StockSerie referenceStock = this.stockDictionary[this.stockPortofolio.OrderList.First().StockName];
+            //this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, referenceStock, referenceStock.StockGroup));
 
             SelectedStockChanged(this.portofolioView.SelectedItems[0].Text, true);
          }

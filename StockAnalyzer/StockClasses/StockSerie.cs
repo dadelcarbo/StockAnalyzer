@@ -85,9 +85,6 @@ namespace StockAnalyzer.StockClasses
          HeikinAshi2B_6D,
          HeikinAshi2B_9D,
          HeikinAshi2B_27D,
-         TwoWeekBreaks,
-         TwoWeekBreaks_BIS,
-         TwoWeekBreaks_TER,
          TwoLineBreaks,
          TwoLineBreaks_BIS,
          TwoLineBreaks_TER,
@@ -98,6 +95,9 @@ namespace StockAnalyzer.StockClasses
          TwoLineBreaks_6D,
          TwoLineBreaks_9D,
          TwoLineBreaks_27D,
+         TwoWeekBreaks,
+         TwoWeekBreaks_BIS,
+         TwoWeekBreaks_TER,
          TLB_EMA3,
          TLB_3D_EMA3,
          TLB_6D_EMA3,
@@ -6323,6 +6323,123 @@ namespace StockAnalyzer.StockClasses
       }
 
       private List<StockDailyValue> GenerateNbLineBreakBarFromDaily(List<StockDailyValue> stockDailyValueList, int nbBar)
+      {
+         bool isIntraday = this.StockName.StartsWith("INT_");
+         Queue<StockDailyValue> previousValues = new Queue<StockDailyValue>(nbBar);
+         List<StockDailyValue> newBarList = new List<StockDailyValue>();
+         StockDailyValue newValue = null;
+         StockDailyValue firstValue = stockDailyValueList[0];
+         newValue = new StockDailyValue(this.StockName, firstValue.OPEN, firstValue.CLOSE, firstValue.OPEN, firstValue.CLOSE, 0, firstValue.DATE);
+
+         newValue.POSITION = firstValue.POSITION;
+         if (this.HasOptix)
+         {
+            newValue.OPTIX = firstValue.OPTIX;
+         }
+
+         previousValues.Enqueue(firstValue);
+
+         int i = 0;
+         int barCount = 1;
+         foreach (StockDailyValue dailyValue in stockDailyValueList)
+         {
+            float highest = previousValues.Max(v => v.HIGH);
+            if ((dailyValue.CLOSE > highest && dailyValue.IsComplete))
+            {
+               if (newValue != null)
+               {
+                  newValue.IsComplete = true;
+                  if (this.HasOptix)
+                  {
+                     newValue.OPTIX /= barCount;
+                     barCount = 1;
+                  }
+                  newBarList.Add(newValue);
+               }
+               newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+               newValue.IsComplete = true;
+               newValue.POSITION = dailyValue.POSITION;
+               newBarList.Add(newValue);
+               newValue = null;
+            }
+            else
+            {
+               float lowest = previousValues.Min(v => v.LOW);
+               if (dailyValue.CLOSE < lowest && dailyValue.IsComplete)
+               {
+                  if (newValue != null)
+                  {
+                     newValue.IsComplete = true;
+                     if (this.HasOptix)
+                     {
+                        newValue.OPTIX /= barCount;
+                        barCount = 1;
+                     }
+                  newBarList.Add(newValue);
+                  }
+                  newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                  newValue.IsComplete = true;
+                  newValue.POSITION = dailyValue.POSITION;
+                  newBarList.Add(newValue);
+                  newValue = null;
+               }
+               else
+               {
+                  if (newValue == null)
+                  {
+                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                     newValue.IsComplete = true;
+                  }
+                  else
+                  {
+                     // Extend current bar
+                     newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                     newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                     newValue.VOLUME += dailyValue.VOLUME;
+                     newValue.UPVOLUME += dailyValue.UPVOLUME;
+                     newValue.CLOSE = dailyValue.CLOSE;
+                  }
+                  if (this.HasOptix)
+                  {
+                     newValue.OPTIX += dailyValue.OPTIX;
+                     barCount++;
+                  }
+               }
+            }
+
+            if (i < nbBar)
+            {
+               previousValues.Enqueue(dailyValue);
+               i++;
+               if (i == nbBar) previousValues.Dequeue();
+            }
+            else
+            {
+               previousValues.Dequeue();
+               previousValues.Enqueue(dailyValue);
+            }
+         }
+         if (newBarList.Last() != newValue && newValue != null)
+         {
+            //float highest = previousValues.Max(v => v.HIGH);
+            //if (newValue.CLOSE > highest)
+            //{
+            //    newValue.IsComplete = true;
+            //}
+            //else
+            //{
+            //    float lowest = previousValues.Min(v => v.LOW);
+            //    if (newValue.CLOSE < lowest)
+            //    {
+            //        newValue.IsComplete = true;
+            //    }
+            //}
+            newBarList.Add(newValue);
+            newValue.OPTIX /= barCount;
+         }
+         return newBarList;
+      }
+      private List<StockDailyValue> GenerateNbLineBreakBarFromDaily_anticipate(List<StockDailyValue> stockDailyValueList, int nbBar)
       {
          bool isIntraday = this.StockName.StartsWith("INT_");
          Queue<StockDailyValue> previousValues = new Queue<StockDailyValue>(nbBar);
