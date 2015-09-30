@@ -99,7 +99,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                         if (found)
                         {
                            DateTime nextDay = serie.Keys.ElementAt(index + 1);
-                           float open = serie.GetValues(StockSerie.StockBarDuration.Daily).First(s => s.DATE == nextDay).OPEN;
+                           float open = serie.GetExactValues().First(s => s.DATE == nextDay).OPEN;
 
                            // Open position
                            int nbUnit = (int)Math.Floor(this.availableLiquidity / open / (nbPosition - this.Positions.Count));

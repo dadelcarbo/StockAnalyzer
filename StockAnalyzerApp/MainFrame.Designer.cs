@@ -926,7 +926,7 @@ namespace StockAnalyzerApp
          // 
          this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.barDurationComboBox.Name = "barDurationComboBox";
-         this.barDurationComboBox.Size = new System.Drawing.Size(125, 25);
+         this.barDurationComboBox.Size = new System.Drawing.Size(175, 25);
          this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
          // 
          // downloadBtn

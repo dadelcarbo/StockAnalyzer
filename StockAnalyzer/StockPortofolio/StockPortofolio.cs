@@ -89,17 +89,36 @@ namespace StockAnalyzer.Portofolio
          public int Position { get; set; }
          public List<StockDailyValue> Values { get; set; }
 
-         public PositionValues(int position, List<StockDailyValue> values)
+         public float OpenValue { get; set; }
+         public float MinValue { get; set; }
+         public float MaxValue { get; set; }
+
+         public PositionValues(int position, float openValue, List<StockDailyValue> values)
          {
             this.Position = position;
             this.Values = values;
+            this.OpenValue = openValue;
+            this.MinValue = float.MaxValue;
+            this.MaxValue = float.MinValue;
          }
 
          public StockDailyValue AtDate(DateTime date)
          {
             return Values.FirstOrDefault(v => v.DATE == date);
          }
+
+         public float MaxDrawdown
+         {
+            get
+            {
+               if (Position > 0)
+                  return (MinValue - OpenValue) / OpenValue;
+               else
+                  return (OpenValue - MinValue) / OpenValue;
+            }
+         }
       }
+
       public StockSerie GeneratePortfolioStockSerie(string name, StockSerie referenceSerie, StockSerie.Groups group)
       {
          StockSerie stockSerie = new StockSerie(name, name, group, StockDataProvider.Portofolio);
@@ -107,44 +126,28 @@ namespace StockAnalyzer.Portofolio
 
          float open = 0.0f;
          float high = 0.0f;
-         float high1 = 0.0f;
-         float high2 = 0.0f;
          float low = 0.0f;
-         float low1 = 0.0f;
-         float low2 = 0.0f;
          float close = 0.0f;
          int volume = 1;
          float cash = TotalDeposit;
 
          Dictionary<string, PositionValues> stockPositionDico = new Dictionary<string, PositionValues>();
 
-         foreach (DateTime date in referenceSerie.GetValues(StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
+          // Statistics
+
+         int nbTrades = 0;
+         int nbWinTrades = 0;
+         float maxDrawdown = float.MaxValue;
+         float maxGain = float.MinValue;
+         float maxLoss = float.MinValue;
+         float totalReturn = 0f;
+
+         foreach (DateTime date in referenceSerie.GetExactValues().Select(v => v.DATE))
          {
             // Calculate open value
             open = cash;
-            low1 = cash;
-            high1 = cash;
-            foreach (KeyValuePair<string, PositionValues> pair in stockPositionDico)
-            {
-               StockDailyValue currentValue = pair.Value.AtDate(date);
-               if (currentValue != null)
-               {
-                  open += currentValue.OPEN * pair.Value.Position;
-                  if (pair.Value.Position > 0)
-                  {
-                     low1 += currentValue.LOW * pair.Value.Position;
-                     high1 += currentValue.HIGH * pair.Value.Position;
-                  }
-                  else
-                  {
-                     low1 += currentValue.HIGH * pair.Value.Position;
-                     high1 += currentValue.LOW * pair.Value.Position;
-                  }
-               }
-            }
-
+            
             // Retrieve orders for this date/time
-
             List<StockOrder> orderList = this.OrderList.FindAll(order => order.ExecutionDate == date);
             // @@@@ this.OrderList.FindAll(order => (order.ExecutionDate >= date.Date && order.ExecutionDate < date.Date.AddDays(1)));
 
@@ -152,35 +155,63 @@ namespace StockAnalyzer.Portofolio
             foreach (StockOrder stockOrder in orderList)
             {
                int numberOfShare = stockOrder.IsShortOrder ? -stockOrder.Number : stockOrder.Number;
-               if (stockOrder.IsBuyOrder())
+               if (stockOrder.IsBuyOrder()) // Opening position
                {
                   cash -= stockOrder.TotalCost;
                   if (stockPositionDico.ContainsKey(stockOrder.StockName))
                   {
                      stockPositionDico[stockOrder.StockName].Position += numberOfShare;
+                     stockPositionDico[stockOrder.StockName].OpenValue = stockOrder.Value;
                   }
                   else
                   {
-                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockDictionary[stockOrder.StockName].GetValues(StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Daily)));
+                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetExactValues()));
                   }
                }
-               else
+               else // Closing Position
                {
                   cash += stockOrder.TotalCost;
                   if (stockPositionDico.ContainsKey(stockOrder.StockName))
                   {
-                     if (stockPositionDico[stockOrder.StockName].Position == numberOfShare)
+                     PositionValues position = stockPositionDico[stockOrder.StockName];
+                     if ( position.Position == numberOfShare)
                      {
+                        maxDrawdown = Math.Min(maxDrawdown, position.MaxDrawdown);
                         stockPositionDico.Remove(stockOrder.StockName);
+                        nbTrades++;
                      }
                      else
                      {
-                        stockPositionDico[stockOrder.StockName].Position -= numberOfShare;
+                        position.Position-= numberOfShare;
+                     }
+                     if (stockOrder.IsShortOrder)
+                     {
+                        if (position.OpenValue > stockOrder.Value)
+                        {
+                           nbWinTrades++;
+                           maxGain = Math.Max(maxGain, (position.OpenValue - stockOrder.Value) / position.OpenValue);
+                        }
+                        else
+                        {
+                           maxLoss = Math.Max(maxLoss, -(position.OpenValue - stockOrder.Value) / position.OpenValue);
+                        }
+                     }
+                     else
+                     {
+                        if (position.OpenValue < stockOrder.Value)
+                        {
+                           nbWinTrades++;
+                           maxGain = Math.Max(maxGain, -(position.OpenValue - stockOrder.Value) / position.OpenValue);
+                        }
+                        else
+                        {
+                           maxLoss = Math.Max(maxLoss, (position.OpenValue - stockOrder.Value) / position.OpenValue);
+                        }
                      }
                   }
                   else
                   {
-                     //throw new System.Exception("Sell order found on non bought stock");
+                     throw new System.Exception("Sell order found on non bought stock");
                      // @@@@ Need to have proper error manegement otherwise the applications crashes.
                      return referenceSerie;
                   }
@@ -188,36 +219,48 @@ namespace StockAnalyzer.Portofolio
             }
 
             // Calculate new value after taking into account the orders.
-            low2 = cash;
-            high2 = cash;
+            low = cash;
+            high = cash;
             close = cash;
-            foreach (KeyValuePair<string, PositionValues> pair in stockPositionDico)
+            if (stockPositionDico.Count != 0)
             {
-               StockDailyValue currentValue = pair.Value.AtDate(date);
-               if (currentValue != null)
-
-                  close += currentValue.CLOSE * pair.Value.Position;
-               if (pair.Value.Position > 0)
+               foreach (PositionValues position in stockPositionDico.Values)
                {
-                  low2 += currentValue.LOW * pair.Value.Position;
-                  high2 += currentValue.HIGH * pair.Value.Position;
-               }
-               else
-               {  // We are facing a short order, everything is reversed
-                  low2 += currentValue.HIGH * pair.Value.Position;
-                  high2 += currentValue.LOW * pair.Value.Position;
+                  StockDailyValue currentValue = position.AtDate(date);
+                  if (currentValue != null)
+
+                     close += currentValue.CLOSE * position.Position;
+                  if (position.Position > 0)
+                  {
+                     position.MaxValue = Math.Max(position.MaxValue, currentValue.HIGH);
+                     position.MinValue = Math.Min(position.MinValue, currentValue.LOW);
+
+                     low += currentValue.LOW * position.Position;
+                     high += currentValue.HIGH * position.Position;
+                  }
+                  else
+                  {  // We are facing a short order, everything is reversed
+                     low += currentValue.HIGH * position.Position;
+                     high += currentValue.LOW * position.Position;
+
+                     position.MaxValue = Math.Max(position.MaxValue, currentValue.LOW);
+                     position.MinValue = Math.Min(position.MinValue, currentValue.HIGH);
+                  }
                }
             }
-
-            // Get low and high
-            low = Math.Min(low1, low2);
-            high = Math.Max(high1, high2);
 
             StockDailyValue dailyValue = new StockDailyValue(name, open, high, low, close, volume, date);
             stockSerie.Add(date, dailyValue);
             dailyValue.Serie = stockSerie;
          }
 
+         Console.WriteLine("Statistics for " + stockSerie.StockName);
+         Console.WriteLine("NbTrades: " + nbTrades);
+         Console.WriteLine("Win %: " + ((float)nbWinTrades/(float)nbTrades).ToString("P2"));
+         Console.WriteLine("MaxDrowdown: " + maxDrawdown.ToString("P2"));
+         Console.WriteLine("MaxGain: " + maxGain.ToString("P2"));
+         Console.WriteLine("MaxLoss: " + maxLoss.ToString("P2"));
+                 
          // Preinitialise the serie
          stockSerie.PreInitialise();
          stockSerie.IsInitialised = true;

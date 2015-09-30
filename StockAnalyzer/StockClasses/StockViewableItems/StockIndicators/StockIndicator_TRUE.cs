@@ -65,17 +65,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[1][i] = false;
 
             this.eventSeries[2][i] = value.VARIATION>0f;
-            this.eventSeries[3][i] = value.VARIATION<0f;
+            this.eventSeries[3][i] = value.VARIATION < 0f;
+
+            this.eventSeries[4][i] = value.IsComplete;
             i++;
          }
       }
 
-      static string[] eventNames = new string[] { "True", "False", "HigherClose", "LowerClose" };
+      static string[] eventNames = new string[] { "True", "False", "HigherClose", "LowerClose", "BarComplete" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { false, false, true, true, };
+      static readonly bool[] isEvent = new bool[] { false, false, true, true, false};
       public override bool[] IsEvent
       {
          get { return isEvent; }

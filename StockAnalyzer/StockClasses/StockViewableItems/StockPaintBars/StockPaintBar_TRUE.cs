@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Black) };
             }
             return seriePens;
          }
