@@ -77,15 +77,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[1][i] = (oscSerie[i - 2] > oscSerie[i - 1] && oscSerie[i - 1] < oscSerie[i]);
             this.eventSeries[2][i] = (oscSerie[i - 1] < 0 && oscSerie[i] >= 0);
             this.eventSeries[3][i] = (oscSerie[i - 1] > 0 && oscSerie[i] <= 0);
+            this.eventSeries[4][i] = oscSerie[i] >= 0;
+            this.eventSeries[5][i] = oscSerie[i] < 0;
          }
       }
 
-      static string[] eventNames = new string[] { "Top", "Bottom", "TurnedPositive", "TurnedNegative" };
+      static string[] eventNames = new string[] { "Top", "Bottom", "TurnedPositive", "TurnedNegative", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, true, true };
+      static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }
