@@ -116,6 +116,7 @@ namespace StockAnalyzer.StockClasses
          ThreeLineBreak,
          ThreeLineBreak_BIS,
          ThreeLineBreak_TER,
+         SixLineBreak,
          Weekly,
          Monthly
       }
@@ -5867,6 +5868,9 @@ namespace StockAnalyzer.StockClasses
                case StockBarDuration.ThreeLineBreak_TER:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
                   break;
+               case StockBarDuration.SixLineBreak:
+                  newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
+                  break;
                //case StockBarDuration.Range_1:
                //   newBarList = GenerateRangeBar(dailyValueList, 0.01f);
                //   break;
@@ -6321,8 +6325,75 @@ namespace StockAnalyzer.StockClasses
 
          return newBarList;
       }
-
       private List<StockDailyValue> GenerateNbLineBreakBarFromDaily(List<StockDailyValue> stockDailyValueList, int nbBar)
+      {
+         bool isIntraday = this.StockName.StartsWith("INT_");
+         Queue<StockDailyValue> previousValues = new Queue<StockDailyValue>(nbBar);
+         List<StockDailyValue> newBarList = new List<StockDailyValue>();
+         StockDailyValue newValue = null;
+
+         previousValues.Enqueue(stockDailyValueList[0]);
+
+         int i = 0;
+         foreach (StockDailyValue dailyValue in stockDailyValueList)
+         {
+            if (newValue == null)
+            {// Need to create a new bar
+
+               newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+               newValue.IsComplete = false;
+               newValue.POSITION = dailyValue.POSITION;
+               newBarList.Add(newValue);
+            }
+            else
+            {
+            // Need to extend current bar
+               newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+               newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+               newValue.VOLUME += dailyValue.VOLUME;
+               newValue.UPVOLUME += dailyValue.UPVOLUME;
+               newValue.CLOSE = dailyValue.CLOSE;
+               newValue.POSITION = (newValue.POSITION + dailyValue.POSITION)/2f;
+            }
+
+            // Check if current Bar is complete or not
+            float highest = previousValues.Max(v => v.HIGH);
+            if ((dailyValue.CLOSE > highest && dailyValue.IsComplete))
+            {
+                  newValue.IsComplete = true;
+                  newValue = null;
+            }
+            else
+            {
+               float lowest = previousValues.Min(v => v.LOW);
+               if (dailyValue.CLOSE < lowest && dailyValue.IsComplete)
+               {
+                  newValue.IsComplete = true;
+                  newValue = null;
+               }
+            }
+
+            if (i < nbBar)
+            {
+               previousValues.Enqueue(dailyValue);
+               i++;
+               if (i == nbBar) previousValues.Dequeue();
+            }
+            else
+            {
+               previousValues.Dequeue();
+               previousValues.Enqueue(dailyValue);
+            }
+         }
+         return newBarList;
+      }
+      /// <summary>
+      /// Create TLB but creates two bar the same day, which causes strategies, to buy before the second bar is actually created.
+      /// </summary>
+      /// <param name="stockDailyValueList"></param>
+      /// <param name="nbBar"></param>
+      /// <returns></returns>
+      private List<StockDailyValue> GenerateNbLineBreakBarFromDaily_Test(List<StockDailyValue> stockDailyValueList, int nbBar)
       {
          bool isIntraday = this.StockName.StartsWith("INT_");
          Queue<StockDailyValue> previousValues = new Queue<StockDailyValue>(nbBar);

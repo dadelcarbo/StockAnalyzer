@@ -13,14 +13,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.RangedIndicator; }
       }
-      public override string Name
-      {
-         get { return "RSI(" + this.Parameters[0].ToString() + ")"; }
-      }
-      public override string Definition
-      {
-         get { return "RSI(int Period, float Overbought, float Oversold)"; }
-      }
       public override string[] ParameterNames
       {
          get { return new string[] { "Period", "Overbought", "Oversold" }; }

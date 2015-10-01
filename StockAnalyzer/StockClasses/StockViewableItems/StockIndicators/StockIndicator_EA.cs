@@ -14,15 +14,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
 
-      public override string Name
-      {
-         get { return "EA(" + this.Parameters[0].ToString() + ")"; }
-      }
-
-      public override string Definition
-      {
-         get { return "EA(int Period)"; }
-      }
       public override object[] ParameterDefaultValues
       {
          get { return new Object[] { 20 }; }

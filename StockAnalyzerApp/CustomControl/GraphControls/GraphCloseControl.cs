@@ -760,10 +760,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
          foreach (StockOrder stockOrder in this.Portofolio.OrderList.FindAll(order => order.ExecutionDate >= this.dateSerie[this.StartIndex] && order.ExecutionDate <= this.dateSerie[this.EndIndex] && order.StockName == this.serieName))
          {
             valuePoint2D.X = this.IndexOf(stockOrder.ExecutionDate);
-            screenPoint2D = GetScreenPointFromOrder(stockOrder);
+            if (valuePoint2D.X < 0)
+            {
+               Console.WriteLine("Order date not found: " + stockOrder.ExecutionDate);
+            }
+            else
+            {
+               screenPoint2D = GetScreenPointFromOrder(stockOrder);
 
-            this.DrawArrow(graphic, screenPoint2D, stockOrder.IsBuyOrder(), stockOrder.IsShortOrder);
-
+               this.DrawArrow(graphic, screenPoint2D, stockOrder.IsBuyOrder(), stockOrder.IsShortOrder);
+            }
          }
       }
 

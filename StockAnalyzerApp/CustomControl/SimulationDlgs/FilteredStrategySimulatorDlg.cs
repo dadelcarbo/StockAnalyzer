@@ -179,7 +179,7 @@ namespace StockAnalyzerApp.CustomControl
          if (filterIndicatorTextBox.Text == string.Empty) return;
          if (previousFilterIndicator == filterIndicatorTextBox.Text) return;
          previousFilterIndicator = filterIndicatorTextBox.Text;
-         IStockViewableSeries filterIndicator = StockIndicatorManager.CreateIndicator(this.filterIndicatorTextBox.Text);
+         IStockViewableSeries filterIndicator = null;
 
          if (StockIndicatorManager.Supports(this.filterIndicatorTextBox.Text))
          {
