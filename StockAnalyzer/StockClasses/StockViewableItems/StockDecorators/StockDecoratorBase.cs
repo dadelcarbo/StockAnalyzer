@@ -8,9 +8,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
    {
       public StockDecoratorBase()
       {
-         this.series = new BoolSerie[this.SeriesCount];
+         this.series = new FloatSerie[this.SeriesCount];
          this.serieVisibility = new bool[this.SeriesCount];
          for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
+         
+         this.eventSeries = new BoolSerie[this.EventCount];
+         this.eventVisibility = new bool[this.EventCount];
+         for (int i = 0; i < this.EventCount; this.eventVisibility[i++] = true) ;
       }
       public abstract IndicatorDisplayTarget DisplayTarget { get; }
       public virtual IndicatorDisplayStyle DisplayStyle
@@ -35,11 +39,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
          }
+         for (int i = 0; i < this.EventCount; i++)
+         {
+            themeString += "|" + GraphCurveType.PenToString(this.EventPens[i]) + "|" + this.EventVisibility[i].ToString();
+         }
          return themeString;
       }
 
-      protected BoolSerie[] series;
-      public BoolSerie[] Series { get { return series; } }
+      protected FloatSerie[] series;
+      public FloatSerie[] Series { get { return series; } }
 
       abstract public Pen[] SeriePens { get; }
 
@@ -66,6 +74,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return eventSeries; }
       }
 
+      virtual protected void CreateEventSeries(int count)
+      {
+         for (int i = 0; i < this.EventCount; i++)
+         {
+            this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
+         }
+      }
+
       abstract public bool[] IsEvent { get; }
+
+
+      private bool[] eventVisibility;
+      public bool[] EventVisibility { get { return this.eventVisibility; } }
+
+      protected Pen[] eventPens = null;
+      abstract public Pen[] EventPens { get; }
    }
 }

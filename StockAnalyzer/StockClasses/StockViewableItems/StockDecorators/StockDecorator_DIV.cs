@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" }; } }
+      public override string[] SerieNames { get { return new string[] { "BuyExhaustion", "SellExhaustion" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -48,11 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
-               seriePens[0].Width = 3;
-               seriePens[1].Width = 3;
-               seriePens[2].Width = 2;
-               seriePens[3].Width = 2;
+               seriePens = new Pen[] { new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
             }
             return seriePens;
          }
@@ -62,10 +58,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
       {
          using (MethodLogger ml = new MethodLogger(this))
          {
+            CreateEventSeries(stockSerie.Count);
+
             IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
             if (indicator != null && indicator.Series[0].Count > 0)
             {
                FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA((int)this.parameters[1]);
+               FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
+               FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
+               this.Series[0] = upperLimit;
+               this.Series[0].Name = this.SerieNames[0];
+               this.Series[1] = lowerLimit;
+               this.Series[1].Name = this.SerieNames[1];
+
                if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
                {
                   IRange range = (IRange)indicator;
@@ -73,10 +78,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                }
                FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-               for (int i = 0; i < this.SeriesCount; i++)
-               {
-                  this.Series[i] = new BoolSerie(stockSerie.Count, this.SerieNames[i]);
-               }
+               
                float exhaustionSellLimit = indicatorToDecorate[0];
                float exhaustionBuyLimit = indicatorToDecorate[0];
                float exhaustionBuyPrice = highSerie[0];
@@ -96,7 +98,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue <= exhaustionSellLimit)
                         {
                            // This is an exhaustion selling
-                           this.series[1][i] = true;
+                           this.Events[1][i] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
                         }
@@ -105,7 +107,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (lowSerie[i] <= exhaustionSellPrice)
                            {
-                              this.series[3][i] = true;
+                              this.Events[3][i] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -116,7 +118,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue >= exhaustionBuyLimit)
                         {
                            // This is an exhaustion selling
-                           this.series[0][i] = true;
+                           this.Events[0][i] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
                         }
@@ -125,7 +127,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (highSerie[i] >= exhaustionBuyPrice)
                            {
-                              this.series[2][i] = true;
+                              this.Events[2][i] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -144,7 +146,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue <= exhaustionSellLimit)
                         {
                            // This is an exhaustion selling
-                           this.series[1][i] = true;
+                           this.Events[1][i] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
                         }
@@ -153,7 +155,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (lowSerie[i] <= exhaustionSellPrice)
                            {
-                              this.series[3][i] = true;
+                              this.Events[3][i] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -172,7 +174,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue >= exhaustionBuyLimit)
                         {
                            // This is an exhaustion selling
-                           this.series[0][i] = true;
+                           this.Events[0][i] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
                         }
@@ -181,7 +183,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (highSerie[i] >= exhaustionBuyPrice)
                            {
-                              this.series[2][i] = true;
+                              this.Events[2][i] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -199,24 +201,43 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                      exhaustionBuyLimit *= exFadeOut;
                   }
                   previousValue = currentValue;
+
+                  upperLimit[i] = exhaustionBuyLimit;
+                  lowerLimit[i] = exhaustionSellLimit;
                }
             }
             else
             {
                for (int i = 0; i < this.SeriesCount; i++)
                {
-                  this.Series[i] = new BoolSerie(0, this.SerieNames[i]);
+                  this.Events[i] = new BoolSerie(0, this.SerieNames[i]);
                }
             }
          }
       }
 
-      static string[] eventNames = new string[] { };
+      public override System.Drawing.Pen[] EventPens
+      {
+         get
+         {
+            if (eventPens == null)
+            {
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+               eventPens[0].Width = 3;
+               eventPens[1].Width = 3;
+               eventPens[2].Width = 2;
+               eventPens[3].Width = 2;
+            }
+            return eventPens;
+         }
+      }
+
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] { true,true,true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }

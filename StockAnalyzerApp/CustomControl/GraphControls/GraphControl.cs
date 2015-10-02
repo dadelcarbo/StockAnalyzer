@@ -585,7 +585,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                }
             }
             #endregion
-
             #region DISPLAY DECORATORS
             if (CurveList.Decorator != null && this.mainSerie != null)
             {
@@ -596,7 +595,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                      Pen pen = CurveList.Decorator.SeriePens[i];
                      using (Brush brush = new SolidBrush(pen.Color))
                      {
-                        BoolSerie decoSerie = CurveList.Decorator.Series[i];
+                        points = GetScreenPoints(StartIndex, EndIndex, CurveList.Decorator.Series[i]);
+                        if (points != null)
+                        {
+
+                           aGraphic.DrawLines(CurveList.Decorator.SeriePens[i], points);
+                        }
+                     }
+                  }
+               }
+               for (i = 0; i < CurveList.Decorator.EventCount; i++)
+               {
+                  if (CurveList.Decorator.EventVisibility[i])
+                  {
+                     Pen pen = CurveList.Decorator.EventPens[i];
+                     using (Brush brush = new SolidBrush(pen.Color))
+                     {
+                        BoolSerie decoSerie = CurveList.Decorator.Events[i];
                         for (int index = this.StartIndex; index <= this.EndIndex; index++)
                         {
                            if (decoSerie[index])

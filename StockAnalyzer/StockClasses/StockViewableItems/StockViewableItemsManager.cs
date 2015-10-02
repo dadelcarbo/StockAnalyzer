@@ -86,12 +86,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                int index = 2 * i + offset;
                if (index < fields.Length)
                {
-                  viewableSerie.SeriePens[i] = GraphCurveType.PenFromString(fields[2 * i + offset]);
-                  viewableSerie.SerieVisibility[i] = bool.Parse(fields[2 * i + offset + 1]);
+                  viewableSerie.SeriePens[i] = GraphCurveType.PenFromString(fields[index]);
+                  viewableSerie.SerieVisibility[i] = bool.Parse(fields[index + 1]);
                }
                else
                {
                   viewableSerie.SerieVisibility[i] = true;
+               }
+            }
+            if (fields[0].ToUpper() == "DECORATOR")
+            {
+               offset += viewableSerie.SeriesCount*2;
+               IStockDecorator decorator = viewableSerie as IStockDecorator;
+               for (int i = 0; i < decorator.EventCount; i++)
+               {
+                  int index = 2 * i + offset;
+                  if (index < fields.Length)
+                  {
+                     decorator.EventPens[i] = GraphCurveType.PenFromString(fields[index]);
+                     decorator.EventVisibility[i] = bool.Parse(fields[index + 1]);
+                  }
+                  else
+                  {
+                     decorator.SerieVisibility[i] = true;
+                  }
                }
             }
          }

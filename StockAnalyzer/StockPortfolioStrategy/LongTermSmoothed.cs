@@ -94,7 +94,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                         bool found = false;
                         for (int i = 0; i < nbBar && !found; i++)
                         {
-                           found = decorator.Series[1][index - i];
+                           found = decorator.Events[1][index - i];
                         }
                         if (found)
                         {

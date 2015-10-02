@@ -1912,7 +1912,7 @@ namespace StockAnalyzer.StockClasses
                   IStockDecorator stockDecorator = ((IStockDecorator)stockEvent);
 
                   int eventIndex = Array.IndexOf<string>(stockDecorator.SerieNames, alertDef.EventName);
-                  if (!stockDecorator.Series[eventIndex][index]) return false;
+                  if (!stockDecorator.Events[eventIndex][index]) return false;
                }
                else
                {
@@ -1945,7 +1945,7 @@ namespace StockAnalyzer.StockClasses
 
             if (stockEvent is IStockDecorator)
             {
-               if (((IStockDecorator)stockEvent).Series[eventMatch.EventIndex][index]) return true;
+               if (((IStockDecorator)stockEvent).Events[eventMatch.EventIndex][index]) return true;
             }
             else
             {
@@ -1970,7 +1970,7 @@ namespace StockAnalyzer.StockClasses
             }
             if (stockEvent is IStockDecorator)
             {
-               if (!((IStockDecorator)stockEvent).Series[eventMatch.EventIndex][index]) return false;
+               if (!((IStockDecorator)stockEvent).Events[eventMatch.EventIndex][index]) return false;
             }
             else
             {

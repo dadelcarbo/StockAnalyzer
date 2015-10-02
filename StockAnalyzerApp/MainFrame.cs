@@ -4096,12 +4096,12 @@ border:1px solid black;
                   }
                }
                // Decorator
-               if (curveList.Decorator != null && curveList.Decorator.SeriesCount > 0)
+               if (curveList.Decorator != null && curveList.Decorator.EventCount > 0)
                {
                   int j = 0;
-                  foreach (BoolSerie eventSerie in curveList.Decorator.Series.Where(ev => ev != null && ev.Count > 0))
+                  foreach (BoolSerie eventSerie in curveList.Decorator.Events.Where(ev => ev != null && ev.Count > 0))
                   {
-                     if (curveList.Decorator.SerieVisibility[j] && eventSerie[i])
+                     if (curveList.Decorator.EventVisibility[j] && eventSerie[i])
                      {
                         eventTypeString += htmlEventTemplate.Replace(eventTemplate, curveList.Decorator.Name + " - " + eventSerie.Name);
                      }

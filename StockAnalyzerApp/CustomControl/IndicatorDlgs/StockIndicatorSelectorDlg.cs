@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Resources;
 using System.Windows.Forms;
+using System.Linq;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -33,6 +34,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
          Graph,
          Indicator,
          Curve,
+         Event, // For decorators
          Line,
          PaintBars,
          TrailStops,
@@ -197,6 +199,33 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.Visible = true;
             this.SupportVisibility = supportVisibility;
             this.Visible = isVisible;
+         }
+         public override string ToThemeString()
+         {
+            return "DATA|" + this.Text + "|" + GraphCurveType.PenToString(this.CurvePen) + "|" + this.Visible.ToString();
+         }
+      }
+      public class EventNode : StockNode
+      {
+         public bool SupportVisibility { get; set; }
+         public EventNode(string name, ContextMenuStrip menuStrip, Pen curvePen, bool isVisible)
+            : base(name, NodeType.Event, menuStrip)
+         {
+            this.CurvePen = curvePen;
+            this.Visible = isVisible;
+            this.SupportVisibility = true;
+            this.ImageKey = "DECO";
+            this.SelectedImageKey = "DECO";
+         }
+         public EventNode(string name, ContextMenuStrip menuStrip, Pen curvePen, bool supportVisibility, bool isVisible)
+            : base(name, NodeType.Event, menuStrip)
+         {
+            this.CurvePen = curvePen;
+            this.Visible = true;
+            this.SupportVisibility = supportVisibility;
+            this.Visible = isVisible;
+            this.ImageKey = "DECO";
+            this.SelectedImageKey = "DECO";
          }
          public override string ToThemeString()
          {
@@ -421,6 +450,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                               {
                                  treeNode1.Nodes.Add(new CurveNode(stockDecorator.SerieNames[i], null, stockDecorator.SeriePens[i], true, true));
                               }
+                              for (int i = 0; i < stockDecorator.EventCount; i++)
+                              {
+                                 treeNode1.Nodes.Add(new EventNode(stockDecorator.EventNames[i], null, stockDecorator.EventPens[i], true, true));
+                              }
                               foreach (TreeNode childNode in treeNode.Nodes)
                               {
                                  if (childNode.Text == stockDecorator.DecoratedItem)
@@ -581,6 +614,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                decoratorNode.Nodes.Add(new CurveNode(curveName, null, stockDecorator.SeriePens[i], true));
                i++;
             }
+            i = 0;
+            foreach (string eventName in stockDecorator.EventNames)
+            {
+               decoratorNode.Nodes.Add(new EventNode(eventName, null, stockDecorator.EventPens[i], true));
+               i++;
+            }
             this.treeView1.SelectedNode = decoratorNode;
             decoratorNode.Expand();
          }
@@ -726,9 +765,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
          this.suspendPreview = true;
 
          StockNode parentNode = (StockNode)this.treeView1.SelectedNode.Parent;
-         this.lineTypeComboBox.Enabled = !((parentNode.Type == NodeType.Decorator)
-             || (parentNode.Type == NodeType.PaintBars) || (parentNode.Type == NodeType.Trail)
-             || (parentNode.Type == NodeType.Indicator && ((IndicatorNode)parentNode).ViewableItem.DisplayStyle == IndicatorDisplayStyle.SupportResistance));
+         this.lineTypeComboBox.Enabled = !(
+             (parentNode.Type == NodeType.PaintBars) ||
+             (parentNode.Type == NodeType.Trail)|| 
+             (parentNode.Type == NodeType.Indicator && ((IndicatorNode)parentNode).ViewableItem.DisplayStyle == IndicatorDisplayStyle.SupportResistance));
          this.lineTypeComboBox.Parent = curveConfigBox;
          this.thicknessComboBox.Parent = curveConfigBox;
          this.lineColorPanel.Parent = curveConfigBox;
@@ -747,6 +787,37 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
          this.lineTypeComboBox.SelectedItem = curveNode.CurvePen.DashStyle.ToString();
          this.thicknessComboBox.SelectedItem = (int)curveNode.CurvePen.Width;
          this.lineColorPanel.BackColor = curveNode.CurvePen.Color;
+
+         this.curvePreviewLabel.Parent = this.curveConfigBox;
+         this.previewPanel.Parent = this.curveConfigBox;
+
+         this.suspendPreview = false;
+         this.previewPanel.Refresh();
+      }
+      private void ActivateCurveConfigPanel(EventNode eventNode)
+      {
+         this.MakeVisible(curveConfigBox);
+         this.suspendPreview = true;
+
+         this.lineTypeComboBox.Enabled = false;
+         this.lineTypeComboBox.Parent = curveConfigBox;
+         this.thicknessComboBox.Parent = curveConfigBox;
+         this.lineColorPanel.Parent = curveConfigBox;
+
+         if (eventNode.SupportVisibility)
+         {
+            this.visibleCheckBox.Parent = curveConfigBox;
+            this.visibleCheckBox.Visible = true;
+            this.visibleCheckBox.Checked = eventNode.Visible;
+         }
+         else
+         {
+            this.visibleCheckBox.Visible = false;
+         }
+
+         this.lineTypeComboBox.SelectedItem = eventNode.CurvePen.DashStyle.ToString();
+         this.thicknessComboBox.SelectedItem = (int)eventNode.CurvePen.Width;
+         this.lineColorPanel.BackColor = eventNode.CurvePen.Color;
 
          this.curvePreviewLabel.Parent = this.curveConfigBox;
          this.previewPanel.Parent = this.curveConfigBox;
@@ -776,7 +847,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
          g.Clear(graphNode.GraphBackgroundColor);
          g.DrawRectangle(Pens.Black, 0, 0, g.VisibleClipBounds.Width - 1, g.VisibleClipBounds.Height - 1);
 
-         CurveNode curveNode = (CurveNode)this.treeView1.SelectedNode;
+         StockNode curveNode = (StockNode)this.treeView1.SelectedNode;
 
 
          if (parentNode.Type == NodeType.PaintBars || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
@@ -801,7 +872,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                   points[i].X = (float)x;
                   points[i++].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
                }
-               if (parentNode.Type == NodeType.Decorator)
+               if (parentNode.Type == NodeType.Decorator && curveNode.Type == NodeType.Event)
                {
                   using (Brush brush = new SolidBrush(curveNode.CurvePen.Color))
                   {
@@ -914,17 +985,40 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
       private void visibleCheckBox_CheckedChanged(object sender, EventArgs e)
       {
-         StockNode node = (StockNode)this.treeView1.SelectedNode;
-         node.Visible = this.visibleCheckBox.Checked;
-         switch (((StockNode)node.Parent).Type)
+         StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
+         stockNode.Visible = this.visibleCheckBox.Checked;
+         switch (((StockNode)stockNode.Parent).Type)
          {
             case NodeType.PaintBars:
             case NodeType.Indicator:
-            case NodeType.Decorator:
             case NodeType.Trail:
-               ViewableItemNode viewableItemNode = (ViewableItemNode)node.Parent;
-               IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
-               viewableItem.SerieVisibility[node.Index] = node.Visible;
+               {
+                  ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
+                  IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                  viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
+               }
+               break;
+            case NodeType.Decorator:
+               if (stockNode.Type == NodeType.Event)
+               {
+                  ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
+                  IStockDecorator viewableItem = (IStockDecorator)viewableItemNode.ViewableItem;
+
+                  int curveCount = 0;
+                  foreach (TreeNode node in stockNode.Parent.Nodes)
+                  {
+                     if (node is CurveNode) curveCount++;
+                  }
+                  int index = stockNode.Index - curveCount;
+
+                  viewableItem.EventVisibility[index] = stockNode.Visible;
+               }
+               else
+               {
+                  ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
+                  IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                  viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
+               }
                break;
          }
          this.previewPanel.Refresh();
@@ -987,12 +1081,31 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                case NodeType.PaintBars:
                case NodeType.Indicator:
-               case NodeType.Decorator:
                case NodeType.Trail:
                case NodeType.TrailStops:
-                  ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
-                  vn.ViewableItem.SeriePens[stockNode.Index].Width = stockNode.CurvePen.Width;
-                  break;
+                  {
+                     ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
+                     vn.ViewableItem.SeriePens[stockNode.Index].Width = stockNode.CurvePen.Width;
+                     break;
+                  }
+               case NodeType.Decorator:
+                  if (stockNode.Type == NodeType.Event)
+                  {
+                     ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
+                     IStockDecorator decorator = (IStockDecorator)vn.ViewableItem;
+                     int curveCount = 0;
+                     foreach(TreeNode node in stockNode.Parent.Nodes ) {
+                        if (node is CurveNode) curveCount++;
+                     }
+                     int index = stockNode.Index - curveCount;
+                     decorator.EventPens[index].Width = stockNode.CurvePen.Width;
+                  }
+                  else
+                  {
+                     ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
+                     vn.ViewableItem.SeriePens[stockNode.Index].Width = stockNode.CurvePen.Width;
+                  }
+                     break;
             }
             this.previewPanel.Refresh();
          }
@@ -1010,11 +1123,31 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                {
                   case NodeType.PaintBars:
                   case NodeType.Indicator:
-                  case NodeType.Decorator:
                   case NodeType.Trail:
                   case NodeType.TrailStops:
+                     {
+                        ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
+                        vn.ViewableItem.SeriePens[stockNode.Index].Color = stockNode.CurvePen.Color;
+                     }
+                     break;
+                  case NodeType.Decorator:
+                     if (stockNode.Type == NodeType.Event)
+                     {
+                        ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
+                        IStockDecorator decorator = (IStockDecorator)vn.ViewableItem;
+                        int curveCount = 0;
+                        foreach (TreeNode node in stockNode.Parent.Nodes)
+                        {
+                           if (node is CurveNode) curveCount++;
+                        }
+                        int index = stockNode.Index - curveCount;
+                        decorator.EventPens[index].Color = stockNode.CurvePen.Color;
+                     }
+                     else
+                     {
                      ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
                      vn.ViewableItem.SeriePens[stockNode.Index].Color = stockNode.CurvePen.Color;
+                     }
                      break;
                }
 
@@ -1300,6 +1433,9 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                {
                   ActivateCurveConfigPanel((CurveNode)treeNode);
                }
+               break;
+            case NodeType.Event:
+                  ActivateCurveConfigPanel((EventNode)treeNode);
                break;
             case NodeType.Line:
                ActivateLineConfigPanel((LineNode)treeNode);

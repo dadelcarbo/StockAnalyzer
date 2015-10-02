@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
          IStockDecorator momex = this.Serie.GetDecorator("DIV(2)", indicatorName);
 
-         if (momex.Series[1][index - 1] || momex.Series[3][index - 1])
+         if (momex.Events[1][index - 1] || momex.Events[3][index - 1])
          {
             return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, false);
          }
@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
          IStockDecorator momex = this.Serie.GetDecorator("DIV(2)", indicatorName);
 
-         if (momex.Series[0][index - 1] || momex.Series[2][index - 1])
+         if (momex.Events[0][index - 1] || momex.Events[2][index - 1])
          {
             return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), number, false);
          }

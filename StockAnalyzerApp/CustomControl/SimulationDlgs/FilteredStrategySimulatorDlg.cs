@@ -10,6 +10,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzerSettings.Properties;
+using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -197,6 +198,17 @@ namespace StockAnalyzerApp.CustomControl
                {
                   filterIndicator = StockPaintBarManager.CreatePaintBar(this.filterIndicatorTextBox.Text);
                }
+               else
+               {
+                  if (StockDecoratorManager.Supports(this.filterIndicatorTextBox.Text))
+                  {
+                     string [] fields = this.filterIndicatorTextBox.Text.Split('|');
+                     if (fields.Length == 2)
+                     {
+                        filterIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                     }
+                  }
+               }
             }
          }
 
@@ -228,7 +240,7 @@ namespace StockAnalyzerApp.CustomControl
          }
          else
          {
-            MessageBox.Show("Cannot create indicator, check syntax please");
+            MessageBox.Show("Cannot create indicator " + this.filterIndicatorTextBox.Text + " , check syntax please");
          }
       }
 
@@ -256,6 +268,17 @@ namespace StockAnalyzerApp.CustomControl
                if (StockPaintBarManager.Supports(this.triggerIndicatorTextBox.Text))
                {
                   triggerIndicator = StockPaintBarManager.CreatePaintBar(this.filterIndicatorTextBox.Text);
+               }
+               else
+               {
+                  if (StockDecoratorManager.Supports(this.triggerIndicatorTextBox.Text))
+                  {
+                     string[] fields = this.triggerIndicatorTextBox.Text.Split('|');
+                     if (fields.Length == 2)
+                     {
+                        triggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                     }
+                  }
                }
             }
          }

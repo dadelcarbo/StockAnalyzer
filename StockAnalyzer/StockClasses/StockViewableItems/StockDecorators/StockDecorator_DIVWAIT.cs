@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" }; } }
+      public override string[] SerieNames { get { return new string[] { }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -62,6 +62,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
       {
          using (MethodLogger ml = new MethodLogger(this))
          {
+            CreateEventSeries(stockSerie.Count);
+            
             IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
             IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
 
@@ -80,11 +82,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             bool waitBearishDivergence = false;
             bool waitBullishDivergence = false;
 
-            for (int i = 0; i < this.SeriesCount; i++)
-            {
-               this.Series[i] = new BoolSerie(stockSerie.Count, this.SerieNames[i]);
-            }
-
             for (int i = 10; i < stockSerie.Count; i++)
             {
                if (waitExhaustionTop)
@@ -92,16 +89,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                   {
                      waitExhaustionTop = false;
-                     this.series[exhaustionTopIndex][i] = true;
+                     this.eventSeries[exhaustionTopIndex][i] = true;
                   }
                }
                else
                {
-                  if (originalDecorator.Series[exhaustionTopIndex][i])
+                  if (originalDecorator.Events[exhaustionTopIndex][i])
                   {
                      if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                      {
-                        this.series[exhaustionTopIndex][i] = true;
+                        this.eventSeries[exhaustionTopIndex][i] = true;
                      }
                      else
                      {
@@ -115,16 +112,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                   {
                      waitBearishDivergence = false;
-                     this.series[bearishDivergenceIndex][i] = true;
+                     this.eventSeries[bearishDivergenceIndex][i] = true;
                   }
                }
                else
                {
-                  if (originalDecorator.Series[bearishDivergenceIndex][i])
+                  if (originalDecorator.Events[bearishDivergenceIndex][i])
                   {
                      if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                      {
-                        this.series[bearishDivergenceIndex][i] = true;
+                        this.eventSeries[bearishDivergenceIndex][i] = true;
                      }
                      else
                      {
@@ -137,16 +134,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                   {
                      waitExhaustionBottom = false;
-                     this.series[exhaustionBottomIndex][i] = true;
+                     this.eventSeries[exhaustionBottomIndex][i] = true;
                   }
                }
                else
                {
-                  if (originalDecorator.Series[exhaustionBottomIndex][i])
+                  if (originalDecorator.Events[exhaustionBottomIndex][i])
                   {
                      if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                      {
-                        this.series[exhaustionBottomIndex][i] = true;
+                        this.eventSeries[exhaustionBottomIndex][i] = true;
                      }
                      else
                      {
@@ -160,16 +157,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                   {
                      waitBullishDivergence = false;
-                     this.series[bullishDivergenceIndex][i] = true;
+                     this.eventSeries[bullishDivergenceIndex][i] = true;
                   }
                }
                else
                {
-                  if (originalDecorator.Series[bullishDivergenceIndex][i])
+                  if (originalDecorator.Events[bullishDivergenceIndex][i])
                   {
                      if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                      {
-                        this.series[bullishDivergenceIndex][i] = true;
+                        this.eventSeries[bullishDivergenceIndex][i] = true;
                      }
                      else
                      {
@@ -181,15 +178,32 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          }
       }
 
-      static string[] eventNames = new string[] { };
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+
+      static readonly bool[] isEvent = new bool[] { true, true, true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }
+      }
+
+      public override System.Drawing.Pen[] EventPens
+      {
+         get
+         {
+            if (eventPens == null)
+            {
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+               eventPens[0].Width = 3;
+               eventPens[1].Width = 3;
+               eventPens[2].Width = 2;
+               eventPens[3].Width = 2;
+            }
+            return eventPens;
+         }
       }
    }
 }

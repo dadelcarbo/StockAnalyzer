@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "Top", "Bottom" }; } }
+      public override string[] SerieNames { get { return new string[] { }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
+               seriePens = new Pen[] {  };
             }
             return seriePens;
          }
@@ -59,42 +59,45 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
+         CreateEventSeries(stockSerie.Count);
+
          IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
          if (indicator != null && indicator.Series[0].Count > 0)
          {
-            for (int i = 0; i < this.SeriesCount; i++)
-            {
-               this.Series[i] = new BoolSerie(stockSerie.Count, this.SerieNames[i]);
-            }
             FloatSerie indicatorToDecorate = indicator.Series[0];
 
             for (int i = 1; i < indicatorToDecorate.Count - 2; i++)
             {
                if (indicatorToDecorate.IsTop(i))
                {
-                  this.Series[0][i] = true;
+                  this.eventSeries[0][i] = true;
                }
                else if (indicatorToDecorate.IsBottom(i))
                {
-                  this.Series[1][i] = true;
+                  this.eventSeries[1][i] = true;
                }
-            }
-         }
-         else
-         {
-            for (int i = 0; i < this.SeriesCount; i++)
-            {
-               this.Series[i] = new BoolSerie(0, this.SerieNames[i]);
             }
          }
       }
 
-      static string[] eventNames = new string[] { };
+      public override System.Drawing.Pen[] EventPens
+      {
+         get
+         {
+            if (eventPens == null)
+            {
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
+            }
+            return eventPens;
+         }
+      }
+
+      static string[] eventNames = new string[] { "Top", "Bottom" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] { true,true};
       public override bool[] IsEvent
       {
          get { return isEvent; }

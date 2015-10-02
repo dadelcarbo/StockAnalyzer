@@ -76,5 +76,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             return decorator;
          }
       }
+
+      public static bool Supports(string fullName)
+      {
+         if (decoratorList == null)
+         {
+            GetDecoratorList();
+         }
+
+         return decoratorList.Contains(fullName.Split('(')[0]);
+      }
    }
 }

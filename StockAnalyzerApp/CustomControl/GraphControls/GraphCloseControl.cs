@@ -364,15 +364,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                   for (int j = 0; j < CurveList.ShowMes.Count; j++)
                   {
                      IStockDecorator decorator = CurveList.ShowMes[j];
-                     for (int i = 0; i < decorator.SeriesCount; i++)
+                     for (int i = 0; i < decorator.EventCount; i++)
                      {
-                        if (decorator.SerieVisibility[i] && decorator.Series[i].Count > 0)
+                        if (decorator.EventVisibility[i] && decorator.Events[i].Count > 0)
                         {
                            FloatSerie dataSerie = (i % 2 == 0) ? highCurveType.DataSerie : lowCurveType.DataSerie;
-                           Pen pen = decorator.SeriePens[i];
+                           Pen pen = decorator.EventPens[i];
                            using (Brush brush = new SolidBrush(pen.Color))
                            {
-                              BoolSerie decoSerie = decorator.Series[i];
+                              BoolSerie decoSerie = decorator.Events[i];
                               for (int index = this.StartIndex; index <= this.EndIndex; index++)
                               {
                                  if (decoSerie[index])

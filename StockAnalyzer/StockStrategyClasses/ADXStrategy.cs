@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockStrategyClasses
          adxIndicator = (IStockIndicator)this.TriggerIndicator;
 
          this.adxDecorator = StockDecoratorManager.CreateDecorator("DIV(1)", triggerName);
-         exhaustionSellIndex = adxDecorator.SerieNames.ToList().IndexOf("ExhaustionBottom");
+         exhaustionSellIndex = adxDecorator.EventNames.ToList().IndexOf("ExhaustionBottom");
 
          this.SRTrailStop = StockTrailStopManager.CreateTrailStop(trailName);
 
@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
          #region Create Buy
 
-         if (this.adxDecorator.Series[this.exhaustionSellIndex][index - 1])
+         if (this.adxDecorator.Events[this.exhaustionSellIndex][index - 1])
          {
             if (this.SupportShortSelling)
             {
