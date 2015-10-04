@@ -108,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                   }
                   else
                   {
-                     decorator.SerieVisibility[i] = true;
+                     decorator.EventVisibility[i] = true;
                   }
                }
             }
