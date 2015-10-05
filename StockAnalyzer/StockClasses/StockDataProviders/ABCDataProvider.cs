@@ -187,7 +187,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
 
                isUpTodate = (lastDate >= DateTime.Today) ||
-                   (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 2 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.UtcNow.Hour < 17)) ||
+                   (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 3 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour < 18)) ||
                    (lastDate == DateTime.Today.AddDays(-1) && DateTime.UtcNow.Hour < 17);
 
                if (!isUpTodate)

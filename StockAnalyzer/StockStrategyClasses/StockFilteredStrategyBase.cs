@@ -4,8 +4,11 @@ using System.Xml.Serialization;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 
 namespace StockAnalyzer.StockStrategyClasses
 {
@@ -37,14 +40,57 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public string TriggerName
       {
-         get { return this.TriggerIndicator == null ? string.Empty : (this.TriggerIndicator as IStockViewableSeries).Name; }
+         get
+         {
+            if (this.TriggerIndicator == null)
+            {
+               return string.Empty;
+            }
+            else
+            {
+               if (this.TriggerIndicator is IStockDecorator)
+               {
+                  IStockDecorator decorator = this.TriggerIndicator as IStockDecorator;
+                  return decorator.Name + "|" + decorator.DecoratedItem;
+               }
+               else
+               {
+                  return (this.TriggerIndicator as IStockViewableSeries).Name;
+               }
+            }
+         }
          set
          {
-            if (StockIndicatorManager.Supports(value.Split('(')[0]))
+            string indicatorName = value.Split('(')[0];
+            if (StockIndicatorManager.Supports(indicatorName))
             {
-               this.TriggerIndicator = StockIndicatorManager.CreateIndicator(value);
+               TriggerIndicator = StockIndicatorManager.CreateIndicator(value);
             }
-            if (this.TriggerIndicator == null) this.TriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
+            else
+            {
+               if (StockTrailStopManager.Supports(indicatorName))
+               {
+                  TriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
+               }
+               else
+               {
+                  if (StockPaintBarManager.Supports(indicatorName))
+                  {
+                     TriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
+                  }
+                  else
+                  {
+                     if (StockDecoratorManager.Supports(indicatorName))
+                     {
+                        string[] fields = value.Split('|');
+                        if (fields.Length == 2)
+                        {
+                           TriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                        }
+                     }
+                  }
+               }
+            }
          }
       }
 
@@ -52,14 +98,57 @@ namespace StockAnalyzer.StockStrategyClasses
       public IStockEvent FilterIndicator { get; set; }
       public string FilterName
       {
-         get { return this.FilterIndicator == null ? string.Empty : (this.FilterIndicator as IStockViewableSeries).Name; }
+         get
+         {
+            if (this.FilterIndicator == null)
+            {
+               return string.Empty;
+            }
+            else
+            {
+               if (this.FilterIndicator is IStockDecorator)
+               {
+                  IStockDecorator decorator = this.FilterIndicator as IStockDecorator;
+                  return decorator.Name + "|" + decorator.DecoratedItem;
+               }
+               else
+               {
+                  return (this.FilterIndicator as IStockViewableSeries).Name;
+               }
+            }
+         }
          set
          {
-            if (StockIndicatorManager.Supports(value.Split('(')[0]))
+            string indicatorName = value.Split('(')[0];
+            if (StockIndicatorManager.Supports(indicatorName))
             {
-               this.FilterIndicator = StockIndicatorManager.CreateIndicator(value);
+               FilterIndicator = StockIndicatorManager.CreateIndicator(value);
             }
-            if (this.FilterIndicator == null) this.FilterIndicator = StockTrailStopManager.CreateTrailStop(value);
+            else
+            {
+               if (StockTrailStopManager.Supports(indicatorName))
+               {
+                  FilterIndicator = StockTrailStopManager.CreateTrailStop(value);
+               }
+               else
+               {
+                  if (StockPaintBarManager.Supports(indicatorName))
+                  {
+                     FilterIndicator = StockPaintBarManager.CreatePaintBar(value);
+                  }
+                  else
+                  {
+                     if (StockDecoratorManager.Supports(indicatorName))
+                     {
+                        string[] fields = value.Split('|');
+                        if (fields.Length == 2)
+                        {
+                           FilterIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                        }
+                     }
+                  }
+               }
+            }
          }
       }
 
@@ -272,7 +361,36 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
          }
          else
          {
+            if (indicator is IStockIndicator)
+            {
+               IStockIndicator stockIndicator = indicator as IStockIndicator;
+               if (stockIndicator.HorizontalLines != null && stockIndicator.HorizontalLines.Count() > 0)
+               {
+                  foreach (HLine hline in stockIndicator.HorizontalLines)
+                  {
+                     theme = theme.Replace("@Indicator" + indCount,
+                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) + System.Environment.NewLine + "@Indicator" + indCount);
+                  }
+               }
+            }
+            if (indicator is IStockDecorator)
+            {
+               IStockDecorator decorator = indicator as IStockDecorator;
+               IStockIndicator decoratedIndicator = StockIndicatorManager.CreateIndicator(decorator.DecoratedItem);
+               theme = theme.Replace("@Indicator" + indCount, decoratedIndicator.ToThemeString() + System.Environment.NewLine + "@Indicator" + indCount);
+               if (decoratedIndicator.HorizontalLines != null && decoratedIndicator.HorizontalLines.Count() > 0)
+               {
+                  foreach (HLine hline in decoratedIndicator.HorizontalLines)
+                  {
+                     theme = theme.Replace("@Indicator" + indCount,
+                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) + System.Environment.NewLine + "@Indicator" + indCount);
+                  }
+               }
+            }
             theme = theme.Replace("@Indicator" + indCount, indicator.ToThemeString());
+
+           
+
             indCount++;
          }
          return theme;

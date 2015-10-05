@@ -1064,8 +1064,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                case NodeType.Decorator:
                case NodeType.Trail:
                case NodeType.TrailStops:
-                  ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
-                  vn.ViewableItem.SeriePens[stockNode.Index].DashStyle = stockNode.CurvePen.DashStyle;
+                  if (stockNode.Type != NodeType.Event)
+                  {
+                     ViewableItemNode vn = (ViewableItemNode) stockNode.Parent;
+                     vn.ViewableItem.SeriePens[stockNode.Index].DashStyle = stockNode.CurvePen.DashStyle;
+                  }
                   break;
             }
             this.previewPanel.Refresh();

@@ -92,7 +92,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                DateTime lastDate = stockSerie.Keys.Last();
 
                isUpTodate = (lastDate >= DateTime.Today) ||
-                   (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 2 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.UtcNow.Hour < 23)) ||
+                   (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 3 && (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.UtcNow.Hour < 23)) ||
                    (lastDate >= DateTime.Today.AddDays(-1) && DateTime.UtcNow.Hour < 23);
 
                NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);

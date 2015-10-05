@@ -6337,9 +6337,9 @@ namespace StockAnalyzer.StockClasses
          int i = 0;
          foreach (StockDailyValue dailyValue in stockDailyValueList)
          {
-            if (newValue == null)
-            {// Need to create a new bar
-
+            if (newValue == null || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
+            {
+               // Need to create a new bar
                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
                newValue.IsComplete = false;
                newValue.POSITION = dailyValue.POSITION;
@@ -6347,13 +6347,13 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-            // Need to extend current bar
+               // Need to extend current bar
                newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
                newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
                newValue.VOLUME += dailyValue.VOLUME;
                newValue.UPVOLUME += dailyValue.UPVOLUME;
                newValue.CLOSE = dailyValue.CLOSE;
-               newValue.POSITION = (newValue.POSITION + dailyValue.POSITION)/2f;
+               newValue.POSITION = (newValue.POSITION + dailyValue.POSITION) / 2f;
             }
 
             // Check if current Bar is complete or not

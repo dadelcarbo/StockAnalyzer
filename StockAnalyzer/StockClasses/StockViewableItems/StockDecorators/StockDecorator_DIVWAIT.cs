@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { }; } }
+      public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -48,11 +48,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
-               seriePens[0].Width = 3;
-               seriePens[1].Width = 3;
-               seriePens[2].Width = 2;
-               seriePens[3].Width = 2;
+               seriePens = new Pen[] { new Pen(Color.DarkRed), new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
+
+               seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+               seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
             }
             return seriePens;
          }
@@ -65,6 +64,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             CreateEventSeries(stockSerie.Count);
             
             IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
+
+            this.Series[0] = originalDecorator.Series[0];
+            this.Series[1] = originalDecorator.Series[1];
+            this.Series[2] = originalDecorator.Series[2];
+
             IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
@@ -178,18 +182,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          }
       }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
-      public override string[] EventNames
-      {
-         get { return eventNames; }
-      }
-
-      static readonly bool[] isEvent = new bool[] { true, true, true, true };
-      public override bool[] IsEvent
-      {
-         get { return isEvent; }
-      }
-
       public override System.Drawing.Pen[] EventPens
       {
          get
@@ -205,6 +197,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             return eventPens;
          }
       }
+
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
+      public override string[] EventNames
+      {
+         get { return eventNames; }
+      }
+
+      static readonly bool[] isEvent = new bool[] { true, true, true, true };
+      public override bool[] IsEvent
+      {
+         get { return isEvent; }
+      }
+
    }
 }
 /*

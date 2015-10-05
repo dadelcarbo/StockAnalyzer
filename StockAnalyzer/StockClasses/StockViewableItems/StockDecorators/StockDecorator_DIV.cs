@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "BuyExhaustion", "SellExhaustion" }; } }
+      public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -48,7 +48,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
+               seriePens = new Pen[] { new Pen(Color.DarkRed), new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
+
+               seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+               seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
             }
             return seriePens;
          }
@@ -66,10 +69,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA((int)this.parameters[1]);
                FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
                FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
-               this.Series[0] = upperLimit;
+
+               if ((int)this.parameters[1] <= 1) { this.SerieVisibility[0] = false; }
+               this.Series[0] = indicatorToDecorate;
                this.Series[0].Name = this.SerieNames[0];
-               this.Series[1] = lowerLimit;
+               this.Series[1] = upperLimit;
                this.Series[1].Name = this.SerieNames[1];
+               this.Series[2] = lowerLimit;
+               this.Series[2].Name = this.SerieNames[2];
 
                if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
                {
@@ -87,8 +94,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
                float previousValue = indicatorToDecorate[0];
                float currentValue;
-
-               for (int i = 1; i < indicatorToDecorate.Count - 1; i++)
+               int i = 0;
+               for (i = 1; i < indicatorToDecorate.Count - 1; i++)
                {
                   currentValue = indicatorToDecorate[i];
                   if (currentValue == previousValue)
@@ -204,6 +211,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
                   upperLimit[i] = exhaustionBuyLimit;
                   lowerLimit[i] = exhaustionSellLimit;
+               }
+               // Update last values
+               exhaustionSellLimit *= exFadeOut;
+               exhaustionBuyLimit *= exFadeOut;
+
+               upperLimit[i] = exhaustionBuyLimit;
+               lowerLimit[i] = exhaustionSellLimit;
+               
+               if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
+               {
+                  IRange range = (IRange)indicator;
+                  this.Series[1] = upperLimit.Add((range.Max + range.Min) / 2.0f); 
+                  this.Series[2] = lowerLimit.Add((range.Max + range.Min) / 2.0f);
                }
             }
             else
