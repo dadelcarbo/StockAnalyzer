@@ -10,11 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
       public StockDecorator_TOP()
       {
       }
-      public override string Name
-      {
-         get { return "TOP"; }
-      }
-
+      
       public override string Definition
       {
          get { return "Plots maximums and minimums"; }
