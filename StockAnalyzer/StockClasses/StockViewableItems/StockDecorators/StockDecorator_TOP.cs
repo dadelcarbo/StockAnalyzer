@@ -62,13 +62,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             FloatSerie indicatorToDecorate = indicator.Series[0];
 
-            for (int i = 1; i < indicatorToDecorate.Count - 2; i++)
+            for (int i = 10; i < indicatorToDecorate.Count - 2; i++)
             {
-               if (indicatorToDecorate.IsTop(i))
+               if (indicatorToDecorate.IsTop(i-1))
                {
                   this.eventSeries[0][i] = true;
                }
-               else if (indicatorToDecorate.IsBottom(i))
+               else if (indicatorToDecorate.IsBottom(i-1))
                {
                   this.eventSeries[1][i] = true;
                }
