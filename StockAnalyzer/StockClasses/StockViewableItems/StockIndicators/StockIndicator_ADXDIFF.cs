@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -67,17 +68,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          int period = (int)this.Parameters[0];
          var adx = stockSerie.GetIndicator("ADX(" + period + "," + trendThreshold + "," + smoothing + ")");
-
+         
          this.Series[0] = (adx.Series[1] - adx.Series[2]);
          this.Series[0].Name = this.Name;
+
+         this.CreateEventSeries(stockSerie.Count);
+
+         for (int i = period; i < stockSerie.Count; i++)
+         {
+            this.eventSeries[0][i] = adx.Series[1][i] > adx.Series[2][i];
+            this.eventSeries[1][i] = adx.Series[1][i] < adx.Series[2][i];
+         }
       }
 
-      static string[] eventNames = new string[] { };
+      static string[] eventNames = new string[] { "Positive", "Negative"};
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] { false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

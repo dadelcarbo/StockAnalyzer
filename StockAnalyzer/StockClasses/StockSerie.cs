@@ -174,7 +174,7 @@ namespace StockAnalyzer.StockClasses
       [XmlIgnore]
       protected IStockPaintBar PaintBarCache { get; set; }
       [XmlIgnore]
-      protected IStockDecorator DecoratorCache { get; set; }
+      protected Dictionary<string, IStockDecorator> DecoratorCache { get; set; }
       [XmlIgnore]
       protected IStockTrail TrailCache { get; set; }
 
@@ -185,12 +185,15 @@ namespace StockAnalyzer.StockClasses
          get { return this.isInitialised; }
          set
          {
-            if (!value)
+            if (isInitialised != value)
             {
-               this.Clear();
-               ResetAllCache();
+               if (!value)
+               {
+                  this.Clear();
+                  ResetAllCache();
+               }
+               this.isInitialised = value;
             }
-            this.isInitialised = value;
          }
       }
       [XmlIgnore]
@@ -342,7 +345,8 @@ namespace StockAnalyzer.StockClasses
       }
       public void ClearBarDurationCache()
       {
-         this.BarSerieDictionary.Clear();
+         if (this.BarSerieDictionary == null) this.BarSerieDictionary = new SortedDictionary<StockBarDuration, List<StockDailyValue>>();
+         else this.BarSerieDictionary.Clear();
       }
       #endregion
 
@@ -437,9 +441,10 @@ namespace StockAnalyzer.StockClasses
       }
       public IStockDecorator GetDecorator(string decoratorName, string decoratedItem)
       {
-         if (this.DecoratorCache != null && this.DecoratorCache.Name == decoratorName && this.DecoratorCache.DecoratedItem == decoratedItem)
+         string fullDecoratorName = decoratorName + "|" + decoratedItem;
+         if (this.DecoratorCache.ContainsKey(fullDecoratorName))
          {
-            return this.DecoratorCache;
+            return this.DecoratorCache[fullDecoratorName];
          }
          else
          {
@@ -447,7 +452,7 @@ namespace StockAnalyzer.StockClasses
             if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
             {
                decorator.ApplyTo(this);
-               this.DecoratorCache = decorator;
+               this.DecoratorCache.Add(fullDecoratorName, decorator);
                return decorator;
             }
             return null;
@@ -622,9 +627,9 @@ namespace StockAnalyzer.StockClasses
          this.EventSeries = new BoolSerie[Enum.GetValues(typeof(StockEvent.EventType)).Length];
          this.FloatSerieCache = new Dictionary<string, FloatSerie>();
          this.IndicatorCache = new Dictionary<string, IStockIndicator>();
+         this.DecoratorCache = new Dictionary<string, IStockDecorator>();
          this.PaintBarCache = null;
          this.TrailStopCache = null;
-         this.DecoratorCache = null;
          this.TrailCache = null;
          this.Events = new List<StockEvent.EventType>();
          this.dateArray = null;
@@ -693,6 +698,8 @@ namespace StockAnalyzer.StockClasses
       }
       public void PreInitialise()
       {
+         ResetAllCache();
+
          float[] openSerie = new float[Values.Count];
          float[] lowSerie = new float[Values.Count];
          float[] highSerie = new float[Values.Count];
