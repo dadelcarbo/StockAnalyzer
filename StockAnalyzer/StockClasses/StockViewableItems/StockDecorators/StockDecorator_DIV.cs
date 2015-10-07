@@ -105,7 +105,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue <= exhaustionSellLimit)
                         {
                            // This is an exhaustion selling
-                           this.Events[1][i] = true;
+                           this.Events[1][i+1] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
                         }
@@ -114,7 +114,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (lowSerie[i] <= exhaustionSellPrice)
                            {
-                              this.Events[3][i] = true;
+                              this.Events[3][i + 1] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -125,7 +125,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue >= exhaustionBuyLimit)
                         {
                            // This is an exhaustion selling
-                           this.Events[0][i] = true;
+                           this.Events[0][i + 1] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
                         }
@@ -134,7 +134,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (highSerie[i] >= exhaustionBuyPrice)
                            {
-                              this.Events[2][i] = true;
+                              this.Events[2][i + 1] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -153,7 +153,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue <= exhaustionSellLimit)
                         {
                            // This is an exhaustion selling
-                           this.Events[1][i] = true;
+                           this.Events[1][i + 1] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
                         }
@@ -162,7 +162,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (lowSerie[i] <= exhaustionSellPrice)
                            {
-                              this.Events[3][i] = true;
+                              this.Events[3][i + 1] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }
@@ -181,7 +181,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                         if (currentValue >= exhaustionBuyLimit)
                         {
                            // This is an exhaustion selling
-                           this.Events[0][i] = true;
+                           this.Events[0][i + 1] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
                         }
@@ -190,7 +190,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            // Check if divergence
                            if (highSerie[i] >= exhaustionBuyPrice)
                            {
-                              this.Events[2][i] = true;
+                              this.Events[2][i + 1] = true;
                            }
                            exhaustionSellLimit *= exFadeOut;
                         }

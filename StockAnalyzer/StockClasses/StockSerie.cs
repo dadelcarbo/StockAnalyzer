@@ -345,8 +345,7 @@ namespace StockAnalyzer.StockClasses
       }
       public void ClearBarDurationCache()
       {
-         if (this.BarSerieDictionary == null) this.BarSerieDictionary = new SortedDictionary<StockBarDuration, List<StockDailyValue>>();
-         else this.BarSerieDictionary.Clear();
+         this.BarSerieDictionary.Clear();
       }
       #endregion
 
@@ -579,6 +578,7 @@ namespace StockAnalyzer.StockClasses
          this.StockTimeSpan = StockBarDuration.Daily;
          this.DataProvider = dataProvider;
          this.IsInitialised = false;
+         ResetAllCache();
       }
       public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider)
       {
@@ -593,6 +593,7 @@ namespace StockAnalyzer.StockClasses
          this.StockTimeSpan = StockBarDuration.Daily;
          this.DataProvider = dataProvider;
          this.IsInitialised = false;
+         ResetAllCache();
       }
       public StockSerie(StockBarSerie barSerie, Groups stockGroup)
       {
@@ -619,6 +620,7 @@ namespace StockAnalyzer.StockClasses
             }
             this.Add(date, dailyValue);
          }
+         ResetAllCache();
       }
       private void ResetAllCache()
       {

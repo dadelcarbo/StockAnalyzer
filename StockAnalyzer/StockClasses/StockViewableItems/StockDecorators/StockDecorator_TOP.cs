@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             FloatSerie indicatorToDecorate = indicator.Series[0];
 
-            for (int i = 10; i < indicatorToDecorate.Count - 2; i++)
+            for (int i = 10; i < indicatorToDecorate.Count; i++)
             {
                if (indicatorToDecorate.IsTop(i-1))
                {

@@ -81,6 +81,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                return stockDictionary.GenerateBullishROCEXSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "MM":
                return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+            case "MYOSC":
+               return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "LD":
                return stockDictionary.GenerateLowestInDays(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "HD":
