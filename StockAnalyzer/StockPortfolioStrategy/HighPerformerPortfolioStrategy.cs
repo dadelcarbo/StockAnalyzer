@@ -20,6 +20,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
          }
       }
 
+      private static DateTime previousDate;
       protected override void ApplyAtDate(System.DateTime applyDate)
       {
          int nbPositions = 5;
@@ -31,7 +32,15 @@ namespace StockAnalyzer.StockPortfolioStrategy
          foreach (StockPosition position in this.Positions)
          {
             StockSerie serie = this.Series.Find(s => s.StockName == position.StockName);
-            float value = position.Value(serie[applyDate].OPEN);
+            float value = 0;
+            if (serie.ContainsKey(applyDate))
+            {
+               value = position.Value(serie[applyDate].OPEN);
+            }
+            else
+            {
+                value = position.Value(serie[previousDate].OPEN);
+            }
             positionValues[count++] = value;
             portfolioValue += value;
          }
@@ -41,15 +50,18 @@ namespace StockAnalyzer.StockPortfolioStrategy
             this.Dump(applyDate);
 #endif
 
-         // Evaluate performance since 6 months
+         // Evaluate performance using RANK indicator
          Dictionary<StockSerie, float> variations = new Dictionary<StockSerie, float>();
-         DateTime startDate = applyDate.AddMonths(-3);
          foreach (StockSerie serie in this.Series)
          {
-            variations.Add(serie, serie.GetVariationSince(applyDate, startDate));
+            if (serie.ContainsKey(applyDate))
+            {
+               //variations.Add(serie, serie.GetIndicator("RANK(12,10)").Series[0][serie.IndexOf(applyDate)-1]);  
+               variations.Add(serie, serie.GetIndicator("ADXDIFF(50,25)").Series[0][serie.IndexOf(applyDate)-1]);  
+            }
          }
 
-         var sortedList = variations.Where(p => p.Value > 0).OrderByDescending(p => p.Value);
+         var sortedList = variations.Where(p => p.Value > 0).OrderByDescending(p => p.Value).Take(nbPositions);
 
          // Sell stock not listed as best performers
          float targetPositionValue = portfolioValue / (float)this.Series.Count;
@@ -64,12 +76,14 @@ namespace StockAnalyzer.StockPortfolioStrategy
             // Sell position
             Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
                               position.StockName);
-            StockOrder order = StockOrder.CreateExecutedOrder(position.StockName,
-                StockOrder.OrderType.SellAtMarketOpen,
-                applyDate, applyDate, position.Number, serie[applyDate].OPEN, 0.0f);
 
-            this.availableLiquidity += position.Number * serie[applyDate].OPEN;
+            StockOrder order;
+            DateTime executionDate = serie.ContainsKey(applyDate) ? applyDate : previousDate;
 
+            order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen,
+               applyDate, applyDate, position.Number, serie[executionDate].OPEN, 0.0f);
+
+            this.availableLiquidity += position.Number * serie[executionDate].OPEN;
             this.Portfolio.OrderList.Add(order);
             trashList.Add(position);
          }
@@ -91,8 +105,8 @@ namespace StockAnalyzer.StockPortfolioStrategy
 
             // Buy
             int nbUnit = (int)Math.Floor(this.availableLiquidity / pair.Key[applyDate].OPEN / (nbPositions - this.Positions.Count));
-            if (nbUnit <= 0)
-               Console.WriteLine("Unit" + nbUnit);
+            //if (nbUnit <= 0)
+            //   Console.WriteLine("Unit" + nbUnit);
             if (nbUnit > 0)
             {
                Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + pair.Key.StockName);
@@ -106,10 +120,11 @@ namespace StockAnalyzer.StockPortfolioStrategy
             }
          }
 
+            this.Dump(applyDate);
+         previousDate = applyDate;
 
 #if USE_LOGS
             Console.WriteLine("After Arbitrage");
-            this.Dump(applyDate);
 #endif
       }
 

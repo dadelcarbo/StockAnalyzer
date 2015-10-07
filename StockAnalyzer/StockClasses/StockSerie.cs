@@ -23,10 +23,14 @@ namespace StockAnalyzer.StockClasses
    public class MomentumSerie
    {
       [XmlIgnore]
-      public float Momentum { get; set; }
+      public float MomentumSlow { get; set; }
+      public float MomentumFast { get; set; }
 
       public StockSerie StockSerie { get; set; }
-      public float Position { get; set; }
+      public float PositionSlow { get; set; }
+      public float PositionFast { get; set; }
+
+      public float Position { get { return (PositionSlow - PositionFast)/2.0f; } }
 
       public MomentumSerie()
       {

@@ -143,7 +143,7 @@
          this.endDatePicker.Name = "endDatePicker";
          this.endDatePicker.Size = new System.Drawing.Size(87, 20);
          this.endDatePicker.TabIndex = 28;
-         this.endDatePicker.Value = new System.DateTime(2014, 10, 22, 0, 0, 0, 0);
+         this.endDatePicker.Value = System.DateTime.Today;
          // 
          // startDatePicker
          // 
@@ -154,7 +154,7 @@
          this.startDatePicker.Name = "startDatePicker";
          this.startDatePicker.Size = new System.Drawing.Size(87, 20);
          this.startDatePicker.TabIndex = 29;
-         this.startDatePicker.Value = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
+         this.startDatePicker.Value = new System.DateTime(2006, 1, 1, 0, 0, 0, 0);
          // 
          // label2
          // 

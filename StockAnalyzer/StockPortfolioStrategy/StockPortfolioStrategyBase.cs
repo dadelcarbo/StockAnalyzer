@@ -84,8 +84,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             do
             {
                currentDate = currentDate.AddDays(1);
-            } while (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday ||
-                     serie.IndexOf(currentDate) == -1);
+            } while (currentDate <= endDate && ( currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday || serie.IndexOf(currentDate) == -1));
          }
       }
 
@@ -93,19 +92,17 @@ namespace StockAnalyzer.StockPortfolioStrategy
 
       protected void Dump(DateTime applyDate)
       {
-#if true
-         Console.WriteLine("Position Dump");
          float value = 0;
          foreach (var position in this.Positions)
          {
             StockSerie serie = this.Series.Find(s => s.StockName == position.StockName);
             float open = serie[applyDate].OPEN;
             value += position.Value(open);
-            Console.WriteLine(position.StockName + " " + position.Number + "==> Open: " + open + " ==> TotalCost: " + position.TotalCost + " CurrentValue: " + position.Value(open));
+            //Console.WriteLine(position.StockName + " " + position.Number + "==> Open: " + open + " ==> TotalCost: " + position.TotalCost + " CurrentValue: " + position.Value(open));
          }
-#endif
-         Console.WriteLine("PortFolio cash: " + this.availableLiquidity + " Value: " + value + "Total: " + (this.availableLiquidity + value));
+         Console.WriteLine(applyDate.ToShortDateString() + " NbPos: " + this.Positions.Count + "Total: " + (this.availableLiquidity + value));
 
+         // Console.WriteLine(applyDate.ToShortDateString()+ " Cash: " + this.availableLiquidity + " Value: " + value + "Total: " + (this.availableLiquidity + value));
       }
    }
 }

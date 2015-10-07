@@ -142,6 +142,8 @@ namespace StockAnalyzer.Portofolio
          float maxLoss = float.MinValue;
          float totalReturn = 0f;
 
+         DateTime previousDate = referenceSerie.Keys.First();
+
          foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
          {
             // Calculate open value
@@ -227,21 +229,25 @@ namespace StockAnalyzer.Portofolio
                foreach (PositionValues position in stockPositionDico.Values)
                {
                   StockDailyValue currentValue = position.AtDate(date);
-
-                     close += currentValue.CLOSE * position.Position;
-                     open += currentValue.OPEN * position.Position;
+                  if (currentValue == null)
+                  {
+                     currentValue = position.AtDate(previousDate);
+                  }
+                  close += currentValue.CLOSE*position.Position;
+                  open += currentValue.OPEN*position.Position;
                   if (position.Position > 0)
                   {
                      position.MaxValue = Math.Max(position.MaxValue, currentValue.HIGH);
                      position.MinValue = Math.Min(position.MinValue, currentValue.LOW);
 
-                     low += currentValue.LOW * position.Position;
-                     high += currentValue.HIGH * position.Position;
+                     low += currentValue.LOW*position.Position;
+                     high += currentValue.HIGH*position.Position;
                   }
                   else
-                  {  // We are facing a short order, everything is reversed
-                     low += currentValue.HIGH * position.Position;
-                     high += currentValue.LOW * position.Position;
+                  {
+                     // We are facing a short order, everything is reversed
+                     low += currentValue.HIGH*position.Position;
+                     high += currentValue.LOW*position.Position;
 
                      position.MaxValue = Math.Max(position.MaxValue, currentValue.LOW);
                      position.MinValue = Math.Min(position.MinValue, currentValue.HIGH);
@@ -252,6 +258,8 @@ namespace StockAnalyzer.Portofolio
             StockDailyValue dailyValue = new StockDailyValue(name, open, high, low, close, volume, date);
             stockSerie.Add(date, dailyValue);
             dailyValue.Serie = stockSerie;
+
+            previousDate = date;
          }
 
          Console.WriteLine("Statistics for " + stockSerie.StockName);

@@ -39,7 +39,7 @@ namespace StockAnalyzerApp.CustomControl
          {
             this.frequencyComboBox.Items.Add(val);
          }
-         this.frequencyComboBox.SelectedIndex = 2;
+         this.frequencyComboBox.SelectedIndex = 0;
 
          // Initialize portofolio combo
          this.stockDictionary = stockDictionary;
@@ -64,7 +64,7 @@ namespace StockAnalyzerApp.CustomControl
          {
             this.watchListComboBox.Items.Add(wlName);
          }
-         this.watchListComboBox.SelectedIndex = 0;
+         this.watchListComboBox.SelectedIndex = 1;
 
          // Initialize Strategy combo
          this.strategyComboBox.Enabled = true;

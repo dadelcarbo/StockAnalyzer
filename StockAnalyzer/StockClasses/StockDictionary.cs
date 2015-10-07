@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -225,7 +225,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -345,7 +345,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -466,7 +466,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -586,7 +586,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -703,7 +703,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -821,7 +821,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -939,7 +939,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -1057,7 +1057,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -1178,7 +1178,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated
@@ -1346,7 +1346,7 @@ namespace StockAnalyzer.StockClasses
 
          StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 
-         DateTime lastIndiceDate = indiceSerie.Keys.Last();
+         DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
          // Check if serie has been already generated

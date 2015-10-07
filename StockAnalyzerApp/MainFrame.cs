@@ -682,7 +682,7 @@ namespace StockAnalyzerApp
       #endregion
       private void OnSelectedStockChanged(string stockName, bool activate)
       {
-         if (stockName.EndsWith("_P"))
+         if (stockName.EndsWith("_P") || stockName == "Default")
          {
             this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
             if (this.StockDictionary.ContainsKey(stockName))
@@ -2666,8 +2666,7 @@ namespace StockAnalyzerApp
 
          foreach (StockSerie.Groups group in groups)
          {
-            Settings.Default.MomentumIndicator = "ROCEX3(100,50,25,10,20)";
-
+            Settings.Default.MomentumIndicator = "ROC(120,1)";
 
             StockSplashScreen.ProgressText = "Generating position data for " + group;
             var groupSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
@@ -2719,8 +2718,6 @@ namespace StockAnalyzerApp
             }
 
             // Find reference stock in group (first date)
-
-
             StockSerie stockSerie = this.GroupReference[group];
             stockSerie.Initialise();
             DateTime firstDate = stockSerie.Keys.First();
@@ -2729,38 +2726,43 @@ namespace StockAnalyzerApp
 
             // Calculate positions for each stocks in group
             SortedDictionary<DateTime, List<MomentumSerie>> positions = new SortedDictionary<DateTime, List<MomentumSerie>>();
-            foreach (var date in stockSerie.Keys.Where(d => d > firstDate))
+
+            foreach (var date in stockSerie.Keys.Where(d => d > firstDate && d.Date == d))
             {
                StockSplashScreen.ProgressSubText = "Calculating positions " + date.ToShortDateString();
-               List<MomentumSerie> momSerie = new List<MomentumSerie>();
+               List<MomentumSerie> momSeries = new List<MomentumSerie>();
                int dateIndex = -1;
                foreach (StockSerie serie in groupSeries)
                {
                   if ((dateIndex = serie.IndexOf(date)) != -1)
                   {
-                     momSerie.Add(new MomentumSerie()
+                     momSeries.Add(new MomentumSerie()
                      {
-                        Momentum = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
+                        MomentumSlow = serie.GetIndicator("ROC(120, 9)").Series[0][dateIndex],
+                        MomentumFast = serie.GetIndicator("ROC(3,3)").Series[0][dateIndex],
                         StockSerie = serie
                      });
                   }
                }
-               var moms = momSerie.OrderBy(ms => ms.Momentum);
-               float count = moms.Count();
-               if (count == 0)
-               {
-                  continue;
-               }
+               var moms = momSeries.OrderBy(ms => ms.MomentumSlow);
+               int count = moms.Count();
                int i = 0;
                foreach (var m in moms)
                {
-                  m.Position = -100f + 200f * (float)(i++) / (count - 1);
+                  m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
+               } 
+
+               moms = momSeries.OrderBy(ms => ms.MomentumFast);
+               i = 0;
+               foreach (var m in moms)
+               {
+                  m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
                   m.StockSerie[date].POSITION = m.Position;
                }
-               positions.Add(date, momSerie);
+               positions.Add(date, momSeries);
             }
 
-            StockSplashScreen.ProgressSubText = "PreInitialising";
+            StockSplashScreen.ProgressSubText = "PreInitialising"; // Inorder to get Position attribute set in DailyValues
             foreach (StockSerie serie in groupSeries)
             {
                serie.PreInitialise();
@@ -2781,9 +2783,6 @@ namespace StockAnalyzerApp
                      if (++i < count) sw.Write(",");
                   }
                   sw.WriteLine();
-
-                  // Set position in dailyValues
-
                }
             }
          }
