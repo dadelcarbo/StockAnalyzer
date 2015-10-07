@@ -570,7 +570,7 @@ namespace StockAnalyzerSettings.Properties
 
       [global::System.Configuration.UserScopedSettingAttribute()]
       [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-      [global::System.Configuration.DefaultSettingValueAttribute("ROCEX3(200,100,50,10,20)")]
+      [global::System.Configuration.DefaultSettingValueAttribute("ROC(120,1)")]
       public string MomentumIndicator
       {
          get
