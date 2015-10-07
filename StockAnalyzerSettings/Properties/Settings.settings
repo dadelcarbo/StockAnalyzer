@@ -111,7 +111,7 @@
       <Value Profile="(Default)">16000</Value>
     </Setting>
     <Setting Name="MomentumIndicator" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ROCEX3(200,100,50,10,20)</Value>
+      <Value Profile="(Default)">ROC(120,1)</Value>
     </Setting>
   </Settings>
 </SettingsFile>
