@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period", "Threshold", "Smoothing" }; }
+         get { return new string[] { "Period", "Threshold", "InputSmoothing" }; }
       }
 
 
@@ -80,33 +80,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie pDM = new FloatSerie(stockSerie.Count);
          FloatSerie mDM = new FloatSerie(stockSerie.Count);
 
+         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA((int)this.Parameters[2]);
+         FloatSerie higherie = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA((int)this.Parameters[2]);
+
          // Calculate +DM and -DM
-         StockDailyValue previous = null;
-         int i = 0;
-         foreach (StockDailyValue current in stockSerie.Values)
+         for (int i = 1; i < stockSerie.Count; i++)
          {
-            if (previous == null)
+            float rangeUp = higherie[i] - higherie[i - 1];
+            float rangeDown = lowSerie[i - 1] - lowSerie[i];
+
+            if (rangeUp > rangeDown)
             {
-               pDM[i] = 0;
-               mDM[i] = 0;
+               pDM[i] = Math.Max(0, rangeUp);
             }
             else
             {
-               float rangeUp = current.HIGH - previous.HIGH;
-               float rangeDown = previous.LOW - current.LOW;
-
-               if (rangeUp > rangeDown)
-               {
-                  pDM[i] = Math.Max(0, rangeUp);
-               }
-               else
-               {
-                  mDM[i] = Math.Max(0, rangeDown);
-               }
-
+               mDM[i] = Math.Max(0, rangeDown);
             }
-            previous = current;
-            i++;
          }
 
          // Calclate +DI and -DI
@@ -119,14 +109,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          pDI.Name = this.SerieNames[1];
          mDI.Name = this.SerieNames[2];
 
-         this.Series[0] = ADX.CalculateEMA((int)this.Parameters[2]);
-         this.Series[1] = pDI.CalculateEMA((int)this.Parameters[2]);
-         this.Series[2] = mDI.CalculateEMA((int)this.Parameters[2]);
+         this.Series[0] = ADX;
+         this.Series[1] = pDI;
+         this.Series[2] = mDI;
 
          // Manage events
          this.CreateEventSeries(stockSerie.Count);
 
-         for (i = period; i < stockSerie.Count; i++)
+         for (int i = period; i < stockSerie.Count; i++)
          {
             this.eventSeries[0][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] > mDI[i];
             this.eventSeries[1][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] < mDI[i];

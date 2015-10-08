@@ -15,10 +15,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
 
-      public override string Definition
-      {
-         get { return "ADXDIFF(int Period, float Smoothing)"; }
-      }
       public override object[] ParameterDefaultValues
       {
          get { return new Object[] { 14, 25f }; }
@@ -29,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period", "Smoothing" }; }
+         get { return new string[] { "Period", "InputSmoothing" }; }
       }
 
 
@@ -63,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override void ApplyTo(StockSerie stockSerie)
       {
          // Set HLine value
-         float trendThreshold = 25; // Used only ofr event calculation
+         float trendThreshold = 25; // Used only for event calculation
          int smoothing = (int)this.Parameters[1];
 
          int period = (int)this.Parameters[0];

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 
 
@@ -57,7 +58,13 @@ namespace StockAnalyzer.StockPortfolioStrategy
             if (serie.ContainsKey(applyDate))
             {
                //variations.Add(serie, serie.GetIndicator("RANK(12,10)").Series[0][serie.IndexOf(applyDate)-1]);  
-               variations.Add(serie, serie.GetIndicator("ADXDIFF(50,25)").Series[0][serie.IndexOf(applyDate)-1]);  
+               //variations.Add(serie, serie.GetIndicator("ADXDIFF(50,25)").Series[0][serie.IndexOf(applyDate)-1]);
+               int index = serie.IndexOf(applyDate) - 1;
+               if (index > 0)
+               {
+                  IStockIndicator indicator = serie.GetIndicator("RANK(12,10)");
+                  variations.Add(serie, indicator.Series[0][index]);
+               }
             }
          }
 

@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          IStockIndicator fastSerie = stockSerie.GetIndicator("EMA(" + this.parameters[0] + ")");
          IStockIndicator slowSerie = stockSerie.GetIndicator("EMA(" + this.parameters[1] + ")");
-         FloatSerie oscSerie = fastSerie.Series[0].Sub(slowSerie.Series[0]);
+         FloatSerie oscSerie = (fastSerie.Series[0].Sub(slowSerie.Series[0])) / fastSerie.Series[0];
          this.series[0] = oscSerie;
          this.Series[0].Name = this.Name;
 
