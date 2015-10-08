@@ -606,7 +606,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                }
                for (i = 0; i < CurveList.Decorator.EventCount; i++)
                {
-                  if (CurveList.Decorator.EventVisibility[i])
+                  if (CurveList.Decorator.EventVisibility[i] && CurveList.Decorator.IsEvent[i])
                   {
                      Pen pen = CurveList.Decorator.EventPens[i];
                      using (Brush brush = new SolidBrush(pen.Color))

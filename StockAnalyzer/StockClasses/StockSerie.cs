@@ -74,8 +74,10 @@ namespace StockAnalyzer.StockClasses
       public enum StockBarDuration
       {
          Daily,
-         Bar_1_EMA5,
-         Bar_1_EMA20,
+         Bar_1_EMA3,
+         Bar_1_EMA6,
+         Bar_1_EMA9,
+         Bar_1_EMA12,
          Bar_2,
          Bar_3,
          Bar_6,
@@ -5746,11 +5748,17 @@ namespace StockAnalyzer.StockClasses
                case StockBarDuration.Bar_2:
                   newBarList = GenerateMultipleBar(dailyValueList, 2);
                   break;
-               case StockBarDuration.Bar_1_EMA5:
-                  newBarList = GenerateSmoothedBars(dailyValueList, 5);
+               case StockBarDuration.Bar_1_EMA3:
+                  newBarList = GenerateSmoothedBars(dailyValueList, 3);
                   break;
-               case StockBarDuration.Bar_1_EMA20:
-                  newBarList = GenerateSmoothedBars(dailyValueList, 20);
+               case StockBarDuration.Bar_1_EMA6:
+                  newBarList = GenerateSmoothedBars(dailyValueList,6);
+                  break;
+               case StockBarDuration.Bar_1_EMA9:
+                  newBarList = GenerateSmoothedBars(dailyValueList,9);
+                  break;
+               case StockBarDuration.Bar_1_EMA12:
+                  newBarList = GenerateSmoothedBars(dailyValueList,12);
                   break;
                case StockBarDuration.Bar_3:
                   newBarList = GenerateMultipleBar(dailyValueList, 3);

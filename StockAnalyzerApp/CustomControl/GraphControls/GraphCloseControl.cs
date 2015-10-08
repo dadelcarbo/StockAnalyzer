@@ -366,7 +366,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                      IStockDecorator decorator = CurveList.ShowMes[j];
                      for (int i = 0; i < decorator.EventCount; i++)
                      {
-                        if (decorator.EventVisibility[i] && decorator.Events[i].Count > 0)
+                        if (decorator.EventVisibility[i] && decorator.IsEvent[i] && decorator.Events[i].Count > 0)
                         {
                            FloatSerie dataSerie = (i % 2 == 0) ? highCurveType.DataSerie : lowCurveType.DataSerie;
                            Pen pen = decorator.EventPens[i];

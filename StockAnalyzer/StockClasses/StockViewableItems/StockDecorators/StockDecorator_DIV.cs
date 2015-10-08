@@ -29,15 +29,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
       public override string[] ParameterNames
       {
-         get { return new string[] { "FadeOut", "Smooting" }; }
+         get { return new string[] { "FadeOut", "Smoothing", "LookBack" }; }
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 1.5f, 1 }; }
+         get { return new Object[] { 1.5f, 1, 6 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500) }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
@@ -78,6 +78,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                this.Series[2] = lowerLimit;
                this.Series[2].Name = this.SerieNames[2];
 
+               int lookbackPeriod = (int) this.parameters[2];
+
                if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
                {
                   IRange range = (IRange)indicator;
@@ -85,7 +87,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                }
                FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-               
+
+               int lastExhaustionSellIndex = int.MinValue;
+               int lastExhaustionBuyIndex = int.MinValue;
                float exhaustionSellLimit = indicatorToDecorate[0];
                float exhaustionBuyLimit = indicatorToDecorate[0];
                float exhaustionBuyPrice = highSerie[0];
@@ -108,6 +112,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            this.Events[1][i+1] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
+                           lastExhaustionSellIndex = i + 1;
                         }
                         else
                         {
@@ -124,10 +129,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                      {
                         if (currentValue >= exhaustionBuyLimit)
                         {
-                           // This is an exhaustion selling
+                           // This is an exhaustion buying
                            this.Events[0][i + 1] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
+                           lastExhaustionBuyIndex = i + 1;
                         }
                         else
                         {
@@ -156,6 +162,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            this.Events[1][i + 1] = true;
                            exhaustionSellPrice = lowSerie[i];
                            exhaustionSellLimit = currentValue;
+                           lastExhaustionSellIndex = i + 1;
                         }
                         else
                         {
@@ -184,6 +191,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                            this.Events[0][i + 1] = true;
                            exhaustionBuyPrice = highSerie[i];
                            exhaustionBuyLimit = currentValue;
+                           lastExhaustionBuyIndex = i + 1;
                         }
                         else
                         {
@@ -211,6 +219,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
                   upperLimit[i] = exhaustionBuyLimit;
                   lowerLimit[i] = exhaustionSellLimit;
+
+                  // Exhaustion occured events
+                  if (lookbackPeriod > 0)
+                  {
+                     if (i + 1 - lookbackPeriod < lastExhaustionBuyIndex)
+                     {
+                        this.Events[4][i + 1] = true;
+                     }
+                     if (i + 1 - lookbackPeriod < lastExhaustionSellIndex)
+                     {
+                        this.Events[5][i + 1] = true;
+                     }
+                  }
                }
                // Update last values
                exhaustionSellLimit *= exFadeOut;
@@ -225,10 +246,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   this.Series[1] = upperLimit.Add((range.Max + range.Min) / 2.0f); 
                   this.Series[2] = lowerLimit.Add((range.Max + range.Min) / 2.0f);
                }
+
+               
             }
             else
             {
-               for (int i = 0; i < this.SeriesCount; i++)
+               for (int i = 0; i < this.EventNames.Length; i++)
                {
                   this.Events[i] = new BoolSerie(0, this.SerieNames[i]);
                }
@@ -242,22 +265,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (eventPens == null)
             {
-               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
                eventPens[0].Width = 3;
                eventPens[1].Width = 3;
                eventPens[2].Width = 2;
                eventPens[3].Width = 2;
+               eventPens[4].Width = 1;
+               eventPens[5].Width = 1;
             }
             return eventPens;
          }
       }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true,true,true, true };
+      static readonly bool[] isEvent = new bool[] { true,true,true, true, false,false };
       public override bool[] IsEvent
       {
          get { return isEvent; }
