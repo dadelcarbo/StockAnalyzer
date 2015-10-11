@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
       private static DateTime previousDate;
       protected override void ApplyAtDate(System.DateTime applyDate)
       {
-         int nbPositions = 5;
+         int nbPositions = 10;
 
          // Evaluate portofolio value.
          float[] positionValues = new float[this.Series.Count];
@@ -62,8 +62,12 @@ namespace StockAnalyzer.StockPortfolioStrategy
                int index = serie.IndexOf(applyDate) - 1;
                if (index > 0)
                {
-                  IStockIndicator indicator = serie.GetIndicator("RANK(12,10)");
-                  variations.Add(serie, indicator.Series[0][index]);
+                  StockSerie rsSerie = StockDictionary[serie.StockName + "_RS"];
+                  IStockIndicator indicator = serie.GetIndicator("OSC(149,150)");
+                  if (indicator.Events[4][index])
+                  {
+                     variations.Add(serie, indicator.Series[0][index]);
+                  }
                }
             }
          }

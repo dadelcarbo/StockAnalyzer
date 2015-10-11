@@ -90,6 +90,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      if (!stockDictionary.ContainsKey(row[1]))
                      {
                         stockDictionary.Add(row[1], stockSerie);
+                        if (stockSerie.StockGroup == StockSerie.Groups.CAC40)
+                        {
+                           StockSerie stockSerieRS = new StockSerie(row[1] + "_RS", row[3] + "_RS", StockSerie.Groups.CAC40_RS, StockDataProvider.ABC);
+                           stockDictionary.Add(stockSerieRS.StockName, stockSerieRS);
+                        }
                      }
                      else
                      {
@@ -107,6 +112,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
          bool res = false;
+
+         if (stockSerie.StockGroup == StockSerie.Groups.CAC40_RS)
+         {
+            StockSerie baseSerie = stockDictionary[stockSerie.StockName.Replace("_RS", "")];
+            StockSerie cacSerie = stockDictionary["CAC40"];
+
+            return stockSerie.GenerateRelativeStrenthStockSerie(baseSerie, cacSerie);
+         }
 
          // Read archive first
          string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";

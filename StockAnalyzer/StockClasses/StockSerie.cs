@@ -46,6 +46,7 @@ namespace StockAnalyzer.StockClasses
          NONE = 0,
          COUNTRY,
          CAC40,
+         CAC40_RS,
          SBF120,
          CAC_ALL,
          DAX30,
@@ -4227,11 +4228,11 @@ namespace StockAnalyzer.StockClasses
          FloatSerie cciSerie = new FloatSerie(closeSerie.Count, "CCI");
 
          float sum = 0;
-         for (int i = 1; i < period && i < closeSerie.Count; i++)
-         {
-            sum += Math.Abs(diff[i]);
-            cciSerie[i] = diff[i] / (0.015f * sum / i);
-         }
+         //for (int i = 1; i < period && i < closeSerie.Count; i++)
+         //{
+         //   sum += Math.Abs(diff[i]);
+         //   cciSerie[i] = diff[i] / (0.015f * sum / i);
+         //}
          float K = 0.015f / period;
          for (int i = period; i < closeSerie.Count; i++)
          {
@@ -5646,6 +5647,39 @@ namespace StockAnalyzer.StockClasses
          // Initialise the serie
          stockSerie.Initialise();
          return stockSerie;
+      }
+      public bool GenerateRelativeStrenthStockSerie(StockSerie baseSerie, StockSerie referenceSerie)
+      {
+         if (!baseSerie.Initialise() || !referenceSerie.Initialise())
+         {
+            return false;
+         }
+
+         // Calculate ratio foreach values
+         StockDailyValue newValue = null;
+         StockDailyValue value2 = null;
+         float ratio = float.NaN;
+         foreach (StockDailyValue value1 in baseSerie.Values)
+         {
+            if (referenceSerie.ContainsKey(value1.DATE))
+            {
+               value2 = referenceSerie[value1.DATE];
+               if (float.IsNaN(ratio))
+               {
+                  if (value1.OPEN == 0 || value2.OPEN == 0)
+                  {
+                     continue;
+                  }
+                  ratio = 100 * value2.OPEN / value1.OPEN;
+               }
+
+               newValue = new StockDailyValue(this.StockName, ratio * value1.OPEN / value2.OPEN, ratio * value1.HIGH / value2.HIGH, ratio * value1.LOW / value2.LOW, ratio * value1.CLOSE / value2.CLOSE, value1.VOLUME + value2.VOLUME, value1.DATE);
+               this.Add(value1.DATE, newValue);
+            }
+         }
+
+         // Initialise the serie
+         return true;
       }
 
       public StockSerie GenerateRelativeStrenthStockSerie(StockSerie referenceSerie)

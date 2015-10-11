@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_CCI : StockIndicatorBase
+   public class StockIndicator_CCIRS : StockIndicatorBase
    {
-      public StockIndicator_CCI()
+      public StockIndicator_CCIRS()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override string Definition
       {
-         get { return "CCI(int Period, int SmoothPeriod1, int SmoothPeriod2)"; }
+         get { return "CCIRS(int Period, int SmoothPeriod1, int SmoothPeriod2)"; }
       }
       public override string[] ParameterNames
       {
@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "CCI(" + this.Parameters[0].ToString() + ")", "Signal" }; } }
+      public override string[] SerieNames { get { return new string[] { "CCIRS(" + this.Parameters[0].ToString() + ")", "Signal" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -56,7 +56,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie cciSerie = stockSerie.CalculateCCI((int)this.parameters[0]);
+         if (stockSerie.StockGroup != StockSerie.Groups.CAC40)
+         {
+            return;
+         }
+         StockSerie rsSerie = StockDictionary.StockDictionarySingleton[stockSerie.StockName + "_RS"];
+         rsSerie.BarDuration = stockSerie.BarDuration;
+         FloatSerie cciSerie = rsSerie.CalculateCCI((int)this.parameters[0]);
 
          int period1 = ((int)this.parameters[1]);
          int period2 = ((int)this.parameters[2]);
@@ -78,8 +84,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             this.eventSeries[0][i] = (cciSerie[i] > signalSerie[i]);
             this.eventSeries[1][i] = (cciSerie[i] < signalSerie[i]);
-            this.eventSeries[2][i] = eventSeries[0][i] & !eventSeries[0][i - 1];
-            this.eventSeries[3][i] = eventSeries[1][i] & !eventSeries[1][i - 1];
+            this.eventSeries[0][i] = eventSeries[0][i] & !eventSeries[0][i - 1];
+            this.eventSeries[1][i] = eventSeries[1][i] & !eventSeries[1][i - 1];
          }
       }
 

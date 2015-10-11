@@ -101,6 +101,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                int i = 0;
                for (i = 1; i < indicatorToDecorate.Count - 1; i++)
                {
+                  if (indicatorToDecorate[i] > 0)
+                  {
+                     this.Events[6][i] = true;
+                  }
+                  else
+                  {
+                     this.Events[7][i] = true;
+                  }
                   currentValue = indicatorToDecorate[i];
                   if (currentValue == previousValue)
                   {
@@ -265,7 +273,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (eventPens == null)
             {
-               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent) };
                eventPens[0].Width = 3;
                eventPens[1].Width = 3;
                eventPens[2].Width = 2;
@@ -277,12 +285,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          }
       }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured" };
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true,true,true, true, false,false };
+      static readonly bool[] isEvent = new bool[] { true,true,true, true, false,false, false,false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

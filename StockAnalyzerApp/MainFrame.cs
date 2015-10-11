@@ -981,7 +981,7 @@ namespace StockAnalyzerApp
             else
             {
                this.StockPortofolioList = new StockPortofolioList();
-               this.StockPortofolioList.Add(new StockPortofolio("Binck"));
+               this.StockPortofolioList.Add(new StockPortofolio("Binck_P"));
             }
          }
          catch (System.Exception exception)
@@ -999,7 +999,7 @@ namespace StockAnalyzerApp
          // Create default portofolio if not exist
          if (this.StockPortofolioList.Count == 0)
          {
-            StockPortofolio portofolio = new StockPortofolio("Default");
+            StockPortofolio portofolio = new StockPortofolio("Default_P");
             portofolio.TotalDeposit = 10000;
             portofolio.Currency = '€';
 
