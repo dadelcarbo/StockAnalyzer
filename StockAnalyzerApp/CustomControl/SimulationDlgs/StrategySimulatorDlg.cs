@@ -109,11 +109,12 @@ namespace StockAnalyzerApp.CustomControl
          }
 
          StockOrder lastOrder = stockSerie.GenerateSimulation(this.SelectedStrategy,
-             simulationParameterControl.StartDate, simulationParameterControl.EndDate.AddHours(18),
-             simulationParameterControl.amount, simulationParameterControl.reinvest,
-             simulationParameterControl.amendOrders, simulationParameterControl.supportShortSelling,
-         simulationParameterControl.takeProfit, simulationParameterControl.profitRate,
-             simulationParameterControl.fixedFee, simulationParameterControl.taxRate, portofolio);
+            simulationParameterControl.StartDate, simulationParameterControl.EndDate.AddHours(18),
+            simulationParameterControl.amount, simulationParameterControl.reinvest,
+            simulationParameterControl.amendOrders, simulationParameterControl.supportShortSelling,
+            simulationParameterControl.takeProfit, simulationParameterControl.profitRate,
+            simulationParameterControl.stopLoss, simulationParameterControl.stopLossRate,
+            simulationParameterControl.fixedFee, simulationParameterControl.taxRate, portofolio);
 
          // Do a bit of cleanup
          if (lastOrder != null && this.simulationParameterControl.removePendingOrders)

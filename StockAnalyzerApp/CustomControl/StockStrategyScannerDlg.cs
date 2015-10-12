@@ -139,7 +139,7 @@ namespace StockAnalyzerApp.CustomControl
 
                      stockSerie.GenerateSimulation(selectedStrategy, Settings.Default.StrategyStartDate,
                         stockSerie.Keys.Last(), amount, false, false, Settings.Default.SupportShortSelling,
-                        false, 0.0f, 0.0f, 0.0f, currentPortofolio);
+                        false, 0.0f, false, 0.0f, 0.0f, 0.0f, currentPortofolio);
 
                      // Check if orders happened during the time frame
                      for (int i = firstIndex; i < lastIndex; i++)

@@ -22,7 +22,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
       public bool reinvest = true;
       public bool amendOrders = false;
       public bool takeProfit = false;
+      public bool stopLoss = false;
       public float profitRate = 5;
+      public float stopLossRate = 5;
       public bool supportShortSelling = false;
       public bool displayPendingOrders = false;
       public bool removePendingOrders = false;
@@ -88,13 +90,21 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
          }
          taxRate = float.Parse(this.taxRateTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
 
+         takeProfit = this.takeProfitCheckBox.Checked;
          if (string.IsNullOrWhiteSpace(this.profitRateTextBox.Text))
          {
             this.profitRateTextBox.Text = "0";
          }
          profitRate = 1f + float.Parse(this.profitRateTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
+
+         stopLoss = this.stopLossCheckBox.Checked;
+         if (string.IsNullOrWhiteSpace(this.stopLossTextBox.Text))
+         {
+            this.stopLossTextBox.Text = "0";
+         }
+         stopLossRate = 1f - float.Parse(this.stopLossTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
+
          amendOrders = this.amendOrdersCheckBox.Checked;
-         takeProfit = this.takeProfitCheckBox.Checked;
          supportShortSelling = this.shortSellingCheckBox.Checked;
          displayPendingOrders = this.displayPendingOrdersCheckBox.Checked;
          removePendingOrders = this.removePendingOrdersCheckBox.Checked;
@@ -113,7 +123,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
          }
          using (StreamWriter sr = new StreamWriter(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + "\\Report\\" + fileName, append))
          {
-            sr.WriteLine("StockName;AddedValue(%);Strategy;StartDate;EndDate;Amount;Reinvest;AmendOrders;TakeProfit;ProfitRate;FixedFee;TaxRate");
+            sr.WriteLine("StockName;AddedValue(%);Strategy;StartDate;EndDate;Amount;Reinvest;AmendOrders;TakeProfit;ProfitRate;StopLoss;stopLossRate;FixedFee;TaxRate");
          }
       }
       public void GenerateReportLine(string fileName, StockSerie stockSerie, StockPortofolio portofolio)
@@ -122,8 +132,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
          {
             sr.WriteLine(stockSerie.StockName + ";" + portofolio.TotalAddedValue.ToString() + ";" + this.SelectedStrategyName + ";" +
                 this.StartDate.ToShortDateString() + ";" + this.EndDate.ToShortDateString() + ";" + this.amount.ToString() +
-                ";" + this.reinvest.ToString() + ";" + this.amendOrders.ToString() + ";" + this.takeProfit.ToString() + ";" +
-                this.profitRate.ToString() + ";" + this.fixedFee.ToString() + ";" + this.taxRate.ToString());
+                ";" + this.reinvest.ToString() + ";" + this.amendOrders.ToString() + ";" +
+                this.takeProfit.ToString() + ";" + this.profitRate.ToString() + ";" +
+                this.stopLoss.ToString() + ";" + this.stopLossRate.ToString() + ";" + 
+                this.fixedFee.ToString() + ";" + this.taxRate.ToString());
          }
       }
    }

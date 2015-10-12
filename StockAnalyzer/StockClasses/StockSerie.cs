@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -481,6 +482,31 @@ namespace StockAnalyzer.StockClasses
             }
             return null;
          }
+      }
+
+      public IStockEvent GetStockEvents(IStockViewableSeries stockViewableSerie)
+      {
+         if (stockViewableSerie is IStockIndicator)
+         {
+            return this.GetIndicator(stockViewableSerie.Name);
+         } 
+         if (stockViewableSerie is IStockPaintBar)
+         {
+            return this.GetPaintBar(stockViewableSerie.Name);
+         }
+         if (stockViewableSerie is IStockTrail)
+         {
+            return this.GetTrail(stockViewableSerie.Name, (stockViewableSerie as IStockTrail).TrailedItem);
+         }
+         if (stockViewableSerie is IStockTrailStop)
+         {
+            return this.GetTrailStop(stockViewableSerie.Name);
+         }
+         if (stockViewableSerie is IStockDecorator)
+         {
+            return this.GetDecorator(stockViewableSerie.Name, (stockViewableSerie as IStockDecorator).DecoratedItem);
+         }
+         throw new StockAnalyzerException("Type not supported, cannot apply to serie the viewable item: " + stockViewableSerie.Name);
       }
 
       public IStockViewableSeries GetViewableItem(string name)
@@ -4870,7 +4896,10 @@ namespace StockAnalyzer.StockClasses
       }
       #region Strategy Simulation
       public StockOrder GenerateSimulation(IStockStrategy strategy, System.DateTime startDate, System.DateTime endDate, float amount, bool reinvest,
-          bool amendOrders, bool supportShortSelling, bool takeProfit, float profitTarget, float fixedFee, float taxRate, StockPortofolio portofolio)
+          bool amendOrders, bool supportShortSelling,
+         bool takeProfit, float profitTarget,
+         bool stopLoss, float stopLossTarget,
+         float fixedFee, float taxRate, StockPortofolio portofolio)
       {
          if (!this.Initialise()) { return null; }
          strategy.Initialise(this, null, supportShortSelling);
@@ -4897,13 +4926,19 @@ namespace StockAnalyzer.StockClasses
 
 
          // Run the order processing loop
-         RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling, takeProfit, profitTarget, fixedFee, taxRate, portofolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
+         RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling,
+            takeProfit, profitTarget,
+            stopLoss, stopLossTarget,
+            fixedFee, taxRate, portofolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
 
          return stockOrder;
       }
 
       public StockOrder GenerateOrder(IStockStrategy strategy, System.DateTime startDate, System.DateTime endDate, float amount, bool reinvest,
-  bool amendOrders, bool supportShortSelling, bool takeProfit, float profitTarget, float fixedFee, float taxRate, StockPortofolio portofolio)
+  bool amendOrders, bool supportShortSelling,
+         bool takeProfit, float profitTarget,
+         bool stopLoss, float stopLossTarget,
+            float fixedFee, float taxRate, StockPortofolio portofolio)
       {
          // Get the exiting order list
          StockOrderList orderList = portofolio.OrderList.GetOrderListSortedByDate(this.StockName);
@@ -4972,16 +5007,24 @@ namespace StockAnalyzer.StockClasses
          strategy.Initialise(this, lastBuyOrder, supportShortSelling);
 
          // Run the order processing loop
-         RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling, takeProfit, profitTarget,
+         RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling,
+            takeProfit, profitTarget,
+            stopLoss, stopLossTarget,
              fixedFee, taxRate, portofolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
 
          return stockOrder;
       }
 
+      private bool printOrderLog = false;
+
       private void RunOrderProcessingLoop(IStockStrategy strategy, System.DateTime startDate, System.DateTime endDate,
-         float amount, bool reinvest, bool amendOrders, bool supportShortSelling, bool takeProfit, float profitTarget,
+         float amount, bool reinvest, bool amendOrders, bool supportShortSelling, 
+         bool takeProfit, float profitTarget,
+         bool stopLoss, float stopLossTarget,
          float fixedFee, float taxRate, StockPortofolio portofolio, ref StockOrder stockOrder, StockOrder lastBuyOrder, bool lookingForBuying, float remainingCash, float benchmark)
       {
+         //printOrderLog = Debugger.IsAttached;
+
          // Loop on series values
          StockDailyValue previousValue = this.Values.First();
          int currentIndex = 0;
@@ -4995,6 +5038,7 @@ namespace StockAnalyzer.StockClasses
          endDate = endDate > dailyValues.Last().DATE ? dailyValues.Last().DATE : startDate;
 
          StockOrder takeProfitOrder = null;
+         StockOrder stopLossOrder = null;
 
          StockOrder.FixedFee = fixedFee;
          StockOrder.TaxRate = taxRate;
@@ -5005,15 +5049,16 @@ namespace StockAnalyzer.StockClasses
                #region Process Pending Orders
                if (stockOrder != null)
                {
-                  if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
+                  if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, stopLoss, stopLossTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, ref stopLossOrder, barValue))
                   {
+                     if (printOrderLog) Console.WriteLine("Main executed: " + stockOrder.ToString());
                      if (supportShortSelling && !stockOrder.IsBuyOrder()) // Closing position
                      { // Try to reverse 
                         stockOrder = strategy.TryToBuy(barValue, currentIndex - 1, amount, ref benchmark);
                         strategy.LastBuyOrder = stockOrder;
                         if (stockOrder != null)
                         {
-                           if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, barValue))
+                           if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, stopLoss, stopLossTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, ref stopLossOrder, barValue))
                            {
                               stockOrder = null;
                            }
@@ -5036,6 +5081,8 @@ namespace StockAnalyzer.StockClasses
                      switch (takeProfitOrder.State)
                      {
                         case StockOrder.OrderStatus.Executed:
+                           if (printOrderLog) Console.WriteLine("Target executed: " + takeProfitOrder.ToString());
+
                            if (takeProfitOrder.IsBuyOrder())
                            {
                               remainingCash = amount - takeProfitOrder.TotalCost;
@@ -5058,10 +5105,71 @@ namespace StockAnalyzer.StockClasses
                               portofolio.OrderList.Add(takeProfitOrder);
                            }
                            nbOpenPosition -= takeProfitOrder.Number;
+                           if (nbOpenPosition == 0)
+                           {
+                              //Console.WriteLine("nothing left");
+                              stopLossOrder = null;
+                              lookingForBuying = true;
+                           }
+                           else
+                           {
+                              if (stopLossOrder != null)
+                              {
+                                 stopLossOrder.Number -= takeProfitOrder.Number;
+                              }
+                           }
                            takeProfitOrder = null;
                            break;
                         case StockOrder.OrderStatus.Expired:
                            takeProfitOrder = null;
+                           break;
+                        default:
+                           break;
+                     }
+                     #endregion
+                  }
+                  if (stopLoss && stopLossOrder != null)
+                  {
+                     #region Process stop loss
+
+                     StockDailyValue dailyValue = dailyValues.First(v => v.DATE >= barValue.DATE);
+                     stopLossOrder.ProcessOrder(dailyValue);
+                     switch (stopLossOrder.State)
+                     {
+                        case StockOrder.OrderStatus.Executed:
+                           if (printOrderLog) Console.WriteLine("Stop executed: " + stopLossOrder.ToString());
+                           if (stopLossOrder.IsBuyOrder())
+                           {
+                              remainingCash = amount - stopLossOrder.TotalCost;
+                           }
+                           else
+                           {
+                              if (reinvest)
+                              {
+                                 // Calculate the new amount to invest
+                                 amount = remainingCash + stopLossOrder.TotalCost;
+                                 if (amount < fixedFee)
+                                 {
+                                    MessageBox.Show("You lost everything", "Game Over");
+                                    break; // Exit the loop
+                                 }
+                              }
+                           }
+                           if (!portofolio.OrderList.Contains(stopLossOrder))
+                           {
+                              portofolio.OrderList.Add(stopLossOrder);
+                           }
+                           nbOpenPosition -= stopLossOrder.Number;
+                           if (nbOpenPosition == 0)
+                           {
+                              //Console.WriteLine("nothing left");
+                              takeProfitOrder = null;
+                              lookingForBuying = true;
+                           }
+                           stopLossOrder = null;
+                           break;
+                        case StockOrder.OrderStatus.Expired:
+                           stopLossOrder = null;
                            break;
                         default:
                            break;
@@ -5129,7 +5237,13 @@ namespace StockAnalyzer.StockClasses
          }
       }
 
-      private static StockOrder.OrderStatus ProcessPendingOrder(ref float amount, bool reinvest, bool takeProfit, float profitTarget, float fixedFee, StockPortofolio portofolio, StockOrder stockOrder, ref bool lookingForBuying, ref float remainingCash, ref float benchmark, ref int nbOpenPosition, List<StockDailyValue> dailyValues, ref StockOrder takeProfitOrder, StockDailyValue barValue)
+      private static StockOrder.OrderStatus ProcessPendingOrder(ref float amount, bool reinvest,
+         bool takeProfit, float profitTarget,
+         bool stopLoss, float stopLossTarget,
+         float fixedFee, StockPortofolio portofolio, StockOrder stockOrder, 
+         ref bool lookingForBuying, ref float remainingCash, ref float benchmark,
+         ref int nbOpenPosition, List<StockDailyValue> dailyValues,
+         ref StockOrder takeProfitOrder,  ref StockOrder stopLossOrder, StockDailyValue barValue)
       {
          // Get bar from daily values
          StockDailyValue dailyValue = dailyValues.First(v => v.DATE >= barValue.DATE);
@@ -5147,7 +5261,13 @@ namespace StockAnalyzer.StockClasses
                         dailyValue.DATE, DateTime.MaxValue, stockOrder.Number / 2, stockOrder.Value * profitTarget,
                         dailyValue, false);
                   }
-
+                  if (stopLoss)
+                  {
+                     // Create stop loss order
+                     stopLossOrder = StockOrder.CreateSellAtThresholdStockOrder(stockOrder.StockName,
+                        dailyValue.DATE, DateTime.MaxValue, stockOrder.Number, stockOrder.Value * stopLossTarget,
+                        dailyValue, false);
+                  }
                   nbOpenPosition = stockOrder.Number;
                }
                else
@@ -5163,6 +5283,7 @@ namespace StockAnalyzer.StockClasses
                      }
                   }
                   takeProfitOrder = null;
+                  stopLossOrder = null;
                   nbOpenPosition -= stockOrder.Number;
                   if (nbOpenPosition != 0)
                   {

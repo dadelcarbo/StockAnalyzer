@@ -104,7 +104,8 @@ namespace StockAnalyzerApp.CustomControl
          StockOrder lastOrder = stockSerie.GenerateOrder(this.SelectedStrategy, simulationParameterControl.StartDate, simulationParameterControl.EndDate.AddHours(18),
             simulationParameterControl.amount, simulationParameterControl.reinvest,
             simulationParameterControl.amendOrders, simulationParameterControl.supportShortSelling,
-            simulationParameterControl.takeProfit, simulationParameterControl.profitRate,
+             this.simulationParameterControl.takeProfit, this.simulationParameterControl.profitRate,
+             this.simulationParameterControl.stopLoss, this.simulationParameterControl.stopLossRate,
             simulationParameterControl.fixedFee, simulationParameterControl.taxRate,
             tmpPortofolio);
 

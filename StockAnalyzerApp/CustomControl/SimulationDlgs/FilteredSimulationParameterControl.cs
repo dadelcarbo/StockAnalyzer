@@ -23,8 +23,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
       public bool supportShortSelling = false;
       public bool displayPendingOrders = false;
       public bool removePendingOrders = false;
+      
       public bool takeProfit = false;
+      public bool stopLoss = false;
       public float profitRate = 5;
+      public float stopLossRate = 5;
 
       public string SelectedStrategyName
       {

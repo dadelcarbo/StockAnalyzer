@@ -158,9 +158,9 @@ namespace StockAnalyzer.Portofolio
          stockOrder.State = OrderStatus.Pending;
          stockOrder.ExpiryDate = expiryDate;
          stockOrder.IsShortOrder = isShortOrder;
-         if (threshold > dailyValue.CLOSE) // OK Due to dodgy shrt sell management
+         if (threshold > dailyValue.CLOSE) // OK Due to dodgy short sell management
          {
-            throw new Exception("Invalid threshold");
+           // throw new Exception("Invalid threshold");
          }
          return stockOrder;
       }
@@ -417,7 +417,7 @@ namespace StockAnalyzer.Portofolio
       }
       override public string ToString()
       {
-         return " Type: " + Type.ToString() + " Short: " + IsShortOrder.ToString() +
+         return " Stock: " + StockName + " Type: " + Type.ToString() + " Short: " + IsShortOrder.ToString() +
              " ExecutionDate : " + ExecutionDate.ToShortDateString() +
              " Number: " + Number +
              " Value : " + Value.ToString("0.###") +

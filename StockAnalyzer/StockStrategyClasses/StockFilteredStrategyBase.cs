@@ -35,6 +35,7 @@ namespace StockAnalyzer.StockStrategyClasses
       [XmlIgnore]
       public StockOrder LastBuyOrder { get; set; }
 
+      private IStockEvent triggerIndicator { get; set; }
       [XmlIgnore]
       public IStockEvent TriggerIndicator { get; set; }
 
@@ -94,6 +95,7 @@ namespace StockAnalyzer.StockStrategyClasses
          }
       }
 
+      private IStockEvent filterIndicator { get; set; }
       [XmlIgnore]
       public IStockEvent FilterIndicator { get; set; }
       public string FilterName
@@ -182,7 +184,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
       }
 
-      virtual public void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
+      public virtual void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
       {
          this.Serie = stockSerie;
          this.LastBuyOrder = lastBuyOrder;
@@ -192,10 +194,9 @@ namespace StockAnalyzer.StockStrategyClasses
          IStockViewableSeries triggerSerie = this.TriggerIndicator as IStockViewableSeries;
          if (triggerSerie != null)
          {
-
             if (stockSerie.HasVolume || !triggerSerie.RequiresVolumeData)
             {
-               triggerSerie.ApplyTo(stockSerie);
+               this.triggerIndicator = stockSerie.GetStockEvents(triggerSerie);
             }
             else
             {
@@ -225,7 +226,7 @@ namespace StockAnalyzer.StockStrategyClasses
          {
             if (stockSerie.HasVolume || !filterSerie.RequiresVolumeData)
             {
-               filterSerie.ApplyTo(stockSerie);
+               this.filterIndicator = stockSerie.GetStockEvents(filterSerie);
             }
             else
             {
@@ -257,12 +258,12 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          if (this.SupportShortSelling)
          {
-            if (this.FilterIndicator.Events[this.OkToShortFilterEventIndex][index] && this.TriggerIndicator.Events[this.ShortTriggerEventIndex][index])
+            if (this.filterIndicator.Events[this.OkToShortFilterEventIndex][index] && this.triggerIndicator.Events[this.ShortTriggerEventIndex][index])
             {
                return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, true);
             }
          }
-         if (this.FilterIndicator.Events[this.OkToBuyFilterEventIndex][index] && this.TriggerIndicator.Events[this.BuyTriggerEventIndex][index])
+         if (this.filterIndicator.Events[this.OkToBuyFilterEventIndex][index] && this.triggerIndicator.Events[this.BuyTriggerEventIndex][index])
          {
             return StockOrder.CreateBuyAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE, dailyValue.DATE.AddDays(30), amount, false);
          }
@@ -273,7 +274,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          if (LastBuyOrder.IsShortOrder)
          {
-            if (this.TriggerIndicator.Events[this.BuyTriggerEventIndex][index])
+            if (this.triggerIndicator.Events[this.BuyTriggerEventIndex][index])
             {
                return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                    dailyValue.DATE.AddDays(30), number, true);
@@ -281,7 +282,7 @@ namespace StockAnalyzer.StockStrategyClasses
          }
          else
          {
-            if (this.TriggerIndicator.Events[this.ShortTriggerEventIndex][index])
+            if (this.triggerIndicator.Events[this.ShortTriggerEventIndex][index])
             {
                return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                    dailyValue.DATE.AddDays(30), number, false);

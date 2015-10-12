@@ -481,7 +481,7 @@ namespace StockAnalyzerApp
             portfolio.Clear();
 
             stockSerie.GenerateSimulation(selectedStrategy, Settings.Default.StrategyStartDate, stockSerie.Keys.Last(),
-                amount, false, false, Settings.Default.SupportShortSelling, false, 0.0f, 0.0f, 0.0f, portfolio);
+                amount, false, false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, portfolio);
 
             if (portfolio.OrderList.Count > 0)
             {
@@ -5068,7 +5068,7 @@ border:1px solid black;
                         this.currentStockSerie.GenerateSimulation(selectedStrategy,
                             Settings.Default.StrategyStartDate, this.currentStockSerie.Keys.Last(),
                             amount, false,
-                            false, Settings.Default.SupportShortSelling, false, 0.0f, 0.0f, 0.0f, CurrentPortofolio);
+                            false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, CurrentPortofolio);
                      }
 
                      this.graphCloseControl.Portofolio = CurrentPortofolio;
