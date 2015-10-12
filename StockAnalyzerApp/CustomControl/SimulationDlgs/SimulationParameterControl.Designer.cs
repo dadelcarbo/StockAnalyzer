@@ -39,7 +39,6 @@
          this.label7 = new System.Windows.Forms.Label();
          this.amountTextBox = new System.Windows.Forms.TextBox();
          this.buyGrowLimitTextBox = new System.Windows.Forms.TextBox();
-         this.label4 = new System.Windows.Forms.Label();
          this.endDatePicker = new System.Windows.Forms.DateTimePicker();
          this.startDatePicker = new System.Windows.Forms.DateTimePicker();
          this.label2 = new System.Windows.Forms.Label();
@@ -53,11 +52,12 @@
          this.strategyComboBox = new System.Windows.Forms.ComboBox();
          this.label10 = new System.Windows.Forms.Label();
          this.groupBox3 = new System.Windows.Forms.GroupBox();
-         this.takeProfitCheckBox = new System.Windows.Forms.CheckBox();
-         this.label3 = new System.Windows.Forms.Label();
          this.profitRateTextBox = new System.Windows.Forms.TextBox();
          this.stopLossCheckBox = new System.Windows.Forms.CheckBox();
          this.stopLossTextBox = new System.Windows.Forms.TextBox();
+         this.label3 = new System.Windows.Forms.Label();
+         this.takeProfitCheckBox = new System.Windows.Forms.CheckBox();
+         this.label4 = new System.Windows.Forms.Label();
          this.groupBox2.SuspendLayout();
          this.groupBox1.SuspendLayout();
          this.groupBox4.SuspendLayout();
@@ -316,32 +316,13 @@
          this.groupBox3.TabStop = false;
          this.groupBox3.Text = "Take Profit";
          // 
-         // takeProfitCheckBox
-         // 
-         this.takeProfitCheckBox.AutoSize = true;
-         this.takeProfitCheckBox.Location = new System.Drawing.Point(7, 16);
-         this.takeProfitCheckBox.Name = "takeProfitCheckBox";
-         this.takeProfitCheckBox.Size = new System.Drawing.Size(57, 17);
-         this.takeProfitCheckBox.TabIndex = 0;
-         this.takeProfitCheckBox.Text = "Target";
-         this.takeProfitCheckBox.UseVisualStyleBackColor = true;
-         // 
-         // label3
-         // 
-         this.label3.AutoSize = true;
-         this.label3.Location = new System.Drawing.Point(5, 41);
-         this.label3.Name = "label3";
-         this.label3.Size = new System.Drawing.Size(21, 13);
-         this.label3.TabIndex = 21;
-         this.label3.Text = "(%)";
-         // 
          // profitRateTextBox
          // 
          this.profitRateTextBox.Location = new System.Drawing.Point(31, 38);
          this.profitRateTextBox.Name = "profitRateTextBox";
-         this.profitRateTextBox.Size = new System.Drawing.Size(26, 20);
+         this.profitRateTextBox.Size = new System.Drawing.Size(44, 20);
          this.profitRateTextBox.TabIndex = 19;
-         this.profitRateTextBox.Text = "0.0";
+         this.profitRateTextBox.Text = "5";
          // 
          // stopLossCheckBox
          // 
@@ -359,7 +340,26 @@
          this.stopLossTextBox.Name = "stopLossTextBox";
          this.stopLossTextBox.Size = new System.Drawing.Size(47, 20);
          this.stopLossTextBox.TabIndex = 19;
-         this.stopLossTextBox.Text = "0.0";
+         this.stopLossTextBox.Text = "5";
+         // 
+         // label3
+         // 
+         this.label3.AutoSize = true;
+         this.label3.Location = new System.Drawing.Point(5, 41);
+         this.label3.Name = "label3";
+         this.label3.Size = new System.Drawing.Size(21, 13);
+         this.label3.TabIndex = 21;
+         this.label3.Text = "(%)";
+         // 
+         // takeProfitCheckBox
+         // 
+         this.takeProfitCheckBox.AutoSize = true;
+         this.takeProfitCheckBox.Location = new System.Drawing.Point(7, 16);
+         this.takeProfitCheckBox.Name = "takeProfitCheckBox";
+         this.takeProfitCheckBox.Size = new System.Drawing.Size(57, 17);
+         this.takeProfitCheckBox.TabIndex = 0;
+         this.takeProfitCheckBox.Text = "Target";
+         this.takeProfitCheckBox.UseVisualStyleBackColor = true;
          // 
          // SimulationParameterControl
          // 

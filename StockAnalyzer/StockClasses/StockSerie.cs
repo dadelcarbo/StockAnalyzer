@@ -4254,11 +4254,11 @@ namespace StockAnalyzer.StockClasses
          FloatSerie cciSerie = new FloatSerie(closeSerie.Count, "CCI");
 
          float sum = 0;
-         //for (int i = 1; i < period && i < closeSerie.Count; i++)
-         //{
-         //   sum += Math.Abs(diff[i]);
-         //   cciSerie[i] = diff[i] / (0.015f * sum / i);
-         //}
+         for (int i = 1; i < period && i < closeSerie.Count; i++)
+         {
+            sum += Math.Abs(diff[i]);
+            cciSerie[i] = diff[i] / (0.015f * sum / i);
+         }
          float K = 0.015f / period;
          for (int i = period; i < closeSerie.Count; i++)
          {
@@ -5044,7 +5044,7 @@ namespace StockAnalyzer.StockClasses
          StockOrder.TaxRate = taxRate;
          foreach (StockDailyValue barValue in this.Values)
          {
-            if ((barValue.DATE >= startDate) && currentIndex > 0 && (barValue.DATE <= endDate) && amount > barValue.CLOSE && barValue.IsComplete)
+            if ((barValue.DATE >= startDate) && currentIndex > 0 && (barValue.DATE <= endDate) && amount > barValue.CLOSE)
             {
                #region Process Pending Orders
                if (stockOrder != null)
@@ -5264,9 +5264,9 @@ namespace StockAnalyzer.StockClasses
                   if (stopLoss)
                   {
                      // Create stop loss order
-                     stopLossOrder = StockOrder.CreateSellAtThresholdStockOrder(stockOrder.StockName,
-                        dailyValue.DATE, DateTime.MaxValue, stockOrder.Number, stockOrder.Value * stopLossTarget,
-                        dailyValue, false);
+                     stopLossOrder = StockOrder.CreateSellTrailingStockOrder(stockOrder.StockName,
+                        dailyValue.DATE, DateTime.MaxValue, stockOrder.Number, stockOrder.Value, stockOrder.Value * (1-stopLossTarget),
+                        dailyValue);
                   }
                   nbOpenPosition = stockOrder.Number;
                }

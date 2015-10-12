@@ -96,6 +96,26 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
          }
          taxRate = float.Parse(this.taxRateTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
 
+         if (string.IsNullOrWhiteSpace(this.taxRateTextBox.Text))
+         {
+            this.taxRateTextBox.Text = "0";
+         }
+         taxRate = float.Parse(this.taxRateTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
+
+         takeProfit = this.takeProfitCheckBox.Checked;
+         if (string.IsNullOrWhiteSpace(this.profitRateTextBox.Text))
+         {
+            this.profitRateTextBox.Text = "0";
+         }
+         profitRate = 1f + float.Parse(this.profitRateTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
+
+         stopLoss = this.stopLossCheckBox.Checked;
+         if (string.IsNullOrWhiteSpace(this.stopLossTextBox.Text))
+         {
+            this.stopLossTextBox.Text = "0";
+         }
+         stopLossRate = 1f - float.Parse(this.stopLossTextBox.Text, StockAnalyzerForm.EnglishCulture) / 100.0f;
+
          amendOrders = this.amendOrdersCheckBox.Checked;
          supportShortSelling = this.shortSellingCheckBox.Checked;
          displayPendingOrders = this.displayPendingOrdersCheckBox.Checked;

@@ -52,9 +52,17 @@
          this.removePendingOrdersCheckBox = new System.Windows.Forms.CheckBox();
          this.strategyComboBox = new System.Windows.Forms.ComboBox();
          this.label10 = new System.Windows.Forms.Label();
+         this.groupBox3 = new System.Windows.Forms.GroupBox();
+         this.profitRateTextBox = new System.Windows.Forms.TextBox();
+         this.stopLossCheckBox = new System.Windows.Forms.CheckBox();
+         this.label3 = new System.Windows.Forms.Label();
+         this.stopLossTextBox = new System.Windows.Forms.TextBox();
+         this.label9 = new System.Windows.Forms.Label();
+         this.takeProfitCheckBox = new System.Windows.Forms.CheckBox();
          this.groupBox2.SuspendLayout();
          this.groupBox1.SuspendLayout();
          this.groupBox4.SuspendLayout();
+         this.groupBox3.SuspendLayout();
          this.SuspendLayout();
          // 
          // displayPendingOrdersCheckBox
@@ -84,8 +92,6 @@
          // shortSellingCheckBox
          // 
          this.shortSellingCheckBox.AutoSize = true;
-         this.shortSellingCheckBox.Checked = false;
-         this.shortSellingCheckBox.CheckState = System.Windows.Forms.CheckState.Unchecked;
          this.shortSellingCheckBox.Location = new System.Drawing.Point(3, 61);
          this.shortSellingCheckBox.Name = "shortSellingCheckBox";
          this.shortSellingCheckBox.Size = new System.Drawing.Size(85, 17);
@@ -224,7 +230,7 @@
          // 
          this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
          this.label8.AutoSize = true;
-         this.label8.Location = new System.Drawing.Point(87, 23);
+         this.label8.Location = new System.Drawing.Point(6, 45);
          this.label8.Name = "label8";
          this.label8.Size = new System.Drawing.Size(42, 13);
          this.label8.TabIndex = 21;
@@ -234,7 +240,7 @@
          // 
          this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
          this.label6.AutoSize = true;
-         this.label6.Location = new System.Drawing.Point(8, 22);
+         this.label6.Location = new System.Drawing.Point(6, 19);
          this.label6.Name = "label6";
          this.label6.Size = new System.Drawing.Size(25, 13);
          this.label6.TabIndex = 22;
@@ -243,7 +249,7 @@
          // taxRateTextBox
          // 
          this.taxRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.taxRateTextBox.Location = new System.Drawing.Point(135, 20);
+         this.taxRateTextBox.Location = new System.Drawing.Point(54, 42);
          this.taxRateTextBox.Name = "taxRateTextBox";
          this.taxRateTextBox.Size = new System.Drawing.Size(47, 20);
          this.taxRateTextBox.TabIndex = 19;
@@ -252,7 +258,7 @@
          // fixedFeeTextBox
          // 
          this.fixedFeeTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.fixedFeeTextBox.Location = new System.Drawing.Point(36, 19);
+         this.fixedFeeTextBox.Location = new System.Drawing.Point(53, 16);
          this.fixedFeeTextBox.Name = "fixedFeeTextBox";
          this.fixedFeeTextBox.Size = new System.Drawing.Size(48, 20);
          this.fixedFeeTextBox.TabIndex = 20;
@@ -266,7 +272,7 @@
          this.groupBox4.Controls.Add(this.label6);
          this.groupBox4.Location = new System.Drawing.Point(11, 183);
          this.groupBox4.Name = "groupBox4";
-         this.groupBox4.Size = new System.Drawing.Size(292, 53);
+         this.groupBox4.Size = new System.Drawing.Size(108, 69);
          this.groupBox4.TabIndex = 23;
          this.groupBox4.TabStop = false;
          this.groupBox4.Text = "Charges";
@@ -300,10 +306,80 @@
          this.label10.TabIndex = 24;
          this.label10.Text = "Strategy";
          // 
-         // SimulationParameterControl
+         // groupBox3
+         // 
+         this.groupBox3.Controls.Add(this.profitRateTextBox);
+         this.groupBox3.Controls.Add(this.stopLossCheckBox);
+         this.groupBox3.Controls.Add(this.label3);
+         this.groupBox3.Controls.Add(this.stopLossTextBox);
+         this.groupBox3.Controls.Add(this.label9);
+         this.groupBox3.Controls.Add(this.takeProfitCheckBox);
+         this.groupBox3.Location = new System.Drawing.Point(125, 183);
+         this.groupBox3.Name = "groupBox3";
+         this.groupBox3.Size = new System.Drawing.Size(172, 69);
+         this.groupBox3.TabIndex = 27;
+         this.groupBox3.TabStop = false;
+         this.groupBox3.Text = "Take Profit";
+         // 
+         // profitRateTextBox
+         // 
+         this.profitRateTextBox.Location = new System.Drawing.Point(31, 38);
+         this.profitRateTextBox.Name = "profitRateTextBox";
+         this.profitRateTextBox.Size = new System.Drawing.Size(44, 20);
+         this.profitRateTextBox.TabIndex = 19;
+         this.profitRateTextBox.Text = "5";
+         // 
+         // stopLossCheckBox
+         // 
+         this.stopLossCheckBox.AutoSize = true;
+         this.stopLossCheckBox.Location = new System.Drawing.Point(84, 16);
+         this.stopLossCheckBox.Name = "stopLossCheckBox";
+         this.stopLossCheckBox.Size = new System.Drawing.Size(69, 17);
+         this.stopLossCheckBox.TabIndex = 0;
+         this.stopLossCheckBox.Text = "Stop loss";
+         this.stopLossCheckBox.UseVisualStyleBackColor = true;
+         // 
+         // label3
+         // 
+         this.label3.AutoSize = true;
+         this.label3.Location = new System.Drawing.Point(81, 41);
+         this.label3.Name = "label3";
+         this.label3.Size = new System.Drawing.Size(21, 13);
+         this.label3.TabIndex = 21;
+         this.label3.Text = "(%)";
+         // 
+         // stopLossTextBox
+         // 
+         this.stopLossTextBox.Location = new System.Drawing.Point(106, 38);
+         this.stopLossTextBox.Name = "stopLossTextBox";
+         this.stopLossTextBox.Size = new System.Drawing.Size(47, 20);
+         this.stopLossTextBox.TabIndex = 19;
+         this.stopLossTextBox.Text = "5";
+         // 
+         // label9
+         // 
+         this.label9.AutoSize = true;
+         this.label9.Location = new System.Drawing.Point(5, 41);
+         this.label9.Name = "label9";
+         this.label9.Size = new System.Drawing.Size(21, 13);
+         this.label9.TabIndex = 21;
+         this.label9.Text = "(%)";
+         // 
+         // takeProfitCheckBox
+         // 
+         this.takeProfitCheckBox.AutoSize = true;
+         this.takeProfitCheckBox.Location = new System.Drawing.Point(7, 16);
+         this.takeProfitCheckBox.Name = "takeProfitCheckBox";
+         this.takeProfitCheckBox.Size = new System.Drawing.Size(57, 17);
+         this.takeProfitCheckBox.TabIndex = 0;
+         this.takeProfitCheckBox.Text = "Target";
+         this.takeProfitCheckBox.UseVisualStyleBackColor = true;
+         // 
+         // FilteredSimulationParameterControl
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+         this.Controls.Add(this.groupBox3);
          this.Controls.Add(this.strategyComboBox);
          this.Controls.Add(this.label10);
          this.Controls.Add(this.groupBox4);
@@ -315,7 +391,7 @@
          this.Controls.Add(this.startDatePicker);
          this.Controls.Add(this.label2);
          this.Controls.Add(this.label1);
-         this.Name = "SimulationParameterControl";
+         this.Name = "FilteredSimulationParameterControl";
          this.Size = new System.Drawing.Size(402, 487);
          this.groupBox2.ResumeLayout(false);
          this.groupBox2.PerformLayout();
@@ -323,6 +399,8 @@
          this.groupBox1.PerformLayout();
          this.groupBox4.ResumeLayout(false);
          this.groupBox4.PerformLayout();
+         this.groupBox3.ResumeLayout(false);
+         this.groupBox3.PerformLayout();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -353,5 +431,12 @@
       private System.Windows.Forms.ComboBox strategyComboBox;
       private System.Windows.Forms.Label label10;
       private System.Windows.Forms.CheckBox shortSellingCheckBox;
+      private System.Windows.Forms.GroupBox groupBox3;
+      private System.Windows.Forms.TextBox profitRateTextBox;
+      private System.Windows.Forms.CheckBox stopLossCheckBox;
+      private System.Windows.Forms.Label label3;
+      private System.Windows.Forms.TextBox stopLossTextBox;
+      private System.Windows.Forms.Label label9;
+      private System.Windows.Forms.CheckBox takeProfitCheckBox;
    }
 }

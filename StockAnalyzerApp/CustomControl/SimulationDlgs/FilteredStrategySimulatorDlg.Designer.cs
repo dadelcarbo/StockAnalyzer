@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl
          this.triggerIndicatorTextBox = new System.Windows.Forms.TextBox();
          this.label7 = new System.Windows.Forms.Label();
          this.saveButton = new System.Windows.Forms.Button();
-         this.simulationParameterControl = new CustomControl.SimulationDlgs.FilteredSimulationParameterControl();
+         this.simulationParameterControl = new SimulationDlgs.FilteredSimulationParameterControl();
          this.strategyNameTextBox = new System.Windows.Forms.TextBox();
          this.groupBox1.SuspendLayout();
          this.groupBox2.SuspendLayout();
@@ -249,13 +249,13 @@ namespace StockAnalyzerApp.CustomControl
          // simulationParameterControl
          // 
          this.simulationParameterControl.EndDate = new System.DateTime(((long)(0)));
-         this.simulationParameterControl.Location = new System.Drawing.Point(-1, 66);
+         this.simulationParameterControl.Location = new System.Drawing.Point(1, 58);
          this.simulationParameterControl.Name = "simulationParameterControl";
          this.simulationParameterControl.SelectedStrategyName = null;
          this.simulationParameterControl.Size = new System.Drawing.Size(402, 487);
          this.simulationParameterControl.StartDate = new System.DateTime(((long)(0)));
          this.simulationParameterControl.TabIndex = 10;
-         this.simulationParameterControl.SelectedStrategyChanged += new CustomControl.SimulationDlgs.FilteredSimulationParameterControl.SelectedStrategyHandler(this.simulationParameterControl_SelectedStrategyChanged);
+         this.simulationParameterControl.SelectedStrategyChanged += new SimulationDlgs.FilteredSimulationParameterControl.SelectedStrategyHandler(this.simulationParameterControl_SelectedStrategyChanged);
          // 
          // strategyNameTextBox
          // 
