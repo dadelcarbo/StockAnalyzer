@@ -76,9 +76,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             if (previousValue != null)
             {
-               var = (value.CLOSE - previousValue.CLOSE) / previousValue.CLOSE;
+               var = (value.CLOSE - previousValue.CLOSE)/previousValue.CLOSE;
                varSerie[i] = var;
                varAbsSerie[i] = Math.Abs(var);
+            }
+            else
+            {
+               varSerie[i] = 0;
+               varAbsSerie[0] = 1;
             }
             previousValue = value;
             i++;
@@ -95,15 +100,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-
+         
+         //
+         float overbought = (float)this.Parameters[3];
+         float oversold = (float)this.Parameters[4];
+         for (i = (int)this.Parameters[1]; i < stockSerie.Count; i++)
+         {
+            float tsi = TSISerie[i];
+            float signal = this.series[1][i];
+            this.eventSeries[0][i] = (tsi >= overbought);
+            this.eventSeries[1][i] = (tsi <= oversold);
+            this.eventSeries[2][i] = (tsi > signal);
+            this.eventSeries[3][i] = (tsi < signal);
+         }
       }
 
-      static string[] eventNames = new string[] { };
+      static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] { false, false, true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }

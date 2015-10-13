@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
    {
       public override string Definition
       {
-         get { return "Plots exhaustion points and divergences"; }
+         get { return "Plots exhaustion points and divergences and provide signal events"; }
       }
 
       public StockDecorator_DIV()
@@ -29,15 +29,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
       public override string[] ParameterNames
       {
-         get { return new string[] { "FadeOut", "Smoothing", "LookBack" }; }
+         get { return new string[] { "FadeOut", "Smoothing", "LookBack" , "SignalSmoothing"}; }
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 1.5f, 1, 6 }; }
+         get { return new Object[] { 1.5f, 1, 30, 6 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500) }; }
+         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500), new ParamRangeInt(1, 500) }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
@@ -67,6 +67,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             if (indicator != null && indicator.Series[0].Count > 0)
             {
                FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA((int)this.parameters[1]);
+               FloatSerie signalSerie = indicatorToDecorate.CalculateEMA((int)this.parameters[3]);
                FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
                FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
 
@@ -108,6 +109,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   else
                   {
                      this.Events[7][i] = true;
+                  } 
+                  if (indicatorToDecorate[i] >signalSerie[i])
+                  {
+                     this.Events[8][i] = true;
+                  }
+                  else
+                  {
+                     this.Events[9][i] = true;
                   }
                   currentValue = indicatorToDecorate[i];
                   if (currentValue == previousValue)
@@ -254,8 +263,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                   this.Series[1] = upperLimit.Add((range.Max + range.Min) / 2.0f); 
                   this.Series[2] = lowerLimit.Add((range.Max + range.Min) / 2.0f);
                }
-
-               
             }
             else
             {
@@ -273,24 +280,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (eventPens == null)
             {
-               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent) };
+               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent) };
                eventPens[0].Width = 3;
                eventPens[1].Width = 3;
                eventPens[2].Width = 2;
                eventPens[3].Width = 2;
-               eventPens[4].Width = 1;
-               eventPens[5].Width = 1;
             }
             return eventPens;
          }
       }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative" };
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Bullish", "Bearish", "Positive", "Negative" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true,true,true, true, false,false, false,false };
+      static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false, false, false, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

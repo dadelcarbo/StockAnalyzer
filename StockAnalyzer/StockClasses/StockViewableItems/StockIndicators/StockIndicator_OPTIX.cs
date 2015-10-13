@@ -97,17 +97,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          }
       }
 
-      public float Max
-      {
-         get { return 100.0f; }
-      }
-
-      public float Min
-      {
-         get { return 0.0f; }
-      }
-
-      static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearsish" };
+      static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
@@ -116,6 +106,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override bool[] IsEvent
       {
          get { return isEvent; }
+      }
+
+      public float Max
+      {
+         get { return 100.0f; }
+      }
+
+      public float Min
+      {
+         get { return 0.0f; }
       }
    }
 }

@@ -46,7 +46,7 @@ namespace StockAnalyzer.StockClasses
          }
          else
          {
-            referenceStockName = this.Values.First().StockName;
+            referenceStockName = this["CAC40"].StockName;
          }
          // Refresh portofolio generated stock
          if (this.Keys.Contains(portofolio.Name))

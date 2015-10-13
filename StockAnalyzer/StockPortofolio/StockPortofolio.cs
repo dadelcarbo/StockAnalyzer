@@ -142,6 +142,7 @@ namespace StockAnalyzer.Portofolio
          float maxLoss = float.MinValue;
          float totalReturn = 0f;
 
+         referenceSerie.Initialise();
          DateTime previousDate = referenceSerie.Keys.First();
 
          foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
