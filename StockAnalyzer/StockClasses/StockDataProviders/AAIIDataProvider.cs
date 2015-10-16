@@ -33,6 +33,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       static private string BULLBEARRATIO_FILENAME = @"\data\weekly\AAII\BullBearRatio.csv";
       static private string bearBullRatioName = "BEAR/BULL Ratio";
 
+      static private char[] percent = new char[] { '%' };
+
       private bool ParseBullBearRatio(StockSerie stockSerie, string fileName)
       {
          // Read new downloaded values
@@ -60,11 +62,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   {
                      continue;
                   }
+
                   string[] row = line.Split(',');
-                  date = DateTime.Parse(row[0], usCulture);
-                  bullish = float.Parse(row[1], usCulture);
-                  neutral = float.Parse(row[2], usCulture);
-                  bearish = float.Parse(row[3], usCulture);
+                     date = DateTime.Parse(row[0], usCulture);
+                  if (row[1].Contains("%"))
+                  {
+                     bullish = float.Parse(row[1].TrimEnd(percent), usCulture) / 100f;
+                     neutral = float.Parse(row[2].TrimEnd(percent), usCulture) / 100f;
+                     bearish = float.Parse(row[3].TrimEnd(percent), usCulture) / 100f;
+                  }
+                  else
+                  {
+                     bullish = float.Parse(row[1], usCulture);
+                     neutral = float.Parse(row[2], usCulture);
+                     bearish = float.Parse(row[3], usCulture);
+                  }
                   ratio = bearish / bullish;
 
                   bearBullRatioValue = new StockDailyValue(bearBullRatioName,
