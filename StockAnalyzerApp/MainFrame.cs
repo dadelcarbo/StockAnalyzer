@@ -1386,15 +1386,12 @@ namespace StockAnalyzerApp
          else
          {
             List<String> stockList = new List<String>();
-            foreach (StockSerie stockSerie in StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup)))
+            var series = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
+            foreach (StockSerie stockSerie in series)
             {
-               // Check if in exclusion list
-               if (!stockSerie.StockAnalysis.Excluded && stockSerie.BelongsToGroup(this.selectedGroup))
+               if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
                {
-                  if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
-                  {
-                     stockList.Add(stockSerie.StockName);
-                  }
+                  stockList.Add(stockSerie.StockName);
                }
             }
             stocks = stockList;
@@ -2658,6 +2655,7 @@ namespace StockAnalyzerApp
 
       private void GeneratePosition(List<StockSerie.Groups> groups)
       {
+         return;
          string folderName = Settings.Default.RootFolder + POSITION_SUBFOLDER;
          if (!System.IO.Directory.Exists(folderName))
          {

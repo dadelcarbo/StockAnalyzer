@@ -3333,8 +3333,8 @@ namespace StockAnalyzer.StockClasses
          //  %D = MA3(%K)
          FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
          FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-         FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-         FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+         FloatSerie lowSerie = this.GetSerie(StockDataType.CLOSE);
+         FloatSerie highSerie = this.GetSerie(StockDataType.CLOSE);
          float lowestLow = float.MaxValue;
          float highestHigh = float.MinValue;
 
@@ -3344,7 +3344,7 @@ namespace StockAnalyzer.StockClasses
             highestHigh = highSerie.GetMax(Math.Max(0, i - period), i);
             if (highestHigh == lowestLow)
             {
-               fastOscillatorSerie[i] = 100.0f;
+               fastOscillatorSerie[i] = 50.0f;
             }
             else
             {
@@ -4878,7 +4878,7 @@ namespace StockAnalyzer.StockClasses
 
          return resultTrends.ToArray();
       }
-
+      
       public bool BelongsToGroup(Groups group)
       {
          if (this.StockAnalysis.Excluded) return false;
@@ -4886,10 +4886,12 @@ namespace StockAnalyzer.StockClasses
          {
             case Groups.ALL:
                return true;
+            case Groups.CAC40:
+               return ABCDataProvider.BelongsToCAC40(this);
             case Groups.SBF120:
-               return (this.StockGroup == Groups.SBF120) || (this.StockGroup == Groups.CAC40);
+               return (this.StockGroup == Groups.EURO_A);
             case Groups.CAC_ALL:
-               return (this.StockGroup == Groups.CAC_ALL) || (this.StockGroup == Groups.SBF120) || (this.StockGroup == Groups.CAC40);
+               return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_B)|| (this.StockGroup == Groups.ALTERNEXT);
             default:
                return this.StockGroup == group;
          }

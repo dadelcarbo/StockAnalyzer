@@ -69,16 +69,21 @@ namespace StockAnalyzer.StockClasses
          }
       }
 
+      private static List<string> validGroups = null;
       public List<string> GetValidGroupNames()
       {
-         List<string> validGroups = new List<string>();
-         foreach (StockSerie.Groups group in Enum.GetValues(typeof(StockSerie.Groups)))
+         if (validGroups == null)
          {
-            if (this.Values.Count(s => s.BelongsToGroup(group)) == 0 || group == StockSerie.Groups.ALL || group == StockSerie.Groups.NONE)
+            validGroups = new List<string>();
+            foreach (StockSerie.Groups group in Enum.GetValues(typeof (StockSerie.Groups)))
             {
-               continue;
+               if (!this.Values.Any(s => s.BelongsToGroup(group)) || group == StockSerie.Groups.ALL ||
+                   group == StockSerie.Groups.NONE)
+               {
+                  continue;
+               }
+               validGroups.Add(group.ToString());
             }
-            validGroups.Add(group.ToString());
          }
          return validGroups;
       }
