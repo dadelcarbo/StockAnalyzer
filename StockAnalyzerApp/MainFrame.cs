@@ -767,11 +767,11 @@ namespace StockAnalyzerApp
          string id;
          if (CurrentStockSerie.ShortName == CurrentStockSerie.StockName)
          {
-            id = CurrentStockSerie.ShortName;
+            id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName;
          }
          else
          {
-            id = CurrentStockSerie.ShortName + " - " + CurrentStockSerie.StockName;
+            id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName + " - " + CurrentStockSerie.StockName;
          }
          if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
          {

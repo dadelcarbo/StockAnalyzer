@@ -92,6 +92,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
       }
 
       private StockSerie replaySerie = null;
+      private DateTime startDate;
       private StockSerie refSerie = null;
       private int index = 0;
 
@@ -99,10 +100,17 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
       private void nextButton_Click(object sender, EventArgs e)
       {
+         NextStep(1);
+      }
+      private void moveButton_Click(object sender, EventArgs e)
+      {
+         NextStep(5);
+      }
+
+      private void NextStep(int step)
+      {
+         index += step;
          DateTime currentDate = DateTime.Today;
-
-         index++;
-
          if (index < refSerie.Count)
          {
             replaySerie.IsInitialised = false;
@@ -132,6 +140,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             startButton.Text = "Start";
             startButton.Focus();
             nextButton.Enabled = false;
+            moveButton.Enabled = false;
 
             this.Position = 0;
             this.OpenValue = 0;
@@ -142,9 +151,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.sellButton.Enabled = false;
             this.shortButton.Enabled = false;
             this.coverButton.Enabled = false;
+
+            MessageBox.Show("Replay serie was: " + refSerie.StockName + Environment.NewLine + 
+               "Start date: " + startDate.ToShortDateString());
          }
          else
          {
+            Cursor cursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
             replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
 
             // Random pick
@@ -166,12 +180,15 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                currentDate = currentDate.AddDays(1);
             }
 
+            startDate = refSerie.Keys.ElementAt(index);
+
             replaySerie.IsInitialised = false;
 
             StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
 
             startButton.Text = "Stop";
             nextButton.Enabled = true;
+            moveButton.Enabled = true;
             nextButton.Focus();
 
             this.buyButton.Enabled = true;
@@ -185,6 +202,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.totalValue = 0;
 
             started = true;
+
+            this.Cursor = cursor;
          }
       }
 

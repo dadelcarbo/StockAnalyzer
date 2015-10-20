@@ -46,6 +46,7 @@
          this.coverButton = new System.Windows.Forms.Button();
          this.label6 = new System.Windows.Forms.Label();
          this.addedValuePercentTextBox = new System.Windows.Forms.TextBox();
+         this.moveButton = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // nextButton
@@ -213,6 +214,17 @@
          this.addedValuePercentTextBox.Size = new System.Drawing.Size(54, 20);
          this.addedValuePercentTextBox.TabIndex = 8;
          // 
+         // moveButton
+         // 
+         this.moveButton.Enabled = false;
+         this.moveButton.Location = new System.Drawing.Point(197, 41);
+         this.moveButton.Name = "moveButton";
+         this.moveButton.Size = new System.Drawing.Size(75, 23);
+         this.moveButton.TabIndex = 0;
+         this.moveButton.Text = "&Move 5";
+         this.moveButton.UseVisualStyleBackColor = true;
+         this.moveButton.Click += new System.EventHandler(this.moveButton_Click);
+         // 
          // StockMarketReplay
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -235,6 +247,7 @@
          this.Controls.Add(this.sellButton);
          this.Controls.Add(this.buyButton);
          this.Controls.Add(this.startButton);
+         this.Controls.Add(this.moveButton);
          this.Controls.Add(this.nextButton);
          this.Name = "StockMarketReplay";
          this.Text = "MarketReplay";
@@ -263,5 +276,6 @@
       private System.Windows.Forms.Button shortButton;
       private System.Windows.Forms.TextBox addedValuePercentTextBox;
       private System.Windows.Forms.Label label6;
+      private System.Windows.Forms.Button moveButton;
    }
 }
