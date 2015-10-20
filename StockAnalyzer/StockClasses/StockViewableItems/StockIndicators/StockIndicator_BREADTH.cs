@@ -64,6 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie breadthIndicator = new FloatSerie(stockSerie.Count);
 
          StockSerie breadthSerie = StockDictionary.StockDictionarySingleton[(string)this.parameters[0]];
+         breadthSerie.Initialise();
 
          int index = -1;
          int i = 0;
@@ -107,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public float Min
       {
-         get { return 0f; }
+         get { return -1.0f; }
       }
    }
 }

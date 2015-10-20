@@ -171,6 +171,12 @@
     <Compile Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.Designer.cs">
       <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.Designer.cs">
+      <DependentUpon>StockMarketReplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\StockStrategyScannerDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -459,6 +465,9 @@
     <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.resx">
       <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\StockMarketReplay.resx">
+      <DependentUpon>StockMarketReplay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockStrategyScannerDlg.fr-FR.resx">
       <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -635,6 +644,7 @@
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.IndicatorDlgs.HilbertSineWaveConfigDlg.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.PortofolioDlgs.StockRiskCalculatorDlg.datasource" />
+    <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.SimulationDlgs.StockMarketReplay.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.Properties.Settings.datasource" />
     <None Include="Service References\StockWebServices\LicenseManager.wsdl" />
   </ItemGroup>

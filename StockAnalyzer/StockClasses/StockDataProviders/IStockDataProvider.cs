@@ -14,6 +14,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       Generated,
       AAII,
       Test,
+      Replay,
       Breadth,
       Ratio,
       COT

@@ -4327,6 +4327,12 @@ border:1px solid black;
                      ZoomIn();
                   }
                   break;
+               case Keys.F4:
+                  {
+                     StockMarketReplay marketReplay = new StockMarketReplay();
+                     marketReplay.Show();
+                  }
+                  break;
                case Keys.F5:
                   {
                      this.DownloadStock();
