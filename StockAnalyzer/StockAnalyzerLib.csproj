@@ -237,6 +237,7 @@
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHL2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStops.Designer.cs">

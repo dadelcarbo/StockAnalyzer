@@ -2748,7 +2748,7 @@ namespace StockAnalyzerApp
                foreach (var m in moms)
                {
                   m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
-               } 
+               }
 
                moms = momSeries.OrderBy(ms => ms.MomentumFast);
                i = 0;
@@ -4329,8 +4329,20 @@ border:1px solid black;
                   break;
                case Keys.F4:
                   {
-                     StockMarketReplay marketReplay = new StockMarketReplay();
-                     marketReplay.Show();
+                     if (marketReplay == null)
+                     {
+                        marketReplay = new StockMarketReplay();
+
+                        marketReplay.FormClosing += new FormClosingEventHandler(delegate
+                        {
+                           this.marketReplay = null;
+                        });
+                        marketReplay.Show();
+                     }
+                     else
+                     {
+                        marketReplay.Activate();
+                     }
                   }
                   break;
                case Keys.F5:
@@ -4391,6 +4403,8 @@ border:1px solid black;
       }
 
       private StockRiskCalculatorDlg riskCalculatorDlg = null;
+
+      private StockMarketReplay marketReplay = null;
 
       private Point lastMouseLocation = Point.Empty;
       void MouseMoveOverGraphControl(object sender, System.Windows.Forms.MouseEventArgs e)

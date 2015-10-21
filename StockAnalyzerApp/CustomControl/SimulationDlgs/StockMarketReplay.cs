@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
@@ -13,14 +14,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
    public partial class StockMarketReplay : Form, INotifyPropertyChanged
    {
-      private enum Action
-      {
-         None,
-         Buy,
-         Sell
-      }
-
-
       public StockMarketReplay()
       {
          InitializeComponent();
@@ -98,7 +91,114 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
       private bool started = false;
 
-      private void nextButton_Click(object sender, EventArgs e)
+      private int nbTrade = 0;
+      private int nbWinTrade = 0;
+      private int nbLostTrade = 0;
+
+      List<float> tradeGains = new List<float>();
+
+       private void startButton_Click(object sender, EventArgs e)
+      {
+         if (started)
+         {
+            replaySerie = null;
+            started = false;
+            startButton.Text = "Start";
+            startButton.Focus();
+            nextButton.Enabled = false;
+            moveButton.Enabled = false;
+
+            this.Position = 0;
+            this.OpenValue = 0;
+            this.CurrentValue = 0;
+            this.totalValue = 0;
+
+            this.buyButton.Enabled = false;
+            this.sellButton.Enabled = false;
+            this.shortButton.Enabled = false;
+            this.coverButton.Enabled = false;
+
+            string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
+                         "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
+                         "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                         "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
+                         "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
+                         "AvgGain:\t\t\t" + tradeGains.Sum().ToString("P2");
+
+            MessageBox.Show(msg);
+         }
+         else
+         {
+            Cursor cursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
+
+            try
+            {
+               // Initialise stats
+               nbTrade = 0;
+               nbWinTrade = 0;
+               nbLostTrade = 0;
+               tradeGains.Clear();
+
+               replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
+
+               // Random pick
+
+               Random rand = new Random(DateTime.Now.Millisecond);
+               var series =
+                  StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.EURO_A))
+                     .Select(s => s.StockName);
+
+               string stockName = series.ElementAt(rand.Next(0, series.Count()));
+
+               refSerie = StockDictionary.StockDictionarySingleton[stockName];
+               refSerie.Initialise();
+
+               DateTime currentDate = DateTime.Today;
+               int nbInitBars = rand.Next(200, refSerie.Count - 200);
+
+               for (index = 0; index < nbInitBars; index++)
+               {
+                  replaySerie.Add(currentDate, refSerie.ValueArray[index]);
+                  currentDate = currentDate.AddDays(1);
+               }
+
+               startDate = refSerie.Keys.ElementAt(index);
+
+               replaySerie.IsInitialised = false;
+
+               StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
+
+               startButton.Text = "Stop";
+               nextButton.Enabled = true;
+               moveButton.Enabled = true;
+               nextButton.Focus();
+
+               this.buyButton.Enabled = true;
+               this.sellButton.Enabled = false;
+               this.shortButton.Enabled = true;
+               this.coverButton.Enabled = false;
+
+               this.Position = 0;
+               this.OpenValue = 0;
+               this.CurrentValue = replaySerie.Values.Last().CLOSE;
+               this.totalValue = 0;
+
+               started = true;
+
+               StockAnalyzerForm.MainFrame.Activate();
+            }
+            catch
+            {
+            }
+            finally
+            {
+               this.Cursor = cursor;
+            }
+         }
+      }
+
+     private void nextButton_Click(object sender, EventArgs e)
       {
          NextStep(1);
       }
@@ -106,7 +206,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
       {
          NextStep(5);
       }
-
       private void NextStep(int step)
       {
          index += step;
@@ -128,82 +227,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
          else
          {
             MessageBox.Show("Replay finished !!!");
-         }
-      }
-
-      private void startButton_Click(object sender, EventArgs e)
-      {
-         if (started)
-         {
-            replaySerie = null;
-            started = false;
-            startButton.Text = "Start";
-            startButton.Focus();
-            nextButton.Enabled = false;
-            moveButton.Enabled = false;
-
-            this.Position = 0;
-            this.OpenValue = 0;
-            this.CurrentValue = 0;
-            this.totalValue = 0;
-
-            this.buyButton.Enabled = false;
-            this.sellButton.Enabled = false;
-            this.shortButton.Enabled = false;
-            this.coverButton.Enabled = false;
-
-            MessageBox.Show("Replay serie was: " + refSerie.StockName + Environment.NewLine + 
-               "Start date: " + startDate.ToShortDateString());
-         }
-         else
-         {
-            Cursor cursor = this.Cursor;
-            this.Cursor = Cursors.WaitCursor;
-            replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
-
-            // Random pick
-
-            Random rand = new Random(DateTime.Now.Millisecond);
-            var series = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A)).Select(s => s.StockName);
-
-            string stockName = series.ElementAt(rand.Next(0, series.Count()));
-
-            refSerie = StockDictionary.StockDictionarySingleton[stockName];
-            refSerie.Initialise();
-
-            DateTime currentDate = DateTime.Today;
-            int nbInitBars = rand.Next(200, refSerie.Count - 200);
-
-            for (index = 0; index < nbInitBars; index++)
-            {
-               replaySerie.Add(currentDate, refSerie.ValueArray[index]);
-               currentDate = currentDate.AddDays(1);
-            }
-
-            startDate = refSerie.Keys.ElementAt(index);
-
-            replaySerie.IsInitialised = false;
-
-            StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
-
-            startButton.Text = "Stop";
-            nextButton.Enabled = true;
-            moveButton.Enabled = true;
-            nextButton.Focus();
-
-            this.buyButton.Enabled = true;
-            this.sellButton.Enabled = false;
-            this.shortButton.Enabled = true;
-            this.coverButton.Enabled = false;
-
-            this.Position = 0;
-            this.OpenValue = 0;
-            this.CurrentValue = replaySerie.Values.Last().CLOSE;
-            this.totalValue = 0;
-
-            started = true;
-
-            this.Cursor = cursor;
          }
       }
 
@@ -257,6 +280,18 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.sellButton.Enabled = false;
             this.shortButton.Enabled = true;
             this.coverButton.Enabled = false;
+
+            // Statistics
+            nbTrade++;
+            if (AddedValue > 0)
+            {
+               nbWinTrade++;
+            }
+            else
+            {
+               nbLostTrade++;
+            }
+            tradeGains.Add(AddedValuePercent);
 
             this.totalValue += this.AddedValue;
             OnPropertyChanged("TotalValue");

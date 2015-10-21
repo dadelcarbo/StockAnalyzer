@@ -3684,6 +3684,101 @@ namespace StockAnalyzer.StockClasses
             i++;
          }
       }
+      public void CalculateHighLowSmoothedTrailStop(int period, int smoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+      {
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+
+         FloatSerie lowSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(smoothing);
+         FloatSerie highSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(smoothing);
+         FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+         StockDailyValue previousValue = this.Values.First();
+         bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
+         int i = 0;
+         if (upTrend)
+         {
+            longStopSerie[0] = previousValue.LOW;
+            shortStopSerie[0] = float.NaN;
+         }
+         else
+         {
+            longStopSerie[0] = float.NaN;
+            shortStopSerie[0] = previousValue.HIGH;
+         }
+         foreach (StockDailyValue currentValue in this.Values)
+         {
+            if (i > period)
+            {
+               if (upTrend)
+               {
+                  if (currentValue.CLOSE < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = highSerie.GetMax(i - period, i);
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(i - period, i));
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (currentValue.CLOSE > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = lowSerie.GetMin(i - period, i);
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie.GetMax(i - period, i));
+                  }
+               }
+            }
+            else if (i > 0)
+            {
+               if (upTrend)
+               {
+                  if (currentValue.CLOSE < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = highSerie.GetMax(0, i);
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(0, i));
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (currentValue.CLOSE > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = lowSerie.GetMin(0, i);
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie.GetMax(0, i));
+                  }
+               }
+            }
+            previousValue = currentValue;
+            i++;
+         }
+      }
+
       public void CalculateHighLowTrailStop(int period, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
          longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
