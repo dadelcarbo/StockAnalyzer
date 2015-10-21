@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
+      public override string[] SerieNames { get { return new string[] { "Data", "BuyExhaustion", "SellExhaustion", "Signal" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.DarkRed), new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
+               seriePens = new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkGray), new Pen(Color.DarkGray), new Pen(Color.DarkRed) };
 
                seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -78,6 +78,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                this.Series[1].Name = this.SerieNames[1];
                this.Series[2] = lowerLimit;
                this.Series[2].Name = this.SerieNames[2];
+               this.Series[3] = signalSerie;
+               this.Series[3].Name = this.SerieNames[3];
 
                int lookbackPeriod = (int) this.parameters[2];
 
@@ -290,7 +292,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
          }
       }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Bullish", "Bearish", "Positive", "Negative" };
+      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
