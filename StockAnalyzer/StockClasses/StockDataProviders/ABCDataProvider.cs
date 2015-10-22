@@ -119,10 +119,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         stockDictionary.Add(row[1].ToUpper(), stockSerie);
 
-                        if (download && this.needDownload)
-                        {
-                           this.DownloadDailyData(rootFolder, stockSerie);
-                        }
                      }
                      else
                      {
@@ -267,15 +263,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
                if (stockSerie != null)
                {
-                  StockDailyValue dailyValue = new StockDailyValue(
-                     stockSerie.StockName,
-                     float.Parse(row[2], frenchCulture),
-                     float.Parse(row[3], frenchCulture),
-                     float.Parse(row[4], frenchCulture),
-                     float.Parse(row[5], frenchCulture),
-                     long.Parse(row[6], frenchCulture),
-                     DateTime.Parse(row[1]));
-                  stockSerie.Add(dailyValue.DATE, dailyValue);
+                  DateTime date = DateTime.Parse(row[1]);                  
+                  if (!stockSerie.ContainsKey(date))
+                  {
+                     StockDailyValue dailyValue = new StockDailyValue(
+                       stockSerie.StockName,
+                       float.Parse(row[2], frenchCulture),
+                       float.Parse(row[3], frenchCulture),
+                       float.Parse(row[4], frenchCulture),
+                       float.Parse(row[5], frenchCulture),
+                       long.Parse(row[6], frenchCulture),
+                       date);
+                     stockSerie.Add(dailyValue.DATE, dailyValue);
+                  }
                }
                line = sr.ReadLine();
             }
