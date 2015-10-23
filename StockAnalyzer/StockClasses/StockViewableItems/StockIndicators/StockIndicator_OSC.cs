@@ -13,26 +13,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
-      public override string Name
-      {
-         get { return "OSC(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"; }
-      }
-      public override string Definition
-      {
-         get { return "OSC(int Period1, int Period2)"; }
-      }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period1", "Period2" }; }
+         get { return new string[] { "FastPeriod", "SlowPeriod", "Relative" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 12, 20 }; }
+         get { return new Object[] { 12, 20, true }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeBool() }; }
       }
       public override string[] SerieNames { get { return new string[] { "OSC(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
 
@@ -64,7 +56,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          IStockIndicator fastSerie = stockSerie.GetIndicator("EMA(" + this.parameters[0] + ")");
          IStockIndicator slowSerie = stockSerie.GetIndicator("EMA(" + this.parameters[1] + ")");
-         FloatSerie oscSerie = (fastSerie.Series[0].Sub(slowSerie.Series[0]))*100f / fastSerie.Series[0];
+         bool relative = (bool) this.parameters[2];
+
+         FloatSerie oscSerie = (fastSerie.Series[0].Sub(slowSerie.Series[0]))*100f;
+         if (relative)
+         {
+            oscSerie = oscSerie / fastSerie.Series[0];
+         }
          this.series[0] = oscSerie;
          this.Series[0].Name = this.Name;
 
