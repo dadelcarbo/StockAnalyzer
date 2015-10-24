@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                if (nbUnit > 0)
                {
                   Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + nbUnit + " " + position.StockName);
-                  StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen,
+                  StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen, false,
                       applyDate, applyDate, nbUnit, serieValues[count], 0.0f);
 
                   this.availableLiquidity += nbUnit * serieValues[count];
@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                if (nbUnit > 0 && this.availableLiquidity > nbUnit * serieValues[count])
                {
                   Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + position.StockName);
-                  StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.BuyAtMarketOpen,
+                  StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                       applyDate, applyDate, nbUnit, serieValues[count], 0.0f);
 
                   this.availableLiquidity -= nbUnit * serieValues[count];
@@ -151,7 +151,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             {
                float value = serie[nextDate].OPEN;
                StockOrder order = StockOrder.CreateExecutedOrder(serie.StockName,
-                   StockOrder.OrderType.BuyAtMarketOpen,
+                   StockOrder.OrderType.BuyAtMarketOpen, false,
                    nextDate, nextDate, (int)(amountPerLine / value), value, 0.0f);
 
                this.Portfolio.OrderList.Add(order);

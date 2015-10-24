@@ -56,7 +56,7 @@ namespace StockAnalyzer.Portofolio
       #endregion
 
       #region Stock Order Contructors
-      public static StockOrder CreateExecutedOrder(string stockName, OrderType type, DateTime creationDate, DateTime executionDate, int number, float value, float fee)
+      public static StockOrder CreateExecutedOrder(string stockName, OrderType type, bool isShortOrder, DateTime creationDate, DateTime executionDate, int number, float value, float fee)
       {
          StockOrder stockOrder = new StockOrder();
          stockOrder.StockName = stockName;
@@ -68,6 +68,7 @@ namespace StockAnalyzer.Portofolio
          stockOrder.Value = value;
          stockOrder.Fee = fee;
          stockOrder.State = OrderStatus.Executed;
+         stockOrder.IsShortOrder = isShortOrder;
          return stockOrder;
       }
       public static StockOrder CreateBuyTrailingStockOrder(string stockName, DateTime creationDate, DateTime expiryDate, float amountToInvest, float benchmark, float gapInPoints, StockDailyValue dailyValue)
@@ -352,7 +353,7 @@ namespace StockAnalyzer.Portofolio
                   // Add new order to current position
                   newNumber = this.Number + stockOrder.Number;
                   newValue = (this.Value * this.Number + stockOrder.Value * stockOrder.Number) / (float)newNumber;
-                  return CreateExecutedOrder(this.StockName, this.Type, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                  return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
                }
                else // Sell order
                {
@@ -366,7 +367,7 @@ namespace StockAnalyzer.Portofolio
                   //{
                   // Keep same value as initial order when selling it partially.
                   newValue = this.Value;
-                  return CreateExecutedOrder(this.StockName, this.Type, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                  return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
                   //}
                }
             }
@@ -383,7 +384,7 @@ namespace StockAnalyzer.Portofolio
                   {
                      // Keep same value as initial order when covering it partially.
                      newValue = (stockOrder.Value * stockOrder.Number - this.Value * this.Number) / (float)newNumber;
-                     return CreateExecutedOrder(this.StockName, this.Type, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                     return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
                   }
                }
                else // Sell order
@@ -391,7 +392,7 @@ namespace StockAnalyzer.Portofolio
                   // TODO test
                   newNumber = this.Number + stockOrder.Number;
                   newValue = (this.Value * this.Number + stockOrder.Value * stockOrder.Number) / (float)newNumber;
-                  return CreateExecutedOrder(this.StockName, this.Type, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                  return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
                }
             }
          }

@@ -60,7 +60,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                      Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
                                        position.StockName);
                      StockOrder order = StockOrder.CreateExecutedOrder(position.StockName,
-                         StockOrder.OrderType.SellAtMarketOpen,
+                         StockOrder.OrderType.SellAtMarketOpen, false,
                          nextDay, nextDay, position.Number, open, 0.0f);
 
                      this.availableLiquidity += position.Number * open;
@@ -108,7 +108,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                            if (nbUnit > 0)
                            {
                               Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + serie.StockName);
-                              StockOrder order = StockOrder.CreateExecutedOrder(serie.StockName, StockOrder.OrderType.BuyAtMarketOpen,
+                              StockOrder order = StockOrder.CreateExecutedOrder(serie.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                                   nextDay, nextDay, nbUnit, open, 0.0f);
 
                               this.availableLiquidity -= nbUnit * open;

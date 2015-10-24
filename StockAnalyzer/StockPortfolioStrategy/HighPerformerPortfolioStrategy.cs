@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             StockOrder order;
             DateTime executionDate = serie.ContainsKey(applyDate) ? applyDate : previousDate;
 
-            order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen,
+            order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen, false,
                applyDate, applyDate, position.Number, serie[executionDate].OPEN, 0.0f);
 
             this.availableLiquidity += position.Number * serie[executionDate].OPEN;
@@ -121,7 +121,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             if (nbUnit > 0)
             {
                Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + pair.Key.StockName);
-               StockOrder order = StockOrder.CreateExecutedOrder(pair.Key.StockName, StockOrder.OrderType.BuyAtMarketOpen,
+               StockOrder order = StockOrder.CreateExecutedOrder(pair.Key.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                    applyDate, applyDate, nbUnit, pair.Key[applyDate].OPEN, 0.0f);
 
                this.availableLiquidity -= nbUnit * pair.Key[applyDate].OPEN;

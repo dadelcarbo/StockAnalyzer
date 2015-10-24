@@ -289,10 +289,11 @@ namespace StockAnalyzer.StockClasses
          {
             if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
             {
-               if (this.BarDuration == StockBarDuration.Daily)
+               if (this.BarDuration == StockBarDuration.Daily && this.Values.Count !=0)
                {
                   this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
                }
+               this.barDuration = newBarDuration;
             }
             return;
          }
@@ -679,6 +680,7 @@ namespace StockAnalyzer.StockClasses
          {
             this.BarSerieDictionary = new SortedDictionary<StockBarDuration, List<StockDailyValue>>();
          }
+         // Do not clear bar cache here, ust indicators are concerned.
       }
       #endregion
       #region Initialisation methods (indicator, data && events calculation)
@@ -5000,7 +5002,7 @@ namespace StockAnalyzer.StockClasses
           bool amendOrders, bool supportShortSelling,
          bool takeProfit, float profitTarget,
          bool stopLoss, float stopLossTarget,
-         float fixedFee, float taxRate, StockPortofolio portofolio)
+         float fixedFee, float taxRate, StockPortofolio portfolio)
       {
          if (!this.Initialise()) { return null; }
          strategy.Initialise(this, null, supportShortSelling);
@@ -5023,14 +5025,13 @@ namespace StockAnalyzer.StockClasses
             else
                return null;
          }
-         portofolio.TotalDeposit = amount;
-
+         portfolio.TotalDeposit = amount;
 
          // Run the order processing loop
          RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling,
             takeProfit, profitTarget,
             stopLoss, stopLossTarget,
-            fixedFee, taxRate, portofolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
+            fixedFee, taxRate, portfolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
 
          return stockOrder;
       }
@@ -5039,10 +5040,10 @@ namespace StockAnalyzer.StockClasses
   bool amendOrders, bool supportShortSelling,
          bool takeProfit, float profitTarget,
          bool stopLoss, float stopLossTarget,
-            float fixedFee, float taxRate, StockPortofolio portofolio)
+            float fixedFee, float taxRate, StockPortofolio portfolio)
       {
          // Get the exiting order list
-         StockOrderList orderList = portofolio.OrderList.GetOrderListSortedByDate(this.StockName);
+         StockOrderList orderList = portfolio.OrderList.GetOrderListSortedByDate(this.StockName);
          StockOrder stockOrder = null;
          StockOrder lastBuyOrder = null;
          bool lookingForBuying = true;
@@ -5111,7 +5112,7 @@ namespace StockAnalyzer.StockClasses
          RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling,
             takeProfit, profitTarget,
             stopLoss, stopLossTarget,
-             fixedFee, taxRate, portofolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
+             fixedFee, taxRate, portfolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
 
          return stockOrder;
       }

@@ -15,25 +15,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
-      public override string Name
-      {
-         get { return "PIVOTLines(" + this.Parameters[0].ToString() + ")"; }
-      }
-      public override string Definition
-      {
-         get { return "PIVOTLines(int Period)"; }
-      }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Period", "Smoothing" }; }
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 1 }; }
+         get { return new Object[] { 1, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
       public override string[] SerieNames { get { return new string[] { "PIVOT", "S1", "S2", "S3", "R1", "R2", "R3" }; } }
 
@@ -51,9 +43,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override void ApplyTo(StockSerie stockSerie)
       {
          int period = (int)this.Parameters[0];
-         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+         int smoothing = (int)this.Parameters[1];
+         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA(smoothing);
+         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA(smoothing);
+         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(smoothing);
 
 
          FloatSerie pivotSerie = new FloatSerie(stockSerie.Count, "PIVOT");

@@ -81,7 +81,7 @@ namespace StockAnalyzerApp.CustomControl
          // Create default order
          if (stockOrderTemplate == null)
          {
-            this.Order = StockOrder.CreateExecutedOrder(currentStockName, StockOrder.OrderType.BuyAtLimit, DateTime.Today, DateTime.Today, 0, 0.0f, 0.0f);
+            this.Order = StockOrder.CreateExecutedOrder(currentStockName, StockOrder.OrderType.BuyAtLimit, false, DateTime.Today, DateTime.Today, 0, 0.0f, 0.0f);
          }
          else
          {

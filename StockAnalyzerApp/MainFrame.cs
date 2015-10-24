@@ -92,7 +92,24 @@ namespace StockAnalyzerApp
       public event OnStockSerieChangedHandler StockSerieChanged;
       private string currentWatchList = null;
 
-      public StockPortofolio CurrentPortofolio { get; set; }
+
+      public StockSerie.StockBarDuration BarDuration
+      {
+         get
+         {
+            return (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem         ;
+         }
+      }
+      public StockPortofolio currentPortofolio;
+      public StockPortofolio CurrentPortofolio
+      {
+         get { return currentPortofolio; }
+         set
+         {
+            this.currentPortofolio = value;
+            this.graphCloseControl.Portofolio = currentPortofolio;
+         }
+      }
 
       private const int MARGIN_SIZE = 20;
       private const int MOUSE_MARQUEE_SIZE = 4;
