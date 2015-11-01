@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 
@@ -100,6 +101,41 @@ namespace StockAnalyzer.StockClasses
             StockLog.Write("Exception occured parsing the COTSerie: " + serieName + " " + e.Message);
          }
          return cotSerie;
+      }
+
+      public FloatSerie GetSerie(CotValue.CotValueType cotValueType, DateTime[] dateList)
+      {         
+         System.Reflection.PropertyInfo pi = typeof(CotValue).GetProperty(cotValueType.ToString());
+
+         this.Initialise();
+         List<float> serie = new List<float>();
+         int i = 0, j = 0;
+         DateTime [] cotDates = this.Keys.ToArray();
+         while(i < dateList.Length && dateList[i] < this.Keys.First())
+         {
+            serie.Add(0f);
+            i++;
+         }
+         while (j < cotDates.Length && cotDates[j] < dateList[0])
+         {
+            j++;
+         }
+         float previousCOT = j > 0 ? (float)pi.GetValue(this.Values.ElementAt(j - 1), null) : (float)pi.GetValue(this.Values.First(), null);
+         for (; i < dateList.Length; i++)
+         {
+            if (dateList[i] >= cotDates[j])
+            {
+               CotValue cotValue = this[cotDates[j]];
+
+               serie.Add(previousCOT = (float)pi.GetValue(cotValue, null));
+               if (j<cotDates.Length-1) j++;
+            }
+            else
+            {
+               serie.Add(previousCOT);
+            }
+         }
+         return new FloatSerie(serie.ToArray(), cotValueType.ToString());
       }
    }
 }

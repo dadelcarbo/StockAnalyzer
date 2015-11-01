@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -64,7 +65,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          if (stockSerie.CotSerie != null)
          {
             // Get the CotSerie with date consideration...
-            this.series[0] = stockSerie.CotSerie.GetSerie(CotValue.CotValueType.CommercialHedgerPosition);
+            this.series[0] = stockSerie.CotSerie.GetSerie(CotValue.CotValueType.CommercialHedgerPosition, stockSerie.Keys.ToArray());
          }
          else
          {

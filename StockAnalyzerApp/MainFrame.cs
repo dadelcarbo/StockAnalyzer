@@ -135,6 +135,7 @@ namespace StockAnalyzerApp
       #region CONSTANTS
       static private string WORK_THEME = "NewTheme*";
       static private string COT_SUBFOLDER = @"\data\weekly\cot";
+      static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
       static private string INTRADAY_SUBFOLDER = @"\data\intraday";
       static private string DAILY_SUBFOLDER = @"\data\daily";
       static private string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
@@ -305,6 +306,7 @@ namespace StockAnalyzerApp
 
             StockWebHelper swh = new StockWebHelper();
             bool upToDate = false;
+            //swh.DownloadCOTAll(Settings.Default.RootFolder, ref upToDate);
             swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
 
             if (System.IO.Directory.Exists(Settings.Default.RootFolder + COT_SUBFOLDER))
@@ -1140,114 +1142,173 @@ namespace StockAnalyzerApp
       {
          this.CotDictionary = new SortedDictionary<string, CotSerie>();
          string line = string.Empty;
-         try
+
+         string cotCfgFileName = Settings.Default.RootFolder + @"\COT.cfg";
+         using (StreamWriter sw = new StreamWriter(cotCfgFileName, false))
          {
-            // Parse COT include list
-            SortedDictionary<string, string> cotIncludeList = ParseCOTInclude();
-
-            // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2010.zip    
-            // Read new downloaded values
-            string cotFolder = Settings.Default.RootFolder + COT_SUBFOLDER;
-            string[] files = System.IO.Directory.GetFiles(cotFolder, "annual_*.txt");
-
-            int cotLargeSpeculatorPositionLongIndex = 7;
-            int cotLargeSpeculatorPositionShortIndex = 8;
-            int cotCommercialHedgerPositionLongIndex = 10;
-            int cotCommercialHedgerPositionShortIndex = 11;
-            int cotSmallSpeculatorPositionLongIndex = 14;
-            int cotSmallSpeculatorPositionShortIndex = 15;
-            int cotOpenInterestIndex = 6;
-
-            DateTime cotDate;
-            float cotLargeSpeculatorPositionLong;
-            float cotLargeSpeculatorPositionShort;
-            float cotCommercialHedgerPositionLong;
-            float cotCommercialHedgerPositionShort;
-            float cotSmallSpeculatorPositionLong;
-            float cotSmallSpeculatorPositionShort;
-            float cotOpenInterest;
-
-            foreach (string fileName in files)
+            try
             {
-               StreamReader sr = new StreamReader(fileName);
-               CotValue readCotValue = null;
-               CotSerie cotSerie = null;
-               int endOfNameIndex = 0;
+               // Parse COT include list
+               SortedDictionary<string, string> cotIncludeList = ParseCOTInclude();
 
-               string cotSerieName = string.Empty;
+               // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2010.zip    
+               // Read new downloaded values
+               string cotFolder = Settings.Default.RootFolder + COT_SUBFOLDER;
+               string cotArchiveFolder = Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER;
+               string[] files = System.IO.Directory.GetFiles(cotFolder, "annual_*.txt");
 
-               string[] row;
-               sr.ReadLine();   // Skip header line
-               while (!sr.EndOfStream)
+               int cotLargeSpeculatorPositionLongIndex = 8;
+               int cotLargeSpeculatorPositionShortIndex = 9;
+               int cotLargeSpeculatorPositionSpreadIndex = 10;
+               int cotCommercialHedgerPositionLongIndex = 11;
+               int cotCommercialHedgerPositionShortIndex = 12;
+               int cotSmallSpeculatorPositionLongIndex = 13;
+               int cotSmallSpeculatorPositionShortIndex = 14;
+               int cotOpenInterestIndex = 7;
+
+               DateTime cotDate;
+               float cotLargeSpeculatorPositionLong;
+               float cotLargeSpeculatorPositionShort;
+               float cotLargeSpeculatorPositionSpread;
+               float cotCommercialHedgerPositionLong;
+               float cotCommercialHedgerPositionShort;
+               float cotSmallSpeculatorPositionLong;
+               float cotSmallSpeculatorPositionShort;
+               float cotOpenInterest;
+
+               foreach (string fileName in files)
                {
-                  line = sr.ReadLine().Replace("\"", "");
-                  if (line == string.Empty)
+                  StreamReader sr = new StreamReader(fileName);
+                  CotValue readCotValue = null;
+                  CotSerie cotSerie = null;
+                  int endOfNameIndex = 0;
+
+                  string cotSerieName = string.Empty;
+
+                  string[] row;
+                  sr.ReadLine();   // Skip header line
+                  while (!sr.EndOfStream)
                   {
-                     continue;
-                  }
-
-                  endOfNameIndex = line.IndexOf(",");
-                  cotSerieName = line.Substring(0, endOfNameIndex - 1);
-                  int index = cotSerieName.IndexOf(" - ");
-                  if (index == -1)
-                  {
-                     continue;
-                  }
-                  cotSerieName = cotSerieName.Substring(0, index);
-
-                  if (!cotIncludeList.Keys.Contains(cotSerieName))
-                  {
-                     continue;
-                  }
-
-                  row = line.Substring(endOfNameIndex + 2).Split(',');
-
-                  cotLargeSpeculatorPositionLong = float.Parse(row[cotLargeSpeculatorPositionLongIndex]);
-                  cotLargeSpeculatorPositionShort = float.Parse(row[cotLargeSpeculatorPositionShortIndex]);
-                  cotCommercialHedgerPositionLong = float.Parse(row[cotCommercialHedgerPositionLongIndex]);
-                  cotCommercialHedgerPositionShort = float.Parse(row[cotCommercialHedgerPositionShortIndex]);
-                  cotSmallSpeculatorPositionLong = float.Parse(row[cotSmallSpeculatorPositionLongIndex]);
-                  cotSmallSpeculatorPositionShort = float.Parse(row[cotSmallSpeculatorPositionShortIndex]);
-                  cotOpenInterest = float.Parse(row[cotOpenInterestIndex]);
-
-                  cotDate = DateTime.Parse(row[1], usCulture);
-
-                  readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort,
-                      cotSmallSpeculatorPositionLong, cotSmallSpeculatorPositionShort,
-                      cotCommercialHedgerPositionLong, cotCommercialHedgerPositionShort, cotOpenInterest);
-                  if (this.CotDictionary.ContainsKey(cotSerieName))
-                  {
-                     cotSerie = this.CotDictionary[cotSerieName];
-                     if (!cotSerie.ContainsKey(readCotValue.Date))
+                     line = sr.ReadLine();
+                     if (line == string.Empty)
                      {
+                        continue;
+                     }
+
+                     string[] fields = ParseCOTLine(line);
+                     cotSerieName = fields[0];
+
+                     int index = cotSerieName.IndexOf(" - ");
+                     if (index == -1)
+                     {
+                        continue;
+                     }
+                     cotSerieName = cotSerieName.Substring(0, index) + "_COT";
+
+                     if (!cotIncludeList.Keys.Contains(cotSerieName))
+                     {
+                        continue;
+                     }
+
+                     row = fields;
+
+                     cotLargeSpeculatorPositionLong = float.Parse(row[cotLargeSpeculatorPositionLongIndex]);
+                     cotLargeSpeculatorPositionShort = float.Parse(row[cotLargeSpeculatorPositionShortIndex]);
+                     cotLargeSpeculatorPositionSpread = float.Parse(row[cotLargeSpeculatorPositionSpreadIndex]);
+                     cotCommercialHedgerPositionLong = float.Parse(row[cotCommercialHedgerPositionLongIndex]);
+                     cotCommercialHedgerPositionShort = float.Parse(row[cotCommercialHedgerPositionShortIndex]);
+                     cotSmallSpeculatorPositionLong = float.Parse(row[cotSmallSpeculatorPositionLongIndex]);
+                     cotSmallSpeculatorPositionShort = float.Parse(row[cotSmallSpeculatorPositionShortIndex]);
+                     cotOpenInterest = float.Parse(row[cotOpenInterestIndex]);
+
+                     cotDate = DateTime.Parse(row[2], usCulture);
+
+                     readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort,
+                         cotSmallSpeculatorPositionLong, cotSmallSpeculatorPositionShort,
+                         cotCommercialHedgerPositionLong, cotCommercialHedgerPositionShort, cotOpenInterest);
+                     if (this.CotDictionary.ContainsKey(cotSerieName))
+                     {
+                        cotSerie = this.CotDictionary[cotSerieName];
+                        if (!cotSerie.ContainsKey(readCotValue.Date))
+                        {
+                           cotSerie.Add(readCotValue.Date, readCotValue);
+
+                           // flag as not initialised as values have to be calculated
+                           cotSerie.IsInitialised = false;
+                        }
+                     }
+                     else
+                     {
+                        cotSerie = new CotSerie(cotSerieName);
+                        this.CotDictionary.Add(cotSerieName, cotSerie);
                         cotSerie.Add(readCotValue.Date, readCotValue);
 
-                        // flag as not initialised as values have to be calculated
-                        cotSerie.IsInitialised = false;
-                     }
-                  }
-                  else
-                  {
-                     cotSerie = new CotSerie(cotSerieName);
-                     this.CotDictionary.Add(cotSerieName, cotSerie);
-                     cotSerie.Add(readCotValue.Date, readCotValue);
-
-                     if (!string.IsNullOrWhiteSpace(cotIncludeList[cotSerieName]))
-                     {
-                        if (this.StockDictionary.ContainsKey(cotIncludeList[cotSerieName]))
+                        sw.WriteLine(cotSerieName + ";");
+                        
+                        if (!string.IsNullOrWhiteSpace(cotIncludeList[cotSerieName]))
                         {
-                           this.StockDictionary[cotIncludeList[cotSerieName]].CotSerie = cotSerie;
+                           if (this.StockDictionary.ContainsKey(cotIncludeList[cotSerieName]))
+                           {
+                              this.StockDictionary[cotIncludeList[cotSerieName]].CotSerie = cotSerie;
+                           }
                         }
                      }
                   }
+                  sr.Close();
                }
-               sr.Close();
+               foreach (CotSerie cotSerie in this.CotDictionary.Values)
+               {
+                  string archiveFileName = cotArchiveFolder + @"\" + cotSerie.CotSerieName + ".csv";
+
+                  cotSerie.SaveToFile(archiveFileName);
+               }
+            }
+            catch (System.Exception e)
+            {
+               MessageBox.Show(e.Message + "\r\r" + line, "Failed to parse COT file");
             }
          }
-         catch (System.Exception e)
+      }
+
+      private string[] ParseCOTLine(string line)
+      {
+         string field = string.Empty;
+         bool quoteFound = false;
+         List<string> fields = new List<string>();
+         for (int i = 0; i < line.Length; i++)
          {
-            MessageBox.Show(e.Message + "\r\r" + line, "Failed to parse COT file");
+            if (line[i] == '\"')
+            {
+               if (quoteFound)
+               {
+                  quoteFound = false;
+               }
+               else
+               {
+                  quoteFound = true;
+               }
+            }
+            else
+            {
+               if (quoteFound)
+               {
+                  field += line[i];
+               }
+               else
+               {
+                  if (line[i] == ',')
+                  {
+                     fields.Add(field.Trim());
+                     field = string.Empty;
+                  }
+                  else
+                  {
+                     field += line[i];
+                  }
+               }
+            }
          }
+         return fields.ToArray();
       }
 
       private static SortedDictionary<string, string> ParseCOTInclude()
@@ -1255,7 +1316,7 @@ namespace StockAnalyzerApp
          SortedDictionary<string, string> cotIncludeList = new SortedDictionary<string, string>();
          string[] fields;
 
-         string fileName = Settings.Default.RootFolder + @"\COT.cfg";
+         string fileName = Settings.Default.RootFolder + @"\COT2.cfg";
          if (File.Exists(fileName))
          {
             using (StreamReader sr = new StreamReader(fileName))

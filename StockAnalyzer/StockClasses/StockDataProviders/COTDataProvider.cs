@@ -25,24 +25,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          // Read archive first
          bool res = false;
-         string archiveFileName = COTFolder + @"\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+         string archiveFileName = COTFolder + @"\" + stockSerie.StockName + ".csv";
          if (File.Exists(archiveFileName))
          {
             res |= ParseCSVFile(stockSerie, archiveFileName);
          }
 
-         COTFolder = rootFolder + COT_SUBFOLDER;
-         if (Directory.Exists(COTFolder))
-         {
-            string[] files = System.IO.Directory.GetFiles(COTFolder, "annual_*.txt");
-            foreach (string fileName in files)
-            {
-               res |= this.ParseCOT(stockSerie, fileName);
-            }
+         //COTFolder = rootFolder + COT_SUBFOLDER;
+         //if (Directory.Exists(COTFolder))
+         //{
+         //   string[] files = System.IO.Directory.GetFiles(COTFolder, "annual_*.txt");
+         //   foreach (string fileName in files)
+         //   {
+         //      res |= this.ParseCOT(stockSerie, fileName);
+         //   }
 
-            stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), new DateTime(stockSerie.Keys.Last().Year - 1, 12, 31));
+         //   stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), new DateTime(stockSerie.Keys.Last().Year - 1, 12, 31));
 
-         }
+         //}
          return res;
       }
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
@@ -58,7 +58,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                while (!sr.EndOfStream)
                {
                   fields = sr.ReadLine().Split(';');
-                  fields[0] += "_COT";
                   if (!stockDictionary.ContainsKey(fields[0]))
                   {
                      stockDictionary.Add(fields[0], new StockSerie(fields[0], fields[0], StockSerie.Groups.COT, StockDataProvider.COT));
@@ -117,9 +116,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   }
                   res = true;
 
-                  endOfNameIndex = line.IndexOf(" ,");
-                  cotSerieName = line.Substring(0, endOfNameIndex - 1);
-                  cotSerieName = cotSerieName.Substring(0, cotSerieName.IndexOf(" - "));
+                  endOfNameIndex = line.IndexOf(",");
+                  cotSerieName = line.Substring(0, endOfNameIndex);
+                  if (cotSerieName.Contains(" - "))
+                  {
+                     cotSerieName = cotSerieName.Substring(0, cotSerieName.IndexOf(" - "));
+                  }
+
                   cotSerieName += "_COT";
                   if (stockSerie.StockName != cotSerieName)
                   {
