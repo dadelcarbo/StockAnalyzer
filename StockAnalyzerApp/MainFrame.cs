@@ -1223,7 +1223,7 @@ namespace StockAnalyzerApp
 
                      cotDate = DateTime.Parse(row[2], usCulture);
 
-                     readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort,
+                     readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort, cotLargeSpeculatorPositionSpread,
                          cotSmallSpeculatorPositionLong, cotSmallSpeculatorPositionShort,
                          cotCommercialHedgerPositionLong, cotCommercialHedgerPositionShort, cotOpenInterest);
                      if (this.CotDictionary.ContainsKey(cotSerieName))

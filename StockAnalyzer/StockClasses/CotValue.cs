@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockClasses
          SmallSpeculatorPositionLong,
          CommercialHedgerPositionLong,
          LargeSpeculatorPositionShort,
+         LargeSpeculatorPositionSpread,
          SmallSpeculatorPositionShort,
          CommercialHedgerPositionShort,
          OpenInterest
@@ -21,6 +22,7 @@ namespace StockAnalyzer.StockClasses
       public DateTime Date { get; private set; }
       public float LargeSpeculatorPositionLong { get; private set; }
       public float LargeSpeculatorPositionShort { get; private set; }
+      public float LargeSpeculatorPositionSpread { get; private set; }
       public float LargeSpeculatorPosition { get { return LargeSpeculatorPositionLong - LargeSpeculatorPositionShort; } }
       public float SmallSpeculatorPositionLong { get; private set; }
       public float SmallSpeculatorPositionShort { get; private set; }
@@ -41,6 +43,7 @@ namespace StockAnalyzer.StockClasses
          this.SmallSpeculatorPositionLong = smallSpeculatorPositionLong;
          this.CommercialHedgerPositionLong = commercialHedgerPositionLong;
          this.LargeSpeculatorPositionShort = largeSpeculatorPositionShort;
+         this.LargeSpeculatorPositionSpread = largeSpeculatorPositionShortSpread;
          this.SmallSpeculatorPositionShort = smallSpeculatorPositionShort;
          this.CommercialHedgerPositionShort = commercialHedgerPositionShort;
 
@@ -49,17 +52,17 @@ namespace StockAnalyzer.StockClasses
 
       static public string StringFormat()
       {
-         return "Date,LargeSpeculatorPositionLong,LargeSpeculatorPositionShort,SmallSpeculatorPositionLong,SmallSpeculatorPositionShort,CommercialHedgerPositionLong,CommercialHedgerPositionShort,OpenInterest";
+         return "Date,LargeSpeculatorPositionLong,LargeSpeculatorPositionShort,LargeSpeculatorPositionSpread,SmallSpeculatorPositionLong,SmallSpeculatorPositionShort,CommercialHedgerPositionLong,CommercialHedgerPositionShort,OpenInterest";
       }
       public override string ToString()
       {
-         return Date.ToString("s") + "," + LargeSpeculatorPositionLong.ToString() + "," + LargeSpeculatorPositionShort.ToString() + "," + SmallSpeculatorPositionLong.ToString() + "," + SmallSpeculatorPositionShort.ToString()
+         return Date.ToString("s") + "," + LargeSpeculatorPositionLong.ToString() + "," + LargeSpeculatorPositionShort.ToString() + "," + LargeSpeculatorPositionSpread.ToString() + "," + SmallSpeculatorPositionLong.ToString() + "," + SmallSpeculatorPositionShort.ToString()
              + "," + CommercialHedgerPositionLong.ToString() + "," + CommercialHedgerPositionShort.ToString() + "," + OpenInterest.ToString();
       }
       public static CotValue Parse(string line)
       {
          string[] fields = line.Split(',');
-         return new CotValue(DateTime.Parse(fields[0]), float.Parse(fields[1]), float.Parse(fields[2]), float.Parse(fields[3]), float.Parse(fields[4]), float.Parse(fields[5]), float.Parse(fields[6]), float.Parse(fields[7]));
+         return new CotValue(DateTime.Parse(fields[0]), float.Parse(fields[1]), float.Parse(fields[2]), float.Parse(fields[3]), float.Parse(fields[4]), float.Parse(fields[5]), float.Parse(fields[6]), float.Parse(fields[7]), float.Parse(fields[8]));
       }
    }
 }

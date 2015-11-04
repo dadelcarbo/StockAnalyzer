@@ -14,25 +14,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
-      public override string Name
-      {
-         get { return "COTCOMMERCIAL"; }
-      }
-      public override string Definition
-      {
-         get { return "COTCOMMERCIAL"; }
-      }
       public override string[] ParameterNames
       {
-         get { return new string[] { }; }
+         get { return new string[] { "Smooting", "OpenIntPercent"}; }
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { }; }
+         get { return new Object[] {1, false }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { }; }
+         get { return new ParamRange[] { new ParamRangeInt(1,500), new ParamRangeBool()};}
       }
 
       public override string[] SerieNames { get { return new string[] { "COTCOMMERCIAL" }; } }
@@ -64,8 +56,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          if (stockSerie.CotSerie != null)
          {
+            int period = (int)this.parameters[0];
+            bool percent = (bool)this.parameters[1];
+
             // Get the CotSerie with date consideration...
-            this.series[0] = stockSerie.CotSerie.GetSerie(CotValue.CotValueType.CommercialHedgerPosition, stockSerie.Keys.ToArray());
+            FloatSerie cotSerie = stockSerie.CotSerie.GetSerie(CotValue.CotValueType.CommercialHedgerPosition, stockSerie.Keys.ToArray());
+            if (percent)
+            {
+               FloatSerie openInt = stockSerie.CotSerie.GetSerie(CotValue.CotValueType.OpenInterest, stockSerie.Keys.ToArray());
+               cotSerie = cotSerie *100f/ openInt;
+            }
+            this.series[0] = cotSerie.CalculateEMA(period);
          }
          else
          {
