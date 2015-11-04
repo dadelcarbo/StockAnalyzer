@@ -85,7 +85,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
 
       // Private methods
-      static private string COT_SUBFOLDER = @"\data\weekly\cot";
       static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
       private bool ParseCOT(StockSerie stockSerie, string fileName)
       {

@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses
       public float OpenInterest { get; private set; }
 
       public CotValue(DateTime date,
-          float largeSpeculatorPositionLong, float largeSpeculatorPositionShort,
+          float largeSpeculatorPositionLong, float largeSpeculatorPositionShort, float largeSpeculatorPositionShortSpread,
           float smallSpeculatorPositionLong, float smallSpeculatorPositionShort,
           float commercialHedgerPositionLong, float commercialHedgerPositionShort,
           float openInterest)

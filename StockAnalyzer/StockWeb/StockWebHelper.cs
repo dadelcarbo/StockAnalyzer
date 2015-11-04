@@ -48,6 +48,9 @@ namespace StockAnalyzer.StockWeb
       {
          upToDate = false;
 
+         // 
+         DownloadCOTArchive(destRootFolder, ref upToDate);
+
          string folder = destRootFolder + COT_SUBFOLDER;
          if (!Directory.Exists(folder))
          {
@@ -98,7 +101,7 @@ namespace StockAnalyzer.StockWeb
          return true;
       }
 
-      public bool DownloadCOTAll(string destRootFolder, ref bool upToDate)
+      public bool DownloadCOTArchive(string destRootFolder, ref bool upToDate)
       {
          upToDate = false;
 
@@ -108,21 +111,16 @@ namespace StockAnalyzer.StockWeb
             Directory.CreateDirectory(folder);
          }
          // Check last download date
-         for (int i = 1991; i <= DateTime.Now.Year; i++)
+         for (int i = 1991; i <= DateTime.Now.Year-1; i++)
          {
-
             string fileName = folder + @"\annual_" + i + ".txt";
-            //if (File.GetLastWriteTime(fileName) >= DateTime.Now.AddDays(-1))
-            //{
-            //    return true;
-            //}
+            if (File.Exists(fileName)) continue;
 
             if (DownloadStarted != null)
             {
                this.DownloadStarted("Downloading Commitment of Traders...");
             }
-            string url = @"http://www.cftc.gov/files/dea/history/deacot$YEAR.zip".Replace("$YEAR",
-               i.ToString());
+            string url = @"http://www.cftc.gov/files/dea/history/deacot$YEAR.zip".Replace("$YEAR", i.ToString());
             using (WebClient wc = new WebClient())
             {
                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
