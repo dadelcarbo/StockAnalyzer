@@ -306,8 +306,7 @@ namespace StockAnalyzerApp.CustomControl
                progress.Add(stockSerie, ProgressStatus.NeedDownload);
             }
 
-            // Refreshes intrady every 2 minutes.
-
+            // Refreshes intraday every 2 minutes.
             downloadTimer = new System.Windows.Forms.Timer();
             downloadTimer.Tick += new EventHandler(this.DownloadSeries);
             downloadTimer.Interval = 100;

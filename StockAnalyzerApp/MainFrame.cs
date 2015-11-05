@@ -435,9 +435,11 @@ namespace StockAnalyzerApp
          // Checks for allert every 5 minutes.
          alertTimer = new System.Windows.Forms.Timer();
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
-         alertTimer.Interval = 5 * 60 * 1000;
+         alertTimer.Interval = 5 * 05 * 1000;
          alertTimer.Start();
       }
+
+
       #region TIMER MANAGEMENT
       void refreshTimer_Tick(object sender, EventArgs e)
       {
@@ -465,18 +467,15 @@ namespace StockAnalyzerApp
             }
          }
       }
-      void alertTimer_Tick(object sender, EventArgs e)
+
+      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionSell");
+      private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
+
+      private void alertTimer_Tick(object sender, EventArgs e)
       {
+         alerts.Clear();
+         alerts.Add(cciEx);
          string alert = string.Empty;
-         if (string.IsNullOrWhiteSpace(this.currentStrategy) || !this.WatchLists.Any(wl => wl.Name == "Alert"))
-            return;
-
-         this.Cursor = Cursors.WaitCursor;
-
-         StockPortofolio portfolio = new StockPortofolio("Alert_P");
-         portfolio.IsSimulation = true;
-         portfolio.TotalDeposit = 10000;
-
          foreach (string stockName in this.WatchLists.Find(wl => wl.Name == "Alert").StockList)
          {
             if (!this.StockDictionary.ContainsKey(stockName)) continue;
@@ -487,62 +486,95 @@ namespace StockAnalyzerApp
             if (!stockSerie.Initialise()) continue;
 
             StockSerie.StockBarDuration previousBarDuration = stockSerie.BarDuration;
-            stockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
+            stockSerie.BarDuration = (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
 
-            // Calculate strategy
-            IStockStrategy selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy, stockSerie, null, true);
-
-            if (selectedStrategy == null) continue;
-
-            float amount = stockSerie.GetMax(StockDataType.CLOSE) * 100f;
-
-            portfolio.TotalDeposit = amount;
-            portfolio.Clear();
-
-            stockSerie.GenerateSimulation(selectedStrategy, Settings.Default.StrategyStartDate, stockSerie.Keys.Last(),
-                amount, false, false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, portfolio);
-
-            if (portfolio.OrderList.Count > 0)
+            if (stockSerie.MatchEventsAnd(alerts))
             {
-               StockOrder lastOrder = portfolio.OrderList.Last();
-               if (lastOrder.ExecutionDate == stockSerie.Keys.ElementAt(stockSerie.LastCompleteIndex))
-               {
-                  alert += stockSerie.StockName + "==>" + lastOrder + Environment.NewLine;
-               }
+               alert += stockSerie.StockName + "==>" + alerts.First().EventName;
             }
-
-            stockSerie.BarDuration = previousBarDuration;
-         }
-         if (!string.IsNullOrEmpty(alert))
-         {
-            MessageBox.Show(alert);
-
-            //// Send email
-            //if (NetworkInterface.GetIsNetworkAvailable())
-            //{
-            //    using (MailMessage message = new MailMessage())
-            //    {
-            //        message.Body = alert;
-
-            //        message.To.Add(Settings.Default.UserEMail);
-            //        message.To.Add("david.carbonel@volvo.com");
-            //        message.Subject = "Ultimate Chartist Analysis Alert Report - " + DateTime.Now;
-            //        message.From = new MailAddress("noreply@ultimatechartist.com");
-            //        message.IsBodyHtml = false;
-            //        SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
-            //        try
-            //        {
-            //            smtp.Send(message);
-            //            System.Windows.Forms.MessageBox.Show("Email sent successfully");
-            //        }
-            //        catch (System.Exception exp)
-            //        {
-            //            System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
-            //        }
-            //    }
-            //}
          }
       }
+
+
+      /// Strategy Timer Alert
+      //void alertTimer_Tick(object sender, EventArgs e)
+      //{
+      //   string alert = string.Empty;
+      //   if (string.IsNullOrWhiteSpace(this.currentStrategy) || !this.WatchLists.Any(wl => wl.Name == "Alert"))
+      //      return;
+
+      //   this.Cursor = Cursors.WaitCursor;
+
+      //   StockPortofolio portfolio = new StockPortofolio("Alert_P");
+      //   portfolio.IsSimulation = true;
+      //   portfolio.TotalDeposit = 10000;
+
+      //   foreach (string stockName in this.WatchLists.Find(wl => wl.Name == "Alert").StockList)
+      //   {
+      //      if (!this.StockDictionary.ContainsKey(stockName)) continue;
+
+      //      StockSerie stockSerie = this.StockDictionary[stockName];
+      //      StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+
+      //      if (!stockSerie.Initialise()) continue;
+
+      //      StockSerie.StockBarDuration previousBarDuration = stockSerie.BarDuration;
+      //      stockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
+
+      //      // Calculate strategy
+      //      IStockStrategy selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy, stockSerie, null, true);
+
+      //      if (selectedStrategy == null) continue;
+
+      //      float amount = stockSerie.GetMax(StockDataType.CLOSE) * 100f;
+
+      //      portfolio.TotalDeposit = amount;
+      //      portfolio.Clear();
+
+      //      stockSerie.GenerateSimulation(selectedStrategy, Settings.Default.StrategyStartDate, stockSerie.Keys.Last(),
+      //          amount, false, false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, portfolio);
+
+      //      if (portfolio.OrderList.Count > 0)
+      //      {
+      //         StockOrder lastOrder = portfolio.OrderList.Last();
+      //         if (lastOrder.ExecutionDate == stockSerie.Keys.ElementAt(stockSerie.LastCompleteIndex))
+      //         {
+      //            alert += stockSerie.StockName + "==>" + lastOrder + Environment.NewLine;
+      //         }
+      //      }
+
+      //      stockSerie.BarDuration = previousBarDuration;
+      //   }
+      //   if (!string.IsNullOrEmpty(alert))
+      //   {
+      //      MessageBox.Show(alert);
+
+      //      //// Send email
+      //      //if (NetworkInterface.GetIsNetworkAvailable())
+      //      //{
+      //      //    using (MailMessage message = new MailMessage())
+      //      //    {
+      //      //        message.Body = alert;
+
+      //      //        message.To.Add(Settings.Default.UserEMail);
+      //      //        message.To.Add("david.carbonel@volvo.com");
+      //      //        message.Subject = "Ultimate Chartist Analysis Alert Report - " + DateTime.Now;
+      //      //        message.From = new MailAddress("noreply@ultimatechartist.com");
+      //      //        message.IsBodyHtml = false;
+      //      //        SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
+      //      //        try
+      //      //        {
+      //      //            smtp.Send(message);
+      //      //            System.Windows.Forms.MessageBox.Show("Email sent successfully");
+      //      //        }
+      //      //        catch (System.Exception exp)
+      //      //        {
+      //      //            System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
+      //      //        }
+      //      //    }
+      //      //}
+      //   }
+      //}
       #endregion
       private System.Windows.Forms.Timer refreshTimer;
       private System.Windows.Forms.Timer alertTimer;
