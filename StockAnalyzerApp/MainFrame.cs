@@ -468,7 +468,7 @@ namespace StockAnalyzerApp
          }
       }
 
-      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionSell");
+      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)

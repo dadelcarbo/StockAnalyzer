@@ -1955,18 +1955,8 @@ namespace StockAnalyzer.StockClasses
 
                int index = LastCompleteIndex;
 
-               if (stockEvent is IStockDecorator)
-               {
-                  IStockDecorator stockDecorator = ((IStockDecorator)stockEvent);
-
-                  int eventIndex = Array.IndexOf<string>(stockDecorator.SerieNames, alertDef.EventName);
-                  if (!stockDecorator.Events[eventIndex][index]) return false;
-               }
-               else
-               {
-                  int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, alertDef.EventName);
-                  if (!stockEvent.Events[eventIndex][index]) return false;
-               }
+               int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, alertDef.EventName);
+               if (!stockEvent.Events[eventIndex][index]) return false;
             }
          }
          finally
