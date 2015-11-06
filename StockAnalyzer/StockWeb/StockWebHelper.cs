@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Linq.Mapping;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -46,7 +47,7 @@ namespace StockAnalyzer.StockWeb
       }
       public bool DownloadCOT(string destRootFolder, ref bool upToDate)
       {
-         upToDate = false;
+         upToDate = true;
 
          // 
          DownloadCOTArchive(destRootFolder, ref upToDate);
@@ -60,8 +61,10 @@ namespace StockAnalyzer.StockWeb
          string fileName = folder + @"\annual_" + DateTime.Now.Year + ".txt";
          if (File.GetLastWriteTime(fileName) >= DateTime.Now.AddDays(-1))
          {
+            upToDate = true;
             return true;
          }
+         upToDate = false;
 
          if (DownloadStarted != null)
          {

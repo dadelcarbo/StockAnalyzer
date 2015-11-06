@@ -123,9 +123,9 @@ namespace StockAnalyzerApp.CustomControl
                               {
                                  TreeNode treeNode = new TreeNode(fields[1]);
                                  parentNode.Nodes.Add(treeNode);
-                                 for (int i = 0; i < decorator.SeriesCount; i++)
+                                 for (int i = 0; i < decorator.EventCount; i++)
                                  {
-                                    treeNode.Nodes.Add(new TreeNode(decorator.SerieNames[i]) { Tag = decorator });
+                                    treeNode.Nodes.Add(new TreeNode(decorator.EventNames[i]) { Tag = decorator });
                                     eventTreeView.Refresh();
                                  }
                               }
@@ -271,24 +271,12 @@ namespace StockAnalyzerApp.CustomControl
 
             foreach (TreeNode childNode in checkedNodes)
             {
-               if (childNode.Tag is IStockDecorator) // Decorator
+               IStockEvent eventSerie = (IStockEvent) childNode.Tag;
+               eventMatches.Add(new StockSerie.EventMatch()
                {
-                  IStockViewableSeries decoratorSerie = (IStockViewableSeries)childNode.Tag;
-                  eventMatches.Add(new StockSerie.EventMatch()
-                  {
-                     ViewableSerie = decoratorSerie,
-                     EventIndex = decoratorSerie.SerieNames.ToList().IndexOf(childNode.Text)
-                  });
-               }
-               else // Indicator or Trail
-               {
-                  IStockEvent eventSerie = (IStockEvent)childNode.Tag;
-                  eventMatches.Add(new StockSerie.EventMatch()
-                  {
-                     ViewableSerie = (IStockViewableSeries)eventSerie,
-                     EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
-                  });
-               }
+                  ViewableSerie = (IStockViewableSeries) eventSerie,
+                  EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
+               });
             }
          }
 
@@ -520,24 +508,12 @@ namespace StockAnalyzerApp.CustomControl
 
                foreach (TreeNode childNode in checkedNodes)
                {
-                  if (childNode.Tag is IStockEvent) // Indicator or Trail
+                  IStockEvent eventSerie = (IStockEvent) childNode.Tag;
+                  eventMatches.Add(new StockSerie.EventMatch()
                   {
-                     IStockEvent eventSerie = (IStockEvent)childNode.Tag;
-                     eventMatches.Add(new StockSerie.EventMatch()
-                     {
-                        ViewableSerie = (IStockViewableSeries)eventSerie,
-                        EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
-                     });
-                  }
-                  else // Decorator
-                  {
-                     IStockViewableSeries decoratorSerie = (IStockViewableSeries)childNode.Tag;
-                     eventMatches.Add(new StockSerie.EventMatch()
-                     {
-                        ViewableSerie = decoratorSerie,
-                        EventIndex = decoratorSerie.SerieNames.ToList().IndexOf(childNode.Text)
-                     });
-                  }
+                     ViewableSerie = (IStockViewableSeries) eventSerie,
+                     EventIndex = eventSerie.EventNames.ToList().IndexOf(childNode.Text)
+                  });
                }
             }
 

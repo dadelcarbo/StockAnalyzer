@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -309,7 +310,7 @@ namespace StockAnalyzerApp
             //swh.DownloadCOTArchive(Settings.Default.RootFolder, ref upToDate);
             swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
 
-            if (System.IO.Directory.Exists(Settings.Default.RootFolder + COT_SUBFOLDER))
+            if (System.IO.Directory.Exists(Settings.Default.RootFolder + COT_SUBFOLDER) && !upToDate)
             {
                StockSplashScreen.ProgressText = "Parsing commitment of traders data...";
 
@@ -435,7 +436,7 @@ namespace StockAnalyzerApp
          // Checks for allert every 5 minutes.
          alertTimer = new System.Windows.Forms.Timer();
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
-         alertTimer.Interval = 5 * 05 * 1000;
+         alertTimer.Interval = 5 * 60 * 1000;
          alertTimer.Start();
       }
 
@@ -469,28 +470,72 @@ namespace StockAnalyzerApp
       }
 
       private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+      private StockSerie.StockAlertDef cciEx2 = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRUE(5)", "EndOfLowerClose");
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)
       {
          alerts.Clear();
          alerts.Add(cciEx);
+         alerts.Add(cciEx2);
          string alert = string.Empty;
-         foreach (string stockName in this.WatchLists.Find(wl => wl.Name == "Alert").StockList)
+
+         var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+
+         StockSplashScreen.FadeInOutSpeed = 0.25;
+         StockSplashScreen.ProgressText = "Scanning Alerts ";
+         StockSplashScreen.ProgressVal = 0;
+         StockSplashScreen.ProgressMax = alertList.Count();
+         StockSplashScreen.ProgressMin = 0;
+         StockSplashScreen.ShowSplashScreen();
+
+         foreach (string stockName in alertList)
          {
             if (!this.StockDictionary.ContainsKey(stockName)) continue;
+
+            StockSplashScreen.ProgressVal++;
+            StockSplashScreen.ProgressSubText = "Scanning " + stockName;
 
             StockSerie stockSerie = this.StockDictionary[stockName];
             StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
 
             if (!stockSerie.Initialise()) continue;
 
-            StockSerie.StockBarDuration previousBarDuration = stockSerie.BarDuration;
-            stockSerie.BarDuration = (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
-
             if (stockSerie.MatchEventsAnd(alerts))
             {
                alert += stockSerie.StockName + "==>" + alerts.First().EventName;
+            }
+         }
+         if (!string.IsNullOrEmpty(alert))
+         {
+            MessageBox.Show(alert);
+            SendEmail(alert);
+         }
+
+         StockSplashScreen.CloseForm(true);
+      }
+
+      private static void SendEmail(string alert)
+      {
+         if (NetworkInterface.GetIsNetworkAvailable())
+         {
+            using (MailMessage message = new MailMessage())
+            {
+               message.Body = alert;
+
+               message.From = new MailAddress("noreply@ultimatechartist.com");
+               message.To.Add("david.carbonel@free.fr");
+               message.Subject = "Ultimate Chartist Analysis Alert Report - " + DateTime.Now;
+               message.IsBodyHtml = false;
+               SmtpClient smtp = new SmtpClient("mailgot.it.volvo.net");
+               try
+               {
+                  smtp.Send(message);
+               }
+               catch (System.Exception exp)
+               {
+                  System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
+               }
             }
          }
       }
@@ -4265,7 +4310,6 @@ border:1px solid black;
       }
       private void sendEMailReportToolStripBtn_Click(object sender, EventArgs e)
       {
-
          this.SendMail();
          //if (this.currentStockSerie == null) return;
 

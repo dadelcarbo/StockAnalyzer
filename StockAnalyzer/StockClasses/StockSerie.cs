@@ -1966,6 +1966,41 @@ namespace StockAnalyzer.StockClasses
 
          return match;
       }
+      public bool MatchEventsOr(List<StockAlertDef> indicators)
+      {
+         bool match = false;
+
+         StockBarDuration currentBarDuration = this.BarDuration;
+         try
+         {
+            foreach (StockAlertDef alertDef in indicators)
+            {
+               this.BarDuration = alertDef.BarDuration;
+               IStockEvent stockEvent = null;
+               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.indicatorFullName);
+               if (this.HasVolume || !indicator.RequiresVolumeData)
+               {
+                  stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+               }
+               else
+               {
+                  continue;
+               }
+
+               int index = LastCompleteIndex;
+
+               int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, alertDef.EventName);
+               if (stockEvent.Events[eventIndex][index]) return true;
+            }
+         }
+         finally
+         {
+            this.BarDuration = currentBarDuration;
+         }
+
+         return match;
+      }
+
       public bool MatchEventsOr(int index, List<EventMatch> viewableSeries)
       {
          bool match = false;

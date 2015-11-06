@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.CustomControl.WatchListDlgs;
 
 namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
 {
@@ -102,15 +103,18 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
       }
       private void addStockbtn_Click(object sender, EventArgs e)
       {
-         StockScannerDlg stockSelectorDlg = new StockScannerDlg(StockAnalyzerForm.MainFrame.StockDictionary, StockSerie.Groups.ALL, StockSerie.StockBarDuration.Daily, StockAnalyzerForm.MainFrame.GetCurrentTheme());
+         StockSelectorDlg stockSelectorDlg = new StockSelectorDlg();
          System.Windows.Forms.DialogResult res = stockSelectorDlg.ShowDialog();
 
-         StockWatchList watchList = watchLists.Find(wl => wl.Name == this.watchListComboBox.Text);
-         watchList.StockList.AddRange(stockSelectorDlg.SelectedStocks);
+         if (res == DialogResult.OK)
+         {
+            StockWatchList watchList = watchLists.Find(wl => wl.Name == this.watchListComboBox.Text);
+            watchList.StockList.AddRange(stockSelectorDlg.SelectedStocks);
 
-         this.stockWatchListBindingSource.DataSource = null;
-         this.stockWatchListBindingSource.DataSource = watchLists.First(wl => wl == this.watchListComboBox.SelectedItem).StockList;
-
+            this.stockWatchListBindingSource.DataSource = null;
+            this.stockWatchListBindingSource.DataSource =
+               watchLists.First(wl => wl == this.watchListComboBox.SelectedItem).StockList;
+         }
       }
    }
 }
