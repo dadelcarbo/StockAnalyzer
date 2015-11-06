@@ -508,37 +508,12 @@ namespace StockAnalyzerApp
          }
          if (!string.IsNullOrEmpty(alert))
          {
-            MessageBox.Show(alert);
-            SendEmail(alert);
+            StockMail.SendEmail("Ultimate Chartist Analysis Alert Report - " + DateTime.Now, alert);
          }
 
          StockSplashScreen.CloseForm(true);
       }
 
-      private static void SendEmail(string alert)
-      {
-         if (NetworkInterface.GetIsNetworkAvailable())
-         {
-            using (MailMessage message = new MailMessage())
-            {
-               message.Body = alert;
-
-               message.From = new MailAddress("noreply@ultimatechartist.com");
-               message.To.Add("david.carbonel@free.fr");
-               message.Subject = "Ultimate Chartist Analysis Alert Report - " + DateTime.Now;
-               message.IsBodyHtml = false;
-               SmtpClient smtp = new SmtpClient("mailgot.it.volvo.net");
-               try
-               {
-                  smtp.Send(message);
-               }
-               catch (System.Exception exp)
-               {
-                  System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
-               }
-            }
-         }
-      }
 
 
       /// Strategy Timer Alert

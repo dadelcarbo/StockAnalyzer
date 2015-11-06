@@ -367,6 +367,7 @@
     <Compile Include="StockStrategyClasses\IStockStrategy.cs" />
     <Compile Include="StockStrategyClasses\StockStrategyBase.cs" />
     <Compile Include="StockStrategyClasses\StrategyManager.cs" />
+    <Compile Include="StockWeb\StockMail.cs" />
     <Compile Include="StockWeb\StockFTP.cs" />
     <Compile Include="StockWeb\StockWebHelper.cs" />
   </ItemGroup>

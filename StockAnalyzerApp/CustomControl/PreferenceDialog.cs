@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
@@ -20,6 +21,8 @@ namespace StockAnalyzerApp.CustomControl
          this.showVariationCheckBox.Checked = Settings.Default.ShowVariation;
          this.userIDTextBox.Text = Settings.Default.UserId;
          this.dateTimePicker.Value = Settings.Default.StrategyStartDate;
+         this.smtpTextBox.Text = Settings.Default.UserSMTP;
+         this.addressTextBox.Text = Settings.Default.UserEMail;
          needRestart = false;
       }
 
@@ -35,6 +38,8 @@ namespace StockAnalyzerApp.CustomControl
          Settings.Default.ShowVariation = this.showVariationCheckBox.Checked;
          Settings.Default.UserId = this.userIDTextBox.Text;
          Settings.Default.StrategyStartDate = this.dateTimePicker.Value;
+         Settings.Default.UserSMTP = this.smtpTextBox.Text;
+         Settings.Default.UserEMail = this.addressTextBox.Text;
          Settings.Default.Save();
 
          if (needRestart)
@@ -79,6 +84,16 @@ namespace StockAnalyzerApp.CustomControl
       private void downloadDataCheckBox_CheckedChanged(object sender, EventArgs e)
       {
          needRestart |= this.downloadDataCheckBox.Checked;
+      }
+
+      private void testButton_Click(object sender, EventArgs e)
+      {
+         Cursor cursor = this.Cursor;
+         this.Cursor = Cursors.WaitCursor;
+
+         StockMail.SendEmail("Test Email", "Test Email");
+
+         this.Cursor = cursor;
       }
    }
 }

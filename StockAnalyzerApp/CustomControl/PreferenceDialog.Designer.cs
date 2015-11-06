@@ -53,22 +53,24 @@
          this.groupBox2 = new System.Windows.Forms.GroupBox();
          this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
          this.label1 = new System.Windows.Forms.Label();
+         this.groupBox3 = new System.Windows.Forms.GroupBox();
+         this.testButton = new System.Windows.Forms.Button();
+         this.smtpTextBox = new System.Windows.Forms.TextBox();
+         this.label3 = new System.Windows.Forms.Label();
+         this.label4 = new System.Windows.Forms.Label();
+         this.addressTextBox = new System.Windows.Forms.TextBox();
          ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource)).BeginInit();
          this.groupBox1.SuspendLayout();
          this.chartParamGroupBox.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
          this.groupBox2.SuspendLayout();
+         this.groupBox3.SuspendLayout();
          this.SuspendLayout();
          // 
          // openFileDlg
          // 
          this.openFileDlg.FileName = "openFileDialog1";
-         resources.ApplyResources(this.openFileDlg, "openFileDlg");
-         // 
-         // folderBrowserDlg
-         // 
-         resources.ApplyResources(this.folderBrowserDlg, "folderBrowserDlg");
          // 
          // okBtn
          // 
@@ -136,9 +138,9 @@
          // 
          // groupBox1
          // 
-         resources.ApplyResources(this.groupBox1, "groupBox1");
          this.groupBox1.Controls.Add(this.generateBreadthCheckBox);
          this.groupBox1.Controls.Add(this.downloadDataCheckBox);
+         resources.ApplyResources(this.groupBox1, "groupBox1");
          this.groupBox1.Name = "groupBox1";
          this.groupBox1.TabStop = false;
          // 
@@ -156,21 +158,21 @@
          // 
          // chartParamGroupBox
          // 
-         resources.ApplyResources(this.chartParamGroupBox, "chartParamGroupBox");
          this.chartParamGroupBox.Controls.Add(this.barNumberUpDown);
          this.chartParamGroupBox.Controls.Add(this.showVariationCheckBox);
          this.chartParamGroupBox.Controls.Add(this.barNumberLabel);
+         resources.ApplyResources(this.chartParamGroupBox, "chartParamGroupBox");
          this.chartParamGroupBox.Name = "chartParamGroupBox";
          this.chartParamGroupBox.TabStop = false;
          // 
          // barNumberUpDown
          // 
-         resources.ApplyResources(this.barNumberUpDown, "barNumberUpDown");
          this.barNumberUpDown.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
+         resources.ApplyResources(this.barNumberUpDown, "barNumberUpDown");
          this.barNumberUpDown.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -207,17 +209,17 @@
          // 
          // groupBox2
          // 
-         resources.ApplyResources(this.groupBox2, "groupBox2");
          this.groupBox2.Controls.Add(this.dateTimePicker);
          this.groupBox2.Controls.Add(this.label1);
          this.groupBox2.Controls.Add(this.shortSellSupportCheckBox);
+         resources.ApplyResources(this.groupBox2, "groupBox2");
          this.groupBox2.Name = "groupBox2";
          this.groupBox2.TabStop = false;
          // 
          // dateTimePicker
          // 
-         resources.ApplyResources(this.dateTimePicker, "dateTimePicker");
          this.dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+         resources.ApplyResources(this.dateTimePicker, "dateTimePicker");
          this.dateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.dateTimePicker.Name = "dateTimePicker";
          // 
@@ -226,12 +228,51 @@
          resources.ApplyResources(this.label1, "label1");
          this.label1.Name = "label1";
          // 
+         // groupBox3
+         // 
+         this.groupBox3.Controls.Add(this.testButton);
+         this.groupBox3.Controls.Add(this.addressTextBox);
+         this.groupBox3.Controls.Add(this.smtpTextBox);
+         this.groupBox3.Controls.Add(this.label4);
+         this.groupBox3.Controls.Add(this.label3);
+         resources.ApplyResources(this.groupBox3, "groupBox3");
+         this.groupBox3.Name = "groupBox3";
+         this.groupBox3.TabStop = false;
+         // 
+         // testButton
+         // 
+         resources.ApplyResources(this.testButton, "testButton");
+         this.testButton.Name = "testButton";
+         this.testButton.UseVisualStyleBackColor = true;
+         this.testButton.Click += new System.EventHandler(this.testButton_Click);
+         // 
+         // smtpTextBox
+         // 
+         resources.ApplyResources(this.smtpTextBox, "smtpTextBox");
+         this.smtpTextBox.Name = "smtpTextBox";
+         // 
+         // label3
+         // 
+         resources.ApplyResources(this.label3, "label3");
+         this.label3.Name = "label3";
+         // 
+         // label4
+         // 
+         resources.ApplyResources(this.label4, "label4");
+         this.label4.Name = "label4";
+         // 
+         // addressTextBox
+         // 
+         resources.ApplyResources(this.addressTextBox, "addressTextBox");
+         this.addressTextBox.Name = "addressTextBox";
+         // 
          // PreferenceDialog
          // 
          this.AcceptButton = this.okBtn;
          resources.ApplyResources(this, "$this");
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.CancelButton = this.cancelBtn;
+         this.Controls.Add(this.groupBox3);
          this.Controls.Add(this.groupBox2);
          this.Controls.Add(this.chartParamGroupBox);
          this.Controls.Add(this.msg1);
@@ -256,6 +297,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).EndInit();
          this.groupBox2.ResumeLayout(false);
          this.groupBox2.PerformLayout();
+         this.groupBox3.ResumeLayout(false);
+         this.groupBox3.PerformLayout();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -285,5 +328,11 @@
       private System.Windows.Forms.GroupBox groupBox2;
       private System.Windows.Forms.DateTimePicker dateTimePicker;
       private System.Windows.Forms.Label label1;
+      private System.Windows.Forms.GroupBox groupBox3;
+      private System.Windows.Forms.TextBox smtpTextBox;
+      private System.Windows.Forms.Label label3;
+      private System.Windows.Forms.Button testButton;
+      private System.Windows.Forms.TextBox addressTextBox;
+      private System.Windows.Forms.Label label4;
    }
 }
