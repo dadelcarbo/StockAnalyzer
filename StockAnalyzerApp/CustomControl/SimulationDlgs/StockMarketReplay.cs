@@ -131,7 +131,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                          "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
                          "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
                          "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                         "AvgGain:\t\t\t" + tradeGains.Sum().ToString("P2");
+                         "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
 
             MessageBox.Show(msg);
          }
@@ -333,7 +333,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
             tradeGains.Add(AddedValuePercent);
 
-            this.totalValue += this.AddedValue;
+            this.totalValue += 1000f * this.AddedValuePercent;
             OnPropertyChanged("TotalValue");
 
             StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();

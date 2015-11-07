@@ -29,6 +29,8 @@ namespace StockAnalyzer.StockClasses
          return ValueSeries[(int)cotType];
       }
 
+
+      static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
       public bool Initialise()
       {
          if (this.IsInitialised)
@@ -37,6 +39,10 @@ namespace StockAnalyzer.StockClasses
          }
          try
          {
+            if (this.Count == 0)
+            {
+               this.LoadFromFile(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER + @"\" + this.CotSerieName + ".csv");
+            }
             foreach (CotValue.CotValueType cotType in Enum.GetValues(typeof(CotValue.CotValueType)))
             {
                System.Reflection.PropertyInfo pi = typeof(CotValue).GetProperty(cotType.ToString());
@@ -83,6 +89,12 @@ namespace StockAnalyzer.StockClasses
       public static CotSerie ReadFromFile(string fileName, string serieName)
       {
          CotSerie cotSerie = new CotSerie(serieName);
+         cotSerie.LoadFromFile(fileName);
+         return cotSerie;
+      }
+
+      private void LoadFromFile(string fileName)
+      {
          try
          {
             CotValue value;
@@ -92,17 +104,15 @@ namespace StockAnalyzer.StockClasses
                while (!sr.EndOfStream)
                {
                   value = CotValue.Parse(sr.ReadLine());
-                  cotSerie.Add(value.Date, value);
+                  this.Add(value.Date, value);
                }
             }
          }
          catch (System.Exception e)
          {
-            StockLog.Write("Exception occured parsing the COTSerie: " + serieName + " " + e.Message);
+            StockLog.Write("Exception occured parsing the COTSerie: " + this.CotSerieName + " " + e.Message);
          }
-         return cotSerie;
       }
-
       public FloatSerie GetSerie(CotValue.CotValueType cotValueType, DateTime[] dateList)
       {         
          System.Reflection.PropertyInfo pi = typeof(CotValue).GetProperty(cotValueType.ToString());

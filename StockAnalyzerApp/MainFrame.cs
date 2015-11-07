@@ -68,7 +68,6 @@ namespace StockAnalyzerApp
 
       public StockDictionary StockDictionary { get; private set; }
       public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
-      public SortedDictionary<string, CotSerie> CotDictionary { get; private set; }
       public StockPortofolioList StockPortofolioList { get; private set; }
       public ToolStripProgressBar ProgressBar { get { return this.progressBar; } }
 
@@ -301,23 +300,7 @@ namespace StockAnalyzerApp
                StockSplashScreen.ProgressVal = 50;
                ParseIntraday();
             }
-
-            // Parse Commitment of Traders
-
-
-            StockWebHelper swh = new StockWebHelper();
-            bool upToDate = false;
-            //swh.DownloadCOTArchive(Settings.Default.RootFolder, ref upToDate);
-            swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
-
-            if (System.IO.Directory.Exists(Settings.Default.RootFolder + COT_SUBFOLDER) && !upToDate)
-            {
-               StockSplashScreen.ProgressText = "Parsing commitment of traders data...";
-
-
-               ParseFullCotSeries();
-            }
-
+            
             // Generate breadth indicator
             if (Settings.Default.GenerateBreadth)
             {
@@ -475,6 +458,8 @@ namespace StockAnalyzerApp
 
       private void alertTimer_Tick(object sender, EventArgs e)
       {
+         if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
+
          alerts.Clear();
          alerts.Add(cciEx);
          alerts.Add(cciEx2);
@@ -1190,185 +1175,12 @@ namespace StockAnalyzerApp
          StockSplashScreen.ProgressText = text;
       }
       #region COMMITMENT OF TRADERS
-      private void ParseFullCotSeries()
-      {
-         this.CotDictionary = new SortedDictionary<string, CotSerie>();
-         string line = string.Empty;
-
-         string cotCfgFileName = Settings.Default.RootFolder + @"\COT.cfg";
-         using (StreamWriter sw = new StreamWriter(cotCfgFileName, false))
-         {
-            try
-            {
-               // Parse COT include list
-               SortedDictionary<string, string> cotIncludeList = ParseCOTInclude();
-
-               // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2010.zip    
-               // Read new downloaded values
-               string cotFolder = Settings.Default.RootFolder + COT_SUBFOLDER;
-               string cotArchiveFolder = Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER;
-               string[] files = System.IO.Directory.GetFiles(cotFolder, "annual_*.txt");
-
-               int cotLargeSpeculatorPositionLongIndex = 8;
-               int cotLargeSpeculatorPositionShortIndex = 9;
-               int cotLargeSpeculatorPositionSpreadIndex = 10;
-               int cotCommercialHedgerPositionLongIndex = 11;
-               int cotCommercialHedgerPositionShortIndex = 12;
-               int cotSmallSpeculatorPositionLongIndex = 13;
-               int cotSmallSpeculatorPositionShortIndex = 14;
-               int cotOpenInterestIndex = 7;
-
-               DateTime cotDate;
-               float cotLargeSpeculatorPositionLong;
-               float cotLargeSpeculatorPositionShort;
-               float cotLargeSpeculatorPositionSpread;
-               float cotCommercialHedgerPositionLong;
-               float cotCommercialHedgerPositionShort;
-               float cotSmallSpeculatorPositionLong;
-               float cotSmallSpeculatorPositionShort;
-               float cotOpenInterest;
-
-               foreach (string fileName in files)
-               {
-                  StreamReader sr = new StreamReader(fileName);
-                  CotValue readCotValue = null;
-                  CotSerie cotSerie = null;
-                  int endOfNameIndex = 0;
-
-                  string cotSerieName = string.Empty;
-
-                  string[] row;
-                  sr.ReadLine();   // Skip header line
-                  while (!sr.EndOfStream)
-                  {
-                     line = sr.ReadLine();
-                     if (line == string.Empty)
-                     {
-                        continue;
-                     }
-
-                     string[] fields = ParseCOTLine(line);
-                     cotSerieName = fields[0];
-
-                     int index = cotSerieName.IndexOf(" - ");
-                     if (index == -1)
-                     {
-                        continue;
-                     }
-                     cotSerieName = cotSerieName.Substring(0, index) + "_COT";
-
-                     if (!cotIncludeList.Keys.Contains(cotSerieName))
-                     {
-                        continue;
-                     }
-
-                     row = fields;
-
-                     cotLargeSpeculatorPositionLong = float.Parse(row[cotLargeSpeculatorPositionLongIndex]);
-                     cotLargeSpeculatorPositionShort = float.Parse(row[cotLargeSpeculatorPositionShortIndex]);
-                     cotLargeSpeculatorPositionSpread = float.Parse(row[cotLargeSpeculatorPositionSpreadIndex]);
-                     cotCommercialHedgerPositionLong = float.Parse(row[cotCommercialHedgerPositionLongIndex]);
-                     cotCommercialHedgerPositionShort = float.Parse(row[cotCommercialHedgerPositionShortIndex]);
-                     cotSmallSpeculatorPositionLong = float.Parse(row[cotSmallSpeculatorPositionLongIndex]);
-                     cotSmallSpeculatorPositionShort = float.Parse(row[cotSmallSpeculatorPositionShortIndex]);
-                     cotOpenInterest = float.Parse(row[cotOpenInterestIndex]);
-
-                     cotDate = DateTime.Parse(row[2], usCulture);
-
-                     readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort, cotLargeSpeculatorPositionSpread,
-                         cotSmallSpeculatorPositionLong, cotSmallSpeculatorPositionShort,
-                         cotCommercialHedgerPositionLong, cotCommercialHedgerPositionShort, cotOpenInterest);
-                     if (this.CotDictionary.ContainsKey(cotSerieName))
-                     {
-                        cotSerie = this.CotDictionary[cotSerieName];
-                        if (!cotSerie.ContainsKey(readCotValue.Date))
-                        {
-                           cotSerie.Add(readCotValue.Date, readCotValue);
-
-                           // flag as not initialised as values have to be calculated
-                           cotSerie.IsInitialised = false;
-                        }
-                     }
-                     else
-                     {
-                        cotSerie = new CotSerie(cotSerieName);
-                        this.CotDictionary.Add(cotSerieName, cotSerie);
-                        cotSerie.Add(readCotValue.Date, readCotValue);
-
-                        sw.WriteLine(cotSerieName + ";");
-                        
-                        if (!string.IsNullOrWhiteSpace(cotIncludeList[cotSerieName]))
-                        {
-                           if (this.StockDictionary.ContainsKey(cotIncludeList[cotSerieName]))
-                           {
-                              this.StockDictionary[cotIncludeList[cotSerieName]].CotSerie = cotSerie;
-                           }
-                        }
-                     }
-                  }
-                  sr.Close();
-               }
-               foreach (CotSerie cotSerie in this.CotDictionary.Values)
-               {
-                  string archiveFileName = cotArchiveFolder + @"\" + cotSerie.CotSerieName + ".csv";
-
-                  cotSerie.SaveToFile(archiveFileName);
-               }
-            }
-            catch (System.Exception e)
-            {
-               MessageBox.Show(e.Message + "\r\r" + line, "Failed to parse COT file");
-            }
-         }
-      }
-
-      private string[] ParseCOTLine(string line)
-      {
-         string field = string.Empty;
-         bool quoteFound = false;
-         List<string> fields = new List<string>();
-         for (int i = 0; i < line.Length; i++)
-         {
-            if (line[i] == '\"')
-            {
-               if (quoteFound)
-               {
-                  quoteFound = false;
-               }
-               else
-               {
-                  quoteFound = true;
-               }
-            }
-            else
-            {
-               if (quoteFound)
-               {
-                  field += line[i];
-               }
-               else
-               {
-                  if (line[i] == ',')
-                  {
-                     fields.Add(field.Trim());
-                     field = string.Empty;
-                  }
-                  else
-                  {
-                     field += line[i];
-                  }
-               }
-            }
-         }
-         return fields.ToArray();
-      }
-
       private static SortedDictionary<string, string> ParseCOTInclude()
       {
          SortedDictionary<string, string> cotIncludeList = new SortedDictionary<string, string>();
          string[] fields;
 
-         string fileName = Settings.Default.RootFolder + @"\COT2.cfg";
+         string fileName = Settings.Default.RootFolder + @"\COT.cfg";
          if (File.Exists(fileName))
          {
             using (StreamReader sr = new StreamReader(fileName))
