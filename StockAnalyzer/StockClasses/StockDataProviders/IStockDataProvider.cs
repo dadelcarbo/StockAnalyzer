@@ -17,7 +17,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       Replay,
       Breadth,
       Ratio,
-      COT
+      COT,
+      NASDACQShortInterest
    }
 
    public delegate void DownloadingStockEventHandler(string text);

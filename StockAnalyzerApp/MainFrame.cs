@@ -267,13 +267,6 @@ namespace StockAnalyzerApp
             return;
          }
 
-         // Download new values
-         if (Settings.Default.DownloadData && System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-         {
-            StockSplashScreen.ProgressText = "Downloading data...";
-            // DownloadStockValue();
-         }
-
          // Parse Yahoo market data
          StockSplashScreen.ProgressText = "Initialize stock dictionary...";
          StockSplashScreen.ProgressVal = 30;
@@ -1126,49 +1119,6 @@ namespace StockAnalyzerApp
       }
 
       delegate bool DownloadDataMethod(string destination, ref bool upToDate);
-
-      private void DownloadStockValue()
-      {
-         StockWebHelper stockWebHelper = new StockWebHelper();
-         stockWebHelper.DownloadStarted += new StockWebHelper.DownloadingStockEventHandler(Notifiy_SplashProgressChanged);
-         DownloadDataMethod[] downloadMethods = { stockWebHelper.DownloadHarpex, stockWebHelper.DownloadCOT };
-
-         bool retry = true;
-         bool upToDate = false;
-         DialogResult dlgResult;
-         foreach (DownloadDataMethod downloadMethod in downloadMethods)
-         {
-            retry = true;
-            while (!upToDate && retry)
-            {
-               try
-               {
-                  downloadMethod(Settings.Default.RootFolder, ref upToDate);
-                  retry = false;
-               }
-               catch (System.Exception e)
-               {
-                  if (e.InnerException != null)
-                  {
-                     dlgResult = MessageBox.Show(e.Message + "\r\rReason:\r" + e.InnerException.Message + "\r\rStack trace:\r" + e.StackTrace, "Download failure !", MessageBoxButtons.AbortRetryIgnore);
-                  }
-                  else
-                  {
-                     dlgResult = MessageBox.Show(e.Message + "\r\rStack trace:\r" + e.StackTrace, "Download failure !", MessageBoxButtons.AbortRetryIgnore);
-                  }
-                  if (dlgResult == System.Windows.Forms.DialogResult.Abort)
-                  {
-                     return;
-                  }
-                  else if (dlgResult == System.Windows.Forms.DialogResult.Ignore)
-                  {
-                     retry = false;
-                  }
-               }
-            }
-
-         }
-      }
 
       void Notifiy_SplashProgressChanged(string text)
       {

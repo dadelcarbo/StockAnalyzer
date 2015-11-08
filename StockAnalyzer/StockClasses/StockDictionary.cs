@@ -17,6 +17,7 @@ namespace StockAnalyzer.StockClasses
       public static StockDictionary StockDictionarySingleton { get; set; }
 
       public SortedDictionary<string, CotSerie> CotDictionary { get; private set; }
+      public SortedDictionary<string, ShortInterestSerie> ShortInterestDictionary { get; private set; }
 
       public delegate void ReportProgressHandler(string progress);
       public event ReportProgressHandler ReportProgress;
@@ -27,6 +28,7 @@ namespace StockAnalyzer.StockClasses
          this.ArchiveEndDate = archiveEndDate;
 
          this.CotDictionary = new SortedDictionary<string, CotSerie>();
+         this.ShortInterestDictionary = new SortedDictionary<string, ShortInterestSerie>();
       }
       public void DetectEvents(OnSerieEventDetectionDone onSerieEventDetectionDone, StockPortofolioList stockPortofolioList, string selectedEvents)
       {

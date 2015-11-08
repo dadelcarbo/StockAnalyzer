@@ -45,6 +45,7 @@ namespace StockAnalyzer.StockWeb
          }
          return DownloadFile(folder, "Harpex.csv", @"http://www.harperpetersen.com/harpex/download.csv");
       }
+
       public bool DownloadCOT(string destRootFolder, ref bool upToDate)
       {
          upToDate = true;
@@ -260,7 +261,7 @@ namespace StockAnalyzer.StockWeb
          }
          return success;
       }
-      private bool DownloadFile(string destFolder, string fileName, string url)
+      public bool DownloadFile(string destFolder, string fileName, string url)
       {
          try
          {

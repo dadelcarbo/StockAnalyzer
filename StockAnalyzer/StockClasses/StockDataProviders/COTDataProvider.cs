@@ -32,19 +32,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {
             res |= ParseCSVFile(stockSerie, archiveFileName);
          }
-
-         //COTFolder = rootFolder + COT_SUBFOLDER;
-         //if (Directory.Exists(COTFolder))
-         //{
-         //   string[] files = System.IO.Directory.GetFiles(COTFolder, "annual_*.txt");
-         //   foreach (string fileName in files)
-         //   {
-         //      res |= this.ParseCOT(stockSerie, fileName);
-         //   }
-
-         //   stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), new DateTime(stockSerie.Keys.Last().Year - 1, 12, 31));
-
-         //}
          return res;
       }
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
@@ -83,16 +70,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                // Need to download new COT
                StockWebHelper swh = new StockWebHelper();
                bool upToDate = false;
-               
-                  NotifyProgress("Downloding commitment of traders data...");
-                
+
+               NotifyProgress("Downloding commitment of traders data...");
+
                swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
 
-               if (!upToDate)
-               {
-                  NotifyProgress("Parsing commitment of traders data...");
-                  ParseFullCotSeries(cotIncludeList, stockDictionary);
-               }
+               NotifyProgress("Parsing commitment of traders data...");
+               ParseFullCotSeries(cotIncludeList, stockDictionary);
             }
          }
       }

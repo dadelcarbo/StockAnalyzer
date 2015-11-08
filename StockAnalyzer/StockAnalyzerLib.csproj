@@ -55,6 +55,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="StockAnalyzer.cs" />
+    <Compile Include="StockClasses\ShortInterestSerie.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
     <Compile Include="StockClasses\CotSerie.cs" />
     <Compile Include="StockClasses\CotValue.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="StockClasses\StockDataProviders\AAIIDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\GoogleIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\NASDACQShortInterestDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\GoogleIntradayDataProviderConfigDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +140,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIRS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CHOP.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ShortInterest.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTSMALLSPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />

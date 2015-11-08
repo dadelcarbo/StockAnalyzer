@@ -74,6 +74,7 @@ namespace StockAnalyzer.StockClasses
          USER1,
          USER2,
          USER3,
+         ShortInterest,
          ALL,
 
       }
@@ -160,6 +161,7 @@ namespace StockAnalyzer.StockClasses
       public bool HasVolume { get; private set; }
       //public bool HasOptix { get { return !string.IsNullOrEmpty(OptixURL); } }
       public bool HasOptix { get { return false; } }
+      public bool HasShortInterest { get; set; }
 
       public string OptixURL { get; set; }
       public FloatSerie Optix { get; set; }
@@ -5008,6 +5010,10 @@ namespace StockAnalyzer.StockClasses
          {
             case Groups.ALL:
                return true;
+            case Groups.ShortInterest:
+               return this.HasShortInterest;
+            case Groups.COT:
+               return this.CotSerie != null;
             case Groups.CAC40:
                return ABCDataProvider.BelongsToCAC40(this);
             case Groups.SBF120:
