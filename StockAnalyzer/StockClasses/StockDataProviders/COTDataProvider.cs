@@ -63,20 +63,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             // Check if download Needed
             CotSerie SP500CotSerie = stockDictionary["SP500"].CotSerie;
-            SP500CotSerie.Initialise();
-            DateTime lastDate = SP500CotSerie.Keys.Last();
-            if ((DateTime.Today - lastDate) > new TimeSpan(9, 0, 0, 0, 0))
+            if (SP500CotSerie != null)
             {
-               // Need to download new COT
-               StockWebHelper swh = new StockWebHelper();
-               bool upToDate = false;
+               SP500CotSerie.Initialise();
+               DateTime lastDate = SP500CotSerie.Keys.Last();
+               if ((DateTime.Today - lastDate) > new TimeSpan(9, 0, 0, 0, 0))
+               {
+                  // Need to download new COT
+                  StockWebHelper swh = new StockWebHelper();
+                  bool upToDate = false;
 
-               NotifyProgress("Downloding commitment of traders data...");
+                  NotifyProgress("Downloding commitment of traders data...");
 
-               swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
+                  swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
 
-               NotifyProgress("Parsing commitment of traders data...");
-               ParseFullCotSeries(cotIncludeList, stockDictionary);
+                  NotifyProgress("Parsing commitment of traders data...");
+                  ParseFullCotSeries(cotIncludeList, stockDictionary);
+               }
             }
          }
       }
