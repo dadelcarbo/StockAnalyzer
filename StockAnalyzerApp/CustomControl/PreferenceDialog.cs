@@ -91,6 +91,9 @@ namespace StockAnalyzerApp.CustomControl
          Cursor cursor = this.Cursor;
          this.Cursor = Cursors.WaitCursor;
 
+         Settings.Default.UserSMTP = this.smtpTextBox.Text;
+         Settings.Default.UserEMail = this.addressTextBox.Text;
+
          StockMail.SendEmail("Test Email", "Test Email");
 
          this.Cursor = cursor;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -410,9 +411,9 @@ namespace StockAnalyzerApp
          refreshTimer.Start();
 
          // Checks for allert every 5 minutes.
-         alertTimer = new System.Windows.Forms.Timer();
+         alertTimer = new System.Windows.Forms.Timer(new Container());
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
-         alertTimer.Interval = 5 * 60 * 1000;
+         alertTimer.Interval = 15 * 60 * 1000;
          alertTimer.Start();
       }
 
@@ -446,52 +447,93 @@ namespace StockAnalyzerApp
       }
 
       private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-      private StockSerie.StockAlertDef cciEx2 = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRUE(5)", "EndOfLowerClose");
+      private StockSerie.StockAlertDef endOfLowerClose = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRUE(5)", "EndOfLowerClose");
+      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)
       {
-         if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
+         if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
+             DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
-         alerts.Clear();
-         alerts.Add(cciEx);
-         alerts.Add(cciEx2);
-         string alert = string.Empty;
-
-         var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
-
-         StockSplashScreen.FadeInOutSpeed = 0.25;
-         StockSplashScreen.ProgressText = "Scanning Alerts ";
-         StockSplashScreen.ProgressVal = 0;
-         StockSplashScreen.ProgressMax = alertList.Count();
-         StockSplashScreen.ProgressMin = 0;
-         StockSplashScreen.ShowSplashScreen();
-
-         foreach (string stockName in alertList)
+         // Clear alert log files
+         string fileName = Path.GetTempPath() + "AlertLog.txt";
+         IEnumerable<string> alertLog = new List<string>();
+         if (File.Exists(fileName))
          {
-            if (!this.StockDictionary.ContainsKey(stockName)) continue;
-
-            StockSplashScreen.ProgressVal++;
-            StockSplashScreen.ProgressSubText = "Scanning " + stockName;
-
-            StockSerie stockSerie = this.StockDictionary[stockName];
-            StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-
-            if (!stockSerie.Initialise()) continue;
-
-            if (stockSerie.MatchEventsAnd(alerts))
+            if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
             {
-               alert += stockSerie.StockName + "==>" + alerts.First().EventName;
+               File.Delete(fileName);
+            }
+            else
+            {
+               alertLog = File.ReadAllLines(fileName);
             }
          }
-         if (!string.IsNullOrEmpty(alert))
+
+         using (StreamWriter sw = new StreamWriter(fileName, true))
          {
-            StockMail.SendEmail("Ultimate Chartist Analysis Alert Report - " + DateTime.Now, alert);
+            alerts.Clear();
+            alerts.Add(cciEx);
+            alerts.Add(endOfLowerClose);
+            alerts.Add(trailHL);
+            //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "UpTrend"));
+            //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "DownTrend");
+            string alertMsg = string.Empty;
+
+            var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+
+            StockSplashScreen.FadeInOutSpeed = 0.25;
+            StockSplashScreen.ProgressText = "Scanning Alerts ";
+            StockSplashScreen.ProgressVal = 0;
+            StockSplashScreen.ProgressMax = alertList.Count();
+            StockSplashScreen.ProgressMin = 0;
+            StockSplashScreen.ShowSplashScreen();
+
+            foreach (string stockName in alertList)
+            {
+               if (!this.StockDictionary.ContainsKey(stockName)) continue;
+
+               StockSplashScreen.ProgressVal++;
+               StockSplashScreen.ProgressSubText = "Scanning " + stockName;
+
+               StockSerie stockSerie = this.StockDictionary[stockName];
+               StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+
+               if (!stockSerie.Initialise()) continue;
+
+               foreach (StockSerie.StockAlertDef alert in alerts)
+               {
+                  if (stockSerie.MatchEvent(alert))
+                  {
+                     var values = stockSerie.GetValues(alerts.First().BarDuration);
+                     string alertLine = stockSerie.StockName + " " + values.ElementAt(values.Count - 2).DATE + "==>" + alert.ToString();
+
+                     // Check if already been sent during the day.
+                     if (!alertLog.Contains(alertLine))
+                     {
+                        alertMsg += alertLine + Environment.NewLine;
+                     }
+                  }
+               }
+            }
+            if (!string.IsNullOrEmpty(alertMsg))
+            {
+               try
+               {
+                  StockMail.SendEmail("Ultimate Chartist Analysis Alert Report - " + DateTime.Now, alertMsg);
+
+                  sw.WriteLine(alertMsg.Trim());
+               }
+               catch (Exception ex)
+               {
+                  StockAnalyzerException.MessageBox(ex);
+               }
+            }
+
+            StockSplashScreen.CloseForm(true);
          }
-
-         StockSplashScreen.CloseForm(true);
       }
-
 
 
       /// Strategy Timer Alert
@@ -1539,6 +1581,7 @@ namespace StockAnalyzerApp
          {
             watchList.StockList.Add(this.stockNameComboBox.SelectedItem.ToString());
             watchList.StockList.Sort();
+            this.SaveWatchList();
          }
       }
       private void watchListMenuItem_Click(object sender, System.EventArgs e)

@@ -270,7 +270,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             {
                for (int i = 0; i < this.EventNames.Length; i++)
                {
-                  this.Events[i] = new BoolSerie(0, this.SerieNames[i]);
+                  this.Events[i] = new BoolSerie(0, this.EventNames[i]);
                }
             }
          }

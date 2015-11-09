@@ -65,7 +65,6 @@ namespace StockAnalyzerApp.CustomControl
                   switch (fields[0].ToUpper())
                   {
                      case "PAINTBAR":
-                        break;
                      case "TRAILSTOP":
                      case "INDICATOR":
                         {

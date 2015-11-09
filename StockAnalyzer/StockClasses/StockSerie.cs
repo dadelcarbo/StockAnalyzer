@@ -252,8 +252,7 @@ namespace StockAnalyzer.StockClasses
          if (ExactDataDurationMapping == null)
          {
             ExactDataDurationMapping = new SortedDictionary<StockBarDuration, StockBarDuration>();
-            //ExactDataDurationMapping.Add(StockBarDuration.Bar_1_EMA5, StockBarDuration.Daily);
-            //ExactDataDurationMapping.Add(StockBarDuration.Bar_1_EMA20, StockBarDuration.Daily);
+            //ExactDataDurationMapping.Add(StockBarDuration.Bar_1_EMA3, StockBarDuration.Daily);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi, StockBarDuration.Daily);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B, StockBarDuration.TwoLineBreaks);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_3D, StockBarDuration.TwoLineBreaks_3D);
@@ -1926,14 +1925,45 @@ namespace StockAnalyzer.StockClasses
          public string IndicatorName { get; private set; }
          public string EventName { get; private set; }
 
-         public string indicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
+         public string IndicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
+
+         public override string ToString()
+         {
+            return this.BarDuration + ":" + IndicatorFullName + "=>" + EventName;
+         }
       }
-      /// <summary>
-      ///
-      /// </summary>
-      /// <param name="index"></param>
-      /// <param name="query"></param>
-      /// <returns></returns>
+      public bool MatchEvent(StockAlertDef stockAlert)
+      {
+         bool match = true;
+
+         StockBarDuration currentBarDuration = this.BarDuration;
+         try
+         {
+               this.BarDuration = stockAlert.BarDuration;
+               IStockEvent stockEvent = null;
+               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+               if (this.HasVolume || !indicator.RequiresVolumeData)
+               {
+                  stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+               }
+               else
+               {
+                  return false;
+               }
+
+               int index = LastCompleteIndex;
+
+               int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+               if (stockEvent.Events[eventIndex][index]) return true;
+            }
+         finally
+         {
+            this.BarDuration = currentBarDuration;
+         }
+
+         return false;
+      }
+
       public bool MatchEventsAnd(List<StockAlertDef> indicators)
       {
          bool match = true;
@@ -1945,7 +1975,7 @@ namespace StockAnalyzer.StockClasses
             {
                this.BarDuration = alertDef.BarDuration;
                IStockEvent stockEvent = null;
-               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.indicatorFullName);
+               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.IndicatorFullName);
                if (this.HasVolume || !indicator.RequiresVolumeData)
                {
                   stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
@@ -1979,7 +2009,7 @@ namespace StockAnalyzer.StockClasses
             {
                this.BarDuration = alertDef.BarDuration;
                IStockEvent stockEvent = null;
-               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.indicatorFullName);
+               IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.IndicatorFullName);
                if (this.HasVolume || !indicator.RequiresVolumeData)
                {
                   stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
