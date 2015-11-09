@@ -268,7 +268,7 @@ namespace StockAnalyzerApp.CustomControl
             {
                if (StockPaintBarManager.Supports(this.triggerIndicatorTextBox.Text))
                {
-                  triggerIndicator = StockPaintBarManager.CreatePaintBar(this.filterIndicatorTextBox.Text);
+                  triggerIndicator = StockPaintBarManager.CreatePaintBar(this.triggerIndicatorTextBox.Text);
                }
                else
                {
