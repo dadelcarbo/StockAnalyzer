@@ -1071,34 +1071,35 @@ namespace StockAnalyzerApp
 
       private void ReadPortofolios()
       {
-         // Read Stock Values from XML
-         string orderFileName = Settings.Default.PortofolioFile;
-         while (orderFileName == string.Empty)
+         if (string.IsNullOrEmpty(Settings.Default.PortofolioFile))
          {
-            PreferenceDialog prefDlg = new PreferenceDialog();
-            prefDlg.ShowDialog();
-            orderFileName = Settings.Default.PortofolioFile;
+            Settings.Default.PortofolioFile = "Portfolio.xml";
          }
+          // Read Stock Values from XML
+         string orderFileName = Path.Combine(Settings.Default.RootFolder,Settings.Default.PortofolioFile);
          try
          {
             // Parsing portofolios
             if (System.IO.File.Exists(orderFileName))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
+               XmlSerializer serializer = new XmlSerializer(typeof (StockPortofolioList));
                using (FileStream fs = new FileStream(orderFileName, FileMode.Open))
                {
                   System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
                   settings.IgnoreWhitespace = true;
                   System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
 
-                  this.StockPortofolioList = (StockPortofolioList)serializer.Deserialize(xmlReader);
+                  this.StockPortofolioList = (StockPortofolioList) serializer.Deserialize(xmlReader);
                }
                RefreshPortofolioMenu();
             }
             else
             {
                this.StockPortofolioList = new StockPortofolioList();
-               this.StockPortofolioList.Add(new StockPortofolio("Binck_P"));
+               this.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000));
+               this.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000));
+               this.SavePortofolios();
+               RefreshPortofolioMenu();
             }
          }
          catch (System.Exception exception)
@@ -1938,13 +1939,7 @@ namespace StockAnalyzerApp
       private void savePortofolioToolStripButton_Click(object sender, EventArgs e)
       {
          // Save stock analysis to XML
-         string portofolioFileName = Settings.Default.PortofolioFile;
-         while (portofolioFileName == string.Empty)
-         {
-            PreferenceDialog prefDlg = new PreferenceDialog();
-            prefDlg.ShowDialog();
-            portofolioFileName = Settings.Default.AnalysisFile;
-         }
+         string portofolioFileName = Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile);
          try
          {
             // Save Portofolios
@@ -1952,7 +1947,7 @@ namespace StockAnalyzerApp
          }
          catch (System.Exception exception)
          {
-            MessageBox.Show(exception.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(exception.Message, "Application Error saving Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
       private void snapshotToolStripButton_Click(object sender, EventArgs e)
@@ -2966,6 +2961,7 @@ namespace StockAnalyzerApp
          //
          OnNeedReinitialise(false);
       }
+
       public void SavePortofolios()
       {
          // Save portofolio list
@@ -2973,14 +2969,17 @@ namespace StockAnalyzerApp
          {
             portofolio.OrderList.SortByDate();
          }
-         XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
-         System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(Settings.Default.PortofolioFile, System.Text.Encoding.Default);
+         XmlSerializer serializer = new XmlSerializer(typeof (StockPortofolioList));
+         System.Xml.XmlTextWriter xmlWriter =
+            new System.Xml.XmlTextWriter(Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile),
+               System.Text.Encoding.Default);
          xmlWriter.Formatting = System.Xml.Formatting.Indented;
          serializer.Serialize(xmlWriter, this.StockPortofolioList);
          xmlWriter.Close();
          //
          OnNeedReinitialise(false);
       }
+
       private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
       {
          if (this.CurrentPortofolio != null)

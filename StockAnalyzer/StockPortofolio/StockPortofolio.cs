@@ -84,6 +84,16 @@ namespace StockAnalyzer.Portofolio
          this.IsSimulation = true;
          this.IsVirtual = true;
       }
+      public StockPortofolio(string name, float totalDeposit)
+      {
+         Currency = '€';
+         Group = StockSerie.Groups.ALL;
+         this.Name = name;
+         this.OrderList = new StockOrderList();
+         this.IsSimulation = false;
+         this.IsVirtual = false;
+         this.TotalDeposit = totalDeposit;
+      }
       class PositionValues
       {
          public int Position { get; set; }

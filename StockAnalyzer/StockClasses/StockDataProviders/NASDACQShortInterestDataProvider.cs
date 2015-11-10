@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          get { return false; }
       }
 
-      static private string SHORTINTEREST_FOLDER = @"data\daily\ShortInterest\";
+      static private string SHORTINTEREST_FOLDER = @"\data\daily\ShortInterest\";
       static private string SI_ARCHIVE_SUBFOLDER = @"\data\archive\daily\ShortInterest";
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
