@@ -162,7 +162,6 @@
          // 
          this.executionDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          this.executionDateTimePicker.Location = new System.Drawing.Point(391, 95);
-         this.executionDateTimePicker.MaxDate = System.DateTime.MaxValue;
          this.executionDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.executionDateTimePicker.Name = "executionDateTimePicker";
          this.executionDateTimePicker.Size = new System.Drawing.Size(103, 20);
@@ -296,7 +295,6 @@
          // 
          this.creationDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
          this.creationDateTimePicker.Location = new System.Drawing.Point(90, 97);
-         this.creationDateTimePicker.MaxDate = System.DateTime.MaxValue;
          this.creationDateTimePicker.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
          this.creationDateTimePicker.Name = "creationDateTimePicker";
          this.creationDateTimePicker.Size = new System.Drawing.Size(103, 20);
@@ -305,11 +303,11 @@
          // label12
          // 
          this.label12.AutoSize = true;
-         this.label12.Location = new System.Drawing.Point(346, 73);
+         this.label12.Location = new System.Drawing.Point(351, 69);
          this.label12.Name = "label12";
          this.label12.Size = new System.Drawing.Size(32, 13);
          this.label12.TabIndex = 5;
-         this.label12.Text = "UpDownState";
+         this.label12.Text = "State";
          // 
          // label13
          // 

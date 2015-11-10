@@ -4665,6 +4665,223 @@ namespace StockAnalyzer.StockClasses
          }
       }
 
+      public void generateAutomaticHLTrendLines(int startIndex, int endIndex, int period, int nbPivots, ref BoolSerie[] events)
+      {
+         DrawingItem.CreatePersistent = false;
+         try
+         {
+            IStockTrailStop pivots = this.GetTrailStop("TrailHL(" + period + ")");
+            BoolSerie brokenDown = pivots.Events[3];
+            BoolSerie brokenUp = pivots.Events[2];
+
+            Queue<int> highPivotIndexQueue = new Queue<int>(nbPivots);
+            Queue<int> lowPivotIndexQueue = new Queue<int>(nbPivots);
+            Queue<float> highPivotValueQueue = new Queue<float>(nbPivots);
+            Queue<float> lowPivotValueQueue = new Queue<float>(nbPivots);
+
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+            float latestHighPivotValue;
+            float latestLowPivotValue;
+
+            Line2DBase latestResistanceLine = null;
+            Line2DBase latestSupportLine = null;
+
+            List<Line2DBase> supportList = new List<Line2DBase>();
+            List<Line2DBase> resistanceList = new List<Line2DBase>();
+
+            if (this.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
+            {
+               this.StockAnalysis.DrawingItems[this.BarDuration].Clear();
+            }
+            else
+            {
+               this.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
+            }
+
+            int j, pivotIndex;
+            int lastBreakIndex = 0;
+            bool brokenResistance = false;
+            bool brokenSupport = false;
+            for (int i = startIndex + period; i <= endIndex; i++)
+            {
+               // Check for broken lines
+               if (latestResistanceLine != null)
+               {
+                  if (closeSerie[i] > latestResistanceLine.ValueAtX(i))
+                  {
+                     // Down trend line has been broken
+                     this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
+                     resistanceList.Remove(latestResistanceLine);
+                     latestResistanceLine = null;
+                     events[(int)TLEvent.ResistanceBroken][i] = true;
+                     brokenResistance = true;
+                     brokenSupport = false;
+                  }
+                  else
+                  {
+                     brokenResistance = false;
+                  }
+               }
+               if (latestSupportLine != null)
+               {
+                  if (closeSerie[i] < latestSupportLine.ValueAtX(i))
+                  {
+                     // Up trend line has been broken
+                     this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(i, true));
+                     supportList.Remove(latestSupportLine);
+                     latestSupportLine = null;
+                     events[(int)TLEvent.SupportBroken][i] = true;
+                     brokenSupport = true;
+                     brokenResistance = false;
+                  }
+                  else
+                  {
+                     brokenSupport = false;
+                  }
+               }
+
+               if (brokenDown[i])
+               {
+                  pivotIndex = highSerie.FindMaxIndex(lastBreakIndex, i-1);
+                  latestHighPivotValue = highSerie[pivotIndex];
+                  lastBreakIndex = i;
+
+                  if (highPivotIndexQueue.Count >= nbPivots)
+                  {
+                     highPivotIndexQueue.Dequeue();
+                     highPivotValueQueue.Dequeue();
+                  }
+                  highPivotIndexQueue.Enqueue(pivotIndex);
+                  highPivotValueQueue.Enqueue(latestHighPivotValue);
+
+                  bool highestPivotFound = false;
+                  for (j = highPivotValueQueue.Count - 2; j >= 0; j--)
+                  {
+                     if (latestHighPivotValue < highPivotValueQueue.ElementAt(j))
+                     {
+                        highestPivotFound = true;
+                        break;
+                     }
+                  }
+                  if (highestPivotFound)
+                  {
+                     if (latestResistanceLine != null)
+                     {
+                        // New line has to be drawn
+                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
+                        resistanceList.Remove(latestResistanceLine);
+                     }
+
+                     latestResistanceLine =
+                         new HalfLine2D(
+                             new PointF(highPivotIndexQueue.ElementAt(j), highPivotValueQueue.ElementAt(j)),
+                             new PointF(pivotIndex, latestHighPivotValue),
+                             Pens.Green);
+                     resistanceList.Add(latestResistanceLine);
+
+                     events[(int)TLEvent.ResistanceDetected][i] = true;
+                     brokenResistance = false;
+                  }
+               }
+               else if (brokenUp[i])
+               {
+                  pivotIndex = lowSerie.FindMinIndex(lastBreakIndex, i - 1);
+                  latestLowPivotValue = lowSerie[pivotIndex];
+                  lastBreakIndex = i;
+
+                  if (lowPivotIndexQueue.Count >= nbPivots)
+                  {
+                     lowPivotIndexQueue.Dequeue();
+                     lowPivotValueQueue.Dequeue();
+                  }
+                  lowPivotIndexQueue.Enqueue(pivotIndex);
+                  lowPivotValueQueue.Enqueue(lowSerie[pivotIndex]);
+
+                  bool lowestPivotFound = false;
+                  for (j = lowPivotValueQueue.Count - 2; j >= 0; j--)
+                  {
+                     if (latestLowPivotValue > lowPivotValueQueue.ElementAt(j))
+                     {
+                        lowestPivotFound = true;
+                        break;
+                     }
+                  }
+                  if (lowestPivotFound)
+                  {
+                     if (latestSupportLine != null)
+                     {
+                        // New line has to be drawn
+                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(pivotIndex, true));
+                        supportList.Remove(latestSupportLine);
+                     }
+
+                     latestSupportLine =
+                         new HalfLine2D(
+                             new PointF(lowPivotIndexQueue.ElementAt(j), lowPivotValueQueue.ElementAt(j)),
+                             new PointF(pivotIndex, latestLowPivotValue),
+                             Pens.Red);
+                     supportList.Add(latestSupportLine);
+
+                     events[(int)TLEvent.SupportDetected][i] = true;
+
+                     brokenSupport = false;
+                  }
+               }
+
+               // Detecting upTrend events
+               bool upTrend = resistanceList.Count == 0 && supportList.Count != 0;
+               foreach (Line2DBase line in resistanceList)
+               {
+                  if (closeSerie[i] > line.ValueAtX(i))
+                  {
+                     upTrend = false;
+                     break;
+                  }
+               }
+
+               // Detecting downTrend events
+               bool downTrend = supportList.Count == 0 && resistanceList.Count != 0;
+               foreach (Line2DBase line in supportList)
+               {
+                  if (closeSerie[i] < line.ValueAtX(i))
+                  {
+                     downTrend = false;
+                     break;
+                  }
+               }
+               if (!(downTrend || upTrend))
+               {
+                  events[(int)TLEvent.UpTrend][i] = brokenResistance;
+                  events[(int)TLEvent.DownTrend][i] = brokenSupport;
+               }
+               else
+               {
+                  events[(int)TLEvent.UpTrend][i] = upTrend;
+                  events[(int)TLEvent.DownTrend][i] = downTrend;
+               }
+            }
+            if (latestSupportLine != null)
+            {
+               this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine);
+            }
+            if (latestResistanceLine != null)
+            {
+               this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
+            }
+         }
+         catch (System.Exception e)
+         {
+            StockLog.Write(e);
+         }
+         finally
+         {
+            DrawingItem.CreatePersistent = true;
+         }
+      }
+
       public enum DowEvent
       {
          UpTrend,

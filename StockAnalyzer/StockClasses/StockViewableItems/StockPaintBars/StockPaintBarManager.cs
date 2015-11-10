@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                {
                   paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                  name = fullName.Substring(0, paramStartIndex - 1);
+                  name = fullName.Substring(0, paramStartIndex - 1).ToUpper();
                }
 
                if (paintBarList.Contains(name))
