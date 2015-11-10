@@ -415,6 +415,25 @@ namespace StockAnalyzerApp
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
          alertTimer.Interval = 15 * 60 * 1000;
          alertTimer.Start();
+
+         string fileName = Path.GetTempPath() + "AlertLog.txt";
+         IEnumerable<string> alertLog = new List<string>();
+         bool firstStartOfTheDay = false;
+         if (File.Exists(fileName))
+         {
+            if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
+            {
+               if (DateTime.Now.Hour > 8 && DateTime.Now.Hour < 18)
+               {
+                  firstStartOfTheDay = true;
+               }
+            }
+         }
+         else
+         {
+            firstStartOfTheDay = true;
+         }
+         if (firstStartOfTheDay) alertTimer_Tick(null, null);
       }
 
 
