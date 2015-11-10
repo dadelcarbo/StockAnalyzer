@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Ionic.Zip;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockWeb
 {
@@ -277,7 +278,8 @@ namespace StockAnalyzer.StockWeb
          }
          catch (Exception e)
          {
-            throw new StockWebHelperException("Exception downloading file: " + url, e);
+            StockLog.Write(e);
+            return false;
          }
          return true;
       }

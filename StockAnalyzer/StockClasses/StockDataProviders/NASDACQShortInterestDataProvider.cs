@@ -28,44 +28,49 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          if (siSerie.Count > 0 && siSerie.Keys.Last() > (DateTime.Today.AddDays(15))) return false;
 
-         StockWebHelper swh = new StockWebHelper();
-         if (swh.DownloadFile(Settings.Default.RootFolder + SHORTINTEREST_FOLDER, stockSerie.ShortName + "_SI.html", url))
+         if (File.GetLastWriteTime(Settings.Default.RootFolder + SHORTINTEREST_FOLDER + stockSerie.ShortName + "_SI.html").Date != DateTime.Today)
          {
-            string html = string.Empty;
-            using (StreamReader rw = new StreamReader(Settings.Default.RootFolder + SHORTINTEREST_FOLDER + stockSerie.ShortName + "_SI.html"))
+            StockWebHelper swh = new StockWebHelper();
+            if (swh.DownloadFile(Settings.Default.RootFolder + SHORTINTEREST_FOLDER, stockSerie.ShortName + "_SI.html", url))
             {
-               html = rw.ReadToEnd();
-               html = html.Remove(0, html.IndexOf("<th>Short Interest</th>"));
-               html = html.Remove(0, html.IndexOf("<tr><td>"));
-               html = html.Remove(html.IndexOf("</tbody>"));
-
-               html = html.Replace("</td></tr><tr><td>", Environment.NewLine);
-
-               html = html.Replace("</td><td>", ";");
-
-               html = html.Replace("<tr><td>", "");
-               html = html.Replace("</td></tr>", "");
-            }
-            using (Stream stringStream = new MemoryStream(Encoding.UTF8.GetBytes(html.Trim())))
-            {
-               using (StreamReader rw = new StreamReader(stringStream))
+               string html = string.Empty;
+               using (
+                  StreamReader rw =
+                     new StreamReader(Settings.Default.RootFolder + SHORTINTEREST_FOLDER + stockSerie.ShortName +
+                                      "_SI.html"))
                {
-                  while (!rw.EndOfStream)
-                  {
-                     string[] fields = rw.ReadLine().Split(';');
-                     ShortInterestValue siValue = new ShortInterestValue(DateTime.Parse(fields[0], usCulture), float.Parse(fields[1], usCulture), 0f, 0f);
+                  html = rw.ReadToEnd();
+                  html = html.Remove(0, html.IndexOf("<th>Short Interest</th>"));
+                  html = html.Remove(0, html.IndexOf("<tr><td>"));
+                  html = html.Remove(html.IndexOf("</tbody>"));
 
-                     if (!siSerie.ContainsKey(siValue.Date))
+                  html = html.Replace("</td></tr><tr><td>", Environment.NewLine);
+
+                  html = html.Replace("</td><td>", ";");
+
+                  html = html.Replace("<tr><td>", "");
+                  html = html.Replace("</td></tr>", "");
+               }
+               using (Stream stringStream = new MemoryStream(Encoding.UTF8.GetBytes(html.Trim())))
+               {
+                  using (StreamReader rw = new StreamReader(stringStream))
+                  {
+                     while (!rw.EndOfStream)
                      {
-                        siSerie.Add(siValue.Date, siValue);
+                        string[] fields = rw.ReadLine().Split(';');
+                        ShortInterestValue siValue = new ShortInterestValue(DateTime.Parse(fields[0], usCulture),
+                           float.Parse(fields[1], usCulture), 0f, 0f);
+
+                        if (!siSerie.ContainsKey(siValue.Date))
+                        {
+                           siSerie.Add(siValue.Date, siValue);
+                        }
                      }
                   }
                }
+
+               siSerie.SaveToFile();
             }
-
-            siSerie.SaveToFile();
-
-            File.Delete(Settings.Default.RootFolder + SHORTINTEREST_FOLDER + stockSerie.ShortName + "_SI.html");
          }
          return false;
       }

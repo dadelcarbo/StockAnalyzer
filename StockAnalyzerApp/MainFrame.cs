@@ -411,29 +411,36 @@ namespace StockAnalyzerApp
          refreshTimer.Start();
 
          // Checks for allert every 5 minutes.
+         int minutes = 15;
          alertTimer = new System.Windows.Forms.Timer(new Container());
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
-         alertTimer.Interval = 15 * 60 * 1000;
+         alertTimer.Interval = minutes * 60 * 1000;
          alertTimer.Start();
 
          string fileName = Path.GetTempPath() + "AlertLog.txt";
          IEnumerable<string> alertLog = new List<string>();
-         bool firstStartOfTheDay = false;
+         bool needDirectAlertCheck = false;
          if (File.Exists(fileName))
          {
             if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
             {
                if (DateTime.Now.Hour > 8 && DateTime.Now.Hour < 18)
                {
-                  firstStartOfTheDay = true;
+                  needDirectAlertCheck = true;
                }
+            }
+            else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
+               // Check if older than x Minutes
+            {
+               needDirectAlertCheck = true;
             }
          }
          else
          {
-            firstStartOfTheDay = true;
+            needDirectAlertCheck = true;
          }
-         if (firstStartOfTheDay) alertTimer_Tick(null, null);
+         if (needDirectAlertCheck) alertTimer_Tick(null, null);
+
       }
 
 
@@ -490,6 +497,7 @@ namespace StockAnalyzerApp
             }
          }
 
+         File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
          using (StreamWriter sw = new StreamWriter(fileName, true))
          {
             alerts.Clear();
@@ -549,7 +557,6 @@ namespace StockAnalyzerApp
                   StockAnalyzerException.MessageBox(ex);
                }
             }
-
             StockSplashScreen.CloseForm(true);
          }
       }
