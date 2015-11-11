@@ -1728,8 +1728,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             newOrder.State = StockOrder.OrderStatus.Executed;
             newOrder.StockName = this.serieName;
             newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-            newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-            newOrder.Number = 10;
+            newOrder.Value = this.closeCurveType.DataSerie.Last;
+            newOrder.Number = 0;
             newOrder.CreationDate = this.dateSerie[lastMouseIndex];
             newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
             newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);

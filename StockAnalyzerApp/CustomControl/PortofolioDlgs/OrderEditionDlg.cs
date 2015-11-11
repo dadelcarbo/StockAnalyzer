@@ -103,6 +103,8 @@ namespace StockAnalyzerApp.CustomControl
 
          this.parseOrderBtn.Enabled = false;
          this.orderText.Enabled = false;
+
+         this.amountToInvestTextBox.Text = "1000";
       }
       private void InitFields()
       {
@@ -287,6 +289,13 @@ namespace StockAnalyzerApp.CustomControl
                this.Refresh();
             }
          }
+      }
+
+      private void amountToInvestTextBox_TextChanged(object sender, EventArgs e)
+      {
+         double amount;
+         if (!double.TryParse(this.amountToInvestTextBox.Text, out amount)) return;
+         this.nbShareTextBox.Text = Math.Ceiling(amount / double.Parse(this.valueTextBox.Text)).ToString();
       }
    }
 }

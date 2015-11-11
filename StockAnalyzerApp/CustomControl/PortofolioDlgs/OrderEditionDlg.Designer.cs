@@ -401,6 +401,7 @@
          this.amountToInvestTextBox.Size = new System.Drawing.Size(85, 20);
          this.amountToInvestTextBox.TabIndex = 6;
          this.amountToInvestTextBox.Text = "0";
+         this.amountToInvestTextBox.TextChanged += new System.EventHandler(this.amountToInvestTextBox_TextChanged);
          // 
          // shortCheckBox
          // 

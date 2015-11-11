@@ -28,8 +28,14 @@ namespace StockAnalyzer.StockWeb
                try
                {
                   message.Body = alert;
+                  if (SMTPServer.Contains("free.fr"))
+                  {
+                     message.From = new MailAddress("noreply@free.fr");
+                  }
+                  else {
 
-                  message.From = new MailAddress("noreply@ultimatechartist.com");
+                     message.From = new MailAddress("noreply@ultimatechartist.com");
+                  }
                   string[] toList = To.Split(';');
                   foreach (string address in toList)
                   {

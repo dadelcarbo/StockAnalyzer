@@ -474,6 +474,7 @@ namespace StockAnalyzerApp
 
       private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
       private StockSerie.StockAlertDef endOfLowerClose = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRUE(5)", "EndOfLowerClose");
+      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
       private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
@@ -494,10 +495,10 @@ namespace StockAnalyzerApp
             else
             {
                alertLog = File.ReadAllLines(fileName);
+               File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
             }
          }
 
-         File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
          using (StreamWriter sw = new StreamWriter(fileName, true))
          {
             alerts.Clear();
@@ -534,7 +535,7 @@ namespace StockAnalyzerApp
                   if (stockSerie.MatchEvent(alert))
                   {
                      var values = stockSerie.GetValues(alerts.First().BarDuration);
-                     string alertLine = stockSerie.StockName + " " + values.ElementAt(values.Count - 2).DATE + "==>" + alert.ToString();
+                     string alertLine = stockSerie.StockName + " " + values.ElementAt(values.Count - 2).DATE.TimeOfDay + "==>" + alert.ToString();
 
                      // Check if already been sent during the day.
                      if (!alertLog.Contains(alertLine))
@@ -548,7 +549,7 @@ namespace StockAnalyzerApp
             {
                try
                {
-                  StockMail.SendEmail("Ultimate Chartist Analysis Alert Report - " + DateTime.Now, alertMsg);
+                  StockMail.SendEmail("Ultimate Chartist Alert", alertMsg);
 
                   sw.WriteLine(alertMsg.Trim());
                }
@@ -1101,6 +1102,7 @@ namespace StockAnalyzerApp
                this.SavePortofolios();
                RefreshPortofolioMenu();
             }
+            this.CurrentPortofolio = this.StockPortofolioList.First();
          }
          catch (System.Exception exception)
          {
@@ -1336,27 +1338,17 @@ namespace StockAnalyzerApp
          stockNameComboBox.SelectedItem = string.Empty;
 
          List<string> stocks;
-         if (this.currentWatchList != null)
+
+         List<String> stockList = new List<String>();
+         var series = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
+         foreach (StockSerie stockSerie in series)
          {
-            stocks = this.WatchLists.Find(wl => wl.Name == this.currentWatchList).StockList;
-         }
-         else if (this.CurrentPortofolio != null)
-         {
-            stocks = this.CurrentPortofolio.GetStockNames();
-         }
-         else
-         {
-            List<String> stockList = new List<String>();
-            var series = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
-            foreach (StockSerie stockSerie in series)
+            if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
             {
-               if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
-               {
-                  stockList.Add(stockSerie.StockName);
-               }
+               stockList.Add(stockSerie.StockName);
             }
-            stocks = stockList;
          }
+         stocks = stockList;
          foreach (string stockName in stocks)
          {
             if (StockDictionary.Keys.Contains(stockName))
