@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                {
                   if (!(t.Name.EndsWith("IndicatorBase") || t.Name.Contains("StockTrail")))
                   {
-                     indicatorList.Add(t.Name.Replace("StockIndicator_", "").ToUpper());
+                     indicatorList.Add(t.Name.Replace("StockIndicator_", ""));
                   }
                }
             }
@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             GetIndicatorList();
          }
 
-         return indicatorList.Contains(fullName.ToUpper().Split('(')[0]);
+         return indicatorList.Contains(fullName.Split('(')[0]);
       }
 
       static public IStockIndicator CreateIndicator(string fullName)
@@ -70,12 +70,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             try
             {
                int paramStartIndex = fullName.IndexOf('(') + 1;
-               string name = fullName.ToUpper();
+               string name = fullName;
                int paramLength = 0;
                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                {
                   paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                  name = fullName.Substring(0, paramStartIndex - 1).ToUpper();
+                  name = fullName.Substring(0, paramStartIndex - 1);
                }
 
                if (indicatorList.Contains(name))

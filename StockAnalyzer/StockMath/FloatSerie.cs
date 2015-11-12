@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using StockAnalyzer.StockLogging;
 
@@ -164,6 +165,72 @@ namespace StockAnalyzer.StockMath
          correl.Name = "CORREL";
          return correl;
       }
+
+      public FloatSerie CalculateAutoCorrelation(int period)
+      {
+         FloatSerie correlSerie = new FloatSerie(this.Count, "AUTO_CORREL");
+         period = Math.Min(period, this.Count);
+         for (int i = period; i < this.Count; i++)
+         {
+            for (int j = 0; j < period; j++)
+            {
+               correlSerie[i] += this[i - j] * this[i - j];
+            }
+         }
+         return correlSerie;
+      }
+      public FloatSerie CalculateMyAutoCovariance(int period, int lag)
+      {
+         FloatSerie ma1 = this.CalculateMA(period);
+         FloatSerie variance = new FloatSerie(this.Count, "AUTOCOVAR");
+         float avg1, avg2;
+         float sum;
+         float spread1, spread2;
+         int count;
+         int step;
+         for (int i = period + lag; i < this.Count; i++)
+         {
+            count = 0;
+            step = 0;
+            sum = 0.0f;
+            avg1 = ma1[i];
+            avg2 = ma1[i - lag];
+            for (int j = i - period; j <= i; j++)
+            {
+               count+= ++step;
+               spread1 = this.Values[j]*step;
+               spread2 = this.Values[j - lag]*step;
+               sum += spread1 * spread2;
+            }
+            variance[i] = sum / (float)count;
+         }
+         return variance;
+      }
+      public FloatSerie CalculateAutoCovariance(int period, int lag)
+      {
+         FloatSerie ma1 = this.CalculateMA(period);
+         FloatSerie variance = new FloatSerie(this.Count, "AUTOCOVAR");
+         float avg1, avg2;
+         float sum;
+         float spread1, spread2;
+         int count;
+         for (int i = period + lag; i < this.Count; i++)
+         {
+            count = 0;
+            sum = 0.0f;
+            avg1 = ma1[i];
+            avg2 = ma1[i - lag];
+            for (int j = i - period; j <= i; j++)
+            {
+               count++;
+               spread1 = this.Values[j] - avg1;
+               spread2 = this.Values[j - lag] - avg2;
+               sum += spread1 * spread2;
+            }
+            variance[i] = sum / (float)count;
+         }
+         return variance;
+      }
       public FloatSerie CalculateStdev(int period)
       {
          FloatSerie ema = this.CalculateMA(period);
@@ -186,6 +253,18 @@ namespace StockAnalyzer.StockMath
             stdev[i] = (float)Math.Sqrt(sum / (double)count);
          }
          return stdev;
+      }
+      public float CalculateVariance(int startIndex, int endIndex)
+      {
+         float avg = this.CalculateAVG(startIndex, endIndex);
+         float sum = 0.0f;
+         float spread = 0.0f;
+         for (int i = startIndex; i <= endIndex; i++)
+         {
+            spread = this[i] - avg;
+            sum += spread * spread;
+         }
+         return sum / (endIndex - startIndex);
       }
       public float CalculateStdev(int startIndex, int endIndex)
       {
@@ -1509,5 +1588,5 @@ namespace StockAnalyzer.StockMath
          }
          return trailSerie;
       }
-   }
+      }
 }

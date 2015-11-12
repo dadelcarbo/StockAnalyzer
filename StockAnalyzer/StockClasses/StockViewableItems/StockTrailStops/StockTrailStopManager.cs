@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                {
                   if (t.Name != "StockTrailStopBase")
                   {
-                     trailStopList.Add(t.Name.Replace("StockTrailStop_", "").ToUpper());
+                     trailStopList.Add(t.Name.Replace("StockTrailStop_", ""));
                   }
                }
             }
@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             GetTrailStopList();
          }
 
-         return trailStopList.Contains(fullName.ToUpper().Split('(')[0]);
+         return trailStopList.Contains(fullName.Split('(')[0]);
       }
       static public IStockTrailStop CreateTrailStop(string fullName)
       {
@@ -50,12 +50,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             try
             {
                int paramStartIndex = fullName.IndexOf('(') + 1;
-               string name = fullName.ToUpper();
+               string name = fullName;
                int paramLength = 0;
                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                {
                   paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                  name = fullName.Substring(0, paramStartIndex - 1).ToUpper();
+                  name = fullName.Substring(0, paramStartIndex - 1);
                }
 
                if (trailStopList.Contains(name))

@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                {
                   if (t.Name != "StockDecoratorBase")
                   {
-                     decoratorList.Add(t.Name.Replace("StockDecorator_", "").ToUpper());
+                     decoratorList.Add(t.Name.Replace("StockDecorator_", ""));
                   }
                }
             }
@@ -46,7 +46,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
                {
                   paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                  name = fullName.Substring(0, paramStartIndex - 1).ToUpper();
+                  name = fullName.Substring(0, paramStartIndex - 1);
                }
                if (decoratorList.Contains(name))
                {
@@ -84,7 +84,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             GetDecoratorList();
          }
 
-         return decoratorList.Contains(fullName.ToUpper().Split('(')[0]);
+         return decoratorList.Contains(fullName.Split('(')[0]);
       }
    }
 }
