@@ -167,7 +167,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -290,7 +290,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -411,7 +411,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -531,7 +531,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -651,7 +651,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -768,7 +768,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -886,7 +886,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -1004,7 +1004,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -1122,7 +1122,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -1243,7 +1243,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
@@ -1411,7 +1411,7 @@ namespace StockAnalyzer.StockClasses
                isIntraday = true;
             }
             int index = -1;
-            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised))
+            foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
             {
                index = -1;
                if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
