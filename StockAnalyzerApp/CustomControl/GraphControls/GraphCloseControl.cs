@@ -757,9 +757,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
          }
          PointF valuePoint2D = PointF.Empty;
          PointF screenPoint2D = PointF.Empty;
-         foreach (StockOrder stockOrder in this.Portofolio.OrderList.FindAll(order => order.ExecutionDate >= this.dateSerie[this.StartIndex] && order.ExecutionDate <= this.dateSerie[this.EndIndex] && order.StockName == this.serieName))
+         foreach (StockOrder stockOrder in this.Portofolio.OrderList.FindAll(order => order.StockName == this.serieName && order.ExecutionDate >= this.dateSerie[this.StartIndex] && order.ExecutionDate.Date <= this.dateSerie[this.EndIndex]))
          {
-            valuePoint2D.X = this.IndexOf(stockOrder.ExecutionDate);
+            DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
+            valuePoint2D.X = this.IndexOf(orderDate);
             if (valuePoint2D.X < 0)
             {
                Console.WriteLine("Order date not found: " + stockOrder.ExecutionDate);
@@ -1668,11 +1669,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
       }
       #endregion
 
-      private PointF GetScreenPointFromOrder(StockOrder buyOrder)
+      private PointF GetScreenPointFromOrder(StockOrder stockOrder)
       {
          PointF valuePoint2D = PointF.Empty;
-         valuePoint2D.X = IndexOf(buyOrder.ExecutionDate);
-         valuePoint2D.Y = buyOrder.UnitCost;
+
+         DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
+         valuePoint2D.X = this.IndexOf(orderDate);
+         valuePoint2D.Y = stockOrder.UnitCost;
          return this.GetScreenPointFromValuePoint(valuePoint2D);
       }
       public int IndexOf(DateTime date)

@@ -37,12 +37,7 @@ namespace StockAnalyzerApp.CustomControl
          StockDictionary stockDictionary = StockAnalyzerForm.MainFrame.StockDictionary;
          foreach (string stockName in stockDictionary.Keys)
          {
-            StockSerie stockSerie = stockDictionary[stockName];
-
-            if (stockSerie.Count > 1)
-            {
-               this.stockNameCombo.Items.Add(stockName);
-            }
+            this.stockNameCombo.Items.Add(stockName);
          }
 
          // Order Type change combo box
@@ -234,11 +229,11 @@ namespace StockAnalyzerApp.CustomControl
                   text = text.Substring(index + header.Length).Trim();
                   index = text.IndexOf("\r\n");
                   string stockName = text.Substring(0, index).Trim().ToUpper();
-                  if (!StockDictionary.StockDictionarySingleton.ContainsKey(stockName))
-                  {
-                     MessageBox.Show(stockName + " Not found !");
-                     return;
-                  }
+                  //if (!StockDictionary.StockDictionarySingleton.ContainsKey(stockName))
+                  //{
+                  //   MessageBox.Show(stockName + " Not found !");
+                  //   return;
+                  //}
                   this.Order.StockName = stockName;
                   this.stockNameCombo.SelectedItem = stockName;
                   this.stockNameCombo.Text = stockName;
@@ -312,6 +307,8 @@ namespace StockAnalyzerApp.CustomControl
                   this.Order.ExecutionDate = orderDateTime + orderTime;
                   this.executionDateTimePicker.Value = this.Order.ExecutionDate;
                   this.creationDateTimePicker.Value = this.Order.ExecutionDate;
+
+                  InitFields();
 
                }
                catch (Exception exception)

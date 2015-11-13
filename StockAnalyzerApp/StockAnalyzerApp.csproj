@@ -152,6 +152,7 @@
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.Designer.cs">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PortofolioDlgs\StockOrderViewModel.cs" />
     <Compile Include="CustomControl\PortofolioDlgs\RiskCalculatorViewModel.cs" />
     <Compile Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.cs">
       <SubType>Form</SubType>
