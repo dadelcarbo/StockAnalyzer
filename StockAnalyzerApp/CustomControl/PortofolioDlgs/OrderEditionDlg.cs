@@ -174,13 +174,13 @@ namespace StockAnalyzerApp.CustomControl
          {
             this.Order.StockName = this.stockNameCombo.SelectedItem.ToString();
             this.Order.Number = int.Parse(this.nbShareTextBox.Text);
-            this.Order.Value = float.Parse(this.valueTextBox.Text.Replace(".", ","));
-            this.Order.Fee = float.Parse(this.feeTextBox.Text.Replace(".", ","));
-            this.Order.Benchmark = float.Parse(this.benchmarkTextBox.Text.Replace(".", ","));
-            this.Order.AmountToInvest = float.Parse(this.amountToInvestTextBox.Text.Replace(".", ","));
-            this.Order.GapInPoints = float.Parse(this.gapTextBox.Text.Replace(".", ","));
-            this.Order.Limit = float.Parse(this.limitTextBox.Text.Replace(".", ","));
-            this.Order.Threshold = float.Parse(this.thresoldTextBox.Text.Replace(".", ","));
+            this.Order.Value = float.Parse(this.valueTextBox.Text);
+            this.Order.Fee = float.Parse(this.feeTextBox.Text);
+            this.Order.Benchmark = float.Parse(this.benchmarkTextBox.Text);
+            this.Order.AmountToInvest = float.Parse(this.amountToInvestTextBox.Text);
+            this.Order.GapInPoints = float.Parse(this.gapTextBox.Text);
+            this.Order.Limit = float.Parse(this.limitTextBox.Text);
+            this.Order.Threshold = float.Parse(this.thresoldTextBox.Text);
             this.Order.CreationDate = this.creationDateTimePicker.Value;
             this.Order.ExecutionDate = this.executionDateTimePicker.Value;
             this.Order.IsShortOrder = this.shortCheckBox.Checked;
@@ -226,61 +226,93 @@ namespace StockAnalyzerApp.CustomControl
             {
                try
                {
-                  // Find order date
-                  index = text.IndexOf("Date d'exécution");
-                  text = text.Substring(index + "Date d'exécution".Length).Trim();
-                  this.Order.ExecutionDate = DateTime.Parse(text.Substring(0, 11));
-                  this.executionDateTimePicker.Value = this.Order.ExecutionDate;
+                  string header;
+
+                  // Find Stock Name
+                  header = "Titre:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf("\r\n");
+                  string stockName = text.Substring(0, index).Trim().ToUpper();
+                  if (!StockDictionary.StockDictionarySingleton.ContainsKey(stockName))
+                  {
+                     MessageBox.Show(stockName + " Not found !");
+                     return;
+                  }
+                  this.Order.StockName = stockName;
+                  this.stockNameCombo.SelectedItem = stockName;
+                  this.stockNameCombo.Text = stockName;
 
                   // Find order type
-                  index = text.IndexOf("Ordre");
-                  text = text.Substring(index + "Ordre".Length);
-                  string orderString = text.Substring(0, 6).Trim();
-                  if (orderString == "Achat")
+                  header = "Type d'ordre:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf("\r\n");
+                  string orderString = text.Substring(0, index).Trim().ToUpper();
+                  if (orderString.StartsWith("ACHAT"))
                   {
                      this.Order.Type = StockOrder.OrderType.BuyAtLimit;
                   }
-                  else if (orderString == "Vente")
+                  else if (orderString.StartsWith("VENTE"))
                   {
                      this.Order.Type = StockOrder.OrderType.SellAtLimit;
                   }
                   else
                   {
-                     this.orderText.Text = "Invalid Order Type: " + orderString;
+                     MessageBox.Show("Invalid Order Type: " + orderString);
                      return;
                   }
                   this.orderTypeComboBox.SelectedItem = Order.Type.ToString();
 
                   // Find number of stocks
-                  index = text.IndexOf("de ");
-                  text = text.Substring(index + "de ".Length);
-                  index = text.IndexOf(' ');
-                  this.nbShareTextBox.Text = text.Substring(0, index);
+                  header = "Quantité:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf("\r\n");
+                  this.nbShareTextBox.Text = text.Substring(0, index).Trim();
                   this.Order.Number = int.Parse(this.nbShareTextBox.Text);
 
-                  // Find Stock Name
-                  text = text.Substring(index + 1);
-                  index = text.IndexOf("\r\n");
-                  this.Order.StockName = text.Substring(0, index).Trim();
-                  this.stockNameCombo.SelectedItem = this.Order.StockName;
-                  this.stockNameCombo.Text = this.Order.StockName;
-
                   // Find stock value
-                  index = text.IndexOf(orderString);
-                  text = text.Substring(index + orderString.Length);
-                  string orderValueString = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
-                  this.Order.Value = float.Parse(orderValueString, System.Globalization.NumberStyles.Any);
-                  this.valueTextBox.Text = this.Order.Value.ToString();
+                  header = "Prix unitaire:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf(" EUR");
+                  string orderValueString = text.Substring(0, index).Trim();
+                  this.Order.Value = float.Parse(orderValueString, StockAnalyzerForm.FrenchCulture);
+                  this.valueTextBox.Text = this.Order.Value.ToString(".##");
 
                   // Find order fee
-                  index = text.IndexOf("Courtage");
-                  text = text.Substring(index + "Courtage".Length);
-                  string courtageString = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                  index = text.IndexOf("TVA sur frais de banque");
-                  text = text.Substring(index + "TVA sur frais de banque".Length);
-                  string TVAString = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                  this.Order.Fee = float.Parse(courtageString, System.Globalization.NumberStyles.Any) + float.Parse(TVAString, System.Globalization.NumberStyles.Any);
-                  this.feeTextBox.Text = this.Order.Fee.ToString();
+                  header = "Montant final:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  header = "Dt ";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf(" EUR");
+                  string totalAmount = text.Substring(0, index).Replace(".","");
+
+                  this.Order.Fee = float.Parse(totalAmount, StockAnalyzerForm.FrenchCulture) -
+                                   (this.Order.Value*this.Order.Number);
+                  this.feeTextBox.Text = this.Order.Fee.ToString(".##");
+                  
+                  // Find order date
+                  header = "Date d'ordre:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf("\r\n");
+                  DateTime orderDateTime = DateTime.Parse(text.Substring(0, index).Trim(), StockAnalyzerForm.FrenchCulture);
+
+                  header = "Heure:";
+                  index = text.IndexOf(header);
+                  text = text.Substring(index + header.Length).Trim();
+                  index = text.IndexOf("\r\n");
+
+                  TimeSpan orderTime = TimeSpan.Parse(text.Substring(0, index).Trim(), StockAnalyzerForm.FrenchCulture);
+
+                  this.Order.ExecutionDate = orderDateTime + orderTime;
+                  this.executionDateTimePicker.Value = this.Order.ExecutionDate;
+                  this.creationDateTimePicker.Value = this.Order.ExecutionDate;
+
                }
                catch (Exception exception)
                {

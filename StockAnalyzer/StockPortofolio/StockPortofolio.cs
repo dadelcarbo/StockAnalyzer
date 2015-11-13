@@ -46,7 +46,11 @@ namespace StockAnalyzer.Portofolio
          {
             if (stockName != this.Name)
             {
-               currentStockValue += this.stockDictionary[stockName].Values.Last().CLOSE * nbActiveStock[stockName];
+               StockSerie stockSerie = this.stockDictionary[stockName];
+               if (stockSerie.Initialise())
+               {
+                  currentStockValue += stockSerie.Values.Last().CLOSE*nbActiveStock[stockName];
+               }
             }
          }
 
