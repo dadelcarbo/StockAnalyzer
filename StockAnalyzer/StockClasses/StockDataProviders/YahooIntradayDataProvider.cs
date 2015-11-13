@@ -10,16 +10,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
    public class YahooIntradayDataProvider : StockDataProviderBase, IConfigDialog
    {
-      static private string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\YahooIntraday";
-      static private string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\YahooIntraday";
-      static private string CONFIG_FILE = @"\YahooIntradayDownload.cfg";
-      static private string CONFIG_FILE_USER = @"\YahooIntradayDownload.user.cfg";
+      private static string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\YahooIntraday";
+      private static string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\YahooIntraday";
+      private static string CONFIG_FILE = @"\YahooIntradayDownload.cfg";
+      private static string CONFIG_FILE_USER = @"\YahooIntradayDownload.user.cfg";
 
-      public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
-
-      public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+      public string UserConfigFileName
       {
-         string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
+         get { return CONFIG_FILE_USER; }
+      }
+
+      public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie,
+         StockSerie.StockBarDuration duration)
+      {
+         string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" +
+                                   serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" +
+                                   serie.StockGroup.ToString() + ".txt";
          if (File.Exists(durationFileName))
          {
             serie.ReadFromCSVFile(durationFileName, duration);
@@ -67,19 +73,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
          InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
       }
+
       public override bool SupportsIntradayDownload
       {
          get { return true; }
       }
+
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
-         string archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+         string archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName +
+                                  "_" + stockSerie.StockGroup.ToString() + ".txt";
          if (File.Exists(archiveFileName))
          {
             stockSerie.ReadFromCSVFile(archiveFileName);
          }
 
-         string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+         string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
+                           stockSerie.StockGroup.ToString() + ".txt";
 
          if (File.Exists(fileName))
          {
@@ -98,30 +108,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                StockSerie.StockBarDuration previousDuration = stockSerie.BarDuration;
                foreach (StockSerie.StockBarDuration duration in cacheDurations)
                {
-                  durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                  durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" +
+                                     stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" +
+                                     stockSerie.StockGroup.ToString() + ".txt";
 
                   if (File.Exists(durationFileName) &&
-                      File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date) break; // Only cache once a day.
+                      File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date)
+                     break; // Only cache once a day.
                   stockSerie.BarDuration = duration;
-                  stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(-5).Date);
+                  stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(),
+                     lastDate.AddDays(-5).Date);
                }
 
                // Set back to previous duration.
                stockSerie.BarDuration = previousDuration;
             }
-            else { return false; }
+            else
+            {
+               return false;
+            }
          }
          return true;
       }
+
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
+         bool needDownload = false;
+
+         string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
+                           stockSerie.StockGroup.ToString() + ".txt";
+         if (File.Exists(fileName))
+         {
+            DateTime fileDate = File.GetLastWriteTime(fileName);
+            if (fileDate.Date == DateTime.Today)
+               return false;
+         }
+         this.DownloadIntradayData(rootFolder, stockSerie);
          return true;
       }
+
       public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
       {
          if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          {
-            NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
+            NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
             string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(fileName))
@@ -174,7 +204,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      }
                      if (download && this.needDownload)
                      {
-                        this.DownloadDailyData(rootFolder, stockSerie);
+                        this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
                      }
                   }
                }

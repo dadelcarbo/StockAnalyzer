@@ -153,7 +153,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       {
          if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          {
-            NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
+            NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
             if (!stockSerie.Initialise())
             {

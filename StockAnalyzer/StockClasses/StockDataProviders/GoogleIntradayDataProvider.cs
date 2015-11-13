@@ -119,13 +119,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
-         return false;
+         string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
+                           stockSerie.StockGroup.ToString() + ".txt";
+         if (File.Exists(fileName))
+         {
+            DateTime fileDate = File.GetLastWriteTime(fileName);
+            if (fileDate.Date == DateTime.Today)
+               return false;
+         }
+         this.DownloadIntradayData(rootFolder, stockSerie);
+         return true;
       }
       public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
       {
          if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          {
-            NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
+            NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
             string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
@@ -188,7 +197,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      }
                      if (download && this.needDownload)
                      {
-                        this.DownloadDailyData(rootFolder, stockSerie);
+                        this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
                      }
                   }
                }

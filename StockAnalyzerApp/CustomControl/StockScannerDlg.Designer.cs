@@ -1,4 +1,6 @@
-﻿namespace StockAnalyzerApp.CustomControl
+﻿using System.Windows.Forms;
+
+namespace StockAnalyzerApp.CustomControl
 {
    partial class StockScannerDlg
    {
@@ -174,6 +176,7 @@
          resources.ApplyResources(this.refreshDataCheckBox, "refreshDataCheckBox");
          this.refreshDataCheckBox.Name = "refreshDataCheckBox";
          this.refreshDataCheckBox.UseVisualStyleBackColor = true;
+         this.refreshDataCheckBox.CheckState = CheckState.Checked;
          // 
          // statisticsButton
          // 

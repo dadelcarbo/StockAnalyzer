@@ -67,7 +67,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                SP500CotSerie.Initialise();
                DateTime lastDate = SP500CotSerie.Keys.Last();
-               if ((DateTime.Today - lastDate) > new TimeSpan(9, 0, 0, 0, 0))
+               if ((DateTime.Today - lastDate) > new TimeSpan(10, 0, 0, 0, 0))
                {
                   // Need to download new COT
                   StockWebHelper swh = new StockWebHelper();
