@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 14, 3, 1.0f, 10 }; }
+         get { return new Object[] { 14, 3, 0.0f, 10 }; }
       }
       public override ParamRange[] ParameterRanges
       {

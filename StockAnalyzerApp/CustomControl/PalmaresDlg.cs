@@ -176,7 +176,7 @@ namespace StockAnalyzerApp.CustomControl
                   subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();
                   subItems[k++] = stockSerie.GetMin(startIndex, endIndex, StockDataType.LOW).ToString();
                   subItems[k++] = lastStockValue.CLOSE.ToString();
-                  subItems[k++] = stockSerie.GetIndicator("RANK(1,1)").Series[0][endIndex].ToString();
+                  subItems[k++] = stockSerie.GetIndicator("RANK(1,1,0,0)").Series[0][endIndex].ToString();
                   viewItems[i++] = new ListViewItem(subItems);
                }
             }

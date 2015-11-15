@@ -75,10 +75,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                   NotifyProgress("Downloding commitment of traders data...");
 
-                  swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate);
-
-                  NotifyProgress("Parsing commitment of traders data...");
-                  ParseFullCotSeries(cotIncludeList, stockDictionary);
+                  if (swh.DownloadCOT(Settings.Default.RootFolder, ref upToDate))
+                  {
+                     NotifyProgress("Parsing commitment of traders data...");
+                     ParseFullCotSeries(cotIncludeList, stockDictionary);
+                  }
                }
             }
          }

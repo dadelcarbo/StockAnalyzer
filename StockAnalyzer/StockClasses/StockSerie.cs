@@ -31,7 +31,8 @@ namespace StockAnalyzer.StockClasses
       public float PositionSlow { get; set; }
       public float PositionFast { get; set; }
 
-      public float Position { get { return (PositionSlow - PositionFast)/2.0f; } }
+      //public float Position { get { return (PositionSlow - PositionFast) / 2.0f; } }
+      public float Position { get { return PositionSlow; } }
 
       public MomentumSerie()
       {
@@ -443,10 +444,8 @@ namespace StockAnalyzer.StockClasses
             if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
             {
                paintBar.ApplyTo(this);
-               if (!paintBar.HasTrendLine)
-               {
-                  this.PaintBarCache = paintBar;
-               }
+
+               this.PaintBarCache = paintBar;
                return paintBar;
             }
             return null;
@@ -517,16 +516,18 @@ namespace StockAnalyzer.StockClasses
 
       public IStockViewableSeries GetViewableItem(string name)
       {
-         string[] nameFields = name.Split('_');
+         string[] nameFields = name.Split('|');
          switch (nameFields[0])
          {
-            case "IND":
+            case "INDICATOR":
                return this.GetIndicator(nameFields[1]);
-            case "TS":
+            case "TRAILSTOP":
                return this.GetTrailStop(nameFields[1]);
-            case "PB":
-               return this.GetIndicator(nameFields[1]);
-            case "DEC":
+            case "TRAIL":
+               return this.GetTrail(nameFields[1], nameFields[2]);
+            case "PAINTBAR":
+               return this.GetPaintBar(nameFields[1]);
+            case "DECORATOR":
                return this.GetDecorator(nameFields[1], nameFields[2]);
          }
          throw new ArgumentException("No viewable item matching " + name + " has been found");
@@ -4670,7 +4671,7 @@ namespace StockAnalyzer.StockClasses
          DrawingItem.CreatePersistent = false;
          try
          {
-            IStockTrailStop pivots = this.GetTrailStop("TrailHL(" + period + ")");
+            IStockTrailStop pivots = this.GetTrailStop("TRAILHL(" + period + ")");
             BoolSerie brokenDown = pivots.Events[3];
             BoolSerie brokenUp = pivots.Events[2];
 

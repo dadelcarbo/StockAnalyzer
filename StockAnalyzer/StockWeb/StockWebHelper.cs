@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockWeb
          if (File.GetLastWriteTime(fileName) >= DateTime.Now.AddDays(-1))
          {
             upToDate = true;
-            return true;
+            return false;
          }
          upToDate = false;
 

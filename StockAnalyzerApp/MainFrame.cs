@@ -294,7 +294,7 @@ namespace StockAnalyzerApp
                StockSplashScreen.ProgressVal = 50;
                ParseIntraday();
             }
-            
+
             // Generate breadth indicator
             if (Settings.Default.GenerateBreadth)
             {
@@ -321,6 +321,79 @@ namespace StockAnalyzerApp
             // Generate Vix Premium
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
             GenerateVixPremium();
+
+            StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
+            //GenerateCACEqualWeight();
+
+            StockSplashScreen.ProgressText = "Generating CAC SAR...";
+            //GenerateCAC_SAR();
+
+            StockSplashScreen.ProgressText = "Generating CAC RANK_" + 3 + " Daily...";
+            GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
+
+            //for (int i = 10; i <= 500; i += 5)
+            //{
+            //   StockSplashScreen.ProgressText = "Generating CAC CCIEX_" + i + " Daily...";
+            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
+            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
+            //}
+            //for (int i = 10; i <= 500; i += 5)
+            //{
+            //   StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
+            //   GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "PriceAbove");
+            //   GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|EMA(%PERIOD%)", "PriceAbove");
+            //} 
+            //for (int i = 10; i <= 500; i += 5)
+            //{
+            //   StockSplashScreen.ProgressText = "Generating CAC HMA_" + i + " Daily...";
+            //   GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
+            //   GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
+            //}
+            for (int i = 2; i <= 20; i++)
+            {
+               StockSplashScreen.ProgressText = "Generating CAC PUKE_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TwoLineBreaks, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+            }
+            for (int i = 1; i <= 20; i++)
+            {
+               StockSplashScreen.ProgressText = "Generating CAC TL_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.Daily, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
+               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
+               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.TLB_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
+               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.TwoLineBreaks, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
+            }
+            //for (int i = 1; i <= 50; i ++)
+            //{
+            //   StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
+            //   GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend");
+            //   GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend");
+            //} 
+            //for (int i = 25; i <= 500; i+=25)
+            //{
+            //   StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + " Daily...";
+            //   GenerateCAC_Event("CAC_RSI_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
+            //   GenerateCAC_Event("CAC_RSI_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
+            //} 
+            for (int i = 25; i <= 500; i += 25)
+            {
+               //StockSplashScreen.ProgressText = "Generating CAC RANK_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
+               //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
+            }
+
+
          }
 
          // Deserialize saved orders
@@ -393,6 +466,18 @@ namespace StockAnalyzerApp
          this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
          StockSplashScreen.CloseForm(true);
+         
+         string best = string.Empty;
+         float max = float.MinValue;
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC_")))
+         {
+            if (stockSerie.Values.Last().CLOSE > max)
+            {
+               max = stockSerie.Values.Last().CLOSE;
+               best = stockSerie.StockName;
+            }
+         }
+         MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
          this.graphCloseControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
@@ -2600,10 +2685,236 @@ namespace StockAnalyzerApp
          StockSerie newSerie = this.CurrentStockSerie.GenerateInverseStockSerie();
          AddNewSerie(newSerie);
       }
+      private void GenerateCACEqualWeight()
+      {
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         StockSerie cacEWSerie = new StockSerie("CAC_EW", "CAC_EW", StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+
+         float value = 1000f;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            float volume = 0.0f;
+            int count = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  count++;
+                  StockDailyValue dailyValue = serie[date];
+                  var += dailyValue.VARIATION;
+                  volume += dailyValue.CLOSE * dailyValue.VOLUME;
+               }
+            }
+            value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue("CAC_EW", value, value, value, value, (long)volume, date));
+         }
+         StockDictionary.Add("CAC_EW", cacEWSerie);
+
+      }
+      private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period, string eventPattern, string eventName)
+      {
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         string serieName = indexName + period + "_" + barDuration;
+         string ieventName = eventPattern.Replace("%PERIOD%",period.ToString());
+         int eventIndex = ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+            
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+         StockSerie BX4Serie = this.StockDictionary["BX4"];
+         BX4Serie.Initialise();
+         cacSeries.Add(BX4Serie);
+
+         float value = 1000f;
+         int previousCount = 0;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            int count = 0;
+            int nbActive = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  count++;
+                  serie.BarDuration = barDuration;
+                  IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
+                  int index = serie.IndexOf(date) - 1;
+                  if (index >= 0 && events.Events[eventIndex][index])
+                  {
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     var += dailyValue.VARIATION;
+                     nbActive++;
+                  }
+               }
+            }
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
+
+            previousCount = count;
+         }
+         foreach (StockSerie serie in cacSeries)
+         {
+            serie.BarDuration = StockSerie.StockBarDuration.Daily;
+         }
+         StockDictionary.Add(serieName, cacEWSerie);
+         Console.WriteLine(serieName + " \t" + cacEWSerie.Values.Last().CLOSE);
+      }
+
+      private void GenerateCAC_SAR()
+      {
+         List<StockSerie> cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         StockSerie cacEWSerie = new StockSerie("CAC_SAR", "CAC_SAR", StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+         StockSerie BX4Serie = this.StockDictionary["BX4"];
+         BX4Serie.Initialise();
+         cacSeries.Add(BX4Serie);
+         
+
+         float value = 1000f;
+         int previousCount = 0;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            int count = 0;
+            int nbActive = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  IStockIndicator indicator = serie.GetIndicator("SAR(0,0.0005,0.2)");
+
+                  count++;
+
+                  int index = serie.IndexOf(date) - 1;
+                  if (index >=0 && indicator.Events[8][index])
+                  {
+                     StockDailyValue dailyValue = serie[date];
+                     var += dailyValue.VARIATION;
+                     nbActive++;
+                  }
+               }
+            }
+            //if (count < 5 && previousCount >= count && BX4Serie.ContainsKey(date))
+            //{
+            //   count++;
+            //   StockDailyValue dailyValue = BX4Serie[date];
+            //   var += dailyValue.VARIATION;
+            //}
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue("CAC_SAR", value, value, value, value, (long)nbActive, date));
+
+            previousCount = count;
+         }
+         StockDictionary.Add("CAC_SAR", cacEWSerie);
+
+      }
+      private void GenerateCAC_TL(StockSerie.StockBarDuration barDuration, int period)
+      {
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         string serieName = "CAC_TL" + period + "_" + barDuration;
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+         StockSerie BX4Serie = this.StockDictionary["BX4"];
+         BX4Serie.Initialise();
+
+         float value = 1000f;
+         int previousCount = 0;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            int count = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  serie.BarDuration = barDuration;
+                  IStockPaintBar trendLine = serie.GetPaintBar("TRENDLINEHL(" + period + ",10)");
+                  int index = serie.IndexOf(date) - 1;
+                  if (index >= 0 && trendLine.Events[5][index])
+                  {
+                     count++;
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     var += dailyValue.VARIATION;
+                  }
+               }
+            }
+            //if (count < 5 && previousCount >= count && BX4Serie.ContainsKey(date))
+            //{
+            //   count++;
+            //   StockDailyValue dailyValue = BX4Serie[date];
+            //   var += dailyValue.VARIATION;
+            //}
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
+
+            previousCount = count;
+         }
+         foreach (StockSerie serie in cacSeries)
+         {
+            serie.BarDuration = StockSerie.StockBarDuration.Daily;
+         }
+         StockDictionary.Add(serieName, cacEWSerie);
+
+      }
+      private void GenerateCAC_STOKS(StockSerie.StockBarDuration barDuration, int period)
+      {
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         string serieName = "CAC_STOKS" + period + "_" + barDuration;
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+         StockSerie BX4Serie = this.StockDictionary["BX4"];
+         BX4Serie.Initialise();
+
+         float value = 1000f;
+         int previousCount = 0;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            int count = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  count++;
+                  serie.BarDuration = barDuration;
+                  IStockEvent events = serie.GetIndicator("STOKS(" + period + ",3,3,50,50)");
+                  int index = serie.IndexOf(date) - 1;
+                  if (index >= 0 && events.Events[2][index])
+                  {
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     var += dailyValue.VARIATION;
+                  }
+               }
+            }
+            //if (count < 5 && previousCount >= count && BX4Serie.ContainsKey(date))
+            //{
+            //   count++;
+            //   StockDailyValue dailyValue = BX4Serie[date];
+            //   var += dailyValue.VARIATION;
+            //}
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
+
+            previousCount = count;
+         }
+         foreach (StockSerie serie in cacSeries)
+         {
+            serie.BarDuration = StockSerie.StockBarDuration.Daily;
+         }
+         StockDictionary.Add(serieName, cacEWSerie);
+         Console.WriteLine(serieName + " \t" + cacEWSerie.Values.Last().CLOSE);
+
+      }
 
       private void GeneratePosition(List<StockSerie.Groups> groups)
       {
-         return;
          string folderName = Settings.Default.RootFolder + POSITION_SUBFOLDER;
          if (!System.IO.Directory.Exists(folderName))
          {
@@ -2684,7 +2995,7 @@ namespace StockAnalyzerApp
                   {
                      momSeries.Add(new MomentumSerie()
                      {
-                        MomentumSlow = serie.GetIndicator("ROC(120, 9)").Series[0][dateIndex],
+                        MomentumSlow = serie.GetIndicator("SPEED(200)").Series[0][dateIndex],
                         MomentumFast = serie.GetIndicator("ROC(3,3)").Series[0][dateIndex],
                         StockSerie = serie
                      });
@@ -3769,22 +4080,22 @@ border:1px solid black;
          float ensureUnique = 0.0f;
 
          SortedDictionary<float, StockSerie> leadersDico = new SortedDictionary<float, StockSerie>();
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC_ALL)))
-         {
-            if (stockSerie.Initialise())
-            {
-               IStockIndicator indicator = stockSerie.GetIndicator(Settings.Default.MomentumIndicator);
-               if (leadersDico.ContainsKey(indicator.Series[0].Last))
-               {
-                  leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
-                  ensureUnique += 0.001f;
-               }
-               else
-               {
-                  leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
-               }
-            }
-         }
+         //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC_ALL)))
+         //{
+         //   if (stockSerie.Initialise())
+         //   {
+         //      IStockIndicator indicator = stockSerie.GetIndicator(Settings.Default.MomentumIndicator);
+         //      if (leadersDico.ContainsKey(indicator.Series[0].Last))
+         //      {
+         //         leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
+         //         ensureUnique += 0.001f;
+         //      }
+         //      else
+         //      {
+         //         leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
+         //      }
+         //   }
+         //}
 
          string htmlLeaders = string.Empty;
          string htmlLosers = string.Empty;
@@ -3798,12 +4109,12 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Winners");
          htmlLeaders += " <table>";
 
-         for (int i = 0; i < 10; i++)
-         {
-            KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(leadersDico.Count - i - 1);
-            if (pair.Key < 0) break;
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
-         }
+         //for (int i = 0; i < 10; i++)
+         //{
+         //   KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(leadersDico.Count - i - 1);
+         //   if (pair.Key < 0) break;
+         //   htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
+         //}
 
          htmlLeaders += " </table>";
 
@@ -3814,12 +4125,12 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Losers");
          htmlLeaders += " <table>";
 
-         for (int i = 0; i < 10; i++)
-         {
-            KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(i);
-            if (pair.Key > 0) break;
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
-         }
+         ////for (int i = 0; i < 10; i++)
+         ////{
+         ////   KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(i);
+         ////   if (pair.Key > 0) break;
+         ////   htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
+         ////}
 
          htmlLeaders += " </table>";
 
@@ -3896,13 +4207,13 @@ border:1px solid black;
             }
             #endregion
          }
+         #region Generate report from Portfolio
 
-         #region Generate report from Events
-
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+         List<String> stockNames = this.StockPortofolioList.GetStockNames();
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => stockNames.Contains(s.StockName)))
          {
             this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
-            this.CurrentTheme = "ReportTheme";
+            this.CurrentTheme = "TrendLine";
             this.CurrentStockSerie = stockSerie;
 
             string eventTypeString = ExtractEventsForReport();
@@ -3935,43 +4246,84 @@ border:1px solid black;
 .Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
                htmlReport += eventTypeString;
             }
-
-            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.HLBreak;
-            this.CurrentTheme = "CCI";
-            this.CurrentStockSerie = stockSerie;
-
-            eventTypeString = ExtractEventsForReport();
-
-            if (string.IsNullOrWhiteSpace(eventTypeString))
-            {
-               continue;
-            }
-
-            this.snapshotToolStripButton_Click(null, null);
-            bitmap = Clipboard.GetImage();
-
-            fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-            if (!System.IO.File.Exists(fileName))
-            {
-               bitmap.Save(fileName, imageFormat);
-               fileNameList.Add(fileName);
-
-               // Get image CID
-               string cid = "Image_" + imageCount++;
-               cidList.Add(cid);
-
-               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
-
-               // Build report from html template
-               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-                   .Replace(imageFileCID, cid);
-               mailReport += eventTypeString;
-               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
-               htmlReport += eventTypeString;
-            }
          }
          #endregion
+
+//         #region Generate report from Events
+
+//         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+//         {
+//            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
+//            this.CurrentTheme = "ReportTheme";
+//            this.CurrentStockSerie = stockSerie;
+
+//            string eventTypeString = ExtractEventsForReport();
+
+//            if (string.IsNullOrWhiteSpace(eventTypeString))
+//            {
+//               continue;
+//            }
+
+//            this.snapshotToolStripButton_Click(null, null);
+//            Image bitmap = Clipboard.GetImage();
+
+//            string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
+//            if (!System.IO.File.Exists(fileName))
+//            {
+//               bitmap.Save(fileName, imageFormat);
+//               fileNameList.Add(fileName);
+
+//               // Get image CID
+//               string cid = "Image_" + imageCount++;
+//               cidList.Add(cid);
+
+//               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+
+//               // Build report from html template
+//               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
+//                   .Replace(imageFileCID, cid);
+//               mailReport += eventTypeString;
+//               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
+//.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
+//               htmlReport += eventTypeString;
+//            }
+
+//            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.HLBreak;
+//            this.CurrentTheme = "CCI";
+//            this.CurrentStockSerie = stockSerie;
+
+//            eventTypeString = ExtractEventsForReport();
+
+//            if (string.IsNullOrWhiteSpace(eventTypeString))
+//            {
+//               continue;
+//            }
+
+//            this.snapshotToolStripButton_Click(null, null);
+//            bitmap = Clipboard.GetImage();
+
+//            fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
+//            if (!System.IO.File.Exists(fileName))
+//            {
+//               bitmap.Save(fileName, imageFormat);
+//               fileNameList.Add(fileName);
+
+//               // Get image CID
+//               string cid = "Image_" + imageCount++;
+//               cidList.Add(cid);
+
+//               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+
+//               // Build report from html template
+//               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
+//                   .Replace(imageFileCID, cid);
+//               mailReport += eventTypeString;
+//               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
+//.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
+//               htmlReport += eventTypeString;
+//            }
+//         }
+//         #endregion
 
 
          AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
@@ -4327,7 +4679,7 @@ border:1px solid black;
                   break;
                case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                   {
-                     List<string> indicators = new List<string> { "IND_TRAILHLSR(2)", "IND_TRAILHLSR(12)", "IND_TRAILHLSR(24)" };
+                     List<string> indicators = new List<string> { "INDICATOR|TRAILHLSR(2)", "INDICATOR|TRAILHLSR(12)", "INDICATOR|TRAILHLSR(24)" };
                      List<StockSerie.StockBarDuration> durations = new List<StockSerie.StockBarDuration>
                             {
                                 StockSerie.StockBarDuration.TwoLineBreaks,

@@ -62,7 +62,7 @@ namespace StockAnalyzerApp.CustomControl
          List<StockSerie> tmpList = new List<StockSerie>();
          foreach (StockSerie stockSerie in this.stockDictionary.Values.Where(s => s.BelongsToGroup(this.group)))
          {
-            if (!stockSerie.StockAnalysis.Excluded && !stockSerie.IsPortofolioSerie)
+            if (!stockSerie.StockAnalysis.Excluded && !stockSerie.IsPortofolioSerie && stockSerie.Initialise() && stockSerie.Count > 50)
             {
                stockNumber++;
                tmpList.Add(stockSerie);
