@@ -329,7 +329,7 @@ namespace StockAnalyzerApp
             //GenerateCAC_SAR();
 
             StockSplashScreen.ProgressText = "Generating CAC RANK_" + 3 + " Daily...";
-            GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
+            //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
 
             //for (int i = 10; i <= 500; i += 5)
             //{
@@ -467,17 +467,17 @@ namespace StockAnalyzerApp
 
          StockSplashScreen.CloseForm(true);
          
-         string best = string.Empty;
-         float max = float.MinValue;
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC_")))
-         {
-            if (stockSerie.Values.Last().CLOSE > max)
-            {
-               max = stockSerie.Values.Last().CLOSE;
-               best = stockSerie.StockName;
-            }
-         }
-         MessageBox.Show("Best index " + best);
+         //string best = string.Empty;
+         //float max = float.MinValue;
+         //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC_")))
+         //{
+         //   if (stockSerie.Values.Last().CLOSE > max)
+         //   {
+         //      max = stockSerie.Values.Last().CLOSE;
+         //      best = stockSerie.StockName;
+         //   }
+         //}
+         //MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
          this.graphCloseControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);

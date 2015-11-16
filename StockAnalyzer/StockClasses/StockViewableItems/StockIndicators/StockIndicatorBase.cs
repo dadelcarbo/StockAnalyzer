@@ -5,7 +5,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public abstract class StockIndicatorBase : Parameterizable, IStockIndicator
    {
-      public StockIndicatorBase()
+      protected StockIndicatorBase()
       {
          this.series = new FloatSerie[this.SeriesCount];
          this.serieVisibility = new bool[this.SeriesCount];

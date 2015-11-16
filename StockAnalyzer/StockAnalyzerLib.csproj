@@ -150,6 +150,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_POSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VARCUMUL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM2.cs" />
