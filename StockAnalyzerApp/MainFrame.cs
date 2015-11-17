@@ -601,7 +601,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ProgressMax = alertList.Count();
             StockSplashScreen.ProgressMin = 0;
-            StockSplashScreen.ShowSplashScreen();
+            //StockSplashScreen.ShowSplashScreen();
 
             foreach (string stockName in alertList)
             {
@@ -620,12 +620,15 @@ namespace StockAnalyzerApp
                   if (stockSerie.MatchEvent(alert))
                   {
                      var values = stockSerie.GetValues(alerts.First().BarDuration);
-                     string alertLine = stockSerie.StockName + " " + values.ElementAt(values.Count - 2).DATE.TimeOfDay + "==>" + alert.ToString();
+                     string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
+                                        ";" + alert.ToString();
 
                      // Check if already been sent during the day.
                      if (!alertLog.Contains(alertLine))
                      {
-                        alertMsg += alertLine + Environment.NewLine;
+                        alertMsg += alertLine + ";" +
+                                    stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
+                                    Environment.NewLine;
                      }
                   }
                }
