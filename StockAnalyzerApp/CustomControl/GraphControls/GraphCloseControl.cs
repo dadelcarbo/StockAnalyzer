@@ -1731,7 +1731,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             newOrder.State = StockOrder.OrderStatus.Executed;
             newOrder.StockName = this.serieName;
             newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-            newOrder.Value = this.closeCurveType.DataSerie.Last;
+            newOrder.Value = this.closeCurveType.DataSerie[lastMouseIndex];
             newOrder.Number = 0;
             newOrder.CreationDate = this.dateSerie[lastMouseIndex];
             newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];

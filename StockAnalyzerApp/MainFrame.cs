@@ -495,8 +495,8 @@ namespace StockAnalyzerApp
          refreshTimer.Interval = 120 * 1000;
          refreshTimer.Start();
 
-         // Checks for allert every 5 minutes.
-         int minutes = 15;
+         // Checks for alert every x minutes.
+         int minutes = 10;
          alertTimer = new System.Windows.Forms.Timer(new Container());
          alertTimer.Tick += new EventHandler(alertTimer_Tick);
          alertTimer.Interval = minutes * 60 * 1000;
@@ -624,7 +624,7 @@ namespace StockAnalyzerApp
                                         ";" + alert.ToString();
 
                      // Check if already been sent during the day.
-                     if (!alertLog.Contains(alertLine))
+                     if (!alertLog.Any(l => l.StartsWith(alertLine)))
                      {
                         alertMsg += alertLine + ";" +
                                     stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +

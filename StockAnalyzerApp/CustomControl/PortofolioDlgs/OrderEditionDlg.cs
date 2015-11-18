@@ -324,7 +324,7 @@ namespace StockAnalyzerApp.CustomControl
       {
          double amount;
          if (!double.TryParse(this.amountToInvestTextBox.Text, out amount)) return;
-         this.nbShareTextBox.Text = Math.Ceiling(amount / double.Parse(this.valueTextBox.Text)).ToString();
+         this.nbShareTextBox.Text = Math.Floor(amount / double.Parse(this.valueTextBox.Text)).ToString();
       }
    }
 }
