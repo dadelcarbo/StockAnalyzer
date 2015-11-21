@@ -5267,7 +5267,7 @@ namespace StockAnalyzer.StockClasses
             case Groups.SBF120:
                return (this.StockGroup == Groups.EURO_A);
             case Groups.CAC_ALL:
-               return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_B)|| (this.StockGroup == Groups.ALTERNEXT);
+               return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C)|| (this.StockGroup == Groups.ALTERNEXT);
             default:
                return this.StockGroup == group;
          }
