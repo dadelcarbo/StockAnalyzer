@@ -197,9 +197,9 @@ namespace StockAnalyzer.StockMath
             avg2 = ma1[i - lag];
             for (int j = i - period; j <= i; j++)
             {
-               count+= ++step;
-               spread1 = this.Values[j]*step;
-               spread2 = this.Values[j - lag]*step;
+               count += ++step;
+               spread1 = this.Values[j] * step;
+               spread2 = this.Values[j - lag] * step;
                sum += spread1 * spread2;
             }
             variance[i] = sum / (float)count;
@@ -470,6 +470,43 @@ namespace StockAnalyzer.StockMath
          }
          serie.Name = "EMA_" + emaPeriod.ToString();
          return serie;
+      }
+      public FloatSerie CalculateKEMA(int fastPeriod, int slowPeriod)
+      {
+         FloatSerie serie = new FloatSerie(Values.Count());
+         FloatSerie erSerie = CalculateER((fastPeriod + slowPeriod)/2);
+         erSerie = erSerie.Abs(); // Calculate square
+
+         serie[0] = Values[0];
+         for (int i = 1; i < Values.Count(); i++)
+         {
+            int period = (int)((erSerie[i]) * (slowPeriod - fastPeriod)) + fastPeriod;
+
+            float alpha = 2.0f / (float)(period + 1);
+            serie[i] = serie[i - 1] + alpha * (Values[i] - serie[i - 1]);
+         }
+         serie.Name = "KEMA_" + slowPeriod + "_" + fastPeriod;
+         return serie;
+      }
+      public FloatSerie CalculateER(int period)
+      {
+         float volatility = 0;
+         float direction;
+         FloatSerie erSerie = new FloatSerie(this.Count, "ER");
+
+         int i = 0;
+         for (i = 1; i <= period; i++)
+         {
+            volatility += Math.Abs(this[i] - this[i - 1]);
+         }
+         for (i = period + 1; i < this.Count; i++)
+         {
+            volatility += Math.Abs(this[i] - this[i - 1]) - Math.Abs(this[i - period] - this[i - period - 1]);
+            direction = this[i] - this[i - period];
+            erSerie[i] = direction / volatility;
+         }
+
+         return erSerie;
       }
       public FloatSerie ShiftForward(int length)
       {
@@ -1588,5 +1625,5 @@ namespace StockAnalyzer.StockMath
          }
          return trailSerie;
       }
-      }
+   }
 }

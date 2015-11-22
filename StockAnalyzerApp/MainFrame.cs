@@ -323,10 +323,10 @@ namespace StockAnalyzerApp
             GenerateVixPremium();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
-            GenerateCACEqualWeight();
+            //GenerateCACEqualWeight();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight2...";
-            GenerateCACEqualWeight2();
+            //GenerateCACEqualWeight2();
 
             StockSplashScreen.ProgressText = "Generating CAC SAR...";
             //for (float i = 0.0001f; i <= 0.001f; i += 0.0001f)
@@ -335,7 +335,7 @@ namespace StockAnalyzerApp
             //}
 
             StockSplashScreen.ProgressText = "Generating CAC Random...";
-            GenerateCAC_Random();
+            //GenerateCAC_Random();
 
             StockSplashScreen.ProgressText = "Generating CAC RANK_" + 3 + " Daily...";
             //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
@@ -490,15 +490,16 @@ namespace StockAnalyzerApp
 
          string best = string.Empty;
          float max = float.MinValue;
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC_")))
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC")))
          {
-            if (stockSerie.Values.Last().CLOSE > max)
+            if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
             {
                max = stockSerie.Values.Last().CLOSE;
                best = stockSerie.StockName;
             }
          }
-         MessageBox.Show("Best index " + best);
+         Console.WriteLine("Best index " + best);
+         //MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
          this.graphCloseControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
@@ -2752,7 +2753,7 @@ namespace StockAnalyzerApp
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
 
-         IStockEvent CACIndicator = cacSerie.GetIndicator("TRAILHLS(19,3)") as IStockEvent;
+         IStockEvent CACIndicator = cacSerie.GetTrailStop("TRAILHLS(19,3)") as IStockEvent;
 
          float value = 1000f;
          int cacIndex = -1;

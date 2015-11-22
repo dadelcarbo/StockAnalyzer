@@ -438,6 +438,7 @@ namespace StockAnalyzer.StockClasses
             if (count != 0)
             {
                val /= count;
+               val = (val - 0.5f) * 2.0f;
                breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
             }
          }
@@ -558,6 +559,7 @@ namespace StockAnalyzer.StockClasses
             if (count != 0)
             {
                val /= count;
+               val = (val - 0.5f) * 2.0f;
                breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
             }
          }

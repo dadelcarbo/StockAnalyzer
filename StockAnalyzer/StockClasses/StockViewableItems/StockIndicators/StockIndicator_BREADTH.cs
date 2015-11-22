@@ -15,18 +15,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.RangedIndicator; }
       }
-      public override string Definition
-      {
-         get { return "BREADTH(string Breadth)"; }
-      }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Breadth" }; }
+         get { return new string[] { "Breadth", "FastSmooting" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { "HLEMA5_6.SP500" }; }
+         get { return new Object[] { "MYOSC_20.CAC40", "1" }; }
       }
       static List<string> breadthSeries = null;
       public override ParamRange[] ParameterRanges
@@ -39,7 +35,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             return new ParamRange[]
             {
-                new ParamRangeStringList( breadthSeries)
+                new ParamRangeStringList( breadthSeries),
+                new ParamRangeInt(1,500)
             };
          }
       }
@@ -62,6 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          // Calculate Bollinger Bands
          FloatSerie breadthIndicator = new FloatSerie(stockSerie.Count);
+         int fastSmoothing = (int)this.parameters[1];
 
          StockSerie breadthSerie = StockDictionary.StockDictionarySingleton[(string)this.parameters[0]];
          breadthSerie.Initialise();
@@ -82,20 +80,41 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             i++;
          }
 
+         breadthIndicator = breadthIndicator.CalculateEMA(fastSmoothing);
+
          this.series[0] = breadthIndicator;
          this.Series[0].Name = this.SerieNames[0];
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
 
+         for (i = 1; i < stockSerie.Count; i++)
+         {
+            if (breadthIndicator[i] >= 0)
+            {
+               this.Events[0][i] = true;
+            }
+            else
+            {
+               this.Events[1][i] = true;
+            }
+            if (breadthIndicator[i] >= breadthIndicator[i - 1])
+            {
+               this.Events[2][i] = true;
+            }
+            else
+            {
+               this.Events[3][i] = true;
+            }
+         }
       }
 
-      static string[] eventNames = new string[] { };
+      static string[] eventNames = new string[] { "Positive", "Negative", "Bullish", "Bearish"};
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] {false,false,false,false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

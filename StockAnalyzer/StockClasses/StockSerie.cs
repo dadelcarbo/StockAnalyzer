@@ -2974,6 +2974,26 @@ namespace StockAnalyzer.StockClasses
          //    OBVEX[i] = OBVEX[i - 1] + upVol[i] - downVol[i];
          //}
       }
+      public FloatSerie CalculateVolatility(int period)
+      {
+         FloatSerie volatilitySerie = new FloatSerie(this.Values.Count, "VLTY");
+         FloatSerie variationSerie = this.GetSerie(StockDataType.VARIATION);
+         int i = 0;
+         for (i = 1; i <= period; i++)
+         {
+            volatilitySerie[i] = volatilitySerie[i-1] + Math.Abs(variationSerie[i]);
+         }
+         for (i = period + 1; i < this.Count; i++)
+         {
+            volatilitySerie[i] = volatilitySerie[i-1] + Math.Abs(variationSerie[i]) - Math.Abs(variationSerie[i-period]);
+         }
+
+         return volatilitySerie;
+      }
+      public FloatSerie CalculateER(int period, int inputSmoothing)
+      {
+         return this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing).CalculateER(period);
+      }
       public FloatSerie CalculateVolatility2(int period)
       {
          FloatSerie volatilitySerie = new FloatSerie(this.Values.Count, "VLTY2");

@@ -3,9 +3,9 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_VLTY : StockIndicatorBase
+   public class StockIndicator_ER : StockIndicatorBase
    {
-      public StockIndicator_VLTY()
+      public StockIndicator_ER()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
@@ -13,24 +13,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
 
-      public override string Definition
-      {
-         get { return "VLTY(int Period)"; }
-      }
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] { 20, 1, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Period", "InputSmoothing", "Smoothing" }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "VLTY(" + this.Parameters[0].ToString() + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "ER(" + this.Parameters[0].ToString() + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -46,7 +42,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         this.series[0] = stockSerie.CalculateVolatility((int)this.parameters[0]);
+         int period = (int)this.parameters[0];
+         int inputSmoothing = (int)this.parameters[1];
+         int smoothing = (int)this.parameters[2];
+         this.series[0] = stockSerie.CalculateER(period, inputSmoothing).CalculateEMA(smoothing);
          this.Series[0].Name = this.Name;
       }
 

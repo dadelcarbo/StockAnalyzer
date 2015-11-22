@@ -142,6 +142,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIRS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CHOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ShortInterest.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTSMALLSPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VARCUMUL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM.cs" />
