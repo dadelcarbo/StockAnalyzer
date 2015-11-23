@@ -59,6 +59,7 @@ namespace StockAnalyzer.StockClasses
          FTSE100,
          SP500,
          INDICES,
+         INDICES_CALC,
          INDICATOR,
          SECTORS,
          CURRENCY,

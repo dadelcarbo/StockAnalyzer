@@ -369,6 +369,14 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
+            for (int i = 30; i <= 230; i+=5)
+            {
+               for (int j = 1; j < 20; j+=2)
+               {
+                  StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
+                  //GenerateCAC_Event("CAC_PUKE_RSI", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
+               }
+            }
             for (int i = 5; i <= 200; i+=5)
             {
                //StockSplashScreen.ProgressText = "Generating CAC MACD_" + i + " Daily...";
@@ -2790,7 +2798,7 @@ namespace StockAnalyzerApp
          string ieventName = eventPattern.Replace("%PERIOD%", period.ToString());
          int eventIndex = ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
 
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -2838,18 +2846,23 @@ namespace StockAnalyzerApp
             serie.BarDuration = StockSerie.StockBarDuration.Daily;
          }
          StockDictionary.Add(serieName, cacEWSerie);
-         Console.WriteLine(serieName + " \t" + cacEWSerie.Values.Last().CLOSE);
+
+         Console.WriteLine(serieName + ";" + period + ";" + cacEWSerie.Values.Last().CLOSE);
       }
 
-      private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period1, int period2, string eventPattern, string eventName, bool stopOnLowBreadth)
+      private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period1, int period2,
+         string eventPattern, string eventName, bool stopOnLowBreadth)
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
          string serieName = indexName + period1 + "_" + period2 + "_" + barDuration;
          string ieventName = eventPattern.Replace("%PERIOD1%", period1.ToString());
          ieventName = ieventName.Replace("%PERIOD2%", period2.ToString());
-         int eventIndex = ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
-            
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         int eventIndex =
+            ((IStockEvent) StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          //StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -2870,24 +2883,25 @@ namespace StockAnalyzerApp
                {
                   count++;
                   serie.BarDuration = barDuration;
-                  IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
+                  IStockEvent events = (IStockEvent) serie.GetViewableItem(ieventName);
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[eventIndex][index])
                   {
-                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily)
+                        .ElementAt(index + 1);
                      var += dailyValue.VARIATION;
                      nbActive++;
                   }
                }
             }
-            if (stopOnLowBreadth && previousNbActive < count / 2)
+            if (stopOnLowBreadth && previousNbActive < count/2)
             {
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
             }
             else
             {
-               if (count != 0) value += value * (var / count);
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
+               if (count != 0) value += value*(var/count);
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) nbActive, date));
             }
             previousNbActive = nbActive;
             previousCount = count;
@@ -2897,13 +2911,14 @@ namespace StockAnalyzerApp
             serie.BarDuration = StockSerie.StockBarDuration.Daily;
          }
          StockDictionary.Add(serieName, cacEWSerie);
-         Console.WriteLine(serieName + " \t" + cacEWSerie.Values.Last().CLOSE);
+         Console.WriteLine(serieName + ";" + period1 + ";" + period2 + ";" + cacEWSerie.Values.Last().CLOSE);
       }
+
       private void GenerateCAC_SAR(bool stopOnLowBreadth, float speed)
       {
          string serieName = "CAC_SAR_" + speed.ToString("#.######");
          List<StockSerie> cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
-         StockSerie newIndexSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie newIndexSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          //StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -2959,7 +2974,7 @@ namespace StockAnalyzerApp
       private void GenerateCAC_Random()
       {
          List<StockSerie> cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
-         StockSerie cacEWSerie = new StockSerie("CAC_RANDOM", "CAC_RANDOM", StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie("CAC_RANDOM", "CAC_RANDOM", StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -3006,7 +3021,7 @@ namespace StockAnalyzerApp
       {
          var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
          string serieName = "CAC_TL" + period + "_" + barDuration;
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -3055,7 +3070,7 @@ namespace StockAnalyzerApp
       {
          var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
          string serieName = "CAC_STOKS" + period + "_" + barDuration;
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -3098,7 +3113,8 @@ namespace StockAnalyzerApp
             serie.BarDuration = StockSerie.StockBarDuration.Daily;
          }
          StockDictionary.Add(serieName, cacEWSerie);
-         Console.WriteLine(serieName + " \t" + cacEWSerie.Values.Last().CLOSE);
+
+         Console.WriteLine(serieName + ";" + cacEWSerie.Values.Last().CLOSE);
 
       }
 
