@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -12,23 +13,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
-
-
-      public override string Definition
-      {
-         get { return "ATR(int Period)"; }
-      }
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] { 20, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Period", "InputSmoothing" }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "ATR(" + this.Parameters[0].ToString() + ")" }; } }
@@ -51,7 +46,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         this.series[0] = stockSerie.GetSerie(StockDataType.ATR).CalculateEMA((int)this.Parameters[0]);
+         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA((int)this.Parameters[1]);
+         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA((int)this.Parameters[1]);
+         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.Parameters[1]);
+
+         FloatSerie atrSerie = new FloatSerie(stockSerie.Count);
+
+         for (int i = 1; i < stockSerie.Count; i++)
+         {
+            atrSerie[i] = Math.Max(highSerie[i], closeSerie[i-1]) - Math.Min(lowSerie[i], closeSerie[i-1]);
+         }
+
+         this.series[0] = atrSerie.CalculateEMA((int)this.Parameters[0]);
          this.Series[0].Name = this.Name;
       }
 
