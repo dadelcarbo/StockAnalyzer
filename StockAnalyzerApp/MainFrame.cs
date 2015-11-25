@@ -365,7 +365,7 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TwoLineBreaks, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
@@ -385,7 +385,7 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TwoLineBreaks, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
+               //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
@@ -399,7 +399,7 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.Daily, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
                //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
                //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.TLB_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
-               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.TwoLineBreaks, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
+               //GenerateCAC_Event("CAC_TL_", StockSerie.StockBarDuration.TLB, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
@@ -486,7 +486,7 @@ namespace StockAnalyzerApp
 
          if (this.CurrentStockSerie.StockName.StartsWith("INT_"))
          {
-            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TwoLineBreaks_6D;
+            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_6D;
          }
          else
          {
@@ -3336,7 +3336,7 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                case StockSerie.Groups.INTRADAY:
-                  this.ForceBarDuration(StockSerie.StockBarDuration.TwoLineBreaks_6D, true);
+                  this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
                   break;
                default:
                   this.ForceBarDuration(StockSerie.StockBarDuration.Daily, true);
@@ -4172,11 +4172,11 @@ namespace StockAnalyzerApp
          #region report multi TimeFrame
 
          StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[] { 
-                StockSerie.StockBarDuration.TwoLineBreaks,
-                StockSerie.StockBarDuration.TwoLineBreaks_3D,
-                StockSerie.StockBarDuration.TwoLineBreaks_6D,
-                StockSerie.StockBarDuration.TwoLineBreaks_9D,
-                StockSerie.StockBarDuration.TwoLineBreaks_27D
+                StockSerie.StockBarDuration.TLB,
+                StockSerie.StockBarDuration.TLB_3D,
+                StockSerie.StockBarDuration.TLB_6D,
+                StockSerie.StockBarDuration.TLB_9D,
+                StockSerie.StockBarDuration.TLB_27D
             };
 
 
@@ -4280,7 +4280,7 @@ border:1px solid black;
          #region Report leaders
 
          this.CurrentTheme = "ReportTheme";
-         this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TwoLineBreaks;
+         this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
 
          float ensureUnique = 0.0f;
 
@@ -4887,10 +4887,10 @@ border:1px solid black;
                      List<string> indicators = new List<string> { "INDICATOR|TRAILHLSR(2)", "INDICATOR|TRAILHLSR(12)", "INDICATOR|TRAILHLSR(24)" };
                      List<StockSerie.StockBarDuration> durations = new List<StockSerie.StockBarDuration>
                             {
-                                StockSerie.StockBarDuration.TwoLineBreaks,
-                                StockSerie.StockBarDuration.TwoLineBreaks_3D,
-                                StockSerie.StockBarDuration.TwoLineBreaks_6D,
-                                StockSerie.StockBarDuration.TwoLineBreaks_9D
+                                StockSerie.StockBarDuration.TLB,
+                                StockSerie.StockBarDuration.TLB_3D,
+                                StockSerie.StockBarDuration.TLB_6D,
+                                StockSerie.StockBarDuration.TLB_9D
                             };
                      MultiTimeFrameGrid grid = new MultiTimeFrameGrid();
 

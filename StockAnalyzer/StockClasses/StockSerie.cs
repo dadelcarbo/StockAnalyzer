@@ -100,19 +100,16 @@ namespace StockAnalyzer.StockClasses
          HeikinAshi2B_6D,
          HeikinAshi2B_9D,
          HeikinAshi2B_27D,
-         TwoLineBreaks,
-         TwoLineBreaks_BIS,
-         TwoLineBreaks_TER,
-         TwoLineBreaks_TER_6D,
-         TwoLineBreaks_TER_9D,
-         TwoLineBreaks_TER_27D,
-         TwoLineBreaks_3D,
-         TwoLineBreaks_6D,
-         TwoLineBreaks_9D,
-         TwoLineBreaks_27D,
-         TwoWeekBreaks,
-         TwoWeekBreaks_BIS,
-         TwoWeekBreaks_TER,
+         TLB,
+         //TLB_BIS,
+         //TLB_TER,
+         //TLB_TER_6D,
+         //TLB_TER_9D,
+         //TLB_TER_27D,
+         TLB_3D,
+         TLB_6D,
+         TLB_9D,
+         TLB_27D,
          TLB_EMA3,
          TLB_3D_EMA3,
          TLB_6D_EMA3,
@@ -256,22 +253,22 @@ namespace StockAnalyzer.StockClasses
             ExactDataDurationMapping = new SortedDictionary<StockBarDuration, StockBarDuration>();
             //ExactDataDurationMapping.Add(StockBarDuration.Bar_1_EMA3, StockBarDuration.Daily);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi, StockBarDuration.Daily);
-            //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B, StockBarDuration.TwoLineBreaks);
+            //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B, StockBarDuration.TLB);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_3D, StockBarDuration.TwoLineBreaks_3D);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_6D, StockBarDuration.TwoLineBreaks_6D);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_9D, StockBarDuration.TwoLineBreaks_9D);
             //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_27D, StockBarDuration.TwoLineBreaks_27D);
-            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA3, StockBarDuration.TwoLineBreaks);
+            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA3, StockBarDuration.TLB);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA3, StockBarDuration.TwoLineBreaks_3D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA3, StockBarDuration.TwoLineBreaks_6D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA3, StockBarDuration.TwoLineBreaks_9D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA3, StockBarDuration.TwoLineBreaks_27D);
-            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA6, StockBarDuration.TwoLineBreaks);
+            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA6, StockBarDuration.TLB);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA6, StockBarDuration.TwoLineBreaks_3D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA6, StockBarDuration.TwoLineBreaks_6D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA6, StockBarDuration.TwoLineBreaks_9D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA6, StockBarDuration.TwoLineBreaks_27D);
-            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA12, StockBarDuration.TwoLineBreaks);
+            //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA12, StockBarDuration.TLB);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA12, StockBarDuration.TwoLineBreaks_3D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA12, StockBarDuration.TwoLineBreaks_6D);
             //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA12, StockBarDuration.TwoLineBreaks_9D);
@@ -6339,103 +6336,94 @@ namespace StockAnalyzer.StockClasses
                   newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
                   break;
                case StockBarDuration.HeikinAshi2B:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks));
+                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB));
                   break;
                case StockBarDuration.HeikinAshi2B_3D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_3D));
+                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D));
                   break;
                case StockBarDuration.HeikinAshi2B_6D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_6D));
+                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D));
                   break;
                case StockBarDuration.HeikinAshi2B_9D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D));
+                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D));
                   break;
                case StockBarDuration.HeikinAshi2B_27D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D));
+                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D));
                   break;
-               case StockBarDuration.TwoWeekBreaks:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.Weekly), 2);
-                  break;
-               case StockBarDuration.TwoWeekBreaks_BIS:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoWeekBreaks), 2);
-                  break;
-               case StockBarDuration.TwoWeekBreaks_TER:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoWeekBreaks_BIS), 2);
-                  break;
-               case StockBarDuration.TwoLineBreaks:
+               case StockBarDuration.TLB:
                   newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
                   break;
-               case StockBarDuration.TwoLineBreaks_BIS:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 2);
-                  break;
-               case StockBarDuration.TwoLineBreaks_TER:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_BIS), 2);
-                  break;
-               case StockBarDuration.TwoLineBreaks_TER_6D:
-                  newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 6), StockBarDuration.TwoWeekBreaks_TER);
-                  break;
-               case StockBarDuration.TwoLineBreaks_TER_9D:
-                  newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 9), StockBarDuration.TwoWeekBreaks_TER);
-                  break;
-               case StockBarDuration.TwoLineBreaks_TER_27D:
-                  newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 27), StockBarDuration.TwoWeekBreaks_TER);
-                  break;
-               case StockBarDuration.TwoLineBreaks_3D:
+               //case StockBarDuration.TLB_BIS:
+               //   newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 2);
+               //   break;
+               //case StockBarDuration.TLB_TER:
+               //   newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_BIS), 2);
+               //   break;
+               //case StockBarDuration.TLB_TER_6D:
+               //   newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 6), StockBarDuration.TwoWeekBreaks_TER);
+               //   break;
+               //case StockBarDuration.TLB_TER_9D:
+               //   newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 9), StockBarDuration.TwoWeekBreaks_TER);
+               //   break;
+               //case StockBarDuration.TLB_TER_27D:
+               //   newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 27), StockBarDuration.TwoWeekBreaks_TER);
+               //   break;
+               case StockBarDuration.TLB_3D:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
                   break;
-               case StockBarDuration.TwoLineBreaks_6D:
+               case StockBarDuration.TLB_6D:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2);
                   break;
-               case StockBarDuration.TwoLineBreaks_9D:
+               case StockBarDuration.TLB_9D:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3), 2);
                   break;
-               case StockBarDuration.TwoLineBreaks_27D:
+               case StockBarDuration.TLB_27D:
                   newBarList = GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3), 2), 3);
                   break;
                case StockBarDuration.TLB_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 3);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 3);
                   break;
                case StockBarDuration.TLB_3D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_3D), 3);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 3);
                   break;
                case StockBarDuration.TLB_6D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_6D), 3);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 3);
                   break;
                case StockBarDuration.TLB_9D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 3);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 3);
                   break;
                case StockBarDuration.TLB_27D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 3);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 3);
                   break;
                case StockBarDuration.TLB_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 6);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 6);
                   break;
                case StockBarDuration.TLB_3D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_3D), 6);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 6);
                   break;
                case StockBarDuration.TLB_6D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_6D), 6);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 6);
                   break;
                case StockBarDuration.TLB_9D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 6);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 6);
                   break;
                case StockBarDuration.TLB_27D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 6);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 6);
                   break;
                case StockBarDuration.TLB_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks), 12);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 12);
                   break;
                case StockBarDuration.TLB_3D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_3D), 12);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 12);
                   break;
                case StockBarDuration.TLB_6D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_6D), 12);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 12);
                   break;
                case StockBarDuration.TLB_9D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_9D), 12);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 12);
                   break;
                case StockBarDuration.TLB_27D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TwoLineBreaks_27D), 12);
+                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 12);
                   break;
                case StockBarDuration.ThreeLineBreak:
                   newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);

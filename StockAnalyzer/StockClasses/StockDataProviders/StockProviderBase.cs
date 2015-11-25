@@ -16,10 +16,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       static public
                  StockSerie.StockBarDuration[] cacheDurations = new StockSerie.StockBarDuration[]
                   {
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TwoLineBreaks_3D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TwoLineBreaks_6D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TwoLineBreaks_9D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TwoLineBreaks_27D
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_3D,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_6D,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_9D,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D
                   };
 
       #region CONSTANTS
