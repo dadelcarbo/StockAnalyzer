@@ -91,21 +91,22 @@ namespace StockAnalyzer.StockClasses
          Bar_3,
          Bar_6,
          Bar_9,
-         HLBreak,
-         HLBreak3,
-         HLBreak6,
-         HeikinAshi,
-         HeikinAshi2B,
-         HeikinAshi2B_3D,
-         HeikinAshi2B_6D,
-         HeikinAshi2B_9D,
-         HeikinAshi2B_27D,
-         TLB,
+         Bar_27,
+         //HLBreak,
+         //HLBreak3,
+         //HLBreak6,
+         //HeikinAshi,
+         //HeikinAshi2B,
+         //HeikinAshi2B_3D,
+         //HeikinAshi2B_6D,
+         //HeikinAshi2B_9D,
+         //HeikinAshi2B_27D,
          //TLB_BIS,
          //TLB_TER,
          //TLB_TER_6D,
          //TLB_TER_9D,
          //TLB_TER_27D,
+         TLB,
          TLB_3D,
          TLB_6D,
          TLB_9D,
@@ -150,7 +151,6 @@ namespace StockAnalyzer.StockClasses
       public StockDataProvider DataProvider { get; private set; }
       public string ISIN { get; set; }
       public Groups StockGroup { get; private set; }
-      public StockBarDuration StockTimeSpan { get; private set; }
       public StockAnalysis StockAnalysis { get; set; }
       public bool IsPortofolioSerie { get; set; }
       public int LastIndex { get { return this.Values.Count - 1; } }
@@ -240,10 +240,11 @@ namespace StockAnalyzer.StockClasses
          }
          else
          {
-            StockBarDuration previousBarDuration = this.barDuration;
-            this.SetBarDuration(stockBarDuration);
-            this.SetBarDuration(previousBarDuration);
-            return this.BarSerieDictionary[stockBarDuration];
+            return null;
+            //StockBarDuration previousBarDuration = this.barDuration;
+            //this.SetBarDuration(stockBarDuration);
+            //this.SetBarDuration(previousBarDuration);
+            //return this.BarSerieDictionary[stockBarDuration];
          }
       }
       public List<StockDailyValue> GetExactValues()
@@ -285,6 +286,7 @@ namespace StockAnalyzer.StockClasses
       }
       protected void SetBarDuration(StockBarDuration newBarDuration)
       {
+         Console.WriteLine("SetBarDuration Name:"+this.StockName+" newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
          if (!this.Initialise() || newBarDuration == this.BarDuration)
          {
             if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
@@ -329,22 +331,7 @@ namespace StockAnalyzer.StockClasses
          {
             this.IsInitialised = false;
             List<StockDailyValue> newList =
-               this.GenerateSerieForTimeSpan(this.BarSerieDictionary[StockBarDuration.Daily], newBarDuration);
-
-            if (this.BarSerieDictionary.ContainsKey(newBarDuration))
-            {
-               // Merge with cached bars.
-               var bars = this.BarSerieDictionary[newBarDuration];
-               foreach (StockDailyValue dailyValue in newList.Where(b => b.DATE > bars.Last().DATE))
-               {
-                  bars.Add(dailyValue);
-               }
-               newList = bars;
-            }
-            else
-            {
-               this.BarSerieDictionary.Add(newBarDuration, newList);
-            }
+               this.GenerateSerieForTimeSpanFromDaily(newBarDuration);
 
             foreach (StockDailyValue dailyValue in newList)
             {
@@ -613,7 +600,7 @@ namespace StockAnalyzer.StockClasses
          this.lastDate = DateTime.MinValue;
          this.StockAnalysis = new StockAnalysis();
          this.IsPortofolioSerie = false;
-         this.StockTimeSpan = StockBarDuration.Daily;
+         this.barDuration = StockBarDuration.Daily;
          this.DataProvider = dataProvider;
          this.IsInitialised = false;
          ResetAllCache();
@@ -628,7 +615,7 @@ namespace StockAnalyzer.StockClasses
          this.lastDate = DateTime.MinValue;
          this.StockAnalysis = new StockAnalysis();
          this.IsPortofolioSerie = false;
-         this.StockTimeSpan = StockBarDuration.Daily;
+         this.barDuration = StockBarDuration.Daily;
          this.DataProvider = dataProvider;
          this.IsInitialised = false;
          ResetAllCache();
@@ -642,7 +629,7 @@ namespace StockAnalyzer.StockClasses
          this.lastDate = DateTime.MinValue;
          this.StockAnalysis = new StockAnalysis();
          this.IsPortofolioSerie = false;
-         this.StockTimeSpan = StockBarDuration.Daily;
+         this.barDuration = StockBarDuration.Daily;
 
          this.IsInitialised = false;
 
@@ -6283,76 +6270,143 @@ namespace StockAnalyzer.StockClasses
          stockSerie.Initialise();
          return stockSerie;
       }
-      
+
+      public List<StockDailyValue> GenerateSerieForTimeSpanFromDaily(StockBarDuration barDuration)
+      {
+         Console.WriteLine("GenerateSerieForTimeSpanFromDaily Name:" + this.StockName + " barDuration:" + barDuration.ToString());
+
+         List<StockDailyValue> newStockValues = null;
+         List<StockDailyValue> cachedStockValues = null;
+
+         if (this.BarSerieDictionary.ContainsKey(barDuration))
+         {
+            Console.WriteLine("Already in cache");
+            return this.BarSerieDictionary[barDuration];
+         }
+
+         List<StockDailyValue> dailyValueList = this.BarSerieDictionary[StockBarDuration.Daily];
+
+         // Check if has saved cache
+         DateTime cacheEndDate = DateTime.Now;
+         if (
+            StockDataProviderBase.LoadIntradayDurationArchive(
+               StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, barDuration))
+         {
+            cachedStockValues = this.BarSerieDictionary[barDuration];
+            this.BarSerieDictionary.Remove(barDuration);
+
+            cacheEndDate = cachedStockValues.Last().DATE;
+            DateTime cacheEndDate2 = cacheEndDate.AddDays(-1);
+
+            Console.WriteLine("Has file cache from " + cachedStockValues.First().DATE + " to " + cacheEndDate);
+
+            dailyValueList = dailyValueList.Where(v => v.DATE >= cacheEndDate2).ToList();
+         }
+
+         // Managed smoothed durations
+         string barDurationString = barDuration.ToString();
+         int index = barDurationString.IndexOf("_EMA");
+         if (index!=-1)
+         {
+            StockBarDuration duration = (StockBarDuration)Enum.Parse(typeof(StockBarDuration),  barDurationString.Substring(0, index));
+            newStockValues = GenerateSerieForTimeSpanFromDaily(duration);
+
+            int smoothing = int.Parse(barDurationString.Substring(index + 4));
+
+            newStockValues = GenerateSmoothedBars(newStockValues, smoothing);
+            this.BarSerieDictionary.Add(barDuration, newStockValues);
+            return newStockValues;
+         }
+
+         int period;
+         string[] timeSpanString = barDurationString.Split('_');
+         switch (timeSpanString[0].ToUpper())
+         {
+            case "BAR":
+               if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
+               {
+                  if (period == 1)
+                  {
+                     return dailyValueList;
+                  }
+                  else
+                  {
+                     newStockValues = GenerateMultipleBar(dailyValueList, period);
+                  }
+               }
+               break;
+            case "TLB":
+               //TLB_3D,
+               //TLB_EMA3,
+               //TLB_3D_EMA3,
+               if (barDuration == StockBarDuration.TLB)
+               {
+                  newStockValues = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
+               }
+               else
+               {
+                  if (timeSpanString[1].EndsWith("D"))
+                  {
+                     newStockValues =
+                        GenerateSerieForTimeSpanFromDaily(
+                           (StockBarDuration)
+                              Enum.Parse(typeof (StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
+                     newStockValues = GenerateNbLineBreakBarFromDaily(newStockValues, 2);
+                  }
+               }
+               break;
+            default:
+               newStockValues = GenerateSerieForTimeSpan(dailyValueList, barDuration);
+               break;
+         }
+
+         if (newStockValues == null)
+         {
+            throw new StockAnalyzerException("BarDuration not supported: " + barDuration);
+         }
+         if (cachedStockValues != null)
+         {
+            // Merge with cache values
+            foreach (StockDailyValue dailyValue in newStockValues.Where(b => b.DATE > cacheEndDate))
+            {
+               cachedStockValues.Add(dailyValue);
+            }
+            newStockValues = cachedStockValues;
+         }
+         this.BarSerieDictionary.Add(barDuration, newStockValues);
+         return newStockValues;
+      }
+
       public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, StockBarDuration timeSpan)
       {
+         Console.WriteLine("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() +
+                           " CurrentBarDuration:" + this.BarDuration);
          List<StockDailyValue> newBarList = null;
-         if (this.StockTimeSpan == StockSerie.StockBarDuration.Daily)
+         if (dailyValueList.Count == 0) return new List<StockDailyValue>();
+
+         // Load cache if exists
+         StockDataProviderBase.LoadIntradayDurationArchive(
+            StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, timeSpan);
+
+         switch (timeSpan)
          {
-            if (dailyValueList.Count == 0) return new List<StockDailyValue>();
+            case StockBarDuration.Daily:
+               break;
+            //case StockBarDuration.HLBreak:
+            //   newBarList = GenerateHighLowBreakBarFromDaily(dailyValueList);
+            //   break;
+            //case StockBarDuration.HLBreak3:
+            //   newBarList = GenerateHighLowBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
+            //   break;
+            //case StockBarDuration.HLBreak6:
+            //   newBarList =
+            //      GenerateHighLowBreakBarFromDaily(
+            //         GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2));
+            //   break;
 
-            // Load cache if exists
-            StockDataProviderBase.LoadIntradayDurationArchive(
-               StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, timeSpan);
-
-            switch (timeSpan)
-            {
-               case StockBarDuration.Daily:
-                  break;
-               case StockBarDuration.Bar_2:
-                  newBarList = GenerateMultipleBar(dailyValueList, 2);
-                  break;
-               case StockBarDuration.Bar_1_EMA3:
-                  newBarList = GenerateSmoothedBars(dailyValueList, 3);
-                  break;
-               case StockBarDuration.Bar_1_EMA6:
-                  newBarList = GenerateSmoothedBars(dailyValueList,6);
-                  break;
-               case StockBarDuration.Bar_1_EMA9:
-                  newBarList = GenerateSmoothedBars(dailyValueList,9);
-                  break;
-               case StockBarDuration.Bar_1_EMA12:
-                  newBarList = GenerateSmoothedBars(dailyValueList,12);
-                  break;
-               case StockBarDuration.Bar_3:
-                  newBarList = GenerateMultipleBar(dailyValueList, 3);
-                  break;
-               case StockBarDuration.Bar_6:
-                  newBarList = GenerateMultipleBar(dailyValueList, 6);
-                  break;
-               case StockBarDuration.Bar_9:
-                  newBarList = GenerateMultipleBar(dailyValueList, 9);
-                  break;
-               case StockBarDuration.HLBreak:
-                  newBarList = GenerateHighLowBreakBarFromDaily(dailyValueList);
-                  break;
-               case StockBarDuration.HLBreak3:
-                  newBarList = GenerateHighLowBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
-                  break;
-               case StockBarDuration.HLBreak6:
-                  newBarList = GenerateHighLowBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2));
-                  break;
-               case StockBarDuration.HeikinAshi:
-                  newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
-                  break;
-               case StockBarDuration.HeikinAshi2B:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB));
-                  break;
-               case StockBarDuration.HeikinAshi2B_3D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D));
-                  break;
-               case StockBarDuration.HeikinAshi2B_6D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D));
-                  break;
-               case StockBarDuration.HeikinAshi2B_9D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D));
-                  break;
-               case StockBarDuration.HeikinAshi2B_27D:
-                  newBarList = GenerateHeikinAshiBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D));
-                  break;
-               case StockBarDuration.TLB:
-                  newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
-                  break;
+            case StockBarDuration.TLB:
+               newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
+               break;
                //case StockBarDuration.TLB_BIS:
                //   newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 2);
                //   break;
@@ -6368,171 +6422,176 @@ namespace StockAnalyzer.StockClasses
                //case StockBarDuration.TLB_TER_27D:
                //   newBarList = GenerateSerieForTimeSpan(GenerateMultipleBar(dailyValueList, 27), StockBarDuration.TwoWeekBreaks_TER);
                //   break;
-               case StockBarDuration.TLB_3D:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
-                  break;
-               case StockBarDuration.TLB_6D:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2);
-                  break;
-               case StockBarDuration.TLB_9D:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3), 2);
-                  break;
-               case StockBarDuration.TLB_27D:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3), 2), 3);
-                  break;
-               case StockBarDuration.TLB_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 3);
-                  break;
-               case StockBarDuration.TLB_3D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 3);
-                  break;
-               case StockBarDuration.TLB_6D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 3);
-                  break;
-               case StockBarDuration.TLB_9D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 3);
-                  break;
-               case StockBarDuration.TLB_27D_EMA3:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 3);
-                  break;
-               case StockBarDuration.TLB_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 6);
-                  break;
-               case StockBarDuration.TLB_3D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 6);
-                  break;
-               case StockBarDuration.TLB_6D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 6);
-                  break;
-               case StockBarDuration.TLB_9D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 6);
-                  break;
-               case StockBarDuration.TLB_27D_EMA6:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 6);
-                  break;
-               case StockBarDuration.TLB_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 12);
-                  break;
-               case StockBarDuration.TLB_3D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 12);
-                  break;
-               case StockBarDuration.TLB_6D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 12);
-                  break;
-               case StockBarDuration.TLB_9D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 12);
-                  break;
-               case StockBarDuration.TLB_27D_EMA12:
-                  newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 12);
-                  break;
-               case StockBarDuration.ThreeLineBreak:
-                  newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
-                  break;
-               case StockBarDuration.ThreeLineBreak_BIS:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
-                  break;
-               case StockBarDuration.ThreeLineBreak_TER:
-                  newBarList = GenerateNbLineBreakBarFromDaily(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
-                  break;
-               case StockBarDuration.SixLineBreak:
-                  newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
-                  break;
-               //case StockBarDuration.Range_1:
-               //   newBarList = GenerateRangeBar(dailyValueList, 0.01f);
-               //   break;
-               //case StockBarDuration.Range_2:
-               //   newBarList = GenerateRangeBar(dailyValueList, 0.02f);
-               //   break;
-               //case StockBarDuration.Range_3:
-               //   newBarList = GenerateRangeBar(dailyValueList, 0.03f);
-               //   break;
-               case StockBarDuration.Weekly:
-                  {
-                     StockDailyValue newValue = null;
-                     DayOfWeek previousDayOfWeek = DayOfWeek.Sunday;
-                     DateTime beginDate = dailyValueList.First().DATE;
-                     newBarList = new List<StockDailyValue>();
+            case StockBarDuration.TLB_3D:
+               newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
+               break;
+            case StockBarDuration.TLB_6D:
+               newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2);
+               break;
+            case StockBarDuration.TLB_9D:
+               newBarList =
+                  GenerateNbLineBreakBarFromDaily(
+                     GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3),
+                     2);
+               break;
+            case StockBarDuration.TLB_27D:
+               newBarList =
+                  GenerateNbLineBreakBarFromDaily(
+                     GenerateNbLineBreakBarFromDaily(
+                        GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2),
+                           3), 2), 3);
+               break;
+            case StockBarDuration.TLB_EMA3:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 3);
+               break;
+            case StockBarDuration.TLB_3D_EMA3:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 3);
+               break;
+            case StockBarDuration.TLB_6D_EMA3:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 3);
+               break;
+            case StockBarDuration.TLB_9D_EMA3:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 3);
+               break;
+            case StockBarDuration.TLB_27D_EMA3:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 3);
+               break;
+            case StockBarDuration.TLB_EMA6:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 6);
+               break;
+            case StockBarDuration.TLB_3D_EMA6:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 6);
+               break;
+            case StockBarDuration.TLB_6D_EMA6:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 6);
+               break;
+            case StockBarDuration.TLB_9D_EMA6:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 6);
+               break;
+            case StockBarDuration.TLB_27D_EMA6:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 6);
+               break;
+            case StockBarDuration.TLB_EMA12:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB), 12);
+               break;
+            case StockBarDuration.TLB_3D_EMA12:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_3D), 12);
+               break;
+            case StockBarDuration.TLB_6D_EMA12:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_6D), 12);
+               break;
+            case StockBarDuration.TLB_9D_EMA12:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_9D), 12);
+               break;
+            case StockBarDuration.TLB_27D_EMA12:
+               newBarList = GenerateSmoothedBars(GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.TLB_27D), 12);
+               break;
+            case StockBarDuration.ThreeLineBreak:
+               newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
+               break;
+            case StockBarDuration.ThreeLineBreak_BIS:
+               newBarList =
+                  GenerateNbLineBreakBarFromDaily(
+                     GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
+               break;
+            case StockBarDuration.ThreeLineBreak_TER:
+               newBarList =
+                  GenerateNbLineBreakBarFromDaily(
+                     GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
+               break;
+            case StockBarDuration.SixLineBreak:
+               newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
+               break;
+            case StockBarDuration.Weekly:
+            {
+               StockDailyValue newValue = null;
+               DayOfWeek previousDayOfWeek = DayOfWeek.Sunday;
+               DateTime beginDate = dailyValueList.First().DATE;
+               newBarList = new List<StockDailyValue>();
 
-                     foreach (StockDailyValue dailyValue in dailyValueList)
+               foreach (StockDailyValue dailyValue in dailyValueList)
+               {
+                  if (newValue == null)
+                  {
+                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                        dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                     beginDate = dailyValue.DATE;
+                     previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                  }
+                  else
+                  {
+                     if (previousDayOfWeek < dailyValue.DATE.DayOfWeek)
                      {
-                        if (newValue == null)
-                        {
-                           newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                           beginDate = dailyValue.DATE;
-                           previousDayOfWeek = dailyValue.DATE.DayOfWeek;
-                        }
-                        else
-                        {
-                           if (previousDayOfWeek < dailyValue.DATE.DayOfWeek)
-                           {
-                              // We are in the week
-                              newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
-                              newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
-                              newValue.CLOSE = dailyValue.CLOSE;
-                              newValue.VOLUME += dailyValue.VOLUME;
-                              previousDayOfWeek = dailyValue.DATE.DayOfWeek;
-                           }
-                           else
-                           {
-                              // We switched to next week
-                              newBarList.Add(newValue);
-                              newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                              beginDate = dailyValue.DATE;
-                              previousDayOfWeek = dailyValue.DATE.DayOfWeek;
-                           }
-                        }
+                        // We are in the week
+                        newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                        newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                        newValue.CLOSE = dailyValue.CLOSE;
+                        newValue.VOLUME += dailyValue.VOLUME;
+                        previousDayOfWeek = dailyValue.DATE.DayOfWeek;
                      }
-                     if (newValue != null)
+                     else
                      {
+                        // We switched to next week
                         newBarList.Add(newValue);
+                        newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                           dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        beginDate = dailyValue.DATE;
+                        previousDayOfWeek = dailyValue.DATE.DayOfWeek;
                      }
                   }
-                  break;
-               case StockBarDuration.Monthly:
-                  {
-                     StockDailyValue newValue = null;
-                     int previousMonth = dailyValueList.First().DATE.Month;
-                     DateTime beginDate = dailyValueList.First().DATE;
-                     newBarList = new List<StockDailyValue>();
-
-                     foreach (StockDailyValue dailyValue in dailyValueList)
-                     {
-                        if (newValue == null)
-                        {
-                           newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                           beginDate = dailyValue.DATE;
-                           previousMonth = dailyValue.DATE.Month;
-                        }
-                        else
-                        {
-                           if (previousMonth == dailyValue.DATE.Month)
-                           {
-                              // We are in the week
-                              newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
-                              newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
-                              newValue.VOLUME += dailyValue.VOLUME;
-                              newValue.CLOSE = dailyValue.CLOSE;
-                              previousMonth = dailyValue.DATE.Month;
-                           }
-                           else
-                           {
-                              // We switched to next week
-                              newBarList.Add(newValue);
-                              newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                              beginDate = dailyValue.DATE;
-                              previousMonth = dailyValue.DATE.Month;
-                           }
-                        }
-                     }
-                     if (newValue != null)
-                     {
-                        newBarList.Add(newValue);
-                     }
-                  }
-                  break;
-               default:
-                  throw new System.NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
+               }
+               if (newValue != null)
+               {
+                  newBarList.Add(newValue);
+               }
             }
+               break;
+            case StockBarDuration.Monthly:
+            {
+               StockDailyValue newValue = null;
+               int previousMonth = dailyValueList.First().DATE.Month;
+               DateTime beginDate = dailyValueList.First().DATE;
+               newBarList = new List<StockDailyValue>();
+
+               foreach (StockDailyValue dailyValue in dailyValueList)
+               {
+                  if (newValue == null)
+                  {
+                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                        dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                     beginDate = dailyValue.DATE;
+                     previousMonth = dailyValue.DATE.Month;
+                  }
+                  else
+                  {
+                     if (previousMonth == dailyValue.DATE.Month)
+                     {
+                        // We are in the week
+                        newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                        newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                        newValue.VOLUME += dailyValue.VOLUME;
+                        newValue.CLOSE = dailyValue.CLOSE;
+                        previousMonth = dailyValue.DATE.Month;
+                     }
+                     else
+                     {
+                        // We switched to next week
+                        newBarList.Add(newValue);
+                        newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                           dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        beginDate = dailyValue.DATE;
+                        previousMonth = dailyValue.DATE.Month;
+                     }
+                  }
+               }
+               if (newValue != null)
+               {
+                  newBarList.Add(newValue);
+               }
+            }
+               break;
+            default:
+               throw new System.NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
          }
          return newBarList;
       }

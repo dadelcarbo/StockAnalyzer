@@ -673,8 +673,8 @@ namespace StockAnalyzerApp.CustomControl
          Cursor = Cursors.WaitCursor;
 
          List<StockSerie.StockAlertDef> alertDefs = new List<StockSerie.StockAlertDef>();
-         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
-         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.HeikinAshi2B_3D, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
+         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_EMA3, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
+         alertDefs.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA3, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
 
          var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
          try

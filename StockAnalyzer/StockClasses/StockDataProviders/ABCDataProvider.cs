@@ -41,8 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       public override void InitDictionary(string rootFolder, StockDictionary dictionary, bool download)
       {
          stockDictionary = dictionary; // Save dictionary for futur use in daily download
-
-
+         
          // Create data folder if not existing
          if (!Directory.Exists(rootFolder + ABC_DAILY_FOLDER))
          {
@@ -213,7 +212,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                res |= ParseABCGroupCSVFile(archiveFileName);
             }
 
-            stockSerie.ClearBarDurationCache();
+            // @@@@ stockSerie.ClearBarDurationCache(); Removed as I don't know why it's here.
             return res;
          }
          
@@ -253,13 +252,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          using (StreamReader sr = new StreamReader(fileName, true))
          {
             string line = sr.ReadLine();
+            string previousISIN =string.Empty;
             while (!sr.EndOfStream)
             {
                string[] row = line.Split(';');
-               if (stockSerie == null || stockSerie.ISIN != row[0])
+               if (previousISIN != row[0])
                {
                   stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
-
+                  previousISIN = row[0];
                }
                if (stockSerie != null)
                {
