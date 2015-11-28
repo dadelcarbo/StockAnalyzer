@@ -83,10 +83,10 @@ namespace StockAnalyzer.StockClasses
       public enum StockBarDuration
       {
          Daily,
-         Bar_1_EMA3,
-         Bar_1_EMA6,
-         Bar_1_EMA9,
-         Bar_1_EMA12,
+         Daily_EMA3,
+         Daily_EMA6,
+         Daily_EMA9,
+         Daily_EMA12,
          Bar_2,
          Bar_3,
          Bar_6,

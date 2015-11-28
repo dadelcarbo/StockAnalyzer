@@ -23,6 +23,8 @@ namespace StockAnalyzerApp.CustomControl
          this.dateTimePicker.Value = Settings.Default.StrategyStartDate;
          this.smtpTextBox.Text = Settings.Default.UserSMTP;
          this.addressTextBox.Text = Settings.Default.UserEMail;
+         this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
+         this.AlertActiveCheckBox.Checked= Settings.Default.RaiseAlerts;
          needRestart = false;
       }
 
@@ -40,6 +42,10 @@ namespace StockAnalyzerApp.CustomControl
          Settings.Default.StrategyStartDate = this.dateTimePicker.Value;
          Settings.Default.UserSMTP = this.smtpTextBox.Text;
          Settings.Default.UserEMail = this.addressTextBox.Text;
+
+         Settings.Default.AlertsFrequency = (int)this.alertFrequencyUpDown.Value;
+         Settings.Default.RaiseAlerts = this.AlertActiveCheckBox.Checked;
+
          Settings.Default.Save();
 
          if (needRestart)
@@ -97,6 +103,16 @@ namespace StockAnalyzerApp.CustomControl
          StockMail.SendEmail("Test Email", "Test Email");
 
          this.Cursor = cursor;
+      }
+
+      private void alertFrequencyUpDown_ValueChanged(object sender, EventArgs e)
+      {
+         needRestart |= this.generateBreadthCheckBox.Checked;
+      }
+
+      private void AlertActiveCheckBox_CheckedChanged(object sender, EventArgs e)
+      {
+         needRestart |= this.generateBreadthCheckBox.Checked;
       }
    }
 }

@@ -113,5 +113,11 @@
     <Setting Name="MomentumIndicator" Type="System.String" Scope="User">
       <Value Profile="(Default)">ROC(120,1)</Value>
     </Setting>
+    <Setting Name="RaiseAlerts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AlertsFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

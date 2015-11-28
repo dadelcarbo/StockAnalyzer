@@ -35,9 +35,7 @@
          this.okBtn = new System.Windows.Forms.Button();
          this.cancelBtn = new System.Windows.Forms.Button();
          this.downloadDataCheckBox = new System.Windows.Forms.CheckBox();
-         this.settingsBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
          this.intradaySupportCheckBox = new System.Windows.Forms.CheckBox();
-         this.settingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
          this.generateBreadthCheckBox = new System.Windows.Forms.CheckBox();
          this.enableLoggingCheckBox = new System.Windows.Forms.CheckBox();
          this.label2 = new System.Windows.Forms.Label();
@@ -55,17 +53,21 @@
          this.label1 = new System.Windows.Forms.Label();
          this.groupBox3 = new System.Windows.Forms.GroupBox();
          this.testButton = new System.Windows.Forms.Button();
-         this.smtpTextBox = new System.Windows.Forms.TextBox();
-         this.label3 = new System.Windows.Forms.Label();
-         this.label4 = new System.Windows.Forms.Label();
          this.addressTextBox = new System.Windows.Forms.TextBox();
-         ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource)).BeginInit();
+         this.smtpTextBox = new System.Windows.Forms.TextBox();
+         this.label4 = new System.Windows.Forms.Label();
+         this.label3 = new System.Windows.Forms.Label();
+         this.alertGroupBox = new System.Windows.Forms.GroupBox();
+         this.AlertActiveCheckBox = new System.Windows.Forms.CheckBox();
+         this.label5 = new System.Windows.Forms.Label();
+         this.alertFrequencyUpDown = new System.Windows.Forms.NumericUpDown();
          this.groupBox1.SuspendLayout();
          this.chartParamGroupBox.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
          this.groupBox2.SuspendLayout();
          this.groupBox3.SuspendLayout();
+         this.alertGroupBox.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).BeginInit();
          this.SuspendLayout();
          // 
          // openFileDlg
@@ -91,26 +93,16 @@
          // downloadDataCheckBox
          // 
          resources.ApplyResources(this.downloadDataCheckBox, "downloadDataCheckBox");
-         this.downloadDataCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("CheckState", this.settingsBindingSource1, "DownloadData", true));
          this.downloadDataCheckBox.Name = "downloadDataCheckBox";
          this.downloadDataCheckBox.UseVisualStyleBackColor = true;
          this.downloadDataCheckBox.CheckedChanged += new System.EventHandler(this.downloadDataCheckBox_CheckedChanged);
          // 
-         // settingsBindingSource1
-         // 
-         this.settingsBindingSource1.DataSource = typeof(StockAnalyzerSettings.Properties.Settings);
-         // 
          // intradaySupportCheckBox
          // 
          resources.ApplyResources(this.intradaySupportCheckBox, "intradaySupportCheckBox");
-         this.intradaySupportCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("CheckState", this.settingsBindingSource, "SupportIntraday", true));
          this.intradaySupportCheckBox.Name = "intradaySupportCheckBox";
          this.intradaySupportCheckBox.UseVisualStyleBackColor = true;
          this.intradaySupportCheckBox.CheckedChanged += new System.EventHandler(this.intradaySupportCheckBox_CheckedChanged);
-         // 
-         // settingsBindingSource
-         // 
-         this.settingsBindingSource.DataSource = typeof(StockAnalyzerSettings.Properties.Settings);
          // 
          // generateBreadthCheckBox
          // 
@@ -246,25 +238,67 @@
          this.testButton.UseVisualStyleBackColor = true;
          this.testButton.Click += new System.EventHandler(this.testButton_Click);
          // 
+         // addressTextBox
+         // 
+         resources.ApplyResources(this.addressTextBox, "addressTextBox");
+         this.addressTextBox.Name = "addressTextBox";
+         // 
          // smtpTextBox
          // 
          resources.ApplyResources(this.smtpTextBox, "smtpTextBox");
          this.smtpTextBox.Name = "smtpTextBox";
-         // 
-         // label3
-         // 
-         resources.ApplyResources(this.label3, "label3");
-         this.label3.Name = "label3";
          // 
          // label4
          // 
          resources.ApplyResources(this.label4, "label4");
          this.label4.Name = "label4";
          // 
-         // addressTextBox
+         // label3
          // 
-         resources.ApplyResources(this.addressTextBox, "addressTextBox");
-         this.addressTextBox.Name = "addressTextBox";
+         resources.ApplyResources(this.label3, "label3");
+         this.label3.Name = "label3";
+         // 
+         // alertGroupBox
+         // 
+         this.alertGroupBox.Controls.Add(this.alertFrequencyUpDown);
+         this.alertGroupBox.Controls.Add(this.label5);
+         this.alertGroupBox.Controls.Add(this.AlertActiveCheckBox);
+         resources.ApplyResources(this.alertGroupBox, "alertGroupBox");
+         this.alertGroupBox.Name = "alertGroupBox";
+         this.alertGroupBox.TabStop = false;
+         // 
+         // AlertActiveCheckBox
+         // 
+         resources.ApplyResources(this.AlertActiveCheckBox, "AlertActiveCheckBox");
+         this.AlertActiveCheckBox.Name = "AlertActiveCheckBox";
+         this.AlertActiveCheckBox.UseVisualStyleBackColor = true;
+         this.AlertActiveCheckBox.CheckedChanged += new System.EventHandler(this.AlertActiveCheckBox_CheckedChanged);
+         // 
+         // label5
+         // 
+         resources.ApplyResources(this.label5, "label5");
+         this.label5.Name = "label5";
+         // 
+         // alertFrequencyUpDown
+         // 
+         resources.ApplyResources(this.alertFrequencyUpDown, "alertFrequencyUpDown");
+         this.alertFrequencyUpDown.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+         this.alertFrequencyUpDown.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+         this.alertFrequencyUpDown.Name = "alertFrequencyUpDown";
+         this.alertFrequencyUpDown.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+         this.alertFrequencyUpDown.ValueChanged += new System.EventHandler(this.alertFrequencyUpDown_ValueChanged);
          // 
          // PreferenceDialog
          // 
@@ -272,6 +306,7 @@
          resources.ApplyResources(this, "$this");
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.CancelButton = this.cancelBtn;
+         this.Controls.Add(this.alertGroupBox);
          this.Controls.Add(this.groupBox3);
          this.Controls.Add(this.groupBox2);
          this.Controls.Add(this.chartParamGroupBox);
@@ -288,8 +323,6 @@
          this.MaximizeBox = false;
          this.MinimizeBox = false;
          this.Name = "PreferenceDialog";
-         ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource)).EndInit();
          this.groupBox1.ResumeLayout(false);
          this.groupBox1.PerformLayout();
          this.chartParamGroupBox.ResumeLayout(false);
@@ -299,6 +332,9 @@
          this.groupBox2.PerformLayout();
          this.groupBox3.ResumeLayout(false);
          this.groupBox3.PerformLayout();
+         this.alertGroupBox.ResumeLayout(false);
+         this.alertGroupBox.PerformLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -311,8 +347,6 @@
       private System.Windows.Forms.Button cancelBtn;
       private System.Windows.Forms.CheckBox downloadDataCheckBox;
       private System.Windows.Forms.CheckBox intradaySupportCheckBox;
-      private System.Windows.Forms.BindingSource settingsBindingSource;
-      private System.Windows.Forms.BindingSource settingsBindingSource1;
       private System.Windows.Forms.CheckBox generateBreadthCheckBox;
       private System.Windows.Forms.CheckBox enableLoggingCheckBox;
       private System.Windows.Forms.Label label2;
@@ -334,5 +368,9 @@
       private System.Windows.Forms.Button testButton;
       private System.Windows.Forms.TextBox addressTextBox;
       private System.Windows.Forms.Label label4;
+      private System.Windows.Forms.GroupBox alertGroupBox;
+      private System.Windows.Forms.NumericUpDown alertFrequencyUpDown;
+      private System.Windows.Forms.Label label5;
+      private System.Windows.Forms.CheckBox AlertActiveCheckBox;
    }
 }

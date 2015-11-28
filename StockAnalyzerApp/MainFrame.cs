@@ -526,36 +526,39 @@ namespace StockAnalyzerApp
          refreshTimer.Start();
 
          // Checks for alert every x minutes.
-         int minutes = 10;
-         alertTimer = new System.Windows.Forms.Timer(new Container());
-         alertTimer.Tick += new EventHandler(alertTimer_Tick);
-         alertTimer.Interval = minutes * 60 * 1000;
-         alertTimer.Start();
-
-         string fileName = Path.GetTempPath() + "AlertLog.txt";
-         IEnumerable<string> alertLog = new List<string>();
-         bool needDirectAlertCheck = false;
-         if (File.Exists(fileName))
+         if (Settings.Default.RaiseAlerts)
          {
-            if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
+            int minutes = Settings.Default.AlertsFrequency;
+            alertTimer = new System.Windows.Forms.Timer(new Container());
+            alertTimer.Tick += new EventHandler(alertTimer_Tick);
+            alertTimer.Interval = minutes * 60 * 1000;
+            alertTimer.Start();
+
+            string fileName = Path.GetTempPath() + "AlertLog.txt";
+            IEnumerable<string> alertLog = new List<string>();
+            bool needDirectAlertCheck = false;
+            if (File.Exists(fileName))
             {
-               if (DateTime.Now.Hour > 8 && DateTime.Now.Hour < 18)
+               if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
+               {
+                  if (DateTime.Now.Hour > 8 && DateTime.Now.Hour < 18)
+                  {
+                     needDirectAlertCheck = true;
+                  }
+               }
+               else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
+               // Check if older than x Minutes
                {
                   needDirectAlertCheck = true;
                }
             }
-            else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
-               // Check if older than x Minutes
+            else
             {
                needDirectAlertCheck = true;
             }
-         }
-         else
-         {
-            needDirectAlertCheck = true;
-         }
-         if (needDirectAlertCheck) alertTimer_Tick(null, null);
+            if (needDirectAlertCheck) alertTimer_Tick(null, null);
 
+         }
       }
 
 
