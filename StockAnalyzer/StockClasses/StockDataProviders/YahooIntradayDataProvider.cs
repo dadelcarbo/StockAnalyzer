@@ -133,8 +133,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
-         bool needDownload = false;
-
          string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
                            stockSerie.StockGroup.ToString() + ".txt";
          if (File.Exists(fileName))

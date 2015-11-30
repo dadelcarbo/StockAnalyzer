@@ -135,8 +135,8 @@ namespace StockAnalyzerApp
 
       #region CONSTANTS
       static private string WORK_THEME = "NewTheme*";
-      static private string COT_SUBFOLDER = @"\data\weekly\cot";
-      static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
+      //static private string COT_SUBFOLDER = @"\data\weekly\cot";
+      //static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
       static private string INTRADAY_SUBFOLDER = @"\data\intraday";
       static private string DAILY_SUBFOLDER = @"\data\daily";
       static private string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
@@ -245,9 +245,7 @@ namespace StockAnalyzerApp
          StockSplashScreen.ProgressMin = 0;
          StockSplashScreen.ShowSplashScreen();
 
-         Console.WriteLine();
-         Console.WriteLine("GetFolderPath: {0}",
-         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+         StockLog.Write("GetFolderPath: "+ Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
          // This is the first time the user runs the application.
          Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UltimateChartistRoot";
@@ -506,7 +504,7 @@ namespace StockAnalyzerApp
                best = stockSerie.StockName;
             }
          }
-         Console.WriteLine("Best index " + best);
+         StockLog.Write("Best index " + best);
          //MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
@@ -2593,8 +2591,8 @@ namespace StockAnalyzerApp
       //     DateTime date1 = refDate.AddTicks(timeStamp1 * 10000000L);
       //     DateTime date2 = refDate.AddTicks(timeStamp2 * 10000000L);
 
-      //     Console.WriteLine("Date 1: " + date1.ToLongDateString() + " " + date1.ToLongTimeString());
-      //     Console.WriteLine("Date 2: " + date2.ToLongDateString() + " " + date2.ToLongTimeString());
+      //     StockLog.Write("Date 1: " + date1.ToLongDateString() + " " + date1.ToLongTimeString());
+      //     StockLog.Write("Date 2: " + date2.ToLongDateString() + " " + date2.ToLongTimeString());
 
       //     while (!line.StartsWith("volume")) line = sr.ReadLine();
 
@@ -2602,7 +2600,7 @@ namespace StockAnalyzerApp
       //     {
       //         timeStamp1 = long.Parse(line.Split(',')[0]);
       //         DateTime date = refDate.AddTicks(timeStamp1 * 10000000L);
-      //         Console.WriteLine("Date " + date.ToShortDateString() + " Time " + date.ToShortTimeString());
+      //         StockLog.Write("Date " + date.ToShortDateString() + " Time " + date.ToShortTimeString());
       //     }
       //} 
 
@@ -2850,7 +2848,7 @@ namespace StockAnalyzerApp
          }
          StockDictionary.Add(serieName, cacEWSerie);
 
-         Console.WriteLine(serieName + ";" + period + ";" + cacEWSerie.Values.Last().CLOSE);
+         StockLog.Write(serieName + ";" + period + ";" + cacEWSerie.Values.Last().CLOSE);
       }
 
       private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period1, int period2,
@@ -2914,7 +2912,7 @@ namespace StockAnalyzerApp
             serie.BarDuration = StockSerie.StockBarDuration.Daily;
          }
          StockDictionary.Add(serieName, cacEWSerie);
-         Console.WriteLine(serieName + ";" + period1 + ";" + period2 + ";" + cacEWSerie.Values.Last().CLOSE);
+         StockLog.Write(serieName + ";" + period1 + ";" + period2 + ";" + cacEWSerie.Values.Last().CLOSE);
       }
 
       private void GenerateCAC_SAR(bool stopOnLowBreadth, float speed)
@@ -3117,7 +3115,7 @@ namespace StockAnalyzerApp
          }
          StockDictionary.Add(serieName, cacEWSerie);
 
-         Console.WriteLine(serieName + ";" + cacEWSerie.Values.Last().CLOSE);
+         StockLog.Write(serieName + ";" + cacEWSerie.Values.Last().CLOSE);
 
       }
 
@@ -3624,8 +3622,7 @@ namespace StockAnalyzerApp
          DateTime lastDate = referenceSerie.Keys.Last();
          foreach (DateTime date in referenceSerie.Keys)
          {
-            Console.WriteLine();
-            Console.WriteLine(date.ToShortDateString());
+            StockLog.Write(date.ToShortDateString());
 
             values.Clear();
 
@@ -3650,7 +3647,7 @@ namespace StockAnalyzerApp
                   cashValue += pos.EndPosition(stockSeries.First(s => s.StockName == pos.Name)[date].OPEN);
                   portofolioValue += pos.Gain;
 
-                  Console.WriteLine("Selling: " + pos.ToString() + " gain: " + pos.Gain.ToString());
+                  StockLog.Write("Selling: " + pos.ToString() + " gain: " + pos.Gain.ToString());
                }
                else
                {
@@ -3673,7 +3670,7 @@ namespace StockAnalyzerApp
                portofolio.Add(pos);
                consumedCash = value.CLOSE * size;
 
-               Console.WriteLine("Buying: " + pos.ToString() + " at: " + pos.Open.ToString());
+               StockLog.Write("Buying: " + pos.ToString() + " at: " + pos.Open.ToString());
             }
             cashValue -= consumedCash;
 
@@ -3684,18 +3681,18 @@ namespace StockAnalyzerApp
                   cashValue += pos.EndPosition(stockSeries.First(s => s.StockName == pos.Name)[date].CLOSE);
                   portofolioValue += pos.Gain;
 
-                  Console.WriteLine("Selling: " + pos.ToString() + " gain: " + pos.Gain.ToString());
+                  StockLog.Write("Selling: " + pos.ToString() + " gain: " + pos.Gain.ToString());
                }
             }
 
             // Display Open Positions
-            Console.WriteLine("Portofolio Value =" + portofolioValue);
+            StockLog.Write("Portofolio Value =" + portofolioValue);
             //foreach (Position pos in portofolio.Where(p => p.IsOpened))
             //{
-            //    Console.WriteLine(pos.ToString());
+            //    StockLog.Write(pos.ToString());
             //}
          }
-         Console.WriteLine("Cash Value: " + cashValue);
+         StockLog.Write("Cash Value: " + cashValue);
       }
 
       class Position
@@ -4285,7 +4282,7 @@ border:1px solid black;
          this.CurrentTheme = "ReportTheme";
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
 
-         float ensureUnique = 0.0f;
+         //float ensureUnique = 0.0f;
 
          SortedDictionary<float, StockSerie> leadersDico = new SortedDictionary<float, StockSerie>();
          //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC_ALL)))
@@ -4308,11 +4305,11 @@ border:1px solid black;
          string htmlLeaders = string.Empty;
          string htmlLosers = string.Empty;
 
-         string rowTemplate = @"
-<tr>
-    <td>%COL1%</td>
-    <td>%COL2%</td>
-</tr>";
+//         string rowTemplate = @"
+//<tr>
+//    <td>%COL1%</td>
+//    <td>%COL2%</td>
+//</tr>";
 
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Winners");
          htmlLeaders += " <table>";

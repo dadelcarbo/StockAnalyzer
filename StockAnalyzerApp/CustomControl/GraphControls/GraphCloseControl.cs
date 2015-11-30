@@ -763,7 +763,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             valuePoint2D.X = this.IndexOf(orderDate);
             if (valuePoint2D.X < 0)
             {
-               Console.WriteLine("Order date not found: " + stockOrder.ExecutionDate);
+               StockLog.Write("Order date not found: " + stockOrder.ExecutionDate);
             }
             else
             {

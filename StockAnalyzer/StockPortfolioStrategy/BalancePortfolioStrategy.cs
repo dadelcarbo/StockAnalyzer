@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 
 
 
@@ -40,7 +41,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
          }
 
 #if USE_LOGS
-            Console.WriteLine("Before Selling Arbitrage");
+            StockLog.Write("Before Selling Arbitrage");
             this.Dump(applyDate);
 #endif
 
@@ -57,10 +58,10 @@ namespace StockAnalyzer.StockPortfolioStrategy
                // Sell to reduce postion
                int nbUnit = (int)Math.Floor(delta / serieValues[count]);
                if (nbUnit <= 0)
-                  Console.WriteLine("Unit" + nbUnit);
+                  StockLog.Write("Unit" + nbUnit);
                if (nbUnit > 0)
                {
-                  Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + nbUnit + " " + position.StockName);
+                  StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Selling " + nbUnit + " " + position.StockName);
                   StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.SellAtMarketOpen, false,
                       applyDate, applyDate, nbUnit, serieValues[count], 0.0f);
 
@@ -75,7 +76,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
 
 
 #if USE_LOGS
-            Console.WriteLine("Before Buying Arbitrage");
+            StockLog.Write("Before Buying Arbitrage");
             this.Dump(applyDate);
 #endif
          // Buy stock undervaluing the ratio by xx%
@@ -89,10 +90,10 @@ namespace StockAnalyzer.StockPortfolioStrategy
                // Buy to increase position
                int nbUnit = (int)Math.Floor(-delta / serieValues[count]);
                if (nbUnit <= 0)
-                  Console.WriteLine("Unit" + nbUnit);
+                  StockLog.Write("Unit" + nbUnit);
                if (nbUnit > 0 && this.availableLiquidity > nbUnit * serieValues[count])
                {
-                  Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + position.StockName);
+                  StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + position.StockName);
                   StockOrder order = StockOrder.CreateExecutedOrder(position.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                       applyDate, applyDate, nbUnit, serieValues[count], 0.0f);
 
@@ -107,7 +108,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
 
 
 #if USE_LOGS
-            Console.WriteLine("After Arbitrage");
+            StockLog.Write("After Arbitrage");
             this.Dump(applyDate);
 #endif
       }
@@ -153,7 +154,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             this.Positions.Add(new StockPosition(order));
          }
 
-         //Console.WriteLine("InitialiseAllocation");
+         //StockLog.Write("InitialiseAllocation");
          //this.Dump(nextDate);
 
          return nextDate;

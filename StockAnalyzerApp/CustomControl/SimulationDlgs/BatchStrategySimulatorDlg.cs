@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockStrategyClasses;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -74,7 +75,7 @@ namespace StockAnalyzerApp.CustomControl
          this.progressBar.Value = 0;
          foreach (StockSerie stockSerie in tmpList)
          {
-            Console.WriteLine("Processing: " + stockSerie.StockName);
+            StockLog.Write("Processing: " + stockSerie.StockName);
             stockSerie.BarDuration = this.BarDuration;
             GenerateSimulation(stockSerie);
             // 
@@ -95,7 +96,7 @@ namespace StockAnalyzerApp.CustomControl
          }
          totalValue = totalValue / tmpList.Count;
          float totalPercentGain = (totalValue - this.simulationParameterControl.amount) / this.simulationParameterControl.amount;
-         Console.WriteLine(totalPercentGain.ToString("P"));
+         StockLog.Write(totalPercentGain.ToString("P"));
       }
 
       private void GenerateSimulation(StockSerie stockSerie)

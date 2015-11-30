@@ -16,7 +16,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          this.amount = amount;
       }
 
-      private StockSerie stockSerie;
+      //private StockSerie stockSerie;
 
       public int Qty
       {

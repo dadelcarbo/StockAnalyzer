@@ -20,20 +20,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
       {
-         Console.WriteLine("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
+         StockLog.Write("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
          string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
          if (File.Exists(durationFileName))
          {
             var values = serie.GetValues(duration);
             if (values == null)
-               Console.WriteLine("LoadIntradayDurationArchiveData Cache File Found, current size is: 0");
-            else  Console.WriteLine("LoadIntradayDurationArchiveData Cache File Found, current size is: " + values.Count);
+               StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: 0");
+            else  StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: " + values.Count);
             serie.ReadFromCSVFile(durationFileName, duration);
 
             
-            Console.WriteLine("LoadIntradayDurationArchiveData New serie size is: " + serie.GetValues(duration).Count);
-            Console.WriteLine("LoadIntradayDurationArchiveData First bar: " + serie.GetValues(duration).First().ToString());
-            Console.WriteLine("LoadIntradayDurationArchiveData Last bar: " + serie.GetValues(duration).Last().ToString());
+            StockLog.Write("LoadIntradayDurationArchiveData New serie size is: " + serie.GetValues(duration).Count);
+            StockLog.Write("LoadIntradayDurationArchiveData First bar: " + serie.GetValues(duration).First().ToString());
+            StockLog.Write("LoadIntradayDurationArchiveData Last bar: " + serie.GetValues(duration).Last().ToString());
 
          }
          else

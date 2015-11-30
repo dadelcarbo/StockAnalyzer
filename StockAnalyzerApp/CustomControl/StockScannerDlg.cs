@@ -9,6 +9,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzerSettings.Properties;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -336,11 +337,11 @@ namespace StockAnalyzerApp.CustomControl
 
                   if (stockSerie == null)
                   {
-                     // Console.WriteLine("Nothing to process" );
+                     StockLog.Write("Nothing to process");
                      return;
                   }
 
-                  // Console.WriteLine("Processing " + stockSerie.StockName);
+                  StockLog.Write("Processing " + stockSerie.StockName);
                   progress[stockSerie] = ProgressStatus.Calculated;
                }
                progressLabel.Text = stockSerie.StockName;
@@ -387,7 +388,7 @@ namespace StockAnalyzerApp.CustomControl
                Cursor = cursor;
                this.Activate();
 
-               Console.WriteLine((DateTime.Now - startDate).ToString());
+               StockLog.Write((DateTime.Now - startDate).ToString());
             }
          }
          catch
@@ -421,7 +422,7 @@ namespace StockAnalyzerApp.CustomControl
                   }
                   if (stockSerie != null)
                   {
-                     // Console.WriteLine("Downloading " + stockSerie.StockName);
+                     // StockLog.Write("Downloading " + stockSerie.StockName);
                      lock (progress)
                      {
                         progress[stockSerie] = ProgressStatus.Downloading;
@@ -434,7 +435,7 @@ namespace StockAnalyzerApp.CustomControl
                }
                else
                {
-                  // Console.WriteLine("Download queue is full ");
+                  // StockLog.Write("Download queue is full ");
                }
             }
             else
@@ -465,7 +466,7 @@ namespace StockAnalyzerApp.CustomControl
                progress[stockSerie] = ProgressStatus.Calculated;
             }
          }
-         // Console.WriteLine(stockSerie.StockName +" Downloaded");
+         // StockLog.Write(stockSerie.StockName +" Downloaded");
       }
 
       DateTime startDate = DateTime.Now;
@@ -570,7 +571,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             Cursor = cursor;
          }
-         Console.WriteLine((DateTime.Now - startDate).ToString());
+         StockLog.Write((DateTime.Now - startDate).ToString());
       }
 
       void clearButton_Click(object sender, EventArgs e)
@@ -600,10 +601,10 @@ namespace StockAnalyzerApp.CustomControl
       }
       void DumpCheckNodes()
       {
-         // Console.WriteLine();
+         // StockLog.Write();
          foreach (var node in GetCheckedChildNodes(eventTreeView.TopNode))
          {
-            // Console.WriteLine(node.FullPath);
+            // StockLog.Write(node.FullPath);
          }
       }
 

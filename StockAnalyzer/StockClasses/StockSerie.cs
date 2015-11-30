@@ -286,7 +286,7 @@ namespace StockAnalyzer.StockClasses
       }
       protected void SetBarDuration(StockBarDuration newBarDuration)
       {
-         Console.WriteLine("SetBarDuration Name:"+this.StockName+" newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
+         StockLog.Write("SetBarDuration Name:"+this.StockName+" newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
          if (!this.Initialise() || newBarDuration == this.BarDuration)
          {
             if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
@@ -1920,8 +1920,6 @@ namespace StockAnalyzer.StockClasses
       }
       public bool MatchEvent(StockAlertDef stockAlert)
       {
-         bool match = true;
-
          StockBarDuration currentBarDuration = this.BarDuration;
          try
          {
@@ -5437,7 +5435,7 @@ namespace StockAnalyzer.StockClasses
                {
                   if (StockOrder.OrderStatus.Executed == ProcessPendingOrder(ref amount, reinvest, takeProfit, profitTarget, stopLoss, stopLossTarget, fixedFee, portofolio, stockOrder, ref lookingForBuying, ref remainingCash, ref benchmark, ref nbOpenPosition, dailyValues, ref takeProfitOrder, ref stopLossOrder, barValue))
                   {
-                     if (printOrderLog) Console.WriteLine("Main executed: " + stockOrder.ToString());
+                     if (printOrderLog) StockLog.Write("Main executed: " + stockOrder.ToString());
                      if (supportShortSelling && !stockOrder.IsBuyOrder()) // Closing position
                      { // Try to reverse 
                         stockOrder = strategy.TryToBuy(barValue, currentIndex - 1, amount, ref benchmark);
@@ -5467,7 +5465,7 @@ namespace StockAnalyzer.StockClasses
                      switch (takeProfitOrder.State)
                      {
                         case StockOrder.OrderStatus.Executed:
-                           if (printOrderLog) Console.WriteLine("Target executed: " + takeProfitOrder.ToString());
+                           if (printOrderLog) StockLog.Write("Target executed: " + takeProfitOrder.ToString());
 
                            if (takeProfitOrder.IsBuyOrder())
                            {
@@ -5493,7 +5491,7 @@ namespace StockAnalyzer.StockClasses
                            nbOpenPosition -= takeProfitOrder.Number;
                            if (nbOpenPosition == 0)
                            {
-                              //Console.WriteLine("nothing left");
+                              //StockLog.Write("nothing left");
                               stopLossOrder = null;
                               lookingForBuying = true;
                            }
@@ -5523,7 +5521,7 @@ namespace StockAnalyzer.StockClasses
                      switch (stopLossOrder.State)
                      {
                         case StockOrder.OrderStatus.Executed:
-                           if (printOrderLog) Console.WriteLine("Stop executed: " + stopLossOrder.ToString());
+                           if (printOrderLog) StockLog.Write("Stop executed: " + stopLossOrder.ToString());
                            if (stopLossOrder.IsBuyOrder())
                            {
                               remainingCash = amount - stopLossOrder.TotalCost;
@@ -5548,7 +5546,7 @@ namespace StockAnalyzer.StockClasses
                            nbOpenPosition -= stopLossOrder.Number;
                            if (nbOpenPosition == 0)
                            {
-                              //Console.WriteLine("nothing left");
+                              //StockLog.Write("nothing left");
                               takeProfitOrder = null;
                               lookingForBuying = true;
                            }
@@ -5673,7 +5671,7 @@ namespace StockAnalyzer.StockClasses
                   nbOpenPosition -= stockOrder.Number;
                   if (nbOpenPosition != 0)
                   {
-                     Console.WriteLine("Error is position calculation");
+                     StockLog.Write("Error is position calculation");
                   }
                }
                lookingForBuying = !lookingForBuying;
@@ -6273,14 +6271,14 @@ namespace StockAnalyzer.StockClasses
 
       public List<StockDailyValue> GenerateSerieForTimeSpanFromDaily(StockBarDuration barDuration)
       {
-         Console.WriteLine("GenerateSerieForTimeSpanFromDaily Name:" + this.StockName + " barDuration:" + barDuration.ToString());
+         StockLog.Write("GenerateSerieForTimeSpanFromDaily Name:" + this.StockName + " barDuration:" + barDuration.ToString());
 
          List<StockDailyValue> newStockValues = null;
          List<StockDailyValue> cachedStockValues = null;
 
          if (this.BarSerieDictionary.ContainsKey(barDuration))
          {
-            Console.WriteLine("Already in cache");
+            StockLog.Write("Already in cache");
             return this.BarSerieDictionary[barDuration];
          }
 
@@ -6298,7 +6296,7 @@ namespace StockAnalyzer.StockClasses
             cacheEndDate = cachedStockValues.Last().DATE;
             DateTime cacheEndDate2 = cacheEndDate.AddDays(-1);
 
-            Console.WriteLine("Has file cache from " + cachedStockValues.First().DATE + " to " + cacheEndDate);
+            StockLog.Write("Has file cache from " + cachedStockValues.First().DATE + " to " + cacheEndDate);
 
             dailyValueList = dailyValueList.Where(v => v.DATE >= cacheEndDate2).ToList();
          }
@@ -6379,7 +6377,7 @@ namespace StockAnalyzer.StockClasses
 
       public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, StockBarDuration timeSpan)
       {
-         Console.WriteLine("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() +
+         StockLog.Write("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() +
                            " CurrentBarDuration:" + this.BarDuration);
          List<StockDailyValue> newBarList = null;
          if (dailyValueList.Count == 0) return new List<StockDailyValue>();

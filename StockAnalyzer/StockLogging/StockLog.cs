@@ -32,41 +32,49 @@ namespace StockAnalyzer.StockLogging
    {
       public bool isEnabled = false;
       public bool isMethodLoggingEnabled = false;
-
+      
       static private StockLog logger = null;
       static public StockLog Logger { get { if (logger == null) { logger = new StockLog(); } return logger; } }
 
       private StreamWriter sw;
+
       private StockLog()
       {
 #if (DEBUG)
          isEnabled = false;
 #else
-            isEnabled = Settings.Default.LoggingEnabled;
+         isEnabled = Settings.Default.LoggingEnabled;
 #endif
          if (isEnabled)
          {
-            string logFolder = Settings.Default.RootFolder + @"\log";
-            if (Directory.Exists(logFolder))
+            if (!Debugger.IsAttached)
             {
-               try
+               string logFolder = Settings.Default.RootFolder + @"\log";
+               if (Directory.Exists(logFolder))
                {
-                  foreach (string file in Directory.GetFiles(logFolder))
+                  try
                   {
-                     File.Delete(file);
+                     foreach (string file in Directory.GetFiles(logFolder))
+                     {
+                        File.Delete(file);
+                     }
+                  }
+                  catch
+                  {
                   }
                }
-               catch
+               else
                {
+                  Directory.CreateDirectory(logFolder);
                }
+               string fileName = logFolder + @"\log_" + DateTime.Now.ToString("yyyMMdd_hhmmss") + ".log";
+               sw = new StreamWriter(fileName, false);
+               sw.AutoFlush = true;
             }
             else
             {
-               Directory.CreateDirectory(logFolder);
+               sw = new StreamWriter(Console.OpenStandardOutput());
             }
-            string fileName = logFolder + @"\log_" + DateTime.Now.ToString("yyyMMdd_hhmmss") + ".log";
-            sw = new StreamWriter(fileName, false);
-            sw.AutoFlush = true;
          }
       }
 

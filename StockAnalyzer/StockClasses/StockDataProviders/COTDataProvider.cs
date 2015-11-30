@@ -97,7 +97,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
          try
          {
-            // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2010.zip    
+            // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2015.zip    
             // Read new downloaded values
             string cotFolder = Settings.Default.RootFolder + COT_SUBFOLDER;
             string cotArchiveFolder = Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER;
@@ -127,7 +127,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                StreamReader sr = new StreamReader(fileName);
                CotValue readCotValue = null;
                CotSerie cotSerie = null;
-               int endOfNameIndex = 0;
 
                string cotSerieName = string.Empty;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.Portofolio
 {
@@ -154,7 +155,6 @@ namespace StockAnalyzer.Portofolio
          float maxDrawdown = float.MaxValue;
          float maxGain = float.MinValue;
          float maxLoss = float.MinValue;
-         float totalReturn = 0f;
 
          referenceSerie.Initialise();
          DateTime previousDate = referenceSerie.Keys.First();
@@ -229,7 +229,7 @@ namespace StockAnalyzer.Portofolio
                   {
                      throw new System.Exception("Sell order found on non bought stock");
                      // @@@@ Need to have proper error manegement otherwise the applications crashes.
-                     return referenceSerie;
+                     //return referenceSerie;
                   }
                }
             }
@@ -277,12 +277,12 @@ namespace StockAnalyzer.Portofolio
             previousDate = date;
          }
 
-         Console.WriteLine("Statistics for " + stockSerie.StockName);
-         Console.WriteLine("NbTrades: " + nbTrades);
-         Console.WriteLine("Win %: " + ((float)nbWinTrades/(float)nbTrades).ToString("P2"));
-         Console.WriteLine("MaxDrowdown: " + maxDrawdown.ToString("P2"));
-         Console.WriteLine("MaxGain: " + maxGain.ToString("P2"));
-         Console.WriteLine("MaxLoss: " + maxLoss.ToString("P2"));
+         StockLog.Write("Statistics for " + stockSerie.StockName);
+         StockLog.Write("NbTrades: " + nbTrades);
+         StockLog.Write("Win %: " + ((float)nbWinTrades/(float)nbTrades).ToString("P2"));
+         StockLog.Write("MaxDrowdown: " + maxDrawdown.ToString("P2"));
+         StockLog.Write("MaxGain: " + maxGain.ToString("P2"));
+         StockLog.Write("MaxLoss: " + maxLoss.ToString("P2"));
                  
          // Preinitialise the serie
          stockSerie.PreInitialise();

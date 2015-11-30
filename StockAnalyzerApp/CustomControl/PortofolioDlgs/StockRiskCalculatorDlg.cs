@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 {
    public partial class StockRiskCalculatorDlg : Form
    {
-      public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+      //public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
 
       private RiskCalculatorViewModel viewModel;
       public StockRiskCalculatorDlg()

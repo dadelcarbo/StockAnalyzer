@@ -4,6 +4,7 @@ using System.Linq;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockPortfolioStrategy
 {
@@ -57,7 +58,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                      DateTime nextDay = serie.Keys.ElementAt(index + 1);
                      float open = serie.GetValues(StockSerie.StockBarDuration.Daily).First(s => s.DATE == nextDay).OPEN;
                      // Close position
-                     Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
+                     StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
                                        position.StockName);
                      StockOrder order = StockOrder.CreateExecutedOrder(position.StockName,
                          StockOrder.OrderType.SellAtMarketOpen, false,
@@ -104,10 +105,10 @@ namespace StockAnalyzer.StockPortfolioStrategy
                            // Open position
                            int nbUnit = (int)Math.Floor(this.availableLiquidity / open / (nbPosition - this.Positions.Count));
                            if (nbUnit <= 0)
-                              Console.WriteLine("Unit" + nbUnit);
+                              StockLog.Write("Unit" + nbUnit);
                            if (nbUnit > 0)
                            {
-                              Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + serie.StockName);
+                              StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + serie.StockName);
                               StockOrder order = StockOrder.CreateExecutedOrder(serie.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                                   nextDay, nextDay, nbUnit, open, 0.0f);
 

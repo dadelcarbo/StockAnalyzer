@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -61,21 +62,21 @@ namespace StockAnalyzer.StockPortfolioStrategy
             switch (updatePeriod)
             {
                case UpdatePeriod.Daily:
-                  //Console.WriteLine("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
+                  //StockLog.Write("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
                   this.ApplyAtDate(currentDate);
                   break;
                case UpdatePeriod.Weekly:
                   if (calendar.GetWeekOfYear(currentDate, CalendarWeekRule.FirstDay, DayOfWeek.Monday) !=
                       calendar.GetWeekOfYear(previousDate, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
                   {
-                     //Console.WriteLine("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
+                     //StockLog.Write("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
                      this.ApplyAtDate(currentDate);
                   }
                   break;
                case UpdatePeriod.Monthly:
                   if (currentDate.Month > previousDate.Month)
                   {
-                     //Console.WriteLine("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
+                     //StockLog.Write("Updating " + updatePeriod.ToString() + " :" + currentDate.ToShortDateString());
                      this.ApplyAtDate(currentDate);
                   }
                   break;
@@ -98,11 +99,11 @@ namespace StockAnalyzer.StockPortfolioStrategy
             StockSerie serie = this.Series.Find(s => s.StockName == position.StockName);
             float open = serie[applyDate].OPEN;
             value += position.Value(open);
-            //Console.WriteLine(position.StockName + " " + position.Number + "==> Open: " + open + " ==> TotalCost: " + position.TotalCost + " CurrentValue: " + position.Value(open));
+            //StockLog.Write(position.StockName + " " + position.Number + "==> Open: " + open + " ==> TotalCost: " + position.TotalCost + " CurrentValue: " + position.Value(open));
          }
-         Console.WriteLine(applyDate.ToShortDateString() + " NbPos: " + this.Positions.Count + "Total: " + (this.availableLiquidity + value));
+         StockLog.Write(applyDate.ToShortDateString() + " NbPos: " + this.Positions.Count + "Total: " + (this.availableLiquidity + value));
 
-         // Console.WriteLine(applyDate.ToShortDateString()+ " Cash: " + this.availableLiquidity + " Value: " + value + "Total: " + (this.availableLiquidity + value));
+         // StockLog.Write(applyDate.ToShortDateString()+ " Cash: " + this.availableLiquidity + " Value: " + value + "Total: " + (this.availableLiquidity + value));
       }
    }
 }

@@ -247,7 +247,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       private bool ParseABCGroupCSVFile(string fileName)
       {
          if (!File.Exists(fileName)) return false;
-         bool found = false;
          StockSerie stockSerie = null;
          using (StreamReader sr = new StreamReader(fileName, true))
          {
@@ -1000,7 +999,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             //{
             //   if (!stockDictionary.ContainsKey(name))
             //   {
-            //      Console.WriteLine("CAC 40 Stock not in dico: " + name);
+            //      StockLog.Write("CAC 40 Stock not in dico: " + name);
             //   }
             //}
          }

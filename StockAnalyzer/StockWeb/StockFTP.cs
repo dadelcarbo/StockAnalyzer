@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,14 +52,14 @@ namespace StockAnalyzer.StockWeb
                   bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
                }
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             localFileStream.Close();
             ftpStream.Close();
             ftpResponse.Close();
             ftpRequest = null;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          return;
       }
 
@@ -110,13 +111,13 @@ namespace StockAnalyzer.StockWeb
                   bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
                }
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             localFileStream.Close();
             ftpStream.Close();
             ftpRequest = null;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          return;
       }
 
@@ -141,7 +142,7 @@ namespace StockAnalyzer.StockWeb
             ftpResponse.Close();
             ftpRequest = null;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          return;
       }
 
@@ -168,7 +169,7 @@ namespace StockAnalyzer.StockWeb
             ftpResponse.Close();
             ftpRequest = null;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          return;
       }
 
@@ -196,7 +197,7 @@ namespace StockAnalyzer.StockWeb
          }
          catch (Exception ex)
          {
-            Console.WriteLine(ex.ToString());
+            StockLog.Write(ex.ToString());
             result = false;
          }
          return result;
@@ -227,7 +228,7 @@ namespace StockAnalyzer.StockWeb
             string fileInfo = null;
             /* Read the Full Response Stream */
             try { fileInfo = ftpReader.ReadToEnd(); }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             ftpReader.Close();
             ftpStream.Close();
@@ -236,7 +237,7 @@ namespace StockAnalyzer.StockWeb
             /* Return File Created Date Time */
             return fileInfo;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          /* Return an Empty string Array if an Exception Occurs */
          return "";
       }
@@ -266,7 +267,7 @@ namespace StockAnalyzer.StockWeb
             string fileInfo = null;
             /* Read the Full Response Stream */
             try { while (ftpReader.Peek() != -1) { fileInfo = ftpReader.ReadToEnd(); } }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             ftpReader.Close();
             ftpStream.Close();
@@ -275,7 +276,7 @@ namespace StockAnalyzer.StockWeb
             /* Return File Size */
             return fileInfo;
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          /* Return an Empty string Array if an Exception Occurs */
          return "";
       }
@@ -305,7 +306,7 @@ namespace StockAnalyzer.StockWeb
             string directoryRaw = null;
             /* Read Each Line of the Response and Append a Pipe to Each Line for Easy Parsing */
             try { while (ftpReader.Peek() != -1) { directoryRaw += ftpReader.ReadLine() + "|"; } }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             ftpReader.Close();
             ftpStream.Close();
@@ -313,9 +314,9 @@ namespace StockAnalyzer.StockWeb
             ftpRequest = null;
             /* Return the Directory Listing as a string Array by Parsing 'directoryRaw' with the Delimiter you Append (I use | in This Example) */
             try { string[] directoryList = directoryRaw.Split("|".ToCharArray()); return directoryList; }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          /* Return an Empty string Array if an Exception Occurs */
          return new string[] { "" };
       }
@@ -345,7 +346,7 @@ namespace StockAnalyzer.StockWeb
             string directoryRaw = null;
             /* Read Each Line of the Response and Append a Pipe to Each Line for Easy Parsing */
             try { while (ftpReader.Peek() != -1) { directoryRaw += ftpReader.ReadLine() + "|"; } }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
             /* Resource Cleanup */
             ftpReader.Close();
             ftpStream.Close();
@@ -353,9 +354,9 @@ namespace StockAnalyzer.StockWeb
             ftpRequest = null;
             /* Return the Directory Listing as a string Array by Parsing 'directoryRaw' with the Delimiter you Append (I use | in This Example) */
             try { string[] directoryList = directoryRaw.Split("|".ToCharArray()); return directoryList; }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) { StockLog.Write(ex.ToString()); }
          }
-         catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+         catch (Exception ex) { StockLog.Write(ex.ToString()); }
          /* Return an Empty string Array if an Exception Occurs */
          return new string[] { "" };
       }

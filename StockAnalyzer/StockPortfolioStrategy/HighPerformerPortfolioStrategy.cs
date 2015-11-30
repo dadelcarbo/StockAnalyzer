@@ -6,6 +6,7 @@ using System.Linq;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockLogging;
 
 
 
@@ -47,7 +48,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
          }
 
 #if USE_LOGS
-            Console.WriteLine("Before Selling Arbitrage");
+            StockLog.Write("Before Selling Arbitrage");
             this.Dump(applyDate);
 #endif
 
@@ -85,7 +86,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
             StockSerie serie = this.Series.First(s => s.StockName == position.StockName);
 
             // Sell position
-            Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
+            StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
                               position.StockName);
 
             StockOrder order;
@@ -104,7 +105,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
          }
 
 #if USE_LOGS
-            Console.WriteLine("Before Buying Arbitrage");
+            StockLog.Write("Before Buying Arbitrage");
             this.Dump(applyDate);
 #endif
          // Buy stock best perfoming stocks
@@ -117,10 +118,10 @@ namespace StockAnalyzer.StockPortfolioStrategy
             // Buy
             int nbUnit = (int)Math.Floor(this.availableLiquidity / pair.Key[applyDate].OPEN / (nbPositions - this.Positions.Count));
             //if (nbUnit <= 0)
-            //   Console.WriteLine("Unit" + nbUnit);
+            //   StockLog.Write("Unit" + nbUnit);
             if (nbUnit > 0)
             {
-               Console.WriteLine(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + pair.Key.StockName);
+               StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Buying " + nbUnit + " " + pair.Key.StockName);
                StockOrder order = StockOrder.CreateExecutedOrder(pair.Key.StockName, StockOrder.OrderType.BuyAtMarketOpen, false,
                    applyDate, applyDate, nbUnit, pair.Key[applyDate].OPEN, 0.0f);
 
@@ -135,7 +136,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
          previousDate = applyDate;
 
 #if USE_LOGS
-            Console.WriteLine("After Arbitrage");
+            StockLog.Write("After Arbitrage");
 #endif
       }
 
