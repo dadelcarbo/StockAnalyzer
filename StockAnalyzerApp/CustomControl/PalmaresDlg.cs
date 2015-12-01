@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
@@ -43,6 +44,8 @@ namespace StockAnalyzerApp.CustomControl
          this.groupComboBox.Items.Clear();
          this.groupComboBox.Items.AddRange(stockDico.GetValidGroupNames().ToArray());
          this.groupComboBox.SelectedItem = selectedGroup.ToString();
+
+         this.indicatorTextBox.Text = Settings.Default.MomentumIndicator;
 
          // Create an instance of a ListView column sorter and assign it to the ListView control.
          lvwColumnSorter = new ListViewColumnSorter();
@@ -105,6 +108,12 @@ namespace StockAnalyzerApp.CustomControl
          this.progressBar.Maximum = stockSeries.Count();
          this.progressBar.Minimum = 0;
          this.progressBar.Value = 0;
+
+         bool validIndicator = false;
+         if (StockIndicatorManager.Supports(this.indicatorTextBox.Text))
+         {
+            validIndicator = true;
+         }
 
          StockSerie underlyingStockSerie = null;
          foreach (StockSerie stockSerie in stockSeries)
@@ -176,7 +185,14 @@ namespace StockAnalyzerApp.CustomControl
                   subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();
                   subItems[k++] = stockSerie.GetMin(startIndex, endIndex, StockDataType.LOW).ToString();
                   subItems[k++] = lastStockValue.CLOSE.ToString();
-                  subItems[k++] = stockSerie.GetIndicator("RANK(1,1,0,0)").Series[0][endIndex].ToString();
+                  if (validIndicator)
+                  {
+                     subItems[k++] = stockSerie.GetIndicator(indicatorTextBox.Text).Series[0][endIndex].ToString();
+                  }
+                  else
+                  {
+                     subItems[k++] = "0";
+                  }
                   viewItems[i++] = new ListViewItem(subItems);
                }
             }
@@ -365,6 +381,11 @@ namespace StockAnalyzerApp.CustomControl
                }
             }
          }
+      }
+
+      private void indicatorTextBox_TextChanged(object sender, EventArgs e)
+      {
+         this.InitializeListView();
       }
    }
    /// <summary>

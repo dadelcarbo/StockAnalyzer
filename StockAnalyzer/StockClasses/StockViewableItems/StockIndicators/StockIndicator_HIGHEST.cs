@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_LW : StockIndicatorBase
+   public class StockIndicator_HIGHEST : StockIndicatorBase
    {
-      public StockIndicator_LW()
+      public StockIndicator_HIGHEST()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] { 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
@@ -24,10 +24,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Smooting" }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "LW(" + this.Parameters[0].ToString() + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -47,21 +47,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie atrSerie = stockSerie.GetSerie(StockDataType.ATR).CalculateEMA((int)this.Parameters[0]);
-         FloatSerie lowCloseSerie = new FloatSerie(stockSerie.Count);
-         int i = 0;
-         foreach (StockDailyValue dailyValue in stockSerie.Values)
-         {
-            lowCloseSerie[i++] = dailyValue.CLOSE - dailyValue.LOW;
-         }
-         lowCloseSerie = lowCloseSerie.CalculateEMA((int)this.Parameters[0]);
-         lowCloseSerie = lowCloseSerie / atrSerie;
-         lowCloseSerie = (lowCloseSerie * 100.0f) - 50.0f;
+         FloatSerie emaSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.Parameters[0]);
+         FloatSerie indexSerie = new FloatSerie(stockSerie.Count);
 
-         this.series[0] = lowCloseSerie.CalculateEMA((int)this.Parameters[0] / 4);
+         for (int i = 1; i < stockSerie.Count; i++)
+         {
+            int count = 0;
+            for (int j = i - 1; j >= 0; j--)
+            {
+               if (emaSerie[i] > emaSerie[j])
+               {
+                  count++;
+               }
+               else
+               {
+                  break;
+               }
+            }
+            indexSerie[i] = count;
+         }
+
+         this.series[0] = indexSerie;
          this.Series[0].Name = this.Name;
       }
-
       static string[] eventNames = new string[] { };
       public override string[] EventNames
       {

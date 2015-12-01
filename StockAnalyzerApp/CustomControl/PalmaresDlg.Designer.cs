@@ -48,6 +48,8 @@
          this.untilCheckBox = new System.Windows.Forms.CheckBox();
          this.untilDateTimePicker = new System.Windows.Forms.DateTimePicker();
          this.portofolioCheckBox = new System.Windows.Forms.CheckBox();
+         this.label2 = new System.Windows.Forms.Label();
+         this.indicatorTextBox = new System.Windows.Forms.TextBox();
          this.palmaresContextMenuStrip.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -168,10 +170,23 @@
          this.portofolioCheckBox.UseVisualStyleBackColor = true;
          this.portofolioCheckBox.CheckedChanged += new System.EventHandler(this.portofolioCheckBox_CheckedChanged);
          // 
+         // label2
+         // 
+         resources.ApplyResources(this.label2, "label2");
+         this.label2.Name = "label2";
+         // 
+         // indicatorTextBox
+         // 
+         resources.ApplyResources(this.indicatorTextBox, "indicatorTextBox");
+         this.indicatorTextBox.Name = "indicatorTextBox";
+         this.indicatorTextBox.LostFocus += new System.EventHandler(this.indicatorTextBox_TextChanged);
+         // 
          // PalmaresDlg
          // 
          resources.ApplyResources(this, "$this");
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+         this.Controls.Add(this.indicatorTextBox);
+         this.Controls.Add(this.label2);
          this.Controls.Add(this.portofolioCheckBox);
          this.Controls.Add(this.groupComboBox);
          this.Controls.Add(this.untilCheckBox);
@@ -206,5 +221,7 @@
       private System.Windows.Forms.ToolStripMenuItem addToWinnerWatchListToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem addToLoserWatchListToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem saveToFileToolStripMenuItem;
+      private System.Windows.Forms.Label label2;
+      private System.Windows.Forms.TextBox indicatorTextBox;
    }
 }
