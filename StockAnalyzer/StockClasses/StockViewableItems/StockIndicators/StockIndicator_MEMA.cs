@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_KEMA : StockIndicatorBase
+   public class StockIndicator_MEMA : StockIndicatorBase
    {
-      public StockIndicator_KEMA()
+      public StockIndicator_MEMA()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 3, 50}; }
+         get { return new Object[] { 3, 3}; }
       }
       public override ParamRange[] ParameterRanges
       {
@@ -23,9 +23,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "FastPeriod", "SlowPeriod" }; }
+         get { return new string[] { "Period", "Iteration" }; }
       }
-      public override string[] SerieNames { get { return new string[] { "KEMA(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "MEMA(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -42,20 +42,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override void ApplyTo(StockSerie stockSerie)
       {
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-         int fastPeriod = (int)this.parameters[0];
-         int slowPeriod = (int)this.parameters[1];
-         FloatSerie emaSerie = closeSerie.CalculateKEMA(fastPeriod, slowPeriod);
-         this.series[0] = emaSerie;
+         int period = (int)this.parameters[0];
+         int iteration = (int)this.parameters[1];
+
+         FloatSerie memaSerie = closeSerie;
+         for (int i = 0; i < iteration; i++)
+         {
+            memaSerie = memaSerie.CalculateEMA(period);
+         }
+            this.series[0] = memaSerie;
          this.series[0].Name = this.Name;
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-         for (int i = 2; i < emaSerie.Count; i++)
+         for (int i = 2; i < memaSerie.Count; i++)
          {
-            this.eventSeries[0][i] = (emaSerie[i - 2] > emaSerie[i - 1] && emaSerie[i - 1] < emaSerie[i]);
-            this.eventSeries[1][i] = (emaSerie[i - 2] < emaSerie[i - 1] && emaSerie[i - 1] > emaSerie[i]);
-            this.eventSeries[2][i] = closeSerie[i] > emaSerie[i];
-            this.eventSeries[3][i] = closeSerie[i] < emaSerie[i];
+            this.eventSeries[0][i] = (memaSerie[i - 2] > memaSerie[i - 1] && memaSerie[i - 1] < memaSerie[i]);
+            this.eventSeries[1][i] = (memaSerie[i - 2] < memaSerie[i - 1] && memaSerie[i - 1] > memaSerie[i]);
+            this.eventSeries[2][i] = closeSerie[i] > memaSerie[i];
+            this.eventSeries[3][i] = closeSerie[i] < memaSerie[i];
          }
       }
 
