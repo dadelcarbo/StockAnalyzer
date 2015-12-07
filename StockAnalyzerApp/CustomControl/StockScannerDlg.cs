@@ -338,6 +338,7 @@ namespace StockAnalyzerApp.CustomControl
                   if (stockSerie == null)
                   {
                      StockLog.Write("Nothing to process");
+                     Thread.Sleep(100);
                      return;
                   }
 
@@ -346,7 +347,7 @@ namespace StockAnalyzerApp.CustomControl
                }
                progressLabel.Text = stockSerie.StockName;
 
-               if (!stockSerie.Initialise())
+               if (!stockSerie.Initialise() || stockSerie.Count < 100)
                {
                   return;
                }
@@ -452,6 +453,7 @@ namespace StockAnalyzerApp.CustomControl
          StockSerie stockSerie = data as StockSerie;
          try
          {
+            StockLog.Write("StockName:" + stockSerie.StockName + "ThreadID:" + Thread.CurrentThread.ManagedThreadId);
             StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
             lock (progress)
             {

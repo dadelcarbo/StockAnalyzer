@@ -8,6 +8,7 @@ using System.Web;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using System.Threading;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -41,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       public override void InitDictionary(string rootFolder, StockDictionary dictionary, bool download)
       {
          stockDictionary = dictionary; // Save dictionary for futur use in daily download
-         
+
          // Create data folder if not existing
          if (!Directory.Exists(rootFolder + ABC_DAILY_FOLDER))
          {
@@ -131,6 +132,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       private void InitFromFile(string rootFolder, bool download, string fileName)
       {
+         StockLog.Write("InitFromFile " + fileName);
          if (File.Exists(fileName))
          {
             using (StreamReader sr = new StreamReader(fileName, true))
@@ -166,8 +168,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
          }
       }
+
+      static string loadingGroup = null;
+      static List<string> loadedGroups = new List<string>();
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
+         StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName  + " - " + stockSerie.Count);
          bool res = false;
 
          if (stockSerie.StockGroup == StockSerie.Groups.CAC40_RS)
@@ -198,26 +204,71 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
          string fileName = null;
          string[] files;
-         if (abcGroup!=null)
+         if (abcGroup != null)
          {
-            fileName = abcGroup + "_*.csv";
-            var groupFiles = System.IO.Directory.GetFiles(rootFolder + ABC_ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
-            foreach (string archiveFileName in groupFiles)
+            try
             {
-               if (!ParseABCGroupCSVFile(archiveFileName)) break;
-            }
-            groupFiles = System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
-            foreach (string archiveFileName in groupFiles)
-            {
-               res |= ParseABCGroupCSVFile(archiveFileName);
-            }
+               if (loadedGroups.Contains(abcGroup))
+               {
+                  StockLog.Write("Here");
+                  return false;
+               }
+               if (loadingGroup == null)
+               {
+                  loadingGroup = abcGroup;
+               }
+               else
+               {
+                  StockLog.Write("Already busy loading group: " + stockSerie.StockGroup);
+                  if (loadingGroup == abcGroup)
+                  {
+                     do
+                     {
+                        Thread.Sleep(100);
+                     } while (loadingGroup == abcGroup);
+                     return stockSerie.Count != 0;
+                  }
+                  else
+                  {
+                     do
+                     {
+                        Thread.Sleep(100);
+                     } while (loadingGroup == abcGroup);
+                  }
+               }
 
+               //
+               StockLog.Write("Sync OK Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+               fileName = abcGroup + "_*.csv";
+               var groupFiles =
+                  System.IO.Directory.GetFiles(rootFolder + ABC_ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
+               foreach (string archiveFileName in groupFiles)
+               {
+                  if (!ParseABCGroupCSVFile(archiveFileName)) break;
+               }
+               groupFiles =
+                  System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
+               foreach (string archiveFileName in groupFiles)
+               {
+                  res |= ParseABCGroupCSVFile(archiveFileName);
+               }
+            }
+            catch (System.Exception ex)
+            {
+               StockLog.Write(ex);
+            }
+            finally
+            {
+               loadingGroup = null;
+               loadedGroups.Add(abcGroup);
+            }
             // @@@@ stockSerie.ClearBarDurationCache(); Removed as I don't know why it's here.
             return res;
          }
-         
+
          // Read archive first
-         fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
+         fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() +
+                    "_*.csv";
          files = System.IO.Directory.GetFiles(rootFolder + ABC_ARCHIVE_FOLDER, fileName);
          foreach (string archiveFileName in files)
          {
@@ -225,7 +276,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
 
          // Read daily value
-         fileName = rootFolder + ABC_DAILY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+         fileName = rootFolder + ABC_DAILY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
+                    stockSerie.StockGroup.ToString() + ".csv";
          res |= ParseCSVFile(stockSerie, fileName);
 
          // Read intraday
@@ -246,12 +298,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       private bool ParseABCGroupCSVFile(string fileName)
       {
+         //StockLog.Write(fileName);
+
          if (!File.Exists(fileName)) return false;
          StockSerie stockSerie = null;
          using (StreamReader sr = new StreamReader(fileName, true))
          {
             string line = sr.ReadLine();
-            string previousISIN =string.Empty;
+            string previousISIN = string.Empty;
             while (!sr.EndOfStream)
             {
                string[] row = line.Split(';');
@@ -262,7 +316,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
                if (stockSerie != null)
                {
-                  DateTime date = DateTime.Parse(row[1]);                  
+                  DateTime date = DateTime.Parse(row[1]);
                   if (!stockSerie.ContainsKey(date))
                   {
                      StockDailyValue dailyValue = new StockDailyValue(
@@ -284,6 +338,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       private bool ParseABCIntradayFile(StockSerie stockSerie, string fileName)
       {
+         StockLog.Write("ParseABCIntradayFile: " + fileName);
+
          if (!File.Exists(fileName)) return false;
          using (StreamReader sr = new StreamReader(fileName, true))
          {
@@ -317,6 +373,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
+         StockLog.Write("DownloadDailyData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+
          if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          {
             bool isUpTodate = false;
@@ -416,6 +474,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
       {
+         StockLog.Write("DownloadIntradayData !!!! Not Implement !!!  Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+
          return false;
          //if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          //{
@@ -681,7 +741,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          return success;
       }
 
-      private bool DownloadMonthlyFileFromABC(string destFolder, DateTime month,string abcGroup)
+      private bool DownloadMonthlyFileFromABC(string destFolder, DateTime month, string abcGroup)
       {
          bool success = true;
          try
@@ -742,7 +802,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             newStream.Write(data, 0, data.Length);
             newStream.Close();
 
-            string fileName = abcGroup + "_" + month.Year + "_" + month.Month + ".csv"; 
+            string fileName = abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
             success = SaveResponseToFile(destFolder + @"\" + fileName, req);
          }
          catch (System.Exception ex)
