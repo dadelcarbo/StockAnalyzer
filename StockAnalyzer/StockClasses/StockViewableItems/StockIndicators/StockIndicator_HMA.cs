@@ -53,29 +53,31 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override void ApplyTo(StockSerie stockSerie)
       {
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-         FloatSerie HMASerie = closeSerie.CalculateHMA((int)this.parameters[0]);
-         this.series[0] = HMASerie;
+         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+         FloatSerie hmaSerie = closeSerie.CalculateHMA((int)this.parameters[0]);
+         this.series[0] = hmaSerie;
          this.series[0].Name = this.Name;
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-         for (int i = 2; i < HMASerie.Count; i++)
+         for (int i = 2; i < hmaSerie.Count; i++)
          {
-            this.eventSeries[0][i] = (HMASerie[i - 2] > HMASerie[i - 1] && HMASerie[i - 1] < HMASerie[i]);
-            this.eventSeries[1][i] = (HMASerie[i - 2] < HMASerie[i - 1] && HMASerie[i - 1] > HMASerie[i]);
-            this.eventSeries[2][i] = closeSerie[i] > HMASerie[i];
-            this.eventSeries[3][i] = closeSerie[i] < HMASerie[i];
-            this.eventSeries[4][i] = HMASerie[i] > HMASerie[i - 1];
-            this.eventSeries[5][i] = HMASerie[i] < HMASerie[i - 1];
+            this.eventSeries[0][i] = (hmaSerie[i - 2] > hmaSerie[i - 1] && hmaSerie[i - 1] < hmaSerie[i]);
+            this.eventSeries[1][i] = (hmaSerie[i - 2] < hmaSerie[i - 1] && hmaSerie[i - 1] > hmaSerie[i]);
+            this.eventSeries[2][i] = closeSerie[i] > hmaSerie[i];
+            this.eventSeries[3][i] = closeSerie[i] < hmaSerie[i];
+            this.eventSeries[4][i] = lowSerie[i] > hmaSerie[i] && lowSerie[i - 1] < hmaSerie[i - 1];
+            this.eventSeries[5][i] = highSerie[i] < hmaSerie[i] && highSerie[i - 1] > hmaSerie[i - 1];
          }
       }
 
-      static string[] eventNames = new string[] { "Bottom", "Top", "PriceAbove", "PriceBelow", "UpWard", "DownWard" };
+      static string[] eventNames = new string[] { "Bottom", "Top", "CloseAbove", "CloseBelow", "BarAbove", "BarBelow" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, false, false, false, false };
+      static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }

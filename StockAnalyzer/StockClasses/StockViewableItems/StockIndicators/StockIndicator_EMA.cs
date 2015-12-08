@@ -52,6 +52,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public override void ApplyTo(StockSerie stockSerie)
       {
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
          FloatSerie emaSerie = closeSerie.CalculateEMA((int)this.parameters[0]);
          this.series[0] = emaSerie;
          this.series[0].Name = this.Name;
@@ -64,15 +66,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[1][i] = (emaSerie[i - 2] < emaSerie[i - 1] && emaSerie[i - 1] > emaSerie[i]);
             this.eventSeries[2][i] = closeSerie[i] > emaSerie[i];
             this.eventSeries[3][i] = closeSerie[i] < emaSerie[i];
+            this.eventSeries[4][i] = lowSerie[i] > emaSerie[i] && lowSerie[i-1] < emaSerie[i-1];
+            this.eventSeries[5][i] = highSerie[i] < emaSerie[i] && highSerie[i - 1] > emaSerie[i - 1];
          }
       }
 
-      static string[] eventNames = new string[] { "Bottom", "Top", "PriceAbove", "PriceBelow" };
+      static string[] eventNames = new string[] { "Bottom", "Top", "CloseAbove", "CloseBelow", "BarAbove", "BarBelow" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, false, false };
+      static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }

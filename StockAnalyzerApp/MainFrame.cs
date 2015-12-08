@@ -588,10 +588,12 @@ namespace StockAnalyzerApp
          }
       }
 
-      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-      private StockSerie.StockAlertDef endOfLowerClose = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRUE(5)", "EndOfLowerClose");
-      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarAbove");
+      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
+      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)
@@ -599,7 +601,14 @@ namespace StockAnalyzerApp
          if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
              DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
-         // Clear alert log files
+
+         Thread alertThread = new Thread(GenerateAlertThread);
+         alertThread.Start();
+      }
+
+      private void GenerateAlertThread()
+      {
+// Clear alert log files
          string fileName = Path.GetTempPath() + "AlertLog.txt";
          IEnumerable<string> alertLog = new List<string>();
          if (File.Exists(fileName))
@@ -619,8 +628,11 @@ namespace StockAnalyzerApp
          {
             alerts.Clear();
             alerts.Add(cciEx);
-            alerts.Add(endOfLowerClose);
+            alerts.Add(barAbove);
+            alerts.Add(barBelow);
             alerts.Add(trailHL);
+            alerts.Add(ResistanceBroken);
+            alerts.Add(trailHLSR);
             //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "UpTrend"));
             //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "DownTrend");
             string alertMsg = string.Empty;
