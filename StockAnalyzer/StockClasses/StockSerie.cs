@@ -92,10 +92,11 @@ namespace StockAnalyzer.StockClasses
          Bar_6,
          Bar_9,
          Bar_27,
+         HA,
+         HA_3D,
          //HLBreak,
          //HLBreak3,
          //HLBreak6,
-         //HeikinAshi,
          //HeikinAshi2B,
          //HeikinAshi2B_3D,
          //HeikinAshi2B_6D,
@@ -6333,6 +6334,24 @@ namespace StockAnalyzer.StockClasses
                   }
                }
                break;
+            case "HA":
+               //HA_3D,
+               if (barDuration == StockBarDuration.HA)
+               {
+                  newStockValues = GenerateHeikinAshiBarFromDaily(dailyValueList);
+               }
+               else
+               {
+                  if (timeSpanString[1].EndsWith("D"))
+                  {
+                     newStockValues =
+                        GenerateSerieForTimeSpanFromDaily(
+                           (StockBarDuration)
+                              Enum.Parse(typeof (StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
+                     newStockValues = GenerateHeikinAshiBarFromDaily(newStockValues);
+                  }
+               }
+               break;
             case "TLB":
                //TLB_3D,
                //TLB_EMA3,
@@ -6688,6 +6707,7 @@ namespace StockAnalyzer.StockClasses
          FloatSerie optixSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.OPTIX).ToArray()).CalculateEMA(nbDay);
          FloatSerie positionSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.POSITION).ToArray()).CalculateEMA(nbDay);
 
+         StockDailyValue previousValue = stockDailyValueList[0];
          for (int i = 0; i < stockDailyValueList.Count; i++)
          {
             StockDailyValue dailyValue = stockDailyValueList[i];
@@ -6703,6 +6723,8 @@ namespace StockAnalyzer.StockClasses
             newValue.POSITION = positionSerie[i];
             newValue.IsComplete = dailyValue.IsComplete;
             newBarList.Add(newValue);
+
+            previousValue = dailyValue;
          }
          return newBarList;
       }

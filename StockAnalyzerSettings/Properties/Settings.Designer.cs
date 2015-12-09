@@ -73,7 +73,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OrderFile.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Portfolio.xml")]
         public string PortofolioFile {
             get {
                 return ((string)(this["PortofolioFile"]));

@@ -47,34 +47,52 @@ namespace StockAnalyzerApp
    public partial class StockAnalyzerForm : Form
    {
       public delegate void SelectedStockChangedEventHandler(string stockName, bool ativateMainWindow);
+
       public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
+
       public delegate void SelectedStrategyChangedEventHandler(string strategyName);
+
       public delegate void NotifySelectedThemeChangedEventHandler(Dictionary<string, List<string>> theme);
+
       public delegate void NotifyBarDurationChangedEventHandler(StockSerie.StockBarDuration barDuration);
+
       public delegate void NotifyStrategyChangedEventHandler(string newStrategy);
+
       public delegate void SelectedPortofolioChangedEventHandler(StockPortofolio portofolio, bool ativateMainWindow);
+
       public delegate void SelectedPortofolioNameChangedEventHandler(string portofolioName, bool ativateMainWindow);
+
       public delegate void SimulationCompletedEventHandler(SimulationParameterControl simulationParameterControl);
+
       public delegate void StockWatchListsChangedEventHandler();
+
       public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
       public delegate void SavePortofolio();
 
-      static public StockAnalyzerForm MainFrame { get; private set; }
+      public static StockAnalyzerForm MainFrame { get; private set; }
       public bool IsClosing { get; set; }
 
-      static public CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
-      static public CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
-      static public CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
+      public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
+      public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+      public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
       public StockDictionary StockDictionary { get; private set; }
       public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
       public StockPortofolioList StockPortofolioList { get; private set; }
-      public ToolStripProgressBar ProgressBar { get { return this.progressBar; } }
 
-      public GraphCloseControl GraphCloseControl { get { return this.graphCloseControl; } }
+      public ToolStripProgressBar ProgressBar
+      {
+         get { return this.progressBar; }
+      }
+
+      public GraphCloseControl GraphCloseControl
+      {
+         get { return this.graphCloseControl; }
+      }
 
       private StockSerie currentStockSerie = null;
+
       public StockSerie CurrentStockSerie
       {
          get { return currentStockSerie; }
@@ -90,18 +108,18 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       public event OnStockSerieChangedHandler StockSerieChanged;
       private string currentWatchList = null;
 
 
       public StockSerie.StockBarDuration BarDuration
       {
-         get
-         {
-            return (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem         ;
-         }
+         get { return (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem; }
       }
+
       public StockPortofolio currentPortofolio;
+
       public StockPortofolio CurrentPortofolio
       {
          get { return currentPortofolio; }
@@ -116,42 +134,45 @@ namespace StockAnalyzerApp
       private const int MOUSE_MARQUEE_SIZE = 4;
       private StockSerie.Groups selectedGroup;
 
-      PalmaresDlg palmaresDlg = null;
-      PortofolioDlg portofolioDlg = null;
-      OrderListDlg orderListDlg = null;
-      StrategySimulatorDlg strategySimulatorDlg = null;
-      FilteredStrategySimulatorDlg filteredStrategySimulatorDlg = null;
-      OrderGenerationDlg orderGenerationDlg = null;
-      BatchStrategySimulatorDlg batchStrategySimulatorDlg = null;
+      private PalmaresDlg palmaresDlg = null;
+      private PortofolioDlg portofolioDlg = null;
+      private OrderListDlg orderListDlg = null;
+      private StrategySimulatorDlg strategySimulatorDlg = null;
+      private FilteredStrategySimulatorDlg filteredStrategySimulatorDlg = null;
+      private OrderGenerationDlg orderGenerationDlg = null;
+      private BatchStrategySimulatorDlg batchStrategySimulatorDlg = null;
 
-      PortfolioSimulatorDlg portfolioSimulatorDlg = null;
+      private PortfolioSimulatorDlg portfolioSimulatorDlg = null;
 
       private static int nbBars;
 
-      int startIndex = 0;
-      int endIndex = 0;
+      private int startIndex = 0;
+      private int endIndex = 0;
 
-      List<GraphControl> graphList = new List<GraphControl>();
+      private List<GraphControl> graphList = new List<GraphControl>();
 
       #region CONSTANTS
-      static private string WORK_THEME = "NewTheme*";
+
+      private static string WORK_THEME = "NewTheme*";
       //static private string COT_SUBFOLDER = @"\data\weekly\cot";
       //static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
-      static private string INTRADAY_SUBFOLDER = @"\data\intraday";
-      static private string DAILY_SUBFOLDER = @"\data\daily";
-      static private string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
-      static private string YAHOO_SUBFOLDER = DAILY_SUBFOLDER + @"\Yahoo";
-      static private string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
-      static private string GENERATED_SUBFOLDER = DAILY_SUBFOLDER + @"\Generated";
-      static private string BREADTH_SUBFOLDER = DAILY_SUBFOLDER + @"\Breadth";
-      static private string POSITION_SUBFOLDER = DAILY_SUBFOLDER + @"\Position";
-      static private string ARCHIVE_DAILY_SUBFOLDER = @"\data\archive\daily";
-      static private string ARCHIVE_GENERATED_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Generated";
-      static private string ARCHIVE_BREADTH_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Breadth";
-      static private string ARCHIVE_POSITION_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Position";
+      private static string INTRADAY_SUBFOLDER = @"\data\intraday";
+      private static string DAILY_SUBFOLDER = @"\data\daily";
+      private static string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
+      private static string YAHOO_SUBFOLDER = DAILY_SUBFOLDER + @"\Yahoo";
+      private static string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
+      private static string GENERATED_SUBFOLDER = DAILY_SUBFOLDER + @"\Generated";
+      private static string BREADTH_SUBFOLDER = DAILY_SUBFOLDER + @"\Breadth";
+      private static string POSITION_SUBFOLDER = DAILY_SUBFOLDER + @"\Position";
+      private static string ARCHIVE_DAILY_SUBFOLDER = @"\data\archive\daily";
+      private static string ARCHIVE_GENERATED_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Generated";
+      private static string ARCHIVE_BREADTH_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Breadth";
+      private static string ARCHIVE_POSITION_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Position";
+
       #endregion
 
       #region STARTUP methods
+
       public StockAnalyzerForm()
       {
          InitializeComponent();
@@ -211,12 +232,14 @@ namespace StockAnalyzerApp
          this.FormClosing += new FormClosingEventHandler(StockAnalyzerForm_FormClosing);
 
          this.StockDictionary = new StockDictionary(new DateTime(DateTime.Now.Year, 01, 01));
-         this.StockDictionary.ReportProgress += new StockAnalyzer.StockClasses.StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
+         this.StockDictionary.ReportProgress +=
+            new StockAnalyzer.StockClasses.StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
 
          nbBars = Settings.Default.DefaultBarNumber;
 
          Settings.Default.PropertyChanged += (sender, args) => Settings.Default.Save();
       }
+
       protected override void OnShown(EventArgs e)
       {
          // Validate preferences and local repository
@@ -232,6 +255,7 @@ namespace StockAnalyzerApp
 
          base.OnActivated(e);
       }
+
       private void Form1_Load(object sender, EventArgs e)
       {
          Thread.CurrentThread.CurrentUICulture = EnglishCulture;
@@ -245,17 +269,19 @@ namespace StockAnalyzerApp
          StockSplashScreen.ProgressMin = 0;
          StockSplashScreen.ShowSplashScreen();
 
-         StockLog.Write("GetFolderPath: "+ Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+         StockLog.Write("GetFolderPath: " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
          // This is the first time the user runs the application.
-         Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UltimateChartistRoot";
+         Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                       @"\UltimateChartistRoot";
 
          string stockRootFolder = Settings.Default.RootFolder;
 
          // Root folder sanity check
          if (!Directory.Exists(Settings.Default.RootFolder))
          {
-            MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle,
+               MessageBoxButtons.OK, MessageBoxIcon.Stop);
             Environment.Exit(0);
          }
 
@@ -270,7 +296,9 @@ namespace StockAnalyzerApp
          StockSplashScreen.ProgressText = "Initialize stock dictionary...";
          StockSplashScreen.ProgressVal = 30;
 
-         StockDataProviderBase.InitStockDictionary(stockRootFolder, this.StockDictionary, Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(), new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+         StockDataProviderBase.InitStockDictionary(stockRootFolder, this.StockDictionary,
+            Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(),
+            new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
          if (this.StockDictionary.ContainsKey("SP500"))
          {
@@ -296,7 +324,9 @@ namespace StockAnalyzerApp
             // Generate breadth indicator
             if (Settings.Default.GenerateBreadth)
             {
-               foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
+               foreach (
+                  StockSerie stockserie in
+                     this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                {
                   StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
                   stockserie.Initialise();
@@ -305,10 +335,10 @@ namespace StockAnalyzerApp
 
             // Generate position indicator
             List<StockSerie.Groups> groups = new List<StockSerie.Groups>()
-                {
-                    StockSerie.Groups.CAC40,
-                    StockSerie.Groups.COMMODITY
-                };
+            {
+               StockSerie.Groups.CAC40,
+               StockSerie.Groups.COMMODITY
+            };
 
             this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
             this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
@@ -367,15 +397,15 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
-            for (int i = 30; i <= 230; i+=5)
+            for (int i = 30; i <= 230; i += 5)
             {
-               for (int j = 1; j < 20; j+=2)
+               for (int j = 1; j < 20; j += 2)
                {
                   StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
                   //GenerateCAC_Event("CAC_PUKE_RSI", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
                }
             }
-            for (int i = 5; i <= 200; i+=5)
+            for (int i = 5; i <= 200; i += 5)
             {
                //StockSplashScreen.ProgressText = "Generating CAC MACD_" + i + " Daily...";
                //GenerateCAC_Event("CAC_MACD_", StockSerie.StockBarDuration.Daily, i+1, i, "INDICATOR|MACD(%PERIOD1%,%PERIOD2%,2)", "MACDAboveSignal");
@@ -401,7 +431,7 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
             }
-            for (int i = 1; i <= 51; i+=10)
+            for (int i = 1; i <= 51; i += 10)
             {
                StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
                //GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
@@ -508,19 +538,25 @@ namespace StockAnalyzerApp
          //MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
-         this.graphCloseControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
-         this.graphScrollerControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphScrollerControl.GraphControl_MouseClick);
-         this.graphIndicator2Control.MouseClick += new System.Windows.Forms.MouseEventHandler(graphIndicator2Control.GraphControl_MouseClick);
-         this.graphIndicator3Control.MouseClick += new System.Windows.Forms.MouseEventHandler(graphIndicator3Control.GraphControl_MouseClick);
-         this.graphIndicator1Control.MouseClick += new System.Windows.Forms.MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
-         this.graphVolumeControl.MouseClick += new System.Windows.Forms.MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
+         this.graphCloseControl.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
+         this.graphScrollerControl.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphScrollerControl.GraphControl_MouseClick);
+         this.graphIndicator2Control.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphIndicator2Control.GraphControl_MouseClick);
+         this.graphIndicator3Control.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphIndicator3Control.GraphControl_MouseClick);
+         this.graphIndicator1Control.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
+         this.graphVolumeControl.MouseClick +=
+            new System.Windows.Forms.MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
          this.Focus();
 
          // Refreshes intrady every 2 minutes.
          refreshTimer = new System.Windows.Forms.Timer();
          refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-         refreshTimer.Interval = 120 * 1000;
+         refreshTimer.Interval = 120*1000;
          refreshTimer.Start();
 
          // Checks for alert every x minutes.
@@ -529,7 +565,7 @@ namespace StockAnalyzerApp
             int minutes = Settings.Default.AlertsFrequency;
             alertTimer = new System.Windows.Forms.Timer(new Container());
             alertTimer.Tick += new EventHandler(alertTimer_Tick);
-            alertTimer.Interval = minutes * 60 * 1000;
+            alertTimer.Interval = minutes*60*1000;
             alertTimer.Start();
 
             string fileName = Path.GetTempPath() + "AlertLog.txt";
@@ -545,7 +581,7 @@ namespace StockAnalyzerApp
                   }
                }
                else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
-               // Check if older than x Minutes
+                  // Check if older than x Minutes
                {
                   needDirectAlertCheck = true;
                }
@@ -561,7 +597,8 @@ namespace StockAnalyzerApp
 
 
       #region TIMER MANAGEMENT
-      void refreshTimer_Tick(object sender, EventArgs e)
+
+      private void refreshTimer_Tick(object sender, EventArgs e)
       {
          if (this.currentStockSerie != null && this.currentStockSerie.StockName.StartsWith("INT_"))
          {
@@ -588,12 +625,25 @@ namespace StockAnalyzerApp
          }
       }
 
-      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarAbove");
-      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
-      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3,
+         "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+
+      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(
+         StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarAbove");
+
+      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(
+         StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
+
+      private StockSerie.StockAlertDef ResistanceBroken =
+         new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)",
+            "ResistanceBroken");
+
+      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3,
+         "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+
+      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D,
+         "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)
@@ -608,7 +658,7 @@ namespace StockAnalyzerApp
 
       private void GenerateAlertThread()
       {
-// Clear alert log files
+         // Clear alert log files
          string fileName = Path.GetTempPath() + "AlertLog.txt";
          IEnumerable<string> alertLog = new List<string>();
          if (File.Exists(fileName))
@@ -694,86 +744,8 @@ namespace StockAnalyzerApp
       }
 
 
-      /// Strategy Timer Alert
-      //void alertTimer_Tick(object sender, EventArgs e)
-      //{
-      //   string alert = string.Empty;
-      //   if (string.IsNullOrWhiteSpace(this.currentStrategy) || !this.WatchLists.Any(wl => wl.Name == "Alert"))
-      //      return;
-
-      //   this.Cursor = Cursors.WaitCursor;
-
-      //   StockPortofolio portfolio = new StockPortofolio("Alert_P");
-      //   portfolio.IsSimulation = true;
-      //   portfolio.TotalDeposit = 10000;
-
-      //   foreach (string stockName in this.WatchLists.Find(wl => wl.Name == "Alert").StockList)
-      //   {
-      //      if (!this.StockDictionary.ContainsKey(stockName)) continue;
-
-      //      StockSerie stockSerie = this.StockDictionary[stockName];
-      //      StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-
-      //      if (!stockSerie.Initialise()) continue;
-
-      //      StockSerie.StockBarDuration previousBarDuration = stockSerie.BarDuration;
-      //      stockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
-
-      //      // Calculate strategy
-      //      IStockStrategy selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy, stockSerie, null, true);
-
-      //      if (selectedStrategy == null) continue;
-
-      //      float amount = stockSerie.GetMax(StockDataType.CLOSE) * 100f;
-
-      //      portfolio.TotalDeposit = amount;
-      //      portfolio.Clear();
-
-      //      stockSerie.GenerateSimulation(selectedStrategy, Settings.Default.StrategyStartDate, stockSerie.Keys.Last(),
-      //          amount, false, false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, portfolio);
-
-      //      if (portfolio.OrderList.Count > 0)
-      //      {
-      //         StockOrder lastOrder = portfolio.OrderList.Last();
-      //         if (lastOrder.ExecutionDate == stockSerie.Keys.ElementAt(stockSerie.LastCompleteIndex))
-      //         {
-      //            alert += stockSerie.StockName + "==>" + lastOrder + Environment.NewLine;
-      //         }
-      //      }
-
-      //      stockSerie.BarDuration = previousBarDuration;
-      //   }
-      //   if (!string.IsNullOrEmpty(alert))
-      //   {
-      //      MessageBox.Show(alert);
-
-      //      //// Send email
-      //      //if (NetworkInterface.GetIsNetworkAvailable())
-      //      //{
-      //      //    using (MailMessage message = new MailMessage())
-      //      //    {
-      //      //        message.Body = alert;
-
-      //      //        message.To.Add(Settings.Default.UserEMail);
-      //      //        message.To.Add("david.carbonel@volvo.com");
-      //      //        message.Subject = "Ultimate Chartist Analysis Alert Report - " + DateTime.Now;
-      //      //        message.From = new MailAddress("noreply@ultimatechartist.com");
-      //      //        message.IsBodyHtml = false;
-      //      //        SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
-      //      //        try
-      //      //        {
-      //      //            smtp.Send(message);
-      //      //            System.Windows.Forms.MessageBox.Show("Email sent successfully");
-      //      //        }
-      //      //        catch (System.Exception exp)
-      //      //        {
-      //      //            System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
-      //      //        }
-      //      //    }
-      //      //}
-      //   }
-      //}
       #endregion
+
       private System.Windows.Forms.Timer refreshTimer;
       private System.Windows.Forms.Timer alertTimer;
 
@@ -831,20 +803,23 @@ namespace StockAnalyzerApp
          return true;
       }
 
-      void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
+      private void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
       {
          this.startIndex = startIndex;
          this.endIndex = endIndex;
          nbBars = endIndex - startIndex;
       }
+
       #endregion
-      void StockDictionary_ReportProgress(string progress)
+
+      private void StockDictionary_ReportProgress(string progress)
       {
          StockSplashScreen.ProgressSubText = progress;
       }
 
       #region ZOOMING
-      void ChangeZoom(int startIndex, int endIndex)
+
+      private void ChangeZoom(int startIndex, int endIndex)
       {
          using (MethodLogger ml = new MethodLogger(this))
          {
@@ -867,11 +842,13 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       private void ResetZoom()
       {
          using (MethodLogger ml = new MethodLogger(this))
          {
-            if (this.CurrentStockSerie == null || this.CurrentStockSerie.Count == 0 || this.CurrentStockSerie.IsInitialised == false)
+            if (this.CurrentStockSerie == null || this.CurrentStockSerie.Count == 0 ||
+                this.CurrentStockSerie.IsInitialised == false)
             {
                startIndex = 0;
                endIndex = 0;
@@ -886,32 +863,37 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       private void ZoomIn()
       {
-         nbBars = Math.Max(25, nbBars / 2);
+         nbBars = Math.Max(25, nbBars/2);
          int newIndex = Math.Max(0, endIndex - nbBars);
          if (newIndex != this.startIndex)
          {
             this.ChangeZoom(newIndex, endIndex);
          }
       }
+
       private void ZoomOut()
       {
-         nbBars = Math.Min(this.endIndex, nbBars * 2);
+         nbBars = Math.Min(this.endIndex, nbBars*2);
          int newIndex = endIndex - nbBars;
          if (newIndex != this.startIndex)
          {
             this.ChangeZoom(newIndex, endIndex);
          }
       }
+
       private void ZoomOutBtn_Click(object sender, EventArgs e)
       {
          ZoomOut();
       }
+
       private void ZoomInBtn_Click(object sender, EventArgs e)
       {
          ZoomIn();
       }
+
       private void logScaleBtn_Click(object sender, EventArgs e)
       {
          if (this.logScaleBtn.CheckState == CheckState.Checked)
@@ -928,7 +910,9 @@ namespace StockAnalyzerApp
          }
          ResetZoom();
       }
+
       #endregion
+
       private void OnSelectedStockChanged(string stockName, bool activate)
       {
          if (stockName.EndsWith("_P") || stockName == "Default")
@@ -941,7 +925,8 @@ namespace StockAnalyzerApp
             this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio);
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
-               this.stockNameComboBox.Items.Insert(this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
+               this.stockNameComboBox.Items.Insert(
+                  this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
             }
 
             this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
@@ -962,7 +947,7 @@ namespace StockAnalyzerApp
          }
       }
 
-      void StockAnalyzerForm_StockSerieChanged(StockSerie newSerie, bool ignoreLinkedTheme)
+      private void StockAnalyzerForm_StockSerieChanged(StockSerie newSerie, bool ignoreLinkedTheme)
       {
          //
          if (newSerie == null)
@@ -992,7 +977,7 @@ namespace StockAnalyzerApp
          }
          else
          {
-            this.currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
+            this.currentStockSerie.BarDuration = (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
          }
          if (!ignoreLinkedTheme
              && newSerie.StockAnalysis != null
@@ -1064,7 +1049,7 @@ namespace StockAnalyzerApp
          this.statusLabel.Text = ("Loading data...");
       }
 
-      void StockAnalyzerForm_FormClosing(object sender, FormClosingEventArgs e)
+      private void StockAnalyzerForm_FormClosing(object sender, FormClosingEventArgs e)
       {
          Settings.Default.ThemeToolbarLocation = this.themeToolStrip.Location;
          Settings.Default.StockToolbarLocation = this.browseToolStrip.Location;
@@ -1073,6 +1058,7 @@ namespace StockAnalyzerApp
 
          this.IsClosing = true;
       }
+
       private void ParseIntraday()
       {
          // Parse Intraday data
@@ -1086,7 +1072,9 @@ namespace StockAnalyzerApp
 
          if (Directory.Exists(Settings.Default.RootFolder + INTRADAY_SUBFOLDER))
          {
-            foreach (string fileFullName in Directory.GetFiles(Settings.Default.RootFolder + INTRADAY_SUBFOLDER).OrderBy(s => s))
+            foreach (
+               string fileFullName in
+                  Directory.GetFiles(Settings.Default.RootFolder + INTRADAY_SUBFOLDER).OrderBy(s => s))
             {
                StockTick[] ticks = StockTick.ParseEuronextFile(fileFullName, -1);
                stockName = fileFullName.Split('_')[1];
@@ -1098,13 +1086,17 @@ namespace StockAnalyzerApp
                   if (previousStockName != null)
                   {
                      this.StockDictionary.Add(tickBarSerie1.Name, new StockSerie(tickBarSerie1, StockSerie.Groups.TICK));
-                     this.StockDictionary.Add(intradayBarSerie.Name, new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
-                     this.StockDictionary.Add(rangeBarSerie1.Name, new StockSerie(rangeBarSerie1, StockSerie.Groups.RANGE));
+                     this.StockDictionary.Add(intradayBarSerie.Name,
+                        new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
+                     this.StockDictionary.Add(rangeBarSerie1.Name,
+                        new StockSerie(rangeBarSerie1, StockSerie.Groups.RANGE));
                   }
                   previousStockName = stockName;
-                  tickBarSerie1 = StockBarSerie.CreateTickBarSerie(stockName + "_TICK1", shortName, Math.Max(ticks.Length / 720, 5), ticks);
+                  tickBarSerie1 = StockBarSerie.CreateTickBarSerie(stockName + "_TICK1", shortName,
+                     Math.Max(ticks.Length/720, 5), ticks);
                   intradayBarSerie = StockBarSerie.CreateIntradayBarSerie(stockName + "_5MIN", shortName, 5, ticks);
-                  rangeBarSerie1 = StockBarSerie.CreateRangeBarSerie(stockName + "_range1", shortName, ticks.Last().Value / 200, ticks);
+                  rangeBarSerie1 = StockBarSerie.CreateRangeBarSerie(stockName + "_range1", shortName,
+                     ticks.Last().Value/200, ticks);
                }
                else
                {
@@ -1116,7 +1108,8 @@ namespace StockAnalyzerApp
             if (tickBarSerie1 != null)
             {
                this.StockDictionary.Add(tickBarSerie1.Name, new StockSerie(tickBarSerie1, StockSerie.Groups.TICK));
-               this.StockDictionary.Add(intradayBarSerie.Name, new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
+               this.StockDictionary.Add(intradayBarSerie.Name,
+                  new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
                this.StockDictionary.Add(rangeBarSerie1.Name, new StockSerie(rangeBarSerie1, StockSerie.Groups.RANGE));
             }
          }
@@ -1128,6 +1121,7 @@ namespace StockAnalyzerApp
       }
 
       public List<StockWatchList> WatchLists { get; set; }
+
       private void LoadWatchList()
       {
          string watchListsFileName = Settings.Default.RootFolder + @"\WatchLists.xml";
@@ -1140,8 +1134,8 @@ namespace StockAnalyzerApp
                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
                settings.IgnoreWhitespace = true;
                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-               XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-               this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
+               XmlSerializer serializer = new XmlSerializer(typeof (List<StockWatchList>));
+               this.WatchLists = (List<StockWatchList>) serializer.Deserialize(xmlReader);
             }
          }
          else
@@ -1154,6 +1148,7 @@ namespace StockAnalyzerApp
             this.WatchLists.Add(new StockWatchList("Empty"));
          }
       }
+
       private void LoadAnalysis(string analysisFileName)
       {
          // Clear existing analysis
@@ -1177,7 +1172,8 @@ namespace StockAnalyzerApp
                }
             }
             bool dirty = false;
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
+            foreach (
+               StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
             {
                if (!this.themeComboBox.Items.Contains(stockSerie.StockAnalysis.Theme))
                {
@@ -1207,8 +1203,8 @@ namespace StockAnalyzerApp
          {
             Settings.Default.PortofolioFile = "Portfolio.xml";
          }
-          // Read Stock Values from XML
-         string orderFileName = Path.Combine(Settings.Default.RootFolder,Settings.Default.PortofolioFile);
+         // Read Stock Values from XML
+         string orderFileName = Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile);
          try
          {
             // Parsing portofolios
@@ -1245,6 +1241,7 @@ namespace StockAnalyzerApp
             MessageBox.Show(message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
+
       private void RefreshPortofolioMenu()
       {
          // Create default portofolio if not exist
@@ -1262,9 +1259,12 @@ namespace StockAnalyzerApp
          this.orderListMenuItem.DropDownItems.Clear();
          this.portofolioFilterMenuItem.DropDownItems.Clear();
 
-         System.Windows.Forms.ToolStripItem[] portofolioMenuItems = new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
-         System.Windows.Forms.ToolStripItem[] portofolioFilterMenuItems = new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
-         System.Windows.Forms.ToolStripItem[] orderListMenuItems = new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
+         System.Windows.Forms.ToolStripItem[] portofolioMenuItems =
+            new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
+         System.Windows.Forms.ToolStripItem[] portofolioFilterMenuItems =
+            new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
+         System.Windows.Forms.ToolStripItem[] orderListMenuItems =
+            new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
          ToolStripMenuItem portofolioDetailsSubMenuItem;
          ToolStripMenuItem portofolioFilterSubMenuItem;
          ToolStripMenuItem orderListSubMenuItem;
@@ -1293,17 +1293,17 @@ namespace StockAnalyzerApp
          this.portofolioFilterMenuItem.DropDownItems.AddRange(portofolioFilterMenuItems);
       }
 
-      void portofolioFilterSubMenuItem_Click(object sender, EventArgs e)
+      private void portofolioFilterSubMenuItem_Click(object sender, EventArgs e)
       {
          foreach (ToolStripMenuItem subItem in this.portofolioFilterMenuItem.DropDownItems)
          {
-            if (subItem != (ToolStripMenuItem)sender)
+            if (subItem != (ToolStripMenuItem) sender)
             {
                subItem.Checked = false;
             }
          }
 
-         if (((ToolStripMenuItem)sender).Checked)
+         if (((ToolStripMenuItem) sender).Checked)
          {
             this.CurrentPortofolio = this.StockPortofolioList.Get(sender.ToString());
             this.currentWatchList = null;
@@ -1320,13 +1320,15 @@ namespace StockAnalyzerApp
          this.InitialiseStockCombo();
       }
 
-      delegate bool DownloadDataMethod(string destination, ref bool upToDate);
+      private delegate bool DownloadDataMethod(string destination, ref bool upToDate);
 
-      void Notifiy_SplashProgressChanged(string text)
+      private void Notifiy_SplashProgressChanged(string text)
       {
          StockSplashScreen.ProgressText = text;
       }
+
       #region COMMITMENT OF TRADERS
+
       private static SortedDictionary<string, string> ParseCOTInclude()
       {
          SortedDictionary<string, string> cotIncludeList = new SortedDictionary<string, string>();
@@ -1346,6 +1348,7 @@ namespace StockAnalyzerApp
          }
          return cotIncludeList;
       }
+
       //private void ParseFullCotSeries2()
       //{
       //   StockLog.Write("ParseFullCotSeries2");
@@ -1462,6 +1465,7 @@ namespace StockAnalyzerApp
       //}
 
       #endregion // COT
+
       private void InitialiseStockCombo()
       {
          // Initialise Combo values
@@ -1503,6 +1507,7 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       public void OnNeedReinitialise(bool resetDrawingButtons)
       {
          if (this.currentStockSerie == null) return;
@@ -1529,7 +1534,9 @@ namespace StockAnalyzerApp
             RefreshGraph();
          }
       }
+
       #region STOCK and PORTOFOLIO selection tool bar
+
       private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
       {
          StockSerie selectedSerie = null;
@@ -1558,7 +1565,8 @@ namespace StockAnalyzerApp
             this.riskCalculatorDlg.StockSerie = this.CurrentStockSerie;
          }
       }
-      void downloadBtn_Click(object sender, System.EventArgs e)
+
+      private void downloadBtn_Click(object sender, System.EventArgs e)
       {
          if (Control.ModifierKeys == Keys.Control)
          {
@@ -1606,7 +1614,9 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
                                              this.currentStockSerie.StockName;
 
-            var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup));
+            var stockSeries =
+               this.StockDictionary.Values.Where(
+                  s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup));
 
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1617,7 +1627,7 @@ namespace StockAnalyzerApp
             {
                StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                            stockSerie.StockName;
+                                                stockSerie.StockName;
 
                StockSplashScreen.ProgressVal++;
             }
@@ -1636,7 +1646,9 @@ namespace StockAnalyzerApp
       }
 
       #endregion
+
       #region PREFERENCES MENU ITEM HANDLER
+
       private void showOnlyEventMenuItem_Click(object sender, EventArgs e)
       {
          showOnlyEventMenuItem.Checked = !showOnlyEventMenuItem.Checked;
@@ -1644,16 +1656,20 @@ namespace StockAnalyzerApp
          {
             this.progressBar.Value = 0;
             this.progressBar.Maximum = StockDictionary.Count;
-            StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed), this.StockPortofolioList, Settings.Default.SelectedEvents);
+            StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed),
+               this.StockPortofolioList, Settings.Default.SelectedEvents);
             this.progressBar.Value = 0;
          }
          InitialiseStockCombo();
       }
+
       private void selectEventsMenuItem_Click(object sender, EventArgs e)
       {
          ResetDrawingButtons();
 
-         StockEventSelectorDlg stockEventSelectorDlg = new StockEventSelectorDlg(Settings.Default.SelectedEvents, (StockEvent.EventFilterMode)Enum.Parse(typeof(StockEvent.EventFilterMode), Settings.Default.EventFilterMode));
+         StockEventSelectorDlg stockEventSelectorDlg = new StockEventSelectorDlg(Settings.Default.SelectedEvents,
+            (StockEvent.EventFilterMode)
+               Enum.Parse(typeof (StockEvent.EventFilterMode), Settings.Default.EventFilterMode));
          if (stockEventSelectorDlg.ShowDialog() == DialogResult.OK)
          {
             Settings.Default.SelectedEvents = stockEventSelectorDlg.SelectedEvents;
@@ -1667,7 +1683,8 @@ namespace StockAnalyzerApp
             this.progressBar.Value = 0;
             if (this.showOnlyEventMenuItem.Checked == true)
             {
-               StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed), this.StockPortofolioList, Settings.Default.SelectedEvents);
+               StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed),
+                  this.StockPortofolioList, Settings.Default.SelectedEvents);
                this.progressBar.Value = 0;
             }
             this.statusLabel.Text = string.Empty;
@@ -1678,6 +1695,7 @@ namespace StockAnalyzerApp
          // Reinit combo
          InitialiseStockCombo();
       }
+
       private void RefreshGraph()
       {
          // Refresh all components
@@ -1688,6 +1706,7 @@ namespace StockAnalyzerApp
          this.graphIndicator3Control.ForceRefresh();
          this.graphVolumeControl.ForceRefresh();
       }
+
       private void InitialiseWatchListComboBox()
       {
          // Clean existing menus
@@ -1696,9 +1715,11 @@ namespace StockAnalyzerApp
          if (this.WatchLists != null)
          {
             // 
-            System.Windows.Forms.ToolStripItem[] watchListMenuItems = new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
+            System.Windows.Forms.ToolStripItem[] watchListMenuItems =
+               new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
             ToolStripMenuItem watchListSubMenuItem;
-            System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems = new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
+            System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems =
+               new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
             ToolStripMenuItem addToWatchListSubMenuItem;
 
             int i = 0;
@@ -1724,7 +1745,7 @@ namespace StockAnalyzerApp
          currentWatchList = null;
       }
 
-      void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
+      private void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
       {
          StockWatchList watchList = this.WatchLists.Find(wl => wl.Name == sender.ToString());
          if (!watchList.StockList.Contains(this.stockNameComboBox.SelectedItem.ToString()))
@@ -1734,17 +1755,18 @@ namespace StockAnalyzerApp
             this.SaveWatchList();
          }
       }
+
       private void watchListMenuItem_Click(object sender, System.EventArgs e)
       {
          foreach (ToolStripMenuItem subItem in this.watchListMenuItem.DropDownItems)
          {
-            if (subItem != (ToolStripMenuItem)sender)
+            if (subItem != (ToolStripMenuItem) sender)
             {
                subItem.Checked = false;
             }
          }
 
-         if (((ToolStripMenuItem)sender).Checked)
+         if (((ToolStripMenuItem) sender).Checked)
          {
             this.currentWatchList = sender.ToString();
             this.CurrentPortofolio = null;
@@ -1761,8 +1783,11 @@ namespace StockAnalyzerApp
          // Refresh Stock Combo list
          InitialiseStockCombo();
       }
+
       #endregion
+
       #region DRAWING TOOLBAR HANDLERS
+
       private void sarLineStripBtn_Click(object sender, EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1786,6 +1811,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void drawLineStripBtn_Click(object sender, EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1809,6 +1835,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void fanLineBtn_Click(object sender, System.EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1832,6 +1859,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void copyLineStripBtn_Click(object sender, EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1855,6 +1883,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void deleteLineStripBtn_Click(object sender, System.EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1878,6 +1907,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void drawingStyleStripBtn_Click(object sender, System.EventArgs e)
       {
          Pen pen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
@@ -1892,6 +1922,7 @@ namespace StockAnalyzerApp
             Settings.Default.Save();
          }
       }
+
       private void addHalfLineStripBtn_Click(object sender, System.EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1915,6 +1946,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void addSegmentStripBtn_Click(object sender, System.EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1938,6 +1970,7 @@ namespace StockAnalyzerApp
          addHalfLineStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void cutLineStripBtn_Click(object sender, EventArgs e)
       {
          foreach (GraphControl graphControl in this.graphList)
@@ -1961,6 +1994,7 @@ namespace StockAnalyzerApp
          addHalfLineStripBtn.Checked = false;
          addSegmentStripBtn.Checked = false;
       }
+
       private void ResetDrawingButtons()
       {
          // Interupt current drawings
@@ -1979,6 +2013,7 @@ namespace StockAnalyzerApp
          addSegmentStripBtn.Checked = false;
          cutLineStripBtn.Checked = false;
       }
+
       private void saveAnalysisToolStripButton_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
@@ -1991,6 +2026,7 @@ namespace StockAnalyzerApp
          this.Cursor = currentCursor;
 
       }
+
       private void SaveWatchList()
       {
          // Sort all the watchlists
@@ -2009,7 +2045,7 @@ namespace StockAnalyzerApp
 
             using (FileStream fs = new FileStream(watchListsFileName, FileMode.Create))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
+               XmlSerializer serializer = new XmlSerializer(typeof (List<StockWatchList>));
                System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, null);
                xmlWriter.Formatting = System.Xml.Formatting.Indented;
                xmlWriter.WriteStartDocument();
@@ -2018,13 +2054,14 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       private void SaveAnalysis(string analysisFileName)
       {
          if (this.currentStockSerie == null) return;
          string tmpFileName = analysisFileName + ".tmp";
          bool success = true;
          // Save stock analysis to XML
-         XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
+         XmlSerializer serializer = new XmlSerializer(typeof (StockAnalysis));
          System.Xml.XmlTextWriter xmlWriter;
          try
          {
@@ -2043,7 +2080,8 @@ namespace StockAnalyzerApp
             success = false;
             if (exception.InnerException != null)
             {
-               MessageBox.Show(exception.InnerException.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               MessageBox.Show(exception.InnerException.Message, "Application Error", MessageBoxButtons.OK,
+                  MessageBoxIcon.Error);
             }
             else
             {
@@ -2059,6 +2097,7 @@ namespace StockAnalyzerApp
             File.Move(tmpFileName, analysisFileName);
          }
       }
+
       private void savePortofolioToolStripButton_Click(object sender, EventArgs e)
       {
          // Save stock analysis to XML
@@ -2070,9 +2109,11 @@ namespace StockAnalyzerApp
          }
          catch (System.Exception exception)
          {
-            MessageBox.Show(exception.Message, "Application Error saving Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(exception.Message, "Application Error saving Portfolio", MessageBoxButtons.OK,
+               MessageBoxIcon.Error);
          }
       }
+
       private void snapshotToolStripButton_Click(object sender, EventArgs e)
       {
          List<Bitmap> bitmaps = new List<Bitmap>();
@@ -2113,14 +2154,18 @@ namespace StockAnalyzerApp
       {
          this.graphCloseControl.Magnetism = this.magnetStripBtn.Checked;
       }
+
       private void generateChannelStripButton_Click(object sender, EventArgs e)
       {
          //this.CurrentStockSerie.generateAutomaticTrendLines(this.graphCloseControl.StartIndex, this.graphCloseControl.EndIndex, 3, 3, 10);
 
          OnNeedReinitialise(true);
       }
+
       #endregion DRAWING TOOLBAR HANDLERS
+
       #region ANALYSYS TOOLBAR HANDLERS
+
       private void excludeButton_Click(object sender, EventArgs e)
       {
          // Flag as excluded
@@ -2138,6 +2183,7 @@ namespace StockAnalyzerApp
             this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
          }
       }
+
       private void followUpCheckBox_CheckedChanged(object sender, EventArgs e)
       {
          if (stockNameComboBox.SelectedItem != null && stockNameComboBox.SelectedItem.ToString() != string.Empty)
@@ -2145,29 +2191,33 @@ namespace StockAnalyzerApp
             CurrentStockSerie.StockAnalysis.FollowUp = this.followUpCheckBox.CheckBox.Checked;
          }
       }
+
       private void commentBtn_Click(object sender, EventArgs e)
       {
-         if (this.CurrentStockSerie != null && stockNameComboBox.SelectedItem != null && stockNameComboBox.SelectedItem.ToString() != string.Empty)
+         if (this.CurrentStockSerie != null && stockNameComboBox.SelectedItem != null &&
+             stockNameComboBox.SelectedItem.ToString() != string.Empty)
          {
             CommentDialog commentDlg = new CommentDialog(this.CurrentStockSerie);
             commentDlg.ShowDialog();
          }
          OnNeedReinitialise(true);
       }
+
       #endregion
+
       #region REWIND/FAST FORWARD METHODS
 
-      void rewindBtn_Click(object sender, System.EventArgs e)
+      private void rewindBtn_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
-         int step = (this.endIndex - this.startIndex) / 4;
+         int step = (this.endIndex - this.startIndex)/4;
          Rewind(step);
       }
 
-      void fastForwardBtn_Click(object sender, System.EventArgs e)
+      private void fastForwardBtn_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
-         int step = (this.endIndex - this.startIndex) / 4;
+         int step = (this.endIndex - this.startIndex)/4;
          Forward(step);
       }
 
@@ -2179,14 +2229,14 @@ namespace StockAnalyzerApp
             ChangeZoom(startIndex - step, endIndex - step);
             OnNeedReinitialise(false);
          }
-         else
-            if (startIndex > 0)
-            {
-               ChangeZoom(0, endIndex - startIndex);
-               OnNeedReinitialise(false);
-            }
+         else if (startIndex > 0)
+         {
+            ChangeZoom(0, endIndex - startIndex);
+            OnNeedReinitialise(false);
+         }
 
       }
+
       private void Forward(int step)
       {
          if (this.currentStockSerie == null) return;
@@ -2205,8 +2255,11 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       #endregion
+
       #region VIEW MENU HANDLERS
+
       private void CreateGroupMenuItem()
       {
          if (!Enum.TryParse<StockSerie.Groups>(Settings.Default.SelectedGroup, out this.selectedGroup))
@@ -2243,29 +2296,34 @@ namespace StockAnalyzerApp
          if (!selectedGroupFound)
          {
             // Set default group
-            ((ToolStripMenuItem)groupMenuItems[0]).Checked = true;
-            this.selectedGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), groupMenuItems[0].ToString());
+            ((ToolStripMenuItem) groupMenuItems[0]).Checked = true;
+            this.selectedGroup =
+               (StockSerie.Groups) Enum.Parse(typeof (StockSerie.Groups), groupMenuItems[0].ToString());
             Settings.Default.SelectedGroup = this.selectedGroup.ToString();
             Settings.Default.Save();
          }
 
          this.groupMenuItem.DropDownItems.AddRange(groupMenuItems.ToArray());
       }
-      void groupSubMenuItem_Click(object sender, EventArgs e)
+
+      private void groupSubMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.SelectedGroup = sender.ToString();
          Settings.Default.Save();
 
          this.OnSelectedStockGroupChanged(sender.ToString());
       }
+
       #region MENU CREATION
+
       private void CreateRelativeStrengthMenuItem()
       {
          // Clean existing menus
          this.indexRelativeStrengthMenuItem.DropDownItems.Clear();
 
          List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-         System.Windows.Forms.ToolStripMenuItem[] groupMenuItems = new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
+         System.Windows.Forms.ToolStripMenuItem[] groupMenuItems =
+            new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
 
          int i = 0;
          foreach (string group in validGroups)
@@ -2273,10 +2331,12 @@ namespace StockAnalyzerApp
             groupMenuItems[i] = new ToolStripMenuItem(group);
 
             // 
-            var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
+            var groupSeries =
+               StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
             if (groupSeries.Count() != 0)
             {
-               System.Windows.Forms.ToolStripMenuItem[] indexRelativeStrengthMenuItems = new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
+               System.Windows.Forms.ToolStripMenuItem[] indexRelativeStrengthMenuItems =
+                  new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
                ToolStripMenuItem indexRelativeStrengthMenuSubItem;
 
                int n = 0;
@@ -2284,7 +2344,8 @@ namespace StockAnalyzerApp
                {
                   // Create indexRelativeStrength menu items
                   indexRelativeStrengthMenuSubItem = new ToolStripMenuItem(stockSerie.StockName);
-                  indexRelativeStrengthMenuSubItem.Click += new EventHandler(indexRelativeStrengthDetailsSubMenuItem_Click);
+                  indexRelativeStrengthMenuSubItem.Click +=
+                     new EventHandler(indexRelativeStrengthDetailsSubMenuItem_Click);
                   indexRelativeStrengthMenuItems[n++] = indexRelativeStrengthMenuSubItem;
                }
                groupMenuItems[i].DropDownItems.AddRange(indexRelativeStrengthMenuItems);
@@ -2300,7 +2361,8 @@ namespace StockAnalyzerApp
          // Clean existing menus
          this.secondarySerieMenuItem.DropDownItems.Clear();
          List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-         System.Windows.Forms.ToolStripMenuItem[] groupMenuItems = new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
+         System.Windows.Forms.ToolStripMenuItem[] groupMenuItems =
+            new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
 
          int i = 0;
          foreach (string group in validGroups)
@@ -2308,10 +2370,12 @@ namespace StockAnalyzerApp
             groupMenuItems[i] = new ToolStripMenuItem(group);
 
             // 
-            var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
+            var groupSeries =
+               StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
             if (groupSeries.Count() != 0)
             {
-               System.Windows.Forms.ToolStripMenuItem[] secondarySerieMenuItems = new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
+               System.Windows.Forms.ToolStripMenuItem[] secondarySerieMenuItems =
+                  new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
                ToolStripMenuItem secondarySerieSubMenuItem;
 
                int n = 0;
@@ -2330,20 +2394,24 @@ namespace StockAnalyzerApp
 
          this.secondarySerieMenuItem.DropDownItems.AddRange(groupMenuItems);
       }
+
       #endregion
+
       #region BAR DURATION MANAGEMENT
+
       private void InitialiseBarDurationComboBox()
       {
-         foreach (StockSerie.StockBarDuration barDuration in Enum.GetValues(typeof(StockSerie.StockBarDuration)))
+         foreach (StockSerie.StockBarDuration barDuration in Enum.GetValues(typeof (StockSerie.StockBarDuration)))
          {
             this.barDurationComboBox.Items.Add(barDuration);
          }
       }
+
       private void barDurationComboBox_SelectedIndexChanged(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
 
-         StockSerie.StockBarDuration barDuration = (StockSerie.StockBarDuration)barDurationComboBox.SelectedItem;
+         StockSerie.StockBarDuration barDuration = (StockSerie.StockBarDuration) barDurationComboBox.SelectedItem;
          if (this.CurrentStockSerie.BarDuration != barDuration)
          {
             int previousBarCount = this.CurrentStockSerie.Count;
@@ -2365,21 +2433,26 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       public void ForceBarDuration(StockSerie.StockBarDuration barDuration, bool triggerEvent)
       {
          if (!triggerEvent)
          {
-            this.barDurationComboBox.SelectedIndexChanged -= new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
+            this.barDurationComboBox.SelectedIndexChanged -=
+               new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
          }
          this.barDurationComboBox.SelectedItem = barDuration;
          if (!triggerEvent)
          {
-            this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
+            this.barDurationComboBox.SelectedIndexChanged +=
+               new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
          }
       }
+
       #endregion
 
       #region generate new series
+
       private void AddNewSerie(StockSerie newSerie)
       {
          if (StockDictionary.ContainsKey(newSerie.StockName))
@@ -2390,16 +2463,19 @@ namespace StockAnalyzerApp
 
          if (!stockNameComboBox.Items.Contains(newSerie.StockName))
          {
-            stockNameComboBox.Items.Insert(stockNameComboBox.Items.IndexOf(this.CurrentStockSerie.StockName) + 1, newSerie.StockName);
+            stockNameComboBox.Items.Insert(stockNameComboBox.Items.IndexOf(this.CurrentStockSerie.StockName) + 1,
+               newSerie.StockName);
          }
          stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(newSerie.StockName);
 
          OnNeedReinitialise(true);
       }
-      void indexRelativeStrengthDetailsSubMenuItem_Click(object sender, EventArgs e)
+
+      private void indexRelativeStrengthDetailsSubMenuItem_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
-         StockSerie newSerie = this.CurrentStockSerie.GenerateRelativeStrenthStockSerie(StockDictionary[sender.ToString()]);
+         StockSerie newSerie =
+            this.CurrentStockSerie.GenerateRelativeStrenthStockSerie(StockDictionary[sender.ToString()]);
          if (newSerie == null)
          {
             MessageBox.Show("This operation is not allowed");
@@ -2407,7 +2483,8 @@ namespace StockAnalyzerApp
          }
          AddNewSerie(newSerie);
       }
-      void generateWeeklyVariationSerieMenuItem_Click(object sender, EventArgs e)
+
+      private void generateWeeklyVariationSerieMenuItem_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          if (!this.currentStockSerie.Initialise())
@@ -2421,20 +2498,22 @@ namespace StockAnalyzerApp
          {
             foreach (StockDailyValue dailyValue in this.currentStockSerie.Values)
             {
-               occurences[(int)dailyValue.DATE.DayOfWeek - 1]++;
-               weeklyData[(int)dailyValue.DATE.DayOfWeek - 1] += dailyValue.VARIATION;
+               occurences[(int) dailyValue.DATE.DayOfWeek - 1]++;
+               weeklyData[(int) dailyValue.DATE.DayOfWeek - 1] += dailyValue.VARIATION;
             }
             string report = string.Empty;
             for (int i = 0; i < 5; i++)
             {
-               weeklyData[i] /= (float)occurences[i];
-               report += ((DayOfWeek)(i + 1)).ToString() + ": " + weeklyData[i].ToString("P2") + System.Environment.NewLine;
+               weeklyData[i] /= (float) occurences[i];
+               report += ((DayOfWeek) (i + 1)).ToString() + ": " + weeklyData[i].ToString("P2") +
+                         System.Environment.NewLine;
             }
 
             MessageBox.Show(report, "Weekly variation for " + this.currentStockSerie.StockName);
          }
       }
-      void overnightSerieMenuItem_Click(object sender, EventArgs e)
+
+      private void overnightSerieMenuItem_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateOvernightStockSerie();
@@ -2468,7 +2547,8 @@ namespace StockAnalyzerApp
             }
          }
       }
-      void generateSeasonalitySerieMenuItem_Click(object sender, EventArgs e)
+
+      private void generateSeasonalitySerieMenuItem_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          if (!this.currentStockSerie.Initialise())
@@ -2512,12 +2592,14 @@ namespace StockAnalyzerApp
                }
 
                // Set appropriate zoom
-               this.ChangeZoom(this.CurrentStockSerie.Count - (this.CurrentStockSerie.Count - previousSerieCount + 200), this.CurrentStockSerie.Count - 1);
+               this.ChangeZoom(
+                  this.CurrentStockSerie.Count - (this.CurrentStockSerie.Count - previousSerieCount + 200),
+                  this.CurrentStockSerie.Count - 1);
             }
          }
       }
 
-      delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
+      private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
 
       public bool EMAUp(int i, StockSerie stockSerie)
       {
@@ -2542,7 +2624,8 @@ namespace StockAnalyzerApp
       {
          FloatSerie momexExhaution = stockSerie.GetIndicator("BUYMOMEX(20,True,1.5)").Series[0];
 
-         return momexExhaution[i - 2] < momexExhaution[i - 1] && momexExhaution[i - 1] > momexExhaution[i] && momexExhaution[i - 1] > 35f;
+         return momexExhaution[i - 2] < momexExhaution[i - 1] && momexExhaution[i - 1] > momexExhaution[i] &&
+                momexExhaution[i - 1] > 35f;
       }
 
       public bool TrailBB(int i, StockSerie stockSerie, ref string eventName)
@@ -2616,7 +2699,7 @@ namespace StockAnalyzerApp
       //     }
       //} 
 
-      void statisticsMenuItem_Click(object sender, System.EventArgs e)
+      private void statisticsMenuItem_Click(object sender, System.EventArgs e)
       {
          int minBar = 50;
          int nbStatBar = 50;
@@ -2633,10 +2716,12 @@ namespace StockAnalyzerApp
 
          int[] histogram = new int[nbStatBar];
 
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)))
+         foreach (
+            StockSerie stockSerie in
+               this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)))
          {
             if (!stockSerie.Initialise()) continue;
-            stockSerie.BarDuration = (StockSerie.StockBarDuration)barDurationComboBox.SelectedItem;
+            stockSerie.BarDuration = (StockSerie.StockBarDuration) barDurationComboBox.SelectedItem;
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
@@ -2663,16 +2748,23 @@ namespace StockAnalyzerApp
                }
             }
          }
-         varSerie /= (float)(eventOccurence);
-         percentUpSerie /= (float)(eventOccurence);
+         varSerie /= (float) (eventOccurence);
+         percentUpSerie /= (float) (eventOccurence);
 
          float val = 100f;
          float maxVal = 100f;
          float minVal = 100f;
 
          // Generate report
-         if (!Directory.Exists(Settings.Default.RootFolder + "\\Report")) Directory.CreateDirectory(Settings.Default.RootFolder + "\\Report");
-         using (StreamWriter sr = new StreamWriter(Settings.Default.RootFolder + "\\Report\\" + this.CurrentStockSerie.StockGroup + "_" + barDurationComboBox.SelectedItem.ToString() + "_" + eventName.Replace("(", "_").Replace(")", "_").Replace(".", "_").Replace(";", "_") + "Stat.csv", false))
+         if (!Directory.Exists(Settings.Default.RootFolder + "\\Report"))
+            Directory.CreateDirectory(Settings.Default.RootFolder + "\\Report");
+         using (
+            StreamWriter sr =
+               new StreamWriter(
+                  Settings.Default.RootFolder + "\\Report\\" + this.CurrentStockSerie.StockGroup + "_" +
+                  barDurationComboBox.SelectedItem.ToString() + "_" +
+                  eventName.Replace("(", "_").Replace(")", "_").Replace(".", "_").Replace(";", "_") + "Stat.csv", false)
+            )
          {
             sr.WriteLine("Histogram");
             sr.WriteLine("");
@@ -2697,35 +2789,41 @@ namespace StockAnalyzerApp
                val *= 1 + varSerie[i];
                minVal *= 1 + varMinSerie[i];
                maxVal *= 1 + varMaxSerie[i];
-               sr.WriteLine(val + ";" + percentUpSerie[i] + ";" + varSerie[i] + ";" + varMaxSerie[i] + ";" + varMinSerie[i]);
+               sr.WriteLine(val + ";" + percentUpSerie[i] + ";" + varSerie[i] + ";" + varMaxSerie[i] + ";" +
+                            varMinSerie[i]);
             }
          }
       }
-      void logSerieMenuItem_Click(object sender, System.EventArgs e)
+
+      private void logSerieMenuItem_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateLogStockSerie();
          AddNewSerie(newSerie);
       }
-      void uniformRandomWalkMenuItem_Click(object sender, System.EventArgs e)
+
+      private void uniformRandomWalkMenuItem_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateRandomSerie();
          AddNewSerie(newSerie);
       }
-      void normalRandomWalkMenuItem_Click(object sender, System.EventArgs e)
+
+      private void normalRandomWalkMenuItem_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateNormalRandomSerie();
          AddNewSerie(newSerie);
       }
-      void gauchyRandomWalkMenuItem_Click(object sender, System.EventArgs e)
+
+      private void gauchyRandomWalkMenuItem_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateGauchyRandomSerie();
          AddNewSerie(newSerie);
       }
-      void inverseSerieMenuItem_Click(object sender, EventArgs e)
+
+      private void inverseSerieMenuItem_Click(object sender, EventArgs e)
       {
          if (this.currentStockSerie == null) return;
          StockSerie newSerie = this.CurrentStockSerie.GenerateInverseStockSerie();
@@ -2760,7 +2858,7 @@ namespace StockAnalyzerApp
                }
             }
             value += value*(var/count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) volume, date));
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
@@ -2768,9 +2866,11 @@ namespace StockAnalyzerApp
 
       private void GenerateCACEqualWeight2()
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
          string serieName = "CAC_EW2";
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
 
@@ -2792,26 +2892,30 @@ namespace StockAnalyzerApp
                      count++;
                      StockDailyValue dailyValue = serie[date];
                      var += dailyValue.VARIATION;
-                     volume += dailyValue.CLOSE * dailyValue.VOLUME;
+                     volume += dailyValue.CLOSE*dailyValue.VOLUME;
                   }
                }
-               value += value * (var / count);
+               value += value*(var/count);
             }
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) volume, date));
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
 
       }
 
-      private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period, string eventPattern, string eventName, bool stopOnLowBreadth)
+      private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, int period,
+         string eventPattern, string eventName, bool stopOnLowBreadth)
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
-         string serieName = indexName + period  + "_" + barDuration;
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         string serieName = indexName + period + "_" + barDuration;
          string ieventName = eventPattern.Replace("%PERIOD%", period.ToString());
-         int eventIndex = ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+         int eventIndex =
+            ((IStockEvent) StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
 
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -2832,11 +2936,12 @@ namespace StockAnalyzerApp
                {
                   count++;
                   serie.BarDuration = barDuration;
-                  IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
+                  IStockEvent events = (IStockEvent) serie.GetViewableItem(ieventName);
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[eventIndex][index])
                   {
-                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily)
+                        .ElementAt(index + 1);
                      var += dailyValue.VARIATION;
                      nbActive++;
                   }
@@ -2844,7 +2949,7 @@ namespace StockAnalyzerApp
             }
             if (stopOnLowBreadth && previousNbActive < count/3)
             {
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
             }
             else
             {
@@ -2930,8 +3035,10 @@ namespace StockAnalyzerApp
       private void GenerateCAC_SAR(bool stopOnLowBreadth, float speed)
       {
          string serieName = "CAC_SAR_" + speed.ToString("#.######");
-         List<StockSerie> cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
-         StockSerie newIndexSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         List<StockSerie> cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         StockSerie newIndexSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          //StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -2950,7 +3057,7 @@ namespace StockAnalyzerApp
             {
                if (serie.ContainsKey(date))
                {
-                  IStockIndicator indicator = serie.GetIndicator("SAR(0,"+speed+",0.2)");
+                  IStockIndicator indicator = serie.GetIndicator("SAR(0," + speed + ",0.2)");
 
                   count++;
 
@@ -2969,14 +3076,14 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (stopOnLowBreadth && previousNbActive < count / 2)
+            if (stopOnLowBreadth && previousNbActive < count/2)
             {
-               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
+               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
             }
             else
             {
-               if (count != 0) value += value * (var / count);
-               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
+               if (count != 0) value += value*(var/count);
+               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) nbActive, date));
             }
             previousNbActive = nbActive;
             previousCount = count;
@@ -2986,14 +3093,16 @@ namespace StockAnalyzerApp
 
       private void GenerateCAC_Random()
       {
-         List<StockSerie> cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
-         StockSerie cacEWSerie = new StockSerie("CAC_RANDOM", "CAC_RANDOM", StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         List<StockSerie> cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         StockSerie cacEWSerie = new StockSerie("CAC_RANDOM", "CAC_RANDOM", StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
          BX4Serie.Initialise();
          cacSeries.Add(BX4Serie);
-         
+
          Random rnd = new Random();
 
          float value = 1000f;
@@ -3008,7 +3117,7 @@ namespace StockAnalyzerApp
                if (serie.ContainsKey(date))
                {
                   count++;
-                  if (rnd.Next(0,11) > 5)
+                  if (rnd.Next(0, 11) > 5)
                   {
                      StockDailyValue dailyValue = serie[date];
                      var += dailyValue.VARIATION;
@@ -3022,19 +3131,22 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value * (var / count);
-            cacEWSerie.Add(date, new StockDailyValue("CAC_RANDOM", value, value, value, value, (long)nbActive, date));
+            if (count != 0) value += value*(var/count);
+            cacEWSerie.Add(date, new StockDailyValue("CAC_RANDOM", value, value, value, value, (long) nbActive, date));
 
             previousCount = count;
          }
          StockDictionary.Add("CAC_RANDOM", cacEWSerie);
 
       }
+
       private void GenerateCAC_TL(StockSerie.StockBarDuration barDuration, int period)
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
          string serieName = "CAC_TL" + period + "_" + barDuration;
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -3056,7 +3168,8 @@ namespace StockAnalyzerApp
                   if (index >= 0 && trendLine.Events[5][index])
                   {
                      count++;
-                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily)
+                        .ElementAt(index + 1);
                      var += dailyValue.VARIATION;
                   }
                }
@@ -3067,8 +3180,8 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value * (var / count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
+            if (count != 0) value += value*(var/count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) count, date));
 
             previousCount = count;
          }
@@ -3079,11 +3192,14 @@ namespace StockAnalyzerApp
          StockDictionary.Add(serieName, cacEWSerie);
 
       }
+
       private void GenerateCAC_STOKS(StockSerie.StockBarDuration barDuration, int period)
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
          string serieName = "CAC_STOKS" + period + "_" + barDuration;
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+            StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
          StockSerie BX4Serie = this.StockDictionary["BX4"];
@@ -3105,7 +3221,8 @@ namespace StockAnalyzerApp
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[2][index])
                   {
-                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily).ElementAt(index + 1);
+                     StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily)
+                        .ElementAt(index + 1);
                      var += dailyValue.VARIATION;
                   }
                }
@@ -3116,8 +3233,8 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value * (var / count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
+            if (count != 0) value += value*(var/count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) count, date));
 
             previousCount = count;
          }
@@ -3144,7 +3261,8 @@ namespace StockAnalyzerApp
             Settings.Default.MomentumIndicator = "ROC(120,1)";
 
             StockSplashScreen.ProgressText = "Generating position data for " + group;
-            var groupSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
+            var groupSeries =
+               StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
 
             // Find last date
             DateTime lastDate = DateTime.MinValue;
@@ -3200,7 +3318,8 @@ namespace StockAnalyzerApp
             firstDate = lastCacheDate > firstDate ? lastCacheDate : firstDate;
 
             // Calculate positions for each stocks in group
-            SortedDictionary<DateTime, List<MomentumSerie>> positions = new SortedDictionary<DateTime, List<MomentumSerie>>();
+            SortedDictionary<DateTime, List<MomentumSerie>> positions =
+               new SortedDictionary<DateTime, List<MomentumSerie>>();
 
             foreach (var date in stockSerie.Keys.Where(d => d > firstDate && d.Date == d))
             {
@@ -3224,20 +3343,21 @@ namespace StockAnalyzerApp
                int i = 0;
                foreach (var m in moms)
                {
-                  m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
+                  m.PositionSlow = -100f + 200f*(float) (i++)/(count - 1);
                }
 
                moms = momSeries.OrderBy(ms => ms.MomentumFast);
                i = 0;
                foreach (var m in moms)
                {
-                  m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
+                  m.PositionFast = -100f + 200f*(float) (i++)/(count - 1);
                   m.StockSerie[date].POSITION = m.Position;
                }
                positions.Add(date, momSeries);
             }
 
-            StockSplashScreen.ProgressSubText = "PreInitialising"; // Inorder to get Position attribute set in DailyValues
+            StockSplashScreen.ProgressSubText = "PreInitialising";
+               // Inorder to get Position attribute set in DailyValues
             foreach (StockSerie serie in groupSeries)
             {
                serie.PreInitialise();
@@ -3263,7 +3383,7 @@ namespace StockAnalyzerApp
          }
       }
 
-      void GenerateVixPremium()
+      private void GenerateVixPremium()
       {
          if (!this.StockDictionary.ContainsKey("VIX"))
          {
@@ -3279,7 +3399,8 @@ namespace StockAnalyzerApp
          {
             return;
          }
-         StockSerie vixPremium = new StockSerie("VIX_PREMIUM", "VIX_PREMIUM", StockSerie.Groups.INDICATOR, StockDataProvider.Generated);
+         StockSerie vixPremium = new StockSerie("VIX_PREMIUM", "VIX_PREMIUM", StockSerie.Groups.INDICATOR,
+            StockDataProvider.Generated);
 
          // Generate the VIX Premium
          FloatSerie spVolatilitySerie = spSerie.GetSerie(StockIndicatorType.VOLATILITY_STDEV);
@@ -3291,7 +3412,8 @@ namespace StockAnalyzerApp
             if (index != -1)
             {
                spVolatility = spVolatilitySerie[index];
-               StockDailyValue dailyValue = new StockDailyValue(vixPremium.StockName, vixValue.OPEN / spVolatility, vixValue.HIGH / spVolatility, vixValue.LOW / spVolatility, vixValue.CLOSE / spVolatility, 0, vixValue.DATE);
+               StockDailyValue dailyValue = new StockDailyValue(vixPremium.StockName, vixValue.OPEN/spVolatility,
+                  vixValue.HIGH/spVolatility, vixValue.LOW/spVolatility, vixValue.CLOSE/spVolatility, 0, vixValue.DATE);
                vixPremium.Add(dailyValue.DATE, dailyValue);
                dailyValue.Serie = vixPremium;
             }
@@ -3299,6 +3421,7 @@ namespace StockAnalyzerApp
          vixPremium.Initialise();
          this.StockDictionary.Add(vixPremium.StockName, vixPremium);
       }
+
       #endregion
 
       private void palmaresMenuItem_Click(object sender, EventArgs e)
@@ -3307,15 +3430,17 @@ namespace StockAnalyzerApp
          {
             palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar);
             palmaresDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            palmaresDlg.SelectedPortofolioChanged += new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
-            palmaresDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
+            palmaresDlg.SelectedPortofolioChanged +=
+               new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
+            palmaresDlg.SelectStockGroupChanged +=
+               new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
 
             palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
             palmaresDlg.StockWatchListsChanged += new StockWatchListsChangedEventHandler(OnWatchListsChanged);
 
             if (sender is SimulationParameterControl)
             {
-               SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
+               SimulationParameterControl simulationParameterControl = (SimulationParameterControl) sender;
                this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
                this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
                this.palmaresDlg.DisplayPortofolio = true;
@@ -3327,7 +3452,7 @@ namespace StockAnalyzerApp
          {
             if (sender is SimulationParameterControl)
             {
-               SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
+               SimulationParameterControl simulationParameterControl = (SimulationParameterControl) sender;
                this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
                this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
                this.palmaresDlg.DisplayPortofolio = true;
@@ -3336,13 +3461,15 @@ namespace StockAnalyzerApp
             palmaresDlg.Activate();
          }
       }
+
       private void palmaresDlg_FormClosing(object sender, FormClosingEventArgs e)
       {
          palmaresDlg = null;
       }
+
       private void OnSelectedStockGroupChanged(string stockGroup)
       {
-         StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
+         StockSerie.Groups newGroup = (StockSerie.Groups) Enum.Parse(typeof (StockSerie.Groups), stockGroup);
          if (this.selectedGroup != newGroup)
          {
             // In order to speed the intraday display.
@@ -3366,6 +3493,7 @@ namespace StockAnalyzerApp
             InitialiseStockCombo();
          }
       }
+
       private void OnCurrentPortofolioChanged(StockPortofolio portofolio, bool activate)
       {
          if (portofolio != null)
@@ -3382,6 +3510,7 @@ namespace StockAnalyzerApp
             this.Activate();
          }
       }
+
       private void OnCurrentPortofolioNameChanged(string portofolioName, bool activate)
       {
          CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == portofolioName);
@@ -3393,6 +3522,7 @@ namespace StockAnalyzerApp
             this.Activate();
          }
       }
+
       private void OnWatchListsChanged()
       {
          InitialiseWatchListComboBox();
@@ -3406,6 +3536,7 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void showDrawingsMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowDrawings = this.showDrawingsMenuItem.Checked;
@@ -3413,6 +3544,7 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void showEventMarqueeMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowEventMarquee = this.showEventMarqueeMenuItem.Checked;
@@ -3420,6 +3552,7 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void showCommentMarqueeMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowCommentMarquee = this.showCommentMarqueeMenuItem.Checked;
@@ -3427,6 +3560,7 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void showOrdersMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowOrders = this.showOrdersMenuItem.Checked;
@@ -3434,6 +3568,7 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void showSummaryOrdersMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowSummaryOrders = this.showSummaryOrdersMenuItem.Checked;
@@ -3447,16 +3582,21 @@ namespace StockAnalyzerApp
          // Refresh the graphs
          OnNeedReinitialise(false);
       }
+
       private void hideIndicatorsStockMenuItem_Click(object sender, EventArgs e)
       {
          this.graphCloseControl.HideIndicators = this.hideIndicatorsStockMenuItem.Checked;
          this.OnNeedReinitialise(false);
       }
+
       #endregion VIEW MENU HANDLERS
+
       #region PORTOFOLIO MENU HANDERS
+
       public void newOrderMenuItem_Click(object sender, EventArgs e)
       {
-         OrderEditionDlg orderCreationDlg = new OrderEditionDlg(this.stockNameComboBox.SelectedItem.ToString(), this.StockPortofolioList.GetPortofolioNames(), null);
+         OrderEditionDlg orderCreationDlg = new OrderEditionDlg(this.stockNameComboBox.SelectedItem.ToString(),
+            this.StockPortofolioList.GetPortofolioNames(), null);
          if (orderCreationDlg.ShowDialog() == DialogResult.OK)
          {
             StockPortofolio portofolio = this.StockPortofolioList.Get(orderCreationDlg.PortofolioName);
@@ -3474,6 +3614,7 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(false);
          }
       }
+
       private void OnStockOrderDeleted(StockOrder stockOrder)
       {
          // Save Portofolios
@@ -3521,6 +3662,7 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       private void viewPortogolioMenuItem_Click(object sender, EventArgs e)
       {
          StockPortofolio portofolio = this.StockPortofolioList.Get(sender.ToString());
@@ -3545,11 +3687,13 @@ namespace StockAnalyzerApp
             }
          }
       }
+
       private void portofolioDlg_FormClosing(object sender, FormClosingEventArgs e)
       {
          portofolioDlg = null;
          OnNeedReinitialise(false);
       }
+
       private void orderListMenuItem_Click(object sender, EventArgs e)
       {
          StockPortofolio portofolio = this.StockPortofolioList.Get(sender.ToString());
@@ -3566,31 +3710,40 @@ namespace StockAnalyzerApp
             orderListDlg.Activate();
          }
       }
+
       private void orderListDlg_FormClosing(object sender, FormClosingEventArgs e)
       {
          orderListDlg = null;
          OnNeedReinitialise(false);
       }
-      void addOrdersMenuItem_Click(object sender, System.EventArgs e)
+
+      private void addOrdersMenuItem_Click(object sender, System.EventArgs e)
       {
-         StockbrokersOrderCreationDlg orderCreationDialog = new StockbrokersOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "STOCKBROKERS"), StockDictionary);
+         StockbrokersOrderCreationDlg orderCreationDialog =
+            new StockbrokersOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "STOCKBROKERS"),
+               StockDictionary);
          orderCreationDialog.SavePortofolioNeeded += new SavePortofolio(this.SavePortofolios);
          orderCreationDialog.ShowDialog();
 
          OnNeedReinitialise(false);
       }
+
       private void addStockCAPCAMenuItem_Click(object sender, EventArgs e)
       {
-         CAPCAOrderCreationDlg orderCreationDialog = new CAPCAOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "CA-CPA"), StockDictionary);
+         CAPCAOrderCreationDlg orderCreationDialog =
+            new CAPCAOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "CA-CPA"), StockDictionary);
          orderCreationDialog.SavePortofolioNeeded += new SavePortofolio(this.SavePortofolios);
          orderCreationDialog.ShowDialog();
 
          OnNeedReinitialise(false);
       }
+
       #endregion
+
       #region ANALYSIS MENU HANDLERS
 
       #region Best Return Strategy
+
       private void bestReturnStrategySimulationMenuItem_Click(object sender, EventArgs e)
       {
 
@@ -3603,6 +3756,7 @@ namespace StockAnalyzerApp
          float cashValue = portofolioValue;
 
          #region CreatePortofolio
+
          // Create new simulation portofolio
          if (CurrentPortofolio == null)
          {
@@ -3615,11 +3769,14 @@ namespace StockAnalyzerApp
                this.StockPortofolioList.Add(CurrentPortofolio);
             }
          }
+
          #endregion
+
          StockSerie referenceSerie = this.StockDictionary["CAC40"];
          referenceSerie.Initialise();
          referenceSerie.BarDuration = StockSerie.StockBarDuration.Monthly;
-         List<StockSerie> stockSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+         List<StockSerie> stockSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
 
          // Switch to monthly values
          foreach (StockSerie serie in stockSeries)
@@ -3649,7 +3806,8 @@ namespace StockAnalyzerApp
             }
 
             // Select positives + order by return
-            List<StockDailyValue> selectedValues = values.Where(s => s.VARIATION > 0).OrderByDescending(s => s.VARIATION).ToList();
+            List<StockDailyValue> selectedValues =
+               values.Where(s => s.VARIATION > 0).OrderByDescending(s => s.VARIATION).ToList();
 
             // Close not listed names.
             foreach (Position pos in portofolio.Where(p => float.IsNaN(p.Close)))
@@ -3677,10 +3835,10 @@ namespace StockAnalyzerApp
             for (int i = 0; i < nbPositionsToOpen && i < candidateCount; i++)
             {
                StockDailyValue value = selectedValues[i];
-               int size = (int)((Math.Min(cashValue / nbPositionsToOpen, maxPositionValue)) / value.CLOSE);
+               int size = (int) ((Math.Min(cashValue/nbPositionsToOpen, maxPositionValue))/value.CLOSE);
                Position pos = new Position(value.NAME, value.CLOSE, size);
                portofolio.Add(pos);
-               consumedCash = value.CLOSE * size;
+               consumedCash = value.CLOSE*size;
 
                StockLog.Write("Buying: " + pos.ToString() + " at: " + pos.Open.ToString());
             }
@@ -3707,15 +3865,22 @@ namespace StockAnalyzerApp
          StockLog.Write("Cash Value: " + cashValue);
       }
 
-      class Position
+      private class Position
       {
          public string Name { get; set; }
          public float Open { get; set; }
          public float Close { get; set; }
          public int Number { get; set; }
-         public bool IsOpened { get { return float.IsNaN(this.Close); } }
 
-         public float Gain { get { return (this.Close - this.Open) * this.Number; } }
+         public bool IsOpened
+         {
+            get { return float.IsNaN(this.Close); }
+         }
+
+         public float Gain
+         {
+            get { return (this.Close - this.Open)*this.Number; }
+         }
 
          public Position(string name, float open, int number)
          {
@@ -3729,7 +3894,7 @@ namespace StockAnalyzerApp
          public float EndPosition(float close)
          {
             this.Close = close;
-            return close * this.Number;
+            return close*this.Number;
          }
 
          public override string ToString()
@@ -3737,6 +3902,7 @@ namespace StockAnalyzerApp
             return this.Name + ": " + this.Number.ToString();
          }
       }
+
       #endregion
 
       private void strategySimulationMenuItem_Click(object sender, EventArgs e)
@@ -3745,10 +3911,13 @@ namespace StockAnalyzerApp
 
          if (strategySimulatorDlg == null || strategySimulatorDlg.IsDisposed)
          {
-            strategySimulatorDlg = new StrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.stockNameComboBox.SelectedItem.ToString());
-            strategySimulatorDlg.SimulationCompleted += new StrategySimulatorDlg.SimulationCompletedEventHandler(strategySimulatorDlg_SimulationCompleted);
+            strategySimulatorDlg = new StrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
+               this.stockNameComboBox.SelectedItem.ToString());
+            strategySimulatorDlg.SimulationCompleted +=
+               new StrategySimulatorDlg.SimulationCompletedEventHandler(strategySimulatorDlg_SimulationCompleted);
             strategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            strategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            strategySimulatorDlg.SelectedPortofolioChanged +=
+               new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
          }
          else
          {
@@ -3766,10 +3935,15 @@ namespace StockAnalyzerApp
 
          if (filteredStrategySimulatorDlg == null || filteredStrategySimulatorDlg.IsDisposed)
          {
-            filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.stockNameComboBox.SelectedItem.ToString());
-            filteredStrategySimulatorDlg.SimulationCompleted += new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(filteredStrategySimulatorDlg_SimulationCompleted);
-            filteredStrategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            filteredStrategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
+               this.stockNameComboBox.SelectedItem.ToString());
+            filteredStrategySimulatorDlg.SimulationCompleted +=
+               new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(
+                  filteredStrategySimulatorDlg_SimulationCompleted);
+            filteredStrategySimulatorDlg.SelectedStockChanged +=
+               new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+            filteredStrategySimulatorDlg.SelectedPortofolioChanged +=
+               new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
          }
          else
          {
@@ -3781,15 +3955,18 @@ namespace StockAnalyzerApp
          filteredStrategySimulatorDlg.Show();
       }
 
-      void portofolioSimulationMenuItem_Click(object sender, System.EventArgs e)
+      private void portofolioSimulationMenuItem_Click(object sender, System.EventArgs e)
       {
          CreateSimulationPortofolio(5000.0f);
 
          if (portfolioSimulatorDlg == null || portfolioSimulatorDlg.IsDisposed)
          {
-            portfolioSimulatorDlg = new PortfolioSimulatorDlg(StockDictionary, this.StockPortofolioList, this.stockNameComboBox.SelectedItem.ToString(), this.WatchLists);
-            portfolioSimulatorDlg.SimulationCompleted += new PortfolioSimulatorDlg.SimulationCompletedEventHandler(portfolioSimulatorDlg_SimulationCompleted);
-            portfolioSimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            portfolioSimulatorDlg = new PortfolioSimulatorDlg(StockDictionary, this.StockPortofolioList,
+               this.stockNameComboBox.SelectedItem.ToString(), this.WatchLists);
+            portfolioSimulatorDlg.SimulationCompleted +=
+               new PortfolioSimulatorDlg.SimulationCompletedEventHandler(portfolioSimulatorDlg_SimulationCompleted);
+            portfolioSimulatorDlg.SelectedPortofolioChanged +=
+               new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
          }
          else
          {
@@ -3816,7 +3993,8 @@ namespace StockAnalyzerApp
             }
          }
       }
-      void strategySimulatorDlg_SimulationCompleted()
+
+      private void strategySimulatorDlg_SimulationCompleted()
       {
          // Refresh portofolio generated stock
          StockPortofolio portofolio = this.strategySimulatorDlg.SelectedPortofolio;
@@ -3842,7 +4020,8 @@ namespace StockAnalyzerApp
 
          RefreshPortofolioMenu();
       }
-      void filteredStrategySimulatorDlg_SimulationCompleted()
+
+      private void filteredStrategySimulatorDlg_SimulationCompleted()
       {
          // Refresh portofolio generated stock
          StockPortofolio portofolio = this.filteredStrategySimulatorDlg.SelectedPortofolio;
@@ -3868,7 +4047,8 @@ namespace StockAnalyzerApp
 
          RefreshPortofolioMenu();
       }
-      void portfolioSimulatorDlg_SimulationCompleted()
+
+      private void portfolioSimulatorDlg_SimulationCompleted()
       {
          // Refresh portofolio generated stock
          StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
@@ -3894,7 +4074,8 @@ namespace StockAnalyzerApp
 
          RefreshPortofolioMenu();
       }
-      void orderGenerationDlg_SimulationCompleted()
+
+      private void orderGenerationDlg_SimulationCompleted()
       {
          // Refresh portofolio generated stock
          StockPortofolio portofolio = this.orderGenerationDlg.SelectedPortofolio;
@@ -3922,12 +4103,15 @@ namespace StockAnalyzerApp
          RefreshPortofolioMenu();
 
       }
+
       private void batchStrategySimulationMenuItem_Click(object sender, EventArgs e)
       {
          if (batchStrategySimulatorDlg == null || batchStrategySimulatorDlg.IsDisposed)
          {
-            batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.selectedGroup, (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem, this.progressBar);
-            batchStrategySimulatorDlg.SimulationCompleted += new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
+            batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
+               this.selectedGroup, (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem, this.progressBar);
+            batchStrategySimulatorDlg.SimulationCompleted +=
+               new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
 
             this.NotifyBarDurationChanged += batchStrategySimulatorDlg.OnBarDurationChanged;
          }
@@ -3937,7 +4121,8 @@ namespace StockAnalyzerApp
          }
          batchStrategySimulatorDlg.Show();
       }
-      void batchStrategySimulatorDlg_SimulationCompleted(SimulationParameterControl simulationParameterControl)
+
+      private void batchStrategySimulatorDlg_SimulationCompleted(SimulationParameterControl simulationParameterControl)
       {
          //
          RefreshPortofolioMenu();
@@ -3948,6 +4133,7 @@ namespace StockAnalyzerApp
          // Open Palmares window Initialised to display batch results
          palmaresMenuItem_Click(simulationParameterControl, null);
       }
+
       private void simulationTuningDlg_SimulationCompleted(StockPortofolio newPortofolio)
       {
          // Refresh portofolio generated stock
@@ -3975,14 +4161,17 @@ namespace StockAnalyzerApp
 
          RefreshPortofolioMenu();
       }
+
       private void generateOrderMenuItem_Click(object sender, EventArgs e)
       {
          if (orderGenerationDlg == null || orderGenerationDlg.IsDisposed)
          {
             orderGenerationDlg = new OrderGenerationDlg(StockDictionary, this.StockPortofolioList);
-            orderGenerationDlg.SimulationCompleted += new OrderGenerationDlg.SimulationCompletedEventHandler(orderGenerationDlg_SimulationCompleted);
+            orderGenerationDlg.SimulationCompleted +=
+               new OrderGenerationDlg.SimulationCompletedEventHandler(orderGenerationDlg_SimulationCompleted);
             orderGenerationDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            orderGenerationDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            orderGenerationDlg.SelectedPortofolioChanged +=
+               new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
             orderGenerationDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
             orderGenerationDlg.Show();
          }
@@ -3991,8 +4180,11 @@ namespace StockAnalyzerApp
             orderGenerationDlg.Activate();
          }
       }
+
       #endregion
+
       #region STATISTICS
+
       // Statistics implementation
       //private void generateStat1MenuItem_Click(object sender, System.EventArgs e)
       //{
@@ -4109,25 +4301,37 @@ namespace StockAnalyzerApp
       //    StatisticsDialog statisticsDlg = new StatisticsDialog(this.graphCloseControl, this.CurrentStockSerie);
       //    statisticsDlg.Show(this);
       //}
+
       #endregion
+
       #region
-      static private string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
-      static private string commentTemplate = "COMMENT_TEMPLATE";
-      static private string titleTemplate = "TITLE_TEMPLATE";
-      static private string eventTemplate = "EVENT_TEMPLATE";
-      static private string imageFileCID = "IMAGE_FILE_CID";
-      static private string imageFileLink = "IMAGE_FILE_LINK";
+
+      private static string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
+      private static string commentTemplate = "COMMENT_TEMPLATE";
+      private static string titleTemplate = "TITLE_TEMPLATE";
+      private static string eventTemplate = "EVENT_TEMPLATE";
+      private static string imageFileCID = "IMAGE_FILE_CID";
+      private static string imageFileLink = "IMAGE_FILE_LINK";
 
       // static private string htmlEventTemplate = "<P style=\"font-size: x-small\">" + eventTemplate + "</P>";
-      static private string htmlEventTemplate = "<br />" + eventTemplate;
-      static private string htmlTitleTemplate = "<br /><hr width=\"50%\"><B><P style=\"text-align: center; font-size: xx-large\">" + titleTemplate + "</P></B>";
+      private static string htmlEventTemplate = "<br />" + eventTemplate;
 
-      static private string htmlMailCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate + "</U></B></P>" +
-"<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" + commentTemplate + "</P>" +
-"<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"cid:" + imageFileCID + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
-      static private string htmlCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate + "</U></B></P>" +
-"<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" + commentTemplate + "</P>" +
-"<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"" + imageFileLink + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
+      private static string htmlTitleTemplate =
+         "<br /><hr width=\"50%\"><B><P style=\"text-align: center; font-size: xx-large\">" + titleTemplate + "</P></B>";
+
+      private static string htmlMailCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
+                                                      "</U></B></P>" +
+                                                      "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
+                                                      commentTemplate + "</P>" +
+                                                      "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"cid:" +
+                                                      imageFileCID + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
+
+      private static string htmlCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
+                                                  "</U></B></P>" +
+                                                  "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
+                                                  commentTemplate + "</P>" +
+                                                  "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"" +
+                                                  imageFileLink + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
 
       private void SendMail()
       {
@@ -4137,7 +4341,7 @@ namespace StockAnalyzerApp
          {
             using (MailMessage message = new MailMessage())
             {
-               GenerateReport(true, message);
+               GenerateDailyReport(true, message);
 
                message.To.Add(Settings.Default.UserEMail);
                message.To.Add("david.carbonel@volvo.com");
@@ -4162,7 +4366,14 @@ namespace StockAnalyzerApp
       {
          return string.Empty;
       }
-      private string GenerateReport(bool htmlFormat, MailMessage email)
+
+      struct RankedSerie
+      {
+         public float rank;
+         public StockSerie stockSerie;
+      }
+
+      private string GenerateDailyReport(bool htmlFormat, MailMessage email)
       {
          string mailReport = string.Empty;
          string htmlReport = string.Empty;
@@ -4183,13 +4394,14 @@ namespace StockAnalyzerApp
 
          #region report multi TimeFrame
 
-         StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[] { 
-                StockSerie.StockBarDuration.TLB,
-                StockSerie.StockBarDuration.TLB_3D,
-                StockSerie.StockBarDuration.TLB_6D,
-                StockSerie.StockBarDuration.TLB_9D,
-                StockSerie.StockBarDuration.TLB_27D
-            };
+         StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[]
+         {
+            StockSerie.StockBarDuration.TLB,
+            StockSerie.StockBarDuration.TLB_3D,
+            StockSerie.StockBarDuration.TLB_6D,
+            StockSerie.StockBarDuration.TLB_9D,
+            StockSerie.StockBarDuration.TLB_27D
+         };
 
 
          string MULTITIMEFRAME_HEADER = @"<html>
@@ -4212,7 +4424,9 @@ border:1px solid black;
 </html>";
          string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
 
-         string CELL_DIR_IMG_TEMPLATE = "<td><img alt=\"%DIR%\" src=\"C:\\Perso\\StockAnalyzer\\StockAnalyzerApp\\Resources\\%DIR%.png\"/></td>" + Environment.NewLine;
+         string CELL_DIR_IMG_TEMPLATE =
+            "<td><img alt=\"%DIR%\" src=\"C:\\Perso\\StockAnalyzer\\StockAnalyzerApp\\Resources\\%DIR%.png\"/></td>" +
+            Environment.NewLine;
          string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
          string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
@@ -4277,9 +4491,11 @@ border:1px solid black;
          //    }
          //}
          StockSplashScreen.CloseForm(true);
-         string table = MULTITIMEFRAME_HEADER + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) + MULTITIMEFRAME_FOOTER;
+         string table = MULTITIMEFRAME_HEADER + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) +
+                        MULTITIMEFRAME_FOOTER;
 
-         if (!Directory.Exists(Settings.Default.RootFolder + "\\CommentReport")) Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport");
+         if (!Directory.Exists(Settings.Default.RootFolder + "\\CommentReport"))
+            Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport");
          using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report_table.html"))
          {
 
@@ -4294,44 +4510,33 @@ border:1px solid black;
          this.CurrentTheme = "ReportTheme";
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
 
-         //float ensureUnique = 0.0f;
-
-         SortedDictionary<float, StockSerie> leadersDico = new SortedDictionary<float, StockSerie>();
-         //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC_ALL)))
-         //{
-         //   if (stockSerie.Initialise())
-         //   {
-         //      IStockIndicator indicator = stockSerie.GetIndicator(Settings.Default.MomentumIndicator);
-         //      if (leadersDico.ContainsKey(indicator.Series[0].Last))
-         //      {
-         //         leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
-         //         ensureUnique += 0.001f;
-         //      }
-         //      else
-         //      {
-         //         leadersDico.Add((indicator.Series[0].Last) + ensureUnique, stockSerie);
-         //      }
-         //   }
-         //}
+         List<RankedSerie> leadersDico = new List<RankedSerie>();
+         foreach ( StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+         {
+            if (stockSerie.Initialise() && stockSerie.Count > 100)
+            {
+               IStockIndicator indicator = stockSerie.GetIndicator("ER(80,6,6)");
+               leadersDico.Add(new RankedSerie() {rank = indicator.Series[0].Last, stockSerie = stockSerie});
+            }
+         }
 
          string htmlLeaders = string.Empty;
          string htmlLosers = string.Empty;
 
-//         string rowTemplate = @"
-//<tr>
-//    <td>%COL1%</td>
-//    <td>%COL2%</td>
-//</tr>";
+         string rowTemplate = @"
+         <tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+         </tr>";
 
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Winners");
          htmlLeaders += " <table>";
 
-         //for (int i = 0; i < 10; i++)
-         //{
-         //   KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(leadersDico.Count - i - 1);
-         //   if (pair.Key < 0) break;
-         //   htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
-         //}
+         var leaders = leadersDico.Where(l=> l.rank >0f).OrderByDescending(l => l.rank).Take(10);
+         foreach (RankedSerie pair in leaders)
+         {
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+         }
 
          htmlLeaders += " </table>";
 
@@ -4342,12 +4547,11 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Losers");
          htmlLeaders += " <table>";
 
-         ////for (int i = 0; i < 10; i++)
-         ////{
-         ////   KeyValuePair<float, StockSerie> pair = leadersDico.ElementAt(i);
-         ////   if (pair.Key > 0) break;
-         ////   htmlLeaders += rowTemplate.Replace("%COL1%", pair.Value.StockName).Replace("%COL2%", pair.Key.ToString());
-         ////}
+         leaders = leadersDico.Where(l=> l.rank <0f).OrderBy(l => l.rank).Take(10);
+         foreach (RankedSerie pair in leaders)
+         {
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+         }
 
          htmlLeaders += " </table>";
 
@@ -4359,14 +4563,17 @@ border:1px solid black;
 
          StockSerie previousStockSerie = this.CurrentStockSerie;
          string previousTheme = this.CurrentTheme;
-         StockSerie.StockBarDuration previousBarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
+         StockSerie.StockBarDuration previousBarDuration =
+            (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
 
          using (StreamReader sr = new StreamReader(Settings.Default.RootFolder + @"\report.cfg"))
          {
             #region Report from config file
+
             while (!sr.EndOfStream)
             {
                string line = sr.ReadLine();
+               continue;
                if (string.IsNullOrWhiteSpace(line))
                {
                   continue;
@@ -4380,10 +4587,13 @@ border:1px solid black;
                }
 
                if (fields.Length == 0 || !this.StockDictionary.ContainsKey(fields[0]))
-               { continue; }
+               {
+                  continue;
+               }
 
 
-               this.barDurationComboBox.SelectedItem = (StockSerie.StockBarDuration)Enum.Parse(typeof(StockSerie.StockBarDuration), fields[2]);
+               this.barDurationComboBox.SelectedItem =
+                  (StockSerie.StockBarDuration) Enum.Parse(typeof (StockSerie.StockBarDuration), fields[2]);
                this.CurrentStockSerie = this.StockDictionary[fields[0]];
                this.CurrentTheme = fields[1];
 
@@ -4411,136 +4621,170 @@ border:1px solid black;
                   string cid = "Image_" + imageCount++;
                   cidList.Add(cid);
 
-                  commentTitle = "\r\n" + stockSerie.StockName + "( " + fields[2] + ") - " + fields[1] + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+                  commentTitle = "\r\n" + stockSerie.StockName + "( " + fields[2] + ") - " + fields[1] + " - " +
+                                 stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
 
                   // Build report from html template
-                  mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-                      .Replace(imageFileCID, cid);
+                  mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                     .Replace(commentTemplate, commentBody)
+                     .Replace(imageFileCID, cid);
                   mailReport += eventTypeString;
-                  htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-                      .Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
+                  htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                     .Replace(commentTemplate, commentBody)
+                     .Replace(imageFileLink,
+                        fileName.Replace(
+                           StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
+                           .Replace(@"\", "/"));
                   htmlReport += eventTypeString;
                }
             }
+
             #endregion
          }
+
          #region Generate report from Portfolio
 
-         List<String> stockNames = this.StockPortofolioList.GetStockNames();
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => stockNames.Contains(s.StockName)))
-         {
-            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
-            this.CurrentTheme = "TrendLine";
-            this.CurrentStockSerie = stockSerie;
+         //List<String> stockNames = this.StockPortofolioList.GetStockNames();
+         //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => stockNames.Contains(s.StockName)))
+         //{
+         //   this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
+         //   this.CurrentTheme = "TrendLine";
+         //   this.CurrentStockSerie = stockSerie;
 
-            string eventTypeString = ExtractEventsForReport();
+         //   string eventTypeString = ExtractEventsForReport();
 
-            if (string.IsNullOrWhiteSpace(eventTypeString))
-            {
-               continue;
-            }
+         //   if (string.IsNullOrWhiteSpace(eventTypeString))
+         //   {
+         //      continue;
+         //   }
 
-            this.snapshotToolStripButton_Click(null, null);
-            Image bitmap = Clipboard.GetImage();
+         //   this.snapshotToolStripButton_Click(null, null);
+         //   Image bitmap = Clipboard.GetImage();
 
-            string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-            if (!System.IO.File.Exists(fileName))
-            {
-               bitmap.Save(fileName, imageFormat);
-               fileNameList.Add(fileName);
+         //   string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
+         //   if (!System.IO.File.Exists(fileName))
+         //   {
+         //      bitmap.Save(fileName, imageFormat);
+         //      fileNameList.Add(fileName);
 
-               // Get image CID
-               string cid = "Image_" + imageCount++;
-               cidList.Add(cid);
+         //      // Get image CID
+         //      string cid = "Image_" + imageCount++;
+         //      cidList.Add(cid);
 
-               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+         //      commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " +
+         //                     " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
 
-               // Build report from html template
-               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-                   .Replace(imageFileCID, cid);
-               mailReport += eventTypeString;
-               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
-               htmlReport += eventTypeString;
-            }
-         }
+         //      // Build report from html template
+         //      mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+         //         .Replace(commentTemplate, commentBody)
+         //         .Replace(imageFileCID, cid);
+         //      mailReport += eventTypeString;
+         //      htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+         //         .Replace(commentTemplate, commentBody)
+         //         .Replace(imageFileLink,
+         //            fileName.Replace(
+         //               StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
+         //               .Replace(@"\", "/"));
+         //      htmlReport += eventTypeString;
+         //   }
+         //}
+
          #endregion
 
-//         #region Generate report from Events
+         #region Generate report from Events
 
-//         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
-//         {
-//            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
-//            this.CurrentTheme = "ReportTheme";
-//            this.CurrentStockSerie = stockSerie;
+         StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+         StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "BarAbove");
+         StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "BarBelow");
+         StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+         StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+         StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+         List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
+         
+         alerts.Clear();
+         alerts.Add(cciEx);
+         alerts.Add(barAbove);
+         alerts.Add(barBelow);
+         alerts.Add(trailHL);
+         alerts.Add(ResistanceBroken);
+         alerts.Add(trailHLSR);
 
-//            string eventTypeString = ExtractEventsForReport();
+         foreach (
+            StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+         {
+            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
+            this.CurrentTheme = "Empty";
+            this.CurrentStockSerie = stockSerie;
 
-//            if (string.IsNullOrWhiteSpace(eventTypeString))
-//            {
-//               continue;
-//            }
+            StockSplashScreen.ProgressVal++;
+            StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-//            this.snapshotToolStripButton_Click(null, null);
-//            Image bitmap = Clipboard.GetImage();
+            if (!stockSerie.Initialise()) continue;
 
-//            string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-//            if (!System.IO.File.Exists(fileName))
-//            {
-//               bitmap.Save(fileName, imageFormat);
-//               fileNameList.Add(fileName);
+            string alertMsg = string.Empty;
+            foreach (StockSerie.StockAlertDef alert in alerts)
+            {
+               if (stockSerie.MatchEvent(alert))
+               {
+                  var values = stockSerie.GetValues(alerts.First().BarDuration);
+                  string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
+                                     ";" + alert.ToString();
 
-//               // Get image CID
-//               string cid = "Image_" + imageCount++;
-//               cidList.Add(cid);
+                  alertMsg += alertLine + ";" +
+                              stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
+                              Environment.NewLine;
+               }
+            }
+            if (!string.IsNullOrEmpty(alertMsg))
+            {
+               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " +
+                              " - " +
+                              stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
 
-//               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+               // Build report from html template
+               //mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+               //   .Replace(commentTemplate, commentBody)
+               //   //.Replace(imageFileCID, cid);
+               //mailReport += eventTypeString;
+               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                  .Replace(commentTemplate, commentBody);
+               //.Replace(imageFileLink,
+               //   fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
+               //      "./").Replace(@"\", "/"));
+               htmlReport += alertMsg;
+            }
+         }
 
-//               // Build report from html template
-//               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-//                   .Replace(imageFileCID, cid);
-//               mailReport += eventTypeString;
-//               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-//.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
-//               htmlReport += eventTypeString;
-//            }
+         //this.snapshotToolStripButton_Click(null, null);
+         //Image bitmap = Clipboard.GetImage();
 
-//            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.HLBreak;
-//            this.CurrentTheme = "CCI";
-//            this.CurrentStockSerie = stockSerie;
+         //string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
+         //if (!System.IO.File.Exists(fileName))
+         //{
+         //   bitmap.Save(fileName, imageFormat);
+         //   fileNameList.Add(fileName);
 
-//            eventTypeString = ExtractEventsForReport();
+         //   // Get image CID
+         //   string cid = "Image_" + imageCount++;
+         //   cidList.Add(cid);
 
-//            if (string.IsNullOrWhiteSpace(eventTypeString))
-//            {
-//               continue;
-//            }
+         //   commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " +
+         //                  stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
 
-//            this.snapshotToolStripButton_Click(null, null);
-//            bitmap = Clipboard.GetImage();
+         //   // Build report from html template
+         //   mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+         //      .Replace(commentTemplate, commentBody)
+         //      .Replace(imageFileCID, cid);
+         //   mailReport += eventTypeString;
+         //   htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+         //      .Replace(commentTemplate, commentBody)
+         //      .Replace(imageFileLink,
+         //         fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
+         //            "./").Replace(@"\", "/"));
+         //   htmlReport += eventTypeString;
+         //}
 
-//            fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-//            if (!System.IO.File.Exists(fileName))
-//            {
-//               bitmap.Save(fileName, imageFormat);
-//               fileNameList.Add(fileName);
-
-//               // Get image CID
-//               string cid = "Image_" + imageCount++;
-//               cidList.Add(cid);
-
-//               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
-
-//               // Build report from html template
-//               mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-//                   .Replace(imageFileCID, cid);
-//               mailReport += eventTypeString;
-//               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, commentBody)
-//.Replace(imageFileLink, fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./").Replace(@"\", "/"));
-//               htmlReport += eventTypeString;
-//            }
-//         }
-//         #endregion
+      #endregion
 
 
          AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
