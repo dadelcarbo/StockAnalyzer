@@ -559,6 +559,14 @@ namespace StockAnalyzerApp
          refreshTimer.Interval = 120*1000;
          refreshTimer.Start();
 
+         if (Settings.Default.GenerateDailyReport)
+         {
+            string fileName = Settings.Default.RootFolder + @"\CommentReport\report.html";
+            if (!File.Exists(fileName) || File.GetLastWriteTime(fileName).Date != DateTime.Today)
+            {
+               GenerateDailyReport();
+            }
+         }
          // Checks for alert every x minutes.
          if (Settings.Default.RaiseAlerts)
          {
@@ -4333,34 +4341,35 @@ namespace StockAnalyzerApp
                                                   "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"" +
                                                   imageFileLink + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
 
-      private void SendMail()
-      {
-         CleanImageFolder();
+      //private void GenerateDailyReport()
+      //{
+      //   CleanImageFolder();
 
-         if (NetworkInterface.GetIsNetworkAvailable())
-         {
-            using (MailMessage message = new MailMessage())
-            {
-               GenerateDailyReport(true, message);
+      //   GenerateDailyReport(true);
 
-               message.To.Add(Settings.Default.UserEMail);
-               message.To.Add("david.carbonel@volvo.com");
-               message.Subject = "Ultimate Chartist Analysis Report - " + DateTime.Now.ToString();
-               message.From = new MailAddress("noreply@free.fr");
-               message.IsBodyHtml = true;
-               SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
-               try
-               {
-                  smtp.Send(message);
-                  System.Windows.Forms.MessageBox.Show("Email sent successfully");
-               }
-               catch (System.Exception e)
-               {
-                  System.Windows.Forms.MessageBox.Show(e.Message, "Email error !");
-               }
-            }
-         }
-      }
+      //   if (NetworkInterface.GetIsNetworkAvailable())
+      //   {
+      //      using (MailMessage message = new MailMessage())
+      //      {
+
+      //         message.To.Add(Settings.Default.UserEMail);
+      //         message.To.Add("david.carbonel@volvo.com");
+      //         message.Subject = "Ultimate Chartist Analysis Report - " + DateTime.Now.ToString();
+      //         message.From = new MailAddress("noreply@free.fr");
+      //         message.IsBodyHtml = true;
+      //         SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
+      //         try
+      //         {
+      //            smtp.Send(message);
+      //            System.Windows.Forms.MessageBox.Show("Email sent successfully");
+      //         }
+      //         catch (System.Exception e)
+      //         {
+      //            System.Windows.Forms.MessageBox.Show(e.Message, "Email error !");
+      //         }
+      //      }
+      //   }
+      //}
 
       private string GenerateEventReport()
       {
@@ -4373,8 +4382,10 @@ namespace StockAnalyzerApp
          public StockSerie stockSerie;
       }
 
-      private string GenerateDailyReport(bool htmlFormat, MailMessage email)
+      private string GenerateDailyReport()
       {
+         CleanImageFolder();
+
          string mailReport = string.Empty;
          string htmlReport = string.Empty;
 
@@ -4787,7 +4798,7 @@ border:1px solid black;
       #endregion
 
 
-         AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
+         //AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
          //int index = 0;
          //foreach (string cid in cidList)
          //{
@@ -4796,7 +4807,7 @@ border:1px solid black;
          //    imagelink.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
          //    htmlView.LinkedResources.Add(imagelink);
          //}
-         email.AlternateViews.Add(htmlView);
+         //email.AlternateViews.Add(htmlView);
 
          using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report.html"))
          {
@@ -4918,13 +4929,9 @@ border:1px solid black;
             sw.WriteLine(this.CurrentStockSerie.StockName + ";" + this.CurrentTheme + ";" + this.barDurationComboBox.SelectedItem.ToString() + ";" + (this.endIndex - this.startIndex));
          }
       }
-      private void sendEMailReportToolStripBtn_Click(object sender, EventArgs e)
+      private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
       {
-         this.SendMail();
-         //if (this.currentStockSerie == null) return;
-
-         //CommentReportDlg commentReportDlg = new CommentReportDlg(StockDictionary, this.graphCloseControl, this.selectedGroup);
-         //commentReportDlg.Show();
+         this.GenerateDailyReport();
       }
       #endregion
       private void selectEventForMarqueeMenuItem_Click(object sender, EventArgs e)

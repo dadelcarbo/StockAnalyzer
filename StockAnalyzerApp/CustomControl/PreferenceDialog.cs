@@ -24,7 +24,8 @@ namespace StockAnalyzerApp.CustomControl
          this.smtpTextBox.Text = Settings.Default.UserSMTP;
          this.addressTextBox.Text = Settings.Default.UserEMail;
          this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
-         this.AlertActiveCheckBox.Checked= Settings.Default.RaiseAlerts;
+         this.alertActiveCheckBox.Checked = Settings.Default.RaiseAlerts;
+         this.generateDailyReportCheckBox.Checked = Settings.Default.GenerateDailyReport;
          needRestart = false;
       }
 
@@ -44,7 +45,8 @@ namespace StockAnalyzerApp.CustomControl
          Settings.Default.UserEMail = this.addressTextBox.Text;
 
          Settings.Default.AlertsFrequency = (int)this.alertFrequencyUpDown.Value;
-         Settings.Default.RaiseAlerts = this.AlertActiveCheckBox.Checked;
+         Settings.Default.RaiseAlerts = this.alertActiveCheckBox.Checked;
+         Settings.Default.GenerateDailyReport = this.generateDailyReportCheckBox.Checked;
 
          Settings.Default.Save();
 
@@ -111,6 +113,11 @@ namespace StockAnalyzerApp.CustomControl
       }
 
       private void AlertActiveCheckBox_CheckedChanged(object sender, EventArgs e)
+      {
+         needRestart |= this.generateBreadthCheckBox.Checked;
+      }
+
+      private void generateDailyReportCheckBox_CheckedChanged(object sender, EventArgs e)
       {
          needRestart |= this.generateBreadthCheckBox.Checked;
       }

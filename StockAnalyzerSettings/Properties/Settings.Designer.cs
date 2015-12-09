@@ -471,13 +471,28 @@ namespace StockAnalyzerSettings.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool RaiseAlerts {
+        public bool GenerateDailyReport {
             get {
-                return ((bool)(this["RaiseAlerts"]));
+               return ((bool)(this["GenerateDailyReport"]));
             }
             set {
-                this["RaiseAlerts"] = value;
+               this["GenerateDailyReport"] = value;
             }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RaiseAlerts
+        {
+           get
+           {
+              return ((bool)(this["RaiseAlerts"]));
+           }
+           set
+           {
+              this["RaiseAlerts"] = value;
+           }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]

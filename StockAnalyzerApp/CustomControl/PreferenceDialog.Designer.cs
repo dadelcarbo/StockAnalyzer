@@ -28,7 +28,6 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.components = new System.ComponentModel.Container();
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferenceDialog));
          this.openFileDlg = new System.Windows.Forms.OpenFileDialog();
          this.folderBrowserDlg = new System.Windows.Forms.FolderBrowserDialog();
@@ -58,9 +57,11 @@
          this.label4 = new System.Windows.Forms.Label();
          this.label3 = new System.Windows.Forms.Label();
          this.alertGroupBox = new System.Windows.Forms.GroupBox();
-         this.AlertActiveCheckBox = new System.Windows.Forms.CheckBox();
-         this.label5 = new System.Windows.Forms.Label();
          this.alertFrequencyUpDown = new System.Windows.Forms.NumericUpDown();
+         this.label5 = new System.Windows.Forms.Label();
+         this.alertActiveCheckBox = new System.Windows.Forms.CheckBox();
+         this.groupBox4 = new System.Windows.Forms.GroupBox();
+         this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
          this.groupBox1.SuspendLayout();
          this.chartParamGroupBox.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
@@ -68,6 +69,7 @@
          this.groupBox3.SuspendLayout();
          this.alertGroupBox.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).BeginInit();
+         this.groupBox4.SuspendLayout();
          this.SuspendLayout();
          // 
          // openFileDlg
@@ -262,22 +264,10 @@
          // 
          this.alertGroupBox.Controls.Add(this.alertFrequencyUpDown);
          this.alertGroupBox.Controls.Add(this.label5);
-         this.alertGroupBox.Controls.Add(this.AlertActiveCheckBox);
+         this.alertGroupBox.Controls.Add(this.alertActiveCheckBox);
          resources.ApplyResources(this.alertGroupBox, "alertGroupBox");
          this.alertGroupBox.Name = "alertGroupBox";
          this.alertGroupBox.TabStop = false;
-         // 
-         // AlertActiveCheckBox
-         // 
-         resources.ApplyResources(this.AlertActiveCheckBox, "AlertActiveCheckBox");
-         this.AlertActiveCheckBox.Name = "AlertActiveCheckBox";
-         this.AlertActiveCheckBox.UseVisualStyleBackColor = true;
-         this.AlertActiveCheckBox.CheckedChanged += new System.EventHandler(this.AlertActiveCheckBox_CheckedChanged);
-         // 
-         // label5
-         // 
-         resources.ApplyResources(this.label5, "label5");
-         this.label5.Name = "label5";
          // 
          // alertFrequencyUpDown
          // 
@@ -300,12 +290,39 @@
             0});
          this.alertFrequencyUpDown.ValueChanged += new System.EventHandler(this.alertFrequencyUpDown_ValueChanged);
          // 
+         // label5
+         // 
+         resources.ApplyResources(this.label5, "label5");
+         this.label5.Name = "label5";
+         // 
+         // alertActiveCheckBox
+         // 
+         resources.ApplyResources(this.alertActiveCheckBox, "alertActiveCheckBox");
+         this.alertActiveCheckBox.Name = "alertActiveCheckBox";
+         this.alertActiveCheckBox.UseVisualStyleBackColor = true;
+         this.alertActiveCheckBox.CheckedChanged += new System.EventHandler(this.AlertActiveCheckBox_CheckedChanged);
+         // 
+         // groupBox4
+         // 
+         this.groupBox4.Controls.Add(this.generateDailyReportCheckBox);
+         resources.ApplyResources(this.groupBox4, "groupBox4");
+         this.groupBox4.Name = "groupBox4";
+         this.groupBox4.TabStop = false;
+         // 
+         // generateDailyReportCheckBox
+         // 
+         resources.ApplyResources(this.generateDailyReportCheckBox, "generateDailyReportCheckBox");
+         this.generateDailyReportCheckBox.Name = "generateDailyReportCheckBox";
+         this.generateDailyReportCheckBox.UseVisualStyleBackColor = true;
+         this.generateDailyReportCheckBox.CheckedChanged += new System.EventHandler(this.generateDailyReportCheckBox_CheckedChanged);
+         // 
          // PreferenceDialog
          // 
          this.AcceptButton = this.okBtn;
          resources.ApplyResources(this, "$this");
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.CancelButton = this.cancelBtn;
+         this.Controls.Add(this.groupBox4);
          this.Controls.Add(this.alertGroupBox);
          this.Controls.Add(this.groupBox3);
          this.Controls.Add(this.groupBox2);
@@ -335,6 +352,8 @@
          this.alertGroupBox.ResumeLayout(false);
          this.alertGroupBox.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).EndInit();
+         this.groupBox4.ResumeLayout(false);
+         this.groupBox4.PerformLayout();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -371,6 +390,8 @@
       private System.Windows.Forms.GroupBox alertGroupBox;
       private System.Windows.Forms.NumericUpDown alertFrequencyUpDown;
       private System.Windows.Forms.Label label5;
-      private System.Windows.Forms.CheckBox AlertActiveCheckBox;
+      private System.Windows.Forms.CheckBox alertActiveCheckBox;
+      private System.Windows.Forms.GroupBox groupBox4;
+      private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
    }
 }

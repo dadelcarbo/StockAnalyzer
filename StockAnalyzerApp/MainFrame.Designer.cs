@@ -152,7 +152,7 @@ namespace StockAnalyzerApp
          this.snapshotToolStripButton = new System.Windows.Forms.ToolStripButton();
          this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
          this.addToReportStripBtn = new System.Windows.Forms.ToolStripButton();
-         this.sendEMailReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
+         this.generateDailyReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
          this.AddToWatchListToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
          this.themeToolStrip = new System.Windows.Forms.ToolStrip();
          this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
@@ -1054,7 +1054,7 @@ namespace StockAnalyzerApp
             this.snapshotToolStripButton,
             this.toolStripSeparator7,
             this.addToReportStripBtn,
-            this.sendEMailReportToolStripBtn,
+            this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
          this.drawToolStrip.Location = new System.Drawing.Point(3, 0);
          this.drawToolStrip.Name = "drawToolStrip";
@@ -1237,15 +1237,15 @@ namespace StockAnalyzerApp
          this.addToReportStripBtn.Text = "Add to Report";
          this.addToReportStripBtn.Click += new System.EventHandler(this.addToReportStripBtn_Click);
          // 
-         // sendEMailReportToolStripBtn
+         // generateDailyReportToolStripBtn
          // 
-         this.sendEMailReportToolStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-         this.sendEMailReportToolStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.EMail;
-         this.sendEMailReportToolStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-         this.sendEMailReportToolStripBtn.Name = "sendEMailReportToolStripBtn";
-         this.sendEMailReportToolStripBtn.Size = new System.Drawing.Size(23, 22);
-         this.sendEMailReportToolStripBtn.Text = "Send Email Report";
-         this.sendEMailReportToolStripBtn.Click += new System.EventHandler(this.sendEMailReportToolStripBtn_Click);
+         this.generateDailyReportToolStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+         this.generateDailyReportToolStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.EMail;
+         this.generateDailyReportToolStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+         this.generateDailyReportToolStripBtn.Name = "generateDailyReportToolStripBtn";
+         this.generateDailyReportToolStripBtn.Size = new System.Drawing.Size(23, 22);
+         this.generateDailyReportToolStripBtn.Text = "Generate Daily Report";
+         this.generateDailyReportToolStripBtn.Click += new System.EventHandler(this.generateDailyReportToolStripBtn_Click);
          // 
          // AddToWatchListToolStripDropDownButton
          // 
@@ -1626,7 +1626,7 @@ namespace StockAnalyzerApp
       private ToolStripSeparator toolStripSeparator11;
       private ToolStripSeparator toolStripSeparator12;
       private ToolStripButton addToReportStripBtn;
-      private ToolStripButton sendEMailReportToolStripBtn;
+      private ToolStripButton generateDailyReportToolStripBtn;
       private ToolStripMenuItem watchListMenuItem;
       private ToolStripMenuItem portofolioFilterMenuItem;
       private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
