@@ -4379,6 +4379,7 @@ namespace StockAnalyzerApp
       struct RankedSerie
       {
          public float rank;
+         public float previousRank;
          public StockSerie stockSerie;
       }
 
@@ -4527,7 +4528,7 @@ border:1px solid black;
             if (stockSerie.Initialise() && stockSerie.Count > 100)
             {
                IStockIndicator indicator = stockSerie.GetIndicator("ER(80,6,6)");
-               leadersDico.Add(new RankedSerie() {rank = indicator.Series[0].Last, stockSerie = stockSerie});
+               leadersDico.Add(new RankedSerie() {rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count-2], stockSerie = stockSerie});
             }
          }
 
@@ -4538,15 +4539,24 @@ border:1px solid black;
          <tr>
              <td>%COL1%</td>
              <td>%COL2%</td>
+             %DIR_IMG%
          </tr>";
 
-         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Winners");
+         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders");
          htmlLeaders += " <table>";
 
          var leaders = leadersDico.Where(l=> l.rank >0f).OrderByDescending(l => l.rank).Take(10);
          foreach (RankedSerie pair in leaders)
          {
             htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+             if (pair.previousRank<=pair.rank)
+             {
+                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+             }
+             else
+             {
+                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+             }
          }
 
          htmlLeaders += " </table>";
@@ -4555,13 +4565,21 @@ border:1px solid black;
          htmlReport += htmlLeaders;
 
 
-         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "CAC 40 Losers");
+         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers");
          htmlLeaders += " <table>";
 
          leaders = leadersDico.Where(l=> l.rank <0f).OrderBy(l => l.rank).Take(10);
          foreach (RankedSerie pair in leaders)
          {
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##")); 
+            if (pair.previousRank <= pair.rank)
+            {
+               htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+            }
+            else
+            {
+               htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+            }
          }
 
          htmlLeaders += " </table>";
