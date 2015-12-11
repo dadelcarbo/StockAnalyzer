@@ -4341,6 +4341,11 @@ namespace StockAnalyzerApp
                                                   "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"" +
                                                   imageFileLink + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
 
+      private static string htmlAlertTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
+                                                  "</U></B></P>" +
+                                                  "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
+                                                  commentTemplate + "</P>";
+
       //private void GenerateDailyReport()
       //{
       //   CleanImageFolder();
@@ -4741,14 +4746,14 @@ border:1px solid black;
          foreach (
             StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
          {
-            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
-            this.CurrentTheme = "Empty";
-            this.CurrentStockSerie = stockSerie;
+            //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
+            //this.CurrentTheme = "Empty";
+            //this.CurrentStockSerie = stockSerie;
 
             StockSplashScreen.ProgressVal++;
             StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-            if (!stockSerie.Initialise()) continue;
+            if (!stockSerie.Initialise() || stockSerie.Count < 200) continue;
 
             string alertMsg = string.Empty;
             foreach (StockSerie.StockAlertDef alert in alerts)
@@ -4766,21 +4771,19 @@ border:1px solid black;
             }
             if (!string.IsNullOrEmpty(alertMsg))
             {
-               commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " +
-                              " - " +
-                              stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+               commentTitle = "\r\n" + stockSerie.StockName + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n";
 
                // Build report from html template
                //mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
                //   .Replace(commentTemplate, commentBody)
                //   //.Replace(imageFileCID, cid);
                //mailReport += eventTypeString;
-               htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                  .Replace(commentTemplate, commentBody);
+               htmlReport += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle)
+                  .Replace(commentTemplate, alertMsg);
                //.Replace(imageFileLink,
                //   fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
                //      "./").Replace(@"\", "/"));
-               htmlReport += alertMsg;
+               //htmlReport += alertMsg;
             }
          }
 

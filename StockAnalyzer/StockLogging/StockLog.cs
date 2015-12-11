@@ -74,6 +74,7 @@ namespace StockAnalyzer.StockLogging
             else
             {
                sw = new StreamWriter(Console.OpenStandardOutput());
+               sw.AutoFlush = true;
             }
          }
       }
@@ -84,14 +85,14 @@ namespace StockAnalyzer.StockLogging
          {
             StackTrace st = new StackTrace(1, true);
             StackFrame sf = st.GetFrame(0);
-            StockLog.Logger.sw.WriteLine(DateTime.Now.ToString() + " - {0}({1},{2}): {3} : {4}", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name, logText);
+            StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : {4}", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name, logText);
          }
       }
       static public void WriteMethodEntry(StackFrame sf)
       {
          if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
          {
-            StockLog.Logger.sw.WriteLine(DateTime.Now.ToString() + " - {0}({1},{2}): {3} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
+            StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
          }
       }
 
@@ -99,21 +100,21 @@ namespace StockAnalyzer.StockLogging
       {
          if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
          {
-            StockLog.Logger.sw.WriteLine(DateTime.Now.ToString() + " - {0}({1},{2}): {3}::{4} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
+            StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3}::{4} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
          }
       }
       static public void WriteMethodExit(StackFrame sf)
       {
          if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
          {
-            StockLog.Logger.sw.WriteLine(DateTime.Now.ToString() + " - {0}({1},{2}): {3} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
+            StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
          }
       }
       static public void WriteMethodExit(Type type, StackFrame sf)
       {
          if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
          {
-            StockLog.Logger.sw.WriteLine(DateTime.Now.ToString() + " - {0}({1},{2}): {3}::{4} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
+            StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3}::{4} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
          }
       }
 
