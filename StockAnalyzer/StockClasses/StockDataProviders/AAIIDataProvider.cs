@@ -1,19 +1,40 @@
 ﻿using System;
 using System.IO;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
    public class AAIIDataProvider : StockDataProviderBase
    {
+      private static StockDictionary stockDictionary;
       // IStockDataProvider Implemetation
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
          bool res = false;
          string fileName = rootFolder + BULLBEARRATIO_FILENAME;
-         res = this.ParseBullBearRatio(stockSerie, fileName);
+         if (stockSerie.StockName == bullBearLogRatioName)
+         {
+            stockDictionary[bearBullRatioName].Initialise();
+            return this.GenerateBullBearLogRatio(stockSerie, true);
+         }
+         if (stockSerie.StockName == bearBullLogRatioName)
+         {
+            stockDictionary[bearBullRatioName].Initialise();
+            return this.GenerateBullBearLogRatio(stockSerie, false);
+         }
+         if (stockSerie.StockName == bearBullRatioName)
+         {
+            return this.ParseBullBearRatio(stockSerie, fileName);
+         }
          return res;
       }
+
+      private bool GenerateBearBullLogRatio(StockSerie stockSerie)
+      {
+         throw new NotImplementedException();
+      }
+
       public override bool SupportsIntradayDownload
       {
          get { return false; }
@@ -24,14 +45,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
       {
+         AAIIDataProvider.stockDictionary = stockDictionary;
          if (!stockDictionary.ContainsKey(bearBullRatioName))
          {
             stockDictionary.Add(bearBullRatioName, new StockSerie(bearBullRatioName, bearBullRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
+         }
+         if (!stockDictionary.ContainsKey(bearBullLogRatioName))
+         {
+            stockDictionary.Add(bearBullLogRatioName, new StockSerie(bearBullLogRatioName, bearBullLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
+         }
+         if (!stockDictionary.ContainsKey(bullBearLogRatioName))
+         {
+            stockDictionary.Add(bullBearLogRatioName, new StockSerie(bullBearLogRatioName, bullBearLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
          }
       }
 
       static private string BULLBEARRATIO_FILENAME = @"\data\weekly\AAII\BullBearRatio.csv";
       static private string bearBullRatioName = "BEAR/BULL Ratio";
+      static private string bearBullLogRatioName = "BEAR/BULL Log Ratio";
+      static private string bullBearLogRatioName = "BULL/BEAR Log Ratio";
 
       static private char[] percent = new char[] { '%' };
 
@@ -64,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   }
 
                   string[] row = line.Split(',');
-                     date = DateTime.Parse(row[0], usCulture);
+                  date = DateTime.Parse(row[0], usCulture);
                   if (row[1].Contains("%"))
                   {
                      bullish = float.Parse(row[1].TrimEnd(percent), usCulture) / 100f;
@@ -96,6 +128,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
          return res;
       }
+      private bool GenerateBullBearLogRatio(StockSerie stockSerie, bool inverse)
+      {
+         StockSerie ratioSerie = AAIIDataProvider.stockDictionary[bearBullRatioName];
+         
+         StockDailyValue bearBullLogRatioValue = null;
+         float ratio;
+         foreach (StockDailyValue dailyValue in ratioSerie.Values)
+         {
+            ratio = (float) Math.Log10(dailyValue.CLOSE);
+            if (inverse) ratio = -ratio;
 
+            bearBullLogRatioValue = new StockDailyValue(bearBullRatioName,
+               ratio,
+               ratio,
+               ratio,
+               ratio, 0, dailyValue.DATE);
+            stockSerie.Add(bearBullLogRatioValue.DATE, bearBullLogRatioValue);
+            bearBullLogRatioValue.Serie = stockSerie;
+         }
+         return true;
+      }
    }
 }
