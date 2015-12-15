@@ -4413,11 +4413,12 @@ namespace StockAnalyzerApp
 
          StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[]
          {
+            StockSerie.StockBarDuration.Daily,
+            StockSerie.StockBarDuration.Daily_EMA3,
             StockSerie.StockBarDuration.TLB,
+            StockSerie.StockBarDuration.TLB_EMA3,
             StockSerie.StockBarDuration.TLB_3D,
-            StockSerie.StockBarDuration.TLB_6D,
-            StockSerie.StockBarDuration.TLB_9D,
-            StockSerie.StockBarDuration.TLB_27D
+            StockSerie.StockBarDuration.TLB_3D_EMA3
          };
 
 
@@ -4442,7 +4443,7 @@ border:1px solid black;
          string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
 
          string CELL_DIR_IMG_TEMPLATE =
-            "<td><img alt=\"%DIR%\" src=\"C:\\Perso\\StockAnalyzer\\StockAnalyzerApp\\Resources\\%DIR%.png\"/></td>" +
+            "<td><img alt=\"%DIR%\" src=\"../img/%DIR%.png\"/></td>" +
             Environment.NewLine;
          string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
          string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
@@ -4458,7 +4459,7 @@ border:1px solid black;
 
          string tableContent = headerRow;
 
-         var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INTRADAY));
+         var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40));
 
          StockSplashScreen.FadeInOutSpeed = 0.25;
          StockSplashScreen.ProgressVal = 0;
@@ -4466,73 +4467,71 @@ border:1px solid black;
          StockSplashScreen.ProgressMin = 0;
          StockSplashScreen.ShowSplashScreen();
 
-         //foreach (StockSerie serie in stockList)
-         //{
-         //    try
-         //    {
-         //        rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", serie.StockName);
+         foreach (StockSerie serie in stockList)
+         {
+            try
+            {
+               rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", serie.StockName);
 
-         //        StockSplashScreen.ProgressVal++;
-         //        StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " +
-         //                                         serie.StockName;
+               StockSplashScreen.ProgressVal++;
+               StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
 
-         //        StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, serie);
+               //StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, serie);
+               
+               foreach (StockSerie.StockBarDuration duration in durations)
+               {
+                  serie.BarDuration = duration;
+                  if (serie.Initialise() && serie.Count > 50)
+                  {
+                     IStockTrailStop trailStop = serie.GetTrailStop("TRAILHL(1)");
+                     if (float.IsNaN(trailStop.Series[0].Last))
+                     {
+                        rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN");
+                     }
+                     else
+                     {
+                        rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP");
+                     }
+                  }
+                  else
+                  {
+                     rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", "-");
+                  }
+               }
+            }
+            finally
+            {
+               // Add Row
+               tableContent += ROW_TEMPLATE.Replace("%ROW%", rowContent);
+            }
+         }
 
-
-         //        foreach (StockSerie.StockBarDuration duration in durations)
-         //        {
-         //            serie.BarDuration = duration;
-         //            if (serie.IsInitialised)
-         //            {
-         //                IStockTrailStop trailStop = serie.GetTrailStop("TRAILHL(3)");
-         //                if (float.IsNaN(trailStop.Series[0].Last))
-         //                {
-         //                    rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN");
-         //                }
-         //                else
-         //                {
-         //                    rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP");
-         //                }
-         //            }
-         //            else
-         //            {
-         //                rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", "-");
-         //            }
-         //        }
-
-         //    }
-         //    finally
-         //    {
-         //        // Add Row
-         //        tableContent += ROW_TEMPLATE.Replace("%ROW%", rowContent);
-         //    }
-         //}
          StockSplashScreen.CloseForm(true);
          string table = MULTITIMEFRAME_HEADER + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) +
                         MULTITIMEFRAME_FOOTER;
 
          if (!Directory.Exists(Settings.Default.RootFolder + "\\CommentReport"))
+         {
             Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport");
+            Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport\\img");
+         }
          using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report_table.html"))
          {
-
             sw.Write(table);
          }
-
-
          #endregion
 
          #region Report leaders
 
          this.CurrentTheme = "ReportTheme";
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
-
+         string rankIndicatorName = "ER(80,6,6)";
          List<RankedSerie> leadersDico = new List<RankedSerie>();
          foreach ( StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
          {
             if (stockSerie.Initialise() && stockSerie.Count > 100)
             {
-               IStockIndicator indicator = stockSerie.GetIndicator("ER(80,6,6)");
+               IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
                leadersDico.Add(new RankedSerie() {rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count-2], stockSerie = stockSerie});
             }
          }
@@ -4547,7 +4546,7 @@ border:1px solid black;
              %DIR_IMG%
          </tr>";
 
-         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders");
+         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
          var leaders = leadersDico.Where(l=> l.rank >0f).OrderByDescending(l => l.rank).Take(10);
@@ -4570,7 +4569,7 @@ border:1px solid black;
          htmlReport += htmlLeaders;
 
 
-         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers");
+         htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
          leaders = leadersDico.Where(l=> l.rank <0f).OrderBy(l => l.rank).Take(10);
