@@ -4763,9 +4763,8 @@ border:1px solid black;
                   string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
                                      ";" + alert.ToString();
 
-                  alertMsg += alertLine + ";" +
-                              stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
-                              Environment.NewLine;
+                  alertMsg += "<br>"+ alertLine + ";" +
+                              stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + "</br>";
                }
             }
             if (!string.IsNullOrEmpty(alertMsg))
