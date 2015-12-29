@@ -4525,7 +4525,7 @@ border:1px solid black;
 
          this.CurrentTheme = "ReportTheme";
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
-         string rankIndicatorName = "ER(80,6,6)";
+         string rankIndicatorName = "ER(50,6,6)";
          List<RankedSerie> leadersDico = new List<RankedSerie>();
          foreach ( StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
          {

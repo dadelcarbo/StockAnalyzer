@@ -185,7 +185,7 @@ namespace StockAnalyzerApp.CustomControl
                   subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();
                   subItems[k++] = stockSerie.GetMin(startIndex, endIndex, StockDataType.LOW).ToString();
                   subItems[k++] = lastStockValue.CLOSE.ToString();
-                  if (validIndicator)
+                  if (validIndicator && stockSerie.Count > 100)
                   {
                      subItems[k++] = stockSerie.GetIndicator(indicatorTextBox.Text).Series[0][endIndex].ToString();
                   }
