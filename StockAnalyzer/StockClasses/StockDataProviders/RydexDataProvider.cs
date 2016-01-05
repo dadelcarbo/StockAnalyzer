@@ -87,12 +87,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                if (!isUpTodate)
                {
                   NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);
-                  if (lastDate.Year < DateTime.Today.Year)
+                  for (int year = lastDate.Year; year < DateTime.Today.Year; year++)
                   {
                      // Happy new year !!! it's time to archive old data...
-                     if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv"))
+                     if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + year.ToString() + ".csv"))
                      {
-                        this.DownloadFileFromRydex(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv", new DateTime(lastDate.Year, 1, 1), new DateTime(lastDate.Year, 12, 31), stockSerie.ShortName);
+                        this.DownloadFileFromRydex(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + year.ToString() + ".csv", new DateTime(year, 1, 1), new DateTime(year, 12, 31), stockSerie.ShortName);
                      }
                   }
                   DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
@@ -121,7 +121,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
                DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
-               for (int i = lastDate.Year - 1; i > 1990; i--)
+               for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
                {
                   if (!this.DownloadFileFromRydex(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ShortName))
                   {

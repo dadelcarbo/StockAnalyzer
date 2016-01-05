@@ -666,7 +666,7 @@ namespace StockAnalyzer.StockClasses
                }
                if (index != -1)
                {
-                  FloatSerie mmSerie = serie.GetIndicator("MYOSC(" + period.ToString() + ")").Series[0];
+                  FloatSerie mmSerie = serie.GetIndicator("MYOSC(" + period.ToString() + ",6)").Series[0];
                   if (serie.GetValue(StockDataType.CLOSE, index) >= mmSerie[index])
                   {
                      val += mmSerie[index];

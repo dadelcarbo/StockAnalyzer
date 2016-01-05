@@ -117,17 +117,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);
                if (!isUpTodate)
                {
-                  if (lastDate.Year < DateTime.Today.Year)
+                  for (int year = lastDate.Year; year < DateTime.Today.Year; year++)
                   {
                      // Happy new year !!! it's time to archive old data...
-                     if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv"))
+                     if (
+                        !File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" +
+                                     stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" +
+                                     year.ToString() + ".csv"))
                      {
-                        this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv", new DateTime(lastDate.Year, 1, 1), new DateTime(lastDate.Year, 12, 31), shortName);
+                        this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER,
+                           stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() +
+                           "_" + year.ToString() + ".csv", new DateTime(year, 1, 1), new DateTime(year, 12, 31),
+                           stockSerie.ShortName);
                      }
                   }
                   DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
                   string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                  this.DownloadFileFromGoogle(rootFolder + FOLDER, fileName, startDate, DateTime.Today, shortName);
+                  this.DownloadFileFromProvider(rootFolder + FOLDER, fileName, startDate, DateTime.Today, shortName);
 
                   if (stockSerie.StockName == "ADIDAS") // Check if something new has been downloaded using ANGLO AMERICAN as the reference for all downloads
                   {
@@ -151,20 +157,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
                DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
-               for (int i = lastDate.Year - 1; i > 1990; i--)
+               for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
                {
-                  if (!this.DownloadFileFromGoogle(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), shortName))
+                  if (!this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), shortName))
                   {
                      break;
                   }
                }
-               this.DownloadFileFromGoogle(rootFolder + FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, shortName);
+               this.DownloadFileFromProvider(rootFolder + FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, shortName);
             }
          }
          return true;
       }
 
-      public bool DownloadFileFromGoogle(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
+      public bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
       {
          string url = @"http://www.google.co.uk/finance/historical?q=$NAME&startdate=$START_MONTH+$START_DAY%2C+$START_YEAR&enddate=$END_MONTH+$END_DAY%2C+$END_YEAR&histperiod=daily&output=csv";
 
@@ -199,7 +205,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      using (StreamWriter writer = new StreamWriter(destFolder + "\\" + fileName))
                      {
                         writer.Write(fileContent);
-                        StockLog.Write("Download succeeded: " + destFolder + "\\" + fileName);
+                        //StockLog.Write("Download succeeded: " + destFolder + "\\" + fileName);
                      }
                   }
 

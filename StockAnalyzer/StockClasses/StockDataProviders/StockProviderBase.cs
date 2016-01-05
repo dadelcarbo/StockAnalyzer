@@ -22,6 +22,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D
                   };
 
+      public const int ARCHIVE_START_YEAR = 1990;
+
       #region CONSTANTS
       static protected string DAILY_SUBFOLDER = @"\data\daily";
       static protected string INTRADAY_SUBFOLDER = @"\data\intraday";

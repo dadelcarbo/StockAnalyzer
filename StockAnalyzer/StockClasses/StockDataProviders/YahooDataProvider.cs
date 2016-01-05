@@ -99,17 +99,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                if (!isUpTodate)
                {
                   NotifyProgress("Downloading " + stockSerie.StockGroup.ToString() + " - " + stockSerie.StockName);
-                  if (lastDate.Year < DateTime.Today.Year)
+                  for (int year = lastDate.Year; year < DateTime.Today.Year; year++)
                   {
                      // Happy new year !!! it's time to archive old data...
-                     if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv"))
+                     if (
+                        !File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" +
+                                     stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" +
+                                     year.ToString() + ".csv"))
                      {
-                        this.DownloadFileFromYahoo(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + lastDate.Year.ToString() + ".csv", new DateTime(lastDate.Year, 1, 1), new DateTime(lastDate.Year, 12, 31), stockSerie.ShortName);
+                        this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER,
+                           stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() +
+                           "_" + year.ToString() + ".csv", new DateTime(year, 1, 1), new DateTime(year, 12, 31),
+                           stockSerie.ShortName);
                      }
                   }
                   DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
                   string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                  this.DownloadFileFromYahoo(rootFolder + DAILY_FOLDER, fileName, startDate, DateTime.Today, stockSerie.ShortName);
+                  this.DownloadFileFromProvider(rootFolder + DAILY_FOLDER, fileName, startDate, DateTime.Today, stockSerie.ShortName);
 
                   if (stockSerie.StockName == "SP500") // Check if something new has been downloaded using SP500 as the reference for all downloads
                   {
@@ -133,14 +139,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
                DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
-               for (int i = lastDate.Year - 1; i > 1990; i--)
+               for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
                {
-                  if (!this.DownloadFileFromYahoo(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ShortName))
+                  if (!this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ShortName))
                   {
                      break;
                   }
                }
-               this.DownloadFileFromYahoo(rootFolder + DAILY_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, stockSerie.ShortName);
+               this.DownloadFileFromProvider(rootFolder + DAILY_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, stockSerie.ShortName);
             }
             if (stockSerie.HasOptix)
             {
@@ -276,7 +282,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
       }
 
-      public bool DownloadFileFromYahoo(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
+      public bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
       {
          string url = @"http://ichart.finance.yahoo.com/table.csv?s=$NAME&a=$START_MONTH&b=$START_DAY&c=$START_YEAR&d=$END_MONTH&e=$END_DAY&f=$END_YEAR&g=d&ignore=.csv";
 
@@ -298,7 +304,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                {
                   wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
                   wc.DownloadFile(url, destFolder + "\\" + fileName);
-                  StockLog.Write("Download succeeded: " + stockName);
+                  //StockLog.Write("Download succeeded: " + stockName);
                   return true;
                }
             }

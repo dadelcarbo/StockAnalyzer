@@ -115,7 +115,7 @@ namespace StockAnalyzerApp
 
       public StockSerie.StockBarDuration BarDuration
       {
-         get { return (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem; }
+         get { return (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem; }
       }
 
       public StockPortofolio currentPortofolio;
@@ -556,7 +556,7 @@ namespace StockAnalyzerApp
          // Refreshes intrady every 2 minutes.
          refreshTimer = new System.Windows.Forms.Timer();
          refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-         refreshTimer.Interval = 120*1000;
+         refreshTimer.Interval = 120 * 1000;
          refreshTimer.Start();
 
          if (Settings.Default.GenerateDailyReport)
@@ -573,7 +573,7 @@ namespace StockAnalyzerApp
             int minutes = Settings.Default.AlertsFrequency;
             alertTimer = new System.Windows.Forms.Timer(new Container());
             alertTimer.Tick += new EventHandler(alertTimer_Tick);
-            alertTimer.Interval = minutes*60*1000;
+            alertTimer.Interval = minutes * 60 * 1000;
             alertTimer.Start();
 
             string fileName = Path.GetTempPath() + "AlertLog.txt";
@@ -589,7 +589,7 @@ namespace StockAnalyzerApp
                   }
                }
                else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
-                  // Check if older than x Minutes
+               // Check if older than x Minutes
                {
                   needDirectAlertCheck = true;
                }
@@ -639,8 +639,7 @@ namespace StockAnalyzerApp
       private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(
          StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarAbove");
 
-      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(
-         StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
+      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
 
       private StockSerie.StockAlertDef ResistanceBroken =
          new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)",
@@ -720,7 +719,7 @@ namespace StockAnalyzerApp
                {
                   if (stockSerie.MatchEvent(alert))
                   {
-                     var values = stockSerie.GetValues(alerts.First().BarDuration);
+                     var values = stockSerie.GetValues(alert.BarDuration);
                      string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
                                         ";" + alert.ToString();
 
@@ -874,7 +873,7 @@ namespace StockAnalyzerApp
 
       private void ZoomIn()
       {
-         nbBars = Math.Max(25, nbBars/2);
+         nbBars = Math.Max(25, nbBars / 2);
          int newIndex = Math.Max(0, endIndex - nbBars);
          if (newIndex != this.startIndex)
          {
@@ -884,7 +883,7 @@ namespace StockAnalyzerApp
 
       private void ZoomOut()
       {
-         nbBars = Math.Min(this.endIndex, nbBars*2);
+         nbBars = Math.Min(this.endIndex, nbBars * 2);
          int newIndex = endIndex - nbBars;
          if (newIndex != this.startIndex)
          {
@@ -985,7 +984,7 @@ namespace StockAnalyzerApp
          }
          else
          {
-            this.currentStockSerie.BarDuration = (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
+            this.currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
          }
          if (!ignoreLinkedTheme
              && newSerie.StockAnalysis != null
@@ -1101,10 +1100,10 @@ namespace StockAnalyzerApp
                   }
                   previousStockName = stockName;
                   tickBarSerie1 = StockBarSerie.CreateTickBarSerie(stockName + "_TICK1", shortName,
-                     Math.Max(ticks.Length/720, 5), ticks);
+                     Math.Max(ticks.Length / 720, 5), ticks);
                   intradayBarSerie = StockBarSerie.CreateIntradayBarSerie(stockName + "_5MIN", shortName, 5, ticks);
                   rangeBarSerie1 = StockBarSerie.CreateRangeBarSerie(stockName + "_range1", shortName,
-                     ticks.Last().Value/200, ticks);
+                     ticks.Last().Value / 200, ticks);
                }
                else
                {
@@ -1142,8 +1141,8 @@ namespace StockAnalyzerApp
                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
                settings.IgnoreWhitespace = true;
                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-               XmlSerializer serializer = new XmlSerializer(typeof (List<StockWatchList>));
-               this.WatchLists = (List<StockWatchList>) serializer.Deserialize(xmlReader);
+               XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
+               this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
             }
          }
          else
@@ -1218,14 +1217,14 @@ namespace StockAnalyzerApp
             // Parsing portofolios
             if (System.IO.File.Exists(orderFileName))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof (StockPortofolioList));
+               XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
                using (FileStream fs = new FileStream(orderFileName, FileMode.Open))
                {
                   System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
                   settings.IgnoreWhitespace = true;
                   System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
 
-                  this.StockPortofolioList = (StockPortofolioList) serializer.Deserialize(xmlReader);
+                  this.StockPortofolioList = (StockPortofolioList)serializer.Deserialize(xmlReader);
                }
                RefreshPortofolioMenu();
             }
@@ -1305,13 +1304,13 @@ namespace StockAnalyzerApp
       {
          foreach (ToolStripMenuItem subItem in this.portofolioFilterMenuItem.DropDownItems)
          {
-            if (subItem != (ToolStripMenuItem) sender)
+            if (subItem != (ToolStripMenuItem)sender)
             {
                subItem.Checked = false;
             }
          }
 
-         if (((ToolStripMenuItem) sender).Checked)
+         if (((ToolStripMenuItem)sender).Checked)
          {
             this.CurrentPortofolio = this.StockPortofolioList.Get(sender.ToString());
             this.currentWatchList = null;
@@ -1677,7 +1676,7 @@ namespace StockAnalyzerApp
 
          StockEventSelectorDlg stockEventSelectorDlg = new StockEventSelectorDlg(Settings.Default.SelectedEvents,
             (StockEvent.EventFilterMode)
-               Enum.Parse(typeof (StockEvent.EventFilterMode), Settings.Default.EventFilterMode));
+               Enum.Parse(typeof(StockEvent.EventFilterMode), Settings.Default.EventFilterMode));
          if (stockEventSelectorDlg.ShowDialog() == DialogResult.OK)
          {
             Settings.Default.SelectedEvents = stockEventSelectorDlg.SelectedEvents;
@@ -1768,13 +1767,13 @@ namespace StockAnalyzerApp
       {
          foreach (ToolStripMenuItem subItem in this.watchListMenuItem.DropDownItems)
          {
-            if (subItem != (ToolStripMenuItem) sender)
+            if (subItem != (ToolStripMenuItem)sender)
             {
                subItem.Checked = false;
             }
          }
 
-         if (((ToolStripMenuItem) sender).Checked)
+         if (((ToolStripMenuItem)sender).Checked)
          {
             this.currentWatchList = sender.ToString();
             this.CurrentPortofolio = null;
@@ -2053,7 +2052,7 @@ namespace StockAnalyzerApp
 
             using (FileStream fs = new FileStream(watchListsFileName, FileMode.Create))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof (List<StockWatchList>));
+               XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
                System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, null);
                xmlWriter.Formatting = System.Xml.Formatting.Indented;
                xmlWriter.WriteStartDocument();
@@ -2069,7 +2068,7 @@ namespace StockAnalyzerApp
          string tmpFileName = analysisFileName + ".tmp";
          bool success = true;
          // Save stock analysis to XML
-         XmlSerializer serializer = new XmlSerializer(typeof (StockAnalysis));
+         XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
          System.Xml.XmlTextWriter xmlWriter;
          try
          {
@@ -2218,14 +2217,14 @@ namespace StockAnalyzerApp
       private void rewindBtn_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
-         int step = (this.endIndex - this.startIndex)/4;
+         int step = (this.endIndex - this.startIndex) / 4;
          Rewind(step);
       }
 
       private void fastForwardBtn_Click(object sender, System.EventArgs e)
       {
          if (this.currentStockSerie == null) return;
-         int step = (this.endIndex - this.startIndex)/4;
+         int step = (this.endIndex - this.startIndex) / 4;
          Forward(step);
       }
 
@@ -2304,9 +2303,9 @@ namespace StockAnalyzerApp
          if (!selectedGroupFound)
          {
             // Set default group
-            ((ToolStripMenuItem) groupMenuItems[0]).Checked = true;
+            ((ToolStripMenuItem)groupMenuItems[0]).Checked = true;
             this.selectedGroup =
-               (StockSerie.Groups) Enum.Parse(typeof (StockSerie.Groups), groupMenuItems[0].ToString());
+               (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), groupMenuItems[0].ToString());
             Settings.Default.SelectedGroup = this.selectedGroup.ToString();
             Settings.Default.Save();
          }
@@ -2409,7 +2408,7 @@ namespace StockAnalyzerApp
 
       private void InitialiseBarDurationComboBox()
       {
-         foreach (StockSerie.StockBarDuration barDuration in Enum.GetValues(typeof (StockSerie.StockBarDuration)))
+         foreach (StockSerie.StockBarDuration barDuration in Enum.GetValues(typeof(StockSerie.StockBarDuration)))
          {
             this.barDurationComboBox.Items.Add(barDuration);
          }
@@ -2419,7 +2418,7 @@ namespace StockAnalyzerApp
       {
          if (this.currentStockSerie == null) return;
 
-         StockSerie.StockBarDuration barDuration = (StockSerie.StockBarDuration) barDurationComboBox.SelectedItem;
+         StockSerie.StockBarDuration barDuration = (StockSerie.StockBarDuration)barDurationComboBox.SelectedItem;
          if (this.CurrentStockSerie.BarDuration != barDuration)
          {
             int previousBarCount = this.CurrentStockSerie.Count;
@@ -2506,14 +2505,14 @@ namespace StockAnalyzerApp
          {
             foreach (StockDailyValue dailyValue in this.currentStockSerie.Values)
             {
-               occurences[(int) dailyValue.DATE.DayOfWeek - 1]++;
-               weeklyData[(int) dailyValue.DATE.DayOfWeek - 1] += dailyValue.VARIATION;
+               occurences[(int)dailyValue.DATE.DayOfWeek - 1]++;
+               weeklyData[(int)dailyValue.DATE.DayOfWeek - 1] += dailyValue.VARIATION;
             }
             string report = string.Empty;
             for (int i = 0; i < 5; i++)
             {
-               weeklyData[i] /= (float) occurences[i];
-               report += ((DayOfWeek) (i + 1)).ToString() + ": " + weeklyData[i].ToString("P2") +
+               weeklyData[i] /= (float)occurences[i];
+               report += ((DayOfWeek)(i + 1)).ToString() + ": " + weeklyData[i].ToString("P2") +
                          System.Environment.NewLine;
             }
 
@@ -2729,7 +2728,7 @@ namespace StockAnalyzerApp
                this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)))
          {
             if (!stockSerie.Initialise()) continue;
-            stockSerie.BarDuration = (StockSerie.StockBarDuration) barDurationComboBox.SelectedItem;
+            stockSerie.BarDuration = (StockSerie.StockBarDuration)barDurationComboBox.SelectedItem;
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
@@ -2756,8 +2755,8 @@ namespace StockAnalyzerApp
                }
             }
          }
-         varSerie /= (float) (eventOccurence);
-         percentUpSerie /= (float) (eventOccurence);
+         varSerie /= (float)(eventOccurence);
+         percentUpSerie /= (float)(eventOccurence);
 
          float val = 100f;
          float maxVal = 100f;
@@ -2862,11 +2861,11 @@ namespace StockAnalyzerApp
                   count++;
                   StockDailyValue dailyValue = serie[date];
                   var += dailyValue.VARIATION;
-                  volume += dailyValue.CLOSE*dailyValue.VOLUME;
+                  volume += dailyValue.CLOSE * dailyValue.VOLUME;
                }
             }
-            value += value*(var/count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) volume, date));
+            value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
@@ -2900,12 +2899,12 @@ namespace StockAnalyzerApp
                      count++;
                      StockDailyValue dailyValue = serie[date];
                      var += dailyValue.VARIATION;
-                     volume += dailyValue.CLOSE*dailyValue.VOLUME;
+                     volume += dailyValue.CLOSE * dailyValue.VOLUME;
                   }
                }
-               value += value*(var/count);
+               value += value * (var / count);
             }
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) volume, date));
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
@@ -2920,7 +2919,7 @@ namespace StockAnalyzerApp
          string serieName = indexName + period + "_" + barDuration;
          string ieventName = eventPattern.Replace("%PERIOD%", period.ToString());
          int eventIndex =
-            ((IStockEvent) StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+            ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
 
          StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
             StockDataProvider.Generated);
@@ -2944,7 +2943,7 @@ namespace StockAnalyzerApp
                {
                   count++;
                   serie.BarDuration = barDuration;
-                  IStockEvent events = (IStockEvent) serie.GetViewableItem(ieventName);
+                  IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[eventIndex][index])
                   {
@@ -2955,14 +2954,14 @@ namespace StockAnalyzerApp
                   }
                }
             }
-            if (stopOnLowBreadth && previousNbActive < count/3)
+            if (stopOnLowBreadth && previousNbActive < count / 3)
             {
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
             }
             else
             {
-               if (count != 0) value += value*(var/count);
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) nbActive, date));
+               if (count != 0) value += value * (var / count);
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
             }
             previousNbActive = nbActive;
             previousCount = count;
@@ -2985,7 +2984,7 @@ namespace StockAnalyzerApp
          string ieventName = eventPattern.Replace("%PERIOD1%", period1.ToString());
          ieventName = ieventName.Replace("%PERIOD2%", period2.ToString());
          int eventIndex =
-            ((IStockEvent) StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+            ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
 
          StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
             StockDataProvider.Generated);
@@ -3009,7 +3008,7 @@ namespace StockAnalyzerApp
                {
                   count++;
                   serie.BarDuration = barDuration;
-                  IStockEvent events = (IStockEvent) serie.GetViewableItem(ieventName);
+                  IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[eventIndex][index])
                   {
@@ -3020,14 +3019,14 @@ namespace StockAnalyzerApp
                   }
                }
             }
-            if (stopOnLowBreadth && previousNbActive < count/2)
+            if (stopOnLowBreadth && previousNbActive < count / 2)
             {
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
             }
             else
             {
-               if (count != 0) value += value*(var/count);
-               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) nbActive, date));
+               if (count != 0) value += value * (var / count);
+               cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
             }
             previousNbActive = nbActive;
             previousCount = count;
@@ -3084,14 +3083,14 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (stopOnLowBreadth && previousNbActive < count/2)
+            if (stopOnLowBreadth && previousNbActive < count / 2)
             {
-               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) 0, date));
+               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
             }
             else
             {
-               if (count != 0) value += value*(var/count);
-               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) nbActive, date));
+               if (count != 0) value += value * (var / count);
+               newIndexSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
             }
             previousNbActive = nbActive;
             previousCount = count;
@@ -3139,8 +3138,8 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value*(var/count);
-            cacEWSerie.Add(date, new StockDailyValue("CAC_RANDOM", value, value, value, value, (long) nbActive, date));
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue("CAC_RANDOM", value, value, value, value, (long)nbActive, date));
 
             previousCount = count;
          }
@@ -3188,8 +3187,8 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value*(var/count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) count, date));
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
 
             previousCount = count;
          }
@@ -3241,8 +3240,8 @@ namespace StockAnalyzerApp
             //   StockDailyValue dailyValue = BX4Serie[date];
             //   var += dailyValue.VARIATION;
             //}
-            if (count != 0) value += value*(var/count);
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long) count, date));
+            if (count != 0) value += value * (var / count);
+            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
 
             previousCount = count;
          }
@@ -3351,21 +3350,21 @@ namespace StockAnalyzerApp
                int i = 0;
                foreach (var m in moms)
                {
-                  m.PositionSlow = -100f + 200f*(float) (i++)/(count - 1);
+                  m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
                }
 
                moms = momSeries.OrderBy(ms => ms.MomentumFast);
                i = 0;
                foreach (var m in moms)
                {
-                  m.PositionFast = -100f + 200f*(float) (i++)/(count - 1);
+                  m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
                   m.StockSerie[date].POSITION = m.Position;
                }
                positions.Add(date, momSeries);
             }
 
             StockSplashScreen.ProgressSubText = "PreInitialising";
-               // Inorder to get Position attribute set in DailyValues
+            // Inorder to get Position attribute set in DailyValues
             foreach (StockSerie serie in groupSeries)
             {
                serie.PreInitialise();
@@ -3420,8 +3419,8 @@ namespace StockAnalyzerApp
             if (index != -1)
             {
                spVolatility = spVolatilitySerie[index];
-               StockDailyValue dailyValue = new StockDailyValue(vixPremium.StockName, vixValue.OPEN/spVolatility,
-                  vixValue.HIGH/spVolatility, vixValue.LOW/spVolatility, vixValue.CLOSE/spVolatility, 0, vixValue.DATE);
+               StockDailyValue dailyValue = new StockDailyValue(vixPremium.StockName, vixValue.OPEN / spVolatility,
+                  vixValue.HIGH / spVolatility, vixValue.LOW / spVolatility, vixValue.CLOSE / spVolatility, 0, vixValue.DATE);
                vixPremium.Add(dailyValue.DATE, dailyValue);
                dailyValue.Serie = vixPremium;
             }
@@ -3448,7 +3447,7 @@ namespace StockAnalyzerApp
 
             if (sender is SimulationParameterControl)
             {
-               SimulationParameterControl simulationParameterControl = (SimulationParameterControl) sender;
+               SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
                this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
                this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
                this.palmaresDlg.DisplayPortofolio = true;
@@ -3460,7 +3459,7 @@ namespace StockAnalyzerApp
          {
             if (sender is SimulationParameterControl)
             {
-               SimulationParameterControl simulationParameterControl = (SimulationParameterControl) sender;
+               SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
                this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
                this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
                this.palmaresDlg.DisplayPortofolio = true;
@@ -3477,7 +3476,7 @@ namespace StockAnalyzerApp
 
       private void OnSelectedStockGroupChanged(string stockGroup)
       {
-         StockSerie.Groups newGroup = (StockSerie.Groups) Enum.Parse(typeof (StockSerie.Groups), stockGroup);
+         StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
          if (this.selectedGroup != newGroup)
          {
             // In order to speed the intraday display.
@@ -3639,7 +3638,7 @@ namespace StockAnalyzerApp
          {
             portofolio.OrderList.SortByDate();
          }
-         XmlSerializer serializer = new XmlSerializer(typeof (StockPortofolioList));
+         XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
          System.Xml.XmlTextWriter xmlWriter =
             new System.Xml.XmlTextWriter(Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile),
                System.Text.Encoding.Default);
@@ -3843,10 +3842,10 @@ namespace StockAnalyzerApp
             for (int i = 0; i < nbPositionsToOpen && i < candidateCount; i++)
             {
                StockDailyValue value = selectedValues[i];
-               int size = (int) ((Math.Min(cashValue/nbPositionsToOpen, maxPositionValue))/value.CLOSE);
+               int size = (int)((Math.Min(cashValue / nbPositionsToOpen, maxPositionValue)) / value.CLOSE);
                Position pos = new Position(value.NAME, value.CLOSE, size);
                portofolio.Add(pos);
-               consumedCash = value.CLOSE*size;
+               consumedCash = value.CLOSE * size;
 
                StockLog.Write("Buying: " + pos.ToString() + " at: " + pos.Open.ToString());
             }
@@ -3887,7 +3886,7 @@ namespace StockAnalyzerApp
 
          public float Gain
          {
-            get { return (this.Close - this.Open)*this.Number; }
+            get { return (this.Close - this.Open) * this.Number; }
          }
 
          public Position(string name, float open, int number)
@@ -3902,7 +3901,7 @@ namespace StockAnalyzerApp
          public float EndPosition(float close)
          {
             this.Close = close;
-            return close*this.Number;
+            return close * this.Number;
          }
 
          public override string ToString()
@@ -4117,7 +4116,7 @@ namespace StockAnalyzerApp
          if (batchStrategySimulatorDlg == null || batchStrategySimulatorDlg.IsDisposed)
          {
             batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-               this.selectedGroup, (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem, this.progressBar);
+               this.selectedGroup, (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem, this.progressBar);
             batchStrategySimulatorDlg.SimulationCompleted +=
                new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
 
@@ -4477,7 +4476,7 @@ border:1px solid black;
                StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
 
                //StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, serie);
-               
+
                foreach (StockSerie.StockBarDuration duration in durations)
                {
                   serie.BarDuration = duration;
@@ -4527,12 +4526,12 @@ border:1px solid black;
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
          string rankIndicatorName = "ER(50,6,6)";
          List<RankedSerie> leadersDico = new List<RankedSerie>();
-         foreach ( StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
          {
             if (stockSerie.Initialise() && stockSerie.Count > 100)
             {
                IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
-               leadersDico.Add(new RankedSerie() {rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count-2], stockSerie = stockSerie});
+               leadersDico.Add(new RankedSerie() { rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
             }
          }
 
@@ -4549,18 +4548,18 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
-         var leaders = leadersDico.Where(l=> l.rank >0f).OrderByDescending(l => l.rank).Take(10);
+         var leaders = leadersDico.Where(l => l.rank > 0f).OrderByDescending(l => l.rank).Take(10);
          foreach (RankedSerie pair in leaders)
          {
             htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
-             if (pair.previousRank<=pair.rank)
-             {
-                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
-             }
-             else
-             {
-                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
-             }
+            if (pair.previousRank <= pair.rank)
+            {
+               htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+            }
+            else
+            {
+               htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+            }
          }
 
          htmlLeaders += " </table>";
@@ -4572,10 +4571,10 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
-         leaders = leadersDico.Where(l=> l.rank <0f).OrderBy(l => l.rank).Take(10);
+         leaders = leadersDico.Where(l => l.rank < 0f).OrderBy(l => l.rank).Take(10);
          foreach (RankedSerie pair in leaders)
          {
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##")); 
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
             if (pair.previousRank <= pair.rank)
             {
                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
@@ -4597,7 +4596,7 @@ border:1px solid black;
          StockSerie previousStockSerie = this.CurrentStockSerie;
          string previousTheme = this.CurrentTheme;
          StockSerie.StockBarDuration previousBarDuration =
-            (StockSerie.StockBarDuration) this.barDurationComboBox.SelectedItem;
+            (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
 
          using (StreamReader sr = new StreamReader(Settings.Default.RootFolder + @"\report.cfg"))
          {
@@ -4626,7 +4625,7 @@ border:1px solid black;
 
 
                this.barDurationComboBox.SelectedItem =
-                  (StockSerie.StockBarDuration) Enum.Parse(typeof (StockSerie.StockBarDuration), fields[2]);
+                  (StockSerie.StockBarDuration)Enum.Parse(typeof(StockSerie.StockBarDuration), fields[2]);
                this.CurrentStockSerie = this.StockDictionary[fields[0]];
                this.CurrentTheme = fields[1];
 
@@ -4733,7 +4732,7 @@ border:1px solid black;
          StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
          StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
          List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
-         
+
          alerts.Clear();
          alerts.Add(cciEx);
          alerts.Add(barAbove);
@@ -4763,7 +4762,7 @@ border:1px solid black;
                   string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
                                      ";" + alert.ToString();
 
-                  alertMsg += "<br>"+ alertLine + ";" +
+                  alertMsg += "<br>" + alertLine + ";" +
                               stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + "</br>";
                }
             }
@@ -4814,7 +4813,7 @@ border:1px solid black;
          //   htmlReport += eventTypeString;
          //}
 
-      #endregion
+         #endregion
 
 
          //AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
