@@ -41,7 +41,10 @@ namespace StockAnalyzer.StockClasses
          {
             if (this.Count == 0)
             {
-               this.LoadFromFile(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER + @"\" + this.CotSerieName + ".csv");
+               if (!this.LoadFromFile(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + COT_ARCHIVE_SUBFOLDER + @"\" + this.CotSerieName + ".csv"))
+               {
+                  return false;
+               }
             }
             foreach (CotValue.CotValueType cotType in Enum.GetValues(typeof(CotValue.CotValueType)))
             {
@@ -93,7 +96,7 @@ namespace StockAnalyzer.StockClasses
          return cotSerie;
       }
 
-      private void LoadFromFile(string fileName)
+      private bool LoadFromFile(string fileName)
       {
          try
          {
@@ -111,7 +114,9 @@ namespace StockAnalyzer.StockClasses
          catch (System.Exception e)
          {
             StockLog.Write("Exception occured parsing the COTSerie: " + this.CotSerieName + " " + e.Message);
+            return false;
          }
+         return true;
       }
       public FloatSerie GetSerie(CotValue.CotValueType cotValueType, DateTime[] dateList)
       {         

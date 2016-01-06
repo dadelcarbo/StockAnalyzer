@@ -39,22 +39,38 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             return seriePens;
          }
       }
+      public override HLine[] HorizontalLines
+      {
+         get
+         {
+            HLine[] lines = new HLine[] { new HLine(0, new Pen(Color.Gray)) };
+            lines[0].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            return lines;
+         }
+      }
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         int period = (int)this.parameters[0];
+         int period = Math.Min((int)this.parameters[0], stockSerie.Count-1);
          int inputSmoothing = (int)this.parameters[1];
          int smoothing = (int)this.parameters[2];
          this.series[0] = stockSerie.CalculateER(period, inputSmoothing).CalculateEMA(smoothing);
          this.Series[0].Name = this.Name;
+         this.CreateEventSeries(stockSerie.Count);
+
+         for (int i = period; i < stockSerie.Count; i++)
+         {
+            this.eventSeries[0][i] = this.series[0][i] > 0;
+            this.eventSeries[1][i] = this.series[0][i] < 0;
+         }
       }
 
-      static string[] eventNames = new string[] { };
+      static string[] eventNames = new string[] { "Positive", "Negative"};
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { };
+      static readonly bool[] isEvent = new bool[] { false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

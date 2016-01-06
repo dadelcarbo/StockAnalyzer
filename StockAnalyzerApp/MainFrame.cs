@@ -351,7 +351,7 @@ namespace StockAnalyzerApp
             GenerateVixPremium();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
-            //GenerateCACEqualWeight();
+            GenerateCACEqualWeight();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight2...";
             //GenerateCACEqualWeight2();
@@ -388,7 +388,7 @@ namespace StockAnalyzerApp
             //}
             for (int i = 2; i <= 20; i++)
             {
-               StockSplashScreen.ProgressText = "Generating CAC PUKE_" + i + " Daily...";
+               //StockSplashScreen.ProgressText = "Generating CAC PUKE_" + i + " Daily...";
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
@@ -401,8 +401,17 @@ namespace StockAnalyzerApp
             {
                for (int j = 1; j < 20; j += 2)
                {
-                  StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
-                  //GenerateCAC_Event("CAC_PUKE_RSI", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
+                  //StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
+                  //GenerateCAC_Event("CAC_RSI", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
+               }
+            } 
+            for (int i = 10; i <= 60; i += 10)
+            {
+               for (int j = 2; j < 6; j += 1)
+               {
+                  //StockSplashScreen.ProgressText = "Generating CAC ER_" + i + "_" + j + " Daily...";
+                  //GenerateCAC_Event("CAC_ER", StockSerie.StockBarDuration.Daily, i, j, "TRAIL|SAR(0,0.0005)|ER(%PERIOD1%,%PERIOD2%,1)", "UpTrend", false);
+                  //GenerateCAC_Event("CAC_ER_BREADTH", StockSerie.StockBarDuration.Daily, i, j, "TRAIL|SAR(0,0.0005)|ER(%PERIOD1%,%PERIOD2%,1)", "UpTrend", true);
                }
             }
             for (int i = 5; i <= 200; i += 5)
@@ -419,7 +428,7 @@ namespace StockAnalyzerApp
             }
             for (int i = 1; i <= 20; i++)
             {
-               StockSplashScreen.ProgressText = "Generating CAC TL_" + i + " Daily...";
+               //StockSplashScreen.ProgressText = "Generating CAC TL_" + i + " Daily...";
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
@@ -433,9 +442,9 @@ namespace StockAnalyzerApp
             }
             for (int i = 1; i <= 51; i += 10)
             {
-               StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
+               //StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
                //GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
-               //GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
+               //GenerateCAC_Event("CAC_HL_", StockSehttps://ptmintegration.visualstudio.comrie.StockBarDuration.Bar_1_EMA6, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
             }
             //for (int i = 25; i <= 500; i+=25)
             //{
@@ -449,8 +458,6 @@ namespace StockAnalyzerApp
                //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
                //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|RSI(%PERIOD%,50,50)", "Overbought");
             }
-
-
          }
 
          // Deserialize saved orders
@@ -2994,6 +3001,10 @@ namespace StockAnalyzerApp
          //BX4Serie.Initialise();
          //cacSeries.Add(BX4Serie);
 
+         foreach (StockSerie serie in cacSeries)
+         {
+            if (serie.BarDuration != barDuration) serie.BarDuration = barDuration;
+         }
          float value = 1000f;
          int previousCount = 0;
          int previousNbActive = 0;
@@ -3004,10 +3015,9 @@ namespace StockAnalyzerApp
             int nbActive = 0;
             foreach (StockSerie serie in cacSeries)
             {
-               if (serie.ContainsKey(date))
+               if (serie.ContainsKey(date) && serie.Count > 200)
                {
                   count++;
-                  serie.BarDuration = barDuration;
                   IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
                   int index = serie.IndexOf(date) - 1;
                   if (index >= 0 && events.Events[eventIndex][index])
@@ -3033,7 +3043,7 @@ namespace StockAnalyzerApp
          }
          foreach (StockSerie serie in cacSeries)
          {
-            serie.BarDuration = StockSerie.StockBarDuration.Daily;
+            if (serie.BarDuration != StockSerie.StockBarDuration.Daily) serie.BarDuration = StockSerie.StockBarDuration.Daily;
          }
          StockDictionary.Add(serieName, cacEWSerie);
          StockLog.Write(serieName + ";" + period1 + ";" + period2 + ";" + cacEWSerie.Values.Last().CLOSE);
