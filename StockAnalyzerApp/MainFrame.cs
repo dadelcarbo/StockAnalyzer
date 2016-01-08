@@ -7,8 +7,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
@@ -351,7 +349,7 @@ namespace StockAnalyzerApp
             GenerateVixPremium();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
-            GenerateCACEqualWeight();
+            //GenerateCACEqualWeight();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight2...";
             //GenerateCACEqualWeight2();

@@ -131,6 +131,8 @@ namespace StockAnalyzer.StockMath
       }
       public FloatSerie CalculateCovariance(int period, FloatSerie serie)
       {
+         if (this.Count != serie.Count) throw new ArgumentOutOfRangeException("Cannot Covariance on series with different size");
+
          FloatSerie ma1 = this.CalculateMA(period);
          FloatSerie ma2 = serie.CalculateMA(period);
          FloatSerie variance = new FloatSerie(this.Count, "COVAR");
@@ -155,14 +157,34 @@ namespace StockAnalyzer.StockMath
          }
          return variance;
       }
+
       public FloatSerie CalculateCorrelation(int period, FloatSerie serie)
       {
-         FloatSerie covar = this.CalculateCovariance(period, serie);
-         FloatSerie stdev1 = this.CalculateMA(period);
-         FloatSerie stdev2 = serie.CalculateMA(period);
+         if (this.Count != serie.Count) throw new ArgumentOutOfRangeException("Cannot Covariance on series with different size");
 
-         FloatSerie correl = covar / (stdev1 * stdev2);
-         correl.Name = "CORREL";
+         FloatSerie ma1 = this.CalculateMA(period);
+         FloatSerie ma2 = serie.CalculateMA(period);
+
+         // Formula is there http://www.socscistatistics.com/tests/pearson/
+
+         FloatSerie correl = new FloatSerie(this.Count, "CORREL");
+
+         for (int i = period; i < this.Count; i++)
+         {
+            double sum1 = 0.0;
+            double sum2 = 0.0;
+            double sum3 = 0.0;
+            for (int j = i - period; j <= i; j++)
+            {
+               double diff1 = this[j] - ma1[i];
+               double diff2 = this[j] - ma2[i];
+               sum1 += diff1 * diff2;
+               sum2 += diff1 * diff1;
+               sum3 += diff2 * diff2;
+            }
+            correl[i] = (float)(sum1 / (Math.Sqrt(sum2) * Math.Sqrt(sum3)));
+         }
+
          return correl;
       }
 

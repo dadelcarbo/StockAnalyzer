@@ -164,6 +164,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                   case "String":
                      this.parameters[i] = parameters[i];
                      break;
+                  case "StockSerie":
+                     this.parameters[i] = parameters[i];
+                     break;
                   default:
                      throw new NotImplementedException("This type is not yet implemented: " + this.ParameterTypes[i].ToString());
                }

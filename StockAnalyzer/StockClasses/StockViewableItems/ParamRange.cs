@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {
@@ -11,15 +12,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
       public ParamRange()
       {
       }
+
       public ParamRange(Object minValue, Object maxValue)
       {
          this.MinValue = minValue;
          this.MaxValue = maxValue;
       }
+
       public abstract bool isValidString(string value);
       public abstract bool isInRange(Object valueString);
 
-      public Type GetParamType()
+      virtual public Type GetParamType()
       {
          return MinValue == null ? null : MinValue.GetType();
       }
@@ -31,10 +34,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
          : base(minValue, maxValue)
       {
       }
+
       public override bool isInRange(Object value)
       {
-         return (int)value >= (int)this.MinValue && (int)value <= (int)this.MaxValue;
+         return (int) value >= (int) this.MinValue && (int) value <= (int) this.MaxValue;
       }
+
       public override bool isValidString(string valueString)
       {
          int intValue;
@@ -45,16 +50,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
          return this.isInRange(intValue);
       }
    }
+
    public class ParamRangeFloat : ParamRange
    {
       public ParamRangeFloat(Object minValue, Object maxValue)
          : base(minValue, maxValue)
       {
       }
+
       public override bool isInRange(Object value)
       {
-         return (float)value >= (float)this.MinValue && (float)value <= (float)this.MaxValue;
+         return (float) value >= (float) this.MinValue && (float) value <= (float) this.MaxValue;
       }
+
       public override bool isValidString(string valueString)
       {
          float floatValue;
@@ -65,6 +73,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
          return this.isInRange(floatValue);
       }
    }
+
    public class ParamRangeBool : ParamRange
    {
       public ParamRangeBool()
@@ -72,32 +81,63 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
          this.MinValue = false;
          this.MaxValue = true;
       }
+
       public override bool isInRange(Object value)
       {
          return true;
       }
+
       public override bool isValidString(string valueString)
       {
          bool boolValue;
          return bool.TryParse(valueString, out boolValue);
       }
    }
+
    public class ParamRangeStringList : ParamRange
    {
       private List<string> stringList;
+
       public ParamRangeStringList(List<string> list)
       {
          this.MinValue = String.Empty;
          this.MaxValue = String.Empty;
          this.stringList = list;
       }
+
       public override bool isInRange(Object value)
       {
          return true;
       }
+
       public override bool isValidString(string valueString)
       {
          return stringList.Contains(valueString.ToUpper());
+      }
+
+   }
+
+   public class ParamRangeStockName : ParamRange
+   {
+      public ParamRangeStockName()
+      {
+         this.MinValue = StockDictionary.StockDictionarySingleton.Keys.First();
+         this.MaxValue = StockDictionary.StockDictionarySingleton.Keys.Last();
+      }
+
+      public override bool isInRange(Object value)
+      {
+         return StockDictionary.StockDictionarySingleton.ContainsKey(value.ToString());
+      }
+
+      public override bool isValidString(string valueString)
+      {
+         return StockDictionary.StockDictionarySingleton.ContainsKey(valueString);
+      }
+
+      override public Type GetParamType()
+      {
+         return typeof(string);
       }
    }
 }
