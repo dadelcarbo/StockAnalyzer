@@ -92,6 +92,7 @@ namespace StockAnalyzer.StockClasses
          Bar_6,
          Bar_9,
          Bar_27,
+         MY,
          HA,
          HA_3D,
          //HLBreak,
@@ -6352,6 +6353,24 @@ namespace StockAnalyzer.StockClasses
                   }
                }
                break;
+            case "MY":
+               //HA_3D,
+               if (barDuration == StockBarDuration.MY)
+               {
+                  newStockValues = GenerateMyBarFromDaily(dailyValueList);
+               }
+               else
+               {
+                  if (timeSpanString[1].EndsWith("D"))
+                  {
+                     newStockValues =
+                        GenerateSerieForTimeSpanFromDaily(
+                           (StockBarDuration)
+                              Enum.Parse(typeof (StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
+                     newStockValues = GenerateHeikinAshiBarFromDaily(newStockValues);
+                  }
+               }
+               break;
             case "TLB":
                //TLB_3D,
                //TLB_EMA3,
@@ -6750,6 +6769,34 @@ namespace StockAnalyzer.StockClasses
             newValue.POSITION = dailyValue.POSITION;
             newValue.IsComplete = dailyValue.IsComplete;
             newBarList.Add(newValue);
+         }
+         return newBarList;
+      }
+      public List<StockDailyValue> GenerateMyBarFromDaily(List<StockDailyValue> stockDailyValueList)
+      {
+         List<StockDailyValue> newBarList = new List<StockDailyValue>();
+         StockDailyValue dailyValue = stockDailyValueList[0];
+         StockDailyValue previousValue = stockDailyValueList[0];
+         StockDailyValue newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+         newBarList.Add(newValue);
+
+         for (int i = 1; i < stockDailyValueList.Count; i++)
+         {
+            dailyValue = stockDailyValueList[i];
+
+            float open = dailyValue.OPEN; 
+            float high =Math.Max(dailyValue.HIGH, previousValue.HIGH);
+            float low = Math.Min(dailyValue.LOW, previousValue.LOW); 
+            float close = dailyValue.CLOSE;
+
+            // New bar
+            newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
+            newValue.OPTIX = dailyValue.OPTIX;
+            newValue.POSITION = dailyValue.POSITION;
+            newValue.IsComplete = dailyValue.IsComplete;
+            newBarList.Add(newValue);
+
+            previousValue = dailyValue;
          }
          return newBarList;
       }

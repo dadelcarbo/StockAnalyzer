@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override string[] ParameterNames
       {
-         get { return new string[] {"Reference", "Period", "Smoothing"}; }
+         get { return new string[] { "Reference", "Period", "Smoothing" }; }
       }
 
       public override Object[] ParameterDefaultValues
@@ -56,9 +56,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          FloatSerie refSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.StockDictionarySingleton[this.parameters[0].ToString()], StockDataType.CLOSE);
 
-         refSerie = refSerie.CalculateEMA((int) this.parameters[2]);
+         refSerie = refSerie.CalculateEMA((int)this.parameters[2]);
 
-	   FloatSerie varSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+         FloatSerie varSerie = stockSerie.GetSerie(StockDataType.CLOSE);
          FloatSerie correlationSerie = varSerie.CalculateCorrelation((int)this.parameters[1], refSerie);
          this.series[0] = correlationSerie;
          this.Series[0].Name = this.Name;

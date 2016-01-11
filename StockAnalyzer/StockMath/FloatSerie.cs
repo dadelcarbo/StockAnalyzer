@@ -177,7 +177,7 @@ namespace StockAnalyzer.StockMath
             for (int j = i - period; j <= i; j++)
             {
                double diff1 = this[j] - ma1[i];
-               double diff2 = this[j] - ma2[i];
+               double diff2 = serie[j] - ma2[i];
                sum1 += diff1 * diff2;
                sum2 += diff1 * diff1;
                sum3 += diff2 * diff2;
