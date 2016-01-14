@@ -93,6 +93,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "alterp", StockSerie.Groups.ALTERNEXT);
+         DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "indicessecp", StockSerie.Groups.SECTORS_CAC);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
 
          //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistap");
@@ -243,6 +244,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                break;
             case StockSerie.Groups.ALTERNEXT:
                abcGroup = "alterp";
+               break;
+            case StockSerie.Groups.SECTORS_CAC:
+               abcGroup = "indicessecp";
                break;
             default:
                break;
@@ -477,6 +481,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistbp");
                         DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistcp");
                         DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "alterp");
+                        DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "indicessecp");
                      }
                   }
                }
@@ -503,6 +508,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                      DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                      DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
+                     DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                   }
                }
                for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
@@ -523,6 +529,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                         DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                         DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
+                        DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                      }
                   }
                }
@@ -1090,6 +1097,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 + "ctl00%24BodyABC%24eurolistCp=on&"
                 + "ctl00%24BodyABC%24eurolistzep=on&"
                 + "ctl00%24BodyABC%24eurolisthzep=on&"
+                + "ctl00%24BodyABC%24indicessecp=on&"
                 + "ctl00%24BodyABC%24mlp=on&"
                 + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
 
