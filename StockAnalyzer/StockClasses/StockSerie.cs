@@ -152,6 +152,7 @@ namespace StockAnalyzer.StockClasses
       public string ShortName { get; private set; }
       public StockDataProvider DataProvider { get; private set; }
       public string ISIN { get; set; }
+      public string SectorID { get; set; }
       public Groups StockGroup { get; private set; }
       public StockAnalysis StockAnalysis { get; set; }
       public bool IsPortofolioSerie { get; set; }

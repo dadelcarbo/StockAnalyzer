@@ -18,6 +18,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       static private string ABC_DAILY_FOLDER = DAILY_SUBFOLDER + @"\ABC";
       static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
       static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
+      static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
       static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
       static private string CONFIG_FILE = @"\EuronextDownload.cfg";
       static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
@@ -60,6 +61,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {
             Directory.CreateDirectory(rootFolder + ABC_DAILY_CFG_FOLDER);
          }
+         if (!Directory.Exists(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER))
+         {
+            Directory.CreateDirectory(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER);
+         }
          if (!Directory.Exists(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER))
          {
             Directory.CreateDirectory(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER);
@@ -82,6 +87,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          fileName = rootFolder + CONFIG_FILE_USER;
          InitFromFile(rootFolder, download, fileName);
 
+
          // Init From LBL file
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
@@ -95,6 +101,45 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          foreach (string file in Directory.GetFiles(rootFolder + ABC_DAILY_CFG_FOLDER))
          {
             InitFromLibelleFile(rootFolder, download, file);
+         }
+
+         // Download sector libelle
+         foreach (string sectorID in SectorCodes.Keys)
+         {
+            if (DownloadSectorFromABC(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID))
+            {
+               AssignSector(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID);
+            }
+         }
+      }
+
+      private void AssignSector(string destFolder, string sectorID)
+      {
+         string fileName = destFolder + @"\" + sectorID + ".txt";
+         if (File.Exists(fileName))
+         {
+            using (StreamReader sr = new StreamReader(fileName, true))
+            {
+               string line;
+               sr.ReadLine(); // Skip first line
+               while (!sr.EndOfStream)
+               {
+                  line = sr.ReadLine();
+                  if (!line.StartsWith("#"))
+                  {
+                     string[] row = line.Split(';');
+                     StockSerie stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0].ToUpper());
+                     if (stockSerie == null)
+                     {
+                        StockLog.Write(row[0].ToUpper() + " " + row[1].ToUpper() + " Not found!!!");
+                     }
+                     else
+                     {
+                        stockSerie.SectorID = sectorID;
+                     }
+                  }
+               }
+            }
          }
       }
 
@@ -684,6 +729,81 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          return HttpUtility.UrlEncode(s.Substring(viewStateStartPosition, viewStateEndPosition - viewStateStartPosition));
       }
+
+      public static SortedDictionary<string, string> SectorCodes = new SortedDictionary<string, string>()
+      {
+         {"2710", "Aerospatiale et defense"},
+         {"3570", "Agro-alimentaire"},
+         {"3760", "Articles personnels"},
+         {"8530", "Assurance - Non vie"},
+         {"8570", "Assurance vie"},
+         {"3350", "Automobiles et equipementiers"},
+         {"8350", "Banques"},
+         {"2350", "Batiment et materiaux de construction"},
+         {"3530", "Boissons"},
+         {"1350", "Chimie"},
+         {"5370", "Distributeurs generalistes"},
+         {"5330", "Distribution - Alimentation, produits pharmaceutiques"},
+         {"7530", "Electricite"},
+         {"3740", "Equipements de loisirs"},
+         {"2730", "Equipements electroniques et electriques"},
+         {"4530", "Equipements et services de sante"},
+         {"7570", "Gaz, eau et services multiples aux collectivites"},
+         {"8670", "Immobiliers - foncieres"},
+         {"8630", "Investissements immobiliers et services"},
+         {"2720", "Industries generalistes"},
+         {"2750", "Ingenierie industrielle"},
+         {"8980", "Instruments de placement"},
+         {"8990", "Instruments de placement - hors actions"},
+         {"9530", "Logiciels et services informatiques"},
+         {"9570", "Materiel et equipements des technologies de l&#39;information"},
+         {"5550", "Medias"},
+         {"1750", "M&#233;taux industriels et mines"},
+         {"0570", "Petrole - Equipements, services et distribution"},
+         {"4570", "Pharmacie et biotechnologie"},
+         {"0530", "Producteurs de petrole et de gaz"},
+         {"3720", "Produits mnagers et bricolage"},
+         {"8770", "Services financiers"},
+         {"2790", "Services supports"},
+         {"1730", "Sylviculture et papiers"},
+         {"6530", "Telecommunications filaires"},
+         {"2770", "Transport industriel"},
+         {"5750", "Voyages et loisirs"}
+      };
+
+      private bool DownloadSectorFromABC(string destFolder, string sectorID)
+      {
+         bool success = true;
+         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+         {
+            string fileName = destFolder + @"\" + sectorID + ".txt";
+            if (File.Exists(fileName))
+            {
+               if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
+                  return true;
+            }
+
+            try
+            {
+               // Send POST request
+               string url = "http://www.abcbourse.com/download/sectors.aspx?s=%SECTORCODE%&t=3";
+               url = url.Replace("%SECTORCODE%", sectorID);
+
+               HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+
+
+               success = SaveResponseToFile(fileName, req);
+            }
+            catch (System.Exception ex)
+            {
+               StockLog.Write(ex);
+               System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
+               success = false;
+            }
+         }
+         return success;
+      }
+
       private bool DownloadLibelleFromABC(string destFolder, string groupName, StockSerie.Groups group)
       {
          bool success = true;
