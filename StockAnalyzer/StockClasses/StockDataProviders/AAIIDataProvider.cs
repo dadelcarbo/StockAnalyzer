@@ -95,7 +95,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      continue;
                   }
 
-                  string[] row = line.Split(',');
+                  string[] row = line.Replace(":","").Split(new []{',',':','\t'});
                   date = DateTime.Parse(row[0], usCulture);
                   if (row[1].Contains("%"))
                   {
