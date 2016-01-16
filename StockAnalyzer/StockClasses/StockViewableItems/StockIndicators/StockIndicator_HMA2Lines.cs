@@ -52,6 +52,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0];
          FloatSerie slowSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0];
 
+         FloatSerie closeSerie = (stockSerie.GetSerie(StockDataType.CLOSE) + stockSerie.GetSerie(StockDataType.HIGH) + stockSerie.GetSerie(StockDataType.LOW)) / 3.0f;
+
          this.Series[0] = fastSerie;
          this.Series[1] = slowSerie;
 
@@ -62,7 +64,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             if (fastSerie[i] > slowSerie[i])
             {
-               this.Events[2][i] = true;
+               if (closeSerie[i] > fastSerie[i])
+               {
+                  this.Events[2][i] = true;
+               }
+               else
+               {
+                  this.Events[4][i] = true;
+               }
                if (fastSerie[i - 1] < slowSerie[i - 1])
                {
                   this.Events[0][i] = true;
@@ -70,7 +79,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             else
             {
-               this.Events[3][i] = true;
+               if (closeSerie[i] < fastSerie[i])
+               {
+                  this.Events[3][i] = true;
+               }
+               else
+               {
+                  this.Events[5][i] = true;
+               }
                if (fastSerie[i - 1] > slowSerie[i - 1])
                {
                   this.Events[1][i] = true;
@@ -79,12 +95,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          }
       }
 
-      static readonly string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "UpTrend", "DownTrend" };
+      static readonly string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "UpTrend", "DownTrend", "UpTrendConso", "DownTrendConso" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, false, false };
+      static readonly bool[] isEvent = new bool[] { true, true, false, false, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

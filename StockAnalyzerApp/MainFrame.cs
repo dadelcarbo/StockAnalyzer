@@ -529,17 +529,17 @@ namespace StockAnalyzerApp
 
          StockSplashScreen.CloseForm(true);
 
-         string best = string.Empty;
-         float max = float.MinValue;
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC")))
-         {
-            if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
-            {
-               max = stockSerie.Values.Last().CLOSE;
-               best = stockSerie.StockName;
-            }
-         }
-         StockLog.Write("Best index " + best);
+         //string best = string.Empty;
+         //float max = float.MinValue;
+         //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockName.StartsWith("CAC")))
+         //{
+         //   if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
+         //   {
+         //      max = stockSerie.Values.Last().CLOSE;
+         //      best = stockSerie.StockName;
+         //   }
+         //}
+         //StockLog.Write("Best index " + best);
          //MessageBox.Show("Best index " + best);
 
          // Initialise event call backs (because of a bug in the designer)
@@ -4538,6 +4538,7 @@ border:1px solid black;
          {
             if (stockSerie.Initialise() && stockSerie.Count > 100)
             {
+               stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
                IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
                leadersDico.Add(new RankedSerie() { rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
             }
