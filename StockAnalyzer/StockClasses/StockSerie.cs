@@ -3751,6 +3751,106 @@ namespace StockAnalyzer.StockClasses
             i++;
          }
       }
+
+      public void CalculatePercentTrailStop(int period, float percent, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+      {
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+
+         FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+         FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+         FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+         StockDailyValue previousValue = this.Values.First();
+         bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
+         int i = 0;
+
+         float upPercent = 1.0f + percent;
+         float downPercent = 1.0f - percent;
+
+         if (upTrend)
+         {
+            longStopSerie[0] = previousValue.HIGH * downPercent;
+            shortStopSerie[0] = float.NaN;
+         }
+         else
+         {
+            longStopSerie[0] = float.NaN;
+            shortStopSerie[0] = previousValue.LOW * upPercent;
+         }
+         foreach (StockDailyValue currentValue in this.Values)
+         {
+            if (i > period)
+            {
+               if (upTrend)
+               {
+                  if (currentValue.CLOSE < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = lowSerie.GetMin(i - period, i) * upPercent;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = Math.Max(longStopSerie[i - 1], highSerie.GetMax(i - period, i)*downPercent);
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (currentValue.CLOSE > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = highSerie.GetMax(i - period, i) * downPercent;
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], lowSerie.GetMin(i - period, i) * upPercent);
+                  }
+               }
+            }
+            else if (i > 0)
+            {
+               if (upTrend)
+               {
+                  if (currentValue.CLOSE < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = lowSerie.GetMin(0, i)*upPercent;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = Math.Max(longStopSerie[i - 1], highSerie.GetMax(0, i)*downPercent);
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (currentValue.CLOSE > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = highSerie.GetMax(0, i) * downPercent;
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], lowSerie.GetMin(0, i) * upPercent);
+                  }
+               }
+            }
+            previousValue = currentValue;
+            i++;
+         }
+      }
+
       public void CalculateHighLowSmoothedTrailStop(int period, int smoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
          longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
