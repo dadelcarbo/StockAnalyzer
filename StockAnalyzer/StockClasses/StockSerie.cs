@@ -109,6 +109,7 @@ namespace StockAnalyzer.StockClasses
          //TLB_TER_6D,
          //TLB_TER_9D,
          //TLB_TER_27D,
+         MIN,
          TLB,
          TLB_3D,
          TLB_6D,
@@ -6473,6 +6474,15 @@ namespace StockAnalyzer.StockClasses
                   }
                }
                break;
+            case "MIN":
+               if (barDuration == StockBarDuration.MIN)
+               {
+                  newStockValues = GenerateMinuteBarsFromIntraday(dailyValueList, 5);
+               }
+               else
+               { 
+               }
+               break;
             case "TLB":
                //TLB_3D,
                //TLB_EMA3,
@@ -6748,6 +6758,50 @@ namespace StockAnalyzer.StockClasses
          StockBarSerie barSerie = StockBarSerie.CreateRangeBarSerie(this.StockName, this.ShortName, stockDailyValueList.First().CLOSE * variation, ticks);
 
          List<StockDailyValue> newBarList = new StockSerie(barSerie, this.StockGroup).Values.ToList();
+         return newBarList;
+      }
+      private List<StockDailyValue> GenerateMinuteBarsFromIntraday(List<StockDailyValue> stockDailyValueList, int nbMinutes)
+      {
+         bool isIntraday = this.StockName.StartsWith("INT_");
+         List<StockDailyValue> newBarList = new List<StockDailyValue>();
+         StockDailyValue newValue = null;
+         foreach (StockDailyValue dailyValue in stockDailyValueList)
+         {
+            if (newValue == null)
+            {
+               // New bar
+               newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                  dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+               newValue.POSITION = dailyValue.POSITION;
+               if (this.HasOptix)
+               {
+                  newValue.OPTIX = dailyValue.OPTIX;
+               }
+               newValue.IsComplete = false;
+            }
+            else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(5))
+            {
+               // Force bar end at the end of a day
+               newValue.IsComplete = true;
+               newBarList.Add(newValue);
+
+               // New bar
+               newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+            }
+            else
+            {
+               // Next bar
+               newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+               newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+               newValue.CLOSE = dailyValue.CLOSE;
+               newValue.VOLUME += dailyValue.VOLUME;
+               newValue.UPVOLUME += dailyValue.UPVOLUME;
+            }
+         }
+         if (newValue != null)
+         {
+            newBarList.Add(newValue);
+         }
          return newBarList;
       }
 
