@@ -470,6 +470,7 @@ namespace StockAnalyzer.StockMath
          }
          return new FloatSerie(serie, "MA_" + maPeriod);
       }
+
       public FloatSerie CalculateEMA(int emaPeriod)
       {
          FloatSerie serie = new FloatSerie(Values.Count());

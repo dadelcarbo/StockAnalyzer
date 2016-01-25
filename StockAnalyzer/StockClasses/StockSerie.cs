@@ -3664,8 +3664,108 @@ namespace StockAnalyzer.StockClasses
 
       public void CalculateEMATrailStop(int period, int lookbackPeriod, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
-         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         float alpha = 2.0f / (float)(period + 1);
+
+         // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
+         // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
+
+         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+
+         FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW);
+         FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH);
+         FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE);
+
+         StockDailyValue previousValue = this.Values.First();
+         bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
+         int i = 0;
+         if (upTrend)
+         {
+            longStopSerie[0] = previousValue.LOW;
+            shortStopSerie[0] = float.NaN;
+         }
+         else
+         {
+            longStopSerie[0] = float.NaN;
+            shortStopSerie[0] = previousValue.HIGH;
+         }
+         foreach (StockDailyValue currentValue in this.Values)
+         {
+            if (i > lookbackPeriod)
+            {
+               if (upTrend)
+               {
+                  if (closeEMASerie[i] < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = highEMASerie.GetMax(i - lookbackPeriod, i);
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (closeEMASerie[i] > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = lowEMASerie.GetMin(i - lookbackPeriod, i);
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
+                  }
+               }
+            }
+            else if (i > 0)
+            {
+               if (upTrend)
+               {
+                  if (closeEMASerie[i] < longStopSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = highEMASerie.GetMax(0, i);
+                  }
+                  else
+                  {
+                     // Trail the stop
+                     longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
+                     shortStopSerie[i] = float.NaN;
+                  }
+               }
+               else
+               {
+                  if (closeEMASerie[i] > shortStopSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     longStopSerie[i] = lowEMASerie.GetMin(0, i);
+                     shortStopSerie[i] = float.NaN;
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     longStopSerie[i] = float.NaN;
+                     shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
+                  }
+               }
+            }
+            previousValue = currentValue;
+            i++;
+         }
+      }
+ 
+      public void CalculateEMATrailStop2(int period, int lookbackPeriod, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+      {
+         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
 
          FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW).CalculateEMA(period);
          FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(period);
@@ -7278,11 +7378,13 @@ namespace StockAnalyzer.StockClasses
          newBarList.Add(newValue);
          newValue.IsComplete = false;
 
+         StockDailyValue previousBar = newValue;
+
          for (int i = 1; i < stockDailyValueList.Count; i++)
          {
             dailyValue = stockDailyValueList[i];
 
-            if (dailyValue.CLOSE > newValue.HIGH)
+            if (dailyValue.CLOSE > newValue.HIGH && dailyValue.CLOSE > previousBar.HIGH)
             {
                // New upbars
                newValue.IsComplete = true;
@@ -7291,6 +7393,7 @@ namespace StockAnalyzer.StockClasses
                TimeSpan uniqueTimeSpan = new TimeSpan();
                do
                {
+                  previousBar = newValue;
                   newValue.IsComplete = true;
                   newValue = new StockDailyValue(this.StockName, previousHigh, newHigh, previousHigh, newHigh,
                      dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE + uniqueTimeSpan);
@@ -7305,7 +7408,7 @@ namespace StockAnalyzer.StockClasses
 
                } while (dailyValue.CLOSE > newValue.HIGH);
             }
-            else if (dailyValue.CLOSE < newValue.LOW)
+            else if (dailyValue.CLOSE < newValue.LOW && dailyValue.CLOSE < previousBar.LOW)
             {
                // new downbars
                newValue.IsComplete = true;
@@ -7314,6 +7417,7 @@ namespace StockAnalyzer.StockClasses
                TimeSpan uniqueTimeSpan = new TimeSpan();
                do
                {
+                  previousBar = newValue;
                   newValue.IsComplete = true;
                   newValue = new StockDailyValue(this.StockName, previousLow, previousLow, newLow, newLow,
                      dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE+uniqueTimeSpan);
