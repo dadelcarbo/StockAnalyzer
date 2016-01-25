@@ -68,10 +68,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[3][i] = closeSerie[i] < emaSerie[i];
             this.eventSeries[4][i] = lowSerie[i] > emaSerie[i] && lowSerie[i-1] < emaSerie[i-1];
             this.eventSeries[5][i] = highSerie[i] < emaSerie[i] && highSerie[i - 1] > emaSerie[i - 1];
+            this.eventSeries[6][i] = lowSerie[i] > emaSerie[i] && closeSerie[i - 1] < closeSerie[i];
+            this.eventSeries[7][i] = highSerie[i] < emaSerie[i] && closeSerie[i - 1] > closeSerie[i];
          }
       }
 
-      static string[] eventNames = new string[] { "Bottom", "Top", "CloseAbove", "CloseBelow", "BarAbove", "BarBelow" };
+      static string[] eventNames = new string[] { "Bottom", "Top", "CloseAbove", "CloseBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
