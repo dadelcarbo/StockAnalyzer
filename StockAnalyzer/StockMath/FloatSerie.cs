@@ -470,6 +470,7 @@ namespace StockAnalyzer.StockMath
          }
          return new FloatSerie(serie, "MA_" + maPeriod);
       }
+
       public FloatSerie CalculateEMA(int emaPeriod)
       {
          FloatSerie serie = new FloatSerie(Values.Count());
@@ -879,6 +880,10 @@ namespace StockAnalyzer.StockMath
          }
          return new FloatSerie(absSerie, this.Name);
       }
+      /// <summary>
+      /// Calculate Power of 2
+      /// </summary>
+      /// <returns></returns>
       public FloatSerie Square()
       {
          float[] squareSerie = new float[this.Count];
@@ -890,6 +895,10 @@ namespace StockAnalyzer.StockMath
          }
          return new FloatSerie(squareSerie);
       }
+      /// <summary>
+      /// Calculate Power of 2 but keep the original sign
+      /// </summary>
+      /// <returns></returns>
       public FloatSerie SquareSigned()
       {
          float[] squareSerie = new float[this.Count];
@@ -902,6 +911,10 @@ namespace StockAnalyzer.StockMath
          }
          return new FloatSerie(squareSerie);
       }
+      /// <summary>
+      /// Calculate the square root series
+      /// </summary>
+      /// <returns></returns>
       public FloatSerie Sqrt()
       {
          float[] sqrtSerie = new float[this.Values.Count()];
