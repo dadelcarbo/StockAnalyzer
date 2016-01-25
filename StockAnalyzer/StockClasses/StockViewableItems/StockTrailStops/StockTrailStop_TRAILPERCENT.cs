@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
          FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-         stockSerie.CalculatePercentTrailStop((int)this.Parameters[0], (float)this.Parameters[1]/100f, out longStopSerie, out shortStopSerie);
+         stockSerie.CalculatePercentTrailStop( (float)this.Parameters[1]/100f, out longStopSerie, out shortStopSerie);
          this.Series[0] = longStopSerie;
          this.Series[1] = shortStopSerie;
 

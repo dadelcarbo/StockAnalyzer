@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                int paramStartIndex = fullName.IndexOf('(') + 1;
                string name = fullName;
                int paramLength = 0;
-               if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
+               if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
                {
                   paramLength = fullName.LastIndexOf(')') - paramStartIndex;
                   name = fullName.Substring(0, paramStartIndex - 1);

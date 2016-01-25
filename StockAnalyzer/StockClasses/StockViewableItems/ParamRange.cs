@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {
@@ -53,6 +54,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
    public class ParamRangeFloat : ParamRange
    {
+      public ParamRangeFloat()
+         : base(float.MinValue, float.MaxValue)
+      {
+      }
       public ParamRangeFloat(Object minValue, Object maxValue)
          : base(minValue, maxValue)
       {
@@ -115,6 +120,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
          return stringList.Contains(valueString.ToUpper());
       }
 
+   }
+   public class ParamRangeIndicator : ParamRange
+   {
+      public ParamRangeIndicator()
+      {
+         this.MinValue = String.Empty;
+         this.MaxValue = String.Empty;
+      }
+
+      public override bool isInRange(Object value)
+      {
+         return StockIndicatorManager.Supports(value.ToString());
+      }
+
+      public override bool isValidString(string valueString)
+      {
+         return StockIndicatorManager.Supports(valueString);
+      }
+
+      override public Type GetParamType()
+      {
+         return typeof(string);
+      }
    }
 
    public class ParamRangeStockName : ParamRange
