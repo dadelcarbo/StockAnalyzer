@@ -17,7 +17,6 @@ namespace StockAnalyzer.StockClasses
       VOLUME,
       UPVOLUME,
       DOWNVOLUME,
-      OPTIX,
       SHORTINTREST,
       POSITION
    };
@@ -118,7 +117,6 @@ namespace StockAnalyzer.StockClasses
       public float AMPLITUDE { get; set; }
       public float Range { get { return this.HIGH - this.LOW; } }
       public long DOWNVOLUME { get { return this.VOLUME - this.UPVOLUME; } }
-      public float OPTIX { get; set; }
       public float SHORTINTEREST { get; set; }
       public float POSITION { get; set; }
 

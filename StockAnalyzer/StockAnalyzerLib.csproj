@@ -176,12 +176,10 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTLines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SARHL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OPTIX2HMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADXDIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADX.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OPTIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_WAD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANK.cs" />

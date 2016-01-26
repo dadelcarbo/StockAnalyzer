@@ -167,12 +167,7 @@ namespace StockAnalyzer.StockClasses
       public CotSerie CotSerie { get; set; }
       public StockSerie SecondarySerie { get; set; }
       public bool HasVolume { get; private set; }
-      //public bool HasOptix { get { return !string.IsNullOrEmpty(OptixURL); } }
-      public bool HasOptix { get { return false; } }
       public bool HasShortInterest { get; set; }
-
-      public string OptixURL { get; set; }
-      public FloatSerie Optix { get; set; }
       #endregion
 
       #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
@@ -684,11 +679,8 @@ namespace StockAnalyzer.StockClasses
       {
          if (!this.IsInitialised)
          {
-            // @@@@ BarType to be implemented.
             if (this.Count == 0)
-            {
-               // LoadData((StockBar.StockBarType)StockAnalyzerSettings.Properties.Settings.Default.BarType , StockAnalyzerSettings.Properties.Settings.Default.StockAnalyzerRootFolder);
-               if (!LoadData(StockBar.StockBarType.Daily, StockAnalyzerSettings.Properties.Settings.Default.RootFolder))
+            {if (!LoadData(StockBar.StockBarType.Daily, StockAnalyzerSettings.Properties.Settings.Default.RootFolder))
                {
                   return false;
                }
@@ -697,31 +689,8 @@ namespace StockAnalyzer.StockClasses
             // Force indicator,data,event and other to null;
             PreInitialise();
 
-            StockDailyValue yesterValue = null;
-            foreach (StockDailyValue currentValue in this.Values)
-            {
-               // Calculate variation
-               if (yesterValue == null)
-               {
-                  currentValue.VARIATION = (currentValue.CLOSE - currentValue.OPEN) / currentValue.OPEN;
-               }
-               else
-               {
-                  currentValue.VARIATION = (currentValue.CLOSE - yesterValue.CLOSE) / yesterValue.CLOSE;
-               }
-               currentValue.AMPLITUDE = (currentValue.HIGH - currentValue.LOW) / currentValue.LOW;
-               yesterValue = currentValue;
-            }
-
             // Events initialisation
             HasEvents = false;
-
-            // ####
-            // Detect Higher Highs && lower lows
-            // DetectHigherHighAndLowerLow();
-
-            // Detect extremum types
-            // DetectRelevantExtremumTypes();
 
             if (this.barDuration == StockBarDuration.Daily && !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
             {
@@ -733,6 +702,7 @@ namespace StockAnalyzer.StockClasses
          }
          return isInitialised;
       }
+
       public void PreInitialise()
       {
          ResetAllCache();
@@ -747,7 +717,6 @@ namespace StockAnalyzer.StockClasses
          float[] volumeSerie = new float[Values.Count];
          float[] upVolumeSerie = new float[Values.Count];
          float[] downVolumeSerie = new float[Values.Count];
-         float[] optixSerie = new float[Values.Count];
          float[] positionSerie = new float[Values.Count];
 
          int i = 0;
@@ -757,16 +726,21 @@ namespace StockAnalyzer.StockClasses
             if (previousValue != null)
             {
                dailyValue.PreviousClose = previousValue.CLOSE;
-               dailyValue.ATR = atrSerie[i] = Math.Max(dailyValue.HIGH - dailyValue.LOW, Math.Max(Math.Abs(dailyValue.HIGH - previousValue.LOW), Math.Abs(previousValue.HIGH - dailyValue.LOW)));
+               dailyValue.ATR =
+                  atrSerie[i] =
+                     Math.Max(dailyValue.HIGH - dailyValue.LOW,
+                        Math.Max(Math.Abs(dailyValue.HIGH - previousValue.LOW),
+                           Math.Abs(previousValue.HIGH - dailyValue.LOW)));
 
-               if (dailyValue.POSITION == 0.0f) dailyValue.POSITION = previousValue.POSITION; // Fix glitches in POSITION calculation
+               if (dailyValue.POSITION == 0.0f)
+                  dailyValue.POSITION = previousValue.POSITION; // Fix glitches in POSITION calculation
             }
             else
             {
                dailyValue.PreviousClose = dailyValue.CLOSE;
                dailyValue.ATR = atrSerie[i] = dailyValue.HIGH - dailyValue.LOW;
             }
-            variationSerie[i] = (dailyValue.CLOSE - dailyValue.PreviousClose) / dailyValue.PreviousClose;
+            variationSerie[i] = (dailyValue.CLOSE - dailyValue.PreviousClose)/dailyValue.PreviousClose;
             openSerie[i] = dailyValue.OPEN;
             lowSerie[i] = dailyValue.LOW;
             highSerie[i] = dailyValue.HIGH;
@@ -776,11 +750,27 @@ namespace StockAnalyzer.StockClasses
             dailyValue.CalculateUpVolume();
             upVolumeSerie[i] = dailyValue.UPVOLUME;
             downVolumeSerie[i] = dailyValue.DOWNVOLUME;
-            optixSerie[i] = dailyValue.OPTIX;
             positionSerie[i] = dailyValue.POSITION;
             i++;
             previousValue = dailyValue;
          }
+
+         StockDailyValue yesterValue = null;
+         foreach (StockDailyValue currentValue in this.Values)
+         {
+            // Calculate variation
+            if (yesterValue == null)
+            {
+               currentValue.VARIATION = (currentValue.CLOSE - currentValue.OPEN)/currentValue.OPEN;
+            }
+            else
+            {
+               currentValue.VARIATION = (currentValue.CLOSE - yesterValue.CLOSE)/yesterValue.CLOSE;
+            }
+            currentValue.AMPLITUDE = (currentValue.HIGH - currentValue.LOW)/currentValue.LOW;
+            yesterValue = currentValue;
+         }
+
          // Check if has volume on the last 10 bars, othewise, disable it
          this.HasVolume = false;
          for (i = Math.Max(0, this.Values.Count - 10); i < this.Values.Count; i++)
@@ -802,9 +792,9 @@ namespace StockAnalyzer.StockClasses
          this.AddSerie(StockDataType.VOLUME, new FloatSerie(volumeSerie, "VOLUME"));
          this.AddSerie(StockDataType.UPVOLUME, new FloatSerie(upVolumeSerie, "UPVOLUME"));
          this.AddSerie(StockDataType.DOWNVOLUME, new FloatSerie(downVolumeSerie, "DOWNVOLUME"));
-         this.AddSerie(StockDataType.OPTIX, new FloatSerie(optixSerie, "OPTIX"));
          this.AddSerie(StockDataType.POSITION, new FloatSerie(positionSerie, "POSITION"));
       }
+
       public void Initialise(StockIndicatorType indicatorType)
       {
          FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
@@ -7132,10 +7122,6 @@ namespace StockAnalyzer.StockClasses
                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                   dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
                newValue.POSITION = dailyValue.POSITION;
-               if (this.HasOptix)
-               {
-                  newValue.OPTIX = dailyValue.OPTIX;
-               }
                newValue.IsComplete = false;
             }
             else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(5))
@@ -7178,10 +7164,6 @@ namespace StockAnalyzer.StockClasses
                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                   dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
                newValue.POSITION = dailyValue.POSITION;
-               if (this.HasOptix)
-               {
-                  newValue.OPTIX = dailyValue.OPTIX;
-               }
                newValue.IsComplete = false;
                count = 1;
             }
@@ -7203,18 +7185,10 @@ namespace StockAnalyzer.StockClasses
                newValue.CLOSE = dailyValue.CLOSE;
                newValue.VOLUME += dailyValue.VOLUME;
                newValue.UPVOLUME += dailyValue.UPVOLUME;
-               if (this.HasOptix)
-               {
-                  newValue.OPTIX += dailyValue.OPTIX;
-               }
                if ((++count == nbDay))
                {
                   // Final bar set to comlete only is last bar is complete
                   newValue.IsComplete = dailyValue.IsComplete;
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX /= nbDay;
-                  }
                   newBarList.Add(newValue);
                   newValue = null;
                }
@@ -7222,10 +7196,6 @@ namespace StockAnalyzer.StockClasses
          }
          if (newValue != null)
          {
-            if (this.HasOptix)
-            {
-               newValue.OPTIX /= count;
-            }
             newBarList.Add(newValue);
          }
          return newBarList;
@@ -7238,7 +7208,6 @@ namespace StockAnalyzer.StockClasses
          FloatSerie highSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.HIGH).ToArray()).CalculateEMA(nbDay);
          FloatSerie lowSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.LOW).ToArray()).CalculateEMA(nbDay);
          FloatSerie openSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.OPEN).ToArray()).CalculateEMA(nbDay);
-         FloatSerie optixSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.OPTIX).ToArray()).CalculateEMA(nbDay);
          FloatSerie positionSerie = new FloatSerie(stockDailyValueList.Select(dv => dv.POSITION).ToArray()).CalculateEMA(nbDay);
 
          StockDailyValue previousValue = stockDailyValueList[0];
@@ -7253,7 +7222,6 @@ namespace StockAnalyzer.StockClasses
 
             // New bar
             StockDailyValue newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
-            newValue.OPTIX = optixSerie[i];
             newValue.POSITION = positionSerie[i];
             newValue.IsComplete = dailyValue.IsComplete;
             newBarList.Add(newValue);
@@ -7280,7 +7248,6 @@ namespace StockAnalyzer.StockClasses
 
             // New bar
             newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
-            newValue.OPTIX = dailyValue.OPTIX;
             newValue.POSITION = dailyValue.POSITION;
             newValue.IsComplete = dailyValue.IsComplete;
             newBarList.Add(newValue);
@@ -7306,7 +7273,6 @@ namespace StockAnalyzer.StockClasses
 
             // New bar
             newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
-            newValue.OPTIX = dailyValue.OPTIX;
             newValue.POSITION = dailyValue.POSITION;
             newValue.IsComplete = dailyValue.IsComplete;
             newBarList.Add(newValue);
@@ -7694,15 +7660,10 @@ namespace StockAnalyzer.StockClasses
          newValue = new StockDailyValue(this.StockName, firstValue.OPEN, firstValue.CLOSE, firstValue.OPEN, firstValue.CLOSE, 0, firstValue.DATE);
 
          newValue.POSITION = firstValue.POSITION;
-         if (this.HasOptix)
-         {
-            newValue.OPTIX = firstValue.OPTIX;
-         }
 
          previousValues.Enqueue(firstValue);
 
          int i = 0;
-         int barCount = 1;
          foreach (StockDailyValue dailyValue in stockDailyValueList)
          {
             float highest = previousValues.Max(v => v.HIGH);
@@ -7711,11 +7672,6 @@ namespace StockAnalyzer.StockClasses
                if (newValue != null)
                {
                   newValue.IsComplete = true;
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX /= barCount;
-                     barCount = 1;
-                  }
                   newBarList.Add(newValue);
                }
                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
@@ -7732,11 +7688,6 @@ namespace StockAnalyzer.StockClasses
                   if (newValue != null)
                   {
                      newValue.IsComplete = true;
-                     if (this.HasOptix)
-                     {
-                        newValue.OPTIX /= barCount;
-                        barCount = 1;
-                     }
                      newBarList.Add(newValue);
                   }
                   newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
@@ -7760,11 +7711,6 @@ namespace StockAnalyzer.StockClasses
                      newValue.VOLUME += dailyValue.VOLUME;
                      newValue.UPVOLUME += dailyValue.UPVOLUME;
                      newValue.CLOSE = dailyValue.CLOSE;
-                  }
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX += dailyValue.OPTIX;
-                     barCount++;
                   }
                }
             }
@@ -7797,7 +7743,6 @@ namespace StockAnalyzer.StockClasses
             //    }
             //}
             newBarList.Add(newValue);
-            newValue.OPTIX /= barCount;
          }
          return newBarList;
       }
@@ -7815,34 +7760,20 @@ namespace StockAnalyzer.StockClasses
          newValue = new StockDailyValue(this.StockName, firstValue.OPEN, firstValue.CLOSE, firstValue.OPEN, firstValue.CLOSE, 0, firstValue.DATE);
 
          newValue.POSITION = firstValue.POSITION;
-         if (this.HasOptix)
-         {
-            newValue.OPTIX = firstValue.OPTIX;
-         }
 
          previousValues.Enqueue(firstValue);
 
          int i = 0;
-         int barCount = 1;
          foreach (StockDailyValue dailyValue in stockDailyValueList)
          {
             float highest = previousValues.Max(v => v.HIGH);
             if ((dailyValue.CLOSE > highest && dailyValue.IsComplete) || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
             {
                newValue.IsComplete = true;
-               if (this.HasOptix)
-               {
-                  newValue.OPTIX /= barCount;
-                  barCount = 1;
-               }
                newBarList.Add(newValue);
                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
                newValue.IsComplete = false;
                newValue.POSITION = dailyValue.POSITION;
-               if (this.HasOptix)
-               {
-                  newValue.OPTIX = dailyValue.OPTIX;
-               }
             }
             else
             {
@@ -7850,19 +7781,10 @@ namespace StockAnalyzer.StockClasses
                if (dailyValue.CLOSE < lowest && dailyValue.IsComplete || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
                {
                   newValue.IsComplete = true;
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX /= barCount;
-                     barCount = 1;
-                  }
                   newBarList.Add(newValue);
                   newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
                   newValue.IsComplete = false;
                   newValue.POSITION = dailyValue.POSITION;
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX = dailyValue.OPTIX;
-                  }
                }
                else
                {
@@ -7872,11 +7794,6 @@ namespace StockAnalyzer.StockClasses
                   newValue.VOLUME += dailyValue.VOLUME;
                   newValue.UPVOLUME += dailyValue.UPVOLUME;
                   newValue.CLOSE = dailyValue.CLOSE;
-                  if (this.HasOptix)
-                  {
-                     newValue.OPTIX += dailyValue.OPTIX;
-                     barCount++;
-                  }
                }
             }
 
@@ -7908,7 +7825,6 @@ namespace StockAnalyzer.StockClasses
             //    }
             //}
             newBarList.Add(newValue);
-            newValue.OPTIX /= barCount;
          }
          return newBarList;
       }

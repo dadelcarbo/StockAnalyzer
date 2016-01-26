@@ -21,10 +21,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
       {
          // Parse yahoo.cfg file// Create data folder if not existing
-         if (!Directory.Exists(rootFolder + OPTIX_SUBFOLDER))
-         {
-            Directory.CreateDirectory(rootFolder + OPTIX_SUBFOLDER);
-         }
          if (!Directory.Exists(rootFolder + DAILY_FOLDER))
          {
             Directory.CreateDirectory(rootFolder + DAILY_FOLDER);
@@ -72,11 +68,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          res |= ParseCSVFile(stockSerie, fileName);
 
          ParseIntradayData(stockSerie, rootFolder + INTRADAY_FOLDER, stockSerie.ShortName + ".csv");
-
-         if (stockSerie.Values.Count > 0 && stockSerie.HasOptix && stockSerie.Values.Last().OPTIX == 0.0f)
-         {
-            ParseOptixFile(stockSerie, rootFolder);
-         }
 
          return res;
       }
@@ -148,10 +139,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
                this.DownloadFileFromProvider(rootFolder + DAILY_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv", lastDate, DateTime.Today, stockSerie.ShortName);
             }
-            if (stockSerie.HasOptix)
-            {
-               this.DownloadOptixData(rootFolder, stockSerie);
-            }
          }
          return true;
       }
@@ -215,11 +202,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      {
                         StockLog.Write("Yahoo Entry: " + row[1] + " already in stockDictionary");
                      }
-                     // Check if has optix
-                     if (row.Count() == 4)
-                     {
-                        stockSerie.OptixURL = row[3];
-                     }
                      if (download && this.needDownload)
                      {
                         this.DownloadDailyData(rootFolder, stockSerie);
@@ -259,7 +241,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                            if (lastValue.DATE.Hour == 0 && lastValue.DATE.Minute == 0) return;
 
-                           dailyValue.OPTIX = lastValue.OPTIX;
                            stockSerie.Remove(lastValue.DATE);
                         }
                         stockSerie.Add(dailyValue.DATE, dailyValue);

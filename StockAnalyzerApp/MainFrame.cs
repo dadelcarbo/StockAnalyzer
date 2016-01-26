@@ -3361,7 +3361,7 @@ namespace StockAnalyzerApp
             }
 
             StockSplashScreen.ProgressSubText = "PreInitialising";
-            // Inorder to get Position attribute set in DailyValues
+            // In order to get Position attribute set in DailyValues
             foreach (StockSerie serie in groupSeries)
             {
                serie.PreInitialise();
