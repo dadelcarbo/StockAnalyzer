@@ -638,23 +638,12 @@ namespace StockAnalyzerApp
          }
       }
 
-      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3,
-         "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-
-      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(
-         StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarAbove");
-
-      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "BarBelow");
-
-      private StockSerie.StockAlertDef ResistanceBroken =
-         new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)",
-            "ResistanceBroken");
-
-      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3,
-         "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-
-      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D,
-         "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
+      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
+      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
 
       private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
 
@@ -4735,8 +4724,8 @@ border:1px solid black;
          #region Generate report from Events
 
          StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-         StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "BarAbove");
-         StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "BarBelow");
+         StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarAbove");
+         StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarBelow");
          StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
          StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
          StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
@@ -4767,12 +4756,11 @@ border:1px solid black;
             {
                if (stockSerie.MatchEvent(alert))
                {
-                  var values = stockSerie.GetValues(alerts.First().BarDuration);
+                  var values = stockSerie.GetValues(alert.BarDuration);
                   string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
                                      ";" + alert.ToString();
 
-                  alertMsg += "<br>" + alertLine + ";" +
-                              stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + "</br>";
+                  alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + "</br>";
                }
             }
             if (!string.IsNullOrEmpty(alertMsg))

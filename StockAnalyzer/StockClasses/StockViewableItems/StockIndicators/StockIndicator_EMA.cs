@@ -54,31 +54,31 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
          FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-         FloatSerie emaSerie = closeSerie.CalculateEMA((int)this.parameters[0]);
-         this.series[0] = emaSerie;
+         FloatSerie maSerie = closeSerie.CalculateEMA((int)this.parameters[0]);
+         this.series[0] = maSerie;
          this.series[0].Name = this.Name;
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-         for (int i = 2; i < emaSerie.Count; i++)
+         for (int i = 2; i < maSerie.Count; i++)
          {
-            this.eventSeries[0][i] = (emaSerie[i - 2] > emaSerie[i - 1] && emaSerie[i - 1] < emaSerie[i]);
-            this.eventSeries[1][i] = (emaSerie[i - 2] < emaSerie[i - 1] && emaSerie[i - 1] > emaSerie[i]);
-            this.eventSeries[2][i] = closeSerie[i] > emaSerie[i];
-            this.eventSeries[3][i] = closeSerie[i] < emaSerie[i];
-            this.eventSeries[4][i] = lowSerie[i] > emaSerie[i] && lowSerie[i-1] < emaSerie[i-1];
-            this.eventSeries[5][i] = highSerie[i] < emaSerie[i] && highSerie[i - 1] > emaSerie[i - 1];
-            this.eventSeries[6][i] = lowSerie[i] > emaSerie[i] && closeSerie[i - 1] < closeSerie[i];
-            this.eventSeries[7][i] = highSerie[i] < emaSerie[i] && closeSerie[i - 1] > closeSerie[i];
+            this.eventSeries[0][i] = (maSerie[i - 2] > maSerie[i - 1] && maSerie[i - 1] < maSerie[i]);
+            this.eventSeries[1][i] = (maSerie[i - 2] < maSerie[i - 1] && maSerie[i - 1] > maSerie[i]);
+            this.eventSeries[2][i] = closeSerie[i - 1] < maSerie[i - 1] && closeSerie[i] > maSerie[i];
+            this.eventSeries[3][i] = closeSerie[i - 1] > maSerie[i - 1] && closeSerie[i] < maSerie[i];
+            this.eventSeries[4][i] = lowSerie[i] > maSerie[i] && lowSerie[i - 1] < maSerie[i - 1];
+            this.eventSeries[5][i] = highSerie[i] < maSerie[i] && highSerie[i - 1] > maSerie[i - 1];
+            this.eventSeries[6][i] = lowSerie[i] > maSerie[i] && closeSerie[i - 1] < closeSerie[i];
+            this.eventSeries[7][i] = highSerie[i] < maSerie[i] && closeSerie[i - 1] > closeSerie[i];
          }
       }
 
-      static string[] eventNames = new string[] { "Bottom", "Top", "CloseAbove", "CloseBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish" };
+      static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true };
+      static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }
