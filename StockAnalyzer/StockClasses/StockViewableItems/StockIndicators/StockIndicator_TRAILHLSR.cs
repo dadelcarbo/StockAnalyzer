@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(0, 50) }; }
+         get { return new ParamRange[] { new ParamRangeInt(0, 500) }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "TRAILHL.S", "TRAILHL.R" }; } }

@@ -369,22 +369,33 @@ namespace StockAnalyzerApp
             //for (int i = 10; i <= 500; i += 5)
             //{
             //   StockSplashScreen.ProgressText = "Generating CAC CCIEX_" + i + " Daily...";
-            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
-            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
+            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Daar_1_EMA3, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
             //}
+            for (int i = 10; i <= 500; i += 5)
+            {
+               StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "Bearish", true);
+               //GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "Bearish", true);
+            }
             //for (int i = 10; i <= 500; i += 5)
             //{
             //   StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
-            //   GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "PriceAbove");
-            //   GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|EMA(%PERIOD%)", "PriceAbove");
-            //} 
+            //   GenerateCAC_Event("CAC_TRAILHLSR_", StockSerie.StockBarDuration.TLB, i, "INDICATOR|TRAILHLSR(%PERIOD%)", "Bullish", false);
+            //}
+            for (int i = 50; i <= 300; i += 10)
+            {
+               StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " TLB...";
+               //GenerateCAC_Event("CAC_TRAILEMA_TLB_", StockSerie.StockBarDuration.TLB, i, "TRAILSTOP|TRAILEMA(%PERIOD%,%PERIOD%)", "UpTrend", true);
+               StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " TLB_3D...";
+               //GenerateCAC_Event("CAC_TRAILEMA_TLB3D_", StockSerie.StockBarDuration.TLB_3D, i, "TRAILSTOP|TRAILEMA(%PERIOD%,%PERIOD%)", "UpTrend", true);
+            } 
             //for (int i = 10; i <= 500; i += 5)
             //{
             //   StockSplashScreen.ProgressText = "Generating CAC HMA_" + i + " Daily...";
             //   GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
             //   GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Bar_1_EMA3, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
             //}
-            for (int i = 2; i <= 20; i++)
+            for (int i = 1; i <= 400; i++)
             {
                //StockSplashScreen.ProgressText = "Generating CAC PUKE_" + i + " Daily...";
                //GenerateCAC_Event("CAC_PUKE_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
@@ -402,7 +413,7 @@ namespace StockAnalyzerApp
                   //StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
                   //GenerateCAC_Event("CAC_RSI", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
                }
-            } 
+            }
             for (int i = 10; i <= 60; i += 10)
             {
                for (int j = 2; j < 6; j += 1)
@@ -3488,7 +3499,7 @@ namespace StockAnalyzerApp
             }
 
             this.selectedGroup = newGroup;
-            this.CurrentPortofolio = null;
+
             foreach (ToolStripMenuItem groupSubMenuItem in this.groupMenuItem.DropDownItems)
             {
                groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
@@ -3670,10 +3681,11 @@ namespace StockAnalyzerApp
       private void viewPortogolioMenuItem_Click(object sender, EventArgs e)
       {
          StockPortofolio portofolio = this.StockPortofolioList.Get(sender.ToString());
-         this.CurrentPortofolio = portofolio;
 
          if (portofolio != null)
          {
+            this.CurrentPortofolio = portofolio;
+
             portofolio.Initialize(StockDictionary);
             if (portofolioDlg == null)
             {
