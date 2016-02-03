@@ -71,19 +71,38 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[5][i] = highSerie[i] < maSerie[i] && highSerie[i - 1] > maSerie[i - 1];
             this.eventSeries[6][i] = lowSerie[i] > maSerie[i] && closeSerie[i - 1] < closeSerie[i];
             this.eventSeries[7][i] = highSerie[i] < maSerie[i] && closeSerie[i - 1] > closeSerie[i];
+            if (this.eventSeries[8][i - 1])
+            {
+               // Check if bullRun Persists
+               this.eventSeries[8][i] = !this.eventSeries[5][i];
+            }
+            else
+            {
+               // Check if BullRun Starts
+               this.eventSeries[8][i] = this.eventSeries[4][i];
+            }
+            if (this.eventSeries[9][i - 1])
+            {
+               // Check if bullRun Persists
+               this.eventSeries[9][i] = !this.eventSeries[4][i];
+            }
+            else
+            {
+               // Check if BullRun Starts
+               this.eventSeries[9][i] = this.eventSeries[5][i];
+            }
          }
       }
 
-      static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish" };
+      static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish", "BullRun", "BearRun" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false };
+      static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }
       }
    }
 }
-

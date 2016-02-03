@@ -2,7 +2,7 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-   public class StockPaintBar_EMA : StockPaintBarIndicatorEventBase
+   public class StockPaintBar_HMA : StockPaintBarIndicatorEventBase
    {
       public override System.Drawing.Pen[] SeriePens
       {
