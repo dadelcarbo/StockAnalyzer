@@ -70,9 +70,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[5][i] = highSerie[i] < maSerie[i] && highSerie[i - 1] > maSerie[i - 1];
             this.eventSeries[6][i] = lowSerie[i] > maSerie[i] && closeSerie[i - 1] < closeSerie[i];
             this.eventSeries[7][i] = highSerie[i] < maSerie[i] && closeSerie[i - 1] > closeSerie[i];
-            if (this.eventSeries[8][i-1])
+            if (this.eventSeries[8][i - 1])
             {
-               // Check if bullRun Persists
+               // Check if BullRun Persists
                this.eventSeries[8][i] = !this.eventSeries[5][i];
             }
             else
@@ -82,12 +82,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             if (this.eventSeries[9][i - 1])
             {
-               // Check if bullRun Persists
+               // Check if BearRun Persists
                this.eventSeries[9][i] = !this.eventSeries[4][i];
             }
             else
             {
-               // Check if BullRun Starts
+               // Check if BearRun Starts
                this.eventSeries[9][i] = this.eventSeries[5][i];
             }
          }
