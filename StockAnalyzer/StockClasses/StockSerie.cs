@@ -3852,8 +3852,8 @@ namespace StockAnalyzer.StockClasses
       }
       public void CalculatePercentTrailStop(float percent, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
-         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
 
          FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
@@ -3884,12 +3884,12 @@ namespace StockAnalyzer.StockClasses
                { // Trailing stop has been broken => reverse trend
                   upTrend = false;
                   longStopSerie[i] = float.NaN;
-                  shortStopSerie[i] = highSerie[i] * upPercent;
+                  shortStopSerie[i] = lowSerie[i] * upPercent;
                }
                else
                {
                   // Trail the stop  
-                  longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowSerie[i] * downPercent);
+                  longStopSerie[i] = Math.Max(longStopSerie[i - 1], highSerie[i] * downPercent);
                   shortStopSerie[i] = float.NaN;
                }
             }
@@ -3898,14 +3898,14 @@ namespace StockAnalyzer.StockClasses
                if (currentValue.CLOSE > shortStopSerie[i - 1])
                {  // Trailing stop has been broken => reverse trend
                   upTrend = true;
-                  longStopSerie[i] = lowSerie[i] * downPercent;
+                  longStopSerie[i] = highSerie[i] * downPercent;
                   shortStopSerie[i] = float.NaN;
                }
                else
                {
                   // Trail the stop  
                   longStopSerie[i] = float.NaN;
-                  shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie[i] * upPercent);
+                  shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], lowSerie[i] * upPercent);
                }
             }
             previousValue = currentValue;

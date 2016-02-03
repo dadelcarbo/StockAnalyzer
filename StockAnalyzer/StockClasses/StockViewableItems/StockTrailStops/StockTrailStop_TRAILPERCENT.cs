@@ -16,16 +16,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
       public override bool RequiresVolumeData { get { return false; } }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period",  "Percent"}; }
+         get { return new string[] { "Percent"}; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 2, 5f }; }
+         get { return new Object[] { 5f }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeFloat(0f, 100f)}; }
+         get { return new ParamRange[] { new ParamRangeFloat(0f, 100f)}; }
       }
 
       public override string[] SerieNames { get { return new string[] { "TRAILPERCENT.LS", "TRAILPERCENT.SS" }; } }
@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
          FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-         stockSerie.CalculatePercentTrailStop( (float)this.Parameters[1]/100f, out longStopSerie, out shortStopSerie);
+         stockSerie.CalculatePercentTrailStop( (float)this.Parameters[0]/100f, out longStopSerie, out shortStopSerie);
          this.Series[0] = longStopSerie;
          this.Series[1] = shortStopSerie;
 
