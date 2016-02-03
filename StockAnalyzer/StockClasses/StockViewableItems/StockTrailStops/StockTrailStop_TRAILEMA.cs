@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
       }
       public override string Definition
       {
-         get { return "TRAILEMA(int smoothPeriod,int lookbackPeriod)"; }
+         get { return "TRAILEMA(int SmoothPeriod,int InputSmoothing)"; }
       }
       public override IndicatorDisplayTarget DisplayTarget
       {
@@ -20,12 +20,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
       public override bool RequiresVolumeData { get { return false; } }
       public override string[] ParameterNames
       {
-         get { return new string[] { "SmoothPeriod", "LookBackPeriod" }; }
+         get { return new string[] { "SmoothPeriod", "InputSmoothing" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 3, 3 }; }
+         get { return new Object[] { 3, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {

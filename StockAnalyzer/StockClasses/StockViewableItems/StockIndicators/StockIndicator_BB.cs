@@ -27,6 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return new Object[] { 20, 2.0f, -2.0f, "MA" }; }
       }
+      static List<string> emaTypes = new List<string>(){"EMA", "HMA", "MA", "EA"};
       public override ParamRange[] ParameterRanges
       {
          get
@@ -36,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new ParamRangeInt(1, 500), 
                 new ParamRangeFloat(0f, 20.0f), 
                 new ParamRangeFloat(-20.0f, 0.0f),
-                new ParamRangeStringList( new List<string>() {"EMA", "HMA", "MA", "EA"})
+                new ParamRangeStringList( emaTypes)
             };
          }
       }
