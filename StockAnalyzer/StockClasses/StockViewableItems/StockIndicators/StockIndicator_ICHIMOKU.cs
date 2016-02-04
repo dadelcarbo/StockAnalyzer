@@ -9,31 +9,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       public StockIndicator_ICHIMOKU()
       {
       }
+
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
-
-      public override string Name
-      {
-         get { return "ICHIMOKU(" + this.Parameters[0].ToString() + ")"; }
-      }
-
-      public override string Definition
-      {
-         get { return "ICHIMOKU(int Period)"; }
-      }
+      
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] {9, 26, 52}; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "TenkanSen", "KijunSen", "SenkouSpanB" }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "TenkanSen", "KijunSen", "SenkouSpanA", "SenkouSpanB" }; } }
@@ -44,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Blue), new Pen(Color.Blue) };
+               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
             }
             return seriePens;
          }
@@ -56,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
          FloatSerie TenkanSenSerie = new FloatSerie(highSerie.Count, "TenkanSen"); //  (highest high + lowest low)/2 for the last 9 periods.
-         int period = 9;
+         int period = (int) this.parameters[0];
          float highest = float.MinValue;
          float lowest = float.MaxValue;
          for (int i = 0; i < highSerie.Count; i++)
@@ -76,7 +68,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          this.series[0] = TenkanSenSerie;
 
          FloatSerie KijunSenSerie = new FloatSerie(highSerie.Count, "KijunSen"); // (highest high + lowest low)/2 for the past 26 periods.
-         period = 26;
+         period = (int)this.parameters[1];
          for (int i = 0; i < highSerie.Count; i++)
          {
             if (i < period)
@@ -93,21 +85,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          }
          this.series[1] = KijunSenSerie;
 
-         FloatSerie SenkouSpanA = new FloatSerie(highSerie.Count, "SenkouSpanA");// (Tenkan-sen + kijun-sen)/2 plotted 26 periods ahead.
-         period = 26;
-         for (int i = period; i < highSerie.Count; i++)
-         {
-            SenkouSpanA[i] = (TenkanSenSerie[i - period] + KijunSenSerie[i - period]) / 2f;
-         }
-         for (int i = 0; i < period; i++)
-         {
-            SenkouSpanA[i] = SenkouSpanA[period];
-         }
+         FloatSerie SenkouSpanA = (TenkanSenSerie + KijunSenSerie)/2.0f;
+         SenkouSpanA.Name = "SenkouSpanA";
+         
          this.series[2] = SenkouSpanA;
 
          FloatSerie SenkouSpanB = new FloatSerie(highSerie.Count, "SenkouSpanB"); // (highest high + lowest low)/2 calculated over the past 52 time periods and plotted 26 periods ahead
          FloatSerie tmpSerie = new FloatSerie(highSerie.Count, "tmp");
-         period = 52;
+         period = (int)this.parameters[2];
          for (int i = 0; i < highSerie.Count; i++)
          {
             if (i < period)

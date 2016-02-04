@@ -4,39 +4,30 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_HMA : StockIndicatorBase
+   public class StockIndicator_HLAVG : StockIndicatorBase
    {
-      public StockIndicator_HMA()
+      public StockIndicator_HLAVG()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
-
-      public override string Name
-      {
-         get { return "HMA(" + this.Parameters[0].ToString() + ")"; }
-      }
-
-      public override string Definition
-      {
-         get { return "HMA(int Period)"; }
-      }
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] { 30, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Period", "InputSmoothing" }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "HMA(" + this.Parameters[0].ToString() + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "HLAVG(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
+
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -52,25 +43,42 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+         this.CreateEventSeries(stockSerie.Count);
+
+         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.parameters[1]);
          FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-         FloatSerie maSerie = closeSerie.CalculateHMA((int)this.parameters[0]);
-         this.series[0] = maSerie;
-         this.series[0].Name = this.Name;
+         FloatSerie hlSerie= new FloatSerie(stockSerie.Count, this.SerieNames[0]);
+         this.Series[0] = hlSerie;
 
+         int period = (int)this.parameters[0];
+
+         float min, max;
+         for (int i = 0; i < period; i++)
+         {
+            min = lowSerie.GetMin(0, i);
+            max = highSerie.GetMax(0, i);
+            hlSerie[i] = (min + max)/2f;
+         }
+         for (int i = period; i < stockSerie.Count; i++)
+         {
+            min = lowSerie.GetMin(i-period, i);
+            max = highSerie.GetMax(i - period, i);
+            hlSerie[i] = (min + max)/2f;
+         }
+         
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-         for (int i = 2; i < maSerie.Count; i++)
+         for (int i = 2; i < hlSerie.Count; i++)
          {
-            this.eventSeries[0][i] = (maSerie[i - 2] > maSerie[i - 1] && maSerie[i - 1] < maSerie[i]);
-            this.eventSeries[1][i] = (maSerie[i - 2] < maSerie[i - 1] && maSerie[i - 1] > maSerie[i]);
-            this.eventSeries[2][i] = closeSerie[i - 1] < maSerie[i - 1] && closeSerie[i] > maSerie[i];
-            this.eventSeries[3][i] = closeSerie[i - 1] > maSerie[i - 1] && closeSerie[i] < maSerie[i];
-            this.eventSeries[4][i] = lowSerie[i] > maSerie[i] && lowSerie[i - 1] < maSerie[i - 1];
-            this.eventSeries[5][i] = highSerie[i] < maSerie[i] && highSerie[i - 1] > maSerie[i - 1];
-            this.eventSeries[6][i] = lowSerie[i] > maSerie[i] && closeSerie[i - 1] < closeSerie[i];
-            this.eventSeries[7][i] = highSerie[i] < maSerie[i] && closeSerie[i - 1] > closeSerie[i];
+            this.eventSeries[0][i] = (hlSerie[i - 2] > hlSerie[i - 1] && hlSerie[i - 1] < hlSerie[i]);
+            this.eventSeries[1][i] = (hlSerie[i - 2] < hlSerie[i - 1] && hlSerie[i - 1] > hlSerie[i]);
+            this.eventSeries[2][i] = closeSerie[i - 1] < hlSerie[i - 1] && closeSerie[i] > hlSerie[i];
+            this.eventSeries[3][i] = closeSerie[i - 1] > hlSerie[i - 1] && closeSerie[i] < hlSerie[i];
+            this.eventSeries[4][i] = lowSerie[i] > hlSerie[i] && lowSerie[i - 1] < hlSerie[i - 1];
+            this.eventSeries[5][i] = highSerie[i] < hlSerie[i] && highSerie[i - 1] > hlSerie[i - 1];
+            this.eventSeries[6][i] = lowSerie[i] > hlSerie[i] && closeSerie[i - 1] < closeSerie[i];
+            this.eventSeries[7][i] = highSerie[i] < hlSerie[i] && closeSerie[i - 1] > closeSerie[i];
             if (this.eventSeries[8][i - 1])
             {
                // Check if BullRun Persists
