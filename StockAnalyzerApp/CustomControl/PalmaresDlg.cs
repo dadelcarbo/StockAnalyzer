@@ -125,7 +125,10 @@ namespace StockAnalyzerApp.CustomControl
                string stockName = stockSerie.StockName;
                if (stockName.EndsWith("_P"))
                {
-                  underlyingStockSerie = StockDico[stockName.Substring(0, stockName.Length - 2)];
+                  if (StockDico.ContainsKey(stockName.Substring(0, stockName.Length - 2)))
+                  {
+                     underlyingStockSerie = StockDico[stockName.Substring(0, stockName.Length - 2)];
+                  }
                }
             }
             if (!stockSerie.IsPortofolioSerie && portofolioCheckBox.Checked)
