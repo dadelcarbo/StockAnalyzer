@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
          if (indicator != null && indicator.Series[0].Count > 0)
          {
             FloatSerie indicatorSerie = indicator.Series[0];
-            FloatSerie trailSerie = indicatorSerie.CalculateEMA((int)this.parameters[0]);
+            FloatSerie trailSerie = indicatorSerie.CalculateEMATrailStop((int)this.parameters[0],1);
             this.Series[0] = trailSerie;
 
             // Detecting events

@@ -497,7 +497,7 @@ namespace StockAnalyzer.StockMath
       public FloatSerie CalculateKEMA(int fastPeriod, int slowPeriod)
       {
          FloatSerie serie = new FloatSerie(Values.Count());
-         FloatSerie erSerie = CalculateER((fastPeriod + slowPeriod)/2);
+         FloatSerie erSerie = CalculateER((fastPeriod + slowPeriod) / 2);
          erSerie = erSerie.Abs(); // Calculate square
 
          serie[0] = Values[0];
@@ -782,6 +782,62 @@ namespace StockAnalyzer.StockMath
                tmp = (float)Math.Sqrt(squareSum / (double)bbTimePeriod);
                upBB = BBUpCoef * tmp;
                downBB = BBDownCoef * tmp;
+            }
+            if (bbUpSerie != null) { bbUpSerie.Values[i] = referenceAverageVal + upBB; }
+            if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
+         }
+      }
+      public void CalculateBBEX(FloatSerie referenceAverage, int bbTimePeriod, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
+      {
+         float squareSum = 0.0f;
+         float tmp = 0.0f;
+         float upBB = 0.0f;
+         float downBB = 0.0f;
+         float referenceAverageVal = 0.0f;
+
+         bbUpSerie = new FloatSerie(this.Values.Count());
+         bbUpSerie.Name = "BBUp";
+         bbDownSerie = new FloatSerie(this.Values.Count());
+         bbDownSerie.Name = "BBDown";
+
+         for (int i = 0; i < this.Values.Count(); i++)
+         {
+            referenceAverageVal = referenceAverage.Values[i];
+            if (i < bbTimePeriod)
+            {
+               // Calculate BB
+               if (i == 0)
+               {
+                  upBB = 0.0f;
+                  downBB = 0.0f;
+               }
+               else
+               {
+                  squareSum = 0.0f;
+                  for (int j = 0; j <= i; j++)
+                  {
+                     tmp = this.Values[j] - referenceAverageVal;
+                     squareSum += tmp * tmp;
+                  }
+                  tmp = (float)Math.Sqrt(squareSum / (double)(i + 1));
+                  upBB = BBUpCoef * tmp;
+                  downBB = BBDownCoef * tmp;
+               }
+            }
+            else
+            {
+               squareSum = 0.0f;
+               for (int j = i - bbTimePeriod + 1; j <= i; j++)
+               {
+                  tmp = this.Values[j] - referenceAverageVal;
+                  squareSum += tmp * tmp;
+               }
+               tmp = (float)Math.Sqrt(squareSum / (double)bbTimePeriod);
+
+               float tt = tmp / referenceAverageVal;
+
+               upBB = ((referenceAverageVal * (1.0f+tt)) - referenceAverageVal)*BBUpCoef;
+               downBB = -((referenceAverageVal / (1.0f + tt)) - referenceAverageVal) * BBDownCoef;
             }
             if (bbUpSerie != null) { bbUpSerie.Values[i] = referenceAverageVal + upBB; }
             if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
@@ -1539,6 +1595,62 @@ namespace StockAnalyzer.StockMath
          }
          return trailSerie;
       }
+      public FloatSerie CalculateEMATrailStop(int period, int inputSmoothing)
+      {
+         float alpha = 2.0f / (float)(period + 1);
+
+         // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
+         // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
+         FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILEMA");
+
+         FloatSerie EMASerie = this.CalculateEMA(inputSmoothing);
+
+         bool upTrend = EMASerie[1] > EMASerie[0];
+         int i = 1;
+         float extremum = EMASerie[0];
+         trailSerie[0] = EMASerie[0];
+         extremum = EMASerie[0];
+
+         foreach (float currentValue in this.Values.Skip(1))
+         {
+            if (i > inputSmoothing)
+            {
+               if (upTrend)
+               {
+                  if (EMASerie[i] < trailSerie[i - 1])
+                  { // Trailing stop has been broken => reverse trend
+                     upTrend = false;
+                     trailSerie[i] = extremum;
+                     extremum = EMASerie[i];
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     trailSerie[i] = trailSerie[i - 1] + alpha * (EMASerie[i] - trailSerie[i - 1]);
+                     extremum = Math.Max(extremum, EMASerie[i]);
+                  }
+               }
+               else
+               {
+                  if (EMASerie[i] > trailSerie[i - 1])
+                  {  // Trailing stop has been broken => reverse trend
+                     upTrend = true;
+                     trailSerie[i] = extremum;
+                     extremum = EMASerie[i];
+                  }
+                  else
+                  {
+                     // Trail the stop  
+                     trailSerie[i] = trailSerie[i - 1] + alpha * (EMASerie[i] - trailSerie[i - 1]);
+                     extremum = Math.Min(extremum, EMASerie[i]);
+                  }
+               }
+            }
+            i++;
+         }
+         return trailSerie;
+      }
+
       public FloatSerie CalculateHLTrail(int period)
       {
          FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILHL");

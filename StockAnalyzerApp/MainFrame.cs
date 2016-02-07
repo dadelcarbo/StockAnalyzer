@@ -123,8 +123,12 @@ namespace StockAnalyzerApp
          get { return currentPortofolio; }
          set
          {
-            this.currentPortofolio = value;
-            this.graphCloseControl.Portofolio = currentPortofolio;
+            if (this.currentPortofolio != value)
+            {
+               this.currentPortofolio = value;
+               this.graphCloseControl.Portofolio = currentPortofolio;
+               if (currentPortofolio != null) OnNeedReinitialise(false);
+            }
          }
       }
 
@@ -4165,6 +4169,8 @@ namespace StockAnalyzerApp
          }
 
          RefreshPortofolioMenu();
+
+         this.CurrentPortofolio = portofolio;
       }
 
       private void portfolioSimulatorDlg_SimulationCompleted()

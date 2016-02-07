@@ -264,12 +264,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   try
                   {
                      string[] row = sr.ReadLine().Split(',');
+                     float ratio = float.Parse(row[4], usCulture);
+
+                     //ratio = (float)Math.Log10(ratio);
+                     //if (inverse) ratio = -ratio;
+
                      readValue = new StockDailyValue(
                          stockSerie.StockName,
-                         float.Parse(row[4], usCulture),
-                         float.Parse(row[4], usCulture),
-                         float.Parse(row[4], usCulture),
-                         float.Parse(row[4], usCulture),
+                         ratio,
+                         ratio,
+                         ratio,
+                         ratio,
                          long.Parse(row[3], usCulture),
                          DateTime.Parse(row[0], usCulture));
                      if (readValue != null && !stockSerie.ContainsKey(readValue.DATE))

@@ -73,14 +73,20 @@ namespace StockAnalyzerApp.CustomControl
          this.progressBar.Maximum = stockNumber;
          this.progressBar.Minimum = 0;
          this.progressBar.Value = 0;
+         float amountInvested = 0;
+         float totalReturn = 0;
          foreach (StockSerie stockSerie in tmpList)
          {
+            amountInvested += this.simulationParameterControl.amount;
             StockLog.Write("Processing: " + stockSerie.StockName);
             stockSerie.BarDuration = this.BarDuration;
-            GenerateSimulation(stockSerie);
+            totalReturn += GenerateSimulation(stockSerie).TotalPortofolioValue;
             // 
             this.progressBar.Value++;
          }
+
+         StockLog.Write("Total return: " + ((totalReturn - amountInvested)/amountInvested).ToString("P2"));
+
          this.progressBar.Value = 0;
 
          if (this.SimulationCompleted != null)
@@ -99,7 +105,7 @@ namespace StockAnalyzerApp.CustomControl
          StockLog.Write(totalPercentGain.ToString("P"));
       }
 
-      private void GenerateSimulation(StockSerie stockSerie)
+      private StockPortofolio GenerateSimulation(StockSerie stockSerie)
       {
          stockSerie.Initialise();
 
@@ -162,6 +168,8 @@ namespace StockAnalyzerApp.CustomControl
          {
             this.simulationParameterControl.GenerateReportLine("BatchReport_" + SelectedStrategy + ".csv", stockSerie, portofolio);
          }
+
+         return portofolio;
       }
    }
 }
