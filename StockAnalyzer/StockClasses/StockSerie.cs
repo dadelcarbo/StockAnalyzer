@@ -290,7 +290,7 @@ namespace StockAnalyzer.StockClasses
       }
       protected void SetBarDuration(StockBarDuration newBarDuration)
       {
-         StockLog.Write("SetBarDuration Name:" + this.StockName + " newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
+         if (newBarDuration != this.BarDuration) StockLog.Write("SetBarDuration Name:" + this.StockName + " newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
          if (!this.Initialise() || newBarDuration == this.BarDuration)
          {
             if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))

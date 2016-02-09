@@ -22,16 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return 0.0f; }
       }
-
-      public override string Name
-      {
-         get { return "STOKF(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"; }
-      }
-      public override string Definition
-      {
-         get { return "STOKF(int FastKPeriod, int FastDPeriod, float Overbought, float Oversold)"; }
-      }
-
+      
       public override string[] ParameterNames
       {
          get { return new string[] { "FastKPeriod", "FastKPeriod", "Overbought", "Oversold" }; }

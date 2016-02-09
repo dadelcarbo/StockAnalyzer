@@ -77,6 +77,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "EMA":
                return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+            case "STOKF":
+               return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             //case "HLEMA20":
             //   return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Bar_1_EMA20, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             //case "HLEMA5":
