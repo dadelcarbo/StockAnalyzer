@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
          this.parameters = baseIndicator.ParameterDefaultValues;
 
          this.serieVisibility = new bool[this.SeriesCount];
-         for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
+         for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = false) ;
       }
 
       public override string Name
