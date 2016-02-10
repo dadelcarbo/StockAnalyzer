@@ -62,6 +62,7 @@
     <Compile Include="StockClasses\StockDataProviders\CBOEDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\AAIIDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\CommerzBankIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\GoogleIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\NASDACQShortInterestDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\GoogleIntradayDataProviderConfigDlg.cs">

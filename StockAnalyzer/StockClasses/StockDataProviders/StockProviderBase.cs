@@ -114,6 +114,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             case StockDataProvider.GoogleIntraday:
                dataProvider = new GoogleIntradayDataProvider();
                break;
+            case StockDataProvider.CommerzBankIntraday:
+               dataProvider = new CommerzBankIntradayDataProvider();
+               break;
             case StockDataProvider.CBOE:
                dataProvider = new CBOEDataProvider();
                break;

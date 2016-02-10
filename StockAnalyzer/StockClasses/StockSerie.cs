@@ -79,6 +79,7 @@ namespace StockAnalyzer.StockClasses
          USER3,
          ShortInterest,
          ALL,
+         TURBO,
 
       }
       public enum StockBarDuration
@@ -7965,18 +7966,24 @@ namespace StockAnalyzer.StockClasses
             }
          }
       }
+
       public void SaveToCSVFromDateToDate(string fileName, DateTime startDate, DateTime endDate)
       {
-         using (StreamWriter sw = new StreamWriter(fileName))
+         var values = this.Values.Where(v => v.DATE >= startDate && v.DATE <= endDate);
+         if (values.Count() > 0)
          {
-            DateTime lastDate = this.Keys.Last();
-            sw.WriteLine(StockDailyValue.StringFormat());
-            foreach (StockDailyValue value in this.Values.Where(v => v.DATE >= startDate && v.DATE <= endDate))
+            using (StreamWriter sw = new StreamWriter(fileName))
             {
-               sw.WriteLine(value.ToString());
+               DateTime lastDate = this.Keys.Last();
+               sw.WriteLine(StockDailyValue.StringFormat());
+               foreach (StockDailyValue value in values)
+               {
+                  sw.WriteLine(value.ToString());
+               }
             }
          }
       }
+
       public void SaveToCSVFromDate(string fileName, DateTime startDate)
       {
          using (StreamWriter sw = new StreamWriter(fileName))

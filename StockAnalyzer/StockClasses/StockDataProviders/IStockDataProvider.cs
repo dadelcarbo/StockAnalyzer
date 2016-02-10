@@ -7,6 +7,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       YahooIntraday,
       Google,
       GoogleIntraday,
+      CommerzBankIntraday,
       Rydex,
       CBOE,
       Harpex,
