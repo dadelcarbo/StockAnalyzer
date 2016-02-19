@@ -633,7 +633,7 @@ namespace StockAnalyzerApp
 
       private void refreshTimer_Tick(object sender, EventArgs e)
       {
-         if (this.currentStockSerie != null && this.currentStockSerie.StockName.StartsWith("INT_"))
+         if (this.currentStockSerie != null && (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY ||  this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
          {
             this.Cursor = Cursors.WaitCursor;
 
@@ -734,15 +734,12 @@ namespace StockAnalyzerApp
                   if (stockSerie.MatchEvent(alert))
                   {
                      var values = stockSerie.GetValues(alert.BarDuration);
-                     string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
-                                        ";" + alert.ToString();
+                     string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay + ";" + alert.ToString();
 
                      // Check if already been sent during the day.
                      if (!alertLog.Any(l => l.StartsWith(alertLine)))
                      {
-                        alertMsg += alertLine + ";" +
-                                    stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
-                                    Environment.NewLine;
+                        alertMsg += alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + Environment.NewLine;
                      }
                   }
                }
@@ -3597,8 +3594,10 @@ namespace StockAnalyzerApp
             // In order to speed the intraday display.
             switch (newGroup)
             {
-               case StockSerie.Groups.INTRADAY:
                case StockSerie.Groups.TURBO:
+                  this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
+                  break;
+               case StockSerie.Groups.INTRADAY:
                   this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
                   break;
                default:
