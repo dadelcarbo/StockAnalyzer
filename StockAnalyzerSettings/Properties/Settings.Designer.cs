@@ -395,8 +395,18 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowCommentMarquee"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
+
+
+       [global::System.Configuration.UserScopedSettingAttribute()]
+       [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+       [global::System.Configuration.DefaultSettingValueAttribute("True")]
+       public bool ShowIndicatorDiv
+       {
+          get { return ((bool) (this["ShowIndicatorDiv"])); }
+          set { this["ShowIndicatorDiv"] = value; }
+       }
+
+       [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("david.carbonel@free.fr")]
         public string UserEMail {

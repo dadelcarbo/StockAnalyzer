@@ -74,6 +74,7 @@ namespace StockAnalyzerApp
          this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
          this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.selectEventForMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
          this.selectDisplayedIndicatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -417,6 +418,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator14,
             this.showEventMarqueeMenuItem,
             this.showCommentMarqueeMenuItem,
+            this.showIndicatorDivMenuItem,
             this.selectEventForMarqueeMenuItem,
             this.toolStripSeparator16,
             this.selectDisplayedIndicatorMenuItem,
@@ -542,6 +544,16 @@ namespace StockAnalyzerApp
          this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(244, 22);
          this.showCommentMarqueeMenuItem.Text = "Show Comment Marquees";
          this.showCommentMarqueeMenuItem.Click += new System.EventHandler(this.showCommentMarqueeMenuItem_Click);
+         // 
+         // showIndicatorDivMenuItem
+         // 
+         this.showIndicatorDivMenuItem.Checked = true;
+         this.showIndicatorDivMenuItem.CheckOnClick = true;
+         this.showIndicatorDivMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+         this.showIndicatorDivMenuItem.Name = "showIndicatorDivMenuItem";
+         this.showIndicatorDivMenuItem.Size = new System.Drawing.Size(244, 22);
+         this.showIndicatorDivMenuItem.Text = "Show Divergences";
+         this.showIndicatorDivMenuItem.Click += new System.EventHandler(this.showIndicatorDivMenuItem_Click);
          // 
          // selectEventForMarqueeMenuItem
          // 
@@ -1595,6 +1607,7 @@ namespace StockAnalyzerApp
       private ToolStripMenuItem showDrawingsMenuItem;
       private ToolStripMenuItem showEventMarqueeMenuItem;
       private ToolStripMenuItem showCommentMarqueeMenuItem;
+      private ToolStripMenuItem showIndicatorDivMenuItem;
       private ToolStripMenuItem showSummaryOrdersMenuItem;
       private ToolStripMenuItem analysisMenuItem;
       private ToolStripMenuItem strategySimulationMenuItem;

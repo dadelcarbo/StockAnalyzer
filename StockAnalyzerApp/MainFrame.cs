@@ -3598,6 +3598,7 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                case StockSerie.Groups.INTRADAY:
+               case StockSerie.Groups.TURBO:
                   this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
                   break;
                default:
@@ -3678,6 +3679,14 @@ namespace StockAnalyzerApp
       private void showCommentMarqueeMenuItem_Click(object sender, EventArgs e)
       {
          Settings.Default.ShowCommentMarquee = this.showCommentMarqueeMenuItem.Checked;
+         Settings.Default.Save();
+         // Refresh the graphs
+         OnNeedReinitialise(false);
+      }
+
+      private void showIndicatorDivMenuItem_Click(object sender, EventArgs e)
+      {
+         Settings.Default.ShowIndicatorDiv = this.showIndicatorDivMenuItem.Checked;
          Settings.Default.Save();
          // Refresh the graphs
          OnNeedReinitialise(false);

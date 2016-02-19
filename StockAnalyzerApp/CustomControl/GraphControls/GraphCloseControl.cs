@@ -50,6 +50,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
       protected bool ShowSummaryOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowSummaryOrders; } }
       protected bool ShowEventMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowEventMarquee; } }
       protected bool ShowCommentMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowCommentMarquee; } }
+      protected bool ShowIndicatorDiv { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorDiv; } }
+
 
       GraphCurveType closeCurveType = null;
       GraphCurveType openCurveType = null;
@@ -359,7 +361,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                #endregion
 
                #region DISPLAY DECORATORS
-               if (CurveList.ShowMes.Count > 0)
+               if (this.ShowIndicatorDiv && CurveList.ShowMes.Count > 0)
                {
                   for (int j = 0; j < CurveList.ShowMes.Count; j++)
                   {
