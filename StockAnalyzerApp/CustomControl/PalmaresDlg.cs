@@ -59,7 +59,8 @@ namespace StockAnalyzerApp.CustomControl
          if (stockList.Count() > 0 && stockList.ElementAt(0).Initialise())
          {
             this.fromDateTimePicker.MaxDate = stockList.ElementAt(0).Keys.Last();
-            this.fromDateTimePicker.Value = stockList.ElementAt(0).Keys.ElementAt(stockList.ElementAt(0).Keys.Count - 2);
+            DateTime fromDate =new DateTime(stockList.ElementAt(0).Keys.ElementAt(stockList.ElementAt(0).Keys.Count - 2).Year,1,1);
+            this.fromDateTimePicker.Value = fromDate;
             this.untilDateTimePicker.Value = stockList.ElementAt(0).Keys.Last();
          }
          else
