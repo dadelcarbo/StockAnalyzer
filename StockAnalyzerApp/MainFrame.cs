@@ -355,17 +355,22 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
             //GenerateCACEqualWeight();
 
-            //GenerateCACEqualWeightNoDay(DayOfWeek.Monday);
-            //GenerateCACEqualWeightNoDay(DayOfWeek.Tuesday);
-            //GenerateCACEqualWeightNoDay(DayOfWeek.Wednesday);
-            //GenerateCACEqualWeightNoDay(DayOfWeek.Thursday);
-            //GenerateCACEqualWeightNoDay(DayOfWeek.Friday);
+            GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
+            GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
+            GenerateIndexNoDay("CAC40", DayOfWeek.Wednesday);
+            GenerateIndexNoDay("CAC40", DayOfWeek.Thursday);
+            GenerateIndexNoDay("CAC40", DayOfWeek.Friday);
+            GenerateIndexNoDay("EUR-USD", DayOfWeek.Monday);
+            GenerateIndexNoDay("EUR-USD", DayOfWeek.Tuesday);
+            GenerateIndexNoDay("EUR-USD", DayOfWeek.Wednesday);
+            GenerateIndexNoDay("EUR-USD", DayOfWeek.Thursday);
+            GenerateIndexNoDay("EUR-USD", DayOfWeek.Friday);
 
-            //GenerateCACEqualWeightOnlyDay(DayOfWeek.Monday);
-            //GenerateCACEqualWeightOnlyDay(DayOfWeek.Tuesday);
-            //GenerateCACEqualWeightOnlyDay(DayOfWeek.Wednesday);
-            //GenerateCACEqualWeightOnlyDay(DayOfWeek.Thursday);
-            //GenerateCACEqualWeightOnlyDay(DayOfWeek.Friday);
+            GenerateIndexOnlyDay("CAC40", DayOfWeek.Monday);
+            GenerateIndexOnlyDay("CAC40", DayOfWeek.Tuesday);
+            GenerateIndexOnlyDay("CAC40", DayOfWeek.Wednesday);
+            GenerateIndexOnlyDay("CAC40", DayOfWeek.Thursday);
+            GenerateIndexOnlyDay("CAC40", DayOfWeek.Friday);
 
             for (int i = 2; i < 40; i+=1)
             {
@@ -373,10 +378,10 @@ namespace StockAnalyzerApp
                //GenerateIndex_Event("CAC40", "EMA_INV", StockSerie.StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
                //GenerateIndex_Event("CAC40", "HLAVG_", StockSerie.StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
                //GenerateIndex_Event("CAC40", "HLAVG_INV", StockSerie.StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
-               GenerateIndex_Event("CAC40", "EMA_", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
-               GenerateIndex_Event("CAC40", "EMA_INV", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
-               GenerateIndex_Event("CAC40", "HLAVG_", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
-               GenerateIndex_Event("CAC40", "HLAVG_INV", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
+               //GenerateIndex_Event("CAC40", "EMA_", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
+               //GenerateIndex_Event("CAC40", "EMA_INV", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
+               //GenerateIndex_Event("CAC40", "HLAVG_", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
+               //GenerateIndex_Event("CAC40", "HLAVG_INV", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
              
                //GenerateIndex_Event("SP500", "EMA_", StockSerie.StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
                //GenerateIndex_Event("SP500", "EMA_INV", StockSerie.StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
@@ -2910,22 +2915,19 @@ namespace StockAnalyzerApp
          }
          StockDictionary.Add(serieName, cacEWSerie);
       }
-      private void GenerateCACEqualWeightNoDay(DayOfWeek dayOfWeek)
+      private void GenerateIndexNoDay(string stockName, DayOfWeek dayOfWeek)
       {
-         //var cacSeries =
-         //   this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
-         string serieName = "CAC_EW_NO_" + dayOfWeek;
+         string serieName = stockName + "_NO_" + dayOfWeek;
 
          StockSplashScreen.ProgressText = "Generating " + serieName + "...";
 
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
-            StockDataProvider.Generated);
-         StockSerie cacSerie = this.StockDictionary["CAC40"];
-         cacSerie.Initialise();
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,StockDataProvider.Generated);
+         StockSerie stockSerie = this.StockDictionary[stockName];
+         stockSerie.Initialise();
 
-         float value = cacSerie.First().Value.OPEN;
+         float value = stockSerie.First().Value.OPEN;
          int cacIndex = 0;
-         foreach (StockDailyValue dailyValue in cacSerie.Values)
+         foreach (StockDailyValue dailyValue in stockSerie.Values)
          {
             float var = 0.0f;
             float volume = 0.0f;
@@ -2939,40 +2941,28 @@ namespace StockAnalyzerApp
          }
          StockDictionary.Add(serieName, cacEWSerie);
       }
-      private void GenerateCACEqualWeightOnlyDay(DayOfWeek dayOfWeek)
+      private void GenerateIndexOnlyDay(string stockName, DayOfWeek dayOfWeek)
       {
-         var cacSeries =
-            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
-         string serieName = "CAC_EW_ONLY_" + dayOfWeek;
-         StockSplashScreen.ProgressText = "Generating " + serieName + "...";
-         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
-            StockDataProvider.Generated);
-         StockSerie cacSerie = this.StockDictionary["CAC40"];
-         cacSerie.Initialise();
+         string serieName = stockName + "_ONLY_" + dayOfWeek;
 
-         float value = 1000f;
+         StockSplashScreen.ProgressText = "Generating " + serieName + "...";
+
+         StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
+         StockSerie stockSerie = this.StockDictionary[stockName];
+         stockSerie.Initialise();
+
+         float value = stockSerie.First().Value.OPEN;
          int cacIndex = 0;
-         foreach (DateTime date in cacSerie.Keys)
+         foreach (StockDailyValue dailyValue in stockSerie.Values)
          {
             float var = 0.0f;
             float volume = 0.0f;
             int count = 0;
-            if (date.DayOfWeek == dayOfWeek)
+            if (dailyValue.DATE.DayOfWeek == dayOfWeek)
             {
-               foreach (StockSerie serie in cacSeries)
-               {
-                  if (serie.ContainsKey(date))
-                  {
-                     count++;
-                     StockDailyValue dailyValue = serie[date];
-                     var += dailyValue.VARIATION;
-                     volume += dailyValue.CLOSE * dailyValue.VOLUME;
-                  }
-               }
-
-               value += value * (var / count);
+               value += value * dailyValue.VARIATION;
             }
-            cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
+            cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(serieName, value, value, value, value, (long)volume, dailyValue.DATE));
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
