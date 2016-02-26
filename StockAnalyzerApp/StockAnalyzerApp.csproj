@@ -146,6 +146,12 @@
     <Compile Include="CustomControl\FixedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
+      <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.cs">
       <SubType>Form</SubType>
     </Compile>

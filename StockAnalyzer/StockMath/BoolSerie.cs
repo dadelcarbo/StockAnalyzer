@@ -13,6 +13,16 @@ namespace StockAnalyzer.StockMath
          this.Name = name;
       }
 
+      public BoolSerie(int size, string name, bool value)
+      {
+         this.Values = new bool[size];
+         for(int i = 0; i < this.Count; i++)
+         {
+            this[i] = value;
+         }
+         this.Name = name;
+      }
+
       public bool this[int index]
       {
          get { return this.Values[index]; }
