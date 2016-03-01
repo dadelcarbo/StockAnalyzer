@@ -2950,9 +2950,7 @@ namespace StockAnalyzerApp
          int cacIndex = 0;
          foreach (StockDailyValue dailyValue in stockSerie.Values)
          {
-            float var = 0.0f;
             float volume = 0.0f;
-            int count = 0;
             if (dailyValue.DATE.DayOfWeek != dayOfWeek)
             {
                value += value * dailyValue.VARIATION;
@@ -2981,9 +2979,7 @@ namespace StockAnalyzerApp
 
          foreach (StockDailyValue dailyValue in cacSerie.Values)
          {
-            float var = 0.0f;
             float volume = 0.0f;
-            int count = 0;
             if (previousDailyValue.VARIATION < 0)
             {
                value += value * dailyValue.VARIATION;
@@ -3013,9 +3009,7 @@ namespace StockAnalyzerApp
 
          foreach (StockDailyValue dailyValue in cacSerie.Values)
          {
-            float var = 0.0f;
             float volume = 0.0f;
-            int count = 0;
             if (previousDailyValue.VARIATION < 0)
             {
                value += value * dailyValue.VARIATION;
@@ -3045,9 +3039,7 @@ namespace StockAnalyzerApp
 
          foreach (StockDailyValue dailyValue in cacSerie.Values)
          {
-            float var = 0.0f;
             float volume = 0.0f;
-            int count = 0;
             if (previousDailyValue.DATE.DayOfWeek == dayOfWeek && previousDailyValue.VARIATION < 0)
             {
                value += value * dailyValue.VARIATION;
@@ -3077,9 +3069,7 @@ namespace StockAnalyzerApp
 
          foreach (StockDailyValue dailyValue in cacSerie.Values)
          {
-            float var = 0.0f;
             float volume = 0.0f;
-            int count = 0;
             if (previousDailyValue.DATE.DayOfWeek == dayOfWeek && previousDailyValue.VARIATION >0 )
             {
                value += value * dailyValue.VARIATION;

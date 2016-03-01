@@ -19,7 +19,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       Breadth,
       Ratio,
       COT,
-      NASDACQShortInterest
+      NASDACQShortInterest,
+      BarChart,
+      BarChartIntraday
    }
 
    public delegate void DownloadingStockEventHandler(string text);
