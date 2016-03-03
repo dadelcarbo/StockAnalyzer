@@ -348,45 +348,45 @@ namespace StockAnalyzerApp
 
             //GeneratePosition(groups);
 
-            // Generate Vix Premium
+            // Generate Vix Premiu
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
-            GenerateVixPremium();
+            //GenerateVixPremium();
 
             StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
             //GenerateCACEqualWeight();
 
-            GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
-            GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
-            GenerateIndexNoDay("CAC40", DayOfWeek.Wednesday);
-            GenerateIndexNoDay("CAC40", DayOfWeek.Thursday);
-            GenerateIndexNoDay("CAC40", DayOfWeek.Friday);
-            GenerateIndexNoDay("EUR-USD", DayOfWeek.Monday);
-            GenerateIndexNoDay("EUR-USD", DayOfWeek.Tuesday);
-            GenerateIndexNoDay("EUR-USD", DayOfWeek.Wednesday);
-            GenerateIndexNoDay("EUR-USD", DayOfWeek.Thursday);
-            GenerateIndexNoDay("EUR-USD", DayOfWeek.Friday);
+            //GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
+            //GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
+            //GenerateIndexNoDay("CAC40", DayOfWeek.Wednesday);
+            //GenerateIndexNoDay("CAC40", DayOfWeek.Thursday);
+            //GenerateIndexNoDay("CAC40", DayOfWeek.Friday);
+            //GenerateIndexNoDay("EUR-USD", DayOfWeek.Monday);
+            //GenerateIndexNoDay("EUR-USD", DayOfWeek.Tuesday);
+            //GenerateIndexNoDay("EUR-USD", DayOfWeek.Wednesday);
+            //GenerateIndexNoDay("EUR-USD", DayOfWeek.Thursday);
+            //GenerateIndexNoDay("EUR-USD", DayOfWeek.Friday);
 
-            GenerateIndexOnlyDay("CAC40", DayOfWeek.Monday);
-            GenerateIndexOnlyDay("CAC40", DayOfWeek.Tuesday);
-            GenerateIndexOnlyDay("CAC40", DayOfWeek.Wednesday);
-            GenerateIndexOnlyDay("CAC40", DayOfWeek.Thursday);
-            GenerateIndexOnlyDay("CAC40", DayOfWeek.Friday);
+            //GenerateIndexOnlyDay("CAC40", DayOfWeek.Monday);
+            //GenerateIndexOnlyDay("CAC40", DayOfWeek.Tuesday);
+            //GenerateIndexOnlyDay("CAC40", DayOfWeek.Wednesday);
+            //GenerateIndexOnlyDay("CAC40", DayOfWeek.Thursday);
+            //GenerateIndexOnlyDay("CAC40", DayOfWeek.Friday);
 
-            GenerateCACEqualWeightNoUpDay(DayOfWeek.Monday);
-            GenerateCACEqualWeightNoUpDay(DayOfWeek.Tuesday);
-            GenerateCACEqualWeightNoUpDay(DayOfWeek.Wednesday);
-            GenerateCACEqualWeightNoUpDay(DayOfWeek.Thursday);
-            GenerateCACEqualWeightNoUpDay(DayOfWeek.Friday);
+            //GenerateCACEqualWeightNoUpDay(DayOfWeek.Monday);
+            //GenerateCACEqualWeightNoUpDay(DayOfWeek.Tuesday);
+            //GenerateCACEqualWeightNoUpDay(DayOfWeek.Wednesday);
+            //GenerateCACEqualWeightNoUpDay(DayOfWeek.Thursday);
+            //GenerateCACEqualWeightNoUpDay(DayOfWeek.Friday);
 
-            GenerateCACEqualWeightNoUpDay();
+            //GenerateCACEqualWeightNoUpDay();
 
-            GenerateCACEqualWeightNoDownDay(DayOfWeek.Monday);
-            GenerateCACEqualWeightNoDownDay(DayOfWeek.Tuesday);
-            GenerateCACEqualWeightNoDownDay(DayOfWeek.Wednesday);
-            GenerateCACEqualWeightNoDownDay(DayOfWeek.Thursday);
-            GenerateCACEqualWeightNoDownDay(DayOfWeek.Friday);
+            //GenerateCACEqualWeightNoDownDay(DayOfWeek.Monday);
+            //GenerateCACEqualWeightNoDownDay(DayOfWeek.Tuesday);
+            //GenerateCACEqualWeightNoDownDay(DayOfWeek.Wednesday);
+            //GenerateCACEqualWeightNoDownDay(DayOfWeek.Thursday);
+            //GenerateCACEqualWeightNoDownDay(DayOfWeek.Friday);
 
-            GenerateCACEqualWeightNoDownDay();
+            //GenerateCACEqualWeightNoDownDay();
 
             //GenerateCACEqualWeightOnlyDay(DayOfWeek.Monday);
             //GenerateCACEqualWeightOnlyDay(DayOfWeek.Tuesday);

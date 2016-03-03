@@ -76,8 +76,33 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
          }
       }
+      private bool GenerateLogSerie(StockSerie stockSerie, StockSerie ratioSerie, bool inverse)
+      {
+         StockDailyValue logValue = null;
+         float ratio;
+         foreach (StockDailyValue dailyValue in ratioSerie.Values)
+         {
+            ratio = (float)Math.Log10(dailyValue.CLOSE);
+            if (inverse) ratio = -ratio;
+
+            logValue = new StockDailyValue(stockSerie.StockName,
+               ratio,
+               ratio,
+               ratio,
+               ratio, 0, dailyValue.DATE);
+            stockSerie.Add(logValue.DATE, logValue);
+            logValue.Serie = stockSerie;
+         }
+         return true;
+      }
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
+         if (stockSerie.StockName == "TRIN_LOG")
+         {
+            StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+            trinSerie.Initialise();
+            return this.GenerateLogSerie(stockSerie, trinSerie, true);
+         }
          // Read archive first
          bool res = false;
          string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
