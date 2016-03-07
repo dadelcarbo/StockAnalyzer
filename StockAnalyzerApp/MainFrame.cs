@@ -596,6 +596,7 @@ namespace StockAnalyzerApp
          this.statusStrip1.Visible = Settings.Default.ShowStatusBar;
          this.showDrawingsMenuItem.Checked = Settings.Default.ShowDrawings;
          this.showEventMarqueeMenuItem.Checked = Settings.Default.ShowEventMarquee;
+         this.showIndicatorDivMenuItem.Checked = Settings.Default.ShowIndicatorDiv;
 
          this.StockSerieChanged += new OnStockSerieChangedHandler(StockAnalyzerForm_StockSerieChanged);
          this.ThemeChanged += new OnThemeChangedHandler(StockAnalyzerForm_ThemeChanged);

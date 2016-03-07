@@ -130,7 +130,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   {
                      foreach (var data in jsonResponse.data.series[0].data)
                      {
-                        DateTime date = refDate.AddMilliseconds(data[0]);
+                        DateTime date = refDate.AddMilliseconds(data[0]).Date;
                         if (!stockSerie.ContainsKey(date))
                         {
                            stockSerie.Add(date, new StockDailyValue(stockSerie.StockName, (float)data[1], (float)data[2], (float)data[3], (float)data[4], 0, date));
