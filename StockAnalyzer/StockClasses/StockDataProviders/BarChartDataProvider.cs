@@ -76,25 +76,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
          }
       }
-      private bool GenerateLogSerie(StockSerie stockSerie, StockSerie ratioSerie, bool inverse)
-      {
-         StockDailyValue logValue = null;
-         float ratio;
-         foreach (StockDailyValue dailyValue in ratioSerie.Values)
-         {
-            ratio = (float)Math.Log10(dailyValue.CLOSE);
-            if (inverse) ratio = -ratio;
-
-            logValue = new StockDailyValue(stockSerie.StockName,
-               ratio,
-               ratio,
-               ratio,
-               ratio, 0, dailyValue.DATE);
-            stockSerie.Add(logValue.DATE, logValue);
-            logValue.Serie = stockSerie;
-         }
-         return true;
-      }
       public override bool LoadData(string rootFolder, StockSerie stockSerie)
       {
          if (stockSerie.StockName == "TRIN_LOG")
@@ -102,6 +83,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
             trinSerie.Initialise();
             return this.GenerateLogSerie(stockSerie, trinSerie, true);
+         }
+         if (stockSerie.StockName == "TRIN_SUM")
+         {
+            StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+            trinSerie.Initialise();
+            return this.GenerateSumSerie(stockSerie, trinSerie, true);
+         }
+         if (stockSerie.StockName == "TRIN_LOG_SUM")
+         {
+            StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN_LOG"];
+            trinSerie.Initialise();
+            return this.GenerateSumSerie(stockSerie, trinSerie, true);
          }
          // Read archive first
          bool res = false;
@@ -114,6 +107,46 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
          return ParseBarChartFile(stockSerie, fileName) || res;
+      }
+
+      private bool GenerateSumSerie(StockSerie stockSerie, StockSerie trinSerie, bool inverse)
+      {
+         StockDailyValue logValue = null;
+         float sum = 0f;
+         foreach (StockDailyValue dailyValue in trinSerie.Values)
+         {
+            sum += dailyValue.CLOSE;
+
+            logValue = new StockDailyValue(stockSerie.StockName,
+               sum,
+               sum,
+               sum,
+               sum, 0, dailyValue.DATE);
+            stockSerie.Add(logValue.DATE, logValue);
+            logValue.Serie = stockSerie;
+         }
+         return true;
+      }
+      private bool GenerateLogSerie(StockSerie stockSerie, StockSerie ratioSerie, bool inverse)
+      {
+         StockDailyValue logValue = null;
+         float ratio = 0;
+         foreach (StockDailyValue dailyValue in ratioSerie.Values)
+         {
+            if (dailyValue.CLOSE > 0f)
+            {
+               ratio = (float)Math.Log10(dailyValue.CLOSE);
+               if (inverse) ratio = -ratio;
+            }
+            logValue = new StockDailyValue(stockSerie.StockName,
+               ratio,
+               ratio,
+               ratio,
+               ratio, 0, dailyValue.DATE);
+            stockSerie.Add(logValue.DATE, logValue);
+            logValue.Serie = stockSerie;
+         }
+         return true;
       }
       private bool ParseBarChartFile(StockSerie stockSerie, string fileName)
       {

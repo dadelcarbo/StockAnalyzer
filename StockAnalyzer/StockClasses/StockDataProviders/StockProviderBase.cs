@@ -23,6 +23,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   };
 
       public const int ARCHIVE_START_YEAR = 1990;
+      public const int LOAD_START_YEAR = 2006;
 
       #region CONSTANTS
       static protected string DAILY_SUBFOLDER = @"\data\daily";
@@ -282,7 +283,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                while (!sr.EndOfStream)
                {
                   readValue = this.ReadMarketDataFromCSVStream(sr, stockSerie.StockName, true);
-                  if (readValue != null && !stockSerie.ContainsKey(readValue.DATE))
+                  if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR && !stockSerie.ContainsKey(readValue.DATE))
                   {
                      stockSerie.Add(readValue.DATE, readValue);
                      readValue.Serie = stockSerie;

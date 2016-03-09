@@ -365,17 +365,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                if (stockSerie != null)
                {
                   DateTime date = DateTime.Parse(row[1]);
-                  if (!stockSerie.ContainsKey(date))
+                  if (date.Year >= LOAD_START_YEAR)
                   {
-                     StockDailyValue dailyValue = new StockDailyValue(
-                       stockSerie.StockName,
-                       float.Parse(row[2], frenchCulture),
-                       float.Parse(row[3], frenchCulture),
-                       float.Parse(row[4], frenchCulture),
-                       float.Parse(row[5], frenchCulture),
-                       long.Parse(row[6], frenchCulture),
-                       date);
-                     stockSerie.Add(dailyValue.DATE, dailyValue);
+                     if (!stockSerie.ContainsKey(date))
+                     {
+                        StockDailyValue dailyValue = new StockDailyValue(
+                          stockSerie.StockName,
+                          float.Parse(row[2], frenchCulture),
+                          float.Parse(row[3], frenchCulture),
+                          float.Parse(row[4], frenchCulture),
+                          float.Parse(row[5], frenchCulture),
+                          long.Parse(row[6], frenchCulture),
+                          date);
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
+                     }
+                  }
+                  else
+                  {
+                     return false;
                   }
                }
                line = sr.ReadLine();
