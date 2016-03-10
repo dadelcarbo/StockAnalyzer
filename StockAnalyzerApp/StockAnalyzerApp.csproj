@@ -152,6 +152,16 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
+      <DependentUpon>HorseRaceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.Designer.cs">
+      <DependentUpon>HorseRaceDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceViewModel.cs" />
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -460,6 +470,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentReportDlg.resx">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
+      <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailDlg.fr-FR.resx">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
@@ -800,6 +813,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\StockWebServices\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

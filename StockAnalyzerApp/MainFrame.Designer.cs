@@ -77,7 +77,7 @@ namespace StockAnalyzerApp
          this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.selectEventForMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
-         this.selectDisplayedIndicatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
          this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -421,7 +421,7 @@ namespace StockAnalyzerApp
             this.showIndicatorDivMenuItem,
             this.selectEventForMarqueeMenuItem,
             this.toolStripSeparator16,
-            this.selectDisplayedIndicatorMenuItem,
+            this.showHorseRaceViewMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
@@ -569,10 +569,10 @@ namespace StockAnalyzerApp
          // 
          // selectDisplayedIndicatorMenuItem
          // 
-         this.selectDisplayedIndicatorMenuItem.Name = "selectDisplayedIndicatorMenuItem";
-         this.selectDisplayedIndicatorMenuItem.Size = new System.Drawing.Size(244, 22);
-         this.selectDisplayedIndicatorMenuItem.Text = "Select Indicators";
-         this.selectDisplayedIndicatorMenuItem.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
+         this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
+         this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(244, 22);
+         this.showHorseRaceViewMenuItem.Text = "Horse Race View";
+         this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
          // 
          // toolStripSeparator15
          // 
@@ -1556,7 +1556,7 @@ namespace StockAnalyzerApp
          this.PerformLayout();
 
       }
-
+      
       #endregion
 
       private System.Windows.Forms.MenuStrip mainMenu;
@@ -1628,7 +1628,7 @@ namespace StockAnalyzerApp
       private ToolStripMenuItem currentPortofolioMenuItem;
       private ToolStripMenuItem addStockCAPCAMenuItem;
       private ToolStripButton generateChannelStripButton;
-      private ToolStripMenuItem selectDisplayedIndicatorMenuItem;
+      private ToolStripMenuItem showHorseRaceViewMenuItem;
       private ToolStripMenuItem hideIndicatorsStockMenuItem;
       private ToolStripSeparator toolStripSeparator10;
       private ToolStripMenuItem indexRelativeStrengthMenuItem;

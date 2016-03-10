@@ -31,6 +31,7 @@ using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
@@ -5865,6 +5866,13 @@ border:1px solid black;
          {
             this.themeComboBox.SelectedItem = WORK_THEME;
          }
+      }
+
+      void showHorseRaceViewMenuItem_Click(object sender, System.EventArgs e)
+      {
+         var stockList = StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.COUNTRY));
+         HorseRaceDlg horseRaceDlg = new HorseRaceDlg(stockList);
+         horseRaceDlg.ShowDialog();
       }
 
       private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
