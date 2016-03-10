@@ -56,6 +56,8 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          }
       }
 
+      static List<int> ranges = new List<int>(){-1,-5,-20,-100,-200}; 
+      public List<int> Ranges { get { return ranges; } }
 
       public HorseRaceViewModel()
       {

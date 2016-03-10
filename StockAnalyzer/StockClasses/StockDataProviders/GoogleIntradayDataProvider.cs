@@ -29,12 +29,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: 0");
             else  StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: " + values.Count);
             serie.ReadFromCSVFile(durationFileName, duration);
-
             
             StockLog.Write("LoadIntradayDurationArchiveData New serie size is: " + serie.GetValues(duration).Count);
             StockLog.Write("LoadIntradayDurationArchiveData First bar: " + serie.GetValues(duration).First().ToString());
             StockLog.Write("LoadIntradayDurationArchiveData Last bar: " + serie.GetValues(duration).Last().ToString());
-
          }
          else
          {
