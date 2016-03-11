@@ -17,6 +17,10 @@
             <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" 
                       ItemsSource="{Binding ViewModel.Ranges, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
                       SelectedItem="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Group" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" 
+                      ItemsSource="{Binding ViewModel.Groups, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                      SelectedItem="{Binding ViewModel.Group, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="dataGrid" AutoGenerateColumns="False"
 			ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}">
@@ -37,9 +41,9 @@
         </DataGrid>
         <Grid Grid.Row="2" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
             <Slider Grid.Column="1" 

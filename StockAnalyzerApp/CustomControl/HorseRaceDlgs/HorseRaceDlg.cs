@@ -12,11 +12,11 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {
    public partial class HorseRaceDlg : Form
    {
-      public HorseRaceDlg(IEnumerable<StockSerie> stockList)
+      public HorseRaceDlg(string group)
       {
          InitializeComponent();
 
-         (this.elementHost1.Child as HorseRaceControl).ViewModel.StockList = stockList.ToList();
+         (this.elementHost1.Child as HorseRaceControl).ViewModel.Group = group;
       }
    }
 }

@@ -41,7 +41,6 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
       }
 
       private int index = 0;
-
       public int Index
       {
          get { return index; }
@@ -55,6 +54,24 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
          }
       }
+
+      private string group = "CAC40";
+      public string Group
+      {
+         get { return group; }
+         set
+         {
+            if (group != value)
+            {
+               group = value;
+               this.InitPositions();
+               OnPropertyChanged("Group");
+            }
+         }
+      } 
+      
+      static List<string> groups = StockDictionary.StockDictionarySingleton.GetValidGroupNames();
+      public List<string> Groups { get { return groups; } }
 
       static List<int> ranges = new List<int>(){-1,-5,-20,-100,-200}; 
       public List<int> Ranges { get { return ranges; } }
@@ -82,7 +99,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
       {
          this.StockPositions.Clear();
          List<StockPosition> positions = new List<StockPosition>();
-         foreach (StockSerie stockSerie in this.StockList)
+         foreach (StockSerie stockSerie in StockDictionary.StockDictionarySingleton.Values.Where(s=>s.BelongsToGroup(this.group)))
          {
             if (stockSerie.Initialise())
             {

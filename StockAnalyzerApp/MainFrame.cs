@@ -1248,8 +1248,7 @@ namespace StockAnalyzerApp
                }
             }
             bool dirty = false;
-            foreach (
-               StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
             {
                if (!this.themeComboBox.Items.Contains(stockSerie.StockAnalysis.Theme))
                {
@@ -5870,8 +5869,7 @@ border:1px solid black;
 
       void showHorseRaceViewMenuItem_Click(object sender, System.EventArgs e)
       {
-         var stockList = StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.COUNTRY));
-         HorseRaceDlg horseRaceDlg = new HorseRaceDlg(stockList);
+         HorseRaceDlg horseRaceDlg = new HorseRaceDlg(StockSerie.Groups.COUNTRY.ToString());
          horseRaceDlg.ShowDialog();
       }
 
