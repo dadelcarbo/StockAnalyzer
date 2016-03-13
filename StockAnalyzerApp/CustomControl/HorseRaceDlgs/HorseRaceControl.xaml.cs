@@ -21,11 +21,22 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
    {
       public HorseRaceViewModel ViewModel { get; set; }
 
+      public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+
       public HorseRaceControl()
       {
          InitializeComponent();
 
          this.ViewModel = new HorseRaceViewModel();
+      }
+
+      private void Cell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+      {
+         if (this.SelectedStockChanged != null)
+         {
+            StockPosition position = (sender as DataGrid).SelectedItem as StockPosition;
+            this.SelectedStockChanged(position.Name, false);
+         }
       }
    }
 }

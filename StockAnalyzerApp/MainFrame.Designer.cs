@@ -1291,7 +1291,7 @@ namespace StockAnalyzerApp
          this.indicatorConfigStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
          this.indicatorConfigStripButton.Name = "indicatorConfigStripButton";
          this.indicatorConfigStripButton.Size = new System.Drawing.Size(23, 22);
-         this.indicatorConfigStripButton.Text = "Configure displayed indicator";
+         this.indicatorConfigStripButton.Text = "Configure displayed indicator1Name";
          this.indicatorConfigStripButton.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
          // 
          // saveThemeStripButton

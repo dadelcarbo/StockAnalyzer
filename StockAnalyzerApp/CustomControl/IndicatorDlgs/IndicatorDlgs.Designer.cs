@@ -124,7 +124,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
       }
 
       /// <summary>
-      ///   Looks up a localized string similar to Indicator parameters.
+      ///   Looks up a localized string similar to Indicator1 parameters.
       /// </summary>
       internal static string IndicatorParam
       {

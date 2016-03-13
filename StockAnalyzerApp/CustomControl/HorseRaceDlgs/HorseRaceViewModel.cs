@@ -73,6 +73,38 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
       static List<string> groups = StockDictionary.StockDictionarySingleton.GetValidGroupNames();
       public List<string> Groups { get { return groups; } }
 
+      private string indicator1Name;
+
+      public string Indicator1Name
+      {
+         get { return indicator1Name; }
+         set
+         {
+            if (indicator1Name != value)
+            {
+               indicator1Name = value;
+               this.CalculatePositions();
+               OnPropertyChanged("Indicator1Name");
+            }
+         }
+      }
+
+      private string indicator2Name;
+
+      public string Indicator2Name
+      {
+         get { return indicator2Name; }
+         set
+         {
+            if (indicator2Name != value)
+            {
+               indicator2Name = value;
+               this.CalculatePositions();
+               OnPropertyChanged("Indicator2Name");
+            }
+         }
+      }
+
       static List<int> ranges = new List<int>(){-1,-5,-20,-100,-200}; 
       public List<int> Ranges { get { return ranges; } }
 
@@ -83,6 +115,9 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          index = 0;
 
          this.StockPositions = new ObservableCollection<StockPosition>();
+
+         this.indicator1Name = "STOKF(100,20,75,25)";
+         this.indicator2Name = "STOKF(50,20,75,25)";
       }
       
       private void CalculatePositions()
@@ -91,7 +126,10 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          {
             float startClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + minIndex - 1)).CLOSE;
             float endClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + index - 1)).CLOSE;
-            stockPosition.Position = 100f * (endClose - startClose) / startClose;
+            stockPosition.Close = endClose;
+            stockPosition.Variation = 100f * (endClose - startClose) / startClose;
+            stockPosition.Indicator1 = stockPosition.StockSerie.GetIndicator(this.indicator1Name).Series[0][Math.Max(0, stockPosition.StockSerie.Count + index - 1)];
+            stockPosition.Indicator2 = stockPosition.StockSerie.GetIndicator(this.indicator2Name).Series[0][Math.Max(0, stockPosition.StockSerie.Count + index - 1)];
          }
       }
 
@@ -103,7 +141,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          {
             if (stockSerie.Initialise())
             {
-               positions.Add(new StockPosition() {Name = stockSerie.StockName, Position = stockSerie.Values.Last().VARIATION * 100f, StockSerie = stockSerie});
+               positions.Add(new StockPosition() {Variation = stockSerie.Values.Last().VARIATION * 100f, StockSerie = stockSerie});
             }
          }
          this.StockPositions = new ObservableCollection<StockPosition>(positions);
@@ -155,35 +193,80 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
    public class StockPosition : INotifyPropertyChanged
    {
-      private string name;
       public string Name
       {
-         get { return name; }
-         set
-         {
-            if (name != value)
-            {
-               name = value;
-               OnPropertyChanged("Name");
-            }
-         }
+         get { return stockSerie!=null?stockSerie.StockName:"null"; }
       }
-      
-      private float position = 0;
-      public float Position
+
+      private float close = 0;
+      public float Close
       {
-         get { return position; }
+         get { return close; }
          set
          {
-            if (position != value)
+            if (close != value)
             {
-               position = value;
-               OnPropertyChanged("Position");
+               close = value;
+               OnPropertyChanged("Close");
             }
          }
       }
 
-      public StockSerie StockSerie { get; set; }
+      
+      private float variation = 0;
+      public float Variation
+      {
+         get { return variation; }
+         set
+         {
+            if (variation != value)
+            {
+               variation = value;
+               OnPropertyChanged("Variation");
+            }
+         }
+      }
+      private float indicator1 = 0;
+      public float Indicator1
+      {
+         get { return indicator1; }
+         set
+         {
+            if (indicator1 != value)
+            {
+               indicator1 = value;
+               OnPropertyChanged("Indicator1");
+            }
+         }
+      }
+
+      private float indicator2 = 0;
+      public float Indicator2
+      {
+         get { return indicator2; }
+         set
+         {
+            if (indicator2 != value)
+            {
+               indicator2 = value;
+               OnPropertyChanged("Indicator2");
+            }
+         }
+      }
+
+      private StockSerie stockSerie;
+      public StockSerie StockSerie
+      {
+         get { return stockSerie; }
+         set
+         {
+            if (stockSerie != value)
+            {
+               stockSerie = value;
+               OnPropertyChanged("Name");
+            }
+         }
+      }
 
       public event PropertyChangedEventHandler PropertyChanged;
 

@@ -35,7 +35,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             if (value != position)
             {
                this.position = value;
-               OnPropertyChanged("Position");
+               OnPropertyChanged("Variation");
             }
          }
       }

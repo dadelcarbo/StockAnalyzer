@@ -17,6 +17,13 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          InitializeComponent();
 
          (this.elementHost1.Child as HorseRaceControl).ViewModel.Group = group;
+         (this.elementHost1.Child as HorseRaceControl).SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
+      }
+
+      protected override void OnClosed(EventArgs e)
+      {
+         (this.elementHost1.Child as HorseRaceControl).SelectedStockChanged -= StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
+         base.OnClosed(e);
       }
    }
 }

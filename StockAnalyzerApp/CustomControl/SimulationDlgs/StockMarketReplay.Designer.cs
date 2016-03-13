@@ -98,11 +98,11 @@
          this.label1.Name = "label1";
          this.label1.Size = new System.Drawing.Size(44, 13);
          this.label1.TabIndex = 3;
-         this.label1.Text = "Position";
+         this.label1.Text = "Variation";
          // 
          // positionTextBox
          // 
-         this.positionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this, "Position", true));
+         this.positionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this, "Variation", true));
          this.positionTextBox.Location = new System.Drawing.Point(67, 77);
          this.positionTextBox.Name = "positionTextBox";
          this.positionTextBox.Size = new System.Drawing.Size(68, 20);

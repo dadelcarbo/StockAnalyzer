@@ -21,19 +21,38 @@
             <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" 
                       ItemsSource="{Binding ViewModel.Groups, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
                       SelectedItem="{Binding ViewModel.Group, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Indicator1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
+                      Text="{Binding ViewModel.Indicator1Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Indicator2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
+                      Text="{Binding ViewModel.Indicator2Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" x:Name="dataGrid" AutoGenerateColumns="False"
-			ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}">
+        <DataGrid Grid.Row="1" x:Name="Cell" AutoGenerateColumns="False" CanUserAddRows="False" 
+			ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" MouseDoubleClick="Cell_MouseDoubleClick" SelectionMode="Single"
+                  >
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Variation" Binding="{Binding Position, Mode=OneWay}"/>
-                <DataGridTemplateColumn Header="Variation">
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" />
+                <DataGridTextColumn Header="Close" Binding="{Binding Close, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+                <DataGridTemplateColumn Header="Indicator1" Width="260">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Slider Minimum="-100" 
-                                    Maximum="200"
-                                    Value="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
-                                    IsEnabled="False"/>
+                            <Slider Minimum="0" 
+                                    Maximum="100"
+                                    Value="{Binding Indicator1, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Indicator2" Width="260">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Slider Minimum="0" 
+                                    Maximum="100"
+                                    Value="{Binding Indicator2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}">
+                                
+                            </Slider>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

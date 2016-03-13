@@ -45,7 +45,7 @@
          this.indicatorConfigBox.Size = new System.Drawing.Size(281, 181);
          this.indicatorConfigBox.TabIndex = 2;
          this.indicatorConfigBox.TabStop = false;
-         this.indicatorConfigBox.Text = "Indicator Parameters";
+         this.indicatorConfigBox.Text = "Indicator1 Parameters";
          // 
          // paramListView
          // 

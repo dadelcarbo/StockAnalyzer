@@ -111,7 +111,7 @@ namespace StockAnalyzerApp.CustomControl
          this.label1.Name = "label1";
          this.label1.Size = new System.Drawing.Size(48, 13);
          this.label1.TabIndex = 6;
-         this.label1.Text = "Indicator";
+         this.label1.Text = "Indicator1";
          // 
          // filterIndicatorTextBox
          // 
@@ -234,7 +234,7 @@ namespace StockAnalyzerApp.CustomControl
          this.label7.Name = "label7";
          this.label7.Size = new System.Drawing.Size(48, 13);
          this.label7.TabIndex = 6;
-         this.label7.Text = "Indicator";
+         this.label7.Text = "Indicator1";
          // 
          // saveButton
          // 

@@ -239,7 +239,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF[] tmpOpenPoints = null;
             PointF[] tmpHighPoints = null;
             PointF[] tmpLowPoints = null;
-            // Draw indicator first not to hide the value
+            // Draw indicator1Name first not to hide the value
             if (!HideIndicators)
             {
                #region DISPLAY TRAIL STOPS

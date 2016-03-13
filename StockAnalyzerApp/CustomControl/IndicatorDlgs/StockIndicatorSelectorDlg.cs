@@ -706,7 +706,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             }
             if (stockIndicator.DisplayTarget != IndicatorDisplayTarget.PriceIndicator)
             {
-               // Only one indicator per graph (except data serie) (multiple ema, BB, ....)
+               // Only one indicator1Name per graph (except data serie) (multiple ema, BB, ....)
                List<StockNode> nodeList = new List<StockNode>();
                foreach (StockNode node in stockNode.Nodes)
                {
@@ -1161,7 +1161,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
          }
       }
       #endregion
-      #region Indicator Config
+      #region Indicator1 Config
       private void ActivateIndicatorConfigPanel(string groupBoxText)
       {
          IStockViewableSeries viewableItem = ((ViewableItemNode)this.treeView1.SelectedNode).ViewableItem;
@@ -1346,7 +1346,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                   this.addPaintBarsToolStripMenuItem.Visible = false;
                   this.addTrailStopsToolStripMenuItem.Visible = false;
                }
-               else if (treeNode.Text.StartsWith("Indicator"))
+               else if (treeNode.Text.StartsWith("Indicator1"))
                {
                   this.addIndicatorToolStripMenuItem.Visible = true;
                   this.addHorizontalLineToolStripMenuItem.Visible = true;

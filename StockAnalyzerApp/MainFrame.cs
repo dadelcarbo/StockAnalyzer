@@ -166,11 +166,11 @@ namespace StockAnalyzerApp
       private static string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
       private static string GENERATED_SUBFOLDER = DAILY_SUBFOLDER + @"\Generated";
       private static string BREADTH_SUBFOLDER = DAILY_SUBFOLDER + @"\Breadth";
-      private static string POSITION_SUBFOLDER = DAILY_SUBFOLDER + @"\Position";
+      private static string POSITION_SUBFOLDER = DAILY_SUBFOLDER + @"\Variation";
       private static string ARCHIVE_DAILY_SUBFOLDER = @"\data\archive\daily";
       private static string ARCHIVE_GENERATED_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Generated";
       private static string ARCHIVE_BREADTH_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Breadth";
-      private static string ARCHIVE_POSITION_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Position";
+      private static string ARCHIVE_POSITION_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Variation";
 
       #endregion
 
@@ -209,7 +209,7 @@ namespace StockAnalyzerApp
          MainFrame = this;
          this.IsClosing = false;
 
-         // Add indicator into the indicators controls layout panel
+         // Add indicator1Name into the indicators controls layout panel
          int nbControl = 0;
          this.indicatorLayoutPanel.Controls.Add(this.graphScrollerControl, nbControl++, 0);
          this.indicatorLayoutPanel.Controls.Add(this.graphCloseControl, nbControl++, 0);
@@ -324,7 +324,7 @@ namespace StockAnalyzerApp
                ParseIntraday();
             }
 
-            // Generate breadth indicator
+            // Generate breadth indicator1Name
             if (Settings.Default.GenerateBreadth)
             {
                foreach (
@@ -336,7 +336,7 @@ namespace StockAnalyzerApp
                }
             }
 
-            // Generate position indicator
+            // Generate position indicator1Name
             List<StockSerie.Groups> groups = new List<StockSerie.Groups>()
             {
                StockSerie.Groups.CAC40,
@@ -989,7 +989,7 @@ namespace StockAnalyzerApp
 
       #endregion
 
-      private void OnSelectedStockChanged(string stockName, bool activate)
+      public void OnSelectedStockChanged(string stockName, bool activate)
       {
          if (stockName.EndsWith("_P") || stockName == "Default")
          {
@@ -3656,7 +3656,7 @@ namespace StockAnalyzerApp
                }
             }
 
-            // Parse Position cache
+            // Parse Variation cache
             string fileName = folderName + @"\" + group + ".csv";
             StockSplashScreen.ProgressSubText = "Loading cache data";
             DateTime lastCacheDate = DateTime.MinValue;
@@ -3737,7 +3737,7 @@ namespace StockAnalyzerApp
             }
 
             StockSplashScreen.ProgressSubText = "PreInitialising";
-            // In order to get Position attribute set in DailyValues
+            // In order to get Variation attribute set in DailyValues
             foreach (StockSerie serie in groupSeries)
             {
                serie.PreInitialise();
@@ -4249,7 +4249,7 @@ namespace StockAnalyzerApp
 
             // Display Open Positions
             StockLog.Write("Portofolio Value =" + portofolioValue);
-            //foreach (Position pos in portofolio.Where(p => p.IsOpened))
+            //foreach (Variation pos in portofolio.Where(p => p.IsOpened))
             //{
             //    StockLog.Write(pos.ToString());
             //}
@@ -5880,7 +5880,7 @@ border:1px solid black;
 
          if (indicatorSelectorDialog.ShowDialog() == DialogResult.OK)
          {
-            // Apply new indicator configuration
+            // Apply new indicator1Name configuration
             this.themeDictionary[WORK_THEME] = indicatorSelectorDialog.GetTheme();
             if (this.themeComboBox.SelectedItem.ToString() == WORK_THEME)
             {

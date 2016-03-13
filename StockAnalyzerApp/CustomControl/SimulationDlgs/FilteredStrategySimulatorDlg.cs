@@ -84,14 +84,14 @@ namespace StockAnalyzerApp.CustomControl
          if (filterIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyFilterComboBox.SelectedItem.ToString()) ||
              string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
          {
-            MessageBox.Show("Invalid filter indicator");
+            MessageBox.Show("Invalid filter indicator1Name");
             return;
          }
 
          if (triggerIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyFilterComboBox.SelectedItem.ToString()) ||
              string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
          {
-            MessageBox.Show("Invalid trigger indicator");
+            MessageBox.Show("Invalid trigger indicator1Name");
             return;
          }
          //
@@ -241,7 +241,7 @@ namespace StockAnalyzerApp.CustomControl
          }
          else
          {
-            MessageBox.Show("Cannot create indicator " + this.filterIndicatorTextBox.Text + " , check syntax please");
+            MessageBox.Show("Cannot create indicator1Name " + this.filterIndicatorTextBox.Text + " , check syntax please");
          }
       }
 
@@ -311,7 +311,7 @@ namespace StockAnalyzerApp.CustomControl
          }
          else
          {
-            MessageBox.Show("Cannot create indicator, check syntax please");
+            MessageBox.Show("Cannot create indicator1Name, check syntax please");
          }
       }
 
@@ -326,14 +326,14 @@ namespace StockAnalyzerApp.CustomControl
          if (filterIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyFilterComboBox.SelectedItem.ToString()) ||
              string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
          {
-            MessageBox.Show("Invalid filter indicator");
+            MessageBox.Show("Invalid filter indicator1Name");
             return;
          }
 
          if (triggerIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyFilterComboBox.SelectedItem.ToString()) ||
              string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
          {
-            MessageBox.Show("Invalid trigger indicator");
+            MessageBox.Show("Invalid trigger indicator1Name");
             return;
          }
 
