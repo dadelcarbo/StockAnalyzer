@@ -32,7 +32,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
       private void Cell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
       {
-         if (this.SelectedStockChanged != null)
+         if (this.SelectedStockChanged != null && (sender as DataGrid).SelectedItem is StockPosition)
          {
             StockPosition position = (sender as DataGrid).SelectedItem as StockPosition;
             this.SelectedStockChanged(position.Name, false);

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.HorseRaceDlgs" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" x:Class="StockAnalyzerApp.CustomControl.HorseRaceDlgs.HorseRaceControl" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" DataContext="">
+             d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
@@ -29,29 +29,25 @@
                       Text="{Binding ViewModel.Indicator2Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="Cell" AutoGenerateColumns="False" CanUserAddRows="False" 
-			ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" MouseDoubleClick="Cell_MouseDoubleClick" SelectionMode="Single"
-                  >
+			ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" MouseDoubleClick="Cell_MouseDoubleClick" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" />
                 <DataGridTextColumn Header="Close" Binding="{Binding Close, Mode=OneWay, StringFormat=\{0:F3\}}"/>
-                <DataGridTemplateColumn Header="Indicator1" Width="260">
+                <DataGridTemplateColumn Header="Indicator1" Width="260" CanUserSort="True" SortMemberPath="Indicator1" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Slider Minimum="0" 
-                                    Maximum="100"
+                            <Slider Minimum="0" Maximum="100" IsEnabled="False"
                                     Value="{Binding Indicator1, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                     TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Indicator2" Width="260">
+                <DataGridTemplateColumn Header="Indicator2" Width="260" CanUserSort="True" SortMemberPath="Indicator2" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Slider Minimum="0" 
-                                    Maximum="100"
+                            <Slider Minimum="0" Maximum="100" IsEnabled="False"
                                     Value="{Binding Indicator2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                     TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}">
-                                
                             </Slider>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

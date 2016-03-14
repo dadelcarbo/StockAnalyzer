@@ -33,7 +33,6 @@ namespace StockAnalyzerApp
       private void InitializeComponent()
       {
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StockAnalyzerForm));
-
          this.mainMenu = new System.Windows.Forms.MenuStrip();
          this.fileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.newAnalysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,19 +91,19 @@ namespace StockAnalyzerApp
          this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+         this.bestReturnStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.strategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.filteredStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-         this.portofolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-         this.bestReturnStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.batchStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-         this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-         this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
          this.generateSeasonalitySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.weeklyVariationStatisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+         this.portofolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
          this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-         this.addStockBrokersOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.addStockBrokersOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.addStockCAPCAMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.newOrderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -160,8 +159,8 @@ namespace StockAnalyzerApp
          this.saveThemeStripButton = new System.Windows.Forms.ToolStripButton();
          this.defaultThemeStripButton = new System.Windows.Forms.ToolStripButton();
          this.themeComboBox = new System.Windows.Forms.ToolStripComboBox();
-         this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
          this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
+         this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
          this.graphCloseControl = new GraphCloseControl();
          this.graphScrollerControl = new GraphScrollerControl();
          this.graphIndicator1Control = new GraphRangedControl();
@@ -180,9 +179,6 @@ namespace StockAnalyzerApp
          this.drawToolStrip.SuspendLayout();
          this.themeToolStrip.SuspendLayout();
          this.SuspendLayout();
-
-
-
          // 
          // mainMenu
          // 
@@ -256,8 +252,8 @@ namespace StockAnalyzerApp
          // 
          this.saveAnalysisFileAsMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.SaveAnalysisAs;
          this.saveAnalysisFileAsMenuItem.Name = "saveAnalysisFileAsMenuItem";
-         this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-                     | System.Windows.Forms.Keys.S)));
+         this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
          this.saveAnalysisFileAsMenuItem.Size = new System.Drawing.Size(262, 22);
          this.saveAnalysisFileAsMenuItem.Text = "Save Analysis File As...";
          this.saveAnalysisFileAsMenuItem.Click += new System.EventHandler(this.saveAnalysisFileAsMenuItem_Click);
@@ -567,9 +563,10 @@ namespace StockAnalyzerApp
          this.toolStripSeparator16.Name = "toolStripSeparator16";
          this.toolStripSeparator16.Size = new System.Drawing.Size(241, 6);
          // 
-         // selectDisplayedIndicatorMenuItem
+         // showHorseRaceViewMenuItem
          // 
          this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
+         this.showHorseRaceViewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
          this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(244, 22);
          this.showHorseRaceViewMenuItem.Text = "Horse Race View";
          this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
@@ -657,92 +654,92 @@ namespace StockAnalyzerApp
          // stockScannerMenuItem
          // 
          this.stockScannerMenuItem.Name = "stockScannerMenuItem";
-         this.stockScannerMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.stockScannerMenuItem.Size = new System.Drawing.Size(240, 22);
          this.stockScannerMenuItem.Text = "Stock Scanner";
          this.stockScannerMenuItem.Click += new System.EventHandler(this.stockScannerMenuItem_Click);
          // 
          // stockStrategyScannerMenuItem
          // 
          this.stockStrategyScannerMenuItem.Name = "stockStrategyScannerMenuItem";
-         this.stockStrategyScannerMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.stockStrategyScannerMenuItem.Size = new System.Drawing.Size(240, 22);
          this.stockStrategyScannerMenuItem.Text = "Strategy Scanner";
          this.stockStrategyScannerMenuItem.Click += new System.EventHandler(this.stockStrategyScannerMenuItem_Click);
          // 
          // palmaresMenuItem
          // 
          this.palmaresMenuItem.Name = "palmaresMenuItem";
-         this.palmaresMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.palmaresMenuItem.Size = new System.Drawing.Size(240, 22);
          this.palmaresMenuItem.Text = "Palmares";
          this.palmaresMenuItem.Click += new System.EventHandler(this.palmaresMenuItem_Click);
          // 
          // toolStripSeparator10
          // 
          this.toolStripSeparator10.Name = "toolStripSeparator10";
-         this.toolStripSeparator10.Size = new System.Drawing.Size(208, 6);
+         this.toolStripSeparator10.Size = new System.Drawing.Size(237, 6);
          // 
          // bestReturnStrategySimulationMenuItem
          // 
          this.bestReturnStrategySimulationMenuItem.Name = "bestReturnStrategySimulationMenuItem";
-         this.bestReturnStrategySimulationMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.bestReturnStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
          this.bestReturnStrategySimulationMenuItem.Text = "Best Return Strategy Simulation";
          this.bestReturnStrategySimulationMenuItem.Click += new System.EventHandler(this.bestReturnStrategySimulationMenuItem_Click);
          // 
          // strategySimulationMenuItem
          // 
          this.strategySimulationMenuItem.Name = "strategySimulationMenuItem";
-         this.strategySimulationMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.strategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
          this.strategySimulationMenuItem.Text = "Strategy Simulation";
          this.strategySimulationMenuItem.Click += new System.EventHandler(this.strategySimulationMenuItem_Click);
          // 
          // filteredStrategySimulationMenuItem
          // 
          this.filteredStrategySimulationMenuItem.Name = "filteredStrategySimulationMenuItem";
-         this.filteredStrategySimulationMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.filteredStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
          this.filteredStrategySimulationMenuItem.Text = "Filtered Strategy Simulation";
          this.filteredStrategySimulationMenuItem.Click += new System.EventHandler(this.filteredStrategySimulationMenuItem_Click);
          // 
          // batchStrategySimulationMenuItem
          // 
          this.batchStrategySimulationMenuItem.Name = "batchStrategySimulationMenuItem";
-         this.batchStrategySimulationMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.batchStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
          this.batchStrategySimulationMenuItem.Text = "Batch Strategy Simulation";
          this.batchStrategySimulationMenuItem.Click += new System.EventHandler(this.batchStrategySimulationMenuItem_Click);
-         // 
-         // toolStripSeparator8
-         // 
-         this.toolStripSeparator8.Name = "toolStripSeparator8";
-         this.toolStripSeparator8.Size = new System.Drawing.Size(208, 6);
-         // 
-         // portofolioSimulationMenuItem
-         // 
-         this.portofolioSimulationMenuItem.Name = "portofolioSimulationMenuItem";
-         this.portofolioSimulationMenuItem.Size = new System.Drawing.Size(211, 22);
-         this.portofolioSimulationMenuItem.Text = "Portofolio Simulation";
-         this.portofolioSimulationMenuItem.Click += new System.EventHandler(portofolioSimulationMenuItem_Click);
-         // 
-         // toolStripSeparator20
-         // 
-         this.toolStripSeparator20.Name = "toolStripSeparator20";
-         this.toolStripSeparator20.Size = new System.Drawing.Size(208, 6);
          // 
          // generateSeasonalitySerieMenuItem
          // 
          this.generateSeasonalitySerieMenuItem.Name = "generateSeasonalitySerieMenuItem";
-         this.generateSeasonalitySerieMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.generateSeasonalitySerieMenuItem.Size = new System.Drawing.Size(240, 22);
          this.generateSeasonalitySerieMenuItem.Text = "Generate Seasonality Serie";
          this.generateSeasonalitySerieMenuItem.Click += new System.EventHandler(this.generateSeasonalitySerieMenuItem_Click);
          // 
          // weeklyVariationStatisticsMenuItem
          // 
          this.weeklyVariationStatisticsMenuItem.Name = "weeklyVariationStatisticsMenuItem";
-         this.weeklyVariationStatisticsMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.weeklyVariationStatisticsMenuItem.Size = new System.Drawing.Size(240, 22);
          this.weeklyVariationStatisticsMenuItem.Text = "Weekly Variation Statistics";
          this.weeklyVariationStatisticsMenuItem.Click += new System.EventHandler(this.generateWeeklyVariationSerieMenuItem_Click);
+         // 
+         // toolStripSeparator8
+         // 
+         this.toolStripSeparator8.Name = "toolStripSeparator8";
+         this.toolStripSeparator8.Size = new System.Drawing.Size(237, 6);
+         // 
+         // portofolioSimulationMenuItem
+         // 
+         this.portofolioSimulationMenuItem.Name = "portofolioSimulationMenuItem";
+         this.portofolioSimulationMenuItem.Size = new System.Drawing.Size(240, 22);
+         this.portofolioSimulationMenuItem.Text = "Portofolio Simulation";
+         this.portofolioSimulationMenuItem.Click += new System.EventHandler(this.portofolioSimulationMenuItem_Click);
+         // 
+         // toolStripSeparator20
+         // 
+         this.toolStripSeparator20.Name = "toolStripSeparator20";
+         this.toolStripSeparator20.Size = new System.Drawing.Size(237, 6);
          // 
          // statisticsMenuItem
          // 
          this.statisticsMenuItem.Name = "statisticsMenuItem";
-         this.statisticsMenuItem.Size = new System.Drawing.Size(211, 22);
+         this.statisticsMenuItem.Size = new System.Drawing.Size(240, 22);
          this.statisticsMenuItem.Text = "Event Statistics";
          this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
          // 
@@ -759,19 +756,19 @@ namespace StockAnalyzerApp
          this.portofolioMenuItem.Size = new System.Drawing.Size(77, 20);
          this.portofolioMenuItem.Text = "Portofolios";
          // 
-         // addStockBrokersOrdersMenuItem
-         // 
-         this.addStockBrokersOrdersMenuItem.Name = "addStockBrokersOrdersMenuItem";
-         this.addStockBrokersOrdersMenuItem.Size = new System.Drawing.Size(236, 22);
-         this.addStockBrokersOrdersMenuItem.Text = "New Orders from Stockbrokers";
-         this.addStockBrokersOrdersMenuItem.Click += new System.EventHandler(this.addOrdersMenuItem_Click);
-         // 
          // currentPortofolioMenuItem
          // 
          this.currentPortofolioMenuItem.Name = "currentPortofolioMenuItem";
          this.currentPortofolioMenuItem.Size = new System.Drawing.Size(236, 22);
          this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
          this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
+         // 
+         // addStockBrokersOrdersMenuItem
+         // 
+         this.addStockBrokersOrdersMenuItem.Name = "addStockBrokersOrdersMenuItem";
+         this.addStockBrokersOrdersMenuItem.Size = new System.Drawing.Size(236, 22);
+         this.addStockBrokersOrdersMenuItem.Text = "New Orders from Stockbrokers";
+         this.addStockBrokersOrdersMenuItem.Click += new System.EventHandler(this.addOrdersMenuItem_Click);
          // 
          // addStockCAPCAMenuItem
          // 
@@ -857,8 +854,8 @@ namespace StockAnalyzerApp
          // 
          // toolStripContainer1.TopToolStripPanel
          // 
-         this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
          this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
+         this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
          this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
          // 
          // statusStrip1
@@ -923,9 +920,9 @@ namespace StockAnalyzerApp
             this.excludeButton,
             this.commentBtn,
             this.toolStripSeparator5});
-         this.browseToolStrip.Location = new System.Drawing.Point(430, 0);
+         this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
          this.browseToolStrip.Name = "browseToolStrip";
-         this.browseToolStrip.Size = new System.Drawing.Size(545, 25);
+         this.browseToolStrip.Size = new System.Drawing.Size(517, 25);
          this.browseToolStrip.TabIndex = 0;
          // 
          // stockNameComboBox
@@ -972,7 +969,7 @@ namespace StockAnalyzerApp
          this.fastForwardBtn.Image = global::StockAnalyzerApp.Properties.Resources.Forward_icon;
          this.fastForwardBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
          this.fastForwardBtn.Name = "fastForwardBtn";
-         this.fastForwardBtn.Size = new System.Drawing.Size(23, 22);
+         this.fastForwardBtn.Size = new System.Drawing.Size(23, 20);
          this.fastForwardBtn.ToolTipText = "Forward";
          this.fastForwardBtn.Click += new System.EventHandler(this.fastForwardBtn_Click);
          // 
@@ -982,7 +979,7 @@ namespace StockAnalyzerApp
          this.zoomOutBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomOut;
          this.zoomOutBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
          this.zoomOutBtn.Name = "zoomOutBtn";
-         this.zoomOutBtn.Size = new System.Drawing.Size(23, 22);
+         this.zoomOutBtn.Size = new System.Drawing.Size(23, 20);
          this.zoomOutBtn.ToolTipText = "Zoom Out";
          this.zoomOutBtn.Click += new System.EventHandler(this.ZoomOutBtn_Click);
          // 
@@ -992,7 +989,7 @@ namespace StockAnalyzerApp
          this.zoomInBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomIn;
          this.zoomInBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
          this.zoomInBtn.Name = "zoomInBtn";
-         this.zoomInBtn.Size = new System.Drawing.Size(23, 22);
+         this.zoomInBtn.Size = new System.Drawing.Size(23, 20);
          this.zoomInBtn.ToolTipText = "Zoon In";
          this.zoomInBtn.Click += new System.EventHandler(this.ZoomInBtn_Click);
          // 
@@ -1002,7 +999,7 @@ namespace StockAnalyzerApp
          this.logScaleBtn.Image = global::StockAnalyzerApp.Properties.Resources.Log;
          this.logScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
          this.logScaleBtn.Name = "logScaleBtn";
-         this.logScaleBtn.Size = new System.Drawing.Size(23, 22);
+         this.logScaleBtn.Size = new System.Drawing.Size(23, 20);
          this.logScaleBtn.ToolTipText = "Log scale";
          this.logScaleBtn.Click += new System.EventHandler(this.logScaleBtn_Click);
          // 
@@ -1062,15 +1059,14 @@ namespace StockAnalyzerApp
             this.toolStripSeparator13,
             this.saveAnalysisToolStripButton,
             this.savePortofolioToolStripButton,
-            this.toolStripSeparator1,
             this.snapshotToolStripButton,
             this.toolStripSeparator7,
             this.addToReportStripBtn,
             this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
-         this.drawToolStrip.Location = new System.Drawing.Point(3, 0);
+         this.drawToolStrip.Location = new System.Drawing.Point(3, 25);
          this.drawToolStrip.Name = "drawToolStrip";
-         this.drawToolStrip.Size = new System.Drawing.Size(427, 25);
+         this.drawToolStrip.Size = new System.Drawing.Size(421, 25);
          this.drawToolStrip.TabIndex = 1;
          // 
          // magnetStripBtn
@@ -1279,9 +1275,9 @@ namespace StockAnalyzerApp
             this.deleteThemeStripButton,
             this.toolStripSeparator1,
             this.strategyComboBox});
-         this.themeToolStrip.Location = new System.Drawing.Point(3, 25);
+         this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
          this.themeToolStrip.Name = "themeToolStrip";
-         this.themeToolStrip.Size = new System.Drawing.Size(227, 25);
+         this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
          this.themeToolStrip.TabIndex = 2;
          // 
          // indicatorConfigStripButton
@@ -1322,14 +1318,6 @@ namespace StockAnalyzerApp
          this.themeComboBox.Sorted = true;
          this.themeComboBox.SelectedIndexChanged += new System.EventHandler(this.themeComboBox_SelectedIndexChanged);
          // 
-         // strategyComboBox
-         // 
-         this.strategyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-         this.strategyComboBox.Name = "strategyComboBox";
-         this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
-         this.strategyComboBox.Sorted = true;
-         this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
-         // 
          // deleteThemeStripButton
          // 
          this.deleteThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1339,9 +1327,16 @@ namespace StockAnalyzerApp
          this.deleteThemeStripButton.Text = "Delete selected theme";
          this.deleteThemeStripButton.Click += new System.EventHandler(this.deleteThemeStripButton_Click);
          // 
+         // strategyComboBox
+         // 
+         this.strategyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+         this.strategyComboBox.Name = "strategyComboBox";
+         this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
+         this.strategyComboBox.Sorted = true;
+         this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
+         // 
          // graphCloseControl
          // 
-         this.graphCloseControl.Parent = this;
          this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
          this.graphCloseControl.ChartMode = GraphChartMode.Line;
          this.graphCloseControl.Comments = null;
@@ -1356,7 +1351,7 @@ namespace StockAnalyzerApp
          this.graphCloseControl.HideIndicators = false;
          this.graphCloseControl.horizontalLines = null;
          this.graphCloseControl.IsLogScale = false;
-         this.graphCloseControl.Location = new System.Drawing.Point(0, 0);
+         this.graphCloseControl.Location = new System.Drawing.Point(0, 24);
          this.graphCloseControl.Magnetism = false;
          this.graphCloseControl.Name = "graphCloseControl";
          this.graphCloseControl.Portofolio = null;
@@ -1365,7 +1360,7 @@ namespace StockAnalyzerApp
          this.graphCloseControl.SecondaryPen = null;
          this.graphCloseControl.ShowGrid = false;
          this.graphCloseControl.ShowVariation = false;
-         this.graphCloseControl.Size = new System.Drawing.Size(973, 260);
+         this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
          this.graphCloseControl.StartIndex = 0;
          this.graphCloseControl.TabIndex = 0;
          this.graphCloseControl.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1373,7 +1368,6 @@ namespace StockAnalyzerApp
          // 
          // graphScrollerControl
          // 
-         this.graphScrollerControl.Parent = this;
          this.graphScrollerControl.AutoSize = true;
          this.graphScrollerControl.BackgroundColor = System.Drawing.Color.White;
          this.graphScrollerControl.ChartMode = GraphChartMode.Line;
@@ -1387,12 +1381,12 @@ namespace StockAnalyzerApp
          this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
          this.graphScrollerControl.horizontalLines = null;
          this.graphScrollerControl.IsLogScale = false;
-         this.graphScrollerControl.Location = new System.Drawing.Point(0, 0);
+         this.graphScrollerControl.Location = new System.Drawing.Point(0, 24);
          this.graphScrollerControl.Name = "graphScrollerControl";
          this.graphScrollerControl.ScaleInvisible = false;
          this.graphScrollerControl.ShowGrid = false;
          this.graphScrollerControl.ShowVariation = false;
-         this.graphScrollerControl.Size = new System.Drawing.Size(1141, 59);
+         this.graphScrollerControl.Size = new System.Drawing.Size(975, 583);
          this.graphScrollerControl.StartIndex = 0;
          this.graphScrollerControl.TabIndex = 2;
          this.graphScrollerControl.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1400,7 +1394,6 @@ namespace StockAnalyzerApp
          // 
          // graphIndicator1Control
          // 
-         this.graphIndicator1Control.Parent = this;
          this.graphIndicator1Control.AutoSize = true;
          this.graphIndicator1Control.BackgroundColor = System.Drawing.Color.White;
          this.graphIndicator1Control.ChartMode = GraphChartMode.Line;
@@ -1414,14 +1407,14 @@ namespace StockAnalyzerApp
          this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
          this.graphIndicator1Control.horizontalLines = null;
          this.graphIndicator1Control.IsLogScale = false;
-         this.graphIndicator1Control.Location = new System.Drawing.Point(0, 0);
+         this.graphIndicator1Control.Location = new System.Drawing.Point(0, 24);
          this.graphIndicator1Control.Name = "graphIndicator1Control";
          this.graphIndicator1Control.RangeMax = 0F;
          this.graphIndicator1Control.RangeMin = 0F;
          this.graphIndicator1Control.ScaleInvisible = false;
          this.graphIndicator1Control.ShowGrid = false;
          this.graphIndicator1Control.ShowVariation = false;
-         this.graphIndicator1Control.Size = new System.Drawing.Size(1141, 59);
+         this.graphIndicator1Control.Size = new System.Drawing.Size(975, 583);
          this.graphIndicator1Control.StartIndex = 0;
          this.graphIndicator1Control.TabIndex = 2;
          this.graphIndicator1Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1429,7 +1422,6 @@ namespace StockAnalyzerApp
          // 
          // graphIndicator2Control
          // 
-         this.graphIndicator2Control.Parent = this;
          this.graphIndicator2Control.AutoSize = true;
          this.graphIndicator2Control.BackgroundColor = System.Drawing.Color.White;
          this.graphIndicator2Control.ChartMode = GraphChartMode.Line;
@@ -1443,14 +1435,14 @@ namespace StockAnalyzerApp
          this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
          this.graphIndicator2Control.horizontalLines = null;
          this.graphIndicator2Control.IsLogScale = false;
-         this.graphIndicator2Control.Location = new System.Drawing.Point(0, 0);
+         this.graphIndicator2Control.Location = new System.Drawing.Point(0, 24);
          this.graphIndicator2Control.Name = "graphIndicator2Control";
          this.graphIndicator2Control.RangeMax = 0F;
          this.graphIndicator2Control.RangeMin = 0F;
          this.graphIndicator2Control.ScaleInvisible = false;
          this.graphIndicator2Control.ShowGrid = false;
          this.graphIndicator2Control.ShowVariation = false;
-         this.graphIndicator2Control.Size = new System.Drawing.Size(1141, 61);
+         this.graphIndicator2Control.Size = new System.Drawing.Size(975, 583);
          this.graphIndicator2Control.StartIndex = 0;
          this.graphIndicator2Control.TabIndex = 1;
          this.graphIndicator2Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1458,7 +1450,6 @@ namespace StockAnalyzerApp
          // 
          // graphIndicator3Control
          // 
-         this.graphIndicator3Control.Parent = this;
          this.graphIndicator3Control.AutoSize = true;
          this.graphIndicator3Control.BackgroundColor = System.Drawing.Color.White;
          this.graphIndicator3Control.ChartMode = GraphChartMode.Line;
@@ -1472,14 +1463,14 @@ namespace StockAnalyzerApp
          this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
          this.graphIndicator3Control.horizontalLines = null;
          this.graphIndicator3Control.IsLogScale = false;
-         this.graphIndicator3Control.Location = new System.Drawing.Point(0, 0);
+         this.graphIndicator3Control.Location = new System.Drawing.Point(0, 24);
          this.graphIndicator3Control.Name = "graphIndicator3Control";
          this.graphIndicator3Control.RangeMax = 0F;
          this.graphIndicator3Control.RangeMin = 0F;
          this.graphIndicator3Control.ScaleInvisible = false;
          this.graphIndicator3Control.ShowGrid = false;
          this.graphIndicator3Control.ShowVariation = false;
-         this.graphIndicator3Control.Size = new System.Drawing.Size(1141, 61);
+         this.graphIndicator3Control.Size = new System.Drawing.Size(975, 583);
          this.graphIndicator3Control.StartIndex = 0;
          this.graphIndicator3Control.TabIndex = 1;
          this.graphIndicator3Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1487,7 +1478,6 @@ namespace StockAnalyzerApp
          // 
          // graphVolumeControl
          // 
-         this.graphVolumeControl.Parent = this;
          this.graphVolumeControl.AutoSize = true;
          this.graphVolumeControl.BackgroundColor = System.Drawing.Color.White;
          this.graphVolumeControl.ChartMode = GraphChartMode.Line;
@@ -1501,12 +1491,12 @@ namespace StockAnalyzerApp
          this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
          this.graphVolumeControl.horizontalLines = null;
          this.graphVolumeControl.IsLogScale = false;
-         this.graphVolumeControl.Location = new System.Drawing.Point(0, 0);
+         this.graphVolumeControl.Location = new System.Drawing.Point(0, 24);
          this.graphVolumeControl.Name = "graphVolumeControl";
          this.graphVolumeControl.ScaleInvisible = false;
          this.graphVolumeControl.ShowGrid = false;
          this.graphVolumeControl.ShowVariation = false;
-         this.graphVolumeControl.Size = new System.Drawing.Size(1141, 59);
+         this.graphVolumeControl.Size = new System.Drawing.Size(975, 583);
          this.graphVolumeControl.StartIndex = 0;
          this.graphVolumeControl.TabIndex = 2;
          this.graphVolumeControl.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1527,6 +1517,12 @@ namespace StockAnalyzerApp
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(975, 607);
+         this.Controls.Add(this.graphCloseControl);
+         this.Controls.Add(this.graphScrollerControl);
+         this.Controls.Add(this.graphIndicator1Control);
+         this.Controls.Add(this.graphIndicator2Control);
+         this.Controls.Add(this.graphIndicator3Control);
+         this.Controls.Add(this.graphVolumeControl);
          this.Controls.Add(this.toolStripContainer1);
          this.Controls.Add(this.mainMenu);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

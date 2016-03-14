@@ -137,8 +137,12 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
       {
          this.StockPositions.Clear();
          List<StockPosition> positions = new List<StockPosition>();
+
+         StockSplashScreen.ShowSplashScreen();
+         StockSplashScreen.ProgressText = "Intializing Horse Race";
          foreach (StockSerie stockSerie in StockDictionary.StockDictionarySingleton.Values.Where(s=>s.BelongsToGroup(this.group)))
          {
+            StockSplashScreen.ProgressSubText= "Intializing " + stockSerie.StockName;
             if (stockSerie.Initialise())
             {
                positions.Add(new StockPosition() {Variation = stockSerie.Values.Last().VARIATION * 100f, StockSerie = stockSerie});
@@ -146,6 +150,8 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          }
          this.StockPositions = new ObservableCollection<StockPosition>(positions);
          this.CalculatePositions();
+
+         StockSplashScreen.CloseForm(true);
       }
 
       public event PropertyChangedEventHandler PropertyChanged;
