@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {
@@ -128,8 +129,16 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             float endClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + index - 1)).CLOSE;
             stockPosition.Close = endClose;
             stockPosition.Variation = 100f * (endClose - startClose) / startClose;
-            stockPosition.Indicator1 = stockPosition.StockSerie.GetIndicator(this.indicator1Name).Series[0][Math.Max(0, stockPosition.StockSerie.Count + index - 1)];
-            stockPosition.Indicator2 = stockPosition.StockSerie.GetIndicator(this.indicator2Name).Series[0][Math.Max(0, stockPosition.StockSerie.Count + index - 1)];
+            int currentIndex = Math.Max(0, stockPosition.StockSerie.Count + index - 1);
+            int previousIndex = Math.Max(0, stockPosition.StockSerie.Count + index - 2);
+
+            IStockIndicator indicator1 = stockPosition.StockSerie.GetIndicator(this.indicator1Name);
+            stockPosition.Indicator1 = indicator1.Series[0][currentIndex];
+            stockPosition.Indicator1Up = indicator1.Series[0][previousIndex] <= stockPosition.Indicator1 ;
+            
+            IStockIndicator indicator2 = stockPosition.StockSerie.GetIndicator(this.indicator2Name);
+            stockPosition.Indicator2 = indicator2.Series[0][currentIndex];
+            stockPosition.Indicator2Up = indicator2.Series[0][previousIndex] <= stockPosition.Indicator2;
          }
       }
 
@@ -246,6 +255,20 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          }
       }
 
+      private bool indicator1up = false;
+      public bool Indicator1Up
+      {
+         get { return indicator1up; }
+         set
+         {
+            if (indicator1up != value)
+            {
+               indicator1up = value;
+               OnPropertyChanged("Indicator1Up");
+            }
+         }
+      }
+
       private float indicator2 = 0;
       public float Indicator2
       {
@@ -256,6 +279,20 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                indicator2 = value;
                OnPropertyChanged("Indicator2");
+            }
+         }
+      }
+
+      private bool indicator2up = false;
+      public bool Indicator2Up
+      {
+         get { return indicator2up; }
+         set
+         {
+            if (indicator2up != value)
+            {
+               indicator2up = value;
+               OnPropertyChanged("Indicator2Up");
             }
          }
       }
