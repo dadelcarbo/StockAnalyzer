@@ -1339,14 +1339,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                   this.addPaintBarsToolStripMenuItem.Visible = true;
                   this.addTrailStopsToolStripMenuItem.Visible = true;
                }
-               else if (treeNode.Text == "Indicator1Graph")
-               {
-                  this.addIndicatorToolStripMenuItem.Visible = true;
-                  this.addHorizontalLineToolStripMenuItem.Visible = true;
-                  this.addPaintBarsToolStripMenuItem.Visible = false;
-                  this.addTrailStopsToolStripMenuItem.Visible = false;
-               }
-               else if (treeNode.Text.StartsWith("Indicator1"))
+               else if (treeNode.Text.StartsWith("Indicator"))
                {
                   this.addIndicatorToolStripMenuItem.Visible = true;
                   this.addHorizontalLineToolStripMenuItem.Visible = true;

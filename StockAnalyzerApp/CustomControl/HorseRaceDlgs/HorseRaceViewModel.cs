@@ -147,9 +147,14 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          this.StockPositions.Clear();
          List<StockPosition> positions = new List<StockPosition>();
 
+         var series = StockDictionary.StockDictionarySingleton.Values.Where(s=>s.BelongsToGroup(this.group));
+
+         StockSplashScreen.ProgressMin = 0;
+         StockSplashScreen.ProgressMax = series.Count();
+         StockSplashScreen.ProgressVal = 0;
          StockSplashScreen.ShowSplashScreen();
          StockSplashScreen.ProgressText = "Intializing Horse Race";
-         foreach (StockSerie stockSerie in StockDictionary.StockDictionarySingleton.Values.Where(s=>s.BelongsToGroup(this.group)))
+         foreach (StockSerie stockSerie in series)
          {
             StockSplashScreen.ProgressSubText= "Intializing " + stockSerie.StockName;
             if (stockSerie.Initialise())
