@@ -89,7 +89,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
          }
       }
-
+      
       private string indicator2Name;
 
       public string Indicator2Name
@@ -115,14 +115,19 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          maxIndex = 0;
          index = 0;
 
-         this.StockPositions = new ObservableCollection<StockPosition>();
-
          this.indicator1Name = "STOKF(100,20,75,25)";
-         this.indicator2Name = "STOKF(50,20,75,25)";
+         this.indicator2Name = "ROR(100,1,6)";
+
+         this.stockPositions = new ObservableCollection<StockPosition>();
       }
       
       private void CalculatePositions()
       {
+         float min1 = float.MaxValue;
+         float min2 = float.MaxValue;
+         float max1 = float.MinValue;
+         float max2 = float.MinValue;
+
          foreach (StockPosition stockPosition in this.StockPositions)
          {
             float startClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + minIndex - 1)).CLOSE;
@@ -134,11 +139,53 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
             IStockIndicator indicator1 = stockPosition.StockSerie.GetIndicator(this.indicator1Name);
             stockPosition.Indicator1 = indicator1.Series[0][currentIndex];
-            stockPosition.Indicator1Up = indicator1.Series[0][previousIndex] <= stockPosition.Indicator1 ;
+            stockPosition.Indicator1Up = indicator1.Series[0][previousIndex] <= stockPosition.Indicator1;
+            min1 = Math.Min(min1, stockPosition.Indicator1);
+            max1 = Math.Max(max1, stockPosition.Indicator1);
             
             IStockIndicator indicator2 = stockPosition.StockSerie.GetIndicator(this.indicator2Name);
             stockPosition.Indicator2 = indicator2.Series[0][currentIndex];
             stockPosition.Indicator2Up = indicator2.Series[0][previousIndex] <= stockPosition.Indicator2;
+            min2 = Math.Min(min2, stockPosition.Indicator2);
+            max2 = Math.Max(max2, stockPosition.Indicator2);
+         }
+
+         IStockIndicator indicator = StockIndicatorManager.CreateIndicator(this.Indicator1Name);
+         if (indicator is IRange)
+         {
+            IRange range = indicator as IRange;
+            foreach (var position in this.stockPositions)
+            {
+               position.MinIndicator1 = range.Min;
+               position.MaxIndicator1 = range.Max;
+            }
+         }
+         else
+         {
+            foreach (var position in this.stockPositions)
+            {
+               position.MinIndicator1 = min1;
+               position.MaxIndicator1 = max1;
+            }
+         }
+
+         indicator = StockIndicatorManager.CreateIndicator(this.Indicator2Name);
+         if (indicator is IRange)
+         {
+            IRange range = indicator as IRange;
+            foreach (var position in this.stockPositions)
+            {
+               position.MinIndicator2 = range.Min;
+               position.MaxIndicator2 = range.Max;
+            }
+         }
+         else
+         {
+            foreach (var position in this.stockPositions)
+            {
+               position.MinIndicator2 = min2;
+               position.MaxIndicator2 = max2;
+            }
          }
       }
 
@@ -163,7 +210,6 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
          }
          this.StockPositions = new ObservableCollection<StockPosition>(positions);
-         this.CalculatePositions();
 
          StockSplashScreen.CloseForm(true);
       }
@@ -274,6 +320,59 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          }
       }
 
+      private float minIndicator1 = 0;
+      public float MinIndicator1
+      {
+         get { return minIndicator1; }
+         set
+         {
+            if (minIndicator1 != value)
+            {
+               minIndicator1 = value;
+               OnPropertyChanged("MinIndicator1");
+            }
+         }
+      }
+      private float maxIndicator1 = 0;
+      public float MaxIndicator1
+      {
+         get { return maxIndicator1; }
+         set
+         {
+            if (maxIndicator1 != value)
+            {
+               maxIndicator1 = value;
+               OnPropertyChanged("MaxIndicator1");
+            }
+         }
+      }
+
+      private float minIndicator2 = 0;
+      public float MinIndicator2
+      {
+         get { return minIndicator2; }
+         set
+         {
+            if (minIndicator2 != value)
+            {
+               minIndicator2 = value;
+               OnPropertyChanged("MinIndicator2");
+            }
+         }
+      }
+      private float maxIndicator2 = 0;
+      public float MaxIndicator2
+      {
+         get { return maxIndicator2; }
+         set
+         {
+            if (maxIndicator2 != value)
+            {
+               maxIndicator2 = value;
+               OnPropertyChanged("MaxIndicator2");
+            }
+         }
+      }
       private float indicator2 = 0;
       public float Indicator2
       {
@@ -318,12 +417,13 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
       public event PropertyChangedEventHandler PropertyChanged;
 
-      public void OnPropertyChanged(string name)
+      private void OnPropertyChanged(string name)
       {
          if (PropertyChanged != null)
          {
             this.PropertyChanged(this, new PropertyChangedEventArgs(name));
          }
       }
+
    }
 }

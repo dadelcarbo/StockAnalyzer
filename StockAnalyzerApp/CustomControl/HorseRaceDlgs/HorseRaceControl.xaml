@@ -112,7 +112,7 @@
                 <DataGridTemplateColumn Header="Indicator1" Width="260" CanUserSort="True" SortMemberPath="Indicator1" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Slider Minimum="0" Maximum="100" IsEnabled="True" Style="{StaticResource HorseRaceSlider}"  Width="200" 
+                            <Slider Minimum="{Binding MinIndicator1}" Maximum="{Binding MaxIndicator1}" IsEnabled="True" Style="{StaticResource HorseRaceSlider}"  Width="200" 
                                     Value="{Binding Indicator1, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                     TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}">
                             </Slider>
@@ -140,9 +140,9 @@
                 <DataGridTemplateColumn Header="Indicator2" Width="260" CanUserSort="True" SortMemberPath="Indicator2" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Slider Minimum="0" Maximum="100" IsEnabled="True" Style="{StaticResource HorseRaceSlider}"  Width="200" 
-                                    Value="{Binding Indicator2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                    TickFrequency="25" TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}">
+                            <Slider Minimum="{Binding MinIndicator2}" Maximum="{Binding MaxIndicator2}"  IsEnabled="True" Style="{StaticResource HorseRaceSlider}"  Width="200" 
+                                    TickFrequency="20" Value="{Binding Indicator2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TickPlacement="TopLeft" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}">
                             </Slider>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

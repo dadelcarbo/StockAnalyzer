@@ -5867,11 +5867,22 @@ border:1px solid black;
          }
       }
 
+      #region HORSE RACE DIALOG
+      HorseRaceDlg horseRaceDlg = null;
       void showHorseRaceViewMenuItem_Click(object sender, System.EventArgs e)
       {
-         HorseRaceDlg horseRaceDlg = new HorseRaceDlg(StockSerie.Groups.COUNTRY.ToString());
-         horseRaceDlg.ShowDialog();
+         if (horseRaceDlg==null){
+             horseRaceDlg = new HorseRaceDlg(StockSerie.Groups.COUNTRY.ToString());
+             horseRaceDlg.Disposed +=horseRaceDlg_Disposed;
+         }
+         horseRaceDlg.Show();
       }
+
+      void horseRaceDlg_Disposed(object sender, EventArgs e)
+      {
+         this.horseRaceDlg = null;
+      }
+      #endregion
 
       private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
       {
