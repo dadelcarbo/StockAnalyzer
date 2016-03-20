@@ -35,7 +35,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          if (this.SelectedStockChanged != null && (sender as DataGrid).SelectedItem is StockPosition)
          {
             StockPosition position = (sender as DataGrid).SelectedItem as StockPosition;
-            this.SelectedStockChanged(position.Name, false);
+            this.SelectedStockChanged(position.Name, true);
          }
       }
    }

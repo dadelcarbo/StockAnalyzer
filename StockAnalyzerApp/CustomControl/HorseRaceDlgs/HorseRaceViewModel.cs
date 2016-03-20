@@ -56,7 +56,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
          }
       }
 
-      private string group = "CAC40";
+      private string group = string.Empty;
       public string Group
       {
          get { return group; }
@@ -67,6 +67,20 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
                group = value;
                this.InitPositions();
                OnPropertyChanged("Group");
+            }
+         }
+      }
+      private StockSerie.StockBarDuration barDuration = StockSerie.StockBarDuration.Daily;
+      public StockSerie.StockBarDuration BarDuration
+      {
+         get { return barDuration; }
+         set
+         {
+            if (barDuration != value)
+            {
+               barDuration = value;
+               this.InitPositions();
+               OnPropertyChanged("BarDuration");
             }
          }
       } 
@@ -206,6 +220,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             StockSplashScreen.ProgressSubText= "Intializing " + stockSerie.StockName;
             if (stockSerie.Initialise())
             {
+               stockSerie.BarDuration = this.barDuration;
                positions.Add(new StockPosition() {Variation = stockSerie.Values.Last().VARIATION * 100f, StockSerie = stockSerie});
             }
          }

@@ -54,6 +54,7 @@ namespace StockAnalyzer.StockClasses
          EURO_B,
          EURO_C,
          ALTERNEXT,
+         SRD,
          CAC_ALL,
          DAX30,
          FTSE100,
@@ -5612,6 +5613,8 @@ namespace StockAnalyzer.StockClasses
                return (this.StockGroup == Groups.EURO_A);
             case Groups.CAC_ALL:
                return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+            case Groups.SRD:
+               return (this.StockGroup == Groups.SRD || ABCDataProvider.BelongsToCAC40(this));
             default:
                return this.StockGroup == group;
          }

@@ -5871,9 +5871,10 @@ border:1px solid black;
       HorseRaceDlg horseRaceDlg = null;
       void showHorseRaceViewMenuItem_Click(object sender, System.EventArgs e)
       {
-         if (horseRaceDlg==null){
-             horseRaceDlg = new HorseRaceDlg(StockSerie.Groups.COUNTRY.ToString());
-             horseRaceDlg.Disposed +=horseRaceDlg_Disposed;
+         if (horseRaceDlg == null)
+         {
+            horseRaceDlg = new HorseRaceDlg(this.selectedGroup.ToString(), this.BarDuration);
+            horseRaceDlg.Disposed += horseRaceDlg_Disposed;
          }
          horseRaceDlg.Show();
       }
@@ -5926,9 +5927,9 @@ border:1px solid black;
          return this.themeDictionary[this.CurrentTheme];
       }
 
-      event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
-      event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;
-      event NotifyStrategyChangedEventHandler StrategyChanged;
+      public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
+      public event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;
+      public event NotifyStrategyChangedEventHandler StrategyChanged;
 
       void StockAnalyzerForm_StrategyChanged(string newStrategy)
       {
