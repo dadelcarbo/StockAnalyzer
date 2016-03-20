@@ -358,7 +358,6 @@ namespace StockAnalyzerApp
 
             StockSplashScreen.ProgressText = "Generating SRD Equal Weight...";
             //GenerateCACEqualWeight();
-            GenerateSRDEqualWeight();
 
             //GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
             //GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
