@@ -324,7 +324,10 @@ namespace StockAnalyzerApp
                ParseIntraday();
             }
 
-            // Generate breadth indicator1Name
+
+            GenerateSRDEqualWeight();
+
+            // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
                foreach (
@@ -353,8 +356,9 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
             //GenerateVixPremium();
 
-            StockSplashScreen.ProgressText = "Generating CAC Equal Weight...";
+            StockSplashScreen.ProgressText = "Generating SRD Equal Weight...";
             //GenerateCACEqualWeight();
+            GenerateSRDEqualWeight();
 
             //GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
             //GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
@@ -2936,6 +2940,40 @@ namespace StockAnalyzerApp
             cacIndex++;
          }
          StockDictionary.Add(serieName, cacEWSerie);
+      }
+      private void GenerateSRDEqualWeight()
+      {
+         var cacSeries =
+            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
+         string serieName = "SRD";
+         StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES,StockDataProvider.Generated);
+         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         cacSerie.Initialise();
+
+         float value = 1000f;
+         foreach (DateTime date in cacSerie.Keys)
+         {
+            float var = 0.0f;
+            float volume = 0.0f;
+            int count = 0;
+            foreach (StockSerie serie in cacSeries)
+            {
+               if (serie.ContainsKey(date))
+               {
+                  count++;
+                  StockDailyValue dailyValue = serie[date];
+                  var += dailyValue.VARIATION;
+                  volume += dailyValue.CLOSE * dailyValue.VOLUME;
+               }
+            }
+            if (count > 0)
+            {
+               value += value * (var / count);
+               volume /= count;
+               srdSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
+            }
+         }
+         StockDictionary.Add(serieName, srdSerie);
       }
       private void GenerateIndexNoDay(string stockName, DayOfWeek dayOfWeek)
       {
