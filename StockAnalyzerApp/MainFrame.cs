@@ -2942,8 +2942,7 @@ namespace StockAnalyzerApp
       }
       private void GenerateSRDEqualWeight()
       {
-         var cacSeries =
-            this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
          string serieName = "SRD";
          StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES,StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];

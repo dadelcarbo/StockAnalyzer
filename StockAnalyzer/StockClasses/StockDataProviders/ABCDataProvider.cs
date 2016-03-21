@@ -196,11 +196,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      if (!stockDictionary.ContainsKey(row[1]))
                      {
                         stockDictionary.Add(row[1], stockSerie);
-                        if (stockSerie.StockGroup == StockSerie.Groups.CAC40)
-                        {
-                           StockSerie stockSerieRS = new StockSerie(row[1] + "_RS", row[3] + "_RS", StockSerie.Groups.CAC40_RS, StockDataProvider.ABC);
-                           stockDictionary.Add(stockSerieRS.StockName, stockSerieRS);
-                        }
+                        //if (stockSerie.StockGroup == StockSerie.Groups.CAC40)
+                        //{
+                        //   StockSerie stockSerieRS = new StockSerie(row[1] + "_RS", row[3] + "_RS", StockSerie.Groups.CAC40_RS, StockDataProvider.ABC);
+                        //   stockDictionary.Add(stockSerieRS.StockName, stockSerieRS);
+                        //}
                      }
                      else
                      {
@@ -223,13 +223,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName  + " - " + stockSerie.Count);
          bool res = false;
 
-         if (stockSerie.StockGroup == StockSerie.Groups.CAC40_RS)
-         {
-            StockSerie baseSerie = stockDictionary[stockSerie.StockName.Replace("_RS", "")];
-            StockSerie cacSerie = stockDictionary["CAC40"];
+         //if (stockSerie.StockGroup == StockSerie.Groups.CAC40_RS)
+         //{
+         //   StockSerie baseSerie = stockDictionary[stockSerie.StockName.Replace("_RS", "")];
+         //   StockSerie cacSerie = stockDictionary["CAC40"];
 
-            return stockSerie.GenerateRelativeStrenthStockSerie(baseSerie, cacSerie);
-         }
+         //   return stockSerie.GenerateRelativeStrenthStockSerie(baseSerie, cacSerie);
+         //}
          string abcGroup = null;
 
          switch (stockSerie.StockGroup)
@@ -237,18 +237,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             case StockSerie.Groups.SRD:
                abcGroup = "srdp";
                break;
-            case StockSerie.Groups.EURO_A:
-               abcGroup = "eurolistap";
-               break;
-            case StockSerie.Groups.EURO_B:
-               abcGroup = "eurolistbp";
-               break;
-            case StockSerie.Groups.EURO_C:
-               abcGroup = "eurolistcp";
-               break;
-            case StockSerie.Groups.ALTERNEXT:
-               abcGroup = "alterp";
-               break;
+            //case StockSerie.Groups.EURO_A:
+            //   abcGroup = "eurolistap";
+            //   break;
+            //case StockSerie.Groups.EURO_B:
+            //   abcGroup = "eurolistbp";
+            //   break;
+            //case StockSerie.Groups.EURO_C:
+            //   abcGroup = "eurolistcp";
+            //   break;
+            //case StockSerie.Groups.ALTERNEXT:
+            //   abcGroup = "alterp";
+            //   break;
             case StockSerie.Groups.SECTORS_CAC:
                abcGroup = "indicessecp";
                break;
@@ -903,6 +903,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          bool success = true;
          try
          {
+            string fileName = destFolder + @"\" + abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
+            if (File.Exists(fileName)) return true;
+
             // Send POST request
             string url = "http://www.abcbourse.com/download/historiques.aspx";
             if (dailyViewState == string.Empty)
@@ -959,8 +962,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             newStream.Write(data, 0, data.Length);
             newStream.Close();
 
-            string fileName = abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
-            success = SaveResponseToFile(destFolder + @"\" + fileName, req);
+            success = SaveResponseToFile(fileName, req);
          }
          catch (System.Exception ex)
          {

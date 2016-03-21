@@ -205,6 +205,10 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
       private void InitPositions()
       {
+         if (string.IsNullOrEmpty(this.group))
+         {
+            return;
+         }
          this.StockPositions.Clear();
          List<StockPosition> positions = new List<StockPosition>();
 

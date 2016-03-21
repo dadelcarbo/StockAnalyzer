@@ -160,7 +160,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                Random rand = new Random(DateTime.Now.Millisecond);
                var series =
-                  StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.EURO_A))
+                  StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.SRD))
                      .Select(s => s.StockName);
 
                StockSerie serie = null;

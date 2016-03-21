@@ -48,12 +48,12 @@ namespace StockAnalyzer.StockClasses
          NONE = 0,
          COUNTRY,
          CAC40,
-         CAC40_RS,
-         SBF120,
-         EURO_A,
-         EURO_B,
-         EURO_C,
-         ALTERNEXT,
+         //CAC40_RS,
+         //SBF120,
+         //EURO_A,
+         //EURO_B,
+         //EURO_C,
+         //ALTERNEXT,
          SRD,
          CAC_ALL,
          DAX30,
@@ -5608,13 +5608,13 @@ namespace StockAnalyzer.StockClasses
             case Groups.COT:
                return this.CotSerie != null;
             case Groups.CAC40:
-               return ABCDataProvider.BelongsToCAC40(this);
-            case Groups.SBF120:
-               return (this.StockGroup == Groups.EURO_A);
-            case Groups.CAC_ALL:
-               return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+               return this.StockGroup == Groups.SRD && ABCDataProvider.BelongsToCAC40(this);
+            //case Groups.SBF120:
+            //   return (this.StockGroup == Groups.EURO_A);
+            //case Groups.CAC_ALL:
+            //   return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
             case Groups.SRD:
-               return (this.StockGroup == Groups.SRD || ABCDataProvider.BelongsToCAC40(this));
+               return this.StockGroup == Groups.SRD;
             default:
                return this.StockGroup == group;
          }

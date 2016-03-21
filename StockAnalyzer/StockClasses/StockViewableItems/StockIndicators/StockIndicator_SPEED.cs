@@ -14,29 +14,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
 
-      public override string Name
-      {
-         get { return "SPEED(" + this.Parameters[0].ToString() + ")"; }
-      }
-
-      public override string Definition
-      {
-         get { return "SPEED(int Period)"; }
-      }
       public override object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20 }; }
+         get { return new Object[] { "ER(20_1_1)", 12 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(2, 500)   }; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period" }; }
+         get { return new string[] { "Indicator", "Period" }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "SPEED(" + this.Parameters[0].ToString() + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "SPEED(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -52,10 +43,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie emaSerie = stockSerie.GetIndicator("EMA(" + this.parameters[0].ToString() + ")").Series[0];
-         emaSerie.CalculateRelativeTrend();
+         FloatSerie indicatorSerie = stockSerie.GetIndicator(this.parameters[0].ToString()).Series[0];
+         FloatSerie speedSerie = indicatorSerie - indicatorSerie.CalculateEMA((int) this.parameters[1]);
 
-         this.series[0] = emaSerie.CalculateRelativeTrend().Mult(100.0f);
+         this.series[0] = speedSerie;
          this.Series[0].Name = this.Name;
       }
 
