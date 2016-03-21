@@ -60,7 +60,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          return res;
       }
-
       private bool GenerateBreadthData(string rootFolder, StockSerie stockSerie)
       {
          string[] row = stockSerie.StockName.Split('.');
@@ -85,6 +84,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             //   return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Bar_1_EMA5, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "ROCEX":
                return stockDictionary.GenerateBullishROCEXSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+            case "McClellan":
+               return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "MM":
                return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "MYOSC":

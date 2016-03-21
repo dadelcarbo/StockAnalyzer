@@ -324,7 +324,7 @@ namespace StockAnalyzerApp
                ParseIntraday();
             }
 
-
+            StockSplashScreen.ProgressText = "Generating SRD Equal Weight...";
             GenerateSRDEqualWeight();
 
             // Generate breadth 
@@ -356,7 +356,6 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
             //GenerateVixPremium();
 
-            StockSplashScreen.ProgressText = "Generating SRD Equal Weight...";
             //GenerateCACEqualWeight();
 
             //GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
@@ -2944,7 +2943,7 @@ namespace StockAnalyzerApp
       {
          var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
          string serieName = "SRD";
-         StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES,StockDataProvider.Generated);
+         StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
          StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
 
