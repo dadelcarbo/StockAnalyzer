@@ -173,7 +173,7 @@ namespace StockAnalyzer.StockDrawing
             return Math.Min(segment1.Length(), segment2.Length());
          }
       }
-      public bool ContainsAbsciss(float x)
+      public override bool ContainsAbsciss(float x)
       {
          return (x >= Math.Min(this.Point1.X, this.Point2.X)) && (x <= Math.Max(this.Point1.X, this.Point2.X));
       }

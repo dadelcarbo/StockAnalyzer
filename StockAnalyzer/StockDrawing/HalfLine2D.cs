@@ -119,7 +119,7 @@ namespace StockAnalyzer.StockDrawing
          return pointArray.Take(nbPoints).ToArray();
       }
 
-      public bool ContainsAbsciss(float x)
+      public override bool ContainsAbsciss(float x)
       {
          if (this.VX == 0 && Point1.X == x)
          {

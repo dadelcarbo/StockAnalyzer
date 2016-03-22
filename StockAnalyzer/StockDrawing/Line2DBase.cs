@@ -74,6 +74,10 @@ namespace StockAnalyzer.StockDrawing
       public abstract PointF Intersection(Line2D line);
       public abstract PointF[] Intersection(Rectangle2D rect);
       public abstract float DistanceTo(PointF point);
+      public virtual bool ContainsAbsciss(float x)
+      {
+         return VX==0? x == Point1.X : true;
+      }
       public bool IsAbovePoint(PointF point)
       {
          Line2D line = new Line2D(point, 0.0f, 1.0f);

@@ -238,6 +238,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_COTCOMMERCIAL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DRAWING.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINEHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRUE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_QQE.cs" />
