@@ -20,12 +20,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
       
       public override string[] ParameterNames
       {
-         get { return new string[] { "EMAPeriod" }; }
+         get { return new string[] { "HLPeriod" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 1 }; }
+         get { return new Object[] { 2 }; }
       }
       public override ParamRange[] ParameterRanges
       {
@@ -39,7 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
          {
             if (eventNames == null)
             {
-               eventNames = new string[] {"SupportBroken", "ResistanceBroken"};
+               eventNames = new string[] {"ResistanceBroken", "SupportBroken"};
             }
             return eventNames;
          }
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
          {
             if (seriePens == null)
             {
-               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Green), new Pen(Color.Red) };
+               seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red)};
                foreach (Pen pen in seriePens)
                {
                   pen.Width = 2;
@@ -71,8 +71,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
       {
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
-
-         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.parameters[0]);
+         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
          if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
          {
@@ -88,12 +87,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                      if (closeSerie[i - 1] < itemPreviousValue && closeSerie[i] > itemPreviousValue)
                      {
                         // Resistance Broken
-                        this.Events[1][i] = true;
+                        this.Events[0][i] = true;
                      }
                      else if (closeSerie[i - 1] > itemPreviousValue && closeSerie[i] < itemPreviousValue)
                      {
                         // Support Broken
-                        this.Events[0][i] = true;
+                        this.Events[1][i] = true;
                      }
                   }
                }
