@@ -191,7 +191,7 @@ namespace StockAnalyzer.StockClasses
       [XmlIgnore]
       protected IStockTrailStop TrailStopCache { get; set; }
       [XmlIgnore]
-      protected IStockPaintBar PaintBarCache { get; set; }
+      public IStockPaintBar PaintBarCache { get; set; }
       [XmlIgnore]
       protected Dictionary<string, IStockDecorator> DecoratorCache { get; set; }
       [XmlIgnore]

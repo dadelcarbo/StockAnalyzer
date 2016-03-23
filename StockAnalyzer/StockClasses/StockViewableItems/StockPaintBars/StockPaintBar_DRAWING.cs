@@ -84,12 +84,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                   {
                      float itemValue = item.ValueAtX(i);
                      float itemPreviousValue = item.ValueAtX(i - 1);
-                     if (closeSerie[i - 1] < itemPreviousValue && closeSerie[i] > itemPreviousValue)
+                     if (closeSerie[i - 1] < itemPreviousValue && closeSerie[i] > itemValue)
                      {
                         // Resistance Broken
                         this.Events[0][i] = true;
                      }
-                     else if (closeSerie[i - 1] > itemPreviousValue && closeSerie[i] < itemPreviousValue)
+                     else if (closeSerie[i - 1] > itemPreviousValue && closeSerie[i] < itemValue)
                      {
                         // Support Broken
                         this.Events[1][i] = true;

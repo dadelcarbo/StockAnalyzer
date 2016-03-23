@@ -1669,6 +1669,7 @@ namespace StockAnalyzerApp
 
             if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
             {
+               this.currentStockSerie.PaintBarCache = null;
                if (this.currentStockSerie.Initialise())
                {
                   this.ApplyTheme();
