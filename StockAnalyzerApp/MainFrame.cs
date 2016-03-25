@@ -2942,10 +2942,11 @@ namespace StockAnalyzerApp
       }
       private void GenerateSRDEqualWeight()
       {
-         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
          string serieName = "SRD";
          StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
-         StockSerie cacSerie = this.StockDictionary["CAC40"];
+         /*
+         var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
+   StockSerie cacSerie = this.StockDictionary["CAC40"];
          cacSerie.Initialise();
 
          float value = 1000f;
@@ -2970,7 +2971,7 @@ namespace StockAnalyzerApp
                volume /= count;
                srdSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
             }
-         }
+         }*/
          StockDictionary.Add(serieName, srdSerie);
       }
       private void GenerateIndexNoDay(string stockName, DayOfWeek dayOfWeek)
@@ -4019,6 +4020,11 @@ namespace StockAnalyzerApp
       #endregion VIEW MENU HANDLERS
 
       #region PORTOFOLIO MENU HANDERS
+      public void importBinckOrders_Click(object sender, EventArgs e)
+      {
+         ImportBinckOrderDlg importOrderDlg = new ImportBinckOrderDlg();
+         importOrderDlg.ShowDialog();
+      }
 
       public void newOrderMenuItem_Click(object sender, EventArgs e)
       {

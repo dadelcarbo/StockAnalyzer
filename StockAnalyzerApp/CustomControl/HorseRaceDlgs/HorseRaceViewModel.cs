@@ -9,7 +9,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {
-   public class HorseRaceViewModel : INotifyPropertyChanged
+   public class HorseRaceViewModel : NotifyPropertyChanged
    {
       private int maxIndex = 0;
 
@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             if (maxIndex != value)
             {
                maxIndex = value;
-               OnPropertyChanged("MaxIndex");
+               this.OnPropertyChanged("MaxIndex");
             }
          }
       }
@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             if (minIndex != value)
             {
                minIndex = value;
-               OnPropertyChanged("MinIndex");
+               this.OnPropertyChanged("MinIndex");
             }
          }
       }
@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                index = value;
                this.CalculatePositions();
-               OnPropertyChanged("Index");
+               this.OnPropertyChanged("Index");
             }
          }
       }
@@ -66,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                group = value;
                this.InitPositions();
-               OnPropertyChanged("Group");
+               this.OnPropertyChanged("Group");
             }
          }
       }
@@ -80,13 +80,13 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                barDuration = value;
                this.InitPositions();
-               OnPropertyChanged("BarDuration");
+               this.OnPropertyChanged("BarDuration");
             }
          }
       } 
       
       static List<string> groups = StockDictionary.StockDictionarySingleton.GetValidGroupNames();
-      public List<string> Groups { get { return groups; } }
+      public List<string> Groups { get { return HorseRaceViewModel.groups; } }
 
       private string indicator1Name;
 
@@ -99,7 +99,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                indicator1Name = value;
                this.CalculatePositions();
-               OnPropertyChanged("Indicator1Name");
+               this.OnPropertyChanged("Indicator1Name");
             }
          }
       }
@@ -115,13 +115,13 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                indicator2Name = value;
                this.CalculatePositions();
-               OnPropertyChanged("Indicator2Name");
+               this.OnPropertyChanged("Indicator2Name");
             }
          }
       }
 
       static List<int> ranges = new List<int>(){-1,-5,-20,-100,-200}; 
-      public List<int> Ranges { get { return ranges; } }
+      public List<int> Ranges { get { return HorseRaceViewModel.ranges; } }
 
       public HorseRaceViewModel()
       {
@@ -232,17 +232,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
          StockSplashScreen.CloseForm(true);
       }
-
-      public event PropertyChangedEventHandler PropertyChanged;
-
-      public void OnPropertyChanged(string name)
-      {
-         if (PropertyChanged != null)
-         {
-            this.PropertyChanged(this, new PropertyChangedEventArgs(name));
-         }
-      }
-
+      
       private List<StockSerie> stockList;
 
       public List<StockSerie> StockList
@@ -254,7 +244,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                stockList = value;
                this.InitPositions();
-               OnPropertyChanged("StockList");
+               this.OnPropertyChanged("StockList");
             }
          }
       }
@@ -270,7 +260,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             {
                stockPositions = value;
                this.CalculatePositions();
-               OnPropertyChanged("StockPositions");
+               this.OnPropertyChanged("StockPositions");
             }
          }
       }
