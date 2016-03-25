@@ -28,5 +28,13 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
          InitializeComponent();
       }
+
+      private void Button_Click(object sender, RoutedEventArgs e)
+      {
+         Cursor cursor = this.Cursor;
+         this.Cursor = Cursors.Wait;
+         this.ViewModel.Import();
+         this.Cursor = cursor;
+      }
    }
 }

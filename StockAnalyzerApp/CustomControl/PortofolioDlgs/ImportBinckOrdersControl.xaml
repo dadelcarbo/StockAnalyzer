@@ -17,9 +17,39 @@
             <Label Content="Portfolio"/>
             <ComboBox ItemsSource="{Binding ViewModel.Portfolios, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"
                       SelectedValue="{Binding ViewModel.SelectedPortfolio, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"/>
+            <Button Content="Import" Click="Button_Click"/>
         </StackPanel>
-        <TextBox Grid.Row="1" HorizontalAlignment="Stretch"/>
-        <DataGrid Grid.Row="2" HorizontalAlignment="Stretch"
-                  ItemsSource="{Binding ViewModel.Orders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"/>
+        <TextBox Grid.Row="1" HorizontalAlignment="Stretch"
+                 Text="{Binding ViewModel.Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}" IsReadOnlyCaretVisible="True"/>
+        <DataGrid Grid.Row="2" HorizontalAlignment="Stretch" AutoGenerateColumns="False" 
+                  ItemsSource="{Binding ViewModel.Orders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortDirection="Descending"/>
+                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True" SortMemberPath="StockName">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding ViewModel.StockNames, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"
+                      Text="{Binding StockName,UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="False">
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Style.Triggers>
+                                            <DataTrigger  Binding="{Binding IsInList}" Value="false">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Number" Binding="{Binding Number, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding Value, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Fee" Binding="{Binding Fee, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="ExecutionDate" Binding="{Binding ExecutionDate, Mode=OneWay}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

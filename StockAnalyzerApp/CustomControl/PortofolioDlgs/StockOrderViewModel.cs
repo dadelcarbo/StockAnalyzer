@@ -6,72 +6,63 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
 using StockAnalyzerSettings.Properties;
+using StockAnalyzer.Portofolio;
 
 namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 {
-   public class StockOrderViewModel : INotifyPropertyChanged
+   public class StockOrderViewModel : NotifyPropertyChanged
    {
-      public StockOrderViewModel(float amount)
+      public StockOrderViewModel(StockOrder stockOrder)
       {
-         this.amount = amount;
+         this.order = stockOrder;
       }
 
       //private StockSerie stockSerie;
 
-      public int Qty
+      public int ID { get { return order.ID; } }
+
+      public int Number
       {
-         get { return (int)Math.Floor(Amount / Buy); }
+         get { return order.Number; }
       }
-
-      public float PortofolioValue { get { return Settings.Default.PortofolioValue; } set { Settings.Default.PortofolioValue = value; NotifyAllChanged(); } }
-
-      private float buy;
-      public float Buy
+      public float Value
       {
-         get { return buy; }
-         set
-         {
-            buy = value;
-            NotifyAllChanged();
-         }
+         get { return order.Value; }
       }
-
-      private float amount;
-      public float Amount { get { return amount; } set { amount = value; NotifyAllChanged(); } }
-
       public float Fee
+      {
+         get { return order.Fee; }
+      }
+      public string ExecutionDate
+      {
+         get { return order.ExecutionDate.ToShortDateString(); }
+      }
+      public StockOrder.OrderType Type
+      {
+         get { return order.Type; }
+      }
+      public string StockName
       {
          get
          {
-            if (Amount < 1000) return 2.5f;
-            else return 5.0f;
+            return order.StockName;
          }
-      }
-
-      public void NotifyAllChanged()
-      {
-         Type type = this.GetType();
-         PropertyInfo[] properties = type.GetProperties();
-
-         if (this.PropertyChanged != null)
+         set
          {
-            foreach (PropertyInfo property in properties)
-            {
-               this.OnPropertyChanged(property.Name);
-            }
+            order.StockName = value;
+            OnPropertyChanged("StockName");
+            OnPropertyChanged("IsInList");
          }
       }
-
-      // Create the OnPropertyChanged method to raise the event
-      protected void OnPropertyChanged(string name)
+      public bool IsInList
       {
-         if (PropertyChanged != null)
+         get
          {
-            PropertyChanged(this, new PropertyChangedEventArgs(name));
+            return StockDictionary.StockDictionarySingleton.ContainsKey(order.StockName);
          }
       }
 
-      public event PropertyChangedEventHandler PropertyChanged;
+
+      private StockOrder order;
    }
-
 }

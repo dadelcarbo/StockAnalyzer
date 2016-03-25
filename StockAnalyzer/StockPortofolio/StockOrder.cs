@@ -71,6 +71,21 @@ namespace StockAnalyzer.Portofolio
          stockOrder.IsShortOrder = isShortOrder;
          return stockOrder;
       }
+      public static StockOrder CreateExecutedOrder(int id, string stockName, OrderType type, bool isShortOrder, DateTime creationDate, DateTime executionDate, int number, float value, float fee)
+      {
+         StockOrder stockOrder = new StockOrder(id);
+         stockOrder.StockName = stockName;
+         stockOrder.Type = type;
+         stockOrder.CreationDate = creationDate;
+         stockOrder.ExecutionDate = executionDate;
+         stockOrder.Number = number;
+         stockOrder.ExecutedNumber = number;
+         stockOrder.Value = value;
+         stockOrder.Fee = fee;
+         stockOrder.State = OrderStatus.Executed;
+         stockOrder.IsShortOrder = isShortOrder;
+         return stockOrder;
+      }
       public static StockOrder CreateBuyTrailingStockOrder(string stockName, DateTime creationDate, DateTime expiryDate, float amountToInvest, float benchmark, float gapInPoints, StockDailyValue dailyValue)
       {
          StockOrder stockOrder = new StockOrder();
@@ -320,6 +335,17 @@ namespace StockAnalyzer.Portofolio
          Fee = 0.0f;
          // default constuctor doesn't set en ID
          ID = getNextID();
+         this.ExecutedNumber = 0;
+      }
+      public StockOrder(int id)
+      {
+         StockName = string.Empty;
+         Type = OrderType.BuyAtMarketClose;
+         ExecutionDate = DateTime.Today;
+         Number = 0;
+         Value = 0.0f;
+         Fee = 0.0f;
+         ID = id;
          this.ExecutedNumber = 0;
       }
       private StockOrder(OrderType type, string stockName, DateTime creationDate, int number, float benchmark, float gapInPoints)
