@@ -14,6 +14,9 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       public ImportBinckOrderDlg()
       {
          InitializeComponent();
+
+         (this.elementHost1.Child as ImportBinckOrdersControl).ParentDialog = this;
+         this.DialogResult = System.Windows.Forms.DialogResult.Ignore;
       }
    }
 }

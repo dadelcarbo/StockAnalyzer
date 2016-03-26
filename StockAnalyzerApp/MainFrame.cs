@@ -4023,7 +4023,10 @@ namespace StockAnalyzerApp
       public void importBinckOrders_Click(object sender, EventArgs e)
       {
          ImportBinckOrderDlg importOrderDlg = new ImportBinckOrderDlg();
-         importOrderDlg.ShowDialog();
+         if (importOrderDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+         {
+            this.SavePortofolios();
+         }
       }
 
       public void newOrderMenuItem_Click(object sender, EventArgs e)

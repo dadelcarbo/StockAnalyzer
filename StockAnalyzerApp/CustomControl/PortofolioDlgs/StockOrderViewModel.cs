@@ -64,5 +64,6 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
 
       private StockOrder order;
+      public StockOrder Order { get { return this.order; } }
    }
 }

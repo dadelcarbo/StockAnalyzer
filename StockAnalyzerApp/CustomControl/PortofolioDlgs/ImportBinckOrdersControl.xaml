@@ -11,21 +11,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="5"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Content="Portfolio"/>
             <ComboBox ItemsSource="{Binding ViewModel.Portfolios, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"
                       SelectedValue="{Binding ViewModel.SelectedPortfolio, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"/>
-            <Button Content="Import" Click="Button_Click"/>
+            <Button Content="Import" Click="Button_Import_Click" Margin="10,0,0,0"/>
+            <Button Content="Save and Exit" Margin="10,0,0,0" Click="Button_Close_Click"/>
         </StackPanel>
-        <TextBox Grid.Row="1" HorizontalAlignment="Stretch"
+        <TextBox Grid.Row="1" HorizontalAlignment="Stretch" AcceptsReturn="True" AcceptsTab="True"
                  Text="{Binding ViewModel.Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}" IsReadOnlyCaretVisible="True"/>
-        <DataGrid Grid.Row="2" HorizontalAlignment="Stretch" AutoGenerateColumns="False" 
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch"/>
+        <DataGrid Grid.Row="3" HorizontalAlignment="Stretch" AutoGenerateColumns="False" 
                   ItemsSource="{Binding ViewModel.Orders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortDirection="Descending"/>
-                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True" SortMemberPath="StockName">
+                <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortDirection="Descending" SortMemberPath="ID"/>
+                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding ViewModel.StockNames, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"

@@ -29,12 +29,20 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          InitializeComponent();
       }
 
-      private void Button_Click(object sender, RoutedEventArgs e)
+      private void Button_Import_Click(object sender, RoutedEventArgs e)
       {
          Cursor cursor = this.Cursor;
          this.Cursor = Cursors.Wait;
          this.ViewModel.Import();
          this.Cursor = cursor;
       }
+
+      private void Button_Close_Click(object sender, RoutedEventArgs e)
+      {
+         this.ParentDialog.DialogResult = System.Windows.Forms.DialogResult.OK;
+         this.ParentDialog.Close();
+      }
+
+      public ImportBinckOrderDlg ParentDialog { get; set; }
    }
 }

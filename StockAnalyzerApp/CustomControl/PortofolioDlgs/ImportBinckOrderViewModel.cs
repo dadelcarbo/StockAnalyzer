@@ -53,7 +53,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                break;
             case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
-               portfolio.OrderList.Remove(portfolio.OrderList.First(o => o.ID == (e.OldItems[0] as StockOrderViewModel).ID));
+               portfolio.OrderList.Remove((e.OldItems[0] as StockOrderViewModel).Order);
                break;
             case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
                break;
@@ -94,18 +94,12 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
       public List<string> StockNames { get { return StockDictionary.StockDictionarySingleton.Keys.ToList(); } }
 
+
       public ImportBinckOrderViewModel()
       {
          this.Portfolios = StockAnalyzerForm.MainFrame.StockPortofolioList.Select(p => p.Name);
          this.selectedPortfolio = this.Portfolios.First();
          this.ChangePortfolio();
-
-         this.text = @"36	Vente	101	Lyxor CAC 40 Daily Double Shrt UCITS ETF	Exécuté	101	9,87	24/03/2016
-35	Vente	421	Lyxor CAC 40 Daily Double Shrt UCITS ETF	Exécuté	421	9,48	19/04/2016
-34	Achat	429	Lyxor CAC 40 Daily Double Shrt UCITS ETF	Exécuté	429	9,31	23/03/2016
-33	Achat	417	Lyxor CAC 40 Daily Double Shrt UCITS ETF	Exécuté	417	9,59	22/03/2016
-32	Vente	232	Electricite de France (EDF)	Exécuté	232	9,362	17/03/2016
-31	Vente	10	Ingenico Group	Exécuté	10	89,15	17/03/2016";
       }
 
       public void Import()
@@ -129,12 +123,18 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      DateTime date = DateTime.Parse(fields[7], StockAnalyzerForm.FrenchCulture);
 
                      string name = fields[3];
-                     if (Mapping.ContainsKey(name))
+                     if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
+
+                     if (mapping.ContainsKey(name))
                      {
-                        name = Mapping[name];
+                        name = mapping[name];
+                     }
+                     else if (name.EndsWith(" SA."))
+                     {
+                        name = name.Replace(" SA.", "");
                      }
 
-                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, qty*value > 1000f ? 5.0f:2.5f);
+                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, qty * value > 1000f ? 5.0f : 2.5f);
 
                      StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
@@ -142,6 +142,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      this.Orders.Add(new StockOrderViewModel(order));
                   }
                }
+               this.ChangePortfolio();
             }
             catch(System.Exception ex)
             {
@@ -150,7 +151,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          }
       }
 
-      private SortedDictionary<string, string> Mapping = new SortedDictionary<string, string>() { 
+      private SortedDictionary<string, string> mapping = new SortedDictionary<string, string>() { 
       { "Lyxor CAC 40 Daily Double Shrt UCITS ETF", "BX4" },
       { "Electricite de France (EDF)", "EDF" }
       };
