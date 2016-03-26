@@ -167,7 +167,7 @@ namespace StockAnalyzer.Portofolio
             // Calculate open value
             
             // Retrieve orders for this date/time
-            List<StockOrder> orderList = this.OrderList.FindAll(order => order.ExecutionDate == date);
+            var orderList = this.OrderList.FindAll(order => order.ExecutionDate == date).OrderBy(o=> o.ID);
             // @@@@ this.OrderList.FindAll(order => (order.ExecutionDate >= date.Date && order.ExecutionDate < date.Date.AddDays(1)));
 
             // Manage new orders
@@ -184,7 +184,12 @@ namespace StockAnalyzer.Portofolio
                   }
                   else
                   {
-                     stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                     if (stockDictionary[stockOrder.StockName].Initialise())
+                     {
+                        stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                     }
+                     else
+                     { StockLog.Write("Initialisation failed: " + stockOrder.StockName); }
                   }
                }
                else // Closing Position

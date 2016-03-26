@@ -87,7 +87,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          fileName = rootFolder + CONFIG_FILE_USER;
          InitFromFile(rootFolder, download, fileName);
 
-
          // Init From LBL file
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "srdAp", StockSerie.Groups.SRD);
          //DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);

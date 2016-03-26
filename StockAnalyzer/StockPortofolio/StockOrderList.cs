@@ -131,6 +131,7 @@ namespace StockAnalyzer.Portofolio
       {
          StockOrder cumulOrder = null;
          StockOrderList stockOrderList = GetExecutedOrderListSortedByDate(stockName);
+
          #region CLEAN UP ALL OBSOLETE SELL ORDER
          // Clean all invalid Sell order if any. An invalid sell order is a sell order before a buy order
          foreach (StockOrder stockOrder in stockOrderList)

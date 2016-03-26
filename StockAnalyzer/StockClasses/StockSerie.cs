@@ -54,6 +54,7 @@ namespace StockAnalyzer.StockClasses
          //EURO_B,
          //EURO_C,
          //ALTERNEXT,
+         EURONEXT,
          SRD,
          CAC_ALL,
          DAX30,

@@ -28,7 +28,7 @@
                   ItemsSource="{Binding ViewModel.Orders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortDirection="Descending"/>
-                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True">
+                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True" SortMemberPath="StockName" ClipboardContentBinding="{Binding StockName}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding ViewModel.StockNames, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"
