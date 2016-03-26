@@ -47,10 +47,13 @@ namespace StockAnalyzer.Portofolio
          {
             if (stockName != this.Name)
             {
-               StockSerie stockSerie = this.stockDictionary[stockName];
-               if (stockSerie.Initialise())
+               if (this.stockDictionary.ContainsKey(stockName))
                {
-                  currentStockValue += stockSerie.Values.Last().CLOSE*nbActiveStock[stockName];
+                  StockSerie stockSerie = this.stockDictionary[stockName];
+                  if (stockSerie.Initialise())
+                  {
+                     currentStockValue += stockSerie.Values.Last().CLOSE * nbActiveStock[stockName];
+                  }
                }
             }
          }

@@ -139,10 +139,9 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
                      portfolio.OrderList.Add(order);
-                     this.Orders.Add(new StockOrderViewModel(order));
+                     this.Orders.Insert(0,new StockOrderViewModel(order));
                   }
                }
-               this.ChangePortfolio();
             }
             catch(System.Exception ex)
             {
