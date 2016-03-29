@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          InitFromFile(rootFolder, download, fileName);
 
          // Init From LBL file
-         DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "srdAp", StockSerie.Groups.SRD);
+         DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, new string[] {"srdp", "srdlop"}, StockSerie.Groups.SRD);
          //DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
          //DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
          //DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
@@ -110,6 +110,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (DownloadSectorFromABC(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID))
             {
                AssignSector(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID);
+               MessageBox.Show("Download sector is now fixed");
+            }
+            else
+            {
+               break;
             }
          }
       }
@@ -811,6 +816,80 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
 
+
+               success = SaveResponseToFile(fileName, req);
+            }
+            catch (System.Exception ex)
+            {
+               StockLog.Write(ex);
+               System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
+               success = false;
+            }
+         }
+         return success;
+      }
+      private bool DownloadLibelleFromABC(string destFolder, string []groupNames, StockSerie.Groups group)
+      {
+         bool success = true;
+         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+         {
+            string fileName = destFolder + @"\" + group.ToString() + ".txt";
+            if (File.Exists(fileName))
+            {
+               if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
+                  return true;
+            }
+
+            try
+            {
+               // Send POST request
+               string url = "http://www.abcbourse.com/download/libelles.aspx";
+               if (dailyViewState == string.Empty)
+               {
+                  // Get ViewState 
+                  using (WebClient webClient = new WebClient())
+                  {
+                     webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36");
+                     byte[] response = webClient.DownloadData(url);
+
+                     string htmlContent = Encoding.ASCII.GetString(response);
+                     dailyViewState = ExtractValue(htmlContent, "__VIEWSTATE");
+                     dailyViewStateGenerator = ExtractValue(htmlContent, "__VIEWSTATEGENERATOR");
+                     dailyEventValidation = ExtractValue(htmlContent, "__EVENTVALIDATION");
+                  }
+               }
+
+               string postData = "ctl00_BodyABC_ToolkitScriptManager1_HiddenField=%3B%3BAjaxControlToolkit%2C+Version%3D3.0.20229.20843%2C+Culture%3Dneutral%2C+PublicKeyToken%3D28f01b0e84b6d53e%3Afr-FR%3A3b7d1b28-161f-426a-ab77-b345f2c428f5%3A865923e8%3A9b7907bc%3A411fea1c%3Ae7c87f07%3A91bd373d%3Abbfda34c%3A30a78ec5%3A9349f837%3Ad4245214%3A77c58d20%3A14b56adc%3A8e72a662%3Aacd642d2%3A596d588c%3A269a19ae&"
+                   + "__EVENTTARGET=&"
+                   + "__EVENTARGUMENT=&"
+                   + "__VIEWSTATE=" + dailyViewState + "&"
+                   + "__VIEWSTATEGENERATOR=" + dailyViewStateGenerator + "&"
+                   + "__EVENTVALIDATION=" + dailyEventValidation + "&";
+
+               foreach (string groupName in groupNames)
+               {
+                  postData += "ctl00%24BodyABC%24" + groupName + "=on&";
+               }
+
+               postData += "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
+
+               byte[] data = Encoding.ASCII.GetBytes(postData);
+               HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+
+               req.CookieContainer = new CookieContainer();
+               req.ContentType = "application/x-www-form-urlencoded";
+               req.ContentLength = data.Length;
+               req.Method = "POST";
+               req.AllowAutoRedirect = false;
+               req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+               req.Headers.Add("Accept-Language", "fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3");
+               req.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36";
+               req.Referer = url;
+
+               Stream newStream = req.GetRequestStream();
+               // Send the data.
+               newStream.Write(data, 0, data.Length);
+               newStream.Close();
 
                success = SaveResponseToFile(fileName, req);
             }

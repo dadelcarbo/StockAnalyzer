@@ -572,6 +572,7 @@ namespace StockAnalyzerApp
          this.showHorseRaceViewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
          this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(244, 22);
          this.showHorseRaceViewMenuItem.Text = "Horse Race View";
+         this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
          // 
          // toolStripSeparator15
          // 

@@ -345,7 +345,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                if (this.IsLogScale && minValue > 0)
                {
-                  minValue -= (maxValue - minValue) * 0.025f;
+                  minValue *= 0.95f;
                }
                else
                {
