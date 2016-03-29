@@ -229,7 +229,14 @@ namespace StockAnalyzer.Portofolio
       {
          this.Sort(delegate(StockOrder stockOrder1, StockOrder stockOrder2)
          {
-            return stockOrder1.ExecutionDate.CompareTo(stockOrder2.ExecutionDate);
+            if (stockOrder1.ExecutionDate == stockOrder2.ExecutionDate)
+            {
+               return stockOrder1.ID.CompareTo(stockOrder2.ID);
+            }
+            else
+            {
+               return stockOrder1.ExecutionDate.CompareTo(stockOrder2.ExecutionDate);
+            }
          });
       }
 

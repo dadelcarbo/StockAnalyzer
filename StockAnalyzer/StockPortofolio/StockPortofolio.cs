@@ -162,12 +162,12 @@ namespace StockAnalyzer.Portofolio
          referenceSerie.Initialise();
          DateTime previousDate = referenceSerie.Keys.First();
 
-         foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Select(v => v.DATE))
+         foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Select(v => v.DATE.Date))
          {
             // Calculate open value
             
             // Retrieve orders for this date/time
-            var orderList = this.OrderList.FindAll(order => order.ExecutionDate == date).OrderBy(o=> o.ID);
+            var orderList = this.OrderList.FindAll(order => order.ExecutionDate.Date == date).OrderBy(o=> o.ID);
             // @@@@ this.OrderList.FindAll(order => (order.ExecutionDate >= date.Date && order.ExecutionDate < date.Date.AddDays(1)));
 
             // Manage new orders
@@ -180,7 +180,7 @@ namespace StockAnalyzer.Portofolio
                   if (stockPositionDico.ContainsKey(stockOrder.StockName))
                   {
                      stockPositionDico[stockOrder.StockName].Position += numberOfShare;
-                     stockPositionDico[stockOrder.StockName].OpenValue = stockOrder.Value;
+                     stockPositionDico[stockOrder.StockName].OpenValue = (stockPositionDico[stockOrder.StockName].Position * stockPositionDico[stockOrder.StockName].OpenValue + numberOfShare * stockOrder.Value) / (stockPositionDico[stockOrder.StockName].Position + numberOfShare);
                   }
                   else
                   {

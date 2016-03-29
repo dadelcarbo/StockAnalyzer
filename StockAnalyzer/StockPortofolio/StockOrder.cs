@@ -444,7 +444,7 @@ namespace StockAnalyzer.Portofolio
       }
       override public string ToString()
       {
-         return " Stock: " + StockName + " Type: " + Type.ToString() + " Short: " + IsShortOrder.ToString() +
+         return "ID: " + ID + " Stock: " + StockName + " Type: " + Type.ToString() + " Short: " + IsShortOrder.ToString() +
              " ExecutionDate : " + ExecutionDate.ToShortDateString() +
              " Number: " + Number +
              " Value : " + Value.ToString("0.###") +
