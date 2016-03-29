@@ -102,6 +102,13 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          this.ChangePortfolio();
       }
 
+      const int idIndex = 0;
+      const int directionIndex = 1;
+      const int qtyIndex = 2;
+      const int nameIndex = 3;
+      const int statusIndex = 4;
+      const int valueIndex = 6;
+      const int dateIndex = 8;
       public void Import()
       {
          if (string.IsNullOrWhiteSpace(this.text)) return;
@@ -111,18 +118,19 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
             try
             {
                string line;
+               int index = 0;
                while ((line = stream.ReadLine()) != null)
                {
                   string[] fields = line.Split('\t');
-                  int id = int.Parse(fields[0]);
-                  if (!this.Orders.Any(o => o.ID == id) && fields[4] == "Exécuté")
+                  int id = int.Parse(fields[idIndex]);
+                  if (!this.Orders.Any(o => o.ID == id) && fields[statusIndex] == "Exécuté")
                   {
-                     StockOrder.OrderType type = fields[1] == "Achat" ? StockOrder.OrderType.BuyAtLimit : StockOrder.OrderType.SellAtLimit;
-                     int qty = int.Parse(fields[5].Replace(" ",""));
-                     float value = float.Parse(fields[6], StockAnalyzerForm.FrenchCulture);
-                     DateTime date = DateTime.Parse(fields[7], StockAnalyzerForm.FrenchCulture);
+                     StockOrder.OrderType type = fields[directionIndex] == "Achat" ? StockOrder.OrderType.BuyAtLimit : StockOrder.OrderType.SellAtLimit;
+                     int qty = int.Parse(fields[qtyIndex].Replace(" ",""));
+                     float value = float.Parse(fields[valueIndex], StockAnalyzerForm.FrenchCulture);
+                     DateTime date = DateTime.Parse(fields[dateIndex], StockAnalyzerForm.FrenchCulture);
 
-                     string name = fields[3];
+                     string name = fields[nameIndex];
                      if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
                      if (name.EndsWith(" SA")) { name = name.Replace(" SA", ""); }
 
@@ -136,7 +144,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
                      portfolio.OrderList.Add(order);
-                     this.Orders.Insert(0,new StockOrderViewModel(order));
+                     this.Orders.Insert(index++, new StockOrderViewModel(order));
                   }
                }
             }
