@@ -35,7 +35,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
          this.Orders = new ObservableCollection<StockOrderViewModel>();
-         foreach (var order in portfolio.OrderList)
+         foreach (var order in portfolio.OrderList.OrderByDescending( o => o.ID))
          {
             this.orders.Add(new StockOrderViewModel(order));
          }
@@ -118,20 +118,17 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                   if (!this.Orders.Any(o => o.ID == id) && fields[4] == "Exécuté")
                   {
                      StockOrder.OrderType type = fields[1] == "Achat" ? StockOrder.OrderType.BuyAtLimit : StockOrder.OrderType.SellAtLimit;
-                     int qty = int.Parse(fields[5]);
+                     int qty = int.Parse(fields[5].Replace(" ",""));
                      float value = float.Parse(fields[6], StockAnalyzerForm.FrenchCulture);
                      DateTime date = DateTime.Parse(fields[7], StockAnalyzerForm.FrenchCulture);
 
                      string name = fields[3];
                      if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
+                     if (name.EndsWith(" SA")) { name = name.Replace(" SA", ""); }
 
                      if (mapping.ContainsKey(name))
                      {
                         name = mapping[name];
-                     }
-                     else if (name.EndsWith(" SA."))
-                     {
-                        name = name.Replace(" SA.", "");
                      }
 
                      StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, qty * value > 1000f ? 5.0f : 2.5f);

@@ -152,7 +152,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                while (!sr.EndOfStream)
                {
                   string[] fields = sr.ReadLine().Split(';');
-                  if (stockDictionary.ContainsKey(fields[0]))
+                  if (stockDictionary.ContainsKey(fields[0]) && !stockDictionary.ShortInterestDictionary.ContainsKey(fields[0]))
                   {
                      NotifyProgress("Short Interest for " + fields[0]);
                      stockDictionary[fields[0]].HasShortInterest = true;
