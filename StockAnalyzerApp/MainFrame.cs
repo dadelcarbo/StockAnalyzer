@@ -610,6 +610,7 @@ namespace StockAnalyzerApp
          this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
          this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
 
+         StockSplashScreen.ProgressText = "Loading "+this.CurrentStockSerie.StockName+" data...";
          if (this.CurrentStockSerie.StockName.StartsWith("INT_"))
          {
             this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_6D;

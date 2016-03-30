@@ -95,6 +95,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          //DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "alterp", StockSerie.Groups.ALTERNEXT);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "indicessecp", StockSerie.Groups.SECTORS_CAC);
          DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
+         DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "sp500u", StockSerie.Groups.SP500);
 
          //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistap");
 
@@ -241,6 +242,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             case StockSerie.Groups.SRD:
                abcGroup = "srdp";
                break;
+            case StockSerie.Groups.SP500:
+               abcGroup = "sp500u";
+               break;
             //case StockSerie.Groups.EURO_A:
             //   abcGroup = "eurolistap";
             //   break;
@@ -298,6 +302,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
                   foreach (string archiveFileName in groupFiles)
                   {
+                     NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
                      if (!ParseABCGroupCSVFile(archiveFileName)) break;
                   }
                   groupFiles =
@@ -497,6 +502,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistcp");
                         //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "alterp");
                         DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "srdp");
+                        DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "sp500u");
                         DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "indicessecp");
                      }
                   }
@@ -525,6 +531,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                      //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
                      DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
+                     DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                      DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                   }
                }
@@ -547,6 +554,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                         //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
                         DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
+                        DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                         DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                      }
                   }
@@ -982,6 +990,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          try
          {
             string fileName = destFolder + @"\" + abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
+            if (File.Exists(fileName)) return true;
             // Send POST request
             string url = "http://www.abcbourse.com/download/historiques.aspx";
             if (dailyViewState == string.Empty)
