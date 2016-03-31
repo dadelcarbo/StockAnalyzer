@@ -324,9 +324,6 @@ namespace StockAnalyzerApp
                ParseIntraday();
             }
 
-            StockSplashScreen.ProgressText = "Generating SRD Equal Weight...";
-            GenerateSRDEqualWeight();
-
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {

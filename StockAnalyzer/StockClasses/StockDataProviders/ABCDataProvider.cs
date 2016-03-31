@@ -344,9 +344,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          // Read intraday
          if (res && stockSerie.Keys.Last() != DateTime.Today)
          {
-            if (stockSerie.BelongsToGroup(StockSerie.Groups.CAC_ALL))
+            if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
             {
-               fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SBF120.csv";
+               fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
+               ParseABCGroupCSVFile(fileName);
+               return true;
             }
             else
             {
@@ -589,9 +591,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string folder = rootFolder + ABC_INTRADAY_FOLDER;
             string fileName;
             string item;
-            if (stockSerie.BelongsToGroup(StockSerie.Groups.CAC_ALL))
+            if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
             {
-               fileName = DateTime.Today.ToString("yyMMdd_") + "SBF120.csv";
+               fileName = DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
                item = "complet";
             }
             else
@@ -990,7 +992,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          try
          {
             string fileName = destFolder + @"\" + abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
-            if (File.Exists(fileName)) return true;
+
             // Send POST request
             string url = "http://www.abcbourse.com/download/historiques.aspx";
             if (dailyViewState == string.Empty)

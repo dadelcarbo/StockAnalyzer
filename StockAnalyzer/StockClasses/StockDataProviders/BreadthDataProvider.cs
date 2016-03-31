@@ -39,7 +39,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      string[] row = line.Split(',');
                      if (!stockDictionary.ContainsKey(row[0]))
                      {
-                        stockDictionary.Add(row[0], new StockSerie(row[0], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth));
+                        string longName = row[0] == "EQW.SRD" ? "SRD" : row[0];
+                        stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth));
                      }
                   }
                }
@@ -62,12 +63,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       private bool GenerateBreadthData(string rootFolder, StockSerie stockSerie)
       {
-         string[] row = stockSerie.StockName.Split('.');
+         string[] row = stockSerie.ShortName.Split('.');
          StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
          switch (row[0].Split('_')[0])
          {
             case "AD":
                return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+            case "EQW":
+               return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "TB":
                return stockDictionary.GenerateHigherThanTrailVolSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             case "HL":
