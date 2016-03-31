@@ -73,11 +73,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {
             foreach (string file in Directory.GetFiles(rootFolder + ABC_INTRADAY_FOLDER))
             {
-               if (file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SBF120.csv" &&
-                   file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFr.csv")
-               {
                   File.Delete(file);
-               }
+               //if (file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SBF120.csv" &&
+               //    file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFr.csv")
+               //{
+               //   File.Delete(file);
+               //}
             }
          }
 
@@ -303,13 +304,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   foreach (string archiveFileName in groupFiles)
                   {
                      NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
-                     if (!ParseABCGroupCSVFile(archiveFileName)) break;
+                     if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
                   }
                   groupFiles =
                      System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
-                  foreach (string archiveFileName in groupFiles)
+                  foreach (string currentFileName in groupFiles)
                   {
-                     res |= ParseABCGroupCSVFile(archiveFileName);
+                     res |= ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
                   }
                }
             }
@@ -347,19 +348,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
             {
                fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
-               ParseABCGroupCSVFile(fileName);
+               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD);
                return true;
             }
-            else
+            else if (stockSerie.BelongsToGroup(StockSerie.Groups.SP500))
             {
-               fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFr.csv";
+               fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SP500.csv";
+               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500);
+               return true;
             }
-            ParseABCIntradayFile(stockSerie, fileName);
+            else if (stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
+            {
+               fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFR.csv";
+               ParseABCIntradayFile(stockSerie, fileName);
+               return true;
+            }
          }
          return res;
       }
 
-      private bool ParseABCGroupCSVFile(string fileName)
+      private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group)
       {
          //StockLog.Write(fileName);
 
@@ -374,7 +382,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                string[] row = line.Split(';');
                if (previousISIN != row[0])
                {
-                  stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
+                  stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0] && s.StockGroup==group);
                   previousISIN = row[0];
                }
                if (stockSerie != null)
@@ -425,11 +433,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   }
                   StockDailyValue dailyValue = new StockDailyValue(
                       stockSerie.StockName,
-                      float.Parse(row[2], frenchCulture),
-                      float.Parse(row[3], frenchCulture),
-                      float.Parse(row[4], frenchCulture),
-                      float.Parse(row[5], frenchCulture),
-                      long.Parse(row[6], frenchCulture),
+                      float.Parse(row[2], usCulture),
+                      float.Parse(row[3], usCulture),
+                      float.Parse(row[4], usCulture),
+                      float.Parse(row[5], usCulture),
+                      long.Parse(row[6]),
                       File.GetLastWriteTime(fileName));
                   stockSerie.Add(dailyValue.DATE, dailyValue);
 

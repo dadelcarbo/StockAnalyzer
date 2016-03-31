@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-using StockAnalyzer;
+﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -40,6 +25,21 @@ using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings.Properties;
 using StockNeuralNetwork;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace StockAnalyzerApp
 {
@@ -6293,6 +6293,14 @@ border:1px solid black;
                    this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
                {
                   this.CurrentPortofolio = null;
+
+                  if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
+                  {
+                     string[] fields = this.currentStockSerie.StockName.Split('.');
+                     this.graphCloseControl.SecondaryFloatSerie =
+                         this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(
+                             this.StockDictionary[fields[1]], StockDataType.CLOSE);
+                  }
                }
                else
                {
