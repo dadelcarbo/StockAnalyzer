@@ -144,6 +144,8 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
          foreach (StockPosition stockPosition in this.StockPositions)
          {
+            if (!stockPosition.StockSerie.Initialise()) continue;
+
             float startClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + minIndex - 1)).CLOSE;
             float endClose = stockPosition.StockSerie.Values.ElementAt(Math.Max(0, stockPosition.StockSerie.Count + index - 1)).CLOSE;
             stockPosition.Close = endClose;

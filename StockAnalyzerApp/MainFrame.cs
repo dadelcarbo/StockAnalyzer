@@ -569,16 +569,7 @@ namespace StockAnalyzerApp
          this.LoadWatchList();
          InitialiseWatchListComboBox();
 
-         // 
-         InitialiseStockCombo();
-
-         //
-         InitialiseThemeCombo();
-
-         //
-         InitialiseStrategyCombo();
-
-         // Deserialize Drawing Items
+         // Deserialize Drawing Items - Read Analysis files
          if (Settings.Default.AnalysisFile == string.Empty)
          {
             Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartistAnalysis.ulc";
@@ -589,6 +580,15 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items...";
             LoadAnalysis(Settings.Default.AnalysisFile);
          }
+
+         // 
+         InitialiseStockCombo();
+
+         //
+         InitialiseThemeCombo();
+
+         //
+         InitialiseStrategyCombo();
 
          this.Show();
          this.progressBar.Value = 0;
@@ -1268,7 +1268,7 @@ namespace StockAnalyzerApp
             {
                message += "\n\r" + exception.InnerException.Message;
             }
-            MessageBox.Show(message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(message, "Error Loading Analysis file", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
 

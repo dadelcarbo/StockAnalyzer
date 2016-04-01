@@ -73,12 +73,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {
             foreach (string file in Directory.GetFiles(rootFolder + ABC_INTRADAY_FOLDER))
             {
-                  File.Delete(file);
-               //if (file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SBF120.csv" &&
-               //    file != rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFr.csv")
-               //{
-               //   File.Delete(file);
-               //}
+               // Purge intraday files at each start
+               File.Delete(file);
             }
          }
 
@@ -305,12 +301,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   {
                      NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
                      if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
+                     else
+                     {
+                        res = true;
+                     }
                   }
                   groupFiles =
                      System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
                   foreach (string currentFileName in groupFiles)
                   {
-                     res |= ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
+                     res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
                   }
                }
             }
@@ -348,13 +348,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
             {
                fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
-               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD);
+               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD, true);
                return true;
             }
             else if (stockSerie.BelongsToGroup(StockSerie.Groups.SP500))
             {
                fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SP500.csv";
-               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500);
+               ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500, true);
                return true;
             }
             else if (stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
@@ -367,7 +367,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          return res;
       }
 
-      private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group)
+      private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
       {
          //StockLog.Write(fileName);
 
@@ -387,7 +387,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
                if (stockSerie != null)
                {
-                  DateTime date = DateTime.Parse(row[1]);
+                  DateTime date;
+                  if (intraday)
+                  {
+                     date = File.GetLastWriteTime(fileName);
+                  }
+                  else
+                  {
+                     date = DateTime.Parse(row[1]);
+                  }
                   if (date.Year >= LOAD_START_YEAR)
                   {
                      if (!stockSerie.ContainsKey(date))
@@ -525,7 +533,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      this.needDownload = false;
                   }
                }
-               stockSerie.IsInitialised = isUpTodate && !needReloadIntraday;
+               stockSerie.IsInitialised = isUpTodate; // && !needReloadIntraday; Why need reload intraday ???
             }
             else
             {
@@ -578,7 +586,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
       {
-         StockLog.Write("DownloadIntradayData !!!! Not Implement !!!  Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+         StockLog.Write("DownloadIntradayData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
 
          if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
          {
@@ -618,7 +626,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (this.DownloadIntradayFileFromABC(folder, fileName, item))
             {
                // Deinitialise all the SBF120 stock
-               foreach (StockSerie serie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC))
+               foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
                {
                   serie.IsInitialised = false;
                }
