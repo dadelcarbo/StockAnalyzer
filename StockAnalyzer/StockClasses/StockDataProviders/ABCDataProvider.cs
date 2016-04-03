@@ -1008,6 +1008,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          try
          {
             string fileName = destFolder + @"\" + abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
+            if (File.Exists(fileName) && destFolder.Contains("archive")) 
+               return true;
 
             // Send POST request
             string url = "http://www.abcbourse.com/download/historiques.aspx";

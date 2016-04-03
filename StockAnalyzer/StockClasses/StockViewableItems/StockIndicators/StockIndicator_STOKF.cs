@@ -22,10 +22,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return 0.0f; }
       }
-      
+
       public override string[] ParameterNames
       {
-         get { return new string[] { "FastKPeriod", "FastKPeriod", "Overbought", "Oversold" }; }
+         get { return new string[] { "FastKPeriod", "SmoothPeriod", "Overbought", "Oversold" }; }
       }
 
       public override Object[] ParameterDefaultValues
@@ -75,22 +75,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          float overbought = (float)this.parameters[2];
          float oversold = (float)this.parameters[3];
+         bool isOverSold = false;
+         bool isOverBought = false;
 
          for (int i = 1; i < fastK.Count; i++)
          {
             this.eventSeries[0][i] = (fastD[i - 1] > fastK[i - 1] && fastD[i] < fastK[i]);
             this.eventSeries[1][i] = (fastD[i - 1] < fastK[i - 1] && fastD[i] > fastK[i]);
-            this.eventSeries[2][i] = fastK[i] >= overbought;
-            this.eventSeries[3][i] = fastK[i] <= oversold;
+            isOverSold = fastK[i] <= oversold;
+            isOverBought = fastK[i] >= overbought;
+            this.eventSeries[2][i] = isOverBought;
+            this.eventSeries[3][i] = isOverSold;
+            this.eventSeries[4][i] = (!isOverSold) && this.eventSeries[3][i - 1];
+            this.eventSeries[5][i] = (!isOverBought) && this.eventSeries[2][i - 1];
+            this.eventSeries[6][i] = fastK[i] > fastD[i];
+            this.eventSeries[7][i] = fastK[i] < fastD[i];
          }
       }
 
-      static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Overbought", "Oversold" };
+      static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Overbought", "Oversold", "OutOfOversold", "OutOfOverbought", "Bullish", "Bearish" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, false, false };
+      static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true, false, false };
       public override bool[] IsEvent
       {
          get { return isEvent; }

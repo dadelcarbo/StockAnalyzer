@@ -426,16 +426,18 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Generating CAC RANK_" + 3 + " Daily...";
             //GenerateCAC_Event("CAC_RANK_", StockSerie.StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
 
-            //for (int i = 10; i <= 500; i += 5)
-            //{
-            //   StockSplashScreen.ProgressText = "Generating CAC CCIEX_" + i + " Daily...";
-            //   GenerateCAC_Event("CAC_CCIEX_", StockSerie.StockBarDuration.Daar_1_EMA3, i, "INDICATOR|CCIEX(%PERIOD%,12,3,0.0195,75,-75)", "Positive");
-            //}
             for (int i = 10; i <= 500; i += 5)
             {
-               StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
-               //GenerateCAC_Event("CAC_EMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "Bearish", true);
-               //GenerateCAC_Event("CAC_HMA_", StockSerie.StockBarDuration.Daily, i, "INDICATOR|EMA(%PERIOD%)", "Bearish", true);
+               StockSplashScreen.ProgressText = "Generating CAC CCIEX_" + i + " Daily...";
+               //GenerateCAC_Event("CAC40", StockSerie.StockBarDuration.Daily, i, "INDICATOR|STOKF(%PERIOD%,1,61.8,38.2)", "Overbought",false);
+            }
+            for (int i = 15; i <= 40; i += 1)
+            {
+               for (int j = 40; j <= 60; j++)
+               {
+                  StockSplashScreen.ProgressText = "Generating SRD STOCK" + i + " Daily...";
+                  //GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
+               }
             }
             //for (int i = 10; i <= 500; i += 5)
             //{
@@ -518,7 +520,7 @@ namespace StockAnalyzerApp
             {
                //StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
                //GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
-               //GenerateCAC_Event("CAC_HL_", StockSehttps://ptmintegration.visualstudio.comrie.StockBarDuration.Bar_1_EMA6, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
+               //GenerateCAC_Event("CAC_HL_", StockSerie.StockBarDuration.Bar_1_EMA6, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
             }
             //for (int i = 25; i <= 500; i+=25)
             //{
@@ -4954,9 +4956,10 @@ border:1px solid black;
 
          this.CurrentTheme = "ReportTheme";
          this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
-         string rankIndicatorName = "ER(50,6,6)";
+         string rankIndicatorName = "ROR(100,1,6)";
+         int nbLeaders = 15;
          List<RankedSerie> leadersDico = new List<RankedSerie>();
-         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)))
          {
             if (stockSerie.Initialise() && stockSerie.Count > 100)
             {
@@ -4979,10 +4982,10 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
-         var leaders = leadersDico.Where(l => l.rank > 0f).OrderByDescending(l => l.rank).Take(10);
+         var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
          foreach (RankedSerie pair in leaders)
          {
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank).ToString("#.##"));
             if (pair.previousRank <= pair.rank)
             {
                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
@@ -5002,10 +5005,10 @@ border:1px solid black;
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers for " + rankIndicatorName);
          htmlLeaders += " <table>";
 
-         leaders = leadersDico.Where(l => l.rank < 0f).OrderBy(l => l.rank).Take(10);
+         leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
          foreach (RankedSerie pair in leaders)
          {
-            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank * 100f).ToString("#.##"));
+            htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank).ToString("#.##"));
             if (pair.previousRank <= pair.rank)
             {
                htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {
@@ -137,6 +138,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
       public override bool isValidString(string valueString)
       {
          return StockIndicatorManager.Supports(valueString);
+      }
+
+      override public Type GetParamType()
+      {
+         return typeof(string);
+      }
+   }
+   public class ParamRangeTrail : ParamRange
+   {
+      public ParamRangeTrail()
+      {
+         this.MinValue = String.Empty;
+         this.MaxValue = String.Empty;
+      }
+
+      public override bool isInRange(Object value)
+      {
+         return StockTrailManager.Supports(value.ToString());
+      }
+
+      public override bool isValidString(string valueString)
+      {
+         return StockTrailManager.Supports(valueString);
       }
 
       override public Type GetParamType()

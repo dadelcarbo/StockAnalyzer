@@ -845,10 +845,13 @@ namespace StockAnalyzer.StockClasses
          DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
          DateTime lastBreadthDate = DateTime.MinValue;
 
+         float val = 1000, var;
+
          // Check if serie has been already generated
          if (breadthSerie.Count > 0)
          {
             lastBreadthDate = breadthSerie.Keys.Last();
+            val = breadthSerie.Values.Last().CLOSE;
             if (lastIndiceDate <= lastBreadthDate)
             {
                // The breadth serie is up to date
@@ -878,7 +881,6 @@ namespace StockAnalyzer.StockClasses
          #endregion
          long vol, upVol;
          int tick, upTick;
-         float val = 1000, var;
 
          foreach (StockDailyValue value in indiceSerie.Values)
          {

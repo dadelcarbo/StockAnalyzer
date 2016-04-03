@@ -76,5 +76,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             return trail;
          }
       }
+
+      public static bool Supports(string fullName)
+      {
+         if (trailList == null)
+         {
+            GetTrailList();
+         }
+
+         return trailList.Contains(fullName.Split('(')[0]);
+      }
    }
 }
