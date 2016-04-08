@@ -5001,10 +5001,20 @@ border:1px solid black;
          mailReport += htmlLeaders;
          htmlReport += htmlLeaders;
 
+         rankIndicatorName = "ROD(100,1,6)";
+         leadersDico.Clear();
+         foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)))
+         {
+            if (stockSerie.Initialise() && stockSerie.Count > 100)
+            {
+               stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+               IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
+               leadersDico.Add(new RankedSerie() { rank = -indicator.Series[0].Last, previousRank = -indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
+            }
+         }
 
          htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers for " + rankIndicatorName);
          htmlLeaders += " <table>";
-
          leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
          foreach (RankedSerie pair in leaders)
          {
