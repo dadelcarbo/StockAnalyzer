@@ -5049,7 +5049,7 @@ border:1px solid black;
             while (!sr.EndOfStream)
             {
                string line = sr.ReadLine();
-               continue;
+               //continue;
                if (string.IsNullOrWhiteSpace(line))
                {
                   continue;
