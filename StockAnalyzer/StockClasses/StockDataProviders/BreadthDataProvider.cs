@@ -37,9 +37,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   if (!line.StartsWith("#"))
                   {
                      string[] row = line.Split(',');
-                     if (!stockDictionary.ContainsKey(row[0]))
+                     string longName = row[0] == "EQW.SRD" ? "SRD" : row[0];
+                     if (!stockDictionary.ContainsKey(longName))
                      {
-                        string longName = row[0] == "EQW.SRD" ? "SRD" : row[0];
                         stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth));
                      }
                   }
