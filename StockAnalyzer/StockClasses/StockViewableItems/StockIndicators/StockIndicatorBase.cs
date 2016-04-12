@@ -85,6 +85,5 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       #endregion
 
-
    }
 }
