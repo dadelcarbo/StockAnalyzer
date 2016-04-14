@@ -13,11 +13,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
-
-      public override string Definition
-      {
-         get { return "KeltnerBand(int Period, float NbUpDev, float NbDownDev)"; }
-      }
       public override string[] ParameterNames
       {
          get { return new string[] { "Period", "NbUpDev", "NbDownDev" }; }
@@ -70,43 +65,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
          FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
          FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-
-         bool waitingForBearSignal = false;
-         bool waitingForBullSignal = false;
-
+         
          for (int i = 1; i < upperKeltnerBand.Count; i++)
          {
-            if (waitingForBearSignal && highSerie[i - 1] >= highSerie[i] && closeSerie[i - 1] >= closeSerie[i])
-            {
-               // BearishSignal
-               this.eventSeries[3][i] = true;
-               waitingForBearSignal = false;
-            }
-            if (highSerie[i] >= upperKeltnerBand[i])
-            {
-               waitingForBearSignal = true;
-               this.eventSeries[0][i] = true;
-            }
-            if (waitingForBullSignal && lowSerie[i - 1] <= lowSerie[i] && closeSerie[i - 1] <= closeSerie[i])
-            {
-               // BullishSignal
-               this.eventSeries[2][i] = true;
-               waitingForBullSignal = false;
-            }
-            if (lowSerie[i] <= lowerKeltnerBand[i])
-            {
-               waitingForBullSignal = true;
-               this.eventSeries[1][i] = lowSerie[i] <= lowerKeltnerBand[i];
-            }
+            this.eventSeries[0][i] = closeSerie[i] > upperKeltnerBand[i];
+            this.eventSeries[1][i] = closeSerie[i] < lowerKeltnerBand[i];
+            this.eventSeries[2][i] = closeSerie[i] >= lowerKeltnerBand[i] && closeSerie[i] <= upperKeltnerBand[i];
          }
       }
 
-      static string[] eventNames = new string[] { "UpBandOvershot", "DownBandOvershot", "BullishSignal", "BearishSignal" };
+      static string[] eventNames = new string[] { "CloseAboveUpBand", "CloseBelowDownBand", "InBand" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { true, true, true, true };
+      static readonly bool[] isEvent = new bool[] { false,false,false };
       public override bool[] IsEvent
       {
          get { return isEvent; }
