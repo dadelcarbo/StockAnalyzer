@@ -184,12 +184,15 @@ namespace StockAnalyzer.Portofolio
                   }
                   else
                   {
-                     if (stockDictionary[stockOrder.StockName].Initialise())
+                     if (stockDictionary.ContainsKey(stockOrder.StockName) && stockDictionary[stockOrder.StockName].Initialise())
                      {
                         stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
                      }
                      else
-                     { StockLog.Write("Initialisation failed: " + stockOrder.StockName); }
+                     { 
+                        StockLog.Write("Initialisation failed: " + stockOrder.StockName);
+                        stockPositionDico.Add(stockOrder.StockName, new PositionValues(numberOfShare, stockOrder.Value, null));
+                     }
                   }
                }
                else // Closing Position
@@ -249,7 +252,7 @@ namespace StockAnalyzer.Portofolio
             open = cash;
             if (stockPositionDico.Count != 0)
             {
-               foreach (PositionValues position in stockPositionDico.Values)
+               foreach (PositionValues position in stockPositionDico.Values.Where(pv => pv.Values!=null))
                {
                   StockDailyValue currentValue = position.AtDate(date);
                   if (currentValue == null)

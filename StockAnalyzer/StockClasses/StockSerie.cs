@@ -80,6 +80,7 @@ namespace StockAnalyzer.StockClasses
          USER2,
          USER3,
          ShortInterest,
+         Portfolio,
          ALL,
          TURBO,
 

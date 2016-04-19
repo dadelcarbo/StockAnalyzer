@@ -28,8 +28,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             if (minValue == maxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
             {
-               this.Deactivate("No volume for this stock", true);
-               return true;
+               this.Deactivate("No volume for this stock", false);
+               return false;
             }
             if (graphic == null)
             {

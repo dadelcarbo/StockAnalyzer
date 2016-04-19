@@ -1296,7 +1296,6 @@ namespace StockAnalyzerApp
 
                   this.StockPortofolioList = (StockPortofolioList)serializer.Deserialize(xmlReader);
                }
-               RefreshPortofolioMenu();
             }
             else
             {
@@ -1304,8 +1303,17 @@ namespace StockAnalyzerApp
                this.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000));
                this.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000));
                this.SavePortofolios();
-               RefreshPortofolioMenu();
             }
+
+            // Generate Portfolio Series
+            foreach (var portfolio in this.StockPortofolioList)
+            {
+               portfolio.Initialize(this.StockDictionary);
+               StockSerie portfolioSerie = portfolio.GeneratePortfolioStockSerie(portfolio.Name, this.StockDictionary["CAC40"], StockSerie.Groups.Portfolio);
+               this.StockDictionary.Add(portfolio.Name, portfolioSerie);
+            }
+            
+            RefreshPortofolioMenu();
             this.CurrentPortofolio = this.StockPortofolioList.First();
          }
          catch (System.Exception exception)

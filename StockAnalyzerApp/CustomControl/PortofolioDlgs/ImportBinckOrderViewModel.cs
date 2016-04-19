@@ -133,6 +133,8 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      string name = fields[nameIndex];
                      if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
                      if (name.EndsWith(" SA")) { name = name.Replace(" SA", ""); }
+                     if (name.EndsWith(" NV")) { name = name.Replace(" NV", ""); }
+                     if (name.StartsWith("SRD ")) { name = name.Replace("SRD ", ""); }
 
                      if (mapping.ContainsKey(name))
                      {
