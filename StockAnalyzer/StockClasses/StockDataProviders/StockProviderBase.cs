@@ -128,6 +128,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                dataProvider = new COTDataProvider();
                break;
             case StockDataProvider.Portofolio:
+               dataProvider = new PortfolioDataProvider();
                break;
             case StockDataProvider.Generated:
                dataProvider = new GeneratedDataProvider();

@@ -104,7 +104,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
       const int idIndex = 0;
       const int directionIndex = 1;
-      const int qtyIndex = 2;
+      const int qtyIndex = 5;
       const int nameIndex = 3;
       const int statusIndex = 4;
       const int valueIndex = 6;
@@ -123,7 +123,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                {
                   string[] fields = line.Split('\t');
                   int id = int.Parse(fields[idIndex]);
-                  if (!this.Orders.Any(o => o.ID == id) && fields[statusIndex] == "Exécuté")
+                  if (!this.Orders.Any(o => o.ID == id) && (fields[statusIndex] == "Exécuté" || fields[statusIndex].StartsWith("Partiellement exécuté")))
                   {
                      StockOrder.OrderType type = fields[directionIndex] == "Achat" ? StockOrder.OrderType.BuyAtLimit : StockOrder.OrderType.SellAtLimit;
                      int qty = int.Parse(fields[qtyIndex].Replace(" ",""));
@@ -134,14 +134,22 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                      if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
                      if (name.EndsWith(" SA")) { name = name.Replace(" SA", ""); }
                      if (name.EndsWith(" NV")) { name = name.Replace(" NV", ""); }
-                     if (name.StartsWith("SRD ")) { name = name.Replace("SRD ", ""); }
+
+                     bool srd = false;
+                     if (name.StartsWith("SRD ")) { 
+                        name = name.Replace("SRD ", "");
+                        srd = true;
+                     }
 
                      if (mapping.ContainsKey(name))
                      {
                         name = mapping[name];
                      }
 
-                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, qty * value > 1000f ? 5.0f : 2.5f);
+                     float fee = qty * value > 1000f ? 5.0f : 2.5f;
+                     fee = srd ? fee*2:fee;
+
+                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, fee);
 
                      StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 

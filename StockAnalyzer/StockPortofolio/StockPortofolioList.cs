@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Management.Instrumentation;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.Portofolio
 {
    public class StockPortofolioList : System.Collections.Generic.List<StockPortofolio>, IXmlSerializable
    {
+      public static StockPortofolioList Instance { get; set; }
+
       public StockPortofolioList()
       {
+         Instance = this;
       }
 
       public List<string> GetStockNames()

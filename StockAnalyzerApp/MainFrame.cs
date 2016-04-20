@@ -1309,7 +1309,7 @@ namespace StockAnalyzerApp
             foreach (var portfolio in this.StockPortofolioList)
             {
                portfolio.Initialize(this.StockDictionary);
-               StockSerie portfolioSerie = portfolio.GeneratePortfolioStockSerie(portfolio.Name, this.StockDictionary["CAC40"], StockSerie.Groups.Portfolio);
+               StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, StockSerie.Groups.Portfolio, StockDataProvider.Portofolio);
                this.StockDictionary.Add(portfolio.Name, portfolioSerie);
             }
             
@@ -1334,7 +1334,6 @@ namespace StockAnalyzerApp
          {
             StockPortofolio portofolio = new StockPortofolio("Default_P");
             portofolio.TotalDeposit = 10000;
-            portofolio.Currency = '€';
 
             this.StockPortofolioList.Add(portofolio);
          }

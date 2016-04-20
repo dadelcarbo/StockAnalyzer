@@ -68,6 +68,7 @@
     <Compile Include="StockClasses\StockDataProviders\BarChartDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\GoogleIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\NASDACQShortInterestDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\GoogleIntradayDataProviderConfigDlg.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -134,17 +134,17 @@ namespace StockAnalyzer.Portofolio
 
          #region CLEAN UP ALL OBSOLETE SELL ORDER
          // Clean all invalid Sell order if any. An invalid sell order is a sell order before a buy order
-         foreach (StockOrder stockOrder in stockOrderList)
-         {
-            if (stockOrder.IsBuyOrder())
-            {
-               break; // We found the buy order we stop looping
-            }
-            else
-            {
-               stockOrderList.Remove(stockOrder); // Just ignore it
-            }
-         }
+         //foreach (StockOrder stockOrder in stockOrderList)
+         //{
+         //   if (stockOrder.IsBuyOrder())
+         //   {
+         //      break; // We found the buy order we stop looping
+         //   }
+         //   else
+         //   {
+         //      stockOrderList.Remove(stockOrder); // Just ignore it
+         //   }
+         //}
          #endregion
 
          // Loop to calculate the summary order list (A couple buy sell is created each time no value for this stock are detained)

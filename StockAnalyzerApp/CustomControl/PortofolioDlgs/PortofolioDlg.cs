@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 
@@ -44,55 +45,74 @@ namespace StockAnalyzerApp.CustomControl
          string[] subItems = new string[8];
          int nbItems = 0;
          int i = 0;
-         StockDailyValue lastStockValue = null, beforeLastStockValue;
+         StockDailyValue beforeLastStockValue;
          foreach (string stockName in nbActiveStocks.Keys)
          {
             i = 0;
             stockOrder = this.stockPortofolio.OrderList.GetActiveSummaryOrder(stockName);
             if (stockOrder != null)
             {
-               lastStockValue = this.stockDictionary[stockName].Values.Last();
-               beforeLastStockValue = this.stockDictionary[stockName].Values.ElementAt(this.stockDictionary[stockName].Values.Count - 2);
-               float totalValue = stockOrder.Number * lastStockValue.CLOSE;
+               if (this.stockDictionary.ContainsKey(stockName))
+               {
+                  StockDailyValue lastStockValue = this.stockDictionary[stockName].Values.Last();
+                  beforeLastStockValue = this.stockDictionary[stockName].Values.ElementAt(this.stockDictionary[stockName].Values.Count - 2);
+                  float totalValue = stockOrder.Number*lastStockValue.CLOSE;
 
-               subItems[i++] = stockOrder.StockName;
-               subItems[i++] = stockOrder.Number.ToString();
-               subItems[i++] = stockOrder.UnitCost.ToString("0.00#");
-               subItems[i++] = lastStockValue.CLOSE.ToString();
-               subItems[i++] = ((lastStockValue.CLOSE - stockOrder.UnitCost) / stockOrder.UnitCost).ToString("P2");
-               subItems[i++] = ((lastStockValue.CLOSE - beforeLastStockValue.CLOSE) / beforeLastStockValue.CLOSE).ToString("P2");
-               subItems[i++] = (totalValue - stockOrder.TotalCost).ToString("0.00");
-               subItems[i++] = totalValue.ToString("0.00");
-               viewItems[nbItems++] = new ListViewItem(subItems);
+                  subItems[i++] = stockOrder.StockName;
+                  subItems[i++] = stockOrder.Number.ToString();
+                  subItems[i++] = stockOrder.UnitCost.ToString("0.00#");
+                  subItems[i++] = lastStockValue.CLOSE.ToString();
+                  subItems[i++] = ((lastStockValue.CLOSE - stockOrder.UnitCost)/stockOrder.UnitCost).ToString("P2");
+                  subItems[i++] =
+                     ((lastStockValue.CLOSE - beforeLastStockValue.CLOSE)/beforeLastStockValue.CLOSE).ToString("P2");
+                  subItems[i++] = (totalValue - stockOrder.TotalCost).ToString("0.00");
+                  subItems[i++] = totalValue.ToString("0.00");
+                  viewItems[nbItems++] = new ListViewItem(subItems);
+               }
+               else
+               {
+                  float totalValue = Math.Abs(stockOrder.TotalCost);
+                  subItems[i++] = stockOrder.StockName;
+                  subItems[i++] = stockOrder.Number.ToString();
+                  subItems[i++] = stockOrder.UnitCost.ToString("0.00#");
+                  subItems[i++] = stockOrder.UnitCost.ToString("0.00#");
+                  subItems[i++] = (0).ToString("P2");
+                  subItems[i++] = (0).ToString("P2");
+                  subItems[i++] = (0).ToString("0.00");
+                  subItems[i++] = stockOrder.UnitCost.ToString("0.00");
+                  viewItems[nbItems++] = new ListViewItem(subItems);
+               }
+
             }
          }
          // Add special case for portofoglio
-         if (this.stockDictionary.ContainsKey(this.stockPortofolio.Name))
-         {
-            this.stockDictionary.Remove(this.stockPortofolio.Name);
-         }
-         if (this.stockPortofolio.OrderList.Count != 0)
-         {
-            StockSerie refSerie = this.stockDictionary[this.stockPortofolio.OrderList.First().StockName];
-            this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, refSerie, refSerie.StockGroup));
-         }
-         else
-         {
-            StockSerie serie;
-            string stockName = this.stockPortofolio.Name.Remove(this.stockPortofolio.Name.Length-2);
-            if (this.stockDictionary.ContainsKey(stockName)){
-               serie = this.stockDictionary[stockName];
-            }
-            else
-            {
-               serie = this.stockDictionary["CAC40"];
-            }
-            this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, serie, serie.StockGroup));
-         }
+         //if (this.stockDictionary.ContainsKey(this.stockPortofolio.Name))
+         //{
+         //   this.stockDictionary.Remove(this.stockPortofolio.Name);
+         //}
+         //if (this.stockPortofolio.OrderList.Count != 0)
+         //{
+         //   StockSerie refSerie = this.stockDictionary[this.stockPortofolio.OrderList.First().StockName];
+         //   this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, refSerie, refSerie.StockGroup));
+         //}
+         //else
+         //{
+         //   StockSerie serie;
+         //   string stockName = this.stockPortofolio.Name.Remove(this.stockPortofolio.Name.Length-2);
+         //   if (this.stockDictionary.ContainsKey(stockName)){
+         //      serie = this.stockDictionary[stockName];
+         //   }
+         //   else
+         //   {
+         //      serie = this.stockDictionary["CAC40"];
+         //   }
+         //   this.stockDictionary.Add(this.stockPortofolio.Name, stockPortofolio.GeneratePortfolioStockSerie(this.stockPortofolio.Name, serie, serie.StockGroup));
+         //}
          StockSerie portofoglioSerie = this.stockDictionary[this.stockPortofolio.Name];
+         portofoglioSerie.Initialise();
          if (portofoglioSerie.Count > 2)
          {
-            lastStockValue = portofoglioSerie.Values.Last();
+            StockDailyValue lastStockValue = portofoglioSerie.Values.Last();
             beforeLastStockValue = portofoglioSerie.ValueArray[portofoglioSerie.Values.Count - 2];
             i = 0;
             subItems[i++] = this.stockPortofolio.Name;
@@ -111,9 +131,9 @@ namespace StockAnalyzerApp.CustomControl
          }
 
          // Initialise portofolio params
-         this.totalDepositTextBox.Text = stockPortofolio.TotalDeposit.ToString("C2");
-         this.currentValueTextBox.Text = stockPortofolio.TotalPortofolioValue.ToString("C2");
-         this.availableTextBox.Text = stockPortofolio.AvailableLiquitidity.ToString("C2"); ;
+         this.totalDepositTextBox.Text = stockPortofolio.TotalDeposit.ToString("C2", StockAnalyzerForm.FrenchCulture);
+         this.currentValueTextBox.Text = stockPortofolio.TotalPortofolioValue.ToString("C2", StockAnalyzerForm.FrenchCulture);
+         this.availableTextBox.Text = stockPortofolio.AvailableLiquitidity.ToString("C2", StockAnalyzerForm.FrenchCulture); ;
          this.addedValueTextBox.Text = stockPortofolio.TotalAddedValue.ToString("P2");
       }
       void portofolioView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
