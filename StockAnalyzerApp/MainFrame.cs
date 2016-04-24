@@ -340,14 +340,18 @@ namespace StockAnalyzerApp
             List<StockSerie.Groups> groups = new List<StockSerie.Groups>()
             {
                StockSerie.Groups.CAC40,
-               StockSerie.Groups.COMMODITY
+               StockSerie.Groups.COMMODITY,
+               StockSerie.Groups.COUNTRY,
+               StockSerie.Groups.CURRENCY
             };
 
             this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
             this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
             this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
+            this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
+            this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
 
-            //GeneratePosition(groups);
+            GeneratePosition(groups);
 
             // Generate Vix Premiu
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
@@ -571,6 +575,9 @@ namespace StockAnalyzerApp
          this.LoadWatchList();
          InitialiseWatchListComboBox();
 
+         //
+         InitialiseThemeCombo();
+
          // Deserialize Drawing Items - Read Analysis files
          if (Settings.Default.AnalysisFile == string.Empty)
          {
@@ -582,12 +589,9 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items...";
             LoadAnalysis(Settings.Default.AnalysisFile);
          }
-
+         
          // 
          InitialiseStockCombo();
-
-         //
-         InitialiseThemeCombo();
 
          //
          InitialiseStrategyCombo();
@@ -3680,9 +3684,10 @@ namespace StockAnalyzerApp
             System.IO.Directory.CreateDirectory(folderName);
          }
 
+         Settings.Default.MomentumIndicator = "ROR(100,6,1)";
+
          foreach (StockSerie.Groups group in groups)
          {
-            Settings.Default.MomentumIndicator = "ROC(120,1)";
 
             StockSplashScreen.ProgressText = "Generating position data for " + group;
             var groupSeries =
@@ -3756,28 +3761,31 @@ namespace StockAnalyzerApp
                   {
                      momSeries.Add(new MomentumSerie()
                      {
-                        MomentumSlow = serie.GetIndicator("SPEED(200)").Series[0][dateIndex],
-                        MomentumFast = serie.GetIndicator("ROC(3,3)").Series[0][dateIndex],
+                        MomentumSlow = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
+                        MomentumFast = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
                         StockSerie = serie
                      });
                   }
                }
-               var moms = momSeries.OrderBy(ms => ms.MomentumSlow);
-               int count = moms.Count();
-               int i = 0;
-               foreach (var m in moms)
+               if (momSeries.Count > 1)
                {
-                  m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
-               }
+                  var moms = momSeries.OrderBy(ms => ms.MomentumSlow);
+                  int count = moms.Count();
+                  int i = 0;
+                  foreach (var m in moms)
+                  {
+                     m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
+                  }
 
-               moms = momSeries.OrderBy(ms => ms.MomentumFast);
-               i = 0;
-               foreach (var m in moms)
-               {
-                  m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
-                  m.StockSerie[date].POSITION = m.Position;
+                  moms = momSeries.OrderBy(ms => ms.MomentumFast);
+                  i = 0;
+                  foreach (var m in moms)
+                  {
+                     m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
+                     m.StockSerie[date].POSITION = m.Position;
+                  }
+                  positions.Add(date, momSeries);
                }
-               positions.Add(date, momSeries);
             }
 
             StockSplashScreen.ProgressSubText = "PreInitialising";
