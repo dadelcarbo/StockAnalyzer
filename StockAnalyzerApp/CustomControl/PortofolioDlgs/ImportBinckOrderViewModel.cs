@@ -121,7 +121,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                int index = 0;
                while ((line = stream.ReadLine()) != null)
                {
-                  string[] fields = line.Split('\t');
+                  string[] fields = line.Replace("\t\t", "\t").Split('\t');
                   int id = int.Parse(fields[idIndex]);
                   if (!this.Orders.Any(o => o.ID == id) && (fields[statusIndex] == "Exécuté" || fields[statusIndex].StartsWith("Partiellement exécuté")))
                   {
