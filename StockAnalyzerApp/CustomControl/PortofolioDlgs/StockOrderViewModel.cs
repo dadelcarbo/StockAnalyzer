@@ -33,9 +33,10 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       {
          get { return order.Fee; }
       }
-      public string ExecutionDate
+      public DateTime ExecutionDate
       {
-         get { return order.ExecutionDate.ToShortDateString(); }
+         get { return order.ExecutionDate; }
+         set { order.ExecutionDate = value; }
       }
       public StockOrder.OrderType Type
       {
