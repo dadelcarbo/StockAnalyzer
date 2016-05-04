@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
@@ -35,7 +36,19 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
       private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
       {
-         this.DataContext = StockAlert.ParseAlertFile();
+         System.Windows.Forms.Cursor cursor = StockAnalyzerForm.MainFrame.Cursor;
+
+         StockAnalyzerForm.MainFrame.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+         try
+         {
+            StockAnalyzerForm.MainFrame.GenerateAlert();
+            this.DataContext = StockAlert.ParseAlertFile();
+         }
+         catch (Exception ex)
+         {
+            StockLog.Write(ex);
+         }
+         StockAnalyzerForm.MainFrame.Cursor = cursor;
       }
 
       private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

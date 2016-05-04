@@ -739,11 +739,11 @@ namespace StockAnalyzerApp
              DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
 
-         Thread alertThread = new Thread(GenerateAlertThread);
+         Thread alertThread = new Thread(GenerateAlert);
          alertThread.Start();
       }
 
-      private void GenerateAlertThread()
+      public void GenerateAlert()
       {
          // Clear alert log files
          string fileName = Path.GetTempPath() + "AlertLog.txt";
