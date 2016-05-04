@@ -77,6 +77,7 @@ namespace StockAnalyzerApp
          this.selectEventForMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
          this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+         this.showAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
          this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -421,6 +422,7 @@ namespace StockAnalyzerApp
             this.selectEventForMarqueeMenuItem,
             this.toolStripSeparator16,
             this.showHorseRaceViewMenuItem,
+            this.showAlertMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
@@ -573,6 +575,14 @@ namespace StockAnalyzerApp
          this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(244, 22);
          this.showHorseRaceViewMenuItem.Text = "Horse Race View";
          this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
+         // 
+         // showAlertMenuItem
+         // 
+         this.showAlertMenuItem.Name = "showAlertMenuItem";
+         this.showAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+         this.showAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+         this.showAlertMenuItem.Text = "Alert View";
+         this.showAlertMenuItem.Click += showAlertViewMenuItem_Click;
          // 
          // toolStripSeparator15
          // 
@@ -1649,6 +1659,7 @@ namespace StockAnalyzerApp
       private ToolStripMenuItem addStockCAPCAMenuItem;
       private ToolStripButton generateChannelStripButton;
       private ToolStripMenuItem showHorseRaceViewMenuItem;
+      private ToolStripMenuItem showAlertMenuItem;
       private ToolStripMenuItem hideIndicatorsStockMenuItem;
       private ToolStripSeparator toolStripSeparator10;
       private ToolStripMenuItem indexRelativeStrengthMenuItem;

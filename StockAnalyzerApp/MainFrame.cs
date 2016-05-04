@@ -40,12 +40,14 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzerApp.CustomControl.AlertDialog;
 
 namespace StockAnalyzerApp
 {
    public partial class StockAnalyzerForm : Form
    {
       public delegate void SelectedStockChangedEventHandler(string stockName, bool ativateMainWindow);
+      public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockSerie.StockBarDuration barDuration, bool ativateMainWindow);
 
       public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
 
@@ -351,7 +353,7 @@ namespace StockAnalyzerApp
             this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
             this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
 
-            GeneratePosition(groups);
+            //GeneratePosition(groups);
 
             // Generate Vix Premiu
             StockSplashScreen.ProgressText = "Generating VIX Premium data...";
@@ -759,72 +761,77 @@ namespace StockAnalyzerApp
             }
          }
 
-         using (StreamWriter sw = new StreamWriter(fileName, true))
+         string alertFile = string.Empty;
+         alerts.Clear();
+         alerts.Add(cciEx);
+         alerts.Add(barAbove);
+         alerts.Add(barBelow);
+         alerts.Add(trailHL);
+         alerts.Add(ResistanceBroken);
+         alerts.Add(trailHLSR);
+         //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "UpTrend"));
+         //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "DownTrend");
+         string alertMsg = string.Empty;
+
+         var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+
+         StockSplashScreen.FadeInOutSpeed = 0.25;
+         StockSplashScreen.ProgressText = "Scanning Alerts ";
+         StockSplashScreen.ProgressVal = 0;
+         StockSplashScreen.ProgressMax = alertList.Count();
+         StockSplashScreen.ProgressMin = 0;
+         //StockSplashScreen.ShowSplashScreen();
+
+         foreach (string stockName in alertList)
          {
-            alerts.Clear();
-            alerts.Add(cciEx);
-            alerts.Add(barAbove);
-            alerts.Add(barBelow);
-            alerts.Add(trailHL);
-            alerts.Add(ResistanceBroken);
-            alerts.Add(trailHLSR);
-            //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "UpTrend"));
-            //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "DownTrend");
-            string alertMsg = string.Empty;
+            if (!this.StockDictionary.ContainsKey(stockName)) continue;
 
-            var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+            StockSplashScreen.ProgressVal++;
+            StockSplashScreen.ProgressSubText = "Scanning " + stockName;
 
-            StockSplashScreen.FadeInOutSpeed = 0.25;
-            StockSplashScreen.ProgressText = "Scanning Alerts ";
-            StockSplashScreen.ProgressVal = 0;
-            StockSplashScreen.ProgressMax = alertList.Count();
-            StockSplashScreen.ProgressMin = 0;
-            //StockSplashScreen.ShowSplashScreen();
+            StockSerie stockSerie = this.StockDictionary[stockName];
+            StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
 
-            foreach (string stockName in alertList)
+            if (!stockSerie.Initialise()) continue;
+
+            foreach (StockSerie.StockAlertDef alert in alerts)
             {
-               if (!this.StockDictionary.ContainsKey(stockName)) continue;
-
-               StockSplashScreen.ProgressVal++;
-               StockSplashScreen.ProgressSubText = "Scanning " + stockName;
-
-               StockSerie stockSerie = this.StockDictionary[stockName];
-               StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-
-               if (!stockSerie.Initialise()) continue;
-
-               foreach (StockSerie.StockAlertDef alert in alerts)
+               if (stockSerie.MatchEvent(alert))
                {
-                  if (stockSerie.MatchEvent(alert))
-                  {
-                     var values = stockSerie.GetValues(alert.BarDuration);
-                     string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay + ";" + alert.ToString();
+                  var values = stockSerie.GetValues(alert.BarDuration);
+                  string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
+                                     ";" + alert.ToString();
 
-                     // Check if already been sent during the day.
-                     if (!alertLog.Any(l => l.StartsWith(alertLine)))
-                     {
-                        alertMsg += alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + Environment.NewLine;
-                     }
+                  // Check if already been sent during the day.
+                  if (!alertLog.Any(l => l.StartsWith(alertLine)))
+                  {
+                     alertMsg += alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
+                                 Environment.NewLine;
                   }
                }
             }
-            if (!string.IsNullOrEmpty(alertMsg))
-            {
-               try
-               {
-                  StockMail.SendEmail("Ultimate Chartist Alert", alertMsg);
-
-                  sw.WriteLine(alertMsg.Trim());
-               }
-               catch (Exception ex)
-               {
-                  StockAnalyzerException.MessageBox(ex);
-               }
-            }
-            StockSplashScreen.CloseForm(true);
          }
-      }
 
+         if (!string.IsNullOrEmpty(alertMsg))
+         {
+            try
+            {
+               StockMail.SendEmail("Ultimate Chartist Alert", alertMsg);
+
+               alertFile += alertMsg.Trim() + Environment.NewLine;
+            }
+            catch (Exception ex)
+            {
+               StockAnalyzerException.MessageBox(ex);
+            }
+         }
+
+         using (StreamWriter sw = new StreamWriter(fileName, true))
+         {
+            sw.Write(alertFile.Trim());
+         }
+         StockSplashScreen.CloseForm(true);
+      }
 
       #endregion
 
@@ -1013,6 +1020,40 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
          }
+         if (!this.stockNameComboBox.Items.Contains(stockName))
+         {
+            this.stockNameComboBox.Items.Add(stockName);
+         }
+         this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
+         this.stockNameComboBox.Text = stockName;
+         this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
+
+         StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+
+         if (activate)
+         {
+            this.Activate();
+         }
+      }
+      public void OnSelectedStockAndDurationChanged(string stockName, StockSerie.StockBarDuration barDuration ,bool activate)
+      {
+         if (stockName.EndsWith("_P") || stockName == "Default")
+         {
+            this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
+            if (this.StockDictionary.ContainsKey(stockName))
+            {
+               this.StockDictionary.Remove(stockName);
+            }
+            this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio);
+            if (!this.stockNameComboBox.Items.Contains(stockName))
+            {
+               this.stockNameComboBox.Items.Insert(
+                  this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
+            }
+         }
+         
+         this.barDurationComboBox.SelectedItem = barDuration;
+
          if (!this.stockNameComboBox.Items.Contains(stockName))
          {
             this.stockNameComboBox.Items.Add(stockName);
@@ -5919,6 +5960,25 @@ border:1px solid black;
          }
       }
 
+      public void SetThemeFromAlert(StockAlert alert)
+      {
+         using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(alert.ToTheme())))
+         {
+            using (StreamReader sr = new StreamReader(ms))
+            {
+               this.LoadThemeStream(WORK_THEME, sr);
+            }
+         }
+         if (this.themeComboBox.SelectedItem.ToString() == WORK_THEME)
+         {
+            this.ApplyTheme();
+         }
+         else
+         {
+            this.themeComboBox.SelectedItem = WORK_THEME;
+         }
+      }
+
       public void SetThemeFromStrategy(StockFilteredStrategyBase strategy)
       {
          using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(strategy.ToTheme())))
@@ -5953,6 +6013,29 @@ border:1px solid black;
       void horseRaceDlg_Disposed(object sender, EventArgs e)
       {
          this.horseRaceDlg = null;
+      }
+      #endregion
+      #region ALERT DIALOG
+      AlertDlg alertDlg = null;
+      void showAlertViewMenuItem_Click(object sender, System.EventArgs e)
+      {
+         if (alertDlg == null)
+         {
+            alertDlg = new AlertDlg();
+            alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+            alertDlg.Disposed += alertDlg_Disposed;
+            alertDlg.Show();
+         }
+         else
+         {
+            alertDlg.Activate();
+         }
+      }
+
+      void alertDlg_Disposed(object sender, EventArgs e)
+      {
+         alertDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+         this.alertDlg = null;
       }
       #endregion
 
@@ -6824,5 +6907,6 @@ border:1px solid black;
          OnNeedReinitialise(true);
       }
       #endregion
+
    }
 }

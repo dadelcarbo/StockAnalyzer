@@ -1919,7 +1919,7 @@ namespace StockAnalyzer.StockClasses
 
          public override string ToString()
          {
-            return this.BarDuration + ":" + IndicatorFullName + "=>" + EventName;
+            return this.BarDuration + ";" + IndicatorFullName + "=>" + EventName;
          }
       }
       public bool MatchEvent(StockAlertDef stockAlert)
