@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses
       }
       public bool IsEmpty()
       {
-         return (this.Comments.Count == 0 || (this.Comments.Values.Count(c => string.IsNullOrWhiteSpace(c)) == 0)) &&
+         return (this.Comments.Count == 0 || (this.Comments.Values.Count(c => !string.IsNullOrWhiteSpace(c)) == 0)) &&
              (this.DrawingItems.Count == 0 || (this.DrawingItems.Values.Count(d => d.Count > 0) == 0)) &&
              this.Excluded == false &&
              this.FollowUp == false &&

@@ -1758,7 +1758,7 @@ namespace StockAnalyzerApp
 
             var stockSeries =
                this.StockDictionary.Values.Where(
-                  s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup));
+                  s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
 
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1787,9 +1787,7 @@ namespace StockAnalyzerApp
 
                StockSplashScreen.ProgressVal++;
             }
-
-            StockSplashScreen.CloseForm(true);
-
+            
             if (this.currentStockSerie.Initialise())
             {
                this.ApplyTheme();
@@ -1798,6 +1796,8 @@ namespace StockAnalyzerApp
             {
                this.DeactivateGraphControls("Unable to download selected stock data...");
             }
+
+            StockSplashScreen.CloseForm(true);
          }
       }
 
