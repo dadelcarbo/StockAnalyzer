@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using System.Threading;
+using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -1330,6 +1331,80 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
 
          return cac40List.Contains(stockSerie.StockName);
+      }
+
+      public static void DownloadAgenda(StockSerie stockSerie)
+      {
+         string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName",
+            stockSerie.ShortName);
+
+         StockWebHelper swh = new StockWebHelper();
+         string html = swh.DownloadHtml(url);
+
+         WebBrowser browser = new WebBrowser();
+         browser.ScriptErrorsSuppressed = true;
+         browser.DocumentText = html;
+         browser.Document.OpenNew(true);
+         browser.Document.Write(html);
+         browser.Refresh();
+
+         HtmlDocument doc = browser.Document;
+
+         HtmlElementCollection tables = doc.GetElementsByTagName("table");
+         List<List<string>> data = new List<List<string>>();
+
+         foreach (HtmlElement tbl in tables)
+         {
+            if (tbl.InnerText.StartsWith("Date"))
+            {
+               data = getTableData(tbl);
+               break;
+            }
+         }
+         //
+         foreach (var row in data)
+         {
+            if (row[0].StartsWith("du")) row[0] = row[0].Substring(row[0].IndexOf("au ") + 3);
+            DateTime date = DateTime.Parse(row[0]);
+
+            string comment = row[1];
+            if (row[2] != null) comment += Environment.NewLine + row[2];
+
+            if (!stockSerie.StockAnalysis.Comments.ContainsKey(date))
+            {
+               stockSerie.StockAnalysis.Comments.Add(date, comment);
+            }
+            else
+            {
+               if (!stockSerie.StockAnalysis.Comments[date].Contains(comment))
+               {
+                  stockSerie.StockAnalysis.Comments[date] = stockSerie.StockAnalysis.Comments[date] +
+                                                            Environment.NewLine + comment;
+               }
+            }
+         }
+      }
+
+      static private List<List<string>> getTableData(HtmlElement tbl)
+      {
+         int nrec = 0;
+         List<List<string>> data = new List<List<string>>();
+         string rowBuff;
+
+         HtmlElementCollection rows = tbl.GetElementsByTagName("tr");
+         HtmlElementCollection cols;
+         foreach (HtmlElement tr in rows)
+         {
+            cols = tr.GetElementsByTagName("td");
+            List<string> row = new List<string>();
+            foreach (HtmlElement td in cols)
+            {
+               row.Add(WebUtility.HtmlDecode(td.InnerText));
+            }
+            if (row.Count>0) data.Add(row);
+         }
+
+         return data;
       }
    }
 }

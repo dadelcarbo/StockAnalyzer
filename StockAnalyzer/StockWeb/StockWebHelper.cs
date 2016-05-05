@@ -283,6 +283,20 @@ namespace StockAnalyzer.StockWeb
          }
          return true;
       }
+
+      public string DownloadHtml(string url)
+      {
+         HttpWebRequest req = (HttpWebRequest) WebRequest.Create(url);
+
+         HttpWebResponse response = (HttpWebResponse) req.GetResponse();
+         // Get the stream containing content returned by the server.
+         Stream dataStream = response.GetResponseStream();
+         // Open the stream using a StreamReader for easy access.
+         StreamReader reader = new StreamReader(dataStream);
+         // Read the content.
+         return reader.ReadToEnd();
+      }
+
       private bool DownloadFile(string destFile, string url)
       {
          if (File.GetLastWriteTime(destFile) > DateTime.Now.AddHours(-6))

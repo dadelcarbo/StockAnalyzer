@@ -1721,6 +1721,18 @@ namespace StockAnalyzerApp
 
             if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
             {
+               if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD))
+               {
+                  try
+                  {
+                     ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                  }
+                  catch (Exception ex)
+                  {
+                     StockLog.Write(ex);
+                  }
+               }
+
                this.currentStockSerie.PaintBarCache = null;
                if (this.currentStockSerie.Initialise())
                {
@@ -1758,6 +1770,20 @@ namespace StockAnalyzerApp
                StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
                                                 stockSerie.StockName;
+
+               if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD))
+               {
+                  try
+                  {
+                     StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " +
+                                                      stockSerie.StockName;
+                     ABCDataProvider.DownloadAgenda(stockSerie);
+                  }
+                  catch (Exception ex)
+                  {
+                     StockLog.Write(ex);
+                  }
+               }
 
                StockSplashScreen.ProgressVal++;
             }
