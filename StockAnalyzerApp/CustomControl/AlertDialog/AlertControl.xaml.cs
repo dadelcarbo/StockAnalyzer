@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,7 +26,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
       public AlertControl()
       {
          this.DataContext = StockAlert.ParseAlertFile();
-
          InitializeComponent();
       }
       
@@ -33,22 +33,17 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
       public ObservableCollection<StockAlert> Alerts { get; set; }
       
-
       private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
       {
-         System.Windows.Forms.Cursor cursor = StockAnalyzerForm.MainFrame.Cursor;
-
-         StockAnalyzerForm.MainFrame.Cursor = System.Windows.Forms.Cursors.WaitCursor;
          try
          {
-            StockAnalyzerForm.MainFrame.GenerateAlert();
-            this.DataContext = StockAlert.ParseAlertFile();
+            Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert);
+            alertThread.Start();
          }
          catch (Exception ex)
          {
             StockLog.Write(ex);
          }
-         StockAnalyzerForm.MainFrame.Cursor = cursor;
       }
 
       private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

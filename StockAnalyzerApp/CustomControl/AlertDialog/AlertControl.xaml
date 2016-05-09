@@ -21,7 +21,7 @@
                 <DataGridTextColumn Header="Stock" Binding="{Binding StockName, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Duration" Binding="{Binding BarDuration, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Event" Binding="{Binding Alert, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, Mode=OneWay, ConverterCulture=en-GB}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

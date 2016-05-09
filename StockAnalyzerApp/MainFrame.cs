@@ -67,6 +67,10 @@ namespace StockAnalyzerApp
 
       public delegate void StockWatchListsChangedEventHandler();
 
+      public delegate void AlertDetectedHandler();
+
+      public event AlertDetectedHandler AlertDetected;
+
       public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
       public delegate void SavePortofolio();
@@ -830,6 +834,12 @@ namespace StockAnalyzerApp
          {
             sw.Write(alertFile.Trim());
          }
+
+         if (this.AlertDetected != null)
+         {
+            this.Invoke(this.AlertDetected);
+         }
+
          StockSplashScreen.CloseForm(true);
       }
 
@@ -1721,7 +1731,7 @@ namespace StockAnalyzerApp
 
             if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
             {
-               if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD))
+               if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD) || currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.EURONEXT))
                {
                   try
                   {
@@ -1771,7 +1781,7 @@ namespace StockAnalyzerApp
                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
                                                 stockSerie.StockName;
 
-               if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD))
+               if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD) || stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.EURONEXT))
                {
                   try
                   {
