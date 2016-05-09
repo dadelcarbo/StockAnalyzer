@@ -821,8 +821,14 @@ namespace StockAnalyzerApp
             try
             {
                StockMail.SendEmail("Ultimate Chartist Alert", alertMsg);
-
-               alertFile += alertMsg.Trim() + Environment.NewLine;
+               if (alertLog.Count() == 0)
+               {
+                  alertFile += alertMsg;
+               }
+               else
+               {
+                  alertFile += Environment.NewLine + alertMsg;
+               }
             }
             catch (Exception ex)
             {
@@ -832,7 +838,7 @@ namespace StockAnalyzerApp
 
          using (StreamWriter sw = new StreamWriter(fileName, true))
          {
-            sw.Write(alertFile.Trim());
+            sw.Write(alertFile);
          }
 
          if (this.AlertDetected != null)
