@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -11,37 +12,27 @@ using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
-   public class StockAlert
+   public class StockAlert : IEquatable<StockAlert>
    {
       public DateTime Date { get; set; }
       public string StockName { get; set; }
       public string Alert { get; set; }
       public StockSerie.StockBarDuration BarDuration { get; set; }
+      public float AlertClose { get; set; }
+      public float CurrentClose { get; set; }
 
       public StockAlert()
       {
       }
 
-      public static ObservableCollection<StockAlert> ParseAlertFile()
+      public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, float alertClose, float currentClose)
       {
-         ObservableCollection<StockAlert> alerts = new ObservableCollection<StockAlert>();
-         string fileName = Path.GetTempPath() + "AlertLog.txt";
-         
-         IEnumerable<string> alertLog = new List<string>();
-         if (File.Exists(fileName))
-         {
-            alertLog = File.ReadAllLines(fileName);
-         }
-
-         foreach (string line in alertLog)
-         {
-            string[] fields = line.Split(';');
-            StockSerie.StockBarDuration barDuration;
-            StockSerie.StockBarDuration.TryParse(fields[2], out barDuration);
-            alerts.Add(new StockAlert() { StockName = fields[0], Date = DateTime.Parse(fields[1]), BarDuration = barDuration, Alert = fields[3]});
-         }
-
-         return alerts;
+         this.Alert = alertDef.EventFullName;
+         this.BarDuration = alertDef.BarDuration;
+         Date = date;
+         StockName = stockName;
+         AlertClose = alertClose;
+         CurrentClose = currentClose;
       }
 
       const string ThemeTemplate = @"#ScrollGraph
@@ -70,13 +61,15 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
 
          string theme = ThemeTemplate;
 
-         IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(this.Alert.Remove(this.Alert.IndexOf("=>")));
+         IStockViewableSeries indicator =
+            StockViewableItemsManager.GetViewableItem(this.Alert.Remove(this.Alert.IndexOf("=>")));
          theme = AppendThemeLine(indicator, theme);
-         
+
          return theme;
       }
 
       private static int indCount;
+
       private static string AppendThemeLine(IStockViewableSeries indicator, string theme)
       {
          int index = -1;
@@ -95,7 +88,8 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
                   foreach (HLine hline in stockIndicator.HorizontalLines)
                   {
                      theme = theme.Replace("@Indicator" + indCount,
-                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) + System.Environment.NewLine + "@Indicator" + indCount);
+                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) +
+                        System.Environment.NewLine + "@Indicator" + indCount);
                   }
                }
             }
@@ -103,23 +97,49 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
             {
                IStockDecorator decorator = indicator as IStockDecorator;
                IStockIndicator decoratedIndicator = StockIndicatorManager.CreateIndicator(decorator.DecoratedItem);
-               theme = theme.Replace("@Indicator" + indCount, decoratedIndicator.ToThemeString() + System.Environment.NewLine + "@Indicator" + indCount);
+               theme = theme.Replace("@Indicator" + indCount,
+                  decoratedIndicator.ToThemeString() + System.Environment.NewLine + "@Indicator" + indCount);
                if (decoratedIndicator.HorizontalLines != null && decoratedIndicator.HorizontalLines.Count() > 0)
                {
                   foreach (HLine hline in decoratedIndicator.HorizontalLines)
                   {
                      theme = theme.Replace("@Indicator" + indCount,
-                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) + System.Environment.NewLine + "@Indicator" + indCount);
+                        "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) +
+                        System.Environment.NewLine + "@Indicator" + indCount);
                   }
                }
             }
             theme = theme.Replace("@Indicator" + indCount, indicator.ToThemeString());
 
-
-
             indCount++;
          }
          return theme;
+      }
+
+      public static bool operator ==(StockAlert a, StockAlert b)
+      {
+         return a.Equals(b);
+      }
+      public static bool operator !=(StockAlert a, StockAlert b)
+      {
+         return !a.Equals(b);
+      }
+
+      public override bool Equals(object obj)
+      {
+         return this.Equals(obj as StockAlert);
+      }
+
+      public bool Equals(StockAlert other)
+      {
+         if (System.Object.ReferenceEquals(this, other))
+         {
+            return true;
+         }
+         return this.StockName == other.StockName &&
+                this.Date == other.Date &&
+                this.Alert == other.Alert &&
+                this.BarDuration == other.BarDuration;
       }
    }
 }

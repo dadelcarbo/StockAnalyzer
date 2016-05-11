@@ -129,16 +129,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       }
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
       {
-         string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                           stockSerie.StockGroup.ToString() + ".txt";
-         if (File.Exists(fileName))
-         {
-            DateTime fileDate = File.GetLastWriteTime(fileName);
-            if (fileDate.Date == DateTime.Today)
-               return false;
-         }
-         this.DownloadIntradayData(rootFolder, stockSerie);
-         return true;
+         return this.DownloadIntradayData(rootFolder, stockSerie);
       }
       public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
       {

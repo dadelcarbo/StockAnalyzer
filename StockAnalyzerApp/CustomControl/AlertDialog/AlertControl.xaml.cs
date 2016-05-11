@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Xml.Serialization;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 
@@ -25,14 +26,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
    {
       public AlertControl()
       {
-         this.DataContext = StockAlert.ParseAlertFile();
          InitializeComponent();
       }
-      
+
       public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
-      public ObservableCollection<StockAlert> Alerts { get; set; }
-      
       private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
       {
          try

@@ -1901,27 +1901,6 @@ namespace StockAnalyzer.StockClasses
          public int EventIndex;
       }
 
-      public class StockAlertDef
-      {
-         public StockAlertDef(StockBarDuration barDuration, string indicatorType, string indicatorName, string eventName)
-         {
-            this.BarDuration = barDuration;
-            this.IndicatorType = indicatorType;
-            this.IndicatorName = indicatorName;
-            this.EventName = eventName;
-         }
-         public StockBarDuration BarDuration { get; private set; }
-         public string IndicatorType { get; private set; }
-         public string IndicatorName { get; private set; }
-         public string EventName { get; private set; }
-
-         public string IndicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
-
-         public override string ToString()
-         {
-            return this.BarDuration + ";" + IndicatorFullName + "=>" + EventName;
-         }
-      }
       public bool MatchEvent(StockAlertDef stockAlert)
       {
          StockBarDuration currentBarDuration = this.BarDuration;

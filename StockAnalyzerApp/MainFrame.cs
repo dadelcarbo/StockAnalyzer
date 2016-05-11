@@ -68,8 +68,11 @@ namespace StockAnalyzerApp
       public delegate void StockWatchListsChangedEventHandler();
 
       public delegate void AlertDetectedHandler();
-
       public event AlertDetectedHandler AlertDetected;
+      public delegate void AlertDetectionStartedHandler(int nbStock);
+      public event AlertDetectionStartedHandler AlertDetectionStarted;
+      public delegate void AlertDetectionProgressHandler(string StockName);
+      public event AlertDetectionProgressHandler AlertDetectionProgress;
 
       public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
@@ -728,14 +731,14 @@ namespace StockAnalyzerApp
          }
       }
 
-      private StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-      private StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
-      private StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
-      private StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-      private StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-      private StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+      private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+      private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
+      private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
+      private StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+      private StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+      private StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
 
-      private List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
+      private List<StockAlertDef> alertDefs = new List<StockAlertDef>();
 
       private void alertTimer_Tick(object sender, EventArgs e)
       {
@@ -749,97 +752,81 @@ namespace StockAnalyzerApp
 
       public void GenerateAlert()
       {
-         // Clear alert log files
-         string fileName = Path.GetTempPath() + "AlertLog.txt";
-         IEnumerable<string> alertLog = new List<string>();
-         if (File.Exists(fileName))
+         DateTime? lastRefreshDate = null;
+
+         alertDefs.Clear();
+         alertDefs.Add(cciEx);
+         alertDefs.Add(barAbove);
+         alertDefs.Add(barBelow);
+         alertDefs.Add(trailHL);
+         alertDefs.Add(ResistanceBroken);
+         alertDefs.Add(trailHLSR);
+
+         var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+         if (AlertDetectionStarted!=null)
          {
-            if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
+            if (this.InvokeRequired)
             {
-               File.Delete(fileName);
+               this.Invoke(this.AlertDetectionStarted, stockList.Count);
             }
             else
             {
-               alertLog = File.ReadAllLines(fileName);
-               File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
+               this.AlertDetectionStarted(stockList.Count);
             }
          }
+         
+         StockAlertLog stockAlertLog = StockAlertLog.Instance;
 
-         string alertFile = string.Empty;
-         alerts.Clear();
-         alerts.Add(cciEx);
-         alerts.Add(barAbove);
-         alerts.Add(barBelow);
-         alerts.Add(trailHL);
-         alerts.Add(ResistanceBroken);
-         alerts.Add(trailHLSR);
-         //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "UpTrend"));
-         //alerts.Add(new StockSerie.StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "DownTrend");
-         string alertMsg = string.Empty;
-
-         var alertList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
-
-         StockSplashScreen.FadeInOutSpeed = 0.25;
-         StockSplashScreen.ProgressText = "Scanning Alerts ";
-         StockSplashScreen.ProgressVal = 0;
-         StockSplashScreen.ProgressMax = alertList.Count();
-         StockSplashScreen.ProgressMin = 0;
-         //StockSplashScreen.ShowSplashScreen();
-
-         foreach (string stockName in alertList)
+         foreach (string stockName in stockList)
          {
+            if (AlertDetectionProgress != null)
+            {
+               if (this.InvokeRequired)
+               {
+                  this.Invoke(this.AlertDetectionProgress, stockName);
+               }
+               else
+               {
+                  this.AlertDetectionProgress(stockName);
+               }
+            }
             if (!this.StockDictionary.ContainsKey(stockName)) continue;
 
-            StockSplashScreen.ProgressVal++;
-            StockSplashScreen.ProgressSubText = "Scanning " + stockName;
 
             StockSerie stockSerie = this.StockDictionary[stockName];
             StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
 
             if (!stockSerie.Initialise()) continue;
 
-            foreach (StockSerie.StockAlertDef alert in alerts)
+            foreach (StockAlertDef alertDef in alertDefs)
             {
-               if (stockSerie.MatchEvent(alert))
+               if (stockSerie.MatchEvent(alertDef))
                {
-                  var values = stockSerie.GetValues(alert.BarDuration);
-                  string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
-                                     ";" + alert.ToString();
+                  var values = stockSerie.GetValues(alertDef.BarDuration);
+                  var dailyValue = values.ElementAt(values.Count - 2);
 
-                  // Check if already been sent during the day.
-                  if (!alertLog.Any(l => l.StartsWith(alertLine)))
+                  StockAlert stockAlert = new StockAlert(alertDef,
+                     dailyValue.DATE,
+                     stockSerie.StockName,
+                     dailyValue.CLOSE,
+                     stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
+
+                  if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
                   {
-                     alertMsg += alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE +
-                                 Environment.NewLine;
+                     if (this.InvokeRequired)
+                     {
+                        this.Invoke(new Action(() => stockAlertLog.Alerts.Add(stockAlert)));
+                     }
+                     else
+                     {
+                        stockAlertLog.Alerts.Add(stockAlert);
+                     }
                   }
                }
             }
          }
 
-         if (!string.IsNullOrEmpty(alertMsg))
-         {
-            try
-            {
-               StockMail.SendEmail("Ultimate Chartist Alert", alertMsg);
-               if (alertLog.Count() == 0)
-               {
-                  alertFile += alertMsg;
-               }
-               else
-               {
-                  alertFile += Environment.NewLine + alertMsg;
-               }
-            }
-            catch (Exception ex)
-            {
-               StockAnalyzerException.MessageBox(ex);
-            }
-         }
-
-         using (StreamWriter sw = new StreamWriter(fileName, true))
-         {
-            sw.Write(alertFile);
-         }
+         stockAlertLog.Save();
 
          if (this.AlertDetected != null)
          {
@@ -5267,13 +5254,13 @@ border:1px solid black;
 
          #region Generate report from Events
 
-         StockSerie.StockAlertDef cciEx = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-         StockSerie.StockAlertDef barAbove = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarAbove");
-         StockSerie.StockAlertDef barBelow = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarBelow");
-         StockSerie.StockAlertDef ResistanceBroken = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-         StockSerie.StockAlertDef trailHL = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-         StockSerie.StockAlertDef trailHLSR = new StockSerie.StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
-         List<StockSerie.StockAlertDef> alerts = new List<StockSerie.StockAlertDef>();
+         StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.Daily, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+         StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarAbove");
+         StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarBelow");
+         StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+         StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+         StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+         List<StockAlertDef> alerts = new List<StockAlertDef>();
 
          alerts.Clear();
          alerts.Add(cciEx);
@@ -5296,7 +5283,7 @@ border:1px solid black;
             if (!stockSerie.Initialise() || stockSerie.Count < 200) continue;
 
             string alertMsg = string.Empty;
-            foreach (StockSerie.StockAlertDef alert in alerts)
+            foreach (StockAlertDef alert in alerts)
             {
                if (stockSerie.MatchEvent(alert))
                {

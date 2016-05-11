@@ -57,6 +57,8 @@
     </Compile>
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\ShortInterestSerie.cs" />
+    <Compile Include="StockClasses\StockAlertDef.cs" />
+    <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
     <Compile Include="StockClasses\CotSerie.cs" />
