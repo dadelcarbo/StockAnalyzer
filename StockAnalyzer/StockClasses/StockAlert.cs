@@ -139,7 +139,8 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
          return this.StockName == other.StockName &&
                 this.Date == other.Date &&
                 this.Alert == other.Alert &&
-                this.BarDuration == other.BarDuration;
+                this.BarDuration == other.BarDuration &&
+                this.AlertClose == other.AlertClose;
       }
    }
 }

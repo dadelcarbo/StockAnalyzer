@@ -249,10 +249,9 @@ namespace StockAnalyzer.StockClasses
          else
          {
             return null;
-            //StockBarDuration previousBarDuration = this.barDuration;
-            //this.SetBarDuration(stockBarDuration);
-            //this.SetBarDuration(previousBarDuration);
-            //return this.BarSerieDictionary[stockBarDuration];
+            //List<StockDailyValue> newList = this.GenerateSerieForTimeSpanFromDaily(stockBarDuration);
+            //this.BarSerieDictionary.Add(stockBarDuration, newList);
+            //return newList;
          }
       }
       public List<StockDailyValue> GetExactValues()
@@ -1899,6 +1898,36 @@ namespace StockAnalyzer.StockClasses
       {
          public IStockViewableSeries ViewableSerie;
          public int EventIndex;
+      }
+      public bool MatchEvent(StockAlertDef stockAlert, int index)
+      {
+         StockBarDuration currentBarDuration = this.BarDuration;
+         try
+         {
+            this.BarDuration = stockAlert.BarDuration;
+            IStockEvent stockEvent = null;
+            IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+            if (this.HasVolume || !indicator.RequiresVolumeData)
+            {
+               stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+            }
+            else
+            {
+               return false;
+            }
+            int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+            if (eventIndex == -1)
+            {
+               StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+            }
+            if (stockEvent.Events[eventIndex][index]) return true;
+         }
+         finally
+         {
+            this.BarDuration = currentBarDuration;
+         }
+
+         return false;
       }
 
       public bool MatchEvent(StockAlertDef stockAlert)

@@ -674,7 +674,7 @@ namespace StockAnalyzerApp
             alertTimer.Interval = minutes * 60 * 1000;
             alertTimer.Start();
 
-            string fileName = Path.GetTempPath() + "AlertLog.txt";
+            string fileName = Path.GetTempPath() + "AlertLog.xml";
             IEnumerable<string> alertLog = new List<string>();
             bool needDirectAlertCheck = false;
             if (File.Exists(fileName))
@@ -697,7 +697,6 @@ namespace StockAnalyzerApp
                needDirectAlertCheck = true;
             }
             if (needDirectAlertCheck) alertTimer_Tick(null, null);
-
          }
       }
 
@@ -752,8 +751,6 @@ namespace StockAnalyzerApp
 
       public void GenerateAlert()
       {
-         DateTime? lastRefreshDate = null;
-
          alertDefs.Clear();
          alertDefs.Add(cciEx);
          alertDefs.Add(barAbove);
@@ -777,6 +774,8 @@ namespace StockAnalyzerApp
          
          StockAlertLog stockAlertLog = StockAlertLog.Instance;
 
+         DateTime lookBackDate = DateTime.Today.AddDays(-7);
+
          foreach (string stockName in stockList)
          {
             if (AlertDetectionProgress != null)
@@ -792,40 +791,44 @@ namespace StockAnalyzerApp
             }
             if (!this.StockDictionary.ContainsKey(stockName)) continue;
 
-
             StockSerie stockSerie = this.StockDictionary[stockName];
             StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
 
             if (!stockSerie.Initialise()) continue;
 
+            StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
+
             foreach (StockAlertDef alertDef in alertDefs)
             {
-               if (stockSerie.MatchEvent(alertDef))
+               stockSerie.BarDuration = alertDef.BarDuration;
+               var values = stockSerie.GetValues(alertDef.BarDuration);
+               for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
                {
-                  var values = stockSerie.GetValues(alertDef.BarDuration);
-                  var dailyValue = values.ElementAt(values.Count - 2);
-
-                  StockAlert stockAlert = new StockAlert(alertDef,
-                     dailyValue.DATE,
-                     stockSerie.StockName,
-                     dailyValue.CLOSE,
-                     stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
-
-                  if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
+                  var dailyValue = values.ElementAt(i);
+                  if (stockSerie.MatchEvent(alertDef,i))
                   {
-                     if (this.InvokeRequired)
+                     StockAlert stockAlert = new StockAlert(alertDef,
+                        dailyValue.DATE,
+                        stockSerie.StockName,
+                        dailyValue.CLOSE,
+                        stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
+
+                     if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
                      {
-                        this.Invoke(new Action(() => stockAlertLog.Alerts.Add(stockAlert)));
-                     }
-                     else
-                     {
-                        stockAlertLog.Alerts.Add(stockAlert);
+                        if (this.InvokeRequired)
+                        {
+                           this.Invoke(new Action(() => stockAlertLog.Alerts.Add(stockAlert)));
+                        }
+                        else
+                        {
+                           stockAlertLog.Alerts.Add(stockAlert);
+                        }
                      }
                   }
                }
             }
+            stockSerie.BarDuration = previouBarDuration;
          }
-
          stockAlertLog.Save();
 
          if (this.AlertDetected != null)
