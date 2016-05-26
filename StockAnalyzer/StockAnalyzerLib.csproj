@@ -183,7 +183,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DIST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MOMENTUM.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIAN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA2Lines.cs" />
@@ -215,7 +214,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DSTOKF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />

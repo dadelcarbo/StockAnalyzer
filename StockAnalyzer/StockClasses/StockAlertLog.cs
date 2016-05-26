@@ -99,7 +99,7 @@ namespace StockAnalyzer.StockClasses
             settings.IgnoreWhitespace = true;
             System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
             XmlSerializer serializer = new XmlSerializer(typeof (List<StockAlert>));
-            this.Alerts = new ObservableCollection<StockAlert>((List<StockAlert>) serializer.Deserialize(xmlReader));
+            this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as List<StockAlert>).OrderByDescending(a => a.Date));
          }
       }
 

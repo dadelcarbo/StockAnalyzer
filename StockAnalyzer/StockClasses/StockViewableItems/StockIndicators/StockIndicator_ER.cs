@@ -51,9 +51,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override void ApplyTo(StockSerie stockSerie)
       {
-         int period = Math.Min((int)this.parameters[0], stockSerie.Count-1);
-         int inputSmoothing = (int)this.parameters[1];
-         int smoothing = (int)this.parameters[2];
+         int period = Math.Min((int) this.parameters[0], stockSerie.Count - 1);
+         int inputSmoothing = (int) this.parameters[1];
+         int smoothing = (int) this.parameters[2];
          this.series[0] = stockSerie.CalculateER(period, inputSmoothing).CalculateEMA(smoothing);
          this.Series[0].Name = this.Name;
          this.CreateEventSeries(stockSerie.Count);
@@ -62,15 +62,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             this.eventSeries[0][i] = this.series[0][i] > 0;
             this.eventSeries[1][i] = this.series[0][i] < 0;
+            this.eventSeries[2][i] = this.series[0][i] > 0 && this.series[0][i - 1] < 0;
+            this.eventSeries[3][i] = this.series[0][i] < 0 && this.series[0][i - 1] > 0;
          }
       }
 
-      static string[] eventNames = new string[] { "Positive", "Negative"};
+      static string[] eventNames = new string[] { "Positive", "Negative", "TurnedPositive", "TurnedNegative" };
       public override string[] EventNames
       {
          get { return eventNames; }
       }
-      static readonly bool[] isEvent = new bool[] { false, false };
+      static readonly bool[] isEvent = new bool[] { false, false, true, true };
       public override bool[] IsEvent
       {
          get { return isEvent; }

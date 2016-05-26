@@ -30,43 +30,45 @@ namespace StockAnalyzerApp.CustomControl
          {
             try
             {
-               StockWebServices.LicenseManagerSoapClient lm = new StockWebServices.LicenseManagerSoapClient();
-               StockUser user = new StockUser(userIdTextBox.Text, passwordTextBox.Text);
+               //StockWebServices.LicenseManagerSoapClient lm = new StockWebServices.LicenseManagerSoapClient();
+               //StockUser user = new StockUser(userIdTextBox.Text, passwordTextBox.Text);
 
-               if (lm.IsRegisteredUser(user.Pseudo, user.EncryptedPassword))
-               {
-                  string licenseString = lm.GetLicense(user.Pseudo, user.EncryptedPassword, StockToolKit.GetMachineUID());
-                  if (licenseString.StartsWith("err"))
-                  {
-                     if (this.Controls.ContainsKey(licenseString))
-                     {
-                        Control errLabel = this.Controls.Find(licenseString, true)[0];
-                        MessageBox.Show(errLabel.Text, this.msg5.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                     }
-                  }
-                  else
-                  {
-                     // Succeeded, save file to local disk.
-                     string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
-                     using (StreamWriter sr = new StreamWriter(licenseFileName, false))
-                     {
-                        sr.Write(licenseString);
-                     }
+               //if (lm.IsRegisteredUser(user.Pseudo, user.EncryptedPassword))
+               //{
+               //   string licenseString = lm.GetLicense(user.Pseudo, user.EncryptedPassword, StockToolKit.GetMachineUID());
+               //   if (licenseString.StartsWith("err"))
+               //   {
+               //      if (this.Controls.ContainsKey(licenseString))
+               //      {
+               //         Control errLabel = this.Controls.Find(licenseString, true)[0];
+               //         MessageBox.Show(errLabel.Text, this.msg5.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+               //      }
+               //   }
+               //   else
+               //   {
+               //      // Succeeded, save file to local disk.
+               //      string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
+               //      using (StreamWriter sr = new StreamWriter(licenseFileName, false))
+               //      {
+               //         sr.Write(licenseString);
+               //      }
 
 
-                     Settings.Default.UserId = this.userIdTextBox.Text;
-                     Settings.Default.Save();
+               //      Settings.Default.UserId = this.userIdTextBox.Text;
+               //      Settings.Default.Save();
 
-                     // Congratulations
-                     MessageBox.Show(this.msg1.Text, this.msg6.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+               //      // Congratulations
+               //      MessageBox.Show(this.msg1.Text, this.msg6.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                     this.Close();
-                  }
-               }
-               else
-               {
-                  MessageBox.Show(this.msg2.Text, this.msg5.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-               }
+               //      this.Close();
+               //   }
+               //}
+               //else
+               //{
+               //   MessageBox.Show(this.msg2.Text, this.msg5.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+               //}
+
+               throw new NotImplementedException("License server not implemented");
             }
             catch
             {

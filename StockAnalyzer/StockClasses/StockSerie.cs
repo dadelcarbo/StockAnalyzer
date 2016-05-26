@@ -7932,9 +7932,11 @@ namespace StockAnalyzer.StockClasses
          if (File.Exists(fileName))
          {
             List<StockDailyValue> bars;
+            DateTime lastDateTime = DateTime.MinValue;
             if (this.BarSerieDictionary.ContainsKey(duration))
             {
                bars = this.BarSerieDictionary[duration];
+               lastDateTime = bars.Last().DATE;
             }
             else
             {
@@ -7948,7 +7950,7 @@ namespace StockAnalyzer.StockClasses
                while (!sr.EndOfStream)
                {
                   readValue = StockDailyValue.ReadMarketDataFromCSVStream(sr, this.StockName, true);
-                  if (readValue != null && !bars.Any(b => b.DATE == readValue.DATE))
+                  if (readValue != null && readValue.DATE> lastDateTime) //!bars.Any(b => b.DATE == readValue.DATE))
                   {
                      bars.Add(readValue);
                      readValue.Serie = this;

@@ -41,6 +41,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerApp.CustomControl.AlertDialog;
+using StockAnalyzerApp.CustomControl.StatisticsDlg;
 
 namespace StockAnalyzerApp
 {
@@ -817,11 +818,11 @@ namespace StockAnalyzerApp
                      {
                         if (this.InvokeRequired)
                         {
-                           this.Invoke(new Action(() => stockAlertLog.Alerts.Add(stockAlert)));
+                           this.Invoke(new Action(() => stockAlertLog.Alerts.Insert(0,stockAlert)));
                         }
                         else
                         {
-                           stockAlertLog.Alerts.Add(stockAlert);
+                           stockAlertLog.Alerts.Insert(0,stockAlert);
                         }
                      }
                   }
@@ -2863,6 +2864,10 @@ namespace StockAnalyzerApp
 
       private void statisticsMenuItem_Click(object sender, System.EventArgs e)
       {
+         StatisticsDlg statisticsDlg = new StatisticsDlg();
+         statisticsDlg.ShowDialog();
+         return;
+
          int minBar = 50;
          int nbStatBar = 50;
 
