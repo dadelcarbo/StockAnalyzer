@@ -5701,13 +5701,15 @@ border:1px solid black;
                   break;
                case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                   {
-                     List<string> indicators = new List<string> { "INDICATOR|TRAILHLSR(2)", "INDICATOR|TRAILHLSR(12)", "INDICATOR|TRAILHLSR(24)" };
+                     List<string> indicators = new List<string> { "TRAILSTOP|TRAILHLS(2,1)"};
                      List<StockSerie.StockBarDuration> durations = new List<StockSerie.StockBarDuration>
                             {
+                                StockSerie.StockBarDuration.Daily,
+                                StockSerie.StockBarDuration.Daily_EMA6,
                                 StockSerie.StockBarDuration.TLB,
+                                StockSerie.StockBarDuration.TLB_EMA6,
                                 StockSerie.StockBarDuration.TLB_3D,
-                                StockSerie.StockBarDuration.TLB_6D,
-                                StockSerie.StockBarDuration.TLB_9D
+                                StockSerie.StockBarDuration.TLB_3D_EMA6,
                             };
                      MultiTimeFrameGrid grid = new MultiTimeFrameGrid();
 

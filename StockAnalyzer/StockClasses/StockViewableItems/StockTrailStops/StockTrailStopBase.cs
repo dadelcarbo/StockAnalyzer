@@ -80,5 +80,32 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
          }
       }
       #endregion
+
+
+      private StockSerie.Trend[] upDownState = null;
+
+      public StockSerie.Trend[] UpDownState
+      {
+         get
+         {
+            if (upDownState == null)
+            {
+               BoolSerie boolSerie = this.Events[0];
+               upDownState = new StockSerie.Trend[boolSerie.Count];
+               for (int i = 0; i < boolSerie.Count; i++)
+               {
+                  upDownState[i] = BoolToTrend(boolSerie[i]);
+               }
+            }
+            return upDownState;
+         }
+      }
+
+      public static StockSerie.Trend BoolToTrend(bool? upTrend)
+      {
+         if (upTrend == null) return StockSerie.Trend.NoTrend;
+         if (upTrend.Value) return StockSerie.Trend.UpTrend;
+         return StockSerie.Trend.DownTrend;
+      }
    }
 }
