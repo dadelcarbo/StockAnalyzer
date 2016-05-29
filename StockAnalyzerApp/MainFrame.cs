@@ -41,6 +41,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerApp.CustomControl.AlertDialog;
+using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.StatisticsDlg;
 
 namespace StockAnalyzerApp
@@ -5711,15 +5712,18 @@ border:1px solid black;
                                 StockSerie.StockBarDuration.TLB_3D,
                                 StockSerie.StockBarDuration.TLB_3D_EMA6,
                             };
-                     MultiTimeFrameGrid grid = new MultiTimeFrameGrid();
+                     //MultiTimeFrameGrid grid = new MultiTimeFrameGrid();
 
-                     this.Cursor = Cursors.WaitCursor;
+                     //this.Cursor = Cursors.WaitCursor;
 
-                     grid.LoadData(durations, indicators, this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup)).ToList());
+                     //grid.LoadData(durations, indicators, this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup)).ToList());
 
-                     this.Cursor = Cursors.Arrow;
+                     //this.Cursor = Cursors.Arrow;
 
-                     grid.Show(this);
+                     //grid.Show(this);
+
+                     MTFDlg mtfDlg = new MTFDlg();
+                     mtfDlg.Show();
                   }
                   break;
                default:
