@@ -20,19 +20,25 @@
         </StackPanel>
         <StackPanel  Grid.Row="1" Orientation="Horizontal">
             <Label Content="TF1"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="75" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="100" VerticalAlignment="Center"></ComboBox>
             <Label Content="TF2"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="75" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="100" VerticalAlignment="Center"></ComboBox>
             <Label Content="TF3"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="75" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="100" VerticalAlignment="Center"></ComboBox>
         </StackPanel>
         <DataGrid Grid.Row="2" ItemsSource="{Binding Trends}" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionMode="Single" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
-                <DataGridTextColumn Binding="{Binding Trend1}" >
+                <DataGridTextColumn Binding="{Binding Trend1}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding ToolTip1}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="{Binding DataContext.BarDuration1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
                 </DataGridTextColumn.Header>
+                    
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding Trend1, Converter={x:Static l:TrendToColorConverter.Instance}}" />
@@ -40,6 +46,11 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Trend2}" >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding ToolTip2}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="{Binding DataContext.BarDuration2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
                     </DataGridTextColumn.Header>
@@ -50,6 +61,11 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Trend3}" >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding ToolTip3}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="{Binding DataContext.BarDuration3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
                     </DataGridTextColumn.Header>

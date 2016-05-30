@@ -3564,8 +3564,8 @@ namespace StockAnalyzer.StockClasses
       /// <param name="shortStopSerie"></param>
       public void CalculateHighLowTrailStop2(int intialPeriod, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
-         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
 
          int period = intialPeriod;
 
@@ -3676,8 +3676,8 @@ namespace StockAnalyzer.StockClasses
          // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
          // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
 
-         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
 
          FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH);
@@ -3760,8 +3760,8 @@ namespace StockAnalyzer.StockClasses
          // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
          // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
 
-         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
 
          FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH);
@@ -3853,8 +3853,8 @@ namespace StockAnalyzer.StockClasses
 
          float min, max;
 
-         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
 
          FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
@@ -3992,8 +3992,8 @@ namespace StockAnalyzer.StockClasses
 
       public void CalculateHighLowSmoothedTrailStop(int period, int smoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
-         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
 
          FloatSerie lowSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(smoothing);
          FloatSerie highSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(smoothing);
@@ -4196,8 +4196,8 @@ namespace StockAnalyzer.StockClasses
       /// <param name="shortStopSerie"></param>
       public void CalculateHighLowTrailStop(int period, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
       {
-         longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
+         shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
 
          if (this.ValueArray.Length < period) return;
 

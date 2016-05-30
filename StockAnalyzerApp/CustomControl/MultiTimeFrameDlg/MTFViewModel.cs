@@ -33,7 +33,16 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
          private StockSerie.Trend trend3;
          public StockSerie.Trend Trend3 { get { return trend3; } set { if (value != trend3) { trend3 = value; OnPropertyChanged("Trend3"); } } }
-      
+
+         private string toolTip1;
+         public string ToolTip1 { get { return toolTip1; } set { if (value != toolTip1) { toolTip1 = value; OnPropertyChanged("ToolTip1"); } } }
+
+         private string toolTip2;
+         public string ToolTip2 { get { return toolTip2; } set { if (value != toolTip2) { toolTip2 = value; OnPropertyChanged("ToolTip2"); } } }
+
+         private string toolTip3;
+         public string ToolTip3 { get { return toolTip3; } set { if (value != toolTip3) { toolTip3 = value; OnPropertyChanged("ToolTip3"); } } }
+
       }
       
       static public Array BarDurations
@@ -56,7 +65,7 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
       private StockSerie.StockBarDuration barDuration3;
       public StockSerie.StockBarDuration BarDuration3 { get { return barDuration3; } set { if (value != barDuration3) { barDuration3 = value; DurationChanged("BarDuration3"); } } }
-
+     
       private ObservableCollection<MTFTrend> trends;
       public ObservableCollection<MTFTrend> Trends { get { return trends; } set { if (value != trends) { trends = value; OnPropertyChanged("Trends"); } } }
 
@@ -92,14 +101,74 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                   stockSerie.BarDuration = barDuration1;
                   IStockUpDownState upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend1 = upDownState.UpDownState.Last();
+                  float close = stockSerie.Values.Last().CLOSE;
+                  float distToStop = 0;
+                  int nbBars = 0;
+
+                  if (trend.Trend1 == StockSerie.Trend.UpTrend)
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[0].Last - close)/close;
+                  }
+                  else
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[1].Last - close) / close;
+                  }
+                  for (int i = upDownState.UpDownState.Length - 2;
+                        i > 1 &&
+                        upDownState.UpDownState[i] ==
+                        trend.Trend1;
+                        i-- ,nbBars++) ;
+                     trend.ToolTip1 = "Close: " + close + Environment.NewLine +
+                                      "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
+                                      "Nb Days: " + nbBars;
 
                   stockSerie.BarDuration = barDuration2;
                   upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend2 = upDownState.UpDownState.Last();
+                  close = stockSerie.Values.Last().CLOSE;
+                  distToStop = 0;
+                  nbBars = 0;
+
+                  if (trend.Trend2 == StockSerie.Trend.UpTrend)
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[0].Last - close) / close;
+                  }
+                  else
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[1].Last - close) / close;
+                  }
+                  for (int i = upDownState.UpDownState.Length - 2;
+                        i > 1 &&
+                        upDownState.UpDownState[i] ==
+                        trend.Trend2;
+                        i--, nbBars++) ;
+                  trend.ToolTip2 = "Close: " + close + Environment.NewLine +
+                                   "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
+                                   "Nb Days: " + nbBars;
 
                   stockSerie.BarDuration = barDuration3;
                   upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend3 = upDownState.UpDownState.Last();
+                  close = stockSerie.Values.Last().CLOSE;
+                  distToStop = 0;
+                  nbBars = 0;
+
+                  if (trend.Trend3 == StockSerie.Trend.UpTrend)
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[0].Last - close) / close;
+                  }
+                  else
+                  {
+                     distToStop = ((upDownState as IStockTrailStop).Series[1].Last - close) / close;
+                  }
+                  for (int i = upDownState.UpDownState.Length - 2;
+                        i > 1 &&
+                        upDownState.UpDownState[i] ==
+                        trend.Trend3;
+                        i--, nbBars++) ;
+                  trend.ToolTip3 = "Close: " + close + Environment.NewLine +
+                                   "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
+                                   "Nb Days: " + nbBars;
                }
                catch (Exception ex)
                {
