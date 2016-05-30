@@ -16,6 +16,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       public IEnumerable<string> Portfolios { get; set; }
 
       private string selectedPortfolio;
+
       public string SelectedPortfolio
       {
          get { return selectedPortfolio; }
@@ -32,10 +33,11 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
       private void ChangePortfolio()
       {
-         StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
+         StockPortofolio portfolio =
+            StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
          this.Orders = new ObservableCollection<StockOrderViewModel>();
-         foreach (var order in portfolio.OrderList.OrderByDescending( o => o.ID))
+         foreach (var order in portfolio.OrderList.OrderByDescending(o => o.ID))
          {
             this.orders.Add(new StockOrderViewModel(order));
          }
@@ -52,7 +54,8 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
             case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
                break;
             case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-               StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
+               StockPortofolio portfolio =
+                  StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
                portfolio.OrderList.Remove((e.OldItems[0] as StockOrderViewModel).Order);
                break;
             case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
@@ -65,6 +68,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       }
 
       private string text;
+
       public string Text
       {
          get { return text; }
@@ -79,6 +83,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       }
 
       private ObservableCollection<StockOrderViewModel> orders;
+
       public ObservableCollection<StockOrderViewModel> Orders
       {
          get { return orders; }
@@ -92,7 +97,10 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
          }
       }
 
-      public List<string> StockNames { get { return StockDictionary.StockDictionarySingleton.Keys.ToList(); } }
+      public List<string> StockNames
+      {
+         get { return StockDictionary.StockDictionarySingleton.Keys.ToList(); }
+      }
 
 
       public ImportBinckOrderViewModel()
@@ -109,6 +117,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       const int statusIndex = 4;
       const int valueIndex = 6;
       const int dateIndex = 8;
+
       public void Import()
       {
          if (string.IsNullOrWhiteSpace(this.text)) return;
@@ -123,20 +132,33 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                {
                   string[] fields = line.Replace("\t\t", "\t").Split('\t');
                   int id = int.Parse(fields[idIndex]);
-                  if (!this.Orders.Any(o => o.ID == id) && (fields[statusIndex] == "Exécuté" || fields[statusIndex].StartsWith("Partiellement exécuté")))
+                  if (!this.Orders.Any(o => o.ID == id) &&
+                      (fields[statusIndex] == "Exécuté" || fields[statusIndex].StartsWith("Partiellement exécuté")))
                   {
-                     StockOrder.OrderType type = fields[directionIndex] == "Achat" ? StockOrder.OrderType.BuyAtLimit : StockOrder.OrderType.SellAtLimit;
-                     int qty = int.Parse(fields[qtyIndex].Replace(" ",""));
+                     StockOrder.OrderType type = fields[directionIndex] == "Achat"
+                        ? StockOrder.OrderType.BuyAtLimit
+                        : StockOrder.OrderType.SellAtLimit;
+                     int qty = int.Parse(fields[qtyIndex].Replace(" ", ""));
                      float value = float.Parse(fields[valueIndex], StockAnalyzerForm.FrenchCulture);
                      DateTime date = DateTime.Parse(fields[dateIndex], StockAnalyzerForm.FrenchCulture);
 
                      string name = fields[nameIndex];
-                     if (name.EndsWith(" SA.")) { name = name.Replace(" SA.", ""); }
-                     if (name.EndsWith(" SA")) { name = name.Replace(" SA", ""); }
-                     if (name.EndsWith(" NV")) { name = name.Replace(" NV", ""); }
+                     if (name.EndsWith(" SA."))
+                     {
+                        name = name.Replace(" SA.", "");
+                     }
+                     if (name.EndsWith(" SA"))
+                     {
+                        name = name.Replace(" SA", "");
+                     }
+                     if (name.EndsWith(" NV"))
+                     {
+                        name = name.Replace(" NV", "");
+                     }
 
                      bool srd = false;
-                     if (name.StartsWith("SRD ")) { 
+                     if (name.StartsWith("SRD "))
+                     {
                         name = name.Replace("SRD ", "");
                         srd = true;
                      }
@@ -146,28 +168,32 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                         name = mapping[name];
                      }
 
-                     float fee = qty * value > 1000f ? 5.0f : 2.5f;
-                     fee = srd ? fee*2:fee;
+                     float fee = qty*value > 1000f ? 5.0f : 2.5f;
+                     fee = srd ? fee*2 : fee;
 
-                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty, value, fee);
+                     StockOrder order = StockOrder.CreateExecutedOrder(id, name.ToUpper(), type, false, date, date, qty,
+                        value, fee);
 
-                     StockPortofolio portfolio = StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
+                     StockPortofolio portfolio =
+                        StockAnalyzerForm.MainFrame.StockPortofolioList.First(p => p.Name == selectedPortfolio);
 
                      portfolio.OrderList.Add(order);
                      this.Orders.Insert(index++, new StockOrderViewModel(order));
                   }
                }
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                MessageBox.Show(ex.Message);
             }
          }
       }
 
-      private SortedDictionary<string, string> mapping = new SortedDictionary<string, string>() { 
-      { "Lyxor CAC 40 Daily Double Shrt UCITS ETF", "BX4" },
-      { "Electricite de France (EDF)", "EDF" }
+      private SortedDictionary<string, string> mapping = new SortedDictionary<string, string>()
+      {
+         {"Lyxor CAC 40 Daily Double Shrt UCITS ETF", "BX4"},
+         {"Lyxor ETF Leverage CAC40", "LVC"},
+         {"Electricite de France (EDF)", "EDF"}
       };
    }
 }
