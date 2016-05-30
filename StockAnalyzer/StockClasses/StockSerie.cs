@@ -293,7 +293,7 @@ namespace StockAnalyzer.StockClasses
       }
       protected void SetBarDuration(StockBarDuration newBarDuration)
       {
-         if (newBarDuration != this.BarDuration) StockLog.Write("SetBarDuration Name:" + this.StockName + " newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
+         //if (newBarDuration != this.BarDuration) StockLog.Write("SetBarDuration Name:" + this.StockName + " newDuration:" + newBarDuration + " CurrentDuration:" + this.BarDuration);
          if (!this.Initialise() || newBarDuration == this.BarDuration)
          {
             if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
@@ -4199,6 +4199,8 @@ namespace StockAnalyzer.StockClasses
          longStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
          shortStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
 
+         if (this.ValueArray.Length < period) return;
+
          FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
          FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
@@ -6625,16 +6627,16 @@ namespace StockAnalyzer.StockClasses
 
       public List<StockDailyValue> GenerateSerieForTimeSpanFromDaily(StockBarDuration barDuration)
       {
+         if (this.BarSerieDictionary.ContainsKey(barDuration))
+         {
+            StockLog.Write("GenerateSerieForTimeSpanFromDaily Already in cache Name:" + this.StockName + " barDuration:" + barDuration.ToString());
+            return this.BarSerieDictionary[barDuration];
+         }
          StockLog.Write("GenerateSerieForTimeSpanFromDaily Name:" + this.StockName + " barDuration:" + barDuration.ToString());
 
          List<StockDailyValue> newStockValues = null;
          List<StockDailyValue> cachedStockValues = null;
 
-         if (this.BarSerieDictionary.ContainsKey(barDuration))
-         {
-            StockLog.Write("Already in cache");
-            return this.BarSerieDictionary[barDuration];
-         }
 
          List<StockDailyValue> dailyValueList = this.BarSerieDictionary[StockBarDuration.Daily];
 

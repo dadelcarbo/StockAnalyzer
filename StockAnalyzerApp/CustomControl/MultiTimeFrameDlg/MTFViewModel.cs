@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 {
@@ -76,31 +77,38 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          this.BarDuration3 = StockSerie.StockBarDuration.TLB_3D;
       }
 
-      private void DurationChanged(string p)
+      private void DurationChanged(string propertyName)
       {
          trends.Clear();
 
          // Calculate duration
          foreach (StockSerie stockSerie in stockSeries)
          {
-            MTFTrend trend = new MTFTrend(stockSerie.StockName);
+            if (stockSerie.Initialise())
+            {
+               MTFTrend trend = new MTFTrend(stockSerie.StockName);
+               try
+               {
+                  stockSerie.BarDuration = barDuration1;
+                  IStockUpDownState upDownState = stockSerie.GetTrailStop(indicatorName);
+                  trend.Trend1 = upDownState.UpDownState.Last();
 
-            stockSerie.BarDuration = barDuration1;
-            IStockUpDownState upDownState = stockSerie.GetTrailStop(indicatorName);
-            trend.Trend1 = upDownState.UpDownState.Last();
+                  stockSerie.BarDuration = barDuration2;
+                  upDownState = stockSerie.GetTrailStop(indicatorName);
+                  trend.Trend2 = upDownState.UpDownState.Last();
 
-            stockSerie.BarDuration = barDuration2;
-            upDownState = stockSerie.GetTrailStop(indicatorName);
-            trend.Trend2 = upDownState.UpDownState.Last();
-
-            stockSerie.BarDuration = barDuration3;
-            upDownState = stockSerie.GetTrailStop(indicatorName);
-            trend.Trend3 = upDownState.UpDownState.Last();
-            
-            trends.Add(trend);
+                  stockSerie.BarDuration = barDuration3;
+                  upDownState = stockSerie.GetTrailStop(indicatorName);
+                  trend.Trend3 = upDownState.UpDownState.Last();
+               }
+               catch (Exception ex)
+               {
+                  StockLog.Write(ex);
+               }
+               trends.Add(trend);
+            }
          }
-
-         OnPropertyChanged(p);
+         OnPropertyChanged(propertyName);
       }
    }
 }
