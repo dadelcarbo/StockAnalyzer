@@ -5723,6 +5723,7 @@ border:1px solid black;
                      //grid.Show(this);
 
                      MTFDlg mtfDlg = new MTFDlg();
+                     mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                      mtfDlg.Show();
                   }
                   break;
@@ -6003,9 +6004,9 @@ border:1px solid black;
          }
       }
 
-      public void SetThemeFromAlert(StockAlert alert)
+      public void SetThemeFromIndicator(string fullName)
       {
-         using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(alert.ToTheme())))
+         using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(StockViewableItemsManager.GetTheme(fullName))))
          {
             using (StreamReader sr = new StreamReader(ms))
             {

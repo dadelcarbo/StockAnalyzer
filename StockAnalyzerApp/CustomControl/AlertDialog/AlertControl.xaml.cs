@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
          if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
 
-         StockAnalyzerForm.MainFrame.SetThemeFromAlert(alert);
+         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Alert.Remove(alert.Alert.IndexOf("=>")));
       }
    }
 }

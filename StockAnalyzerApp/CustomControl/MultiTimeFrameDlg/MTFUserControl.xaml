@@ -6,13 +6,19 @@
              xmlns:l="clr-namespace:StockAnalyzerApp.CustomControl.MultiTimeFrameDlg"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
-    <Grid>
+   <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label Content="Group"/>
+            <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="75" VerticalAlignment="Center" MinWidth="100"></ComboBox>
+            <Label Content="Trail Stop"/>
+            <TextBox Text="{Binding IndicatorName}" Width="150"></TextBox>
+        </StackPanel>
+        <StackPanel  Grid.Row="1" Orientation="Horizontal">
             <Label Content="TF1"/>
             <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="75" VerticalAlignment="Center"></ComboBox>
             <Label Content="TF2"/>
@@ -20,28 +26,33 @@
             <Label Content="TF3"/>
             <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="75" VerticalAlignment="Center"></ComboBox>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Label Content="Trail Stop"/>
-            <TextBox Text="{Binding IndicatorName}" Width="150"></TextBox>
-        </StackPanel>
-        <DataGrid Grid.Row="2" ItemsSource="{Binding Trends}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Trends}" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionMode="Single" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
-                <DataGridTextColumn Header="Trend1" Binding="{Binding Trend1}">
+                <DataGridTextColumn Binding="{Binding Trend1}" >
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="{Binding DataContext.BarDuration1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
+                </DataGridTextColumn.Header>
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding Trend1, Converter={x:Static l:TrendToColorConverter.Instance}}" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Trend2" Binding="{Binding Trend2}">
+                <DataGridTextColumn Binding="{Binding Trend2}" >
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="{Binding DataContext.BarDuration2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
+                    </DataGridTextColumn.Header>
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding Trend2, Converter={x:Static l:TrendToColorConverter.Instance}}" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Trend3" Binding="{Binding Trend3}">
+                <DataGridTextColumn Binding="{Binding Trend3}" >
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="{Binding DataContext.BarDuration3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
+                    </DataGridTextColumn.Header>
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding Trend3, Converter={x:Static l:TrendToColorConverter.Instance}}" />

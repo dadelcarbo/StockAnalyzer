@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Activation;
 using System.Text;
 using System.Threading.Tasks;
 using StockAnalyzer.StockClasses;
@@ -37,6 +39,13 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       {
          get { return Enum.GetValues(typeof (StockSerie.StockBarDuration)); }
       }
+      static public Array Groups
+      {
+         get { return Enum.GetValues(typeof (StockSerie.Groups)); }
+      }
+
+      private StockSerie.Groups group;
+      public StockSerie.Groups Group { get { return group; } set { if (value != group) { group = value; this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group));  DurationChanged("Group"); } } }
 
       private StockSerie.StockBarDuration barDuration1;
       public StockSerie.StockBarDuration BarDuration1 { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; DurationChanged("BarDuration1"); } } }
@@ -59,7 +68,8 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       {
          indicatorName = "TRAILHL(2)";
 
-         this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.COUNTRY));
+         this.group = StockSerie.Groups.EURONEXT;
+         this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group));
          this.Trends = new ObservableCollection<MTFTrend>();
          this.barDuration1 = StockSerie.StockBarDuration.Daily;
          this.barDuration2 = StockSerie.StockBarDuration.TLB;

@@ -16,5 +16,10 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       {
          InitializeComponent();
       }
+
+      public MTFUserControl MtfControl
+      {
+         get { return mtfUserControl1; }
+      }
    }
 }
