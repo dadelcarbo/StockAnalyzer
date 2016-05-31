@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -56,7 +57,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                Directory.CreateDirectory(durationFileName);
             }
          }
-
+         
+         bool alreadyDownloadedToday = false;
          if (!Directory.Exists(rootFolder + INTRADAY_FOLDER))
          {
             Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
@@ -69,10 +71,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                {
                   File.Delete(file);
                }
+               else
+               {
+                  alreadyDownloadedToday |= true;
+               }
             }
          }
 
          // Parse GoogleDownload.cfg file
+         download &= !alreadyDownloadedToday;
          this.needDownload = download;
          InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
          InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);

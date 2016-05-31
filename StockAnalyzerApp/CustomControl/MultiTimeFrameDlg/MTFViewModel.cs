@@ -115,6 +115,11 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                   stockSerie.BarDuration = barDuration1;
                   IStockUpDownState upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend1 = upDownState.UpDownState.Last();
+                  if (trend.Trend1 == StockSerie.Trend.UpTrend && this.SelectedView == SelectedTrend.DownTrendOnly)
+                     continue;
+                  if (trend.Trend1 == StockSerie.Trend.DownTrend && this.SelectedView == SelectedTrend.UpTrendOnly)
+                     continue;
+
                   float close = stockSerie.Values.Last().CLOSE;
                   float distToStop = 0;
                   int nbBars = 0;
@@ -134,11 +139,16 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                         i-- ,nbBars++) ;
                      trend.ToolTip1 = "Close: " + close + Environment.NewLine +
                                       "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
-                                      "Nb Days: " + nbBars;
+                                      "Nb Bars: " + nbBars;
 
                   stockSerie.BarDuration = barDuration2;
                   upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend2 = upDownState.UpDownState.Last();
+                  if (trend.Trend2 == StockSerie.Trend.UpTrend && this.SelectedView == SelectedTrend.DownTrendOnly)
+                     continue;
+                  if (trend.Trend2 == StockSerie.Trend.DownTrend && this.SelectedView == SelectedTrend.UpTrendOnly)
+                     continue;
+
                   close = stockSerie.Values.Last().CLOSE;
                   distToStop = 0;
                   nbBars = 0;
@@ -158,11 +168,16 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                         i--, nbBars++) ;
                   trend.ToolTip2 = "Close: " + close + Environment.NewLine +
                                    "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
-                                   "Nb Days: " + nbBars;
+                                   "Nb Bars: " + nbBars;
 
                   stockSerie.BarDuration = barDuration3;
                   upDownState = stockSerie.GetTrailStop(indicatorName);
                   trend.Trend3 = upDownState.UpDownState.Last();
+                  if (trend.Trend3 == StockSerie.Trend.UpTrend && this.SelectedView == SelectedTrend.DownTrendOnly)
+                     continue;
+                  if (trend.Trend3 == StockSerie.Trend.DownTrend && this.SelectedView == SelectedTrend.UpTrendOnly)
+                     continue;
+
                   close = stockSerie.Values.Last().CLOSE;
                   distToStop = 0;
                   nbBars = 0;
@@ -182,7 +197,7 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                         i--, nbBars++) ;
                   trend.ToolTip3 = "Close: " + close + Environment.NewLine +
                                    "Stop %: " + distToStop.ToString("P2") + Environment.NewLine +
-                                   "Nb Days: " + nbBars;
+                                   "Nb Bars: " + nbBars;
                }
                catch (Exception ex)
                {
