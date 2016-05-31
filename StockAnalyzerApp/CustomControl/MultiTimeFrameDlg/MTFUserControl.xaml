@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:l="clr-namespace:StockAnalyzerApp.CustomControl.MultiTimeFrameDlg"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="500" d:DesignWidth="600">
    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
@@ -13,10 +13,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label Content="Group"/>
+            <Label Content="Group "/>
             <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="75" VerticalAlignment="Center" MinWidth="100"></ComboBox>
-            <Label Content="Trail Stop"/>
-            <TextBox Text="{Binding IndicatorName}" Width="150"></TextBox>
+            <Label Content="Trail Stop "/>
+            <TextBox Text="{Binding IndicatorName}" Width="200" VerticalAlignment="Center"></TextBox>
+            <Label Content="View "/>
+            <ComboBox ItemsSource="{Binding SelectedViews}" SelectedValue="{Binding SelectedView}" MinWidth="100" VerticalAlignment="Center"></ComboBox>
         </StackPanel>
         <StackPanel  Grid.Row="1" Orientation="Horizontal">
             <Label Content="TF1"/>

@@ -49,7 +49,7 @@
          this.ClientSize = new System.Drawing.Size(578, 299);
          this.Controls.Add(this.elementHost1);
          this.Name = "MTFDlg";
-         this.Text = "MTFDlg";
+         this.Text = "Multi Time Frame Analysis";
          this.ResumeLayout(false);
 
       }

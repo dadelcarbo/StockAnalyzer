@@ -44,7 +44,14 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          public string ToolTip3 { get { return toolTip3; } set { if (value != toolTip3) { toolTip3 = value; OnPropertyChanged("ToolTip3"); } } }
 
       }
-      
+
+      public enum SelectedTrend
+      {
+         All,
+         UpTrendOnly,
+         DownTrendOnly
+      }
+
       static public Array BarDurations
       {
          get { return Enum.GetValues(typeof (StockSerie.StockBarDuration)); }
@@ -53,6 +60,13 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       {
          get { return Enum.GetValues(typeof (StockSerie.Groups)); }
       }
+      static public Array SelectedViews
+      {
+         get { return Enum.GetValues(typeof(SelectedTrend)); }
+      }
+
+      private SelectedTrend selectedView;
+      public SelectedTrend SelectedView { get { return selectedView; } set { if (value != selectedView) { selectedView = value; DurationChanged("SelectedView"); } } }
 
       private StockSerie.Groups group;
       public StockSerie.Groups Group { get { return group; } set { if (value != group) { group = value; this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group));  DurationChanged("Group"); } } }
@@ -174,7 +188,28 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                {
                   StockLog.Write(ex);
                }
-               trends.Add(trend);
+               switch (SelectedView)
+               {
+                  case SelectedTrend.All:
+                     trends.Add(trend);
+                     break;
+                  case SelectedTrend.DownTrendOnly:
+                     if (trend.Trend1 == StockSerie.Trend.DownTrend
+                         && trend.Trend2 == StockSerie.Trend.DownTrend
+                         && trend.Trend3 == StockSerie.Trend.DownTrend)
+                     {
+                        trends.Add(trend);
+                     }
+                     break;
+                  case SelectedTrend.UpTrendOnly:
+                     if (trend.Trend1 == StockSerie.Trend.UpTrend
+                        && trend.Trend2 == StockSerie.Trend.UpTrend
+                        && trend.Trend3 == StockSerie.Trend.UpTrend)
+                     {
+                        trends.Add(trend);
+                     }
+                     break;
+               }
             }
          }
          OnPropertyChanged(propertyName);
