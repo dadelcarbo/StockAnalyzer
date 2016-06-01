@@ -6,7 +6,10 @@
              xmlns:l="clr-namespace:StockAnalyzerApp.CustomControl.MultiTimeFrameDlg"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="600">
-   <Grid>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
@@ -14,20 +17,29 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label Content="Group "/>
-            <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="75" VerticalAlignment="Center" MinWidth="100"></ComboBox>
+            <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="75" VerticalAlignment="Center" MinWidth="100" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="Trail Stop "/>
-            <TextBox Text="{Binding IndicatorName}" Width="200" VerticalAlignment="Center"></TextBox>
+            <TextBox Text="{Binding IndicatorName}" Width="200" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></TextBox>
             <Label Content="View "/>
-            <ComboBox ItemsSource="{Binding SelectedViews}" SelectedValue="{Binding SelectedView}" MinWidth="100" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding SelectedViews}" SelectedValue="{Binding SelectedView}" MinWidth="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
         </StackPanel>
         <StackPanel  Grid.Row="1" Orientation="Horizontal">
             <Label Content="TF1"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="100" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="TF2"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="100" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="TF3"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="100" VerticalAlignment="Center"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
         </StackPanel>
+        <ProgressBar  Grid.Row="1" Minimum="0" Maximum="{Binding NbStocks}" Visibility="{Binding ProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Value="{Binding CurrentStock}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="16"  Width="100" Margin="0,0,5,0"/>
+        <Grid  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" Margin="0,0,5,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="{Binding NbSelectedStocks}" />
+                <Label Content="/"></Label>
+                <Label Content="{Binding NbStocks}" />
+            </StackPanel>
+        </Grid>
+
         <DataGrid Grid.Row="2" ItemsSource="{Binding Trends}" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick" SelectionMode="Single" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
@@ -39,8 +51,8 @@
                     </DataGridTextColumn.CellStyle>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="{Binding DataContext.BarDuration1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MTFUserControl}}}"/>
-                </DataGridTextColumn.Header>
-                    
+                    </DataGridTextColumn.Header>
+
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding Trend1, Converter={x:Static l:TrendToColorConverter.Instance}}" />

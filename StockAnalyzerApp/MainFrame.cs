@@ -83,6 +83,7 @@ namespace StockAnalyzerApp
       public static StockAnalyzerForm MainFrame { get; private set; }
       public bool IsClosing { get; set; }
 
+
       public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
       public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
       public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");

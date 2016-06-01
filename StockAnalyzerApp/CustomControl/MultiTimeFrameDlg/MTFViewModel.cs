@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Remoting.Activation;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
@@ -69,7 +70,20 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       public SelectedTrend SelectedView { get { return selectedView; } set { if (value != selectedView) { selectedView = value; DurationChanged("SelectedView"); } } }
 
       private StockSerie.Groups group;
-      public StockSerie.Groups Group { get { return group; } set { if (value != group) { group = value; this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group));  DurationChanged("Group"); } } }
+      public StockSerie.Groups Group
+      {
+         get { return group; }
+         set
+         {
+            if (value != group)
+            {
+               group = value; 
+               this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group)).ToList();
+               this.NbStocks = stockSeries.Count(); 
+               DurationChanged("Group");
+            }
+         }
+      }
 
       private StockSerie.StockBarDuration barDuration1;
       public StockSerie.StockBarDuration BarDuration1 { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; DurationChanged("BarDuration1"); } } }
@@ -86,25 +100,63 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
       private string indicatorName;
       public string IndicatorName { get { return indicatorName; } set { if (value != indicatorName) { indicatorName = value; DurationChanged("IndicatorName"); } } }
 
-      private IEnumerable<StockSerie> stockSeries;
+      private IList<StockSerie> stockSeries;
+
+      #region Progress properties
+      private int nbStocks;
+      public int NbStocks { get { return nbStocks; } set { if (value != nbStocks) { nbStocks = value; OnPropertyChanged("NbStocks"); } } }
+
+      private int nbSelectedStocks;
+      public int NbSelectedStocks { get { return nbSelectedStocks; } set { if (value != nbSelectedStocks) { nbSelectedStocks = value; OnPropertyChanged("NbSelectedStocks"); } } }
+
+      private int currentStock;
+      public int CurrentStock { get { return currentStock; } set { if (value != currentStock) { currentStock = value; OnPropertyChanged("CurrentStock"); } } }
+
+      private bool progressVisible;
+      public bool ProgressVisible { get { return progressVisible; } set { if (value != progressVisible) { progressVisible = value; OnPropertyChanged("ProgressVisible"); OnPropertyChanged("ControlEnabled"); } } }
+
+      public bool ControlEnabled { get { return !progressVisible; } }
+
+      private Dispatcher dispatcher;
+
+      #endregion
 
       public MTFViewModel()
       {
          indicatorName = "TRAILHL(2)";
 
          this.group = StockSerie.Groups.EURONEXT;
-         this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group));
+         this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group)).ToList();
+         this.NbStocks = stockSeries.Count();
          this.Trends = new ObservableCollection<MTFTrend>();
          this.barDuration1 = StockSerie.StockBarDuration.Daily;
          this.barDuration2 = StockSerie.StockBarDuration.TLB;
          this.BarDuration3 = StockSerie.StockBarDuration.TLB_3D;
+
+         dispatcher = Dispatcher.CurrentDispatcher;
       }
 
       private void DurationChanged(string propertyName)
       {
-         trends.Clear();
+         OnPropertyChanged(propertyName);
+
+         BackgroundWorker worker = new BackgroundWorker();
+         worker.DoWork += WorkerOnDoWork;
+
+         worker.RunWorkerAsync();
+      }
+
+      private void WorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+      {
+         dispatcher.Invoke((Action)delegate
+         {
+            trends.Clear();
+         });
 
          // Calculate duration
+         this.CurrentStock = 0;
+         this.NbSelectedStocks = 0;
+         this.ProgressVisible = true;
          foreach (StockSerie stockSerie in stockSeries)
          {
             if (stockSerie.Initialise())
@@ -206,14 +258,14 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                switch (SelectedView)
                {
                   case SelectedTrend.All:
-                     trends.Add(trend);
+                     AddTrend(trend);
                      break;
                   case SelectedTrend.DownTrendOnly:
                      if (trend.Trend1 == StockSerie.Trend.DownTrend
                          && trend.Trend2 == StockSerie.Trend.DownTrend
                          && trend.Trend3 == StockSerie.Trend.DownTrend)
                      {
-                        trends.Add(trend);
+                        AddTrend(trend);
                      }
                      break;
                   case SelectedTrend.UpTrendOnly:
@@ -221,13 +273,23 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
                         && trend.Trend2 == StockSerie.Trend.UpTrend
                         && trend.Trend3 == StockSerie.Trend.UpTrend)
                      {
-                        trends.Add(trend);
+                        AddTrend(trend);
                      }
                      break;
                }
             }
+            this.CurrentStock++;
          }
-         OnPropertyChanged(propertyName);
+         this.ProgressVisible = false;
+      }
+
+      private void AddTrend(MTFTrend trend)
+      {
+         this.NbSelectedStocks++;
+         dispatcher.Invoke((Action)delegate
+         {
+            trends.Add(trend);
+         });
       }
    }
 }
