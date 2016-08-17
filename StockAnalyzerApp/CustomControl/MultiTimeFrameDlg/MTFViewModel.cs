@@ -53,14 +53,6 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          DownTrendOnly
       }
 
-      static public Array BarDurations
-      {
-         get { return Enum.GetValues(typeof (StockSerie.StockBarDuration)); }
-      }
-      static public Array Groups
-      {
-         get { return Enum.GetValues(typeof (StockSerie.Groups)); }
-      }
       static public Array SelectedViews
       {
          get { return Enum.GetValues(typeof(SelectedTrend)); }
@@ -68,6 +60,11 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
       private SelectedTrend selectedView;
       public SelectedTrend SelectedView { get { return selectedView; } set { if (value != selectedView) { selectedView = value; DurationChanged("SelectedView"); } } }
+
+      static public Array Groups
+      {
+         get { return Enum.GetValues(typeof(StockSerie.Groups)); }
+      }
 
       private StockSerie.Groups group;
       public StockSerie.Groups Group
@@ -85,6 +82,11 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          }
       }
 
+      static public Array BarDurations
+      {
+         get { return Enum.GetValues(typeof(StockSerie.StockBarDuration)); }
+      }
+      
       private StockSerie.StockBarDuration barDuration1;
       public StockSerie.StockBarDuration BarDuration1 { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; DurationChanged("BarDuration1"); } } }
 

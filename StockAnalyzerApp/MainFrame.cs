@@ -455,18 +455,38 @@ namespace StockAnalyzerApp
                   //GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
                }
             }
-            //for (int i = 10; i <= 500; i += 5)
-            //{
-            //   StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
-            //   GenerateCAC_Event("CAC_TRAILHLSR_", StockSerie.StockBarDuration.TLB, i, "INDICATOR|TRAILHLSR(%PERIOD%)", "Bullish", false);
-            //}
-            //for (int i = 90; i <= 100; i += 10)
-            //{
-            //   //StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " Daily...";
-            //   //GenerateCAC_Event("CAC_TRAILEMA_TLB_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILEMA(%PERIOD%,%PERIOD%)", "UpTrend", true);
-            //   //StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " TLB_3D...";
-            //   //GenerateCAC_Event("CAC_TRAILEMA_TLB3D_", StockSerie.StockBarDuration.TLB_3D, i, "TRAILSTOP|TRAILEMA(%PERIOD%,%PERIOD%)", "UpTrend", true);
-            //} 
+            for (int i = 2; i <= 50; i += 1)
+            {
+               //StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_TRAILHMA_UP_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHMA(%PERIOD%,1)", "UpTrend", false);
+               //StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
+               //GenerateCAC_Event("CAC_TRAILHMA_DOWN_", StockSerie.StockBarDuration.Daily, i, "TRAILSTOP|TRAILHMA(%PERIOD%,1)", "DownTrend", false);
+            }
+            int period = 11;
+            int smoothing = 7;
+            for (int i = 1; i <= period; i++)
+            {
+               for (int j = 1; j <= smoothing; j++, j++)
+               {
+                  //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily...";
+                  //GenerateCAC_Event("CAC_TRAILHLS_UP_", StockSerie.StockBarDuration.Daily, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
+                  //GenerateCAC_Event("CAC_TRAILHLS_DOWN_", StockSerie.StockBarDuration.Daily, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "DownTrend", false);
+                  //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_3...";
+                  //GenerateCAC_Event("CAC_TRAILHLS_", StockSerie.StockBarDuration.Daily_EMA3, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
+                  //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_6...";
+                  //GenerateCAC_Event("CAC_TRAILHLS_", StockSerie.StockBarDuration.Daily_EMA6, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
+                  //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_9...";
+                  //GenerateCAC_Event("CAC_TRAILHLS_", StockSerie.StockBarDuration.Daily_EMA9, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
+                  //StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + "," + j + " TLB...";
+                  //GenerateCAC_Event("CAC_TRAILHLS_", StockSerie.StockBarDuration.TLB, i, j,
+                  //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
+               }
+            }
             //for (int i = 90; i <= 100; i += 10)
             //{
             //   StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " Daily...";
@@ -3393,7 +3413,7 @@ namespace StockAnalyzerApp
          float value = 1000f;
          int previousCount = 0;
          int previousNbActive = 0;
-         foreach (DateTime date in cacSerie.Keys.Where(d => d.Year > 1991))
+         foreach (DateTime date in cacSerie.Keys.Where(d => d.Year > 2005))
          {
             float var = 0.0f;
             int count = 0;
@@ -3499,7 +3519,7 @@ namespace StockAnalyzerApp
          float value = 1000f;
          int previousCount = 0;
          int previousNbActive = 0;
-         foreach (DateTime date in cacSerie.Keys)
+         foreach (DateTime date in cacSerie.Keys.Where(d => d.Year>2005))
          {
             float var = 0.0f;
             int count = 0;

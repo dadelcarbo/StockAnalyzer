@@ -17,6 +17,32 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
       public static List<String> IndicatorTypes {
          get { return indicatorTypes; }
       }
+
+      static public Array Groups
+      {
+         get { return Enum.GetValues(typeof(StockSerie.Groups)); }
+      }
+
+      private StockSerie.Groups group;
+      public StockSerie.Groups Group
+      {
+         get { return group; }
+         set
+         {
+            if (value != group)
+            {
+               group = value;
+               OnPropertyChanged("Group");
+            }
+         }
+      }
+      static public Array BarDurations
+      {
+         get { return Enum.GetValues(typeof(StockSerie.StockBarDuration)); }
+      }
+
+      private StockSerie.StockBarDuration barDuration1;
+      public StockSerie.StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
          
       private static List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator" };
 
@@ -35,8 +61,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 
                IStockViewableSeries viewableSeries =
                   StockViewableItemsManager.GetViewableItem(this.indicatorType.ToUpper() + "|" + this.Indicator);
-
-
+               
                this.Events = (viewableSeries as IStockEvent).EventNames;
                
                OnPropertyChanged("Events");
@@ -57,7 +82,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             if (value != eventName)
             {
                eventName = value;
-               eventIndex = this.Event.IndexOf(eventName);
+               eventIndex = this.Events.ToList().IndexOf(eventName);
                OnPropertyChanged("Event");
             }
          }
@@ -81,7 +106,10 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
       private int eventIndex = 2;
 
       private ObservableCollection<StatisticsResult> results;
-      public ObservableCollection<StatisticsResult> Results { get { return results; } set { if (value != results) { results = value; OnPropertyChanged("Results"); } } } 
+      public ObservableCollection<StatisticsResult> Results { get { return results; } set { if (value != results) { results = value; OnPropertyChanged("Results"); } } }
+      
+      private ObservableCollection<StatisticsResult> summary;
+      public ObservableCollection<StatisticsResult> Summary { get { return summary; } set { if (value != summary) { summary = value; OnPropertyChanged("Summary"); } } } 
 
       public StatisticsViewModel(string indicator, string eventName, int lookbackPeriod)
       {
@@ -90,9 +118,12 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
          Indicator = indicator;
          this.Event = eventName;
          this.Results = new ObservableCollection<StatisticsResult>();
+         this.Summary = new ObservableCollection<StatisticsResult>();
+         this.BarDuration = StockSerie.StockBarDuration.Daily;
+         this.Group = StockSerie.Groups.CAC40;
       }
 
-      public void Calculate(string name)
+      public bool Calculate(string name)
       {
          S1Count = 0;
          R1Count = 0;
@@ -100,10 +131,12 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
          TotalReturn = 0;
 
          StockSerie stockSerie = StockDictionary.StockDictionarySingleton[name];
-         if (!stockSerie.Initialise()) return;
+         if (!stockSerie.Initialise()) return false;
 
-         IStockTrailStop trail = stockSerie.GetTrailStop(Indicator);
-
+         stockSerie.BarDuration = this.BarDuration;
+         
+         IStockEvent stockEvent = StockViewableItemsManager.GetViewableItem(this.indicatorType.ToUpper() + "|" + this.Indicator, stockSerie) as IStockEvent;
+         
          bool inPosition = false;
          bool R1Touched = false;
          float gap = 0, gapPercent = 0, buy = 0, S1 = 0, R1 = 0, R2 = 0;
@@ -124,11 +157,11 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                   inPosition = false;
                   if (R1Touched)
                   {
-                     totalReturn -= 0.5f*gapPercent;
+                     //totalReturn -= 0.5f*gapPercent;
                   }
                   else
                   {
-                     //totalReturn -= gapPercent;
+                     totalReturn -= gapPercent;
                   }
                }
                else
@@ -153,7 +186,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             }
             else
             {
-               if (trail.Events[eventIndex][i])
+               if (stockEvent.Events[eventIndex][i])
                {
                   //S1 = trail.Series[0][i];
                   buy = closeSerie[i];
@@ -170,6 +203,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             }
          }
          this.Results.Add(new StatisticsResult(){Name = name, R1Count = R1Count, R2Count = R2Count, S1Count = S1Count, TotalReturn = totalReturn});
+         return true;
       }
 
       public override string ToString()

@@ -14,24 +14,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
 
-      public override string Definition
-      {
-         get { return "PUKE(int Period, int Smoothing, float ATRPercent, int SignalSmoothing)"; }
-      }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period", "Smoothing", "ATRPercent", "SignalSmoothing" }; }
+         get { return new string[] { "Period", "Smoothing", "InputSmoothing", "SignalSmoothing" }; }
       }
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 14, 3, 0.0f, 10 }; }
+         get { return new Object[] { 20, 1, 1, 6 }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0.0f, 100.0f), new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
 
-      public override string[] SerieNames { get { return new string[] { "PUKE(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")", "Signal" }; } }
+      public override string[] SerieNames { get { return new string[] { "PUKE(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")", "Signal(" + this.Parameters[3].ToString() + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
@@ -60,13 +56,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          int period = ((int)this.parameters[0]);
          int smoothing = ((int)this.parameters[1]);
-         float atrPercent = ((float)this.parameters[2]) / 100.0f;
          int signalSmoothing = ((int)this.parameters[3]);
+         int inputSmoothing = ((int)this.parameters[2]);
 
-         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-         FloatSerie varSerie = stockSerie.GetSerie(StockDataType.CLOSE) - stockSerie.GetSerie(StockDataType.CLOSE);
-
-         FloatSerie atrSerie = stockSerie.GetIndicator("ATR(" + this.parameters[0] + ")").Series[0] * atrPercent;
+         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
 
          var values = stockSerie.ValueArray;
 
@@ -75,20 +68,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
 
             int puke = 0;
-            for (int j = i - period; j <= i; j++)
+            for (int j = i - period+1; j <= i; j++)
             {
                StockDailyValue dv = values[j];
-               float range = dv.CLOSE - dv.PreviousClose;
-               if (range >= atrSerie[j]) puke++;
-               else if (range <= -atrSerie[j]) puke--;
+               if (closeSerie[j] - closeSerie[j-1] >= 0) puke++;
+               else  puke--;
             }
             pukeSerie[i] = puke;
          }
-
-         if (smoothing > 1)
-         {
-            pukeSerie = pukeSerie.CalculateEMA(smoothing);
-         }
+         
+         pukeSerie = pukeSerie.CalculateEMA(smoothing);
+         
          this.Series[0] = pukeSerie;
          this.series[0].Name = this.SerieNames[0];
 

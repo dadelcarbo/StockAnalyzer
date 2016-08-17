@@ -4449,7 +4449,7 @@ namespace StockAnalyzer.StockClasses
             i++;
          }
       }
-      public void CalculateSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance)
+      public void CalculateSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int inputSmoothing)
       {
          float accelerationFactor = accelerationFactorInit;
          bool isUpTrend = true;
@@ -4460,7 +4460,7 @@ namespace StockAnalyzer.StockClasses
          sarSerieResistance[0] = float.NaN;
          sarSerieSupport[0] = previousSAR;
 
-         FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+         FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
          FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
          FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
 
