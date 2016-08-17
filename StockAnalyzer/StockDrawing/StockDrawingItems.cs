@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockDrawing
                DrawingItem item = (DrawingItem)serializer.Deserialize(reader);
                this.Add(item);
             }
-            reader.ReadEndElement(); // End StockAnalyzer.StockDrawing.StockDrawingItems
+            reader.ReadEndElement(); // End StockAnalyzer.StockDrawing.StockDrawingItemsC:\Perso\StockAnalyzer\StockAnalyzer\StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs
          }
       }
       public void WriteXml(System.Xml.XmlWriter writer)
