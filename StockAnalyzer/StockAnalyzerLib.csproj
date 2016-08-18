@@ -237,6 +237,10 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SCOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA.cs" />
@@ -382,6 +386,7 @@
     <Compile Include="StockStrategyClasses\SARFilteredStrategy.cs" />
     <Compile Include="StockStrategyClasses\SimBuyWithCloseDirection.cs" />
     <Compile Include="StockStrategyClasses\StockFilteredStrategyBase.cs" />
+    <Compile Include="StockStrategyClasses\StockMoneyManagement\IStockMoneyManagement.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLow2Strategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLowStrategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLStrategy.cs" />
@@ -484,6 +489,7 @@
   <ItemGroup>
     <Content Include="HTMLPage1.htm" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -227,8 +227,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                {
                   string line = sr.ReadLine();
                   string[] row = line.Split(',');
+                  if (row.Length <2) continue;
 
-                  DateTime openDate = DateTime.Parse(row[0]);
+                  DateTime openDate;
+                  if (!DateTime.TryParse(row[0], out openDate)) continue;
                   float value = float.Parse(row[1]);
 
                   if (!stockSerie.ContainsKey(openDate))

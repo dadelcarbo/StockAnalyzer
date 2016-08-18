@@ -24,17 +24,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override string[] ParameterNames
       {
-         get { return new string[] { "Init", "Step", "Max" }; }
+         get { return new string[] { "Init", "Step", "Max", "InputSmooting" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 0.02f, 0.02f, 0.2f }; }
+         get { return new Object[] { 0.02f, 0.02f, 0.2f, 1 }; }
       }
 
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f) }; }
+         get { return new ParamRange[] { new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f), new ParamRangeInt(1,500)}; }
       }
 
       public override string[] SerieNames
@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie sarResistance;
 
          stockSerie.CalculateSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport,
-            out sarResistance);
+            out sarResistance, (int)this.parameters[3]);
 
          this.Series[0] = sarSupport;
          this.Series[1] = sarResistance;

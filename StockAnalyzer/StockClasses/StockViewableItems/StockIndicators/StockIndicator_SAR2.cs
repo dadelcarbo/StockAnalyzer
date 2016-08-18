@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
          float ratio = (float)this.parameters[2];
 
-         stockSerie.CalculateSAR(accelerationFactorStep, accelerationFactorStep, accelerationFactorMax, out sarSupport1, out sarResistance1);
+         stockSerie.CalculateSAR(accelerationFactorStep, accelerationFactorStep, accelerationFactorMax, out sarSupport1, out sarResistance1, 1);
          stockSerie.CalculateSAR2(accelerationFactorStep / ratio, accelerationFactorStep / ratio, accelerationFactorMax / ratio, sarSupport1, sarResistance1, out sarSupport2, out sarResistance2);
 
          this.Series[0] = sarSupport1;

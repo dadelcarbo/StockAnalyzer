@@ -29,22 +29,45 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
          this.DataContext = viewModel;
       }
 
-      private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+      private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
       {
-         int S1 = 0, R1 = 0, R2 = 0;
-         float Return = 0;
-         viewModel.Results.Clear();
-         foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup("SRD")))
-         {
-            viewModel.Calculate(serie.StockName);
+         this.Cursor = Cursors.Wait;
 
-            Console.WriteLine(serie.StockName + " " + viewModel.ToString());
-            S1 += viewModel.S1Count;
-            R1 += viewModel.R1Count;
-            R2 += viewModel.R2Count;
-            Return += viewModel.TotalReturn;
+         try
+         {
+            int S1 = 0, R1 = 0, R2 = 0, count = 0;
+            float avgReturn = 0;
+            viewModel.Results.Clear();
+            viewModel.Summary.Clear();
+            foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(viewModel.Group)))
+            {
+               if (viewModel.Calculate(serie.StockName))
+               {
+                  Console.WriteLine(serie.StockName + " " + viewModel.ToString());
+                  S1 += viewModel.S1Count;
+                  R1 += viewModel.R1Count;
+                  R2 += viewModel.R2Count;
+                  avgReturn += viewModel.TotalReturn;
+                  count++;
+               }
+            }
+            avgReturn /= (float) count;
+            viewModel.Summary.Add(new StatisticsResult() { Name = "All", R1Count = R1, R2Count = R2, S1Count = S1, TotalReturn = avgReturn });
+            
          }
-         viewModel.Results.Add(new StatisticsResult() { Name = "All", R1Count = R1, R2Count = R2, S1Count = S1, TotalReturn = Return});
+         catch (Exception ex)
+         {
+            MessageBox.Show(ex.Message);
+         }
+         this.Cursor = Cursors.Arrow;
+      }
+
+      private void DataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+      {
+         if (e.PropertyName == "TotalReturn")
+         {
+            (e.Column as DataGridTextColumn).Binding.StringFormat = "P2";
+         }
       }
    }
 }
