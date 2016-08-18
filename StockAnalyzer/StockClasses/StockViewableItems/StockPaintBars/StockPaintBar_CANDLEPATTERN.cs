@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-    public class StockPaintBar_BARPATTERN : StockPaintBarBase
+    public class StockPaintBar_CANDLEPATTERN : StockPaintBarBase
     {
-        public StockPaintBar_BARPATTERN()
+        public StockPaintBar_CANDLEPATTERN()
         {
         }
         public override IndicatorDisplayTarget DisplayTarget
@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "GapUp", "GapDown", "Large" };
+                    eventNames = new string[] { "Doji" };
                 }
                 return eventNames;
             }
@@ -53,7 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.MediumPurple) };
+                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Purple) };
                     foreach (Pen pen in seriePens)
                     {
                         pen.Width = 2;
@@ -70,16 +70,39 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            FloatSerie atr1Serie = stockSerie.GetIndicator("ATR(1)").Series[0];
-            FloatSerie atr20Serie = stockSerie.GetIndicator("ATR(20)").Series[0];
-
+            float accuracy = 0.1f; // 10%
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 // Check Gaps
                 this.eventSeries[0][i] = highSerie[i - 1] < lowSerie[i];
                 this.eventSeries[1][i] = lowSerie[i - 1] > highSerie[i];
-                this.eventSeries[2][i] = atr1Serie[i] > 1.5*atr20Serie[i];
+
+                float range = highSerie[i] - lowSerie[i];
+                float rangeMiddle = lowSerie[i] + range/2.0f;
+                float body = closeSerie[i] - openSerie[i];
+                float bodyRatio = body/range;
+                float bodyMiddle = openSerie[i] + body/2.0f;
+                float bodyLow = Math.Min(closeSerie[i], openSerie[i]);
+                float bodyHigh = Math.Max(closeSerie[i], openSerie[i]);
+
+                if (range > 0.0)
+                { 
+                    if (Math.Abs(bodyRatio) < accuracy)
+                    {
+                        if (Math.Abs(rangeMiddle-bodyMiddle) < accuracy)
+                        {
+                            // Dojis
+                            this.eventSeries[2][i] = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // Flat bars not taken into account.
+                }
             }
         }
     }

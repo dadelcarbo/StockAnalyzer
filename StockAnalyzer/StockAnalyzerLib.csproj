@@ -237,7 +237,9 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SCOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLAVG.cs" />
