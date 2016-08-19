@@ -134,6 +134,7 @@
     <Compile Include="StockClasses\StockEvent.cs" />
     <Compile Include="StockClasses\StockIndicator.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIVWAIT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.Designer.cs">
       <AutoGen>True</AutoGen>
