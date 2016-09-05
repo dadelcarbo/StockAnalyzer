@@ -154,6 +154,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIRS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CHOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ALLIGATOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MEMA.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="StockAnalyzerException.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ALLIGATOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
@@ -389,6 +391,9 @@
     <Compile Include="StockStrategyClasses\SimBuyWithCloseDirection.cs" />
     <Compile Include="StockStrategyClasses\StockFilteredStrategyBase.cs" />
     <Compile Include="StockStrategyClasses\StockMoneyManagement\IStockMoneyManagement.cs" />
+    <Compile Include="StockStrategyClasses\StockMoneyManagement\StockMoneyManagementBase.cs" />
+    <Compile Include="StockStrategyClasses\StockMoneyManagement\StockPreviousLowRiskFree.cs" />
+    <Compile Include="StockStrategyClasses\StockMoneyManagement\MoneyManagementManager.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLow2Strategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLHigherLowStrategy.cs" />
     <Compile Include="StockStrategyClasses\TrailHLStrategy.cs" />

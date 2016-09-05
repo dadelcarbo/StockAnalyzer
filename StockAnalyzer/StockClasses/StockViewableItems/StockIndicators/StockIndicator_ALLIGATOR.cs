@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_EMA3Lines : StockIndicatorBase
+    public class StockIndicator_ALLIGATOR : StockIndicatorBase
     {
-        public StockIndicator_EMA3Lines()
+        public StockIndicator_ALLIGATOR()
         {
         }
         public override IndicatorDisplayTarget DisplayTarget
@@ -15,23 +15,35 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "MediumPeriod", "SlowPeriod", "FastShift", "MediumShift", "SlowShift" }; }
+            get { return new string[] { "FiboRank" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 5, 8, 13, 3, 5, 8 }; }
+            get { return new Object[] { 3 }; }
         }
+
         public override ParamRange[] ParameterRanges
         {
             get
             {
-                return new ParamRange[] { 
-             new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), 
-             new ParamRangeInt(0, 500), new ParamRangeInt(0, 500), new ParamRangeInt(0, 500)   };
+                return new ParamRange[] { new ParamRangeInt(1, 10) };
             }
         }
-        public override string[] SerieNames { get { return new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")", "EMA(" + this.Parameters[2].ToString() + ")" }; } }
+
+        public override string[] SerieNames
+        {
+            get
+            {
+                int fiboRank = (int) this.Parameters[0];
+                return new string[]
+                {
+                    "EMA(" + fibos[fiboRank + 1].ToString() + ")",
+                    "EMA(" + fibos[fiboRank + 2].ToString().ToString() + ")",
+                    "EMA(" + fibos[fiboRank + 3].ToString().ToString() + ")"
+                };
+            }
+        }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -44,12 +56,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+
+        static int [] fibos = new int[] {1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233};
+  
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0].ShiftForward((int)this.parameters[3]);
-            FloatSerie mediumSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0].ShiftForward((int)this.parameters[4]);
-            FloatSerie slowSerie = stockSerie.GetIndicator(this.SerieNames[2]).Series[0].ShiftForward((int)this.parameters[5]);
+            FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0];
+            FloatSerie mediumSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0];
+            FloatSerie slowSerie = stockSerie.GetIndicator(this.SerieNames[2]).Series[0];
             
+            int fiboRank = (int) this.Parameters[0]; 
+            int shift = fibos[fiboRank];
+            fastSerie = fastSerie.ShiftForward(shift);
+
+            shift = fibos[fiboRank + 1];
+            mediumSerie = mediumSerie.ShiftForward(shift);
+           
+            shift = fibos[fiboRank + 2];
+            slowSerie = slowSerie.ShiftForward(shift);
+
             this.Series[0] = fastSerie;
             this.Series[1] = mediumSerie;
             this.Series[2] = slowSerie;
