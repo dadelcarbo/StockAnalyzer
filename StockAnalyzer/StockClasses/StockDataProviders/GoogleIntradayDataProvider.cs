@@ -171,8 +171,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   url = url.Replace("{code}", stockSerie.ShortName);
                   url = url.Replace("{interval}", "60");
                }
-               wc.DownloadFile(url, fileName);
-               stockSerie.IsInitialised = false;
+                try
+                {
+                    wc.DownloadFile(url, fileName);
+                    stockSerie.IsInitialised = false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
          }
          return true;
