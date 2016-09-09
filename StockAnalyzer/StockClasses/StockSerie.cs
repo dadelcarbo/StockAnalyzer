@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzer.Portofolio;
@@ -679,33 +680,47 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
         #region Initialisation methods (indicator, data && events calculation)
+
+        private bool isInitialising = false;
         public bool Initialise()
         {
-            if (!this.IsInitialised)
+            try
             {
-                if (this.Count == 0)
+                while (isInitialising) Thread.Sleep(50);
+                if (!this.IsInitialised)
                 {
-                    if (!LoadData(StockBar.StockBarType.Daily, StockAnalyzerSettings.Properties.Settings.Default.RootFolder))
+                    this.isInitialising = true;
+                    if (this.Count == 0)
                     {
-                        return false;
+                        if (
+                            !LoadData(StockBar.StockBarType.Daily,
+                                StockAnalyzerSettings.Properties.Settings.Default.RootFolder))
+                        {
+                            return false;
+                        }
                     }
+
+                    // Force indicator,data,event and other to null;
+                    PreInitialise();
+
+                    // Events initialisation
+                    HasEvents = false;
+
+                    if (this.barDuration == StockBarDuration.Daily &&
+                        !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
+                    {
+                        this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
+                    }
+
+                    // Flag initialisation as completed
+                    this.isInitialised = true;
                 }
-
-                // Force indicator,data,event and other to null;
-                PreInitialise();
-
-                // Events initialisation
-                HasEvents = false;
-
-                if (this.barDuration == StockBarDuration.Daily && !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
-                {
-                    this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
-                }
-
-                // Flag initialisation as completed
-                this.isInitialised = true;
+                return isInitialised;
             }
-            return isInitialised;
+            finally
+            {
+                this.isInitialising = false;
+            }
         }
 
         public void PreInitialise()
@@ -5783,7 +5798,7 @@ namespace StockAnalyzer.StockClasses
 
             IStockMoneyManagement moneyManagement = null;
             if (stopLoss) moneyManagement = MoneyManagementManager.CreateMoneyManagement("StockPreviousLowRiskFree", this);
-            
+
             StockOrder.FixedFee = fixedFee;
             StockOrder.TaxRate = taxRate;
             foreach (StockDailyValue barValue in this.Values)
@@ -6007,9 +6022,9 @@ namespace StockAnalyzer.StockClasses
                         }
                         if (stopLoss)
                         {
-                            stopLossOrder = StockOrder.CreateSellAtThresholdStockOrder( stockOrder.StockName,
+                            stopLossOrder = StockOrder.CreateSellAtThresholdStockOrder(stockOrder.StockName,
                                dailyValue.DATE, DateTime.MaxValue, stockOrder.Number, stockOrder.Value * (1 - stopLossTarget),
-                               dailyValue,false);
+                               dailyValue, false);
                         }
                         nbOpenPosition = stockOrder.Number;
                     }
