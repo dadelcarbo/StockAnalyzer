@@ -681,15 +681,19 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Initialisation methods (indicator, data && events calculation)
 
-        private bool isInitialising = false;
+        private Thread initialisingThread = null;
         public bool Initialise()
         {
             try
             {
-                while (isInitialising) Thread.Sleep(50);
                 if (!this.IsInitialised)
                 {
-                    this.isInitialising = true;
+                    // Multithread management
+                    while (initialisingThread != null && initialisingThread != Thread.CurrentThread) 
+                        Thread.Sleep(50);
+                    this.initialisingThread = Thread.CurrentThread;
+
+
                     if (this.Count == 0)
                     {
                         if (
@@ -719,7 +723,7 @@ namespace StockAnalyzer.StockClasses
             }
             finally
             {
-                this.isInitialising = false;
+                this.initialisingThread = null;
             }
         }
 

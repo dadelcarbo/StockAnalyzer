@@ -126,7 +126,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                }
 
                // Set back to previous duration.
-               stockSerie.BarDuration = previousDuration;
+                if (previousDuration != stockSerie.BarDuration)
+                {
+                    stockSerie.BarDuration = previousDuration;
+                }
             }
             else
             {
