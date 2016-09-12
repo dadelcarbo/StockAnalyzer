@@ -100,8 +100,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[2][i] = erSerie[i] > 0 && erSerie[i - 1] < 0;
                 this.eventSeries[3][i] = erSerie[i] < 0 && erSerie[i - 1] > 0;
 
-
-
                 isOverSold = erSerie[i] <= oversold;
                 isOverBought = erSerie[i] >= overbought;
                 this.eventSeries[4][i] = isOverBought;
