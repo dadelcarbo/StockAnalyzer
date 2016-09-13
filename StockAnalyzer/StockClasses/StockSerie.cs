@@ -140,7 +140,12 @@ namespace StockAnalyzer.StockClasses
             ThreeLineBreak_BIS,
             ThreeLineBreak_TER,
             SixLineBreak,
+            TLB_Weekly,
             Weekly,
+            Weekly_EMA3,
+            Weekly_EMA6,
+            Weekly_EMA9,
+            Weekly_EMA12,
             Monthly,
             RENKO_1,
             RENKO_2,
@@ -6790,6 +6795,12 @@ namespace StockAnalyzer.StockClasses
                                GenerateSerieForTimeSpanFromDaily(
                                   (StockBarDuration)
                                      Enum.Parse(typeof(StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
+                            newStockValues = GenerateNbLineBreakBarFromDaily(newStockValues, 2);
+                        }
+                        else if (timeSpanString[1]=="Weekly")
+                        {
+                            newStockValues =
+                                  GenerateSerieForTimeSpanFromDaily(StockBarDuration.Weekly);
                             newStockValues = GenerateNbLineBreakBarFromDaily(newStockValues, 2);
                         }
                     }
