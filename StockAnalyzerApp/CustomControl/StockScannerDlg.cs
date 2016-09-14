@@ -380,7 +380,7 @@ namespace StockAnalyzerApp.CustomControl
                if (progressBar != null)
                {
                   progressBar.Value = 0;
-                  progressLabel.Text = selectedStockListBox.Items.Count + "/" + progress.Count();
+                  progressLabel.Text = selectedStockListBox.Items.Count + "/" + progress.Count(s=>s.Key.IsInitialised);
                }
                processTimer.Stop();
                processTimer.Dispose();
