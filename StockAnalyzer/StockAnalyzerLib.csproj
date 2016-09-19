@@ -155,6 +155,9 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CHOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ALLIGATOR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MEMA.cs" />
@@ -243,6 +246,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ALLIGATOR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
