@@ -12,7 +12,7 @@ namespace StockAnalyzerSettings.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -73,7 +73,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Portfolio.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("OrderFile.xml")]
         public string PortofolioFile {
             get {
                 return ((string)(this["PortofolioFile"]));
@@ -395,18 +395,8 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowCommentMarquee"] = value;
             }
         }
-
-
-       [global::System.Configuration.UserScopedSettingAttribute()]
-       [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-       [global::System.Configuration.DefaultSettingValueAttribute("True")]
-       public bool ShowIndicatorDiv
-       {
-          get { return ((bool) (this["ShowIndicatorDiv"])); }
-          set { this["ShowIndicatorDiv"] = value; }
-       }
-
-       [global::System.Configuration.UserScopedSettingAttribute()]
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("david.carbonel@free.fr")]
         public string UserEMail {
@@ -481,28 +471,13 @@ namespace StockAnalyzerSettings.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool GenerateDailyReport {
+        public bool RaiseAlerts {
             get {
-               return ((bool)(this["GenerateDailyReport"]));
+                return ((bool)(this["RaiseAlerts"]));
             }
             set {
-               this["GenerateDailyReport"] = value;
+                this["RaiseAlerts"] = value;
             }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool RaiseAlerts
-        {
-           get
-           {
-              return ((bool)(this["RaiseAlerts"]));
-           }
-           set
-           {
-              this["RaiseAlerts"] = value;
-           }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
@@ -514,6 +489,42 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["AlertsFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowIndicatorDiv {
+            get {
+                return ((bool)(this["ShowIndicatorDiv"]));
+            }
+            set {
+                this["ShowIndicatorDiv"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GenerateDailyReport {
+            get {
+                return ((bool)(this["GenerateDailyReport"]));
+            }
+            set {
+                this["GenerateDailyReport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowIndicatorText {
+            get {
+                return ((bool)(this["ShowIndicatorText"]));
+            }
+            set {
+                this["ShowIndicatorText"] = value;
             }
         }
     }

@@ -4107,6 +4107,13 @@ namespace StockAnalyzerApp
             // Refresh the graphs
             OnNeedReinitialise(false);
         }
+        private void showIndicatorTextMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.ShowIndicatorText = this.showIndicatorTextMenuItem.Checked;
+            Settings.Default.Save();
+            // Refresh the graphs
+            OnNeedReinitialise(false);
+        }
 
         private void showOrdersMenuItem_Click(object sender, EventArgs e)
         {
