@@ -294,6 +294,13 @@ namespace StockAnalyzerApp.CustomControl
                progress.Add(stockSerie, ProgressStatus.NeedDownload);
             }
 
+
+            Console.WriteLine("StockScanner Download WaitOne");
+            StockAnalyzerForm.timerWorkingEvent.WaitOne();
+
+            Console.WriteLine("StockScanner Download Reset");
+            StockAnalyzerForm.timerWorkingEvent.Reset();
+
             // Refreshes intraday every 2 minutes.
             downloadTimer = new System.Windows.Forms.Timer();
             downloadTimer.Tick += new EventHandler(this.DownloadSeries);
@@ -308,6 +315,12 @@ namespace StockAnalyzerApp.CustomControl
             }
          }
 
+
+         Console.WriteLine("StockScanner ProcessScan WaitOne");
+         StockAnalyzerForm.timerWorkingEvent.WaitOne();
+
+         Console.WriteLine("StockScanner ProcessScan Reset");
+         StockAnalyzerForm.timerWorkingEvent.Reset();
 
          processTimer = new System.Windows.Forms.Timer();
          processTimer.Tick += new EventHandler(this.ProcessScan);
@@ -385,6 +398,9 @@ namespace StockAnalyzerApp.CustomControl
                processTimer.Stop();
                processTimer.Dispose();
 
+               Console.WriteLine("StockScanner ProcessScan Set");
+               StockAnalyzerForm.timerWorkingEvent.Set();
+
                this.Enabled = true;
                Cursor = cursor;
                this.Activate();
@@ -431,6 +447,7 @@ namespace StockAnalyzerApp.CustomControl
                      stockSerie.IsInitialised = false;
 
                      Thread thread = new Thread(DownloadSerie);
+                      thread.Name = "Scanner Dnld " + stockSerie.ShortName;
                      thread.Start(stockSerie);
                   }
                }
@@ -443,6 +460,9 @@ namespace StockAnalyzerApp.CustomControl
             {
                downloadTimer.Stop();
                downloadTimer.Dispose();
+
+               Console.WriteLine("StockScanner Download Set");
+               StockAnalyzerForm.timerWorkingEvent.Set();
             }
          }
          catch { }
