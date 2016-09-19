@@ -269,6 +269,9 @@ namespace StockAnalyzerApp
             }
 
             base.OnActivated(e);
+
+            // Unable timers and multithreading
+            timerWorkingEvent.Set();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -726,14 +729,25 @@ namespace StockAnalyzerApp
 
         #region TIMER MANAGEMENT
 
+
+        public static AutoResetEvent timerWorkingEvent = new AutoResetEvent(true);
+
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
-            if (this.currentStockSerie != null && (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY || this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
-            {
-                this.Cursor = Cursors.WaitCursor;
+            Console.WriteLine("refreshTimer_Tick WaitOne");
+            timerWorkingEvent.WaitOne();
 
-                try
+            Console.WriteLine("refreshTimer_Tick Reset");
+            timerWorkingEvent.Reset();
+
+            try
+            {
+                if (this.currentStockSerie != null &&
+                    (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY ||
+                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
                 {
+                    this.Cursor = Cursors.WaitCursor;
+
                     if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
                     {
                         if (this.currentStockSerie.Initialise())
@@ -746,10 +760,12 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                finally
-                {
-                    this.Cursor = Cursors.Arrow;
-                }
+            }
+            finally
+            {
+                this.Cursor = Cursors.Arrow;
+                Console.WriteLine("refreshTimer_Tick Set");
+                timerWorkingEvent.Set();
             }
         }
 
@@ -769,11 +785,13 @@ namespace StockAnalyzerApp
 
 
             Thread alertThread = new Thread(GenerateAlert);
+            alertThread.Name = "alertTimer";
             alertThread.Start();
         }
 
         public void GenerateAlert()
         {
+
             alertDefs.Clear();
             alertDefs.Add(cciEx);
             alertDefs.Add(barAbove);
@@ -782,87 +800,101 @@ namespace StockAnalyzerApp
             alertDefs.Add(ResistanceBroken);
             alertDefs.Add(trailHLSR);
 
-            var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
-            if (AlertDetectionStarted != null)
+            Console.WriteLine("GenerateAlert WaitOne");
+            timerWorkingEvent.WaitOne();
+
+            Console.WriteLine("GenerateAlert Reset");
+            timerWorkingEvent.Reset();
+            try
             {
-                if (this.InvokeRequired)
-                {
-                    this.Invoke(this.AlertDetectionStarted, stockList.Count);
-                }
-                else
-                {
-                    this.AlertDetectionStarted(stockList.Count);
-                }
-            }
 
-            StockAlertLog stockAlertLog = StockAlertLog.Instance;
-
-            DateTime lookBackDate = DateTime.Today.AddDays(-7);
-
-            foreach (string stockName in stockList)
-            {
-                if (AlertDetectionProgress != null)
+                var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
+                if (AlertDetectionStarted != null)
                 {
                     if (this.InvokeRequired)
                     {
-                        this.Invoke(this.AlertDetectionProgress, stockName);
+                        this.Invoke(this.AlertDetectionStarted, stockList.Count);
                     }
                     else
                     {
-                        this.AlertDetectionProgress(stockName);
+                        this.AlertDetectionStarted(stockList.Count);
                     }
                 }
-                if (!this.StockDictionary.ContainsKey(stockName)) continue;
 
-                StockSerie stockSerie = this.StockDictionary[stockName];
-                StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                StockAlertLog stockAlertLog = StockAlertLog.Instance;
 
-                if (!stockSerie.Initialise()) continue;
+                DateTime lookBackDate = DateTime.Today.AddDays(-7);
 
-                StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
-
-                lock (alertDefs)
+                foreach (string stockName in stockList)
                 {
-                    foreach (StockAlertDef alertDef in alertDefs)
+                    if (AlertDetectionProgress != null)
                     {
-                        stockSerie.BarDuration = alertDef.BarDuration;
-                        var values = stockSerie.GetValues(alertDef.BarDuration);
-                        for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
+                        if (this.InvokeRequired)
                         {
-                            var dailyValue = values.ElementAt(i);
-                            if (stockSerie.MatchEvent(alertDef, i))
-                            {
-                                StockAlert stockAlert = new StockAlert(alertDef,
-                                    dailyValue.DATE,
-                                    stockSerie.StockName,
-                                    dailyValue.CLOSE,
-                                    stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
+                            this.Invoke(this.AlertDetectionProgress, stockName);
+                        }
+                        else
+                        {
+                            this.AlertDetectionProgress(stockName);
+                        }
+                    }
+                    if (!this.StockDictionary.ContainsKey(stockName)) continue;
 
-                                if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
+                    StockSerie stockSerie = this.StockDictionary[stockName];
+                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+
+                    if (!stockSerie.Initialise()) continue;
+
+                    StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
+
+                    lock (alertDefs)
+                    {
+                        foreach (StockAlertDef alertDef in alertDefs)
+                        {
+                            stockSerie.BarDuration = alertDef.BarDuration;
+                            var values = stockSerie.GetValues(alertDef.BarDuration);
+                            for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
+                            {
+                                var dailyValue = values.ElementAt(i);
+                                if (stockSerie.MatchEvent(alertDef, i))
                                 {
-                                    if (this.InvokeRequired)
+                                    StockAlert stockAlert = new StockAlert(alertDef,
+                                        dailyValue.DATE,
+                                        stockSerie.StockName,
+                                        dailyValue.CLOSE,
+                                        stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
+
+                                    if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
                                     {
-                                        this.Invoke(new Action(() => stockAlertLog.Alerts.Insert(0, stockAlert)));
-                                    }
-                                    else
-                                    {
-                                        stockAlertLog.Alerts.Insert(0, stockAlert);
+                                        if (this.InvokeRequired)
+                                        {
+                                            this.Invoke(new Action(() => stockAlertLog.Alerts.Insert(0, stockAlert)));
+                                        }
+                                        else
+                                        {
+                                            stockAlertLog.Alerts.Insert(0, stockAlert);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    stockSerie.BarDuration = previouBarDuration;
                 }
-                stockSerie.BarDuration = previouBarDuration;
-            }
-            stockAlertLog.Save();
+                stockAlertLog.Save();
 
-            if (this.AlertDetected != null)
+                if (this.AlertDetected != null)
+                {
+                    this.Invoke(this.AlertDetected);
+                }
+
+                StockSplashScreen.CloseForm(true);
+            }
+            finally
             {
-                this.Invoke(this.AlertDetected);
+                Console.WriteLine("GenerateAlert Set");
+                timerWorkingEvent.Set();
             }
-
-            StockSplashScreen.CloseForm(true);
         }
 
         #endregion
@@ -1730,14 +1762,19 @@ namespace StockAnalyzerApp
 
         private void downloadBtn_Click(object sender, System.EventArgs e)
         {
-            if (Control.ModifierKeys == Keys.Control)
+            if (timerWorkingEvent.WaitOne(0))
             {
-                DownloadStockGroup();
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    DownloadStockGroup();
+                }
+                else
+                {
+                    DownloadStock();
+                }
             }
-            else
-            {
-                DownloadStock();
-            }
+            Console.WriteLine("downloadBtn_Click Set");
+            timerWorkingEvent.Set();
         }
 
         private void DownloadStock()
