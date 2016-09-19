@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          }
       }
 
-      public override string[] SerieNames { get { return new string[] { "BBUp", "BBDown", this.parameters[3] + "(" + (int)this.parameters[0] + ")" }; } }
+      public override string[] SerieNames { get { return new string[] { "BBHLUp", "BBHLDown", this.parameters[3] + "(" + (int)this.parameters[0] + ")" }; } }
 
       public override System.Drawing.Pen[] SeriePens
       {
