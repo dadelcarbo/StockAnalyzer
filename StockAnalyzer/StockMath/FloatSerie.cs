@@ -847,6 +847,21 @@ namespace StockAnalyzer.StockMath
                 if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
             }
         }
+
+        public void CalculateBBOSC(FloatSerie referenceAverage, FloatSerie widthSerie, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
+        {
+            bbUpSerie = new FloatSerie(this.Values.Count());
+            bbUpSerie.Name = "BBOSCUp";
+            bbDownSerie = new FloatSerie(this.Values.Count());
+            bbDownSerie.Name = "BBOSCDown";
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                float absWidth = Math.Abs(widthSerie[i]);
+                bbDownSerie[i] = referenceAverage[i] + BBDownCoef * absWidth;
+                bbUpSerie[i] = referenceAverage[i] + BBUpCoef * absWidth;
+            }
+        }
         public FloatSerie CalculateEC(int emaPeriod, float gain)
         {
             FloatSerie serie = new FloatSerie(Values.Count(), "EMA_" + emaPeriod.ToString());
