@@ -13,13 +13,15 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockStrategyClasses;
-using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
+using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
+using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
+using StockAnalyzerApp.CustomControl.StatisticsDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
@@ -40,9 +42,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using StockAnalyzerApp.CustomControl.AlertDialog;
-using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
-using StockAnalyzerApp.CustomControl.StatisticsDlg;
 
 namespace StockAnalyzerApp
 {
@@ -271,7 +270,7 @@ namespace StockAnalyzerApp
             base.OnActivated(e);
 
             // Unable timers and multithreading
-            timerWorkingEvent.Set();
+            busy = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -325,7 +324,7 @@ namespace StockAnalyzerApp
             }
 
 #if DEBUG
-         bool fastStart = true;
+            bool fastStart = true;
 #else
             bool fastStart = false;
 #endif
@@ -680,7 +679,7 @@ namespace StockAnalyzerApp
             // Refreshes intrady every 2 minutes.
             refreshTimer = new System.Windows.Forms.Timer();
             refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-            refreshTimer.Interval = 120 * 1000;
+            refreshTimer.Interval = 10 * 1000;
             refreshTimer.Start();
 
             if (Settings.Default.GenerateDailyReport)
@@ -730,15 +729,12 @@ namespace StockAnalyzerApp
         #region TIMER MANAGEMENT
 
 
-        public static AutoResetEvent timerWorkingEvent = new AutoResetEvent(true);
+        public static bool busy = false;
 
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("refreshTimer_Tick WaitOne");
-            timerWorkingEvent.WaitOne();
-
-            Console.WriteLine("refreshTimer_Tick Reset");
-            timerWorkingEvent.Reset();
+            if (busy) return;
+            busy = true;
 
             try
             {
@@ -764,8 +760,7 @@ namespace StockAnalyzerApp
             finally
             {
                 this.Cursor = Cursors.Arrow;
-                Console.WriteLine("refreshTimer_Tick Set");
-                timerWorkingEvent.Set();
+                busy = false;
             }
         }
 
@@ -791,6 +786,8 @@ namespace StockAnalyzerApp
 
         public void GenerateAlert()
         {
+            if (busy) return;
+            busy = true;
 
             alertDefs.Clear();
             alertDefs.Add(cciEx);
@@ -800,11 +797,6 @@ namespace StockAnalyzerApp
             alertDefs.Add(ResistanceBroken);
             alertDefs.Add(trailHLSR);
 
-            Console.WriteLine("GenerateAlert WaitOne");
-            timerWorkingEvent.WaitOne();
-
-            Console.WriteLine("GenerateAlert Reset");
-            timerWorkingEvent.Reset();
             try
             {
 
@@ -892,8 +884,7 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                Console.WriteLine("GenerateAlert Set");
-                timerWorkingEvent.Set();
+                busy = false;
             }
         }
 
@@ -1762,19 +1753,17 @@ namespace StockAnalyzerApp
 
         private void downloadBtn_Click(object sender, System.EventArgs e)
         {
-            if (timerWorkingEvent.WaitOne(0))
+            if (busy) return;
+            busy = true;
+            if (Control.ModifierKeys == Keys.Control)
             {
-                if (Control.ModifierKeys == Keys.Control)
-                {
-                    DownloadStockGroup();
-                }
-                else
-                {
-                    DownloadStock();
-                }
+                DownloadStockGroup();
             }
-            Console.WriteLine("downloadBtn_Click Set");
-            timerWorkingEvent.Set();
+            else
+            {
+                DownloadStock();
+            }
+            busy = false;
         }
 
         private void DownloadStock()

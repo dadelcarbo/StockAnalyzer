@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockLogging
       private StockLog()
       {
 #if (DEBUG)
-         isEnabled = true;
+         isEnabled = false;
 #else
          isEnabled = Settings.Default.LoggingEnabled;
 #endif
