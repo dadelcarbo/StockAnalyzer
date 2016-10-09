@@ -5084,7 +5084,7 @@ namespace StockAnalyzer.StockClasses
                     this.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
                 }
 
-                int j, pivotIndex;
+                int pivotIndex;
                 int lastBreakDownIndex = -1;
                 int lastBreakUpIndex = -1;
                 bool brokenResistance = false;

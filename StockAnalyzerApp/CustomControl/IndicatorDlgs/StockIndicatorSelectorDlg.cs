@@ -448,11 +448,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                               treeNode1 = new DecoratorNode(stockDecorator.Name, this.indicatorMenuStrip, stockDecorator);
                               for (int i = 0; i < stockDecorator.SeriesCount; i++)
                               {
-                                 treeNode1.Nodes.Add(new CurveNode(stockDecorator.SerieNames[i], null, stockDecorator.SeriePens[i], true, true));
+                                  treeNode1.Nodes.Add(new CurveNode(stockDecorator.SerieNames[i], null, stockDecorator.SeriePens[i], true, stockDecorator.SerieVisibility[i]));
                               }
                               for (int i = 0; i < stockDecorator.EventCount; i++)
                               {
-                                 treeNode1.Nodes.Add(new EventNode(stockDecorator.EventNames[i], null, stockDecorator.EventPens[i], true, true));
+                                  treeNode1.Nodes.Add(new EventNode(stockDecorator.EventNames[i], null, stockDecorator.EventPens[i], true, stockDecorator.EventVisibility[i]));
                               }
                               foreach (TreeNode childNode in treeNode.Nodes)
                               {

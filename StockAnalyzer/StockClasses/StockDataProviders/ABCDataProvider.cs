@@ -468,12 +468,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (stockSerie.Count > 0)
                 {
                     DateTime lastDate = stockSerie.Keys.Last();
-                    bool needReloadIntraday = false;
                     if (lastDate.TimeOfDay != TimeSpan.Zero)
                     {
                         stockSerie.Remove(lastDate);
                         lastDate = stockSerie.Keys.Last();
-                        needReloadIntraday = true;
                     }
 
                     isUpTodate = (lastDate >= DateTime.Today) ||
@@ -1388,9 +1386,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static private List<List<string>> getTableData(HtmlElement tbl)
         {
-            int nrec = 0;
             List<List<string>> data = new List<List<string>>();
-            string rowBuff;
 
             HtmlElementCollection rows = tbl.GetElementsByTagName("tr");
             HtmlElementCollection cols;

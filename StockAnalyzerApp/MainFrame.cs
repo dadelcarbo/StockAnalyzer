@@ -2923,7 +2923,7 @@ namespace StockAnalyzerApp
             statisticsDlg.ShowDialog();
             return;
 
-            int minBar = 50;
+            const int minBar = 50;
             int nbStatBar = 50;
 
             FloatSerie varSerie = new FloatSerie(nbStatBar);
@@ -3276,9 +3276,7 @@ namespace StockAnalyzerApp
             int cacIndex = 0;
             foreach (StockDailyValue dailyValue in stockSerie.Values)
             {
-                float var = 0.0f;
                 float volume = 0.0f;
-                int count = 0;
                 if (dailyValue.DATE.DayOfWeek == dayOfWeek)
                 {
                     value += value * dailyValue.VARIATION;
