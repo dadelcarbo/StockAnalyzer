@@ -5089,8 +5089,10 @@ namespace StockAnalyzer.StockClasses
                 int lastBreakUpIndex = -1;
                 bool brokenResistance = false;
                 bool brokenSupport = false;
-                Pen greenPen = new Pen(Color.Green, 2);
-                Pen redPen = new Pen(Color.Red, 2);
+                Pen greenLargePen = new Pen(Color.Green, 2);
+                Pen redLargePen = new Pen(Color.Red, 2);
+                Pen greenThinPen = new Pen(Color.Green, 1);
+                Pen redThinPen = new Pen(Color.Red, 1);
 
                 for (int i = startIndex + period; i <= endIndex; i++)
                 {
@@ -5108,7 +5110,7 @@ namespace StockAnalyzer.StockClasses
                         {
                             latestResistanceLine = new HalfLine2D(
                                    new PointF(lastBreakDownIndex, latestHighPivotValue),
-                                   new PointF(pivotIndex, highPivotValue), greenPen);
+                                   new PointF(pivotIndex, highPivotValue), greenLargePen);
 
                             this.StockAnalysis.DrawingItems[this.BarDuration].Add(new Bullet2D(latestResistanceLine.Point1, 3));
                             this.StockAnalysis.DrawingItems[this.BarDuration].Add(new Bullet2D(latestResistanceLine.Point2, 3));
@@ -5150,7 +5152,7 @@ namespace StockAnalyzer.StockClasses
                         {
                             latestSupportLine = new HalfLine2D(
                                    new PointF(lastBreakUpIndex, latestLowPivotValue),
-                                   new PointF(pivotIndex, lowPivotValue), redPen);
+                                   new PointF(pivotIndex, lowPivotValue), redLargePen);
 
                             this.StockAnalysis.DrawingItems[this.BarDuration].Add(new Bullet2D(latestSupportLine.Point1, 3));
                             this.StockAnalysis.DrawingItems[this.BarDuration].Add(new Bullet2D(latestSupportLine.Point2, 3));
@@ -5209,6 +5211,16 @@ namespace StockAnalyzer.StockClasses
                         events[(int)TLEvent.UpTrend][i] = upTrend;
                         events[(int)TLEvent.DownTrend][i] = downTrend;
                     }
+                }
+                foreach (var line in resistanceList)
+                {
+                    line.Pen = greenThinPen;
+                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(line);
+                }
+                foreach (var line in supportList)
+                {
+                    line.Pen = redThinPen;
+                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(line);
                 }
                 //if (latestSupportLine != null)
                 //{

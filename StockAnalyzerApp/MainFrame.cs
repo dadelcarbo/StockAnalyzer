@@ -6233,7 +6233,10 @@ border:1px solid black;
                                                      " cannot be initialised");
                         return;
                     }
-                    this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings();
+                    if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings()>0)
+                    {
+                        this.CurrentStockSerie.PaintBarCache = null;
+                    }
 
                     // Build curve list from definition
                     if (!this.themeDictionary.ContainsKey(currentTheme))
