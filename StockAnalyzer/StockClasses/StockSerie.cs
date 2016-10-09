@@ -3709,7 +3709,7 @@ namespace StockAnalyzer.StockClasses
             FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
 
             StockDailyValue previousValue = this.Values.First();
-            bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
+            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
             int i = 1;
             float extremum;
             if (upTrend)
@@ -3727,41 +3727,40 @@ namespace StockAnalyzer.StockClasses
 
             foreach (StockDailyValue currentValue in this.Values.Skip(1))
             {
-                if (i > inputSmoothing)
+                if (upTrend)
                 {
-                    if (upTrend)
+                    if (closeEMASerie[i] < longStopSerie[i - 1])
                     {
-                        if (closeEMASerie[i] < longStopSerie[i - 1])
-                        { // Trailing stop has been broken => reverse trend
-                            upTrend = false;
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = extremum;
-                            extremum = lowEMASerie[i];
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
-                            shortStopSerie[i] = float.NaN;
-                            extremum = Math.Max(extremum, highEMASerie[i]);
-                        }
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = false;
+                        longStopSerie[i] = float.NaN;
+                        shortStopSerie[i] = extremum;
+                        extremum = lowEMASerie[i];
                     }
                     else
                     {
-                        if (closeEMASerie[i] > shortStopSerie[i - 1])
-                        {  // Trailing stop has been broken => reverse trend
-                            upTrend = true;
-                            longStopSerie[i] = extremum;
-                            shortStopSerie[i] = float.NaN;
-                            extremum = highEMASerie[i];
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
-                            extremum = Math.Min(extremum, lowEMASerie[i]);
-                        }
+                        // Trail the stop  
+                        longStopSerie[i] = longStopSerie[i - 1] + alpha*(closeEMASerie[i] - longStopSerie[i - 1]);
+                        shortStopSerie[i] = float.NaN;
+                        extremum = Math.Max(extremum, highEMASerie[i]);
+                    }
+                }
+                else
+                {
+                    if (closeEMASerie[i] > shortStopSerie[i - 1])
+                    {
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = true;
+                        longStopSerie[i] = extremum;
+                        shortStopSerie[i] = float.NaN;
+                        extremum = highEMASerie[i];
+                    }
+                    else
+                    {
+                        // Trail the stop  
+                        longStopSerie[i] = float.NaN;
+                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha*(closeEMASerie[i] - shortStopSerie[i - 1]);
+                        extremum = Math.Min(extremum, lowEMASerie[i]);
                     }
                 }
                 previousValue = currentValue;

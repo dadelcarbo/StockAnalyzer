@@ -269,7 +269,7 @@ namespace StockAnalyzerApp
 
             base.OnActivated(e);
 
-            // Unable timers and multithreading
+            // Enable timers and multithreading
             busy = false;
         }
 
@@ -586,6 +586,9 @@ namespace StockAnalyzerApp
             }
             StockLog.Write("Best index " + best);
             //MessageBox.Show("Best index " + best);
+
+            //this.StockDictionary.GenerateHighLowDistributionInMonth();
+            //this.StockDictionary.GenerateHighLowDistributionIntraday();
 
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
