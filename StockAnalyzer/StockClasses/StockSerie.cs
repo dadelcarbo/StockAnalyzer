@@ -5075,6 +5075,9 @@ namespace StockAnalyzer.StockClasses
                 List<Line2DBase> supportList = new List<Line2DBase>();
                 List<Line2DBase> resistanceList = new List<Line2DBase>();
 
+                SortedDictionary<int, float> highs = new SortedDictionary<int, float>();
+                SortedDictionary<int, float> lows = new SortedDictionary<int, float>();
+
                 if (this.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
                 {
                     this.StockAnalysis.DrawingItems[this.BarDuration].Clear();
@@ -5100,6 +5103,16 @@ namespace StockAnalyzer.StockClasses
                     {
                         pivotIndex = highSerie.FindMaxIndex(i - period - 2, i - 1);
                         highPivotValue = highSerie[pivotIndex];
+
+                        List<int> indexToRemove = new List<int>();
+                        float maxHigh = float.MinValue;
+                        foreach (var pair in highs)
+                        {
+                            maxHigh = Math.Max(maxHigh, highPivotValue);
+                            if (pair.Value < highPivotValue) indexToRemove.Add(i);
+                        }
+                        indexToRemove.ForEach(ind => highs.Remove(ind));
+
 
                         if (lastBreakDownIndex == -1 || highPivotValue >= latestHighPivotValue) // Need a new line
                         {
