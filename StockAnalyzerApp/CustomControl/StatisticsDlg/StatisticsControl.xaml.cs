@@ -39,9 +39,9 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             float avgReturn = 0;
             viewModel.Results.Clear();
             viewModel.Summary.Clear();
-            foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(viewModel.Group)))
+            foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(viewModel.Group) && s.Initialise()))
             {
-               if (viewModel.Calculate(serie.StockName))
+                if (viewModel.CalculateFixedStopProfit(serie.StockName))
                {
                   Console.WriteLine(serie.StockName + " " + viewModel.ToString());
                   S1 += viewModel.S1Count;
@@ -67,6 +67,10 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
          if (e.PropertyName == "TotalReturn")
          {
             (e.Column as DataGridTextColumn).Binding.StringFormat = "P2";
+         }
+         if (e.PropertyName == "WinRatio")
+         {
+             (e.Column as DataGridTextColumn).Binding.StringFormat = "P2";
          }
       }
    }
