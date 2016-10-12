@@ -5292,7 +5292,7 @@ namespace StockAnalyzer.StockClasses
                 bool brokenSupport = false;
                 for (int i = startIndex + period; i <= endIndex; i++)
                 {
-                    // Check for broken lines
+                    #region Check for broken lines
                     if (latestResistanceLine != null)
                     {
                         if (closeSerie[i] > latestResistanceLine.ValueAtX(i))
@@ -5327,7 +5327,7 @@ namespace StockAnalyzer.StockClasses
                             brokenSupport = false;
                         }
                     }
-
+                    #endregion
                     if (brokenDown[i])
                     {
                         pivotIndex = highSerie.FindMaxIndex(lastBreakIndex, i - 1);
@@ -5356,8 +5356,8 @@ namespace StockAnalyzer.StockClasses
                             if (latestResistanceLine != null)
                             {
                                 // New line has to be drawn
-                                this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
-                                resistanceList.Remove(latestResistanceLine);
+                                //this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
+                                //resistanceList.Remove(latestResistanceLine);
                             }
 
                             latestResistanceLine =
@@ -5399,8 +5399,8 @@ namespace StockAnalyzer.StockClasses
                             if (latestSupportLine != null)
                             {
                                 // New line has to be drawn
-                                this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(pivotIndex, true));
-                                supportList.Remove(latestSupportLine);
+                                //this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(pivotIndex, true));
+                                //supportList.Remove(latestSupportLine);
                             }
 
                             latestSupportLine =
