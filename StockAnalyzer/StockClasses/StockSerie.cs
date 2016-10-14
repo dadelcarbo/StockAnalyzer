@@ -115,7 +115,10 @@ namespace StockAnalyzer.StockClasses
             //TLB_TER_6D,
             //TLB_TER_9D,
             //TLB_TER_27D,
-            MIN,
+            MIN_5,
+            MIN_15,
+            MIN_60,
+            MIN_120,
             TLB,
             TLB_3D,
             TLB_6D,
@@ -3740,7 +3743,7 @@ namespace StockAnalyzer.StockClasses
                     else
                     {
                         // Trail the stop  
-                        longStopSerie[i] = longStopSerie[i - 1] + alpha*(closeEMASerie[i] - longStopSerie[i - 1]);
+                        longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
                         shortStopSerie[i] = float.NaN;
                         extremum = Math.Max(extremum, highEMASerie[i]);
                     }
@@ -3759,7 +3762,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         // Trail the stop  
                         longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha*(closeEMASerie[i] - shortStopSerie[i - 1]);
+                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
                         extremum = Math.Min(extremum, lowEMASerie[i]);
                     }
                 }
@@ -6973,13 +6976,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     break;
                 case "MIN":
-                    if (barDuration == StockBarDuration.MIN)
-                    {
-                        newStockValues = GenerateMinuteBarsFromIntraday(dailyValueList, 5);
-                    }
-                    else
-                    {
-                    }
+                    newStockValues = GenerateMinuteBarsFromIntraday(dailyValueList, int.Parse(timeSpanString[1]));
                     break;
                 case "TLB":
                     //TLB_3D,
@@ -7279,7 +7276,7 @@ namespace StockAnalyzer.StockClasses
                     newValue.POSITION = dailyValue.POSITION;
                     newValue.IsComplete = false;
                 }
-                else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(5))
+                else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(nbMinutes))
                 {
                     // Force bar end at the end of a day
                     newValue.IsComplete = true;
