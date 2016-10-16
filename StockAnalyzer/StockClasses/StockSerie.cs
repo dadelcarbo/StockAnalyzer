@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses
         }
     }
 
-    public class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
+    public partial class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
     {
         #region Type Definition
         public enum Groups

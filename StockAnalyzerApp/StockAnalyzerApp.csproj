@@ -187,6 +187,11 @@
     </Compile>
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\TrendToColorConverter.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
+      <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\StatisticsDlg\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
@@ -318,9 +323,7 @@
     <Compile Include="CustomControl\GraphControls\GraphCloseControl.Designer.cs">
       <DependentUpon>GraphCloseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\GraphControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControl\GraphControls\GraphControl.cs" />
     <Compile Include="CustomControl\GraphControls\GraphControl.Designer.cs">
       <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
@@ -872,6 +875,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\PortofolioDlgs\ImportBinckOrdersControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

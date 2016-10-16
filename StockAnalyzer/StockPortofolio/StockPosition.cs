@@ -23,7 +23,11 @@ namespace StockAnalyzer.Portofolio
          this.Status = PositionStatus.Opened;
       }
 
-      public override float AddedValue(float stockValue)
+        public StockPosition()
+        {
+        }
+
+        public override float AddedValue(float stockValue)
       {
          if (this.IsShortPosition)
          {

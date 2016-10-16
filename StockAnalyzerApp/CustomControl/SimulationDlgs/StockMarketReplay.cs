@@ -2,349 +2,435 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.Portofolio;
+using System.Collections.ObjectModel;
+using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
-   public partial class StockMarketReplay : Form, INotifyPropertyChanged
-   {
-      public StockMarketReplay()
-      {
-         InitializeComponent();
+    public partial class StockMarketReplay : Form, INotifyPropertyChanged
+    {
+        public ObservableCollection<PositionViewModel> Positions { get; set; }
 
-         portfolio = new StockPortofolio("Replay_P");
-         portfolio.TotalDeposit = 1000;
+        private StockDailyValue dailyValue;
 
-         this.TopMost = true;
-      }
+        public StockMarketReplay()
+        {
+            InitializeComponent();
 
-      private int position;
+            portfolio = new StockPortofolio("Replay_P");
+            portfolio.TotalDeposit = 1000;
 
-      public int Position
-      {
-         get { return position; }
-         set
-         {
-            if (value != position)
+            this.TopMost = true;
+
+            this.Position = new PositionViewModel();
+            this.position.OnPositionClosed += OnPositionClosed;
+            this.position.OnStopTouched += Position_OnStopTouched;
+            this.position.OnTargetTouched += Position_OnTargetTouched;
+            this.Positions = new ObservableCollection<PositionViewModel>();
+            this.Positions.Add(this.Position);
+            this.stockPositionUserControl1.DataContext = this;
+        }
+
+        private void Position_OnTargetTouched(OrderViewModel order)
+        {
+            StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName,
+                StockOrder.OrderType.SellAtLimit,
+                order.Type == OrderType.Short,
+                dailyValue.DATE, dailyValue.DATE, 1,
+                order.Value, 0);
+            this.portfolio.OrderList.Add(stockOrder);
+        }
+
+        private void Position_OnStopTouched(OrderViewModel order)
+        {
+            StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName,
+                StockOrder.OrderType.SellAtLimit, order.Type == OrderType.Short,
+                dailyValue.DATE, dailyValue.DATE,
+                1, order.Value, 0);
+            this.portfolio.OrderList.Add(stockOrder);
+        }
+
+        private PositionViewModel position;
+        public PositionViewModel Position
+        {
+            get { return position; }
+            set
             {
-               this.position = value;
-               OnPropertyChanged("Variation");
+                if (value != position)
+                {
+                    this.position = value;
+                    OnPropertyChanged("Position");
+                }
             }
-         }
-      }
+        }
 
-      private float openValue;
-
-      public float OpenValue
-      {
-         get { return openValue; }
-         set
-         {
-            if (value != openValue)
+        private bool halfPosition;
+        public bool HalfPosition
+        {
+            get { return halfPosition; }
+            set
             {
-               this.openValue = value;
-               OnPropertyChanged("OpenValue");
-               OnPropertyChanged("AddedValue");
-               OnPropertyChanged("AddedValuePercent");
+                if (value != halfPosition)
+                {
+                    halfPosition = value;
+                    if (halfPosition)
+                    {
+                        this.Stop = this.Position.CurrentValue * 0.9f;
+                        this.Target = this.Position.CurrentValue * 1.1f;
+                    }
+                    else
+                    {
+                        this.Stop = 0;
+                        this.Target = 0;
+                    }
+                    OnPropertyChanged("HalfPosition");
+                }
             }
-         }
-      }
+        }
 
-      private float currentValue;
-
-      public float CurrentValue
-      {
-         get { return currentValue; }
-         set
-         {
-            if (value != currentValue)
+        private float stop;
+        public float Stop
+        {
+            get { return stop; }
+            set
             {
-               this.currentValue = value;
-               OnPropertyChanged("CurrentValue");
-               OnPropertyChanged("AddedValue");
-               OnPropertyChanged("AddedValuePercent");
+                if (value != stop)
+                {
+                    this.stop = value;
+                    OnPropertyChanged("Stop");
+                }
             }
-         }
-      }
+        }
 
-      public float AddedValue
-      {
-         get { return (CurrentValue - OpenValue)*Position; }
-      }
-      public float AddedValuePercent
-      {
-         get { return openValue == 0f ? 0.0f : (CurrentValue - OpenValue)*Position / OpenValue; }
-      }
-
-      private float totalValue;
-
-      public float TotalValue
-      {
-         get { return totalValue; }
-      }
-
-      private StockSerie replaySerie = null;
-      private DateTime startDate;
-      private StockSerie refSerie = null;
-      private int index = 0;
-
-      private bool started = false;
-
-      private int nbTrade = 0;
-      private int nbWinTrade = 0;
-      private int nbLostTrade = 0;
-
-      List<float> tradeGains = new List<float>();
-
-      StockPortofolio portfolio { get; set; }
-
-       private void startButton_Click(object sender, EventArgs e)
-      {
-         if (started)
-         {
-            replaySerie = null;
-            started = false;
-            startButton.Text = "Start";
-            startButton.Focus();
-            nextButton.Enabled = false;
-            moveButton.Enabled = false;
-
-            this.Position = 0;
-            this.OpenValue = 0;
-            this.CurrentValue = 0;
-            this.totalValue = 0;
-
-            this.buyButton.Enabled = false;
-            this.sellButton.Enabled = false;
-            this.shortButton.Enabled = false;
-            this.coverButton.Enabled = false;
-
-            string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
-                         "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
-                         "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
-                         "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
-                         "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                         "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
-
-            MessageBox.Show(msg);
-         }
-         else
-         {
-            Cursor cursor = this.Cursor;
-            this.Cursor = Cursors.WaitCursor;
-
-            try
+        private float target;
+        public float Target
+        {
+            get { return target; }
+            set
             {
-               // Initialise stats
-               nbTrade = 0;
-               nbWinTrade = 0;
-               nbLostTrade = 0;
-               tradeGains.Clear();
-
-               // Create Portfolio
-               StockAnalyzerForm.MainFrame.CurrentPortofolio = portfolio;
-
-               
-
-               portfolio.Clear();
-               replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
-
-               // Random pick
-
-               Random rand = new Random(DateTime.Now.Millisecond);
-               var series =
-                  StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.SRD))
-                     .Select(s => s.StockName);
-
-               StockSerie serie = null;
-               do
-               {
-                  string stockName = series.ElementAt(rand.Next(0, series.Count()));
-
-                  serie = StockDictionary.StockDictionarySingleton[stockName];
-                  serie.Initialise();
-                  serie.BarDuration = StockSerie.StockBarDuration.Daily;
-               }
-               while (serie.Count < 400);
-
-               DateTime currentDate = DateTime.Today;
-               refSerie = new StockSerie(serie.StockName, serie.ShortName, serie.StockGroup, StockDataProvider.Replay);
-               foreach(StockDailyValue dailyValue in serie.Values)
-               {
-                  StockDailyValue newValue = new StockDailyValue(serie.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, currentDate);
-                  refSerie.Add(currentDate, newValue);
-                  currentDate = currentDate.AddDays(1);
-               }
-
-               currentDate = DateTime.Today;
-               int nbInitBars = rand.Next(200, refSerie.Count - 200);
-
-               for (index = 0; index < nbInitBars; index++)
-               {
-                  replaySerie.Add(currentDate, refSerie.ValueArray[index]);
-                  currentDate = currentDate.AddDays(1);
-               }
-
-               startDate = serie.Keys.ElementAt(index);
-               
-               startButton.Text = "Stop";
-               nextButton.Enabled = true;
-               moveButton.Enabled = true;
-               nextButton.Focus();
-
-               this.buyButton.Enabled = true;
-               this.sellButton.Enabled = false;
-               this.shortButton.Enabled = true;
-               this.coverButton.Enabled = false;
-
-               this.Position = 0;
-               this.OpenValue = 0;
-               this.CurrentValue = replaySerie.Values.Last().CLOSE;
-               this.totalValue = 0;
-
-               started = true;
-
-               refSerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
-               replaySerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
-               StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
-
-               StockAnalyzerForm.MainFrame.Activate();
+                if (value != target)
+                {
+                    this.target = value;
+                    OnPropertyChanged("Target");
+                }
             }
-            catch
+        }
+
+        private float variation;
+        public float Variation
+        {
+            get { return variation; }
+            set
             {
+                if (value != variation)
+                {
+                    this.variation = value;
+                    OnPropertyChanged("Variation");
+                }
             }
-            finally
+        }
+
+        private float totalValue;
+        public float TotalValue
+        {
+            get { return totalValue; }
+        }
+
+        private StockSerie replaySerie = null;
+        private DateTime startDate;
+        private StockSerie refSerie = null;
+        private int index = 0;
+
+        private bool started = false;
+
+        private int nbTrade = 0;
+        private int nbWinTrade = 0;
+        private int nbLostTrade = 0;
+
+        List<float> tradeGains = new List<float>();
+
+        StockPortofolio portfolio { get; set; }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            if (started)
             {
-               this.Cursor = cursor;
-            }
-         }
-      }
+                replaySerie = null;
+                started = false;
+                startButton.Text = "Start";
+                startButton.Focus();
+                nextButton.Enabled = false;
+                moveButton.Enabled = false;
 
-     private void nextButton_Click(object sender, EventArgs e)
-      {
-         NextStep(1);
-      }
-      private void moveButton_Click(object sender, EventArgs e)
-      {
-         NextStep(5);
-      }
-      private void NextStep(int step)
-      {
-         index += step;
-         DateTime currentDate = DateTime.Today;
-         refSerie.BarDuration = StockSerie.StockBarDuration.Daily;
-         if (index < refSerie.Count)
-         {
-            replaySerie.IsInitialised = false;
-            replaySerie.ClearBarDurationCache();
-            replaySerie.BarDuration = StockSerie.StockBarDuration.Daily;
-            for (int i = 0; i < index; i++)
+                this.Position.Number = 0;
+                this.Position.OpenValue = 0;
+                this.totalValue = 0;
+
+                this.buyButton.Enabled = false;
+                this.sellButton.Enabled = false;
+                this.shortButton.Enabled = false;
+                this.coverButton.Enabled = false;
+
+                string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
+                             "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
+                             "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                             "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
+                             "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
+                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
+
+                MessageBox.Show(msg);
+            }
+            else
             {
-               StockDailyValue dailyValue = refSerie.ValueArray[i];
-               replaySerie.Add(currentDate, dailyValue);
-               currentDate = currentDate.AddDays(1);
+                Cursor cursor = this.Cursor;
+                this.Cursor = Cursors.WaitCursor;
+
+                try
+                {
+                    // Initialise stats
+                    nbTrade = 0;
+                    nbWinTrade = 0;
+                    nbLostTrade = 0;
+                    tradeGains.Clear();
+
+                    // Create Portfolio
+                    StockAnalyzerForm.MainFrame.CurrentPortofolio = portfolio;
+
+                    portfolio.Clear();
+                    replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
+
+                    // Random pick
+
+                    Random rand = new Random(DateTime.Now.Millisecond);
+                    var series =
+                       StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.COUNTRY))
+                          .Select(s => s.StockName);
+
+                    StockSerie serie = null;
+                    do
+                    {
+                        string stockName = series.ElementAt(rand.Next(0, series.Count()));
+
+                        serie = StockDictionary.StockDictionarySingleton[stockName];
+                        serie.Initialise();
+                        serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                    }
+                    while (serie.Count < 400);
+
+                    DateTime currentDate = DateTime.Today;
+                    refSerie = new StockSerie(serie.StockName, serie.ShortName, serie.StockGroup, StockDataProvider.Replay);
+                    foreach (StockDailyValue dailyValue in serie.Values)
+                    {
+                        StockDailyValue newValue = new StockDailyValue(serie.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, currentDate);
+                        refSerie.Add(currentDate, newValue);
+                        currentDate = currentDate.AddDays(1);
+                    }
+
+                    currentDate = DateTime.Today;
+                    int nbInitBars = rand.Next(200, refSerie.Count - 200);
+
+                    for (index = 0; index < nbInitBars; index++)
+                    {
+                        replaySerie.Add(currentDate, refSerie.ValueArray[index]);
+                        currentDate = currentDate.AddDays(1);
+                    }
+
+                    dailyValue = serie.Values.Last();
+                    startDate = dailyValue.DATE;
+
+                    startButton.Text = "Stop";
+                    nextButton.Enabled = true;
+                    moveButton.Enabled = true;
+                    nextButton.Focus();
+
+                    OnPositionClosed();
+
+                    this.Position.Number = 0;
+                    this.Position.OpenValue = 0;
+                    this.Position.CurrentValue = replaySerie.Values.Last().CLOSE;
+                    this.totalValue = 0;
+
+                    started = true;
+
+                    refSerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
+                    replaySerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
+                    StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
+
+                    StockAnalyzerForm.MainFrame.Activate();
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    this.Cursor = cursor;
+                }
             }
-            replaySerie.Initialise();
+        }
 
-            this.CurrentValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE;
+        private void nextButton_Click(object sender, EventArgs e)
+        {
+            NextStep();
+        }
+        private void moveButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                NextStep();
+            }
+        }
+        private void NextStep()
+        {
+            index++;
+            DateTime currentDate = DateTime.Today;
+            refSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+            if (index < refSerie.Count)
+            {
+                replaySerie.IsInitialised = false;
+                replaySerie.ClearBarDurationCache();
+                replaySerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                StockDailyValue dailyVal = null;
+                for (int i = 0; i < index; i++)
+                {
+                    dailyVal = refSerie.ValueArray[i];
+                    replaySerie.Add(currentDate, dailyVal);
+                    currentDate = currentDate.AddDays(1);
+                }
+                replaySerie.Initialise();
+                dailyValue = dailyVal;
 
-            replaySerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
-            StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
-         }
-         else
-         {
-            MessageBox.Show("Replay finished !!!");
-         }
-      }
+                this.Position.CurrentValue = dailyValue.CLOSE;
+                this.Variation = dailyValue.VARIATION;
 
-      public event PropertyChangedEventHandler PropertyChanged;
+                this.Position.ValidatePosition();
 
-      private void OnPropertyChanged(string name)
-      {
-         if (PropertyChanged != null)
-         {
-            this.PropertyChanged(this, new PropertyChangedEventArgs(name));
-         }
-      }
+                replaySerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
+                StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
+            }
+            else
+            {
+                MessageBox.Show("Replay finished !!!");
+            }
+        }
 
-      private void buyButton_Click(object sender, EventArgs e)
-      {
-         if (started)
-         {
-            this.buyButton.Enabled = false;
-            this.sellButton.Enabled = true;
-            this.shortButton.Enabled = false;
-            this.coverButton.Enabled = false;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-            StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
-            this.OpenValue = dailyValue.CLOSE;
-            this.Position = 1;
+        private void OnPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
-            this.portfolio.OrderList.Add(StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.BuyAtMarketClose, false, dailyValue.DATE, dailyValue.DATE, 1, dailyValue.CLOSE, 0));
+        private void buyButton_Click(object sender, EventArgs e)
+        {
+            if (started)
+            {
+                this.buyButton.Enabled = false;
+                this.sellButton.Enabled = true;
+                this.shortButton.Enabled = false;
+                this.coverButton.Enabled = false;
 
-            nextButton.Focus();
-         }
-      }
+                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                this.Position.OpenValue = dailyValue.CLOSE;
+                this.Position.Number = 2;
 
-      private void shortButton_Click(object sender, EventArgs e)
-      {
-         if (started)
-         {
-            this.buyButton.Enabled = false;
-            this.sellButton.Enabled = false;
-            this.shortButton.Enabled = false;
-            this.coverButton.Enabled = true;
+                StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.BuyAtMarketClose, false, dailyValue.DATE, dailyValue.DATE, 1, dailyValue.CLOSE, 0);
+                this.portfolio.OrderList.Add(stockOrder);
 
-            StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
-            this.OpenValue = dailyValue.CLOSE;
-            this.Position = -1;
+                if (this.stop != 0)
+                {
+                    this.Position.AddStop(this.stop);
+                }
+                if (this.target != 0)
+                {
+                    this.Position.AddTarget(this.target, this.halfPosition ? 1 : 2);
+                }
 
-            this.portfolio.OrderList.Add(StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.BuyAtMarketClose, true, dailyValue.DATE, dailyValue.DATE, 1, dailyValue.CLOSE, 0));
+                nextButton.Focus();
+            }
+        }
+        private void shortButton_Click(object sender, EventArgs e)
+        {
+            if (started)
+            {
+                this.buyButton.Enabled = false;
+                this.sellButton.Enabled = false;
+                this.shortButton.Enabled = false;
+                this.coverButton.Enabled = true;
 
-            nextButton.Focus();
-         }
-      }
+                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                this.Position.OpenValue = dailyValue.CLOSE;
+                this.Position.Number = -2;
 
-      private void sellButton_Click(object sender, EventArgs e)
-      {
-         if (started)
-         {
+                StockOrder order = StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.BuyAtMarketClose, true, dailyValue.DATE, dailyValue.DATE, 2, dailyValue.CLOSE, 0);
+                this.portfolio.OrderList.Add(order);
+
+                if (this.stop != 0)
+                {
+                    this.Position.AddTarget(this.stop, this.halfPosition ? 1 : 2);
+                }
+
+                if (this.target != 0)
+                {
+                    this.Position.AddStop(this.target);
+                }
+
+                nextButton.Focus();
+            }
+        }
+        private void sellButton_Click(object sender, EventArgs e)
+        {
+            if (started)
+            {
+                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+
+                PerformSell(dailyValue, this.Position.Number, dailyValue.CLOSE);
+
+                StockAnalyzerForm.MainFrame.CurrentStockSerie = replaySerie;
+            }
+        }
+        private void OnPositionClosed()
+        {
             this.buyButton.Enabled = true;
             this.sellButton.Enabled = false;
             this.shortButton.Enabled = true;
             this.coverButton.Enabled = false;
+        }
+        private void PerformSell(StockDailyValue dailyValue, int qty, float value)
+        {
+            OnPositionClosed();
 
             // Statistics
-            nbTrade++;
-            if (AddedValue > 0)
-            {
-               nbWinTrade++;
-            }
-            else
-            {
-               nbLostTrade++;
-            }
-            tradeGains.Add(AddedValuePercent);
+            //nbTrade++;
+            //if (AddedValue > 0)
+            //{
+            //    nbWinTrade++;
+            //}
+            //else
+            //{
+            //    nbLostTrade++;
+            //}
+            //tradeGains.Add(this.CalculateAddedValuePercent(value));
 
-            this.totalValue += 1000f * this.AddedValuePercent;
-            OnPropertyChanged("TotalValue");
-
-            StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
-            this.portfolio.OrderList.Add(StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.SellAtMarketClose, this.position < 0, dailyValue.DATE, dailyValue.DATE, 1, dailyValue.CLOSE, 0));
+            //this.totalValue += 1000f * this.CalculateAddedValuePercent(value);
+            //OnPropertyChanged("TotalValue");
 
 
-            this.Position = 0;
-            this.OpenValue = 0;
+            StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.SellAtMarketClose, (bool)(this.Position.Number < 0), dailyValue.DATE, dailyValue.DATE, 1, value, 0);
+            this.portfolio.OrderList.Add(stockOrder);
 
             nextButton.Focus();
-         }
-      }
-   }
+
+            this.HalfPosition = false;
+            this.Stop = 0;
+            this.Target = 0;
+        }
+    }
 }

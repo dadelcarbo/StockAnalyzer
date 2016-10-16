@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.SimulationDlgs.StockPositionUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:StockMarketReplay x:Key="viewModel"/>
+    </UserControl.Resources>
+    <Grid d:DataContext="{Binding Mode=OneWay, Source={StaticResource viewModel}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Position"></Label>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Positions}" AutoGenerateColumns="False"
+                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Qty" Binding="{Binding Number, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Entry" Binding="{Binding OpenValue, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+                <DataGridTextColumn Header="%" Binding="{Binding AddedValuePercent, Mode=OneWay, StringFormat=\{0:P2\}}"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding CurrentValue, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Grid.Row="2" Content="Orders"></Label>
+        <DataGrid Grid.Row="3" ItemsSource="{Binding Position.Orders}" AutoGenerateColumns="False"
+                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Qty" Binding="{Binding Number, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding Value, StringFormat=\{0:F3\}}"/>
+                <DataGridTextColumn Header="Category" Binding="{Binding Category, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type, Mode=OneWay}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
