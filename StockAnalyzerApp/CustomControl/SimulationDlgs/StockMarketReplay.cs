@@ -405,7 +405,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
         private void PerformSell(StockDailyValue dailyValue, int qty, float value)
         {
-            OnPositionClosed();
+            this.Position.Close();
 
             // Statistics
             //nbTrade++;

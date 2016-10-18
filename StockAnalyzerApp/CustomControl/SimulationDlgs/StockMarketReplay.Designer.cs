@@ -235,7 +235,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             // createOrdersButton
             // 
-            this.createOrdersButton.Enabled = false;
             this.createOrdersButton.Location = new System.Drawing.Point(161, 31);
             this.createOrdersButton.Name = "createOrdersButton";
             this.createOrdersButton.Size = new System.Drawing.Size(75, 23);

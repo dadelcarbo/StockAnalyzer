@@ -116,7 +116,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             return openValue == 0f ? 0.0f : (value - OpenValue) * this.Number / OpenValue;
         }
 
-        private void Close()
+        public void Close()
         {
             this.Number = 0;
             this.OpenValue = 0;
