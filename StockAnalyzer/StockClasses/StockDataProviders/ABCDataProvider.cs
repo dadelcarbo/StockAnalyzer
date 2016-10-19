@@ -1331,6 +1331,104 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             return cac40List.Contains(stockSerie.StockName);
         }
+        public static void DownloadFinancial(StockSerie stockSerie)
+        {
+            string url = "http://www.abcbourse.com/analyses/chiffres.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
+
+            StockWebHelper swh = new StockWebHelper();
+            string html = swh.DownloadHtml(url);
+
+            WebBrowser browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.DocumentText = html;
+            browser.Document.OpenNew(true);
+            browser.Document.Write(html);
+            browser.Refresh();
+
+            HtmlDocument doc = browser.Document;
+
+            HtmlElementCollection tables = doc.GetElementsByTagName("table");
+            List<List<string>> data = new List<List<string>>();
+
+            StockFinancial financial = new StockFinancial();
+
+            foreach (HtmlElement tbl in tables)
+            {
+                if (tbl.InnerText.StartsWith("Marché"))
+                {
+                    data = getTableData(tbl);
+                    foreach (var row in data)
+                    {
+                        if (row.Count == 2)
+                        {
+                            switch (row[0].Trim())
+                            {
+                                case "Marché":
+                                    financial.Market = row[1];
+                                    break;
+                                case "Nombre de titres":
+                                    financial.ShareNumber = int.Parse(row[1].Replace(" ", ""));
+                                    break;
+                                case "Place de cotation":
+                                    financial.MarketPlace = row[1];
+                                    break;
+                                case "Secteur d'activité":
+                                    financial.Sector = row[1];
+                                    break;
+                                case "Eligible au SRD":
+                                    financial.SRD = row[1];
+                                    break;
+                                case "Eligible au PEA":
+                                    financial.PEA = row[1];
+                                    break;
+                                case "Indices":
+                                    financial.Indices = row[1];
+                                    break;
+                                case "Capitalisation (milliers d'euros)":
+                                    financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
+                                    break;
+                                case "Rendement":
+                                    float yield = 0f;
+                                    if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
+                                    {
+                                        financial.Yield = yield / 100f;
+                                    }
+                                    break;
+                                case "Dividende (Date de versement)":
+                                    financial.Dividend = row[1];
+                                    break;
+                                case "Date Assemblée Générale":
+                                    financial.MeetingDate = row[1];
+                                    break;
+                            }
+                        }
+                    }
+                    stockSerie.StockAnalysis.Financial = financial;
+                }
+            }
+            ////
+            //foreach (var row in data)
+            //{
+            //    if (row[0].StartsWith("du")) row[0] = row[0].Substring(row[0].IndexOf("au ") + 3);
+            //    DateTime date = DateTime.Parse(row[0]);
+
+            //    string comment = row[1];
+            //    if (row[2] != null) comment += Environment.NewLine + row[2];
+
+            //    if (!stockSerie.StockAnalysis.Comments.ContainsKey(date))
+            //    {
+            //        stockSerie.StockAnalysis.Comments.Add(date, comment);
+            //    }
+            //    else
+            //    {
+            //        if (!stockSerie.StockAnalysis.Comments[date].Contains(comment))
+            //        {
+            //            stockSerie.StockAnalysis.Comments[date] = stockSerie.StockAnalysis.Comments[date] +
+            //                                                      Environment.NewLine + comment;
+            //        }
+            //    }
+            //}
+        }
 
         public static void DownloadAgenda(StockSerie stockSerie)
         {

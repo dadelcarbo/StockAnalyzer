@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockClasses
         public string Theme { get; set; }
         public bool Excluded { get; set; }
         public bool FollowUp { get; set; }
+        public StockFinancial Financial { get; set; }
         public Dictionary<DateTime, String> Comments { get; set; }
 
         public Dictionary<StockSerie.StockBarDuration, StockDrawingItems> DrawingItems { get; set; }
@@ -55,8 +56,16 @@ namespace StockAnalyzer.StockClasses
 
             bool hasDrawings = bool.Parse(reader.GetAttribute("HasDrawings"));
             bool hasComments = bool.Parse(reader.GetAttribute("HasComments"));
+            bool hasFinancial = bool.Parse(reader.GetAttribute("HasFinancial"));
 
-            reader.ReadStartElement(); // StockAnalysis
+            reader.ReadStartElement(); // StockAnalysis 
+
+            if (hasFinancial)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
+                this.Financial = serializer.Deserialize(reader) as StockFinancial;
+            }
+
             if (hasDrawings)
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(StockDrawingItems));
@@ -110,6 +119,15 @@ namespace StockAnalyzer.StockClasses
 
             bool hasComments = this.Comments.Values.Count(c => !string.IsNullOrWhiteSpace(c)) > 0;
             writer.WriteAttributeString("HasComments", hasComments.ToString());
+
+            bool hasFinancial = this.Financial != null;
+            writer.WriteAttributeString("HasFinancial ", hasFinancial.ToString());
+
+            if (this.Financial != null)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
+                serializer.Serialize(writer, this.Financial);
+            }
 
             // Serialize drawing items
             if (hasDrawings)
