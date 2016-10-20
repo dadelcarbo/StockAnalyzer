@@ -119,6 +119,7 @@
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
+    <Compile Include="StockClasses\StockFinancial.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
