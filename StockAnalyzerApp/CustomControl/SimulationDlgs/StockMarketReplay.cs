@@ -224,9 +224,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                     DateTime currentDate = DateTime.Today;
                     refSerie = new StockSerie(serie.StockName, serie.ShortName, serie.StockGroup, StockDataProvider.Replay);
-                    foreach (StockDailyValue dailyValue in serie.Values)
+                    foreach (StockDailyValue dailyVal in serie.Values)
                     {
-                        StockDailyValue newValue = new StockDailyValue(serie.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, currentDate);
+                        StockDailyValue newValue = new StockDailyValue(serie.StockName, dailyVal.OPEN, dailyVal.HIGH, dailyVal.LOW, dailyVal.CLOSE, dailyVal.VOLUME, currentDate);
                         refSerie.Add(currentDate, newValue);
                         currentDate = currentDate.AddDays(1);
                     }

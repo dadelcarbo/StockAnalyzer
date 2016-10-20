@@ -146,7 +146,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             {
                 if (StopOrder.Value * this.Number >= currentValue * this.Number)
                 {
-                    this.OnStopTouched?.Invoke(StopOrder);
+                    if (this.OnStopTouched!=null) this.OnStopTouched(StopOrder);
                     if (StopOrder.Number == this.Number)
                     {
                         addedValue = (currentValue - this.openValue) * this.number;
@@ -166,7 +166,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             {
                 if (TargetOrder.Value * this.Number <= currentValue * this.Number)
                 {
-                    this.OnTargetTouched?.Invoke(TargetOrder);
+                    if (this.OnTargetTouched!=null) this.OnTargetTouched(TargetOrder);
                     if (TargetOrder.Number == this.Number)
                     {
                         addedValue = (currentValue - this.openValue) * this.number;
