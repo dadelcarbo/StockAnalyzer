@@ -42,6 +42,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzerApp.CustomControl.FinancialDlg;
 
 namespace StockAnalyzerApp
 {
@@ -7017,5 +7018,18 @@ border:1px solid black;
         }
 #endregion
 
+
+        public void ShowFinancials()
+        {
+            if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Financial != null)
+            {
+                StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie.StockAnalysis.Financial);
+                financialForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No financial information for this stock");
+            }
+        }
     }
 }

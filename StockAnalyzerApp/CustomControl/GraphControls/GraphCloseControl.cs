@@ -1119,7 +1119,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 // Draw vertical line
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D) new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1129,7 +1129,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             else
                             {
                                 // Draw horizontal line
-                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 1.0f, 0.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D) new Line2D(mouseValuePoint, 1.0f, 0.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1147,10 +1147,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                     {
-                        if (StockAnalyzerForm.MainFrame.CurrentPortofolio != null)
-                        {
-                            this.contextMenu.Show(this, e.Location);
-                        }
+                        this.contextMenu.Show(this, e.Location);
                     }
                 }
                 else
@@ -1825,6 +1822,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     this.ForegroundDirty = true;
                 }
             }
+        }
+        void financialMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.ShowFinancials();
         }
         #endregion
     }

@@ -157,6 +157,15 @@
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.Designer.cs">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.Designer.cs">
+      <DependentUpon>StockFinancialForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml.cs">
+      <DependentUpon>StockFinancialUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\FixedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -323,7 +332,9 @@
     <Compile Include="CustomControl\GraphControls\GraphCloseControl.Designer.cs">
       <DependentUpon>GraphCloseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\GraphControl.cs" />
+    <Compile Include="CustomControl\GraphControls\GraphControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControl\GraphControls\GraphControl.Designer.cs">
       <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
@@ -518,6 +529,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentReportDlg.resx">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\FinancialDlg\StockFinancialForm.resx">
+      <DependentUpon>StockFinancialForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
@@ -863,6 +877,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CustomControl\AlertDialog\AlertControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

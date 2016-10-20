@@ -37,6 +37,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
          coverMenu = new MenuItem("Cover");
          coverMenu.Click += new System.EventHandler(coverMenu_Click);
          contextMenu.MenuItems.Add(coverMenu);
+
+         financialMenu = new MenuItem("Financials");
+         financialMenu.Click += new System.EventHandler(financialMenu_Click);
+         contextMenu.MenuItems.Add(financialMenu);
       }
 
       private ContextMenu contextMenu;
@@ -44,6 +48,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
       private MenuItem sellMenu;
       private MenuItem shortMenu;
       private MenuItem coverMenu;
+      private MenuItem financialMenu;
 
       #endregion
 
