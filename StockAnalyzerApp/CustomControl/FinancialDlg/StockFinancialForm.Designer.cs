@@ -67,7 +67,6 @@
             this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.closeButton);
             this.Name = "StockFinancialForm";
-            this.Text = "StockFinancialForm";
             this.ResumeLayout(false);
 
         }

@@ -1333,6 +1333,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public static void DownloadFinancial(StockSerie stockSerie)
         {
+            if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddMonths(1) > DateTime.Today) return;
+
             string url = "http://www.abcbourse.com/analyses/chiffres.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
 
             StockWebHelper swh = new StockWebHelper();
@@ -1403,6 +1405,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                         }
                     }
+                    financial.DownloadDate = DateTime.Now;
                     stockSerie.StockAnalysis.Financial = financial;
                 }
             }

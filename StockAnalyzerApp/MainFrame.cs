@@ -682,10 +682,10 @@ namespace StockAnalyzerApp
 
             this.Focus();
 
-            // Refreshes intrady every 2 minutes.
+            // Refreshes intraday every 2 minutes.
             refreshTimer = new System.Windows.Forms.Timer();
             refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-            refreshTimer.Interval = 10 * 1000;
+            refreshTimer.Interval = 120 * 1000;
             refreshTimer.Start();
 
             if (Settings.Default.GenerateDailyReport)
@@ -1844,6 +1844,7 @@ namespace StockAnalyzerApp
                             StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " +
                                                              stockSerie.StockName;
                             ABCDataProvider.DownloadAgenda(stockSerie);
+                            ABCDataProvider.DownloadFinancial(stockSerie);
                         }
                         catch (Exception ex)
                         {
@@ -1853,6 +1854,8 @@ namespace StockAnalyzerApp
 
                     StockSplashScreen.ProgressVal++;
                 }
+
+                this.SaveAnalysis(Settings.Default.AnalysisFile);
 
                 if (this.currentStockSerie.Initialise())
                 {
@@ -7023,7 +7026,7 @@ border:1px solid black;
         {
             if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Financial != null)
             {
-                StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie.StockAnalysis.Financial);
+                StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
                 financialForm.ShowDialog();
             }
             else

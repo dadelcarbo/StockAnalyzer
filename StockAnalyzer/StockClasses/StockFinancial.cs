@@ -7,6 +7,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockFinancial
     {
+        public DateTime DownloadDate { get; set; }
         public string Dividend { get; set; }
         public string Indices { get; set; }
         public string Market { get; set; }

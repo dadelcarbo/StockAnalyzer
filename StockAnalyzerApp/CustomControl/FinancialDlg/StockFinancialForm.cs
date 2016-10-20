@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,11 +20,13 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
             InitializeComponent();
         }
 
-        public StockFinancialForm(StockAnalyzer.StockClasses.StockFinancial stockFinancial)
+        public StockFinancialForm(StockSerie stockSerie)
         {
             InitializeComponent();
 
-            this.stockFinancial = stockFinancial;
+            this.Text = "Financials for " + stockSerie.ShortName + " - " + stockSerie.StockName;
+
+            this.stockFinancial = stockSerie.StockAnalysis.Financial;
             this.stockFinancialUserControl1.DataContext = stockFinancial;
         }
     }
