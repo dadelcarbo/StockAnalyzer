@@ -1333,7 +1333,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public static void DownloadFinancial(StockSerie stockSerie)
         {
-            if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddMonths(1) > DateTime.Today) return;
+            if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
 
             string url = "http://www.abcbourse.com/analyses/chiffres.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
 
@@ -1354,83 +1354,111 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             StockFinancial financial = new StockFinancial();
 
-            foreach (HtmlElement tbl in tables)
+            HtmlElement tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Marché"));
+            if (tbl != null)
             {
-                if (tbl.InnerText.StartsWith("Marché"))
+               ParseFinancialGeneral(stockSerie, financial, tbl);
+            }
+            bool found = false;
+            int count = 0;
+            foreach(HtmlElement table in tables)
+            {
+                if (found)
                 {
-                    data = getTableData(tbl);
-                    foreach (var row in data)
+                    switch(count)
                     {
-                        if (row.Count == 2)
-                        {
-                            switch (row[0].Trim())
-                            {
-                                case "Marché":
-                                    financial.Market = row[1];
-                                    break;
-                                case "Nombre de titres":
-                                    financial.ShareNumber = int.Parse(row[1].Replace(" ", ""));
-                                    break;
-                                case "Place de cotation":
-                                    financial.MarketPlace = row[1];
-                                    break;
-                                case "Secteur d'activité":
-                                    financial.Sector = row[1];
-                                    break;
-                                case "Eligible au SRD":
-                                    financial.SRD = row[1];
-                                    break;
-                                case "Eligible au PEA":
-                                    financial.PEA = row[1];
-                                    break;
-                                case "Indices":
-                                    financial.Indices = row[1];
-                                    break;
-                                case "Capitalisation (milliers d'euros)":
-                                    financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
-                                    break;
-                                case "Rendement":
-                                    float yield = 0f;
-                                    if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
-                                    {
-                                        financial.Yield = yield / 100f;
-                                    }
-                                    break;
-                                case "Dividende (Date de versement)":
-                                    financial.Dividend = row[1];
-                                    break;
-                                case "Date Assemblée Générale":
-                                    financial.MeetingDate = row[1];
-                                    break;
-                            }
-                        }
+                        case 0:
+                            financial.IncomeStatement = getTableData(table);
+                            count++;
+                            break;
+                        case 1:
+                            financial.BalanceSheet = getTableData(table);
+                            count++;
+                            break;
+                        case 2:
+                            financial.Ratios = getTableData(table);
+                            count++;
+                            break;
+                        case 3:
+                            financial.Quaterly = getTableData(table);
+                            count++;
+                            break;
                     }
-                    financial.DownloadDate = DateTime.Now;
-                    stockSerie.StockAnalysis.Financial = financial;
+                }
+                else
+                {
+                found = table.InnerText.StartsWith("Compte de");
                 }
             }
-            ////
-            //foreach (var row in data)
-            //{
-            //    if (row[0].StartsWith("du")) row[0] = row[0].Substring(row[0].IndexOf("au ") + 3);
-            //    DateTime date = DateTime.Parse(row[0]);
 
-            //    string comment = row[1];
-            //    if (row[2] != null) comment += Environment.NewLine + row[2];
+            if (found)
+            tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Compte"));
+            if (tbl != null)
+            {
+                ParseFinancialDetails(stockSerie, financial, tbl);
+            }
+        }
 
-            //    if (!stockSerie.StockAnalysis.Comments.ContainsKey(date))
-            //    {
-            //        stockSerie.StockAnalysis.Comments.Add(date, comment);
-            //    }
-            //    else
-            //    {
-            //        if (!stockSerie.StockAnalysis.Comments[date].Contains(comment))
-            //        {
-            //            stockSerie.StockAnalysis.Comments[date] = stockSerie.StockAnalysis.Comments[date] +
-            //                                                      Environment.NewLine + comment;
-            //        }
-            //    }
-            //}
+        private static void ParseFinancialDetails(StockSerie stockSerie, StockFinancial financial, HtmlElement table)
+        {
+            HtmlElementCollection tables = table.GetElementsByTagName(("table"));
+            foreach(HtmlElement tbl in tables)
+            {
+
+            }
+        }
+
+        private static void ParseFinancialGeneral(StockSerie stockSerie, StockFinancial financial, HtmlElement tbl)
+        {
+            List<List<string>> data = getTableData(tbl);
+            foreach (var row in data)
+            {
+                if (row.Count == 2)
+                {
+                    switch (row[0].Trim())
+                    {
+                        case "Marché":
+                            financial.Market = row[1];
+                            break;
+                        case "Nombre de titres":
+                            financial.ShareNumber = long.Parse(row[1].Replace(" ", ""));
+                            break;
+                        case "Place de cotation":
+                            financial.MarketPlace = row[1];
+                            break;
+                        case "Secteur d'activité":
+                            financial.Sector = row[1];
+                            break;
+                        case "Eligible au SRD":
+                            financial.SRD = row[1];
+                            break;
+                        case "Eligible au PEA":
+                            financial.PEA = row[1];
+                            break;
+                        case "Indices":
+                            financial.Indices = row[1];
+                            break;
+                        case "Capitalisation (milliers d'euros)":
+                            financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
+                            break;
+                        case "Rendement":
+                            float yield = 0f;
+                            if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
+                            {
+                                financial.Yield = yield / 100f;
+                            }
+                            break;
+                        case "Dividende (Date de versement)":
+                            financial.Dividend = row[1];
+                            break;
+                        case "Date Assemblée Générale":
+                            financial.MeetingDate = row[1];
+                            break;
+                    }
+                }
+                financial.DownloadDate = DateTime.Now;
+                stockSerie.StockAnalysis.Financial = financial;
+            }
         }
 
         public static void DownloadAgenda(StockSerie stockSerie)

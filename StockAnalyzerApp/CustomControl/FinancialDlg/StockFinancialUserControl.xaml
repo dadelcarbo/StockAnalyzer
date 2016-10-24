@@ -4,17 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="300" Width="600">
+    <Grid >
         <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TabItem Header="General">
                 <StackPanel Name="propertyPanel">
                 </StackPanel>
             </TabItem>
+            <TabItem Header="Income Statement">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding IncomeStatementTable}" CanUserAddRows="False" CanUserDeleteRows="False"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Balance Sheet">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding BalanceSheetTable}" CanUserAddRows="False" CanUserDeleteRows="False"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Ratios">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding RatiosTable}" CanUserAddRows="False" CanUserDeleteRows="False"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Quaterly">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding QuaterlyTable}" CanUserAddRows="False" CanUserDeleteRows="False"/>
+                </Grid>
             </TabItem>
         </TabControl>
-
     </Grid>
 </UserControl>
