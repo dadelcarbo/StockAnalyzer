@@ -566,23 +566,16 @@ namespace StockAnalyzer.StockMath
                 RSI_EMA_D = RSI_EMA_D + alphaEMA_RSI * (D - RSI_EMA_D);
 
                 // Calculate RSI
-                if (RSI_EMA_U == 0.0f)
+                if ((RSI_EMA_U + RSI_EMA_D) != 0)
                 {
-                    serie[i] = 50.0f;
+                    serie[i] = 100.0f * RSI_EMA_U / (RSI_EMA_U + RSI_EMA_D);
                 }
                 else
                 {
-                    if ((RSI_EMA_U + RSI_EMA_D) != 0)
-                    {
-                        serie[i] = 100.0f * RSI_EMA_U / (RSI_EMA_U + RSI_EMA_D);
-                    }
-                    else
-                    {
-                        serie[i] = serie[i - 1];
-                    }
+                    serie[i] = serie[i - 1];
                 }
 
-                // Camp in case of first values
+                // Clamp in case of first values
                 if (i < rsiPeriod)
                 {
                     serie[i] = Math.Max(30, serie[i]);

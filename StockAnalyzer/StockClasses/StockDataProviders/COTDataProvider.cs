@@ -67,7 +67,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                if (SP500CotSerie.Initialise())
                {
-                  DateTime lastDate = SP500CotSerie.Keys.Last();
+                   DateTime lastDate = DateTime.Today.AddMonths(-2);
+                      lastDate = SP500CotSerie.Keys.Last();
                   if ((DateTime.Today - lastDate) > new TimeSpan(10, 0, 0, 0, 0))
                   {
                      // Need to download new COT
