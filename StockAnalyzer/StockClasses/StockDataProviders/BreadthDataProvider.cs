@@ -37,7 +37,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#"))
                         {
                             string[] row = line.Split(',');
-                            string longName = row[0] == "EQW.SRD" ? "SRD" : row[0];
+                            string longName = row[0];
+                            if (row[0] == "EQW.SRD") longName = "SRD";
+                            if (row[0] == "EQW.CACALL") longName = "CACALL";
+                            
                             if (!stockDictionary.ContainsKey(longName))
                             {
                                 stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth));

@@ -955,7 +955,7 @@ namespace StockAnalyzer.StockClasses
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))
             {
-                if (indexName == "SRD") indiceSerie = this["CAC40"];
+                if (indexName == "SRD" || indexName == "CACALL") indiceSerie = this["CAC40"];
                 else indiceSerie = this[indexName];
 
                 if (!indiceSerie.Initialise())

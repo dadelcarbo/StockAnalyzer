@@ -146,7 +146,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                dataProvider = new RatioDataProvider();
                break;
             case StockDataProvider.NASDACQShortInterest:
-               dataProvider = new NASDACQShortInterestDataProvider();
+               //dataProvider = new NASDACQShortInterestDataProvider();
                break;
             case StockDataProvider.BarChart:
                dataProvider = new BarChartDataProvider();

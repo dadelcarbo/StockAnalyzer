@@ -254,6 +254,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ALLIGATOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLAVG.cs" />

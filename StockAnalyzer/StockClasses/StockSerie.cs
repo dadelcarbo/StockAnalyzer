@@ -50,15 +50,13 @@ namespace StockAnalyzer.StockClasses
             NONE = 0,
             COUNTRY,
             CAC40,
-            //CAC40_RS,
-            //SBF120,
-            //EURO_A,
-            //EURO_B,
-            //EURO_C,
-            //ALTERNEXT,
-            EURONEXT,
+            CACALL,
             SRD,
-            CAC_ALL,
+            EURO_A,
+            EURO_B,
+            EURO_C,
+            ALTERNEXT,
+            EURONEXT,
             DAX30,
             FTSE100,
             SP500,
@@ -5850,13 +5848,20 @@ namespace StockAnalyzer.StockClasses
                 case Groups.COT:
                     return this.CotSerie != null;
                 case Groups.CAC40:
-                    return this.StockGroup == Groups.SRD && ABCDataProvider.BelongsToCAC40(this);
-                //case Groups.SBF120:
-                //   return (this.StockGroup == Groups.EURO_A);
-                //case Groups.CAC_ALL:
-                //   return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SRD:
-                    return this.StockGroup == Groups.SRD;
+                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSRD(this);
+                case Groups.EURO_A:
+                    return (this.StockGroup == Groups.EURO_A);
+                case Groups.EURO_B:
+                    return (this.StockGroup == Groups.EURO_B);
+                case Groups.EURO_C:
+                    return (this.StockGroup == Groups.EURO_C);
+                case Groups.ALTERNEXT:
+                    return (this.StockGroup == Groups.ALTERNEXT);
+                case Groups.CACALL:
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+                
                 default:
                     return this.StockGroup == group;
             }
