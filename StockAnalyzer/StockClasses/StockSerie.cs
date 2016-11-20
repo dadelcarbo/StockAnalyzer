@@ -173,6 +173,7 @@ namespace StockAnalyzer.StockClasses
         public string SectorID { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
+        public StockFinancial Financial { get; set; }
         public bool IsPortofolioSerie { get; set; }
         public int LastIndex { get { return this.Values.Count - 1; } }
         public int LastCompleteIndex { get { return this.Values.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }

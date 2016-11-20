@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="600">
+             d:DesignHeight="300" Width="1000">
     <Grid >
-        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
             <TabItem Header="General">
                 <StackPanel Name="propertyPanel">
                 </StackPanel>
             </TabItem>
             <TabItem Header="Income Statement">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding IncomeStatementTable}" CanUserAddRows="False" CanUserDeleteRows="False"/>
+                    <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding IncomeStatementTable}" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Balance Sheet">

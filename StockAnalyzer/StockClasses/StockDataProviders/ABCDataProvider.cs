@@ -973,20 +973,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         + "ctl00%24BodyABC%24$GROUPNAME=on&"
                         + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
 
-//                    POST /download/libelles.aspx HTTP/1.1
-//Host: www.abcbourse.com
-//Connection: keep-alive
-//Content-Length: 2780
-//Cache-Control: max-age=0
-//Origin: http://www.abcbourse.com
-//Upgrade-Insecure-Requests: 1
-//User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36
-//Content-Type: application/x-www-form-urlencoded
-//Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-//Referer: http://www.abcbourse.com/download/libelles.aspx
-//Accept-Encoding: gzip, deflate
-//Accept-Language: en-US,en;q=0.8,fr;q=0.6
-//Cookie: ABCUser=72F2F42219E37B3033A28A8570D79EFF5F8FC6FB812B0801C3537E62EA3B2EF5A14C073D6D2881DFC20DE83147927543E6ED8445B178BED0DDE815EF623AECC4543797EF8660F8D6CBB41D600512098DCC830388FB29F9560B0CB039CC4CFF7A0EDBC35AB62602B75D81E65841AA52B9B7ED268A965B23B775FDA337; _ga=GA1.2.1807021474.1469302117; _gat=1
+                    //                    POST /download/libelles.aspx HTTP/1.1
+                    //Host: www.abcbourse.com
+                    //Connection: keep-alive
+                    //Content-Length: 2780
+                    //Cache-Control: max-age=0
+                    //Origin: http://www.abcbourse.com
+                    //Upgrade-Insecure-Requests: 1
+                    //User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36
+                    //Content-Type: application/x-www-form-urlencoded
+                    //Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+                    //Referer: http://www.abcbourse.com/download/libelles.aspx
+                    //Accept-Encoding: gzip, deflate
+                    //Accept-Language: en-US,en;q=0.8,fr;q=0.6
+                    //Cookie: ABCUser=72F2F42219E37B3033A28A8570D79EFF5F8FC6FB812B0801C3537E62EA3B2EF5A14C073D6D2881DFC20DE83147927543E6ED8445B178BED0DDE815EF623AECC4543797EF8660F8D6CBB41D600512098DCC830388FB29F9560B0CB039CC4CFF7A0EDBC35AB62602B75D81E65841AA52B9B7ED268A965B23B775FDA337; _ga=GA1.2.1807021474.1469302117; _gat=1
 
 
                     postData = "__VIEWSTATE=%2FwEPDwULLTEzOTkwMTQxNjkPZBYCZg9kFgICBA9kFgYCCQ9kFgICVQ9kFgJmDxYCHgdWaXNpYmxlZ2QCDQ9kFgJmDxYCHwBnZAIPD2QWAgIBDw8WAh4EVGV4dAUpQmFzY3VsZXIgc3VyIGxhIHZlcnNpb24gY2xhc3NpcXVlIGR1IHNpdGVkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WKQUVY3RsMDAkQm9keUFCQyR4Y2FjNDBwBRZjdGwwMCRCb2R5QUJDJHhzYmYxMjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNhdHAFFmN0bDAwJEJvZHlBQkMkeGNhY24yMHAFGGN0bDAwJEJvZHlBQkMkeGNhY3NtYWxscAUVY3RsMDAkQm9keUFCQyR4Y2FjNjBwBRZjdGwwMCRCb2R5QUJDJHhjYWNsNjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNtc3AFFWN0bDAwJEJvZHlBQkMkeGJlbDIwZwUVY3RsMDAkQm9keUFCQyR4YWV4MjVuBRFjdGwwMCRCb2R5QUJDJGRqdQUSY3RsMDAkQm9keUFCQyRuYXN1BRRjdGwwMCRCb2R5QUJDJHNwNTAwdQUWY3RsMDAkQm9keUFCQyRnZXJtYW55ZgURY3RsMDAkQm9keUFCQyR1a2UFEmN0bDAwJEJvZHlBQkMkYmVsZwUSY3RsMDAkQm9keUFCQyRkZXZwBRRjdGwwMCRCb2R5QUJDJHNwYWlubQUVY3RsMDAkQm9keUFCQyRpdGFsaWFpBRNjdGwwMCRCb2R5QUJDJGhvbGxuBRVjdGwwMCRCb2R5QUJDJGxpc2JvYWwFFGN0bDAwJEJvZHlBQkMkc3dpdHpzBRJjdGwwMCRCb2R5QUJDJHVzYXUFFGN0bDAwJEJvZHlBQkMkYWx0ZXJwBRFjdGwwMCRCb2R5QUJDJGJzcAUYY3RsMDAkQm9keUFCQyRldXJvbGlzdEFwBRhjdGwwMCRCb2R5QUJDJGV1cm9saXN0QnAFGGN0bDAwJEJvZHlBQkMkZXVyb2xpc3RDcAUZY3RsMDAkQm9keUFCQyRldXJvbGlzdHplcAUaY3RsMDAkQm9keUFCQyRldXJvbGlzdGh6ZXAFGGN0bDAwJEJvZHlBQkMkaW5kaWNlc21rcAUZY3RsMDAkQm9keUFCQyRpbmRpY2Vzc2VjcAURY3RsMDAkQm9keUFCQyRtbHAFE2N0bDAwJEJvZHlBQkMkb2JsMnAFEmN0bDAwJEJvZHlBQkMkb2JscAUXY3RsMDAkQm9keUFCQyRvcGN2bTM2MHAFEmN0bDAwJEJvZHlBQkMkc3JkcAUUY3RsMDAkQm9keUFCQyRzcmRsb3AFFGN0bDAwJEJvZHlBQkMkdHJhY2twBRZjdGwwMCRCb2R5QUJDJHdhcnJhbnRzBRVjdGwwMCRCb2R5QUJDJGNiUGxhY2XV7VAmF5gdwy7DIiJT1Q8P3geCLQ%3D%3D&__VIEWSTATEGENERATOR=63AB8707&__EVENTVALIDATION=%2FwEdAC2uMiOe5%2Bi%2BKBXO4l4QxQh92AGy%2BFRpYOz7XDkkbfjubp9UXI7RwI%2BukRHnd%2BAlDZ7yE4oeSMQcqAToKX4%2BVY%2FoKwHPZ3LL3fdWqV0S%2FvWmetYHl%2BXtIMfr4sJ5HoKPeEGaXWKkENsUVjCs33ftb%2Bk6Vh68XGlO5A7hLzsl2zmozVHKtnVHMqNjuSl%2FVTLUSxGOrSXMajdQMItHxDOD4gI5oZA%2FrQy55rsm3Yy%2BuTl0%2FnRrfHed0TzZAp%2F%2By2dFmxusO8axFlSjvdrqSAJF9oAESNvpV6G124LKs01uIQT%2BzPLtwgDb4ZnV8AzgWlnJDQlBhudEBAhKHZIsMbDqQKObxt6eBSEoHlSQ0h6eQsjG3FU1EY8C1%2F0GGZDF0VWO2oYTcspg%2FQJIEo7yz4CR037atiIVgEYIzEhkb9KlYZmye7%2FnJk8Wqab3FraRKRA4NH4SMkbr0ssfhDNp48vrt1aToLK%2FxuYkxeDUJ2jyEChuCcZNAzb5On4rHEP9HywghYEYPSSOqNVqe2KgYnr%2BNJRx9At%2BumCzYS2uPoXq%2FdVJByyB7RsbMXUq2lzc8dt95PO%2BkCFfVa1MgDkVN3T3jY%2FKQIBPK12FXYyMGO0%2F5KPgqmM77ItwinSXDlQBQcTHG5JyTAMHmjunt2bP%2Fj%2FgPFOe%2F%2Baf%2FiQDbqNtvcnRfkH2ohjdh6dUQ5m%2B2VTNYWkGxattRg9EKKE5vey1FPRlCqZyDgvrv9lvrlshrlzdNlGwotAGLfLMcs2vyw1rETiNehQSuxs4fVNVenj9bBwNMtd92XoZ0fgAFx0VYRpgUubx6SaFj1P1ns1k7saP20CtOv40Vh1fIBS7G3r7SNtlzk3C0A%2F4Rmw2%2BXo6xnkHUnscHL5GCzjGbRjxavMDrnvi92ihmau6VuJALuZvH2%2BXItM49krxVbbQbx%2BrvmYdNFMYrxrqfXKoG%2FeBbQYV684ncHXIr7RWAGAEkKq%2FpI3%2Bjw0KrRp1bA%3D%3D&ctl00%24txtAutoComplete=&ctl00%24BodyABC%24$GROUPNAME=on&ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
@@ -1380,22 +1380,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Sanity Check
                 foreach (string name in srdList)
                 {
-                   if (!stockDictionary.ContainsKey(name))
-                   {
-                      StockLog.Write("CAC40 Stock not in dico: " + name);
-                   }
+                    if (!stockDictionary.ContainsKey(name))
+                    {
+                        StockLog.Write("CAC40 Stock not in dico: " + name);
+                    }
                 }
             }
 
             return srdList.Contains(stockSerie.StockName);
         }
-
-        public static void DownloadFinancial(StockSerie stockSerie)
+        public static void DownloadFinancial2(StockSerie stockSerie)
         {
             if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
 
             string url = "http://www.abcbourse.com/analyses/chiffres.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
-
+            url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1rP$ShortName".Replace("$ShortName", stockSerie.ShortName);
             StockWebHelper swh = new StockWebHelper();
             string html = swh.DownloadHtml(url);
 
@@ -1408,7 +1407,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             HtmlDocument doc = browser.Document;
 
-            HtmlElementCollection tables = doc.GetElementsByTagName("table");
+            HtmlElementCollection tables = doc.GetElementsByTagName("div");
             List<List<string>> data = new List<List<string>>();
 
             StockFinancial financial = new StockFinancial();
@@ -1416,15 +1415,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             HtmlElement tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Marché"));
             if (tbl != null)
             {
-               ParseFinancialGeneral(stockSerie, financial, tbl);
+                //ParseFinancialGeneral(stockSerie, financial, tbl);
             }
             bool found = false;
             int count = 0;
-            foreach(HtmlElement table in tables)
+            foreach (HtmlElement table in tables)
             {
                 if (found)
                 {
-                    switch(count)
+                    switch (count)
                     {
                         case 0:
                             financial.IncomeStatement = getTableData(table);
@@ -1446,79 +1445,152 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 else
                 {
-                found = table.InnerText.StartsWith("Compte de");
+                    found = table.InnerText.StartsWith("Compte de");
                 }
             }
 
             if (found)
-            tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Compte"));
+                tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Compte"));
             if (tbl != null)
             {
                 ParseFinancialDetails(stockSerie, financial, tbl);
             }
         }
 
+        public static void DownloadFinancialSummary(StockFinancial financial, string shortName)
+        {
+            string url = "http://www.boursorama.com/bourse/profil/resume_societe.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
+            StockWebHelper swh = new StockWebHelper();
+            string html = swh.DownloadHtml(url);
+
+            WebBrowser browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.DocumentText = html;
+            browser.Document.OpenNew(true);
+            browser.Document.Write(html);
+            browser.Refresh();
+
+            HtmlDocument doc = browser.Document;
+
+            var divs = doc.GetElementsByTagName("ul").Cast<HtmlElement>();
+            foreach (var div in divs)
+            {
+                if (div.InnerText != null && div.InnerText.StartsWith("Nombre de titres"))
+                {
+                    var list = div.InnerText.Replace(Environment.NewLine, "|");
+                    var split = list.Split('|');
+                    var nbTitres = split[0].Split(':')[1].Replace(" ", "");
+                    financial.ShareNumber = long.Parse(nbTitres);
+                    financial.Dividend = split.First(l => l.StartsWith("Dern")).Split(':')[1].Trim();
+                    financial.Sector = split.First(l => l.StartsWith("Secteur")).Split(':')[1].Trim();
+                    financial.PEA = split.First(l => l.Contains("PEA")).Split(':')[1].Trim();
+                    financial.SRD = split.First(l => l.Contains("SRD")).Split(':')[1].Trim();
+                    financial.Indices = split.First(l => l.StartsWith("Indice")).Split(':')[1].Trim();
+                    break;
+                }
+            }
+        }
+
+        public static void DownloadFinancial(StockSerie stockSerie)
+        {
+            if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
+
+            StockFinancial financial = new StockFinancial();
+
+            string shortName = stockSerie.StockGroup==StockSerie.Groups.ALTERNEXT?"EP":"P";
+            shortName += stockSerie.ShortName;
+            DownloadFinancialSummary(financial, shortName);
+
+            string url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
+            StockWebHelper swh = new StockWebHelper();
+            string html = swh.DownloadHtml(url);
+
+            WebBrowser browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.DocumentText = html;
+            browser.Document.OpenNew(true);
+            browser.Document.Write(html);
+            browser.Refresh();
+
+            HtmlDocument doc = browser.Document;
+
+            var divs = doc.GetElementsByTagName("div").Cast<HtmlElement>();
+            foreach (var div in divs)
+            {
+                if (div.InnerText != null && div.InnerText.StartsWith("Compte de"))
+                {
+                    Console.WriteLine(div.InnerText);
+                    var tables = div.GetElementsByTagName("table").Cast<HtmlElement>();
+                    financial.IncomeStatement = getTableData(tables.First());
+                    break;
+                }
+            }
+
+            financial.DownloadDate = DateTime.Now;
+            stockSerie.Financial = financial;
+        }
+
         private static void ParseFinancialDetails(StockSerie stockSerie, StockFinancial financial, HtmlElement table)
         {
             HtmlElementCollection tables = table.GetElementsByTagName(("table"));
-            foreach(HtmlElement tbl in tables)
+            foreach (HtmlElement tbl in tables)
             {
 
             }
         }
 
-        private static void ParseFinancialGeneral(StockSerie stockSerie, StockFinancial financial, HtmlElement tbl)
-        {
-            List<List<string>> data = getTableData(tbl);
-            foreach (var row in data)
-            {
-                if (row.Count == 2)
-                {
-                    switch (row[0].Trim())
-                    {
-                        case "Marché":
-                            financial.Market = row[1];
-                            break;
-                        case "Nombre de titres":
-                            financial.ShareNumber = long.Parse(row[1].Replace(" ", ""));
-                            break;
-                        case "Place de cotation":
-                            financial.MarketPlace = row[1];
-                            break;
-                        case "Secteur d'activité":
-                            financial.Sector = row[1];
-                            break;
-                        case "Eligible au SRD":
-                            financial.SRD = row[1];
-                            break;
-                        case "Eligible au PEA":
-                            financial.PEA = row[1];
-                            break;
-                        case "Indices":
-                            financial.Indices = row[1];
-                            break;
-                        case "Capitalisation (milliers d'euros)":
-                            financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
-                            break;
-                        case "Rendement":
-                            float yield = 0f;
-                            if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
-                            {
-                                financial.Yield = yield / 100f;
-                            }
-                            break;
-                        case "Dividende (Date de versement)":
-                            financial.Dividend = row[1];
-                            break;
-                        case "Date Assemblée Générale":
-                            financial.MeetingDate = row[1];
-                            break;
-                    }
-                }
-                financial.DownloadDate = DateTime.Now;
-                stockSerie.StockAnalysis.Financial = financial;
-            }
-        }
+        //private static void ParseFinancialGeneral(StockSerie stockSerie, StockFinancial financial, HtmlElement tbl)
+        //{
+        //    List<List<string>> data = getTableData(tbl);
+        //    foreach (var row in data)
+        //    {
+        //        if (row.Count == 2)
+        //        {
+        //            switch (row[0].Trim())
+        //            {
+        //                case "Marché":
+        //                    financial.Market = row[1];
+        //                    break;
+        //                case "Nombre de titres":
+        //                    financial.ShareNumber = long.Parse(row[1].Replace(" ", ""));
+        //                    break;
+        //                case "Place de cotation":
+        //                    financial.MarketPlace = row[1];
+        //                    break;
+        //                case "Secteur d'activité":
+        //                    financial.Sector = row[1];
+        //                    break;
+        //                case "Eligible au SRD":
+        //                    financial.SRD = row[1];
+        //                    break;
+        //                case "Eligible au PEA":
+        //                    financial.PEA = row[1];
+        //                    break;
+        //                case "Indices":
+        //                    financial.Indices = row[1];
+        //                    break;
+        //                case "Capitalisation (milliers d'euros)":
+        //                    //financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
+        //                    break;
+        //                case "Rendement":
+        //                    float yield = 0f;
+        //                    if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
+        //                    {
+        //                        financial.Yield = yield / 100f;
+        //                    }
+        //                    break;
+        //                case "Dividende (Date de versement)":
+        //                    financial.Dividend = row[1];
+        //                    break;
+        //                case "Date Assemblée Générale":
+        //                    financial.MeetingDate = row[1];
+        //                    break;
+        //            }
+        //        }
+        //        financial.DownloadDate = DateTime.Now;
+        //        stockSerie.StockAnalysis.Financial = financial;
+        //    }
+        //}
 
         public static void DownloadAgenda(StockSerie stockSerie)
         {
@@ -1544,7 +1616,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (tbl.InnerText.StartsWith("Date"))
                 {
-                    data = getTableData(tbl);
+                    data = getTableData(tbl).Skip(1).ToList();
                     break;
                 }
             }
@@ -1577,11 +1649,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             List<List<string>> data = new List<List<string>>();
 
             HtmlElementCollection rows = tbl.GetElementsByTagName("tr");
-            HtmlElementCollection cols;
+            HtmlElementCollection cols; // = rows.GetElementsByTagName("th");
             foreach (HtmlElement tr in rows)
             {
-                cols = tr.GetElementsByTagName("td");
                 List<string> row = new List<string>();
+                cols = tr.GetElementsByTagName("th");
+                foreach (HtmlElement td in cols)
+                {
+                    row.Add(WebUtility.HtmlDecode(td.InnerText));
+                }
+                cols = tr.GetElementsByTagName("td");
                 foreach (HtmlElement td in cols)
                 {
                     row.Add(WebUtility.HtmlDecode(td.InnerText));

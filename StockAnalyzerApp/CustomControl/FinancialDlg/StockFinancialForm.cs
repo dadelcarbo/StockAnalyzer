@@ -13,8 +13,6 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
 {
     public partial class StockFinancialForm : Form
     {
-        private StockAnalyzer.StockClasses.StockFinancial stockFinancial;
-
         public StockFinancialForm()
         {
             InitializeComponent();
@@ -26,8 +24,7 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
 
             this.Text = "Financials for " + stockSerie.ShortName + " - " + stockSerie.StockName;
 
-            this.stockFinancial = stockSerie.StockAnalysis.Financial;
-            this.stockFinancialUserControl1.DataContext = stockFinancial;
+            this.stockFinancialUserControl1.DataContext = stockSerie.Financial;
         }
     }
 }

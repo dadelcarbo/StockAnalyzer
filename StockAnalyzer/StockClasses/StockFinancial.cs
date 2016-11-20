@@ -12,13 +12,13 @@ namespace StockAnalyzer.StockClasses
         public DateTime DownloadDate { get; set; }
         public string Dividend { get; set; }
         public string Indices { get; set; }
-        public string Market { get; set; }
-        public int MarketCap { get; set; }
-        public string MarketPlace { get; set; }
-        public string MeetingDate { get; set; }
+        [XmlIgnore]
+        public long MarketCap { get { return (long)(this.ShareNumber * this.Value); } }
         public string PEA { get; set; }
         public string Sector { get; set; }
         public long ShareNumber { get; set; }
+        [XmlIgnore]
+        public float Value { get; set; }
         public string SRD { get; set; }
         public float Yield { get; set; }
 
@@ -72,7 +72,7 @@ namespace StockAnalyzer.StockClasses
 
         private void TableFromStrings(DataTable table, List<List<string>> strings)
         {
-            if (strings != null && strings.Count>0)
+            if (strings != null && strings.Count > 0)
             {
                 // Create Column
                 foreach (string header in strings[0])
@@ -83,7 +83,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     else
                     {
-                        table.Columns.Add(header);
+                        table.Columns.Add(header.Replace(".", "-"));
                     }
                 }
                 foreach (var values in strings.Skip(1))

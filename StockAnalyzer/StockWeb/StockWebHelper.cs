@@ -292,7 +292,7 @@ namespace StockAnalyzer.StockWeb
          // Get the stream containing content returned by the server.
          Stream dataStream = response.GetResponseStream();
          // Open the stream using a StreamReader for easy access.
-         StreamReader reader = new StreamReader(dataStream);
+         StreamReader reader = new StreamReader(dataStream, Encoding.GetEncoding("ISO-8859-15"));
          // Read the content.
          return reader.ReadToEnd();
       }

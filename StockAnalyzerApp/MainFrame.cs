@@ -1786,7 +1786,7 @@ namespace StockAnalyzerApp
 
                 if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
                 {
-                    if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD) || currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.EURONEXT))
+                    if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL))
                     {
                         try
                         {
@@ -7024,8 +7024,9 @@ border:1px solid black;
 
         public void ShowFinancials()
         {
-            if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Financial != null)
+            if (this.currentStockSerie != null && this.currentStockSerie.Financial != null)
             {
+                this.currentStockSerie.Financial.Value = this.currentStockSerie.GetSerie(StockDataType.CLOSE).Last;
                 StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
                 financialForm.ShowDialog();
             }

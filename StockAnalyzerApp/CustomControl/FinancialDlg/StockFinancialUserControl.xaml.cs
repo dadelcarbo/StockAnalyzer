@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,8 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
 
             foreach (var prop in (typeof (StockFinancial)).GetProperties())
             {
+                if (prop.PropertyType == typeof(DataTable) || prop.PropertyType.Name.StartsWith("List"))
+                    continue;
                 StackPanel propertyRow = new StackPanel() {Orientation = Orientation.Horizontal};
                 // Create financials control
                 Label labelTitle = new Label();
