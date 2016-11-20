@@ -10,17 +10,20 @@ namespace StockAnalyzer.StockClasses
     public class StockFinancial
     {
         public DateTime DownloadDate { get; set; }
-        public string Dividend { get; set; }
         public string Indices { get; set; }
+        public string Sector { get; set; }
         [XmlIgnore]
         public long MarketCap { get { return (long)(this.ShareNumber * this.Value); } }
-        public string PEA { get; set; }
-        public string Sector { get; set; }
         public long ShareNumber { get; set; }
         [XmlIgnore]
         public float Value { get; set; }
         public string SRD { get; set; }
-        public float Yield { get; set; }
+        public string PEA { get; set; }
+        public string Coupon { get; set; }
+        public float Dividend { get; set; }
+        public float Yield { get { return this.Dividend / this.Value; } }
+
+        public string Activity { get; set; }
 
         public List<List<string>> IncomeStatement { get; set; }
         [XmlIgnore]

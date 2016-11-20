@@ -26,11 +26,12 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
         {
             InitializeComponent();
 
-            foreach (var prop in (typeof (StockFinancial)).GetProperties())
+            foreach (var prop in (typeof(StockFinancial)).GetProperties())
             {
                 if (prop.PropertyType == typeof(DataTable) || prop.PropertyType.Name.StartsWith("List"))
                     continue;
-                StackPanel propertyRow = new StackPanel() {Orientation = Orientation.Horizontal};
+                StackPanel propertyRow = new StackPanel() { Orientation = Orientation.Horizontal };
+     
                 // Create financials control
                 Label labelTitle = new Label();
                 labelTitle.Content = prop.Name;

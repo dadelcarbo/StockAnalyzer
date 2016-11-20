@@ -173,7 +173,57 @@ namespace StockAnalyzer.StockClasses
         public string SectorID { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
-        public StockFinancial Financial { get; set; }
+        private StockFinancial financial;
+        public StockFinancial Financial
+        {
+            get
+            {
+                if (financial == null)
+                {
+                    financial = LoadFinancial();
+                }
+                return financial;
+            }
+            set { financial = value; }
+        }
+
+        private static string FINANCIAL_SUBFOLDER = @"\data\financial";
+        private StockFinancial LoadFinancial()
+        {
+            StockFinancial stockFinancial = null;
+            if (this.BelongsToGroup(Groups.CACALL))
+            {
+                string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + FINANCIAL_SUBFOLDER;
+                string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+                if (File.Exists(fileName))
+                {
+                    using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                    {
+                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                        settings.IgnoreWhitespace = true;
+                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                        XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
+                        stockFinancial = (StockFinancial)serializer.Deserialize(xmlReader);
+                    }
+                }
+            }
+            return stockFinancial;
+        }
+        public void SaveFinancial()
+        {
+            if (this.Financial == null) return;
+            string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + FINANCIAL_SUBFOLDER;
+            string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+                settings.Indent = true;
+                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
+                serializer.Serialize(xmlWriter, this.Financial);
+            }
+        }
+
         public bool IsPortofolioSerie { get; set; }
         public int LastIndex { get { return this.Values.Count - 1; } }
         public int LastCompleteIndex { get { return this.Values.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }

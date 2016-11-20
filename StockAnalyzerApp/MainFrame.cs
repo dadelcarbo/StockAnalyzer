@@ -7024,15 +7024,22 @@ border:1px solid black;
 
         public void ShowFinancials()
         {
-            if (this.currentStockSerie != null && this.currentStockSerie.Financial != null)
+            if (this.currentStockSerie != null)
             {
-                this.currentStockSerie.Financial.Value = this.currentStockSerie.GetSerie(StockDataType.CLOSE).Last;
-                StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
-                financialForm.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show("No financial information for this stock");
+                if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                {
+                    ABCDataProvider.DownloadFinancial(this.currentStockSerie);
+                }
+                if (this.currentStockSerie.Financial != null)
+                {
+                    this.currentStockSerie.Financial.Value = this.currentStockSerie.GetSerie(StockDataType.CLOSE).Last;
+                    StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
+                    financialForm.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("No financial information for this stock");
+                }
             }
         }
     }
