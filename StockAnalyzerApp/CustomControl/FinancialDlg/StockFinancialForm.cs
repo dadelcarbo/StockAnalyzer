@@ -23,7 +23,7 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
             InitializeComponent();
 
             this.Text = "Financials for " + stockSerie.ShortName + " - " + stockSerie.StockName;
-
+            stockSerie.Financial.CalculateRatios();
             this.stockFinancialUserControl1.DataContext = stockSerie.Financial;
         }
     }

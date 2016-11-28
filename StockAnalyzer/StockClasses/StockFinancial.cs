@@ -61,6 +61,7 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
+        [XmlIgnore]
         public List<List<string>> Ratios { get; set; }
         [XmlIgnore]
         public DataTable RatiosTable
@@ -96,6 +97,43 @@ namespace StockAnalyzer.StockClasses
                     table.Rows.Add(row);
                 }
             }
+        }
+
+        public void CalculateRatios()
+        {
+            if (this.IncomeStatement.Count <= 0) return;
+            this.Ratios = new List<List<string>>();
+            List<String> header = new List<string>() { "Ratios" };
+            for (int i = 1; i < this.IncomeStatement[0].Count; i++)
+            {
+                header.Add(this.IncomeStatement[0][i]);
+            }
+            this.Ratios.Add(header);
+
+            var resOp = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat opérationnel");
+            if (resOp != null)
+            {
+                List<String> resOpString = new List<string>();
+                List<String> distribRatioString = new List<string>();
+                List<String> PERString = new List<string>();
+                this.Ratios.Add(resOpString);
+                this.Ratios.Add(distribRatioString);
+                this.Ratios.Add(PERString);
+                resOpString.Add("EPS"); 
+                distribRatioString.Add("Distrib Ratio");
+                PERString.Add("PER");
+                for (int i = 1; i < resOp.Count; i++)
+                {
+                    long resultat = long.Parse(resOp[i].Replace(" ", ""));
+                    float eps = (1000.0f * resultat / (float)this.ShareNumber);
+                    resOpString.Add(eps.ToString());
+                    float per = this.Value/eps;
+                    PERString.Add(per.ToString());
+                    float distribRatio = this.Dividend/eps;
+                    distribRatioString.Add(distribRatio.ToString());
+                }
+            }
+
         }
     }
 }

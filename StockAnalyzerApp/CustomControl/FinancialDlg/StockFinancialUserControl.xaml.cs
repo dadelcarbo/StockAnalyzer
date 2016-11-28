@@ -31,15 +31,22 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
                 if (prop.PropertyType == typeof(DataTable) || prop.PropertyType.Name.StartsWith("List"))
                     continue;
                 StackPanel propertyRow = new StackPanel() { Orientation = Orientation.Horizontal };
-     
+
                 // Create financials control
                 Label labelTitle = new Label();
                 labelTitle.Content = prop.Name;
                 labelTitle.Width = 100;
 
-                Label labelValue = new Label();
-                labelValue.SetBinding(Label.ContentProperty, new Binding(prop.Name));
-
+                TextBlock labelValue = new TextBlock();
+                labelValue.Margin = new Thickness(0, 5, 0, 0);
+                if (prop.Name == "Yield")
+                {
+                    labelValue.SetBinding(TextBlock.TextProperty, new Binding(prop.Name) { StringFormat = "P2" });
+                }
+                else
+                {
+                    labelValue.SetBinding(TextBlock.TextProperty, new Binding(prop.Name));
+                }
                 propertyRow.Children.Add(labelTitle);
                 propertyRow.Children.Add(labelValue);
 
