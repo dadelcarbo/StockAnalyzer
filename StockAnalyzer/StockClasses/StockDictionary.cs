@@ -827,7 +827,124 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
+        public bool GenerateVarBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        {
+            int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+            StockSerie indiceSerie = null;
+            if (this.ContainsKey(indexName))
+            {
+                indiceSerie = this[indexName];
+                if (!indiceSerie.Initialise())
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
 
+            StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+
+            DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
+            DateTime lastBreadthDate = DateTime.MinValue;
+
+            // Check if serie has been already generated
+            if (breadthSerie.Count > 0)
+            {
+                lastBreadthDate = breadthSerie.Keys.Last();
+                if (lastIndiceDate <= lastBreadthDate)
+                {
+                    // The breadth serie is up to date
+                    return true;
+                }
+                // Check if latest value is intraday data
+                if (lastIndiceDate.TimeOfDay > TimeSpan.Zero)
+                {
+                    // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
+                    if (lastIndiceDate.Date == lastBreadthDate.Date)
+                    {
+                        breadthSerie.Remove(lastBreadthDate);
+                        lastBreadthDate = breadthSerie.Keys.Last();
+                    }
+                }
+            }
+            #region Load component series
+            foreach (StockSerie serie in indexComponents)
+            {
+                if (this.ReportProgress != null)
+                {
+                    this.ReportProgress("Loading data for " + serie.StockName);
+                }
+                serie.Initialise();
+                serie.BarDuration = barDuration;
+            }
+            #endregion
+            long vol, upVol;
+            int tick, upTick;
+            float val, count;
+            foreach (StockDailyValue value in indiceSerie.Values)
+            {
+                if (value.DATE <= lastBreadthDate)
+                {
+                    continue;
+                }
+                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                if (this.ReportProgress != null)
+                {
+                    this.ReportProgress(value.DATE.ToShortDateString());
+                }
+
+                bool isIntraday = false;
+                if (value.DATE.TimeOfDay != TimeSpan.Zero)
+                {
+                    isIntraday = true;
+                }
+                int index = -1;
+                foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
+                {
+                    index = -1;
+                    if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
+                    {
+                        index = serie.Keys.Count - 1;
+                    }
+                    else
+                    {
+                        index = serie.IndexOf(value.DATE);
+                    }
+                    if (index != -1)
+                    {
+                        IStockIndicator trailStop = serie.GetIndicator("VAR(" + period + ")");
+                        if (trailStop != null && trailStop.Series[0].Count > 0)
+                        {
+                            val += trailStop.Series[0][index];
+                            count++;
+                        }
+                    }
+                }
+                if (count != 0)
+                {
+                    val /= count;
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                }
+            }
+            if (breadthSerie.Count == 0)
+            {
+                this.Remove(breadthSerie.StockName);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(destinationFolder))
+                {
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                }
+                if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
+                {
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                }
+            }
+            return true;
+        }
         public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);

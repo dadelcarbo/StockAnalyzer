@@ -80,7 +80,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateHigherThanTrailVolSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "ER":
+                case "VAR":
+                    return stockDictionary.GenerateVarBreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+               case "ER":
                     return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "EMA":
                     return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
