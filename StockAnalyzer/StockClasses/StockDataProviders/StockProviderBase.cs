@@ -121,6 +121,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             case StockDataProvider.CBOE:
                dataProvider = new CBOEDataProvider();
                break;
+            case StockDataProvider.FINRA:
+               dataProvider = new FINRADataProvider();
+               break;
             case StockDataProvider.Harpex:
                dataProvider = new HarpexDataProvider();
                break;

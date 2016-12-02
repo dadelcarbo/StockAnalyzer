@@ -1,28 +1,29 @@
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-   public enum StockDataProvider
-   {
-      ABC,
-      Yahoo,
-      YahooIntraday,
-      Google,
-      GoogleIntraday,
-      CommerzBankIntraday,
-      Rydex,
-      CBOE,
-      Harpex,
-      Portofolio,
-      Generated,
-      AAII,
-      Test,
-      Replay,
-      Breadth,
-      Ratio,
-      COT,
-      NASDACQShortInterest,
-      BarChart,
-      BarChartIntraday
-   }
+    public enum StockDataProvider
+    {
+        ABC,
+        Yahoo,
+        YahooIntraday,
+        Google,
+        GoogleIntraday,
+        CommerzBankIntraday,
+        Rydex,
+        CBOE,
+        Harpex,
+        Portofolio,
+        Generated,
+        AAII,
+        Test,
+        Replay,
+        Breadth,
+        Ratio,
+        COT,
+        NASDACQShortInterest,
+        BarChart,
+        BarChartIntraday,
+        FINRA
+    }
 
    public delegate void DownloadingStockEventHandler(string text);
 

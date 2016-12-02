@@ -60,6 +60,7 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
+    <Compile Include="StockClasses\StockDataProviders\FINRADataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
     <Compile Include="StockClasses\CotSerie.cs" />
     <Compile Include="StockClasses\CotValue.cs" />
