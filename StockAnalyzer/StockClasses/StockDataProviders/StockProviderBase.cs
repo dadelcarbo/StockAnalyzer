@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -274,7 +275,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       //   }
       //   return true;
       //}
-
 
       protected virtual bool ParseCSVFile(StockSerie stockSerie, string fileName)
       {

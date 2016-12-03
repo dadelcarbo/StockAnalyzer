@@ -110,7 +110,7 @@ namespace StockAnalyzer.StockClasses
             }
             this.Ratios.Add(header);
 
-            var resOp = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat opérationnel");
+            var resOp = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat net");
             if (resOp != null)
             {
                 List<String> resOpString = new List<string>();
@@ -126,14 +126,27 @@ namespace StockAnalyzer.StockClasses
                 {
                     long resultat = long.Parse(resOp[i].Replace(" ", ""));
                     float eps = (1000.0f * resultat / (float)this.ShareNumber);
-                    resOpString.Add(eps.ToString());
+                    resOpString.Add(eps.ToString("0.##"));
                     float per = this.Value/eps;
-                    PERString.Add(per.ToString());
+                    PERString.Add(per.ToString("0.##"));
                     float distribRatio = this.Dividend/eps;
-                    distribRatioString.Add(distribRatio.ToString());
+                    distribRatioString.Add(distribRatio.ToString("0.##"));
                 }
             }
 
+            var actif = this.BalanceSheet.FirstOrDefault(i => i.First() == "Total actif");
+            if (actif != null)
+            {
+                List<String> capActifString = new List<string>();
+                this.Ratios.Add(capActifString);
+                capActifString.Add("Cap/Actif");
+                for (int i = 1; i < resOp.Count; i++)
+                {
+                    long totalActif = long.Parse(actif[i].Replace(" ", ""));
+                    float capActif = ((float)this.MarketCap / (float)(totalActif*1000f));
+                    capActifString.Add(capActif.ToString("0.##"));
+                }
+            }
         }
     }
 }

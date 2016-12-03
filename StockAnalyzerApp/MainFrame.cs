@@ -4552,6 +4552,36 @@ namespace StockAnalyzerApp
             filteredStrategySimulatorDlg.Show();
         }
 
+
+        private void exportFinancialsMenuItem_Click(object sender, System.EventArgs e)
+        {
+            bool first = true;
+            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.Financial != null && s.Initialise()))
+            {
+                stockSerie.Financial.Value = stockSerie.Values.Last().CLOSE;
+                stockSerie.Financial.CalculateRatios();
+                if (stockSerie.Financial.Ratios!=null && stockSerie.Financial.Ratios.Count>0)
+                {
+                    if (first)
+                    {
+                        first = false;
+                        Console.Write("StockName");
+                        foreach (var ratio in stockSerie.Financial.Ratios)
+                        {
+                            Console.Write(ratio.First() + ",");
+                        }
+                        Console.WriteLine();
+                    }
+                    Console.Write(stockSerie.StockName + ",");
+                    foreach (var ratio in stockSerie.Financial.Ratios)
+                    {
+                        Console.Write(ratio.Last() + ",");
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }
+
         private void portofolioSimulationMenuItem_Click(object sender, System.EventArgs e)
         {
             CreateSimulationPortofolio(5000.0f);

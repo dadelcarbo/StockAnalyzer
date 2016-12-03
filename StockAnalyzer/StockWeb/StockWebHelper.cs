@@ -288,6 +288,7 @@ namespace StockAnalyzer.StockWeb
       {
          HttpWebRequest req = (HttpWebRequest) WebRequest.Create(url);
 
+          
          HttpWebResponse response = (HttpWebResponse) req.GetResponse();
          // Get the stream containing content returned by the server.
          Stream dataStream = response.GetResponseStream();

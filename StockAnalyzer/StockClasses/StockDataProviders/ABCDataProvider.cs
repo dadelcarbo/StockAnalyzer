@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override void InitDictionary(string rootFolder, StockDictionary dictionary, bool download)
         {
-            stockDictionary = dictionary; // Save dictionary for futur use in daily download
+            stockDictionary = dictionary; // Save dictionary for future use in daily download
 
             // Create data folder if not existing
             if (!Directory.Exists(rootFolder + FINANCIAL_SUBFOLDER))

@@ -102,6 +102,8 @@ namespace StockAnalyzerApp
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.portofolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
+            this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -671,6 +673,8 @@ namespace StockAnalyzerApp
             this.toolStripSeparator8,
             this.portofolioSimulationMenuItem,
             this.toolStripSeparator20,
+            this.exportFinancialsMenuItem,
+            this.toolStripSeparator22,
             this.statisticsMenuItem});
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
@@ -760,6 +764,18 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator20.Name = "toolStripSeparator20";
             this.toolStripSeparator20.Size = new System.Drawing.Size(237, 6);
+            // 
+            // exportFinancialsMenuItem
+            // 
+            this.exportFinancialsMenuItem.Name = "exportFinancialsMenuItem";
+            this.exportFinancialsMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.exportFinancialsMenuItem.Text = "Export Financials";
+            this.exportFinancialsMenuItem.Click += new System.EventHandler(this.exportFinancialsMenuItem_Click);
+            // 
+            // toolStripSeparator22
+            // 
+            this.toolStripSeparator22.Name = "toolStripSeparator22";
+            this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
             // 
             // statisticsMenuItem
             // 
@@ -1595,7 +1611,6 @@ namespace StockAnalyzerApp
             this.themeToolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -1666,6 +1681,8 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripMenuItem portofolioSimulationMenuItem;
         private ToolStripSeparator toolStripSeparator20;
+        private ToolStripMenuItem exportFinancialsMenuItem;
+        private ToolStripSeparator toolStripSeparator22;
         private ToolStripButton savePortofolioToolStripButton;
         private ToolStripMenuItem addStockBrokersOrdersMenuItem;
         private ToolStripMenuItem currentPortofolioMenuItem;
