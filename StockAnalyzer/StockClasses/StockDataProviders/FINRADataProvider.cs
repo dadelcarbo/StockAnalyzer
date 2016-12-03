@@ -7,6 +7,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -28,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 Directory.CreateDirectory(rootFolder + FOLDER);
             }
-            string[] names = new string[] { "BOND_AD.ALL", "BOND_AD.HY", "BOND_AD.IG" };
+            string[] names = new string[] { "BOND_AD.ALL", "BOND_AD.HY", "BOND_AD.IG", "McClellan.HY", "McClellan.IG" };
             StockSerie stockSerie = null;
 
             if (finraSerie == null)
@@ -40,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (!stockDictionary.ContainsKey(name))
                 {
-                    stockSerie = new StockSerie(name, name, StockSerie.Groups.INDICATOR, StockDataProvider.FINRA);
+                    stockSerie = new StockSerie(name, name, StockSerie.Groups.BREADTH, StockDataProvider.FINRA);
                     stockDictionary.Add(name, stockSerie);
                 }
             }
@@ -84,6 +85,46 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 float open = -1.0f + (float)val.Advances * 2.0f / (float)val.Total;
                                 dailyValue = new StockDailyValue(stockSerie.StockName, open, open, open, open, val.Volume, val.Date);
                                 stockSerie.Add(val.Date, dailyValue);
+                            }
+                            break;
+                    }
+                    break;
+                case "McClellan":
+                    switch (fields[1])
+                    {
+                        case "ALL":
+
+                            break;
+                        case "IG":
+                            {
+                                var serie = StockDictionary.StockDictionarySingleton["BOND_AD.IG"];
+                                if (!serie.Initialise()) return false;
+                                FloatSerie ema19 = serie.GetIndicator("EMA(19)").Series[0];
+                                FloatSerie ema39 = serie.GetIndicator("EMA(39)").Series[0];
+                                var diff = ema19 - ema39;
+                                int i = 0;
+                                foreach (var val in serie.Values)
+                                {
+                                    float open = diff[i++];
+                                    dailyValue = new StockDailyValue(stockSerie.StockName, open, open, open, open, val.VOLUME, val.DATE);
+                                    stockSerie.Add(val.DATE, dailyValue);
+                                }
+                            }
+                            break;
+                        case "HY":
+                            {
+                                var serie = StockDictionary.StockDictionarySingleton["BOND_AD.HY"];
+                                if (!serie.Initialise()) return false;
+                                FloatSerie ema19 = serie.GetIndicator("EMA(19)").Series[0];
+                                FloatSerie ema39 = serie.GetIndicator("EMA(39)").Series[0];
+                                var diff = ema19 - ema39;
+                                int i = 0;
+                                foreach (var val in serie.Values)
+                                {
+                                    float open = diff[i++];
+                                    dailyValue = new StockDailyValue(stockSerie.StockName, open, open, open, open, val.VOLUME, val.DATE);
+                                    stockSerie.Add(val.DATE, dailyValue);
+                                }
                             }
                             break;
                     }

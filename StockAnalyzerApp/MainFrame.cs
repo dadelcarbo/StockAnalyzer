@@ -6548,7 +6548,7 @@ border:1px solid black;
                     {
                         this.CurrentPortofolio = null;
 
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
+                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) && this.currentStockSerie.DataProvider!=StockDataProvider.FINRA)
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
                             this.graphCloseControl.SecondaryFloatSerie =
