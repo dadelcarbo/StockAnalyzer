@@ -171,7 +171,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             Directory.CreateDirectory(destFolder);
          }
 
-         string[] fileNames = new string[] { "equityPC.csv", "indexPC.csv", "totalPC.csv", "vixPC.csv" };
+         string[] fileNames = new string[] { "equitypc.csv", "indexpc.csv", "totalpc.csv", "vixpc.csv" };
          string[] destFileNames = new string[] { "PCR.EQUITY_INDICATOR.csv", "PCR.INDEX_INDICATOR.csv", "PCR.TOTAL_INDICATOR.csv", "PCR.VIX_INDICATOR.csv" };
          int i = 0;
          foreach (string fileName in fileNames)
@@ -181,7 +181,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                i++;
                continue;
             }
-            string url = @"http://www.cboe.com/publish/ScheduledTask/MktData/datahouse/" + fileName;
+            string url = @"http://www.cboe.com/publish/scheduledtask/mktdata/datahouse/" + fileName;
             try
             {
                using (WebClient wc = new WebClient())
