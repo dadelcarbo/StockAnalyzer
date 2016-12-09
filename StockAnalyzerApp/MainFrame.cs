@@ -4560,7 +4560,7 @@ namespace StockAnalyzerApp
             {
                 stockSerie.Financial.Value = stockSerie.Values.Last().CLOSE;
                 stockSerie.Financial.CalculateRatios();
-                if (stockSerie.Financial.Ratios!=null && stockSerie.Financial.Ratios.Count>0)
+                if (stockSerie.Financial.Ratios != null && stockSerie.Financial.Ratios.Count > 0)
                 {
                     if (first)
                     {
@@ -4946,7 +4946,7 @@ namespace StockAnalyzerApp
         private static string htmlEventTemplate = "<br />" + eventTemplate;
 
         private static string htmlTitleTemplate =
-           "<br /><hr width=\"50%\"><B><P style=\"text-align: center; font-size: xx-large\">" + titleTemplate + "</P></B>";
+           "<br /><hr width=\"50%\"><B><P style=\"text-align: center; font-size: xx-medium\">" + titleTemplate + "</P></B>";
 
         private static string htmlMailCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
                                                         "</U></B></P>" +
@@ -5008,6 +5008,31 @@ namespace StockAnalyzerApp
             public float previousRank;
             public StockSerie stockSerie;
         }
+        string MULTITIMEFRAME_HEADER = @"<html>
+<head>
+    <title>Untitled Page</title>
+   <style>
+table
+{
+border-collapse:collapse;
+}
+table, td, th
+{
+border:1px solid black;
+}
+</style>
+</head>
+<body>";
+        string MULTITIMEFRAME_FOOTER = @"
+</body>
+</html>";
+        string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
+
+        string CELL_DIR_IMG_TEMPLATE =
+           "<td><img alt=\"%DIR%\" src=\"../img/%DIR%.png\"/></td>" +
+           Environment.NewLine;
+        string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
+        string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
         private string GenerateDailyReport()
         {
@@ -5041,33 +5066,6 @@ namespace StockAnalyzerApp
             StockSerie.StockBarDuration.TLB_3D,
             StockSerie.StockBarDuration.TLB_3D_EMA3
          };
-
-
-            string MULTITIMEFRAME_HEADER = @"<html>
-<head>
-    <title>Untitled Page</title>
-   <style>
-table
-{
-border-collapse:collapse;
-}
-table, td, th
-{
-border:1px solid black;
-}
-</style>
-</head>
-<body>";
-            string MULTITIMEFRAME_FOOTER = @"
-</body>
-</html>";
-            string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
-
-            string CELL_DIR_IMG_TEMPLATE =
-               "<td><img alt=\"%DIR%\" src=\"../img/%DIR%.png\"/></td>" +
-               Environment.NewLine;
-            string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
-            string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
             // Generate header
             string rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", "Stock Name");
@@ -5145,85 +5143,21 @@ border:1px solid black;
             #region Report leaders
 
             this.CurrentTheme = "ReportTheme";
-            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB;
-            string rankIndicatorName = "ROR(100,1,6)";
+            this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
+
+            string rankLeaderIndicatorName = "ROR(100,1,6)";
+            string rankLoserIndicatorName = "ROD(100,1,6)";
             int nbLeaders = 15;
-            List<RankedSerie> leadersDico = new List<RankedSerie>();
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)))
-            {
-                if (stockSerie.Initialise() && stockSerie.Count > 100)
-                {
-                    stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
-                    IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
-                    leadersDico.Add(new RankedSerie() { rank = indicator.Series[0].Last, previousRank = indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
-                }
-            }
+            string htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
 
-            string htmlLeaders = string.Empty;
-            string htmlLosers = string.Empty;
-
-            string rowTemplate = @"
-         <tr>
-             <td>%COL1%</td>
-             <td>%COL2%</td>
-             %DIR_IMG%
-         </tr>";
-
-            htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + rankIndicatorName);
-            htmlLeaders += " <table>";
-
-            var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
-            foreach (RankedSerie pair in leaders)
-            {
-                htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank).ToString("#.##"));
-                if (pair.previousRank <= pair.rank)
-                {
-                    htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
-                }
-                else
-                {
-                    htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
-                }
-            }
-
-            htmlLeaders += " </table>";
+            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
 
             mailReport += htmlLeaders;
             htmlReport += htmlLeaders;
-
-            rankIndicatorName = "ROD(100,1,6)";
-            leadersDico.Clear();
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)))
-            {
-                if (stockSerie.Initialise() && stockSerie.Count > 100)
-                {
-                    stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
-                    IStockIndicator indicator = stockSerie.GetIndicator(rankIndicatorName);
-                    leadersDico.Add(new RankedSerie() { rank = -indicator.Series[0].Last, previousRank = -indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
-                }
-            }
-
-            htmlLeaders = htmlTitleTemplate.Replace(titleTemplate, "Losers for " + rankIndicatorName);
-            htmlLeaders += " <table>";
-            leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
-            foreach (RankedSerie pair in leaders)
-            {
-                htmlLeaders += rowTemplate.Replace("%COL1%", pair.stockSerie.StockName).Replace("%COL2%", (pair.rank).ToString("#.##"));
-                if (pair.previousRank <= pair.rank)
-                {
-                    htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
-                }
-                else
-                {
-                    htmlLeaders = htmlLeaders.Replace("%DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
-                }
-            }
-
-            htmlLeaders += " </table>";
-
-            mailReport += htmlLeaders;
-            htmlReport += htmlLeaders;
-
 
             #endregion
 
@@ -5234,78 +5168,78 @@ border:1px solid black;
 
             using (StreamReader sr = new StreamReader(Settings.Default.RootFolder + @"\report.cfg"))
             {
-                #region Report from config file
+                //#region Report from config file
 
-                while (!sr.EndOfStream)
-                {
-                    string line = sr.ReadLine();
-                    //continue;
-                    if (string.IsNullOrWhiteSpace(line))
-                    {
-                        continue;
-                    }
+                //while (!sr.EndOfStream)
+                //{
+                //    string line = sr.ReadLine();
+                //    //continue;
+                //    if (string.IsNullOrWhiteSpace(line))
+                //    {
+                //        continue;
+                //    }
 
-                    string[] fields = line.Split(';');
-                    if (fields[0].StartsWith("#Title", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        mailReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
-                        htmlReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
-                    }
+                //    string[] fields = line.Split(';');
+                //    if (fields[0].StartsWith("#Title", StringComparison.InvariantCultureIgnoreCase))
+                //    {
+                //        mailReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
+                //        htmlReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
+                //    }
 
-                    if (fields.Length == 0 || !this.StockDictionary.ContainsKey(fields[0]))
-                    {
-                        continue;
-                    }
+                //    if (fields.Length == 0 || !this.StockDictionary.ContainsKey(fields[0]))
+                //    {
+                //        continue;
+                //    }
 
 
-                    this.barDurationComboBox.SelectedItem =
-                       (StockSerie.StockBarDuration)Enum.Parse(typeof(StockSerie.StockBarDuration), fields[2]);
-                    this.CurrentStockSerie = this.StockDictionary[fields[0]];
-                    this.CurrentTheme = fields[1];
+                //    this.barDurationComboBox.SelectedItem =
+                //       (StockSerie.StockBarDuration)Enum.Parse(typeof(StockSerie.StockBarDuration), fields[2]);
+                //    this.CurrentStockSerie = this.StockDictionary[fields[0]];
+                //    this.CurrentTheme = fields[1];
 
-                    if (fields.Length >= 4)
-                    {
-                        int nbBars = int.Parse(fields[3]);
-                        this.ChangeZoom(Math.Max(0, CurrentStockSerie.Count - 1 - nbBars), CurrentStockSerie.Count - 1);
-                    }
+                //    if (fields.Length >= 4)
+                //    {
+                //        int nbBars = int.Parse(fields[3]);
+                //        this.ChangeZoom(Math.Max(0, CurrentStockSerie.Count - 1 - nbBars), CurrentStockSerie.Count - 1);
+                //    }
 
-                    StockSerie stockSerie = this.CurrentStockSerie;
+                //    StockSerie stockSerie = this.CurrentStockSerie;
 
-                    // Extract indicators
-                    string eventTypeString = ExtractEventsForReport();
+                //    // Extract indicators
+                //    string eventTypeString = ExtractEventsForReport();
 
-                    this.snapshotToolStripButton_Click(null, null);
-                    Image bitmap = Clipboard.GetImage();
+                //    this.snapshotToolStripButton_Click(null, null);
+                //    Image bitmap = Clipboard.GetImage();
 
-                    string fileName = GetFileName(DateTime.Now, stockSerie, imageFormat.ToString().ToLower());
-                    if (!System.IO.File.Exists(fileName))
-                    {
-                        bitmap.Save(fileName, imageFormat);
-                        fileNameList.Add(fileName);
+                //    string fileName = GetFileName(DateTime.Now, stockSerie, imageFormat.ToString().ToLower());
+                //    if (!System.IO.File.Exists(fileName))
+                //    {
+                //        bitmap.Save(fileName, imageFormat);
+                //        fileNameList.Add(fileName);
 
-                        // Get image CID
-                        string cid = "Image_" + imageCount++;
-                        cidList.Add(cid);
+                //        // Get image CID
+                //        string cid = "Image_" + imageCount++;
+                //        cidList.Add(cid);
 
-                        commentTitle = "\r\n" + stockSerie.StockName + "( " + fields[2] + ") - " + fields[1] + " - " +
-                                       stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
+                //        commentTitle = "\r\n" + stockSerie.StockName + "( " + fields[2] + ") - " + fields[1] + " - " +
+                //                       stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
 
-                        // Build report from html template
-                        mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                           .Replace(commentTemplate, commentBody)
-                           .Replace(imageFileCID, cid);
-                        mailReport += eventTypeString;
-                        htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                           .Replace(commentTemplate, commentBody)
-                           .Replace(imageFileLink,
-                              fileName.Replace(
-                                 StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
-                                 .Replace(@"\", "/"));
-                        htmlReport += eventTypeString;
-                    }
-                }
+                //        // Build report from html template
+                //        mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                //           .Replace(commentTemplate, commentBody)
+                //           .Replace(imageFileCID, cid);
+                //        mailReport += eventTypeString;
+                //        htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                //           .Replace(commentTemplate, commentBody)
+                //           .Replace(imageFileLink,
+                //              fileName.Replace(
+                //                 StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
+                //                 .Replace(@"\", "/"));
+                //        htmlReport += eventTypeString;
+                //    }
+                //}
 
-                #endregion
+                //#endregion
             }
 
             #region Generate report from Portfolio
@@ -5472,8 +5406,113 @@ border:1px solid black;
             this.CurrentTheme = previousTheme;
             this.barDurationComboBox.SelectedItem = previousBarDuration;
 
-
             return mailReport;
+        }
+
+        private string GenerateLeaderLoserTable(StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
+        {
+            string html = "<table><tr><td>";
+
+            List<RankedSerie> leadersDico = new List<RankedSerie>();
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(reportGroup)))
+            {
+                if (stockSerie.Initialise() && stockSerie.Count > 100)
+                {
+                    stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                    IStockIndicator indicator = stockSerie.GetIndicator(rankLeaderIndicatorName);
+                    leadersDico.Add(new RankedSerie() { 
+                        rank = indicator.Series[0].Last,
+                        previousRank = indicator.Series[0][indicator.Series[0].Count - 2], 
+                        stockSerie = stockSerie });
+                }
+            }
+
+            string rowTemplate = @"
+         <tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+             %RANK_DIR_IMG%
+             <td>%COL3%</td>
+             %CLOSE_DIR_IMG%
+         </tr>";
+
+            html += htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + reportGroup + " - " + rankLeaderIndicatorName);
+            html += " <table>";
+
+            var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
+            foreach (RankedSerie pair in leaders)
+            {
+                var lastValue = pair.stockSerie.ValueArray.Last();
+                html += rowTemplate.
+                    Replace("%COL1%", pair.stockSerie.StockName).
+                    Replace("%COL2%", (pair.rank).ToString("#.##")).
+                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2"));
+                if (pair.previousRank <= pair.rank)
+                {
+                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+                }
+                else
+                {
+                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+                }
+                if (lastValue.VARIATION > 0)
+                {
+                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+                }
+                else
+                {
+                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+                }
+            }
+
+            html += " </table>";
+
+            html += "</td><td width=100></td><td>";
+
+            leadersDico.Clear();
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(reportGroup)))
+            {
+                if (stockSerie.Initialise() && stockSerie.Count > 100)
+                {
+                    stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                    IStockIndicator indicator = stockSerie.GetIndicator(rankLoserIndicatorName);
+                    leadersDico.Add(new RankedSerie() { rank = -indicator.Series[0].Last, previousRank = -indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
+                }
+            }
+
+            html += htmlTitleTemplate.Replace(titleTemplate, "Losers for " + reportGroup + " - " + rankLoserIndicatorName);
+            html += " <table>";
+            leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
+            foreach (RankedSerie pair in leaders)
+            {
+                var lastValue = pair.stockSerie.ValueArray.Last();
+                html += rowTemplate.
+                    Replace("%COL1%", pair.stockSerie.StockName).
+                    Replace("%COL2%", (pair.rank).ToString("#.##")).
+                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2"));
+                if (pair.previousRank <= pair.rank)
+                {
+                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+                }
+                else
+                {
+                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+                }
+                if (lastValue.VARIATION > 0)
+                {
+                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
+                }
+                else
+                {
+                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "DOWN"));
+                }
+            }
+
+            html += " </table>";
+
+            html += "</td></tr></table>";
+
+            return html;
         }
 
         private string ExtractEventsForReport()
@@ -6548,7 +6587,7 @@ border:1px solid black;
                     {
                         this.CurrentPortofolio = null;
 
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) && this.currentStockSerie.DataProvider!=StockDataProvider.FINRA)
+                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) && this.currentStockSerie.DataProvider != StockDataProvider.FINRA)
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
                             this.graphCloseControl.SecondaryFloatSerie =
