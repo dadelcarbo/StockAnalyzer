@@ -5434,6 +5434,7 @@ border:1px solid black;
              %RANK_DIR_IMG%
              <td>%COL3%</td>
              %CLOSE_DIR_IMG%
+             <td>%COL4%</td>
          </tr>";
 
             html += htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + reportGroup + " - " + rankLeaderIndicatorName);
@@ -5446,7 +5447,8 @@ border:1px solid black;
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
                     Replace("%COL2%", (pair.rank).ToString("#.##")).
-                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2"));
+                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
+                    Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
                 if (pair.previousRank <= pair.rank)
                 {
                     html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
@@ -5489,7 +5491,8 @@ border:1px solid black;
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
                     Replace("%COL2%", (pair.rank).ToString("#.##")).
-                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2"));
+                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
+                    Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
                 if (pair.previousRank <= pair.rank)
                 {
                     html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "UP"));
