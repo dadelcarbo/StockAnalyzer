@@ -5147,11 +5147,11 @@ border:1px solid black;
 
             string rankLeaderIndicatorName = "ROR(100,1,6)";
             string rankLoserIndicatorName = "ROD(100,1,6)";
-            int nbLeaders = 15;
+            int nbLeaders = 10;
             string htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
 
             htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
