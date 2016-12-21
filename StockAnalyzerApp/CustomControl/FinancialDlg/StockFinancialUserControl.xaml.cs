@@ -39,7 +39,11 @@ namespace StockAnalyzerApp.CustomControl.FinancialDlg
 
                 TextBlock labelValue = new TextBlock();
                 labelValue.Margin = new Thickness(0, 5, 0, 0);
-                if (prop.Name == "Yield")
+                if (prop.PropertyType == typeof(long))
+                {
+                    labelValue.SetBinding(TextBlock.TextProperty, new Binding(prop.Name) { StringFormat = "#,##0,K" });
+                }
+                else if (prop.Name == "Yield")
                 {
                     labelValue.SetBinding(TextBlock.TextProperty, new Binding(prop.Name) { StringFormat = "P2" });
                 }

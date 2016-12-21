@@ -136,6 +136,15 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\AgendaDlg\StockAgendaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\AgendaDlg\StockAgendaForm.Designer.cs">
+      <DependentUpon>StockAgendaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml.cs">
+      <DependentUpon>StockAgendaUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\AlertDialog\AlertControl.xaml.cs">
       <DependentUpon>AlertControl.xaml</DependentUpon>
     </Compile>
@@ -518,6 +527,9 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\AgendaDlg\StockAgendaForm.resx">
+      <DependentUpon>StockAgendaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\AlertDialog\AlertDlg.resx">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -876,6 +888,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\AlertDialog\AlertControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

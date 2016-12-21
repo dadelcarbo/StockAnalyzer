@@ -1827,6 +1827,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.ShowFinancials();
         }
+        void agendaMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.ShowAgenda();
+        }
         #endregion
+
     }
 }

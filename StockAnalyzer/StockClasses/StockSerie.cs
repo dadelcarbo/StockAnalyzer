@@ -173,6 +173,8 @@ namespace StockAnalyzer.StockClasses
         public string SectorID { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
+
+        #region StockFinancial
         private StockFinancial financial;
         public StockFinancial Financial
         {
@@ -223,6 +225,63 @@ namespace StockAnalyzer.StockClasses
                 serializer.Serialize(xmlWriter, this.Financial);
             }
         }
+
+        #endregion
+
+        #region StockAgenda
+        private StockAgenda agenda;
+        public StockAgenda Agenda
+        {
+            get
+            {
+                if (agenda == null)
+                {
+                    agenda = LoadAgenda();
+                }
+                return agenda;
+            }
+            set { agenda = value; }
+        }
+
+        private static string AGENDA_SUBFOLDER = @"\data\agenda";
+        private StockAgenda LoadAgenda()
+        {
+            StockAgenda stockAgenda = null;
+            if (this.BelongsToGroup(Groups.CACALL))
+            {
+                string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + AGENDA_SUBFOLDER;
+                string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+                if (File.Exists(fileName))
+                {
+                    using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                    {
+                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                        settings.IgnoreWhitespace = true;
+                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                        XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
+                        stockAgenda = (StockAgenda)serializer.Deserialize(xmlReader);
+                    }
+                }
+            }
+            return stockAgenda;
+        }
+        public void SaveAgenda()
+        {
+            if (this.Agenda == null) return;
+            string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + AGENDA_SUBFOLDER;
+            string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+                settings.Indent = true;
+                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
+                serializer.Serialize(xmlWriter, this.Agenda);
+            }
+        }
+
+        #endregion
+
 
         public bool IsPortofolioSerie { get; set; }
         public int LastIndex { get { return this.Values.Count - 1; } }

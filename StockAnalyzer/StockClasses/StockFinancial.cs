@@ -119,17 +119,17 @@ namespace StockAnalyzer.StockClasses
                 this.Ratios.Add(resOpString);
                 this.Ratios.Add(distribRatioString);
                 this.Ratios.Add(PERString);
-                resOpString.Add("EPS"); 
+                resOpString.Add("EPS");
                 distribRatioString.Add("Distrib Ratio");
                 PERString.Add("PER");
                 for (int i = 1; i < resOp.Count; i++)
                 {
-                    long resultat = long.Parse(resOp[i].Replace(" ", ""));
+                    long resultat = resOp[i] == null ? 0 : long.Parse(resOp[i].Replace(" ", ""));
                     float eps = (1000.0f * resultat / (float)this.ShareNumber);
                     resOpString.Add(eps.ToString("0.##"));
-                    float per = this.Value/eps;
+                    float per = this.Value / eps;
                     PERString.Add(per.ToString("0.##"));
-                    float distribRatio = this.Dividend/eps;
+                    float distribRatio = this.Dividend / eps;
                     distribRatioString.Add(distribRatio.ToString("0.##"));
                 }
             }
@@ -142,7 +142,7 @@ namespace StockAnalyzer.StockClasses
                 capCAString.Add("Cap/CA");
                 for (int i = 1; i < caLine.Count; i++)
                 {
-                    long ca = long.Parse(caLine[i].Replace(" ", ""));
+                    long ca = caLine[i] == null ? 0 : long.Parse(caLine[i].Replace(" ", ""));
                     float caCap = (float)this.MarketCap / (1000.0f * ca);
                     capCAString.Add(caCap.ToString("0.##"));
                 }
@@ -156,8 +156,8 @@ namespace StockAnalyzer.StockClasses
                 capActifString.Add("Cap/Actif");
                 for (int i = 1; i < resOp.Count; i++)
                 {
-                    long totalActif = long.Parse(actif[i].Replace(" ", ""));
-                    float capActif = ((float)this.MarketCap / (float)(totalActif*1000f));
+                    long totalActif = actif[i] == null ? 0 : long.Parse(actif[i].Replace(" ", ""));
+                    float capActif = ((float)this.MarketCap / (float)(totalActif * 1000f));
                     capActifString.Add(capActif.ToString("0.##"));
                 }
             }

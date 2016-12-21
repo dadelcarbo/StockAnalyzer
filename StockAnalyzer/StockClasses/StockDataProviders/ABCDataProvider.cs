@@ -21,6 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
         private static string FINANCIAL_SUBFOLDER = @"\data\financial";
+        private static string AGENDA_SUBFOLDER = @"\data\agenda";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         static private string CONFIG_FILE = @"\EuronextDownload.cfg";
         static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
@@ -50,6 +51,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (!Directory.Exists(rootFolder + FINANCIAL_SUBFOLDER))
             {
                 Directory.CreateDirectory(rootFolder + FINANCIAL_SUBFOLDER);
+            }
+            if (!Directory.Exists(rootFolder + AGENDA_SUBFOLDER))
+            {
+                Directory.CreateDirectory(rootFolder + AGENDA_SUBFOLDER);
             }
             if (!Directory.Exists(rootFolder + ABC_DAILY_FOLDER))
             {
@@ -1466,7 +1471,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             string url = "http://www.boursorama.com/bourse/profil/resume_societe.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
             StockWebHelper swh = new StockWebHelper();
-            string html = swh.DownloadHtml(url);
+            string html = swh.DownloadHtml(url, null);
 
             WebBrowser browser = new WebBrowser();
             browser.ScriptErrorsSuppressed = true;
@@ -1538,7 +1543,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 string url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
                 StockWebHelper swh = new StockWebHelper();
-                string html = swh.DownloadHtml(url);
+                string html = swh.DownloadHtml(url, null);
 
                 WebBrowser browser = new WebBrowser();
                 browser.ScriptErrorsSuppressed = true;
@@ -1655,11 +1660,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public static void DownloadAgenda(StockSerie stockSerie)
         {
+            if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
+            if (stockSerie.Agenda == null)
+            {
+                stockSerie.Agenda = new StockAgenda();
+            }
+            else
+            {
+                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) return;
+            }
+
             string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName",
                stockSerie.ShortName);
 
             StockWebHelper swh = new StockWebHelper();
-            string html = swh.DownloadHtml(url);
+            string html = swh.DownloadHtml(url, Encoding.UTF8);
 
             WebBrowser browser = new WebBrowser();
             browser.ScriptErrorsSuppressed = true;
@@ -1690,19 +1705,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string comment = row[1];
                 if (row[2] != null) comment += Environment.NewLine + row[2];
 
-                if (!stockSerie.StockAnalysis.Comments.ContainsKey(date))
+                if (!stockSerie.Agenda.ContainsKey(date))
                 {
-                    stockSerie.StockAnalysis.Comments.Add(date, comment);
+                    stockSerie.Agenda.Add(date, comment);
                 }
                 else
                 {
-                    if (!stockSerie.StockAnalysis.Comments[date].Contains(comment))
+                    if (!stockSerie.Agenda[date].Contains(comment))
                     {
-                        stockSerie.StockAnalysis.Comments[date] = stockSerie.StockAnalysis.Comments[date] +
-                                                                  Environment.NewLine + comment;
+                        stockSerie.Agenda[date] = stockSerie.Agenda[date] + Environment.NewLine + comment;
                     }
                 }
             }
+            stockSerie.Agenda.DownloadDate = DateTime.Today;
+            stockSerie.SaveAgenda();
         }
 
         static private List<List<string>> getTableData(HtmlElement tbl)

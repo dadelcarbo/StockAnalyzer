@@ -43,6 +43,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
+using StockAnalyzerApp.CustomControl.AgendaDlg;
 
 namespace StockAnalyzerApp
 {
@@ -5420,10 +5421,12 @@ border:1px solid black;
                 {
                     stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
                     IStockIndicator indicator = stockSerie.GetIndicator(rankLeaderIndicatorName);
-                    leadersDico.Add(new RankedSerie() { 
+                    leadersDico.Add(new RankedSerie()
+                    {
                         rank = indicator.Series[0].Last,
-                        previousRank = indicator.Series[0][indicator.Series[0].Count - 2], 
-                        stockSerie = stockSerie });
+                        previousRank = indicator.Series[0][indicator.Series[0].Count - 2],
+                        stockSerie = stockSerie
+                    });
                 }
             }
 
@@ -7107,6 +7110,25 @@ border:1px solid black;
                     this.currentStockSerie.Financial.Value = this.currentStockSerie.GetSerie(StockDataType.CLOSE).Last;
                     StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
                     financialForm.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("No financial information for this stock");
+                }
+            }
+        }
+        public void ShowAgenda()
+        {
+            if (this.currentStockSerie != null)
+            {
+                if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                {
+                    ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                }
+                if (this.currentStockSerie.Agenda != null)
+                {
+                    StockAgendaForm agendaForm = new StockAgendaForm(this.currentStockSerie);
+                    agendaForm.ShowDialog();
                 }
                 else
                 {

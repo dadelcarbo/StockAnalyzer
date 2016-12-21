@@ -120,6 +120,7 @@
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
+    <Compile Include="StockClasses\StockAgenda.cs" />
     <Compile Include="StockClasses\StockFinancial.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ALLIGATOR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_WEDGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CUPHANDLE.cs" />
