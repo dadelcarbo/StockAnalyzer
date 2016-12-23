@@ -11,6 +11,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -50,6 +51,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected bool ShowSummaryOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowSummaryOrders; } }
         protected bool ShowEventMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowEventMarquee; } }
         protected bool ShowCommentMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowCommentMarquee; } }
+        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), StockAnalyzerSettings.Properties.Settings.Default.ShowAgenda); } }
         protected bool ShowIndicatorDiv { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorDiv; } }
         protected bool ShowIndicatorText { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorText; } }
 
@@ -78,6 +80,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         public Dictionary<DateTime, String> Comments { get; set; }
+        public StockAgenda Agenda { get; set; }
 
         // Secondary serie management
         protected System.Drawing.Drawing2D.Matrix matrixSecondaryScreenToValue;
@@ -653,7 +656,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
-
+                if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
+                {
+                    for (int i = StartIndex; i <= EndIndex; i++)
+                    {
+                        DateTime agendaDate = this.dateSerie[i];
+                        if (this.Agenda.ContainsKey(agendaDate))
+                        {
+                            var agendaEntry = this.Agenda[agendaDate];
+                            if (agendaEntry.IsOfType(this.ShowAgenda))
+                            {
+                                PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(i);
+                                aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
+                            }
+                        }
+                    }
+                }
                 #endregion
             }
         }
@@ -1050,7 +1068,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     #endregion
                     #region Display comment text box
-                    if (mouseOverThis && this.ShowCommentMarquee &&
+                    if (mouseOverThis && this.ShowCommentMarquee && this.Comments != null &&
                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
                         (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
                     {
@@ -1065,6 +1083,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 Size size = TextRenderer.MeasureText(comment, axisFont);
 
                                 this.DrawString(this.foregroundGraphic, comment, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                            }
+                        }
+                    } 
+                    if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
+                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
+                         (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
+                    {
+                        int i = this.RoundToIndex(mousePoint);
+                        DateTime agendaDate = this.dateSerie[i];
+                        if (this.Agenda.ContainsKey(agendaDate))
+                        {
+                            var agendaEntry = this.Agenda[agendaDate];
+                            if (agendaEntry.IsOfType(this.ShowAgenda))
+                            {
+                                Size size = TextRenderer.MeasureText(agendaEntry.Event, axisFont);
+
+                                this.DrawString(this.foregroundGraphic, agendaEntry.Event, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                             }
                         }
                     }
@@ -1119,7 +1154,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 // Draw vertical line
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                                Line2D newLine = (Line2D) new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1129,7 +1164,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             else
                             {
                                 // Draw horizontal line
-                                Line2D newLine = (Line2D) new Line2D(mouseValuePoint, 1.0f, 0.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 1.0f, 0.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1832,6 +1867,5 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             StockAnalyzerForm.MainFrame.ShowAgenda();
         }
         #endregion
-
     }
 }

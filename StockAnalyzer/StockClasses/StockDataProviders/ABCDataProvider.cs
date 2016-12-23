@@ -1709,13 +1709,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     stockSerie.Agenda.Add(date, comment);
                 }
-                else
-                {
-                    if (!stockSerie.Agenda[date].Contains(comment))
-                    {
-                        stockSerie.Agenda[date] = stockSerie.Agenda[date] + Environment.NewLine + comment;
-                    }
-                }
+                //else
+                //{
+                //    if (!stockSerie.Agenda[date].Contains(comment))
+                //    {
+                //        stockSerie.Agenda[date] = stockSerie.Agenda[date] + Environment.NewLine + comment;
+                //    }
+                //}
             }
             stockSerie.Agenda.DownloadDate = DateTime.Today;
             stockSerie.SaveAgenda();

@@ -62,11 +62,7 @@ namespace StockAnalyzerApp
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.barTypeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dailyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tickMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.intradayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDrawingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showSummaryOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -414,11 +410,11 @@ namespace StockAnalyzerApp
             this.viewMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showShowStatusBarMenuItem,
             this.hideIndicatorsStockMenuItem,
-            this.barTypeMenuItem,
             this.showDrawingsMenuItem,
             this.showSummaryOrdersMenuItem,
             this.showOrdersMenuItem,
             this.toolStripSeparator14,
+            this.showAgendaMenuItem,
             this.showEventMarqueeMenuItem,
             this.showCommentMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
@@ -458,44 +454,9 @@ namespace StockAnalyzerApp
             // 
             // barTypeMenuItem
             // 
-            this.barTypeMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dailyMenuItem,
-            this.rangeMenuItem,
-            this.tickMenuItem,
-            this.intradayMenuItem});
-            this.barTypeMenuItem.Name = "barTypeMenuItem";
-            this.barTypeMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.barTypeMenuItem.Text = "Bar Type";
-            // 
-            // dailyMenuItem
-            // 
-            this.dailyMenuItem.Checked = true;
-            this.dailyMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.dailyMenuItem.Name = "dailyMenuItem";
-            this.dailyMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.dailyMenuItem.Text = "Daily";
-            this.dailyMenuItem.Click += new System.EventHandler(this.dailyMenuItem_Click);
-            // 
-            // rangeMenuItem
-            // 
-            this.rangeMenuItem.Name = "rangeMenuItem";
-            this.rangeMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.rangeMenuItem.Text = "Range";
-            this.rangeMenuItem.Click += new System.EventHandler(this.rangeMenuItem_Click);
-            // 
-            // tickMenuItem
-            // 
-            this.tickMenuItem.Name = "tickMenuItem";
-            this.tickMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.tickMenuItem.Text = "Tick";
-            this.tickMenuItem.Click += new System.EventHandler(this.tickMenuItem_Click);
-            // 
-            // intradayMenuItem
-            // 
-            this.intradayMenuItem.Name = "intradayMenuItem";
-            this.intradayMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.intradayMenuItem.Text = "Intraday";
-            this.intradayMenuItem.Click += new System.EventHandler(this.intradayMenuItem_Click);
+            this.showAgendaMenuItem.Name = "showAgendaMenuItem";
+            this.showAgendaMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showAgendaMenuItem.Text = "Show Agenda Entries";
             // 
             // showDrawingsMenuItem
             // 
@@ -1391,6 +1352,7 @@ namespace StockAnalyzerApp
             this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
             this.graphCloseControl.ChartMode = GraphChartMode.Line;
             this.graphCloseControl.Comments = null;
+            this.graphCloseControl.Agenda = null;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1724,11 +1686,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;
         private ToolStripComboBox strategyComboBox;
-        private ToolStripMenuItem barTypeMenuItem;
-        private ToolStripMenuItem dailyMenuItem;
-        private ToolStripMenuItem rangeMenuItem;
-        private ToolStripMenuItem tickMenuItem;
-        private ToolStripMenuItem intradayMenuItem;
+        private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;
         private ToolStripButton defaultThemeStripButton;
         private ToolStripButton deleteThemeStripButton;

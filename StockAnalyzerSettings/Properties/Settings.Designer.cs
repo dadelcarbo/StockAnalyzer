@@ -395,6 +395,21 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowCommentMarquee"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("No")]
+        public string ShowAgenda
+        {
+            get
+            {
+                return ((string)(this["ShowAgenda"]));
+            }
+            set
+            {
+                this["ShowAgenda"] = value;
+            }
+        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

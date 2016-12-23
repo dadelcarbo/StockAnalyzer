@@ -604,6 +604,8 @@ namespace StockAnalyzerApp
             // Create Groups menu items
             CreateGroupMenuItem();
 
+            CreateAgendaMenuItem();
+
             // Update dynamic menu
             InitialiseBarDurationComboBox();
             CreateRelativeStrengthMenuItem();
@@ -6357,6 +6359,7 @@ border:1px solid black;
                                     graphControl = this.graphCloseControl;
                                     this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
                                     this.graphCloseControl.Comments = this.CurrentStockSerie.StockAnalysis.Comments;
+                                    this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
                                     break;
                                 case "SCROLLGRAPH":
                                     graphControl = this.graphScrollerControl;
@@ -6882,58 +6885,46 @@ border:1px solid black;
             }
         }
         #endregion
-        #region BAR TYPE MENU HANDLERS
-        private void dailyMenuItem_Click(object sender, EventArgs e)
+        #region SHOW AGENDA MENU HANDLERS
+
+        private void CreateAgendaMenuItem()
         {
-            if (!dailyMenuItem.Checked)
+            AgendaEntryType agendaEntryType = AgendaEntryType.No;
+            if (!Enum.TryParse<AgendaEntryType>(Settings.Default.ShowAgenda, out agendaEntryType))
             {
-                dailyMenuItem.Checked = true;
-                tickMenuItem.Checked = false;
-                rangeMenuItem.Checked = false;
-                intradayMenuItem.Checked = false;
-                Settings.Default.BarType = (int)StockBar.StockBarType.Daily;
+                Settings.Default.ShowAgenda = AgendaEntryType.No.ToString();
             }
-            OnNeedReinitialise(false);
+
+            // Clean existing menus
+            this.showAgendaMenuItem.DropDownItems.Clear();
+
+            List<ToolStripItem> agendaMenuItems = new List<ToolStripItem>();
+            ToolStripMenuItem agendaSubMenuItem;
+
+            foreach (AgendaEntryType agendaType in Enum.GetValues(typeof(AgendaEntryType)))
+            {
+                // Create group menu items
+                agendaSubMenuItem = new ToolStripMenuItem(agendaType.ToString());
+                agendaSubMenuItem.Click += new EventHandler(agendaSubMenuItem_Click);
+                agendaSubMenuItem.Checked = (agendaType == agendaEntryType);
+
+                agendaMenuItems.Add(agendaSubMenuItem);
+            }
+            this.showAgendaMenuItem.DropDownItems.AddRange(agendaMenuItems.ToArray());
         }
 
-        private void rangeMenuItem_Click(object sender, EventArgs e)
+        private void agendaSubMenuItem_Click(object sender, EventArgs e)
         {
-            if (!rangeMenuItem.Checked)
+            Settings.Default.ShowAgenda = sender.ToString();
+            Settings.Default.Save();
+
+            foreach (ToolStripMenuItem agendaSubMenuItem in this.showAgendaMenuItem.DropDownItems)
             {
-                dailyMenuItem.Checked = false;
-                tickMenuItem.Checked = false;
-                rangeMenuItem.Checked = true;
-                intradayMenuItem.Checked = false;
-                Settings.Default.BarType = (int)StockBar.StockBarType.Range;
+                agendaSubMenuItem.Checked = agendaSubMenuItem.Text == Settings.Default.ShowAgenda;
             }
-            OnNeedReinitialise(false);
+            this.OnNeedReinitialise(false);
         }
 
-        private void tickMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!tickMenuItem.Checked)
-            {
-                dailyMenuItem.Checked = false;
-                tickMenuItem.Checked = true;
-                rangeMenuItem.Checked = false;
-                intradayMenuItem.Checked = false;
-                Settings.Default.BarType = (int)StockBar.StockBarType.Tick;
-            }
-            OnNeedReinitialise(false);
-        }
-
-        private void intradayMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!intradayMenuItem.Checked)
-            {
-                dailyMenuItem.Checked = false;
-                tickMenuItem.Checked = false;
-                rangeMenuItem.Checked = false;
-                intradayMenuItem.Checked = true;
-                Settings.Default.BarType = (int)StockBar.StockBarType.Intraday;
-            }
-            OnNeedReinitialise(false);
-        }
         #endregion
 
         void aboutMenuItem_Click(object sender, System.EventArgs e)

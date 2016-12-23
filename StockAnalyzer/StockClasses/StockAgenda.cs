@@ -7,6 +7,16 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
 {
+    public enum AgendaEntryType
+    {
+        No = 0,
+        Dividend = 1,
+        CA = 2,
+        Result = 4,
+        Meeting = 8,
+        Other = 16,
+        All = 31
+    }
     public class StockAgendaEntry
     {
         public StockAgendaEntry()
@@ -15,7 +25,33 @@ namespace StockAnalyzer.StockClasses
         }
         public DateTime Date { get; set; }
         public string Event { get; set; }
+        [XmlIgnore]
+        public AgendaEntryType EntryType
+        {
+            get
+            {
+                if (Event.ToLower().Contains("dividende"))
+                    return AgendaEntryType.Dividend;
+
+                if (Event.ToLower().Contains("résultat"))
+                    return AgendaEntryType.Result;
+
+                if (Event.ToLower().Contains("affaire"))
+                    return AgendaEntryType.CA;
+
+                if (Event.ToLower().Contains("assemblée"))
+                    return AgendaEntryType.Meeting;
+
+                return AgendaEntryType.Other;
+            }
+        }
+
+        public bool IsOfType(AgendaEntryType entryType)
+        {
+            return (this.EntryType & entryType) > 0;
+        }
     }
+
 
     public class StockAgenda
     {
@@ -35,15 +71,11 @@ namespace StockAnalyzer.StockClasses
         {
             Entries.Add(new StockAgendaEntry { Date = date, Event = text });
         }
-        public string this[DateTime date]
+        public StockAgendaEntry this[DateTime date]
         {
             get
             {
-                return this.Entries.First(e => e.Date == date).Event;
-            }
-            set
-            {
-                this.Entries.First(e => e.Date == date).Event = value;
+                return this.Entries.First(e => e.Date == date);
             }
         }
     }
