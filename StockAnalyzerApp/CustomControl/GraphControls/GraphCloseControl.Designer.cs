@@ -11,6 +11,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         /// </summary>
         protected override void InitializeComponent()
         {
+            this.SuspendLayout();
+            base.InitializeComponent();
+
             this.contextMenu = new System.Windows.Forms.ContextMenu();
             this.buyMenu = new System.Windows.Forms.MenuItem();
             this.sellMenu = new System.Windows.Forms.MenuItem();
@@ -19,7 +22,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.financialMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.separatorMenu = new MenuItem();
-            this.SuspendLayout();
             // 
             // contextMenu
             // 
