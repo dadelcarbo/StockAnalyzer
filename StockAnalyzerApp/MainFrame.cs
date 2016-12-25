@@ -14,7 +14,9 @@ using StockAnalyzer.StockMath;
 using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzerApp.CustomControl;
+using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
+using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
@@ -42,8 +44,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using StockAnalyzerApp.CustomControl.FinancialDlg;
-using StockAnalyzerApp.CustomControl.AgendaDlg;
 
 namespace StockAnalyzerApp
 {

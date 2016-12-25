@@ -3,8 +3,17 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockDrawing
 {
+    public static class PointFExtension
+    {
+        public static float CrossProduct(this PointF p1, PointF p2, PointF p3)
+        {
+            // (x2-x1)(y3-y1)-(y2-y1)(x3-x1)
+            return (p2.X - p1.X)*(p3.Y - p1.Y) - (p2.Y - p1.Y)*(p3.X - p1.X);
+        }
+    }
     public abstract class Line2DBase : DrawingItem
     {
+
         public bool IsHorizontal { get { return VY == 0.0f; } }
         public bool IsVertical { get { return VX == 0.0f; } }
         public PointF Point1 { get; set; }
@@ -20,7 +29,7 @@ namespace StockAnalyzer.StockDrawing
                 if (VX == 0.0f) { return float.MaxValue; }
                 else { return VY / VX; }
             }
-        } 
+        }
 
 
         public Line2DBase()

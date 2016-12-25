@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Windows.Forms;
-using StockAnalyzer.Portofolio;
+﻿using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockClasses;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -1197,14 +1197,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddSAR:
-                    if (this.DrawingStep == GraphDrawingStep.SelectItem)
-                    {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpSAR(this.foregroundGraphic, mouseValuePoint);
-                        }
-                    }
+                    DrawTmpConvexHull(this.foregroundGraphic, mouseValuePoint);
+                    //if (this.DrawingStep == GraphDrawingStep.SelectItem)
+                    //{
+                    //    // first point is already selected, draw new line
+                    //    if (!selectedValuePoint.Equals(mouseValuePoint))
+                    //    {
+                    //        DrawTmpSAR(this.foregroundGraphic, mouseValuePoint);
+                    //    }
+                    //}
                     break;
                 case GraphDrawMode.AddLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
@@ -1308,6 +1309,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
                 default:
                     break;
+            }
+        }
+        private void DrawTmpConvexHull(Graphics graphics, PointF mouseValuePoint)
+        {
+            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
+            {
+                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
+
+                if (index < 200) return;
+                HalfLine2D support, resistance;
+               
+                StockPaintBar_CONVEXHULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
+
+                foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
+                {
+                    DrawTmpItem(graphics, item.Pen, item, true, true);
+                }
             }
         }
 
