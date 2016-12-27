@@ -385,6 +385,8 @@
     <Compile Include="StockPortfolioStrategy\IStockPortfolioStrategy.cs" />
     <Compile Include="StockPortfolioStrategy\PortfolioStrategyManager.cs" />
     <Compile Include="StockPortfolioStrategy\StockPortfolioStrategyBase.cs" />
+    <Compile Include="StockPortfolio\StockPortfolio.cs" />
+    <Compile Include="StockPortfolio\StockPosition.cs" />
     <Compile Include="StockPortofolio\StockOrder.cs" />
     <Compile Include="StockPortofolio\StockOrderList.cs" />
     <Compile Include="StockPortofolio\StockPortofolio.cs" />
@@ -504,6 +506,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="StockPortofolio\Portfolio.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">

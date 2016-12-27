@@ -1,11 +1,5 @@
-﻿using StockAnalyzer.Portofolio;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
 {
@@ -113,7 +107,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
         }
         private float CalculateAddedValuePercent(float value)
         {
-            return openValue == 0f ? 0.0f : (value - OpenValue) * this.Number / OpenValue;
+            return openValue == 0f ? 0.0f : (value - OpenValue) / OpenValue;
         }
 
         public void Close()

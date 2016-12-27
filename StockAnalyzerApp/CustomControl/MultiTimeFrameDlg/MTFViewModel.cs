@@ -14,9 +14,9 @@ using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 {
-   public class MTFViewModel : NotifyPropertyChanged
+   public class MTFViewModel : NotifyPropertyChangedBase
    {
-      public class MTFTrend : NotifyPropertyChanged
+      public class MTFTrend : NotifyPropertyChangedBase
       {
          public MTFTrend(string name)
          {

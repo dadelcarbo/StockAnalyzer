@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StockAnalyzer.Portofolio.StockPortofolio">
+    <Position X="1" Y="0.5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="StockAnalyzer.Portofolio.StockPortofolio.PositionValues" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StockPortofolio\StockPortofolio.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AACAhEAAAAAAAQiEAAACBAQAACEAQAAAAAIAAABAFhA=</HashCode>
+      <FileName>StockPortofolio\StockPortofolio.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="OrderList" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StockAnalyzer.Portofolio.StockOrderList" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgQEAEAAAABAAAAIBAAEAABAAAAAAAAAIAAAABAA=</HashCode>
+      <FileName>StockPortofolio\StockOrderList.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

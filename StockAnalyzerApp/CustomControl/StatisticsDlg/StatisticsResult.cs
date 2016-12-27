@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 {
-    public class StatisticsResult : NotifyPropertyChanged
+    public class StatisticsResult : NotifyPropertyChangedBase
     {
         private string name;
         public string Name { get { return name; } set { if (value != name) { name = value; OnPropertyChanged("Name"); } } }

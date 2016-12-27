@@ -9,7 +9,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {
-   public class HorseRaceViewModel : NotifyPropertyChanged
+   public class HorseRaceViewModel : NotifyPropertyChangedBase
    {
       private int maxIndex = 0;
 

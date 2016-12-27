@@ -10,7 +10,7 @@ using StockAnalyzer.Portofolio;
 
 namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 {
-   public class StockOrderViewModel : NotifyPropertyChanged
+   public class StockOrderViewModel : NotifyPropertyChangedBase
    {
       public StockOrderViewModel(StockOrder stockOrder)
       {

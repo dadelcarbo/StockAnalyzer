@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerLib", "StockAn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerSettings", "StockAnalyzerSettings\StockAnalyzerSettings.csproj", "{D7BE95C8-BCE9-4E66-B305-C85D07936F73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerTest", "StockAnalyzerTest\StockAnalyzerTest.csproj", "{87F4F775-6F91-4702-B25C-84A50FC87026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,16 @@ Global
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|x86.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

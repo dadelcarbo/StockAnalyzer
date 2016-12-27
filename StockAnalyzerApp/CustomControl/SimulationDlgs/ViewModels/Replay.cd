@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.OrderViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAIEAAAAAAgAABACAAAQAoAAAACAA=</HashCode>
+      <FileName>CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+      <Property Name="Type" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.PositionViewModel" Collapsed="true">
+    <Position X="2.75" Y="0.75" Width="3.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Events" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.PositionViewModel.StopTouchedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.PositionViewModel.TargetTouchedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.PositionViewModel.PositionClosedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAEAAAAAAAAARAAAIEQAgBACgEAAAAECAgABAECEBAQ=</HashCode>
+      <FileName>CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TargetOrder" />
+      <Property Name="StopOrder" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Orders" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.OrderCategory" Collapsed="true">
+    <Position X="0.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels.OrderType" Collapsed="true">
+    <Position X="0.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

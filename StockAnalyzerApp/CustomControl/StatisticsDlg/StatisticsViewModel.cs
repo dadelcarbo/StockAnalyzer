@@ -13,7 +13,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 {
-    public class StatisticsViewModel : NotifyPropertyChanged
+    public class StatisticsViewModel : NotifyPropertyChangedBase
     {
         public static List<String> IndicatorTypes
         {

@@ -11,7 +11,7 @@ using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 {
-   public class ImportBinckOrderViewModel : NotifyPropertyChanged
+   public class ImportBinckOrderViewModel : NotifyPropertyChangedBase
    {
       public IEnumerable<string> Portfolios { get; set; }
 

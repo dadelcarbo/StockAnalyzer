@@ -160,6 +160,15 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (started)
             {
+                string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
+                             "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
+                             "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                             "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
+                             "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
+                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
+
+                MessageBox.Show(msg);
+
                 replaySerie = null;
                 started = false;
                 startButton.Text = "Start";
@@ -176,14 +185,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = false;
 
-                string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
-                             "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
-                             "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
-                             "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
-                             "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
-
-                MessageBox.Show(msg);
             }
             else
             {

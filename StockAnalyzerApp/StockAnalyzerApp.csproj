@@ -751,6 +751,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="CustomControl\SimulationDlgs\ViewModels\Replay.cd" />
     <None Include="Properties\DataSources\StockAnalyzer.Portofolio.StockPosition.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockClasses.StockSerie.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />

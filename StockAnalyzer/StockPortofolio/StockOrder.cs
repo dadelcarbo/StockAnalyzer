@@ -18,12 +18,12 @@ namespace StockAnalyzer.Portofolio
          SellAtMarketClose,
          SellTrailing,
          SellAtLimit,
-         SellAtThreshold,
+         SellAtThreshold
       }
+
       public enum OrderStatus
       {
          Executed,
-         PartiallyExecuted,
          Pending,
          Expired
       }
