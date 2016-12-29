@@ -3,12 +3,12 @@ using System;
 
 namespace StockAnalyzer.Portofolio
 {
-   public class StockPosition : StockPositionBase
+   public class StockPosition2 : StockPositionBase
    {
       public int Number { get; protected set; }
       public float TotalCost { get { return this.UnitCost * this.Number; } }
 
-      public StockPosition(StockOrder stockOrder)
+      public StockPosition2(StockOrder stockOrder)
       {
          if (stockOrder.State != StockOrder.OrderStatus.Executed)
          {
@@ -24,7 +24,7 @@ namespace StockAnalyzer.Portofolio
          this.Status = PositionStatus.Opened;
       }
 
-        public StockPosition()
+        public StockPosition2()
         {
         }
 

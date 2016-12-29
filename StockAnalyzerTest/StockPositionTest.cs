@@ -23,10 +23,10 @@ namespace StockAnalyzerTest
             // Create Open order
             StockOrder openOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort, openDate, openDate, qty, openValue, orderFee);
 
-            StockPosition2 position = new StockPosition2(openOrder);
+            StockPosition position = new StockPosition(openOrder);
             position.OnPositionClosed += position_OnPositionClosed;
 
-            Assert.AreEqual(qty, position.Size);
+            Assert.AreEqual(qty, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate, position.OpenDate);
             Assert.AreEqual(openOrder, position.OpenOrder);
@@ -43,9 +43,9 @@ namespace StockAnalyzerTest
             float closeValue = 5000;
             StockOrder closeOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort, closeDate, closeDate, qty, closeValue, orderFee);
 
-            position.AddOrder(closeOrder);
+            position.Add(closeOrder);
 
-            Assert.AreEqual(0, position.Size);
+            Assert.AreEqual(0, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate, position.OpenDate);
             Assert.AreEqual(closeDate, position.CloseDate);
@@ -75,10 +75,10 @@ namespace StockAnalyzerTest
             // Create Open order
             StockOrder openOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort, openDate, openDate, qty, openValue, orderFee);
 
-            StockPosition2 position = new StockPosition2(openOrder);
+            StockPosition position = new StockPosition(openOrder);
             position.OnPositionClosed += position_OnPositionClosed;
 
-            Assert.AreEqual(qty, position.Size);
+            Assert.AreEqual(qty, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate, position.OpenDate);
             Assert.AreEqual(openOrder, position.OpenOrder);
@@ -95,9 +95,9 @@ namespace StockAnalyzerTest
             float closeValue = 5000;
             StockOrder closeOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort, closeDate, closeDate, qty, closeValue, orderFee);
 
-            position.AddOrder(closeOrder);
+            position.Add(closeOrder);
 
-            Assert.AreEqual(0, position.Size);
+            Assert.AreEqual(0, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate, position.OpenDate);
             Assert.AreEqual(closeDate, position.CloseDate);
@@ -127,10 +127,10 @@ namespace StockAnalyzerTest
             // Create Open order1
             StockOrder openOrder1 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort, openDate1, openDate1, openQty1, openValue1, orderFee);
 
-            StockPosition2 position = new StockPosition2(openOrder1);
+            StockPosition position = new StockPosition(openOrder1);
             position.OnPositionClosed += position_OnPositionClosed;
 
-            Assert.AreEqual(openQty1, position.Size);
+            Assert.AreEqual(openQty1, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(openOrder1, position.OpenOrder);
@@ -149,9 +149,9 @@ namespace StockAnalyzerTest
             StockOrder openOrder2 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort,
                 openDate2, openDate2, openQty2, openValue2, orderFee);
 
-            position.AddOrder(openOrder2);
+            position.Add(openOrder2);
 
-            Assert.AreEqual(openQty1+openQty2, position.Size);
+            Assert.AreEqual(openQty1+openQty2, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(openOrder1, position.OpenOrder);
@@ -171,9 +171,9 @@ namespace StockAnalyzerTest
             StockOrder closeOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort,
                 closeDate1, closeDate1, closeQty1, closeValue1, orderFee);
 
-            position.AddOrder(closeOrder);
+            position.Add(closeOrder);
 
-            Assert.AreEqual(openQty1 + openQty2 - closeQty1, position.Size);
+            Assert.AreEqual(openQty1 + openQty2 - closeQty1, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(null, position.CloseDate);
@@ -195,9 +195,9 @@ namespace StockAnalyzerTest
             StockOrder closeOrder2 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort,
                 closeDate2, closeDate2, closeQty2, closeValue2, orderFee);
 
-            position.AddOrder(closeOrder2);
+            position.Add(closeOrder2);
 
-            Assert.AreEqual(0, position.Size);
+            Assert.AreEqual(0, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(closeDate2, position.CloseDate);
@@ -227,10 +227,10 @@ namespace StockAnalyzerTest
             // Create Open order1
             StockOrder openOrder1 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort, openDate1, openDate1, openQty1, openValue1, orderFee);
 
-            StockPosition2 position = new StockPosition2(openOrder1);
+            StockPosition position = new StockPosition(openOrder1);
             position.OnPositionClosed += position_OnPositionClosed;
 
-            Assert.AreEqual(openQty1, position.Size);
+            Assert.AreEqual(openQty1, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(openOrder1, position.OpenOrder);
@@ -249,9 +249,9 @@ namespace StockAnalyzerTest
             StockOrder openOrder2 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.BuyAtMarketOpen, isShort,
                 openDate2, openDate2, openQty2, openValue2, orderFee);
 
-            position.AddOrder(openOrder2);
+            position.Add(openOrder2);
 
-            Assert.AreEqual(openQty1 + openQty2, position.Size);
+            Assert.AreEqual(openQty1 + openQty2, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(openOrder1, position.OpenOrder);
@@ -271,9 +271,9 @@ namespace StockAnalyzerTest
             StockOrder closeOrder = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort,
                 closeDate1, closeDate1, closeQty1, closeValue1, orderFee);
 
-            position.AddOrder(closeOrder);
+            position.Add(closeOrder);
 
-            Assert.AreEqual(openQty1 + openQty2 - closeQty1, position.Size);
+            Assert.AreEqual(openQty1 + openQty2 - closeQty1, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(null, position.CloseDate);
@@ -295,9 +295,9 @@ namespace StockAnalyzerTest
             StockOrder closeOrder2 = StockOrder.CreateExecutedOrder(name, StockOrder.OrderType.SellAtMarketOpen, isShort,
                 closeDate2, closeDate2, closeQty2, closeValue2, orderFee);
 
-            position.AddOrder(closeOrder2);
+            position.Add(closeOrder2);
 
-            Assert.AreEqual(0, position.Size);
+            Assert.AreEqual(0, position.Number);
             Assert.AreEqual(name, position.StockName);
             Assert.AreEqual(openDate1, position.OpenDate);
             Assert.AreEqual(closeDate2, position.CloseDate);
@@ -313,7 +313,7 @@ namespace StockAnalyzerTest
             Assert.AreEqual(Math.Round(expectedReturn), Math.Round(position.TotalReturn));
         }
 
-        void position_OnPositionClosed(StockPosition2 position)
+        void position_OnPositionClosed(StockPosition position)
         {
             closeEventReceived = true;
         }
