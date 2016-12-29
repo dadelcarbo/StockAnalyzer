@@ -382,12 +382,6 @@
     <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.Designer.cs">
       <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\CAPCAOrderCreationDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\CAPCAOrderCreationDlg.Designer.cs">
-      <DependentUpon>CAPCAOrderCreationDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -405,12 +399,6 @@
     </Compile>
     <Compile Include="CustomControl\SimulationDlgs\OrderGenerationDlg.Designer.cs">
       <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\StockbrokersOrderCreationDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\StockbrokersOrderCreationDlg.Designer.cs">
-      <DependentUpon>StockbrokersOrderCreationDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\PortofolioDlgs\OrderListDlg.cs">
       <SubType>Form</SubType>
@@ -666,9 +654,6 @@
     <EmbeddedResource Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.resx">
       <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\CAPCAOrderCreationDlg.resx">
-      <DependentUpon>CAPCAOrderCreationDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.resx">
       <DependentUpon>PortfolioSimulatorDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -678,9 +663,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\OrderGenerationDlg.resx">
       <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\StockbrokersOrderCreationDlg.resx">
-      <DependentUpon>StockbrokersOrderCreationDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortofolioDlgs\OrderListDlg.resx">
       <DependentUpon>OrderListDlg.cs</DependentUpon>

@@ -4,6 +4,7 @@ using System.Linq;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzer.Portofolio
 {

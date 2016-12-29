@@ -11,6 +11,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzerApp.CustomControl
 {

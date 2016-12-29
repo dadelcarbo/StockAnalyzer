@@ -6,6 +6,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Windows.Forms;
+﻿using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.Portofolio;
-using System.Collections.ObjectModel;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {

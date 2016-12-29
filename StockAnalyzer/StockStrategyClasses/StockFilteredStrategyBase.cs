@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;

@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzer.StockStrategyClasses
 {

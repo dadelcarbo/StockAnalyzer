@@ -11,6 +11,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzerApp.CustomControl;
@@ -4316,28 +4317,7 @@ namespace StockAnalyzerApp
             orderListDlg = null;
             OnNeedReinitialise(false);
         }
-
-        private void addOrdersMenuItem_Click(object sender, System.EventArgs e)
-        {
-            StockbrokersOrderCreationDlg orderCreationDialog =
-               new StockbrokersOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "STOCKBROKERS"),
-                  StockDictionary);
-            orderCreationDialog.SavePortofolioNeeded += new SavePortofolio(this.SavePortofolios);
-            orderCreationDialog.ShowDialog();
-
-            OnNeedReinitialise(false);
-        }
-
-        private void addStockCAPCAMenuItem_Click(object sender, EventArgs e)
-        {
-            CAPCAOrderCreationDlg orderCreationDialog =
-               new CAPCAOrderCreationDlg(this.StockPortofolioList.Find(p => p.Name == "CA-CPA"), StockDictionary);
-            orderCreationDialog.SavePortofolioNeeded += new SavePortofolio(this.SavePortofolios);
-            orderCreationDialog.ShowDialog();
-
-            OnNeedReinitialise(false);
-        }
-
+        
         #endregion
 
         #region ANALYSIS MENU HANDLERS

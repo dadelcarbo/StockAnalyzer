@@ -2,8 +2,9 @@
 using System.Xml.Serialization;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.Portofolio;
 
-namespace StockAnalyzer.Portofolio
+namespace StockAnalyzer.StockPortfolio
 {
    public class StockOrder : ICloneable
    {

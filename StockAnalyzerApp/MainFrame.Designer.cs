@@ -103,8 +103,6 @@ namespace StockAnalyzerApp
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addStockBrokersOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addStockCAPCAMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newOrderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importBinckOrders = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -749,8 +747,6 @@ namespace StockAnalyzerApp
             // 
             this.portofolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.currentPortofolioMenuItem,
-            this.addStockBrokersOrdersMenuItem,
-            this.addStockCAPCAMenuItem,
             this.newOrderMenuItem,
             this.toolStripSeparator19,
             this.importBinckOrders,
@@ -767,20 +763,6 @@ namespace StockAnalyzerApp
             this.currentPortofolioMenuItem.Size = new System.Drawing.Size(236, 22);
             this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
             this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
-            // 
-            // addStockBrokersOrdersMenuItem
-            // 
-            this.addStockBrokersOrdersMenuItem.Name = "addStockBrokersOrdersMenuItem";
-            this.addStockBrokersOrdersMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.addStockBrokersOrdersMenuItem.Text = "New Orders from Stockbrokers";
-            this.addStockBrokersOrdersMenuItem.Click += new System.EventHandler(this.addOrdersMenuItem_Click);
-            // 
-            // addStockCAPCAMenuItem
-            // 
-            this.addStockCAPCAMenuItem.Name = "addStockCAPCAMenuItem";
-            this.addStockCAPCAMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.addStockCAPCAMenuItem.Text = "New Orders from CA-PCA";
-            this.addStockCAPCAMenuItem.Click += new System.EventHandler(this.addStockCAPCAMenuItem_Click);
             // 
             // newOrderMenuItem
             // 
@@ -1646,9 +1628,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem exportFinancialsMenuItem;
         private ToolStripSeparator toolStripSeparator22;
         private ToolStripButton savePortofolioToolStripButton;
-        private ToolStripMenuItem addStockBrokersOrdersMenuItem;
         private ToolStripMenuItem currentPortofolioMenuItem;
-        private ToolStripMenuItem addStockCAPCAMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem showAlertMenuItem;

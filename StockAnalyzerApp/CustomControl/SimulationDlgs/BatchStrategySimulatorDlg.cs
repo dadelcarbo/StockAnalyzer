@@ -7,6 +7,7 @@ using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzerApp.CustomControl
 {

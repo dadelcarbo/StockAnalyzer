@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzer.StockStrategyClasses
 {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzer.StockStrategyClasses
 {

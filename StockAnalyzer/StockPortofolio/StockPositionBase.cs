@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockPortfolio;
+using System;
 
 namespace StockAnalyzer.Portofolio
 {

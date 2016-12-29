@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
@@ -20,6 +20,7 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockStrategyClasses.StockMoneyManagement;
+using StockAnalyzer.Portofolio;
 
 namespace StockAnalyzer.StockClasses
 {

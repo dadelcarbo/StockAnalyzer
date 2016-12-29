@@ -2,9 +2,10 @@
 
 using System;
 using System.Linq;
-using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.Portofolio;
 
 
 

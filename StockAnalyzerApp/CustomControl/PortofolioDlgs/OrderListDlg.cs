@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio;
+using System;
 using System.Linq;
 using System.Windows.Forms;
-
-using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl
 {

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 
 
 

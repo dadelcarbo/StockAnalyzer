@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

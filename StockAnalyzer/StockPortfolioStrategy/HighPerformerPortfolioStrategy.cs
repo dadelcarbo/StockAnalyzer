@@ -7,6 +7,7 @@ using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 
 
 
