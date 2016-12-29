@@ -52,6 +52,7 @@ namespace StockAnalyzer.StockClasses
             CAC40,
             CACALL,
             SRD,
+            SRD_LO,
             EURO_A,
             EURO_B,
             EURO_C,
@@ -5961,6 +5962,8 @@ namespace StockAnalyzer.StockClasses
                     return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SRD:
                     return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSRD(this);
+                case Groups.SRD_LO:
+                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSRD_LO(this);
                 case Groups.EURO_A:
                     return (this.StockGroup == Groups.EURO_A);
                 case Groups.EURO_B:

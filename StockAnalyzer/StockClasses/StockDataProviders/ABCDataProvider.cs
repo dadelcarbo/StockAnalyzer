@@ -96,7 +96,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             InitFromFile(rootFolder, download, fileName);
 
             // Init From LBL file
-            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, new string[] { "srdp", "srdlop" }, StockSerie.Groups.SRD);
+//            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, new string[] { "srdp", "srdlop" }, StockSerie.Groups.SRD);
+            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdp", StockSerie.Groups.SRD);
+            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdlop", StockSerie.Groups.SRD_LO);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
@@ -1399,6 +1401,47 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             return srdList.Contains(stockSerie.StockName);
         }
+        private static List<string> srdloList = null;
+        public static bool BelongsToSRD_LO(StockSerie stockSerie)
+        {
+            if (srdloList == null)
+            {
+                srdloList = new List<string>();
+
+                // parse SRD_LO list
+                string fileName = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\" +
+                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD_LO.txt";
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName, true))
+                    {
+                        string line;
+                        sr.ReadLine(); // Skip first line
+                        while (!sr.EndOfStream)
+                        {
+                            line = sr.ReadLine();
+                            if (!line.StartsWith("#"))
+                            {
+                                string[] row = line.Split(';');
+                                srdloList.Add(row[1].ToUpper());
+                            }
+                        }
+                    }
+                }
+                // Sanity Check
+                foreach (string name in srdloList)
+                {
+                    if (!stockDictionary.ContainsKey(name))
+                    {
+                        StockLog.Write("CAC40 Stock not in dico: " + name);
+                    }
+                }
+            }
+
+            return srdloList.Contains(stockSerie.StockName);
+        }
+
+
         //public static void DownloadFinancial2(StockSerie stockSerie)
         //{
         //    if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
@@ -1467,7 +1510,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         //    }
         //}
 
-        public static void DownloadFinancialSummary(StockFinancial financial, string shortName)
+        public static void DownloadFinancialSummary(StockFinancial financial, string shortName, StockSerie stockSerie)
         {
             string url = "http://www.boursorama.com/bourse/profil/resume_societe.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
             StockWebHelper swh = new StockWebHelper();
@@ -1494,7 +1537,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     financial.Coupon = split.First(l => l.StartsWith("Dern")).Split(':')[1].Trim();
                     financial.Sector = split.First(l => l.StartsWith("Secteur")).Split(':')[1].Trim();
                     financial.PEA = split.First(l => l.Contains("PEA")).Split(':')[1].Trim();
-                    financial.SRD = split.First(l => l.Contains("SRD")).Split(':')[1].Trim();
+                    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
+                    {
+                        financial.SRD = "Long Short";
+                    } 
+                    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD_LO))
+                    {
+                        financial.SRD = "Long Only";
+                    }
                     financial.Indices = split.First(l => l.StartsWith("Indice")).Split(':')[1].Trim();
                     break;
                 }
@@ -1539,7 +1589,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 string shortName = stockSerie.StockGroup == StockSerie.Groups.ALTERNEXT ? "EP" : "P";
                 shortName += stockSerie.ShortName;
-                DownloadFinancialSummary(financial, shortName);
+                DownloadFinancialSummary(financial, shortName, stockSerie);
 
                 string url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
                 StockWebHelper swh = new StockWebHelper();
