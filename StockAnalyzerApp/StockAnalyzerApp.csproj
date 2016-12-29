@@ -221,7 +221,6 @@
     </Compile>
     <Compile Include="CustomControl\StatisticsDlg\StatisticsResult.cs" />
     <Compile Include="CustomControl\StatisticsDlg\StatisticsViewModel.cs" />
-    <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.cs">
       <SubType>Form</SubType>
     </Compile>

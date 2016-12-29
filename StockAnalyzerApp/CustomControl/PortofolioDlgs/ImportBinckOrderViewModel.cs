@@ -1,13 +1,12 @@
-﻿using System;
+﻿using StockAnalyzer;
+using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using StockAnalyzer.Portofolio;
 using System.IO;
+using System.Linq;
 using System.Windows;
-using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 {

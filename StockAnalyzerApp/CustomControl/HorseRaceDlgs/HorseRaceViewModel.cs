@@ -1,11 +1,11 @@
-﻿using System;
+﻿using StockAnalyzer;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace StockAnalyzerApp
+namespace StockAnalyzer
 {
    public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
    {

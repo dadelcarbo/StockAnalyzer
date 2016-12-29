@@ -24,9 +24,6 @@ namespace StockAnalyzer.StockPortfolio
         /// <summary>
         /// Dictionnary of positions
         /// </summary>
-        public SortedDictionary<string, List<StockPosition>> Positions { get { return positions; } set { if (value != positions) { positions = value; NotifyPropertyChanged("Positions"); } } }
-   
-    
-    
+        public SortedDictionary<string, List<StockPosition>> Positions { get { return positions; } set { if (value != positions) { positions = value; OnPropertyChanged("Positions"); } } }
     }
 }
