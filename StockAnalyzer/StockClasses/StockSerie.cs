@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-using StockAnalyzer.StockPortfolio;
+﻿using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
@@ -18,9 +9,17 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockStrategyClasses.StockMoneyManagement;
-using StockAnalyzer.Portofolio;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -4586,6 +4585,88 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
+        public void CalculateTOPSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int inputSmoothing)
+        {
+            float accelerationFactorUp = accelerationFactorInit;
+            float accelerationFactorDown = accelerationFactorInit;
+            bool isUpTrend = false;
+            bool isDownTrend = false;
+            sarSerieSupport = new FloatSerie(this.Values.Count(), "TOPSAR.S");
+            sarSerieResistance = new FloatSerie(this.Values.Count(), "TOPSAR.R");
+            float previousLow = float.NaN;
+            float previousHigh = float.NaN;
+            float previousSARUp = float.NaN;
+            float previousSARDown = float.NaN;
+            sarSerieResistance[0] = sarSerieResistance[1] = float.NaN;
+            sarSerieSupport[0] = sarSerieSupport[1] = float.NaN;
+
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+
+            for (int i = 2; i < this.Values.Count(); i++)
+            {
+                if (isUpTrend)
+                {
+                    float nextSAR = previousSARUp + accelerationFactorUp * (lowSerie[i] - previousSARUp);
+                    if (nextSAR >= closeSerie[i]) // UpTrendBroken
+                    {
+                        isUpTrend = false;
+                        accelerationFactorUp = accelerationFactorInit;
+                        sarSerieSupport[i] = float.NaN;
+                    }
+                    else // Up Trend continues
+                    {
+                        previousSARUp = nextSAR;
+                        sarSerieSupport[i] = previousSARUp;
+                        accelerationFactorUp = Math.Min(accelerationFactorMax, accelerationFactorUp + accelerationFactorStep);
+                    }
+                }
+                else
+                {
+                    if (lowSerie.IsBottom(i - 1)) // Uptrend starts
+                    {
+                        isUpTrend = true;
+                        accelerationFactorUp = accelerationFactorInit;
+                        sarSerieSupport[i] = previousLow = previousSARUp = lowSerie[i - 1];
+                    }
+                    else
+                    {
+                        sarSerieSupport[i] = float.NaN;
+                    }
+                }
+                if (isDownTrend)
+                {
+                    float nextSAR = previousSARDown + accelerationFactorDown * (highSerie[i] - previousSARDown);
+                    if (nextSAR <= closeSerie[i]) // DownTrendBroken
+                    {
+                        isDownTrend = false;
+                        accelerationFactorDown = accelerationFactorInit;
+                        sarSerieResistance[i] = float.NaN;
+                    }
+                    else // Down Trend continues
+                    {
+                        previousSARDown = nextSAR;
+                        sarSerieResistance[i] = previousSARDown;
+                        accelerationFactorDown = Math.Min(accelerationFactorMax, accelerationFactorDown + accelerationFactorStep);
+                    }
+                }
+                else
+                {
+                    if (highSerie.IsTop(i - 1)) // Downtrend starts
+                    {
+                        isDownTrend = true;
+                        accelerationFactorDown = accelerationFactorInit;
+                        sarSerieResistance[i] = previousHigh = previousSARDown = highSerie[i - 1];
+                    }
+                    else
+                    {
+                        sarSerieResistance[i] = float.NaN;
+                    }
+                }
+            }
+        }
+
         public void CalculateSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int inputSmoothing)
         {
             float accelerationFactor = accelerationFactorInit;
@@ -5975,7 +6056,7 @@ namespace StockAnalyzer.StockClasses
                     return (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.CACALL:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
-                
+
                 default:
                     return this.StockGroup == group;
             }
