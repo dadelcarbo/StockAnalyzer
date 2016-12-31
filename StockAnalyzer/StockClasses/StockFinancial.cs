@@ -161,6 +161,20 @@ namespace StockAnalyzer.StockClasses
                     capActifString.Add(capActif.ToString("0.##"));
                 }
             }
+
+            var cash = this.BalanceSheet.FirstOrDefault(i => i.First() == "Trésorerie et équivalents de trésorerie");
+            if (cash != null)
+            {
+                List<String> capCashString = new List<string>();
+                this.Ratios.Add(capCashString);
+                capCashString.Add("Cap/Cash");
+                for (int i = 1; i < resOp.Count; i++)
+                {
+                    long totalCash = cash[i] == null ? 0 : long.Parse(cash[i].Replace(" ", ""));
+                    float capCash = ((float)this.MarketCap / (float)(totalCash * 1000f));
+                    capCashString.Add(capCash.ToString("0.##"));
+                }
+            }
         }
     }
 }

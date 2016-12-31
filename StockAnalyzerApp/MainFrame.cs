@@ -4548,7 +4548,7 @@ namespace StockAnalyzerApp
                     if (first)
                     {
                         first = false;
-                        Console.Write("StockName");
+                        Console.Write("StockName,");
                         foreach (var ratio in stockSerie.Financial.Ratios)
                         {
                             Console.Write(ratio.First() + ",");
