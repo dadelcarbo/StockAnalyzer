@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
       TrailStop,                  /// Draw as a trailing stop
       PaintBar,                   /// Draw as a paint bar
       DecoratorPlot,              /// Draw as a plot
-      DecoratorLine,               /// Draw a a vertical line
+      DecoratorLine,              /// Draw a a vertical line
       TrailCurve
    }
    public enum ViewableItemType

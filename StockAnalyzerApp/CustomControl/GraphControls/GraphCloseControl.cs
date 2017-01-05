@@ -336,14 +336,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 }
                                                 else if (!isHilbertSR)
                                                 {
-                                                    if (stockIndicator.Events[4][index])
+                                                    if (isSupport && stockIndicator.Events[4][index])
                                                     {
                                                         this.DrawString(aGraphic, "HL", axisFont, srBrush,
                                                            this.backgroundBrush,
                                                            srPoint.X - textOffset, yPos, false);
 
                                                     }
-                                                    else if (stockIndicator.Events[5][index])
+                                                    if (isResistance && stockIndicator.Events[5][index])
                                                     {
                                                         this.DrawString(aGraphic, "LH", axisFont, srBrush,
                                                            this.backgroundBrush,

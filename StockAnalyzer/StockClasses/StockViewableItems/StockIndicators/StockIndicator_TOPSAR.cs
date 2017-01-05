@@ -59,6 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float accelerationFactorStart = (float)this.parameters[0];
             float accelerationFactorStep = (float)this.parameters[1];
             float accelerationFactorMax = (float)this.parameters[2];
+            int inputSmooting = (int)this.parameters[3];
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
@@ -66,8 +67,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie sarSupport;
             FloatSerie sarResistance;
 
-            stockSerie.CalculateTOPSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport,
-               out sarResistance, (int)this.parameters[3]);
+            stockSerie.CalculateTOPSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport, out sarResistance, inputSmooting);
 
             this.Series[0] = sarSupport;
             this.Series[1] = sarResistance;
@@ -77,17 +77,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             float previousHigh = stockSerie.Values.First().HIGH, previousLow = stockSerie.Values.First().LOW;
             float previousHigh2 = stockSerie.Values.First().HIGH, previousLow2 = stockSerie.Values.First().LOW;
-            bool waitingForEndTrend = false;
+            bool waitingForEndOfUpTrend = false;
+            bool waitingForEndOfDownTrend = false;
             for (int i = 5; i < stockSerie.Count; i++)
             {
-                if (float.IsNaN(sarResistance[i]) && !float.IsNaN(sarResistance[i - 1]))
+                if (!float.IsNaN(sarSupport[i]) && float.IsNaN(sarSupport[i - 1]))
                 {
                     this.Events[0][i] = true; // SupportDetected
 
-                    if (waitingForEndTrend)
+                    if (waitingForEndOfDownTrend)
                     {
                         this.Events[3][i] = true; // EndOfTrend
-                        waitingForEndTrend = false;
+                        waitingForEndOfDownTrend = false;
                     }
 
                     if (sarSupport[i] > previousLow)
@@ -97,20 +98,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         if (sarSupport[i] > previousHigh2)
                         {
                             this.Events[2][i] = true; // PB
-                            waitingForEndTrend = true;
+                            waitingForEndOfDownTrend = true;
                         }
                     }
                     previousLow2 = previousLow;
                     previousLow = sarSupport[i];
                 }
-                if (float.IsNaN(sarSupport[i]) && !float.IsNaN(sarSupport[i - 1]))
+                if (!float.IsNaN(sarResistance[i]) && float.IsNaN(sarResistance[i - 1]))
                 {
                     this.Events[1][i] = true; // ResistanceDetected
 
-                    if (waitingForEndTrend)
+                    if (waitingForEndOfUpTrend)
                     {
                         this.Events[3][i] = true; // EndOfTrend
-                        waitingForEndTrend = false;
+                        waitingForEndOfUpTrend = false;
                     }
 
                     if (sarResistance[i] < previousHigh)
@@ -119,23 +120,26 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         if (sarResistance[i] < previousLow2)
                         {
                             this.Events[2][i] = true; // PB
-                            waitingForEndTrend = true;
+                            waitingForEndOfUpTrend = true;
                         }
                     }
                     previousHigh2 = previousHigh;
                     previousHigh = sarResistance[i];
                 }
 
-                this.Events[6][i] = false;
-                this.Events[7][i] = false;
+                this.Events[6][i] = float.IsNaN(sarResistance[i]) && !float.IsNaN(sarResistance[i - 1]);
+                this.Events[7][i] = float.IsNaN(sarSupport[i]) && !float.IsNaN(sarSupport[i - 1]);
                 this.Events[8][i] = float.IsNaN(sarResistance[i]);
                 this.Events[9][i] = float.IsNaN(sarSupport[i]);
             }
         }
         private static string[] eventNames = new string[]
       {
-         "SupportDetected", "ResistanceDetected", "Pullback", "EndOfTrend", "HigherLow", "LowerHigh", "ResistanceBroken",
-         "SupportBroken", "Bullish", "Bearish"
+         "SupportDetected", "ResistanceDetected",
+         "Pullback", "EndOfTrend",
+         "HigherLow", "LowerHigh",
+         "ResistanceBroken", "SupportBroken", 
+         "Bullish", "Bearish"
       };
 
         //static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown" };

@@ -4608,7 +4608,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (isUpTrend)
                 {
-                    float nextSAR = previousSARUp + accelerationFactorUp * (lowSerie[i] - previousSARUp);
+                    float nextSAR = Math.Max(previousSARUp, previousSARUp + accelerationFactorUp * (lowSerie[i] - previousSARUp));
                     if (nextSAR >= closeSerie[i]) // UpTrendBroken
                     {
                         isUpTrend = false;
@@ -4637,7 +4637,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 if (isDownTrend)
                 {
-                    float nextSAR = previousSARDown + accelerationFactorDown * (highSerie[i] - previousSARDown);
+                    float nextSAR = Math.Min(previousSARDown, previousSARDown + accelerationFactorDown * (highSerie[i] - previousSARDown));
                     if (nextSAR <= closeSerie[i]) // DownTrendBroken
                     {
                         isDownTrend = false;
