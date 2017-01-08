@@ -141,7 +141,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                      break;
                   case "Single":
                      float floatParam;
-                     if (float.TryParse(parameters[i], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.GetCultureInfo("en-US"), out floatParam))
+                     if (float.TryParse(parameters[i], NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out floatParam))
                      {
                         this.parameters[i] = floatParam;
                      }

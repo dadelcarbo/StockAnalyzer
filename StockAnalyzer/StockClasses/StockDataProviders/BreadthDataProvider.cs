@@ -78,6 +78,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "TB":
                     return stockDictionary.GenerateHigherThanTrailVolSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                case "TOPSAR":
+                    return stockDictionary.GenerateTOPSARSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockSerie.StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "VAR":

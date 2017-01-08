@@ -4666,7 +4666,91 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
+        public void CalculateHLSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int hlPeriod)
+        {
+            float accelerationFactorUp = accelerationFactorInit;
+            float accelerationFactorDown = accelerationFactorInit;
+            bool isUpTrend = false;
+            bool isDownTrend = false;
+            sarSerieSupport = new FloatSerie(this.Values.Count(), "TOPSAR.S");
+            sarSerieResistance = new FloatSerie(this.Values.Count(), "TOPSAR.R");
+            float previousLow = float.NaN;
+            float previousHigh = float.NaN;
+            float previousSARUp = float.NaN;
+            float previousSARDown = float.NaN;
+            sarSerieResistance[0] = sarSerieResistance[1] = float.NaN;
+            sarSerieSupport[0] = sarSerieSupport[1] = float.NaN;
 
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+
+            IStockIndicator hlTrailSR = this.GetIndicator("TRAILHLSR(" + hlPeriod + ")");
+            FloatSerie supportSerie = hlTrailSR.Series[0];
+            FloatSerie resistanceSerie = hlTrailSR.Series[1];
+
+            for (int i = 2; i < this.Values.Count(); i++)
+            {
+                if (isUpTrend)
+                {
+                    float nextSAR = Math.Max(previousSARUp, previousSARUp + accelerationFactorUp * (lowSerie[i] - previousSARUp));
+                    if (nextSAR >= closeSerie[i]) // UpTrendBroken
+                    {
+                        isUpTrend = false;
+                        accelerationFactorUp = accelerationFactorInit;
+                        sarSerieSupport[i] = float.NaN;
+                    }
+                    else // Up Trend continues
+                    {
+                        previousSARUp = nextSAR;
+                        sarSerieSupport[i] = previousSARUp;
+                        accelerationFactorUp = Math.Min(accelerationFactorMax, accelerationFactorUp + accelerationFactorStep);
+                    }
+                }
+                else
+                {
+                    if (float.IsNaN(supportSerie[i-1]) && !float.IsNaN(supportSerie[i])) // Uptrend starts
+                    {
+                        isUpTrend = true;
+                        accelerationFactorUp = accelerationFactorInit;
+                        sarSerieSupport[i] = previousLow = previousSARUp = lowSerie[i - 1];
+                    }
+                    else
+                    {
+                        sarSerieSupport[i] = float.NaN;
+                    }
+                }
+                if (isDownTrend)
+                {
+                    float nextSAR = Math.Min(previousSARDown, previousSARDown + accelerationFactorDown * (highSerie[i] - previousSARDown));
+                    if (nextSAR <= closeSerie[i]) // DownTrendBroken
+                    {
+                        isDownTrend = false;
+                        accelerationFactorDown = accelerationFactorInit;
+                        sarSerieResistance[i] = float.NaN;
+                    }
+                    else // Down Trend continues
+                    {
+                        previousSARDown = nextSAR;
+                        sarSerieResistance[i] = previousSARDown;
+                        accelerationFactorDown = Math.Min(accelerationFactorMax, accelerationFactorDown + accelerationFactorStep);
+                    }
+                }
+                else
+                {
+                    if (float.IsNaN(resistanceSerie[i - 1]) && !float.IsNaN(resistanceSerie[i])) // Down  trend starts
+                    {
+                        isDownTrend = true;
+                        accelerationFactorDown = accelerationFactorInit;
+                        sarSerieResistance[i] = previousHigh = previousSARDown = highSerie[i - 1];
+                    }
+                    else
+                    {
+                        sarSerieResistance[i] = float.NaN;
+                    }
+                }
+            }
+        }
         public void CalculateSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int inputSmoothing)
         {
             float accelerationFactor = accelerationFactorInit;

@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TOPSAR : StockIndicatorBase
+    public class StockIndicator_HLSAR : StockIndicatorBase
     {
-        public StockIndicator_TOPSAR()
+        public StockIndicator_HLSAR()
         {
         }
 
@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Init", "Step", "Max", "InputSmooting" }; }
+            get { return new string[] { "Init", "Step", "Max", "HLPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames
         {
-            get { return new string[] { "TOPSAR.S", "TOPSAR.R" }; }
+            get { return new string[] { "HLSAR.S", "HLSAR.R" }; }
         }
 
         public override System.Drawing.Pen[] SeriePens
@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float accelerationFactorStart = (float)this.parameters[0];
             float accelerationFactorStep = (float)this.parameters[1]/100f;
             float accelerationFactorMax = (float)this.parameters[2]/100f;
-            int inputSmooting = (int)this.parameters[3];
+            int hlPeriod = (int)this.parameters[3];
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie sarSupport;
             FloatSerie sarResistance;
 
-            stockSerie.CalculateTOPSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport, out sarResistance, inputSmooting);
+            stockSerie.CalculateHLSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport, out sarResistance, hlPeriod);
 
             this.Series[0] = sarSupport;
             this.Series[1] = sarResistance;
