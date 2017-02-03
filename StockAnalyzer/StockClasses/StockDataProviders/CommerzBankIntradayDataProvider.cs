@@ -166,19 +166,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             using (WebClient wc = new WebClient())
             {
-               wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-               string url;
+                string url;
 
-               string isin = stockSerie.ISIN;
-               string market = "CBFR";
+                string isin = stockSerie.ISIN;
+                string market = "CBFR";
 
-               url = "http://www5.warrants.commerzbank.com/services/RetailMobile.svc/v1_0_3/charthistory?isin={isin}&mkt={market}&property=Bid&period=5&dayshistory=10&includebarprice=5";
-               url = url.Replace("{isin}", isin);
-               url = url.Replace("{market}", market);
-               
-               wc.DownloadFile(url, fileName);
-               stockSerie.IsInitialised = false;
+                url = "http://www5.warrants.commerzbank.com/services/RetailMobile.svc/v1_0_3/charthistory?isin={isin}&mkt={market}&property=Bid&period=5&dayshistory=10&includebarprice=5";
+                url = url.Replace("{isin}", isin);
+                url = url.Replace("{market}", market);
+                try
+                {
+                    wc.DownloadFile(url, fileName);
+                    stockSerie.IsInitialised = false;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
             }
          }
          return true;
