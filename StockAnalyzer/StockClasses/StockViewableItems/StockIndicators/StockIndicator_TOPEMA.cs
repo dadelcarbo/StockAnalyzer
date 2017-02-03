@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TOPSAR : StockIndicatorBase
+    public class StockIndicator_TOPEMA : StockIndicatorBase
     {
-        public StockIndicator_TOPSAR()
+        public StockIndicator_TOPEMA()
         {
         }
 
@@ -23,22 +23,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Init", "Step", "Max", "InputSmooting" }; }
+            get { return new string[] { "Init", "Period", "InputSmooting" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 2f, 2f, 20f, 1 }; }
+            get { return new Object[] { 0.0f,1, 1 }; }
         }
 
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 50.0f), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
 
         public override string[] SerieNames
         {
-            get { return new string[] { "TOPSAR.S", "TOPSAR.R" }; }
+            get { return new string[] { "TOPEMA.S", "TOPEMA.R" }; }
         }
 
         public override System.Drawing.Pen[] SeriePens
@@ -55,10 +55,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            float accelerationFactorStart = (float)this.parameters[0]/100f;
-            float accelerationFactorStep = (float)this.parameters[1]/100f;
-            float accelerationFactorMax = (float)this.parameters[2]/100f;
-            int inputSmooting = (int)this.parameters[3];
+            float initGap = (float)this.parameters[0];
+            int period = (int)this.parameters[1];
+            int inputSmooting = (int)this.parameters[2];
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
@@ -66,7 +65,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie sarSupport;
             FloatSerie sarResistance;
 
-            stockSerie.CalculateTOPSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport, out sarResistance, inputSmooting);
+            stockSerie.CalculateTOPEMA(period, initGap, out sarSupport, out sarResistance, inputSmooting);
 
             this.Series[0] = sarSupport;
             this.Series[1] = sarResistance;

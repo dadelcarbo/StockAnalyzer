@@ -4666,6 +4666,80 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
+        public void CalculateTOPEMA(int period, float initGap, out FloatSerie emaSerieSupport, out FloatSerie emaSerieResistance, int inputSmoothing)
+        {
+            float alpha = 2.0f / (float)(period + 1);
+            bool isUpTrend = false;
+            bool isDownTrend = false;
+            emaSerieSupport = new FloatSerie(this.Values.Count(), "TOPEMA.S");
+            emaSerieResistance = new FloatSerie(this.Values.Count(), "TOPEMA.R");
+            float previousLow = float.NaN;
+            float previousHigh = float.NaN;
+            float previousEMAUp = float.NaN;
+            float previousEMADown = float.NaN;
+            emaSerieResistance[0] = emaSerieResistance[1] = float.NaN;
+            emaSerieSupport[0] = emaSerieSupport[1] = float.NaN;
+
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+
+            for (int i = 2; i < this.Values.Count(); i++)
+            {
+                if (isUpTrend)
+                {
+                    float nextEMA = previousEMAUp + alpha * (closeSerie[i] - previousEMAUp);
+                    if (nextEMA >= closeSerie[i]) // UpTrendBroken
+                    {
+                        isUpTrend = false;
+                        emaSerieSupport[i] = float.NaN;
+                    }
+                    else // Up Trend continues
+                    {
+                        previousEMAUp = nextEMA;
+                        emaSerieSupport[i] = previousEMAUp;
+                    }
+                }
+                else
+                {
+                    if (lowSerie.IsBottom(i - 1)) // Uptrend starts
+                    {
+                        isUpTrend = true;
+                        emaSerieSupport[i] = previousLow = previousEMAUp = lowSerie[i - 1] * (1.0f - initGap);
+                    }
+                    else
+                    {
+                        emaSerieSupport[i] = float.NaN;
+                    }
+                }
+                if (isDownTrend)
+                {
+                    float nextEMA = previousEMADown + alpha * (closeSerie[i] - previousEMADown);
+                    if (nextEMA <= closeSerie[i]) // DownTrendBroken
+                    {
+                        isDownTrend = false;
+                        emaSerieResistance[i] = float.NaN;
+                    }
+                    else // Down Trend continues
+                    {
+                        previousEMADown = nextEMA;
+                        emaSerieResistance[i] = previousEMADown;
+                    }
+                }
+                else
+                {
+                    if (highSerie.IsTop(i - 1)) // Downtrend starts
+                    {
+                        isDownTrend = true;
+                        emaSerieResistance[i] = previousHigh = previousEMADown = highSerie[i - 1] * (1.0f + initGap);
+                    }
+                    else
+                    {
+                        emaSerieResistance[i] = float.NaN;
+                    }
+                }
+            }
+        }
         public void CalculateHLSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int hlPeriod)
         {
             float accelerationFactorUp = accelerationFactorInit;
@@ -4709,7 +4783,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 else
                 {
-                    if (float.IsNaN(supportSerie[i-1]) && !float.IsNaN(supportSerie[i])) // Uptrend starts
+                    if (float.IsNaN(supportSerie[i - 1]) && !float.IsNaN(supportSerie[i])) // Uptrend starts
                     {
                         isUpTrend = true;
                         accelerationFactorUp = accelerationFactorInit;
