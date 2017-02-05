@@ -320,6 +320,18 @@ namespace StockAnalyzerApp
                Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(),
                new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
+            // Deserialize Drawing Items - Read Analysis files
+            if (Settings.Default.AnalysisFile == string.Empty)
+            {
+                Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartistAnalysis.ulc";
+                Settings.Default.Save();
+            }
+            else
+            {
+                StockSplashScreen.ProgressText = "Reading Drawing items...";
+                LoadAnalysis(Settings.Default.AnalysisFile);
+            }
+
             if (this.StockDictionary.ContainsKey("SP500"))
             {
                 StockSerie cashSerie = this.StockDictionary["SP500"].GenerateCashStockSerie();
@@ -621,18 +633,6 @@ namespace StockAnalyzerApp
 
             //
             InitialiseThemeCombo();
-
-            // Deserialize Drawing Items - Read Analysis files
-            if (Settings.Default.AnalysisFile == string.Empty)
-            {
-                Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartistAnalysis.ulc";
-                Settings.Default.Save();
-            }
-            else
-            {
-                StockSplashScreen.ProgressText = "Reading Drawing items...";
-                LoadAnalysis(Settings.Default.AnalysisFile);
-            }
 
             // 
             InitialiseStockCombo();
@@ -1359,10 +1359,6 @@ namespace StockAnalyzerApp
                         System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                         StockDictionary.ReadAnalysisFromXml(xmlReader);
                     }
-                }
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Excluded).ToList())
-                { 
-                    StockDictionary.Remove(stockSerie.StockName);
                 }
                 bool dirty = false;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
@@ -2403,6 +2399,7 @@ namespace StockAnalyzerApp
         {
             // Flag as excluded
             CurrentStockSerie.StockAnalysis.Excluded = true;
+            SaveAnalysis(Settings.Default.AnalysisFile);
 
             // Remove from current combo list.
             int selectedIndex = this.stockNameComboBox.SelectedIndex;
