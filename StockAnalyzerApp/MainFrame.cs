@@ -161,7 +161,7 @@ namespace StockAnalyzerApp
 
         private PortfolioSimulatorDlg portfolioSimulatorDlg = null;
 
-        private static int nbBars;
+        private static int NbBars { get; set; }
 
         private int startIndex = 0;
         private int endIndex = 0;
@@ -252,7 +252,7 @@ namespace StockAnalyzerApp
             this.StockDictionary.ReportProgress +=
                new StockAnalyzer.StockClasses.StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
 
-            nbBars = Settings.Default.DefaultBarNumber;
+            NbBars = Settings.Default.DefaultBarNumber;
 
             Settings.Default.PropertyChanged += (sender, args) => Settings.Default.Save();
         }
@@ -962,7 +962,6 @@ namespace StockAnalyzerApp
         {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
-            nbBars = endIndex - startIndex;
         }
 
         #endregion
@@ -1010,6 +1009,7 @@ namespace StockAnalyzerApp
                 }
                 else
                 {
+                    int nbBars = NbBars;
                     if (CurrentStockSerie.Count > 1 && CurrentStockSerie.Count - 1 - nbBars < 0) // Previous serie was longer
                     {
                         nbBars = CurrentStockSerie.Count - 1;
@@ -1021,8 +1021,8 @@ namespace StockAnalyzerApp
 
         private void ZoomIn()
         {
-            nbBars = Math.Max(25, nbBars / 2);
-            int newIndex = Math.Max(0, endIndex - nbBars);
+            NbBars = Math.Max(25, NbBars / 2);
+            int newIndex = Math.Max(0, endIndex - NbBars);
             if (newIndex != this.startIndex)
             {
                 this.ChangeZoom(newIndex, endIndex);
@@ -1031,8 +1031,8 @@ namespace StockAnalyzerApp
 
         private void ZoomOut()
         {
-            nbBars = Math.Min(this.endIndex, nbBars * 2);
-            int newIndex = endIndex - nbBars;
+            NbBars = Math.Min(this.endIndex, NbBars * 2);
+            int newIndex = endIndex - NbBars;
             if (newIndex != this.startIndex)
             {
                 this.ChangeZoom(newIndex, endIndex);
@@ -1359,6 +1359,10 @@ namespace StockAnalyzerApp
                         System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                         StockDictionary.ReadAnalysisFromXml(xmlReader);
                     }
+                }
+                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Excluded).ToList())
+                { 
+                    StockDictionary.Remove(stockSerie.StockName);
                 }
                 bool dirty = false;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
@@ -2648,10 +2652,10 @@ namespace StockAnalyzerApp
 
                 if (previousBarCount != this.CurrentStockSerie.Count)
                 {
-                    nbBars = Settings.Default.DefaultBarNumber;
+                    NbBars = Settings.Default.DefaultBarNumber;
                 }
                 this.endIndex = this.CurrentStockSerie.Count - 1;
-                this.startIndex = Math.Max(0, this.endIndex - nbBars);
+                this.startIndex = Math.Max(0, this.endIndex - NbBars);
 
                 OnNeedReinitialise(true);
                 this.ApplyTheme();
