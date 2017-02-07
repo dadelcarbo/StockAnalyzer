@@ -4785,9 +4785,18 @@ namespace StockAnalyzer.StockClasses
                 {
                     if (float.IsNaN(supportSerie[i - 1]) && !float.IsNaN(supportSerie[i])) // Uptrend starts
                     {
+                        float low = lowSerie[i - 1];
+                        int index = i - 1;
+                        while (--index > 0 && float.IsNaN(supportSerie[index]))
+                        {
+                            if (lowSerie[index] < low)
+                            {
+                                low = lowSerie[index];
+                            }
+                        }
                         isUpTrend = true;
                         accelerationFactorUp = accelerationFactorInit;
-                        sarSerieSupport[i] = previousLow = previousSARUp = lowSerie[i - 1];
+                        sarSerieSupport[i] = previousLow = previousSARUp = low;
                     }
                     else
                     {
@@ -4814,9 +4823,18 @@ namespace StockAnalyzer.StockClasses
                 {
                     if (float.IsNaN(resistanceSerie[i - 1]) && !float.IsNaN(resistanceSerie[i])) // Down  trend starts
                     {
+                        float high = highSerie[i - 1];
+                        int index = i-1;
+                        while (--index > 0 && float.IsNaN(resistanceSerie[index]))
+                        {
+                            if (highSerie[index]>high)
+                            {
+                                high = highSerie[index];
+                            }
+                        }
                         isDownTrend = true;
                         accelerationFactorDown = accelerationFactorInit;
-                        sarSerieResistance[i] = previousHigh = previousSARDown = highSerie[i - 1];
+                        sarSerieResistance[i] = previousHigh = previousSARDown = high;
                     }
                     else
                     {
