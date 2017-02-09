@@ -320,6 +320,9 @@ namespace StockAnalyzerApp
                Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(),
                new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
+            //
+            InitialiseThemeCombo();
+
             // Deserialize Drawing Items - Read Analysis files
             if (Settings.Default.AnalysisFile == string.Empty)
             {
@@ -630,10 +633,7 @@ namespace StockAnalyzerApp
             // Watchlist menu item
             this.LoadWatchList();
             InitialiseWatchListComboBox();
-
-            //
-            InitialiseThemeCombo();
-
+            
             // 
             InitialiseStockCombo();
 
