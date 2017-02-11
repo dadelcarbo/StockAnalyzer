@@ -54,7 +54,6 @@ namespace StockAnalyzerApp
             this.eraseAllDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.portofolioFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -348,8 +347,7 @@ namespace StockAnalyzerApp
             // stockFilterMenuItem
             // 
             this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.groupMenuItem,
-            this.portofolioFilterMenuItem});
+            this.groupMenuItem});
             this.stockFilterMenuItem.Name = "stockFilterMenuItem";
             this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
             this.stockFilterMenuItem.Text = "Filter";
@@ -359,13 +357,6 @@ namespace StockAnalyzerApp
             this.groupMenuItem.Name = "groupMenuItem";
             this.groupMenuItem.Size = new System.Drawing.Size(131, 22);
             this.groupMenuItem.Text = "Groups";
-            // 
-            // portofolioFilterMenuItem
-            // 
-            this.portofolioFilterMenuItem.Name = "portofolioFilterMenuItem";
-            this.portofolioFilterMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.portofolioFilterMenuItem.Text = "Portofolio";
-            this.portofolioFilterMenuItem.Click += new System.EventHandler(this.portofolioFilterSubMenuItem_Click);
             // 
             // viewMenuItem
             // 
@@ -1604,7 +1595,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripButton addToReportStripBtn;
         private ToolStripButton generateDailyReportToolStripBtn;
-        private ToolStripMenuItem portofolioFilterMenuItem;
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
         private ToolStripSeparator toolStripSeparator13;
         private ToolStripSeparator toolStripSeparator14;

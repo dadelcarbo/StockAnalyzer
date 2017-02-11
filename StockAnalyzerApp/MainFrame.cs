@@ -1424,7 +1424,6 @@ namespace StockAnalyzerApp
             // Clean existing menus
             this.portofolioDetailsMenuItem.DropDownItems.Clear();
             this.orderListMenuItem.DropDownItems.Clear();
-            this.portofolioFilterMenuItem.DropDownItems.Clear();
 
             System.Windows.Forms.ToolStripItem[] portofolioMenuItems =
                new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
@@ -1439,7 +1438,7 @@ namespace StockAnalyzerApp
             int i = 0;
             foreach (StockPortofolio portofolio in this.StockPortofolioList)
             {
-                // Create portofoglio menu items
+                // Create portofolio menu items
                 portofolioDetailsSubMenuItem = new ToolStripMenuItem(portofolio.Name);
                 portofolioDetailsSubMenuItem.Click += new EventHandler(this.viewPortogolioMenuItem_Click);
                 portofolioMenuItems[i] = portofolioDetailsSubMenuItem;
@@ -1447,7 +1446,6 @@ namespace StockAnalyzerApp
                 // Create portofoglio menu items
                 portofolioFilterSubMenuItem = new ToolStripMenuItem(portofolio.Name);
                 portofolioFilterSubMenuItem.CheckOnClick = true;
-                portofolioFilterSubMenuItem.Click += new EventHandler(portofolioFilterSubMenuItem_Click);
                 portofolioFilterMenuItems[i] = portofolioFilterSubMenuItem;
 
                 // create order list menu items
@@ -1457,34 +1455,6 @@ namespace StockAnalyzerApp
             }
             this.portofolioDetailsMenuItem.DropDownItems.AddRange(portofolioMenuItems);
             this.orderListMenuItem.DropDownItems.AddRange(orderListMenuItems);
-            this.portofolioFilterMenuItem.DropDownItems.AddRange(portofolioFilterMenuItems);
-        }
-
-        private void portofolioFilterSubMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (ToolStripMenuItem subItem in this.portofolioFilterMenuItem.DropDownItems)
-            {
-                if (subItem != (ToolStripMenuItem)sender)
-                {
-                    subItem.Checked = false;
-                }
-            }
-
-            if (((ToolStripMenuItem)sender).Checked)
-            {
-                this.CurrentPortofolio = this.StockPortofolioList.Get(sender.ToString());
-                this.currentWatchList = null;
-                foreach (ToolStripMenuItem menuItem in this.portofolioFilterMenuItem.DropDownItems)
-                {
-                    menuItem.Checked = false;
-                }
-            }
-            else
-            {
-                this.CurrentPortofolio = null;
-            }
-
-            this.InitialiseStockCombo();
         }
 
         private delegate bool DownloadDataMethod(string destination, ref bool upToDate);
