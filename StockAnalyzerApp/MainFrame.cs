@@ -93,7 +93,6 @@ namespace StockAnalyzerApp
         public StockDictionary StockDictionary { get; private set; }
         public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
 
-        private StockPortofolioList stockPortofolioList = null;
         public StockPortofolioList StockPortofolioList
         {
             get
@@ -131,8 +130,6 @@ namespace StockAnalyzerApp
         }
 
         public event OnStockSerieChangedHandler StockSerieChanged;
-        private string currentWatchList = null;
-
 
         public StockSerie.StockBarDuration BarDuration
         {
@@ -459,10 +456,11 @@ namespace StockAnalyzerApp
                     //GenerateIndex_Event("SP500", "HLAVG_INV", StockSerie.StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
                 }
                 StockSplashScreen.ProgressText = "Generating CAC SAR...";
-                //for (float i = 0.0001f; i <= 0.001f; i += 0.0001f)
-                //{
-                //   GenerateCAC_SAR(true, i);
-                //}
+                for (float i = 0.001f; i <= 0.1f; i += 0.002f)
+                {
+                    StockSplashScreen.ProgressText = "Generating CAC TOPSAR_" + i + " Daily...";
+                    //GenerateCAC_Event("CAC40", StockSerie.StockBarDuration.Daily, i/15f, "INDICATOR|HLSAR(0,%PERIOD%,5,6)", "Bullish", false);
+                }
 
                 StockSplashScreen.ProgressText = "Generating CAC Random...";
                 //GenerateCAC_Random();
@@ -480,7 +478,7 @@ namespace StockAnalyzerApp
                     for (int j = 40; j <= 60; j++)
                     {
                         StockSplashScreen.ProgressText = "Generating SRD STOCK" + i + " Daily...";
-                        //GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
+                      //  GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
                     }
                 }
                 for (int i = 2; i <= 50; i += 1)
@@ -2689,59 +2687,6 @@ namespace StockAnalyzerApp
 
             return upTrend[i] && roc[i] > 0 && (upBar[i] && !upBar[i - 1]);
         }
-
-        //        string data = @"uri:/instrument/1.0/aapl/chartdata;type=quote;range=1d/csv/
-        //ticker:aapl
-        //unit:MIN
-        //timezone:EDT
-        //currency:USD
-        //gmtoffset:-14400
-        //previous_close:490.6400
-        //Timestamp:1379943000,1379966400
-        //labels:1379944800,1379948400,1379952000,1379955600,1379959200,1379962800,1379966400
-        //values:Timestamp,close,high,low,open,volume
-        //close:482.8200,494.5000
-        //high:483.5000,496.8300
-        //low:482.6200,494.4500
-        //open:482.8400,496.1900
-        //volume:100,3994000
-        //1379943059,494.1400,496.8300,494.1400,496.1900,3994000
-        //1379943119,494.3800,495.2950,493.5600,494.2600,419900
-        //1379943179,492.9000,494.2800,492.8300,494.2800,387800
-        //1379943239,492.0300,493.2600,491.5200,492.8800,395300
-        //1379943299,492.4200,492.7100,492.1200,492.1300,295600
-        //1379943344,491.9300,492.6700,491.2000,492.5100,195600
-        //1379943418,492.2990,492.4700,490.9700,492.2600,292500
-        //1379943478,491.7500,492.4400,491.4800,492.3500,162500
-        //1379943539,492.8500,492.8500,491.3300,491.4300,219200
-        //1379943599,493.7959,493.8500,492.4630,492.8400,283300";
-
-        // using (StringReader sr = new StringReader(data))
-        // {
-        //     string line = sr.ReadLine();
-        //     while (!line.StartsWith("Timestamp")) line = sr.ReadLine();
-
-        //     long timeStamp1 = long.Parse(line.Split(':')[1].Split(',')[0]);
-        //     long timeStamp2 = long.Parse(line.Split(':')[1].Split(',')[1]);
-
-        //     DateTime refDate = new DateTime(1970, 1, 1);
-
-        //     DateTime date1 = refDate.AddTicks(timeStamp1 * 10000000L);
-        //     DateTime date2 = refDate.AddTicks(timeStamp2 * 10000000L);
-
-        //     StockLog.Write("Date 1: " + date1.ToLongDateString() + " " + date1.ToLongTimeString());
-        //     StockLog.Write("Date 2: " + date2.ToLongDateString() + " " + date2.ToLongTimeString());
-
-        //     while (!line.StartsWith("volume")) line = sr.ReadLine();
-
-        //     while ((line = sr.ReadLine()) != null)
-        //     {
-        //         timeStamp1 = long.Parse(line.Split(',')[0]);
-        //         DateTime date = refDate.AddTicks(timeStamp1 * 10000000L);
-        //         StockLog.Write("Date " + date.ToShortDateString() + " Time " + date.ToShortTimeString());
-        //     }
-        //} 
-
         private void statisticsMenuItem_Click(object sender, System.EventArgs e)
         {
             StatisticsDlg statisticsDlg = new StatisticsDlg();
@@ -3238,6 +3183,70 @@ namespace StockAnalyzerApp
                 value = value / (float)cacSeries.Count;
 
                 cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)count, date));
+            }
+            foreach (StockSerie serie in cacSeries)
+            {
+                serie.BarDuration = StockSerie.StockBarDuration.Daily;
+            }
+            StockDictionary.Add(serieName, cacEWSerie);
+
+            StockLog.Write(serieName + ";" + period + ";" + cacEWSerie.Values.Last().CLOSE);
+        }
+        private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, float period,
+   string eventPattern, string eventName, bool stopOnLowBreadth)
+        {
+            var cacSeries =
+               this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+            string serieName = indexName + period + "_" + barDuration;
+            string ieventName = eventPattern.Replace("%PERIOD%", period.ToString());
+            int eventIndex =
+               ((IStockEvent)StockViewableItemsManager.GetViewableItem(ieventName)).EventNames.ToList().IndexOf(eventName);
+            if (eventIndex < 0) return;
+
+            StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
+               StockDataProvider.Generated);
+            StockSerie cacSerie = this.StockDictionary["CAC40"];
+            cacSerie.Initialise();
+            StockSerie BX4Serie = this.StockDictionary["BX4"];
+            BX4Serie.Initialise();
+            cacSeries.Add(BX4Serie);
+
+            float value = 1000f;
+            int previousCount = 0;
+            int previousNbActive = 0;
+            foreach (DateTime date in cacSerie.Keys.Where(d => d.Year > 2005))
+            {
+                float var = 0.0f;
+                int count = 0;
+                int nbActive = 0;
+                foreach (StockSerie serie in cacSeries)
+                {
+                    if (serie.ContainsKey(date))
+                    {
+                        count++;
+                        serie.BarDuration = barDuration;
+                        IStockEvent events = (IStockEvent)serie.GetViewableItem(ieventName);
+                        int index = serie.IndexOf(date) - 1;
+                        if (index >= 0 && events.Events[eventIndex][index])
+                        {
+                            StockDailyValue dailyValue = serie.GetValues(StockSerie.StockBarDuration.Daily)
+                               .ElementAt(index + 1);
+                            var += dailyValue.VARIATION;
+                            nbActive++;
+                        }
+                    }
+                }
+                if (stopOnLowBreadth && previousNbActive < count / 3)
+                {
+                    cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)0, date));
+                }
+                else
+                {
+                    if (count != 0) value += value * (var / count);
+                    cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)nbActive, date));
+                }
+                previousNbActive = nbActive;
+                previousCount = count;
             }
             foreach (StockSerie serie in cacSeries)
             {
@@ -4834,7 +4843,6 @@ border:1px solid black;
 
             string commentTitle = string.Empty;
             string commentBody = string.Empty;
-            int imageCount = 0;
             ImageFormat imageFormat = ImageFormat.Png;
             List<string> cidList = new List<string>();
             List<string> fileNameList = new List<string>();

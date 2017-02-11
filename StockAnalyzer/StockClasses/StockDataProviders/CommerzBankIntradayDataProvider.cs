@@ -181,7 +181,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     wc.DownloadFile(url, fileName);
                     stockSerie.IsInitialised = false;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return false;
                 }

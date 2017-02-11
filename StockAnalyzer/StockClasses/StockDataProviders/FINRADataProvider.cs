@@ -158,7 +158,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 sp500.Initialise();
                 var dates = sp500.Keys;
 
-                bool isUpTodate = false;
                 DateTime lastDate;
                 if (finraSerie.HighYield.Count > 0)
                 {
@@ -284,7 +283,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private bool DowloadFromFINRA(DateTime date, out StockAdvDecl investGrade, out StockAdvDecl highYield)
         {
-            bool res = false;
             investGrade = null;
             highYield = null;
 

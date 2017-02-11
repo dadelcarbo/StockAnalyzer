@@ -87,7 +87,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 int shortPeriod = (int)this.parameters[1];
 
                 FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                HalfLine2D supportLine = null; ;
                 float longHigh = float.MinValue, longLow = float.MaxValue, shortHigh = float.MinValue, shortLow = float.MaxValue;
                 for (int i = longPeriod; i < stockSerie.Count; i++)
                 {

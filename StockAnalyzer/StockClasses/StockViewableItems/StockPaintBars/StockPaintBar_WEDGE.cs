@@ -94,7 +94,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                 FloatSerie LowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 HalfLine2D risingUpLine = null, nextRisingUpLine = null;
-                PointF A, B, C, D;
+                PointF A, B;
 
                 int highIndex = highSerie.FindMaxIndex(stockSerie.Count - longPeriod, stockSerie.Count - shortPeriod - 1);
                 float high = highSerie[highIndex];
@@ -102,8 +102,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 A = new PointF(highIndex, high);
                 B = new PointF(highIndex + 1, highSerie[highIndex + 1]);
                 risingUpLine = new HalfLine2D(A, B);
-
-                float longHigh = float.MinValue, longLow = float.MaxValue, shortHigh = float.MinValue, shortLow = float.MaxValue;
 
                 List<HalfLine2D> lines = new List<HalfLine2D>();
 
