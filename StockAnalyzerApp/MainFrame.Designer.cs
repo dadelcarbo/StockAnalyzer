@@ -54,7 +54,6 @@ namespace StockAnalyzerApp
             this.eraseAllDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.watchListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -350,7 +349,6 @@ namespace StockAnalyzerApp
             // 
             this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.groupMenuItem,
-            this.watchListMenuItem,
             this.portofolioFilterMenuItem});
             this.stockFilterMenuItem.Name = "stockFilterMenuItem";
             this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
@@ -362,19 +360,12 @@ namespace StockAnalyzerApp
             this.groupMenuItem.Size = new System.Drawing.Size(131, 22);
             this.groupMenuItem.Text = "Groups";
             // 
-            // watchListMenuItem
-            // 
-            this.watchListMenuItem.Name = "watchListMenuItem";
-            this.watchListMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.watchListMenuItem.Text = "Watch lists";
-            this.watchListMenuItem.Click += new System.EventHandler(this.watchListMenuItem_Click);
-            // 
             // portofolioFilterMenuItem
             // 
             this.portofolioFilterMenuItem.Name = "portofolioFilterMenuItem";
             this.portofolioFilterMenuItem.Size = new System.Drawing.Size(131, 22);
             this.portofolioFilterMenuItem.Text = "Portofolio";
-            this.portofolioFilterMenuItem.Click += new System.EventHandler(this.watchListMenuItem_Click);
+            this.portofolioFilterMenuItem.Click += new System.EventHandler(this.portofolioFilterSubMenuItem_Click);
             // 
             // viewMenuItem
             // 
@@ -1613,7 +1604,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripButton addToReportStripBtn;
         private ToolStripButton generateDailyReportToolStripBtn;
-        private ToolStripMenuItem watchListMenuItem;
         private ToolStripMenuItem portofolioFilterMenuItem;
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
         private ToolStripSeparator toolStripSeparator13;

@@ -640,7 +640,6 @@ namespace StockAnalyzerApp
 
             // Watchlist menu item
             this.LoadWatchList();
-            InitialiseWatchListComboBox();
 
             // 
             InitialiseStockCombo();
@@ -1475,7 +1474,7 @@ namespace StockAnalyzerApp
             {
                 this.CurrentPortofolio = this.StockPortofolioList.Get(sender.ToString());
                 this.currentWatchList = null;
-                foreach (ToolStripMenuItem menuItem in this.watchListMenuItem.DropDownItems)
+                foreach (ToolStripMenuItem menuItem in this.portofolioFilterMenuItem.DropDownItems)
                 {
                     menuItem.Checked = false;
                 }
@@ -1846,44 +1845,6 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.ForceRefresh();
         }
 
-        private void InitialiseWatchListComboBox()
-        {
-            // Clean existing menus
-            this.watchListMenuItem.DropDownItems.Clear();
-
-            if (this.WatchLists != null)
-            {
-                // 
-                System.Windows.Forms.ToolStripItem[] watchListMenuItems =
-                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
-                ToolStripMenuItem watchListSubMenuItem;
-                System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems =
-                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
-                ToolStripMenuItem addToWatchListSubMenuItem;
-
-                int i = 0;
-                foreach (StockWatchList watchList in WatchLists)
-                {
-                    // Create menu items
-                    watchListSubMenuItem = new ToolStripMenuItem(watchList.Name);
-                    watchListSubMenuItem.CheckOnClick = true;
-                    watchListSubMenuItem.Click += new EventHandler(watchListMenuItem_Click);
-                    watchListMenuItems[i] = watchListSubMenuItem;
-
-                    // Create add to wath list menu items
-                    addToWatchListSubMenuItem = new ToolStripMenuItem(watchList.Name);
-                    addToWatchListSubMenuItem.Click += new EventHandler(addToWatchListSubMenuItem_Click);
-                    addToWatchListMenuItems[i++] = addToWatchListSubMenuItem;
-                }
-                this.watchListMenuItem.DropDownItems.Clear();
-                this.watchListMenuItem.DropDownItems.AddRange(watchListMenuItems);
-                this.AddToWatchListToolStripDropDownButton.DropDownItems.Clear();
-                this.AddToWatchListToolStripDropDownButton.DropDownItems.AddRange(addToWatchListMenuItems);
-            }
-            // No list is selected so far
-            currentWatchList = null;
-        }
-
         private void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
         {
             StockWatchList watchList = this.WatchLists.Find(wl => wl.Name == sender.ToString());
@@ -1893,34 +1854,6 @@ namespace StockAnalyzerApp
                 watchList.StockList.Sort();
                 this.SaveWatchList();
             }
-        }
-
-        private void watchListMenuItem_Click(object sender, System.EventArgs e)
-        {
-            foreach (ToolStripMenuItem subItem in this.watchListMenuItem.DropDownItems)
-            {
-                if (subItem != (ToolStripMenuItem)sender)
-                {
-                    subItem.Checked = false;
-                }
-            }
-
-            if (((ToolStripMenuItem)sender).Checked)
-            {
-                this.currentWatchList = sender.ToString();
-                this.CurrentPortofolio = null;
-                foreach (ToolStripMenuItem menuItem in this.portofolioFilterMenuItem.DropDownItems)
-                {
-                    menuItem.Checked = false;
-                }
-            }
-            else
-            {
-                this.currentWatchList = null;
-            }
-
-            // Refresh Stock Combo list
-            InitialiseStockCombo();
         }
 
         #endregion
@@ -3921,7 +3854,6 @@ namespace StockAnalyzerApp
                    new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
-                palmaresDlg.StockWatchListsChanged += new StockWatchListsChangedEventHandler(OnWatchListsChanged);
 
                 if (sender is SimulationParameterControl)
                 {
@@ -4009,11 +3941,6 @@ namespace StockAnalyzerApp
             {
                 this.Activate();
             }
-        }
-
-        private void OnWatchListsChanged()
-        {
-            InitialiseWatchListComboBox();
         }
 
         private void showShowStatusBarMenuItem_Click(object sender, EventArgs e)
@@ -5542,11 +5469,9 @@ border:1px solid black;
 
             WatchListDlg watchlistDlg = new WatchListDlg(this.WatchLists);
             watchlistDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            watchlistDlg.StockWatchListsChanged += new StockWatchListsChangedEventHandler(this.OnWatchListsChanged);
             if (watchlistDlg.ShowDialog() == DialogResult.OK)
             {
                 this.SaveWatchList();
-                this.InitialiseWatchListComboBox();
             }
             else
             { this.LoadWatchList(); }
