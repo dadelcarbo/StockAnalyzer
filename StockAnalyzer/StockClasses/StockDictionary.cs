@@ -30,19 +30,6 @@ namespace StockAnalyzer.StockClasses
             this.CotDictionary = new SortedDictionary<string, CotSerie>();
             this.ShortInterestDictionary = new SortedDictionary<string, ShortInterestSerie>();
         }
-        public void DetectEvents(OnSerieEventDetectionDone onSerieEventDetectionDone, StockPortofolioList stockPortofolioList, string selectedEvents)
-        {
-            // Detect Events according to the new selected list
-            foreach (StockSerie stockSerie in Values)
-            {
-                if (!stockSerie.StockAnalysis.Excluded)
-                {
-                    stockSerie.DetectEventsForGui(stockSerie.Count - 1, StockEvent.GetEventFilterMode(), stockPortofolioList, selectedEvents);
-                    // Notifiy one serie has been analysed
-                    onSerieEventDetectionDone();
-                }
-            }
-        }
         public void CreatePortofolioSerie(StockPortofolio portofolio)
         {
             string referenceStockName = string.Empty;
@@ -61,7 +48,7 @@ namespace StockAnalyzer.StockClasses
             }
             if (this.Keys.Contains(referenceStockName))
             {
-                portofolio.Initialize(this);
+                portofolio.Initialize();
                 try
                 {
                     StockSerie portfolioSerie = portofolio.GeneratePortfolioStockSerie(portofolio.Name, this[referenceStockName], portofolio.Group);

@@ -92,7 +92,15 @@ namespace StockAnalyzerApp
 
         public StockDictionary StockDictionary { get; private set; }
         public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
-        public StockPortofolioList StockPortofolioList { get; private set; }
+
+        private StockPortofolioList stockPortofolioList = null;
+        public StockPortofolioList StockPortofolioList
+        {
+            get
+            {
+                return PortfolioDataProvider.StockPortofolioList;
+            }
+        }
 
         public ToolStripProgressBar ProgressBar
         {
@@ -633,7 +641,7 @@ namespace StockAnalyzerApp
             // Watchlist menu item
             this.LoadWatchList();
             InitialiseWatchListComboBox();
-            
+
             // 
             InitialiseStockCombo();
 
@@ -1387,43 +1395,8 @@ namespace StockAnalyzerApp
 
         private void ReadPortofolios()
         {
-            if (string.IsNullOrEmpty(Settings.Default.PortofolioFile))
-            {
-                Settings.Default.PortofolioFile = "Portfolio.xml";
-            }
-            // Read Stock Values from XML
-            string orderFileName = Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile);
             try
             {
-                // Parsing portofolios
-                if (System.IO.File.Exists(orderFileName))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
-                    using (FileStream fs = new FileStream(orderFileName, FileMode.Open))
-                    {
-                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                        settings.IgnoreWhitespace = true;
-                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-
-                        this.StockPortofolioList = (StockPortofolioList)serializer.Deserialize(xmlReader);
-                    }
-                }
-                else
-                {
-                    this.StockPortofolioList = new StockPortofolioList();
-                    this.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000));
-                    this.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000));
-                    this.SavePortofolios();
-                }
-
-                // Generate Portfolio Series
-                foreach (var portfolio in this.StockPortofolioList)
-                {
-                    portfolio.Initialize(this.StockDictionary);
-                    StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, StockSerie.Groups.Portfolio, StockDataProvider.Portofolio);
-                    this.StockDictionary.Add(portfolio.Name, portfolioSerie);
-                }
-
                 RefreshPortofolioMenu();
                 this.CurrentPortofolio = this.StockPortofolioList.First();
             }
@@ -1667,29 +1640,13 @@ namespace StockAnalyzerApp
             stockNameComboBox.Items.Clear();
             stockNameComboBox.SelectedItem = string.Empty;
 
-            List<string> stocks;
-
-            List<String> stockList = new List<String>();
-            var series = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
-            foreach (StockSerie stockSerie in series)
-            {
-                if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
-                {
-                    stockList.Add(stockSerie.StockName);
-                }
-            }
-            stocks = stockList;
+            var stocks = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
             foreach (string stockName in stocks)
             {
                 if (StockDictionary.Keys.Contains(stockName))
                 {
                     StockSerie stockSerie = StockDictionary[stockName];
-
-                    // Check if in exclusion list
-                    if ((!showOnlyEventMenuItem.Checked) || stockSerie.HasEvents)
-                    {
-                        stockNameComboBox.Items.Add(stockName);
-                    }
+                    stockNameComboBox.Items.Add(stockName);
                 }
             }
             // 
@@ -1877,53 +1834,6 @@ namespace StockAnalyzerApp
         #endregion
 
         #region PREFERENCES MENU ITEM HANDLER
-
-        private void showOnlyEventMenuItem_Click(object sender, EventArgs e)
-        {
-            showOnlyEventMenuItem.Checked = !showOnlyEventMenuItem.Checked;
-            if (showOnlyEventMenuItem.Checked)
-            {
-                this.progressBar.Value = 0;
-                this.progressBar.Maximum = StockDictionary.Count;
-                StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed),
-                   this.StockPortofolioList, Settings.Default.SelectedEvents);
-                this.progressBar.Value = 0;
-            }
-            InitialiseStockCombo();
-        }
-
-        private void selectEventsMenuItem_Click(object sender, EventArgs e)
-        {
-            ResetDrawingButtons();
-
-            StockEventSelectorDlg stockEventSelectorDlg = new StockEventSelectorDlg(Settings.Default.SelectedEvents,
-               (StockEvent.EventFilterMode)
-                  Enum.Parse(typeof(StockEvent.EventFilterMode), Settings.Default.EventFilterMode));
-            if (stockEventSelectorDlg.ShowDialog() == DialogResult.OK)
-            {
-                Settings.Default.SelectedEvents = stockEventSelectorDlg.SelectedEvents;
-                Settings.Default.EventFilterMode = stockEventSelectorDlg.EventFilterMode.ToString();
-
-                // Detect new indicators
-                this.statusLabel.Text = "Detecting Events";
-                this.Refresh();
-                this.progressBar.Minimum = 0;
-                this.progressBar.Maximum = StockDictionary.Count;
-                this.progressBar.Value = 0;
-                if (this.showOnlyEventMenuItem.Checked == true)
-                {
-                    StockDictionary.DetectEvents(new StockDictionary.OnSerieEventDetectionDone(OnSerieEventProcessed),
-                       this.StockPortofolioList, Settings.Default.SelectedEvents);
-                    this.progressBar.Value = 0;
-                }
-                this.statusLabel.Text = string.Empty;
-                this.progressBar.Value = 0;
-
-                Settings.Default.Save();
-            }
-            // Reinit combo
-            InitialiseStockCombo();
-        }
 
         private void RefreshGraph()
         {
@@ -4247,7 +4157,7 @@ namespace StockAnalyzerApp
         {
             if (this.CurrentPortofolio != null)
             {
-                this.CurrentPortofolio.Initialize(StockDictionary);
+                this.CurrentPortofolio.Initialize();
                 if (portofolioDlg == null)
                 {
                     portofolioDlg = new PortofolioDlg(StockDictionary, this.CurrentPortofolio);
@@ -4272,7 +4182,7 @@ namespace StockAnalyzerApp
             {
                 this.CurrentPortofolio = portofolio;
 
-                portofolio.Initialize(StockDictionary);
+                portofolio.Initialize();
                 if (portofolioDlg == null)
                 {
 
@@ -4318,7 +4228,7 @@ namespace StockAnalyzerApp
             orderListDlg = null;
             OnNeedReinitialise(false);
         }
-        
+
         #endregion
 
         #region ANALYSIS MENU HANDLERS
@@ -4609,7 +4519,7 @@ namespace StockAnalyzerApp
         {
             // Refresh portofolio generated stock
             StockPortofolio portofolio = this.strategySimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize(StockDictionary);
+            portofolio.Initialize();
             StockDictionary.CreatePortofolioSerie(portofolio);
 
             // Refresh the screen
@@ -4636,7 +4546,7 @@ namespace StockAnalyzerApp
         {
             // Refresh portofolio generated stock
             StockPortofolio portofolio = this.filteredStrategySimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize(StockDictionary);
+            portofolio.Initialize();
             StockDictionary.CreatePortofolioSerie(portofolio);
 
             // Refresh the screen
@@ -4665,7 +4575,7 @@ namespace StockAnalyzerApp
         {
             // Refresh portofolio generated stock
             StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize(StockDictionary);
+            portofolio.Initialize();
             StockDictionary.CreatePortofolioSerie(portofolio);
 
             // Refresh the screen
@@ -4692,7 +4602,7 @@ namespace StockAnalyzerApp
         {
             // Refresh portofolio generated stock
             StockPortofolio portofolio = this.orderGenerationDlg.SelectedPortofolio;
-            portofolio.Initialize(StockDictionary);
+            portofolio.Initialize();
             StockDictionary.CreatePortofolioSerie(portofolio);
 
             // Refresh the screen
@@ -6621,7 +6531,7 @@ border:1px solid black;
 
                             if (portofolioDlg != null)
                             {
-                                this.CurrentPortofolio.Initialize(this.StockDictionary);
+                                this.CurrentPortofolio.Initialize();
                                 portofolioDlg.SetPortofolio(this.CurrentPortofolio);
                                 portofolioDlg.Activate();
                             }

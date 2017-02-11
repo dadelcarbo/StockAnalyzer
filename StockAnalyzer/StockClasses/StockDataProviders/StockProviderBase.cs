@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          }
       }
 
-      private static IStockDataProvider GetDataProvider(StockDataProvider dataProviderType)
+      public static IStockDataProvider GetDataProvider(StockDataProvider dataProviderType)
       {
          IStockDataProvider dataProvider = null;
          switch (dataProviderType)

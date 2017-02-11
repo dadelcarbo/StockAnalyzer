@@ -157,7 +157,7 @@ namespace StockAnalyzerApp.CustomControl
          }
 
          // Create Portofoglio serie
-         portofolio.Initialize(stockDictionary);
+         portofolio.Initialize();
          if (stockDictionary.Keys.Contains(portofolio.Name))
          {
             stockDictionary.Remove(portofolio.Name);

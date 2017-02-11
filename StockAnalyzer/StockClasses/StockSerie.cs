@@ -336,11 +336,6 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        [XmlIgnore]
-        public bool HasEvents { get; set; }
-        [XmlIgnore]
-        public List<StockEvent.EventType> Events { get; set; }
-
         #region MANAGE TIMESPAN
 
         private StockDailyValue[] StockDailyValuesAsArray()
@@ -722,7 +717,6 @@ namespace StockAnalyzer.StockClasses
             this.StockName = stockName;
             this.ShortName = shortName;
             this.StockGroup = stockGroup;
-            this.HasEvents = false;
             this.lastDate = DateTime.MinValue;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortofolioSerie = false;
@@ -737,7 +731,6 @@ namespace StockAnalyzer.StockClasses
             this.ShortName = shortName;
             this.ISIN = isin;
             this.StockGroup = stockGroup;
-            this.HasEvents = false;
             this.lastDate = DateTime.MinValue;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortofolioSerie = false;
@@ -751,7 +744,6 @@ namespace StockAnalyzer.StockClasses
             this.StockName = barSerie.Name;
             this.ShortName = barSerie.ShortName;
             this.StockGroup = stockGroup;
-            this.HasEvents = false;
             this.lastDate = DateTime.MinValue;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortofolioSerie = false;
@@ -784,7 +776,6 @@ namespace StockAnalyzer.StockClasses
             this.PaintBarCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
-            this.Events = new List<StockEvent.EventType>();
             this.dateArray = null;
             this.valueArray = null;
 
@@ -823,10 +814,7 @@ namespace StockAnalyzer.StockClasses
 
                     // Force indicator,data,event and other to null;
                     PreInitialise();
-
-                    // Events initialisation
-                    HasEvents = false;
-
+                    
                     if (this.barDuration == StockBarDuration.Daily &&
                         !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
                     {
@@ -2241,45 +2229,6 @@ namespace StockAnalyzer.StockClasses
                 }
             }
             return allEvents;
-        }
-        public void DetectEventsForGui(int index, StockEvent.EventFilterMode filterMode, StockPortofolioList stockPortofolioList, string selectedEvent)
-        {
-            // Find all events for this serie
-            if (filterMode == StockEvent.EventFilterMode.EventAll)
-            {
-                this.HasEvents = true;
-            }
-            else
-            {
-                this.HasEvents = false;
-            }
-            // Get the list of events to detect
-            StockEvent.EventType[] eventsToDetect = StockEvent.EventTypesFromString(selectedEvent);
-            bool eventDetected = false;
-            List<StockEvent.EventType> events = new List<StockEvent.EventType>();
-            foreach (StockEvent.EventType eventType in eventsToDetect)
-            {
-                eventDetected = this.DetectEvent(eventType, index);
-                if (filterMode == StockEvent.EventFilterMode.EventAll)
-                {
-                    if (!eventDetected)
-                    {
-                        this.HasEvents = false;
-                    }
-                    else
-                    {
-                        this.Events.Add(eventType);
-                    }
-                }
-                else
-                {
-                    if (eventDetected)
-                    {
-                        this.HasEvents = true;
-                        this.Events.Add(eventType);
-                    }
-                }
-            }
         }
         #endregion
         #region Hilbert Sine Wave Methods

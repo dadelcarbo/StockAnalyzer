@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using StockAnalyzer.Portofolio;
+using StockAnalyzerSettings.Properties;
+using System.IO;
+using System.Xml.Serialization;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-   class PortfolioDataProvider : StockDataProviderBase
+   public class PortfolioDataProvider : StockDataProviderBase
    {
       public override bool SupportsIntradayDownload
       {
@@ -15,6 +19,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
       {
+          if (string.IsNullOrEmpty(Settings.Default.PortofolioFile))
+          {
+              Settings.Default.PortofolioFile = "Portfolio.xml";
+          }
+          // Read Stock Values from XML
+          string orderFileName = Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile);
+          try
+          {
+              // Parsing portofolios
+              if (System.IO.File.Exists(orderFileName))
+              {
+                  XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
+                  using (FileStream fs = new FileStream(orderFileName, FileMode.Open))
+                  {
+                      System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                      settings.IgnoreWhitespace = true;
+                      System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+
+                      PortfolioDataProvider.StockPortofolioList = (StockPortofolioList)serializer.Deserialize(xmlReader);
+                  }
+              }
+              else
+              {
+                  PortfolioDataProvider.StockPortofolioList = new StockPortofolioList();
+                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000));
+                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000));
+              }
+
+              // Generate Portfolio Series
+              foreach (var portfolio in PortfolioDataProvider.StockPortofolioList)
+              {
+                  StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, StockSerie.Groups.Portfolio, StockDataProvider.Portofolio);
+                  stockDictionary.Add(portfolio.Name, portfolioSerie);
+              }
+          }
+          catch (System.Exception exception)
+          {
+              string message = exception.Message;
+              if (exception.InnerException != null)
+              {
+                  message += "\n\r" + exception.InnerException.Message;
+              }
+              MessageBox.Show(message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
       }
 
       public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
@@ -31,5 +79,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
          return true;
       }
+
+      public static StockPortofolioList StockPortofolioList { get; set; }
    }
 }

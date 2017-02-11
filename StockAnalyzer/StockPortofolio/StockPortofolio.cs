@@ -32,11 +32,9 @@ namespace StockAnalyzer.Portofolio
       private float totalIncome = 0.0f;
       private float currentStockValue = 0.0f;
 
-      private StockDictionary stockDictionary;
-      public void Initialize(StockDictionary stockDictionary)
+      private StockDictionary StockDictionary { get { return StockDictionary.StockDictionarySingleton; } }
+      public void Initialize()
       {
-         this.stockDictionary = stockDictionary;
-
          totalIncome = 0.0f;
          currentStockValue = 0.0f;
 
@@ -47,9 +45,9 @@ namespace StockAnalyzer.Portofolio
          {
             if (stockName != this.Name)
             {
-               if (this.stockDictionary.ContainsKey(stockName))
+               if (this.StockDictionary.ContainsKey(stockName))
                {
-                  StockSerie stockSerie = this.stockDictionary[stockName];
+                  StockSerie stockSerie = this.StockDictionary[stockName];
                   if (stockSerie.Initialise())
                   {
                      currentStockValue += stockSerie.Values.Last().CLOSE * nbActiveStock[stockName];
@@ -233,12 +231,12 @@ namespace StockAnalyzer.Portofolio
                   }
                   else
                   {
-                     if (stockDictionary.ContainsKey(stockOrder.StockName) &&
-                         stockDictionary[stockOrder.StockName].Initialise())
+                     if (StockDictionary.ContainsKey(stockOrder.StockName) &&
+                         StockDictionary[stockOrder.StockName].Initialise())
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(numberOfShare, stockOrder.Value,
-                              stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
                      }
                      else
                      {
@@ -294,12 +292,12 @@ namespace StockAnalyzer.Portofolio
                      // Open short position
                      cash += stockOrder.TotalCost;
 
-                     if (stockDictionary.ContainsKey(stockOrder.StockName) &&
-                         stockDictionary[stockOrder.StockName].Initialise())
+                     if (StockDictionary.ContainsKey(stockOrder.StockName) &&
+                         StockDictionary[stockOrder.StockName].Initialise())
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(-numberOfShare, stockOrder.Value,
-                              stockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
                      }
                      else
                      {

@@ -56,9 +56,6 @@ namespace StockAnalyzerApp
             this.groupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EventMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showOnlyEventMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectEventsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -354,8 +351,7 @@ namespace StockAnalyzerApp
             this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.groupMenuItem,
             this.watchListMenuItem,
-            this.portofolioFilterMenuItem,
-            this.EventMenuItem});
+            this.portofolioFilterMenuItem});
             this.stockFilterMenuItem.Name = "stockFilterMenuItem";
             this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
             this.stockFilterMenuItem.Text = "Filter";
@@ -379,29 +375,6 @@ namespace StockAnalyzerApp
             this.portofolioFilterMenuItem.Size = new System.Drawing.Size(131, 22);
             this.portofolioFilterMenuItem.Text = "Portofolio";
             this.portofolioFilterMenuItem.Click += new System.EventHandler(this.watchListMenuItem_Click);
-            // 
-            // EventMenuItem
-            // 
-            this.EventMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showOnlyEventMenuItem,
-            this.selectEventsMenuItem});
-            this.EventMenuItem.Name = "EventMenuItem";
-            this.EventMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.EventMenuItem.Text = "Events";
-            // 
-            // showOnlyEventMenuItem
-            // 
-            this.showOnlyEventMenuItem.Name = "showOnlyEventMenuItem";
-            this.showOnlyEventMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.showOnlyEventMenuItem.Text = "ShowOnlyEvent";
-            this.showOnlyEventMenuItem.Click += new System.EventHandler(this.showOnlyEventMenuItem_Click);
-            // 
-            // selectEventsMenuItem
-            // 
-            this.selectEventsMenuItem.Name = "selectEventsMenuItem";
-            this.selectEventsMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.selectEventsMenuItem.Text = "Select Events";
-            this.selectEventsMenuItem.Click += new System.EventHandler(this.selectEventsMenuItem_Click);
             // 
             // viewMenuItem
             // 
@@ -1573,8 +1546,6 @@ namespace StockAnalyzerApp
         private ToolStripComboBox barDurationComboBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
-        private ToolStripMenuItem showOnlyEventMenuItem;
-        private ToolStripMenuItem selectEventsMenuItem;
         private ToolStripMenuItem optionsMenuItem;
         private ToolStripMenuItem configDataProviderMenuItem;
         private ToolStripButton sarLineStripBtn;
@@ -1592,7 +1563,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem viewMenuItem;
         private ToolStripButton commentBtn;
-        private ToolStripMenuItem EventMenuItem;
         private ToolStripMenuItem portofolioMenuItem;
         private ToolStripMenuItem portofolioDetailsMenuItem;
         private ToolStripButton magnetStripBtn;
