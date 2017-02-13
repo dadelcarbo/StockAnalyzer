@@ -2311,7 +2311,7 @@ namespace StockAnalyzerApp
             }
 
             // Clean existing menus
-            this.groupMenuItem.DropDownItems.Clear();
+            this.stockFilterMenuItem.DropDownItems.Clear();
 
             List<ToolStripItem> groupMenuItems = new List<ToolStripItem>();
             ToolStripMenuItem groupSubMenuItem;
@@ -2344,7 +2344,7 @@ namespace StockAnalyzerApp
                 Settings.Default.Save();
             }
 
-            this.groupMenuItem.DropDownItems.AddRange(groupMenuItems.ToArray());
+            this.stockFilterMenuItem.DropDownItems.AddRange(groupMenuItems.ToArray());
         }
 
         private void groupSubMenuItem_Click(object sender, EventArgs e)
@@ -3884,7 +3884,7 @@ namespace StockAnalyzerApp
 
                 this.selectedGroup = newGroup;
 
-                foreach (ToolStripMenuItem groupSubMenuItem in this.groupMenuItem.DropDownItems)
+                foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
                 {
                     groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
                 }

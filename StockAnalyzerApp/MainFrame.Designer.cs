@@ -53,7 +53,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
             this.eraseAllDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -346,17 +345,10 @@ namespace StockAnalyzerApp
             // 
             // stockFilterMenuItem
             // 
-            this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.groupMenuItem});
+            this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {});
             this.stockFilterMenuItem.Name = "stockFilterMenuItem";
             this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
             this.stockFilterMenuItem.Text = "Filter";
-            // 
-            // groupMenuItem
-            // 
-            this.groupMenuItem.Name = "groupMenuItem";
-            this.groupMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.groupMenuItem.Text = "Groups";
             // 
             // viewMenuItem
             // 
@@ -1549,7 +1541,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem portofolioDetailsMenuItem;
         private ToolStripButton magnetStripBtn;
         private ToolStripMenuItem palmaresMenuItem;
-        private ToolStripMenuItem groupMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel;
         private ToolStripProgressBar progressBar;
