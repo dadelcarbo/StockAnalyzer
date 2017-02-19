@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             InitFromFile(rootFolder, download, fileName);
 
             // Init From LBL file
-//            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, new string[] { "srdp", "srdlop" }, StockSerie.Groups.SRD);
+            //            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, new string[] { "srdp", "srdlop" }, StockSerie.Groups.SRD);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdp", StockSerie.Groups.SRD);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdlop", StockSerie.Groups.SRD_LO);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
@@ -663,7 +663,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         readValue = this.ReadMarketDataFromABCCSVStream(sr, stockSerie.StockName, true);
                         if (readValue != null)
                         {
-
                             if (!stockSerie.ContainsKey(readValue.DATE))
                             {
                                 stockSerie.Add(readValue.DATE, readValue);
@@ -1108,8 +1107,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-
-        private bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
+        private bool DownloadFileFromProvider2(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
         {
             bool success = true;
             try
@@ -1140,6 +1138,78 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     + "ctl00%24BodyABC%24strDateFin=$END_DAY%2F$END_MONTH%2F$END_YEAR&"
                     + "ctl00%24BodyABC%24oneSico=on&"
                     + "ctl00%24BodyABC%24txtOneSico=$ISIN&"
+                    + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger&"
+                    + "ctl00%24BodyABC%24dlFormat=w&"
+                    + "ctl00%24BodyABC%24listFormat=isin";
+
+                postData = postData.Replace("$ISIN", ISIN);
+
+                postData = postData.Replace("$START_DAY", startDate.Day.ToString());
+                postData = postData.Replace("$START_MONTH", startDate.Month.ToString());
+                postData = postData.Replace("$START_YEAR", startDate.Year.ToString());
+                postData = postData.Replace("$END_DAY", endDate.Day.ToString());
+                postData = postData.Replace("$END_MONTH", endDate.Month.ToString());
+                postData = postData.Replace("$END_YEAR", endDate.Year.ToString());
+
+                byte[] data = Encoding.ASCII.GetBytes(postData);
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+
+                req.CookieContainer = new CookieContainer();
+                req.ContentType = "application/x-www-form-urlencoded";
+                req.ContentLength = data.Length;
+                req.Method = "POST";
+                req.AllowAutoRedirect = false;
+                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+                req.Headers.Add("Accept-Language", "fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3");
+                req.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36";
+                req.Referer = url;
+
+                Stream newStream = req.GetRequestStream();
+                // Send the data.
+                newStream.Write(data, 0, data.Length);
+                newStream.Close();
+
+                success = SaveResponseToFile(destFolder + @"\" + fileName, req);
+            }
+            catch (System.Exception ex)
+            {
+                StockLog.Write(ex);
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
+                success = false;
+            }
+            return success;
+        }
+
+        private bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
+        {
+            bool success = true;
+            try
+            {
+                // Send POST request
+                //string url = "http://www.abcbourse.com/download/historiques.aspx";
+                string url = "https://www.abcbourse.com/download/download.aspx?s=" + ISIN;
+                if (dailyViewState == string.Empty)
+                {
+                    // Get ViewState 
+                    using (WebClient webClient = new WebClient())
+                    {
+                        webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36");
+                        byte[] response = webClient.DownloadData(url);
+
+                        string htmlContent = Encoding.ASCII.GetString(response);
+                        dailyViewState = ExtractValue(htmlContent, "__VIEWSTATE");
+                        dailyEventValidation = ExtractValue(htmlContent, "__EVENTVALIDATION");
+                    }
+                }
+
+                string postData = "ctl00_BodyABC_ToolkitScriptManager1_HiddenField=%3B%3BAjaxControlToolkit%2C+Version%3D3.0.20229.20843%2C+Culture%3Dneutral%2C+PublicKeyToken%3D28f01b0e84b6d53e%3Afr-FR%3A3b7d1b28-161f-426a-ab77-b345f2c428f5%3A865923e8%3A9b7907bc%3A411fea1c%3Ae7c87f07%3A91bd373d%3Abbfda34c%3A30a78ec5%3A9349f837%3Ad4245214%3A77c58d20%3A14b56adc%3A8e72a662%3Aacd642d2%3A596d588c%3A269a19ae&"
+                    + "__EVENTTARGET=&"
+                    + "__EVENTARGUMENT=&"
+                    + "__VIEWSTATE=" + dailyViewState + "&"
+                    + "__EVENTVALIDATION=" + dailyEventValidation + "&"
+                    + "ctl00%24txtAutoComplete=&"
+                    + "ctl00%24BodyABC%24txtFrom=$START_DAY%2F$START_MONTH%2F$START_YEAR&"
+                    + "ctl00%24BodyABC%24txtTo=$END_DAY%2F$END_MONTH%2F$END_YEAR&"
                     + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger&"
                     + "ctl00%24BodyABC%24dlFormat=w&"
                     + "ctl00%24BodyABC%24listFormat=isin";
@@ -1540,7 +1610,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
                     {
                         financial.SRD = "Long Short";
-                    } 
+                    }
                     if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD_LO))
                     {
                         financial.SRD = "Long Only";
