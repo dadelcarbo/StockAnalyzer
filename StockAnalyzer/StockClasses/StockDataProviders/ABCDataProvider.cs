@@ -1028,17 +1028,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Send POST request
                 string url = "https://www.abcbourse.com/download/historiques.aspx";
 
-
-                // Get ViewState 
-                using (WebClient webClient = new WebClient())
+                if (string.IsNullOrEmpty(dailyViewState) || string.IsNullOrEmpty(dailyViewStateGenerator))
                 {
-                    webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36");
-                    byte[] response = webClient.DownloadData(url);
+                    // Get ViewState 
+                    using (WebClient webClient = new WebClient())
+                    {
+                        webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36");
+                        byte[] response = webClient.DownloadData(url);
 
-                    string htmlContent = Encoding.ASCII.GetString(response);
-                    dailyViewState = ExtractValue(htmlContent, "__VIEWSTATE");
-                    dailyViewStateGenerator = ExtractValue(htmlContent, "__VIEWSTATEGENERATOR");
-                    dailyEventValidation = ExtractValue(htmlContent, "__EVENTVALIDATION");
+                        string htmlContent = Encoding.ASCII.GetString(response);
+                        dailyViewState = ExtractValue(htmlContent, "__VIEWSTATE");
+                        dailyViewStateGenerator = ExtractValue(htmlContent, "__VIEWSTATEGENERATOR");
+                        dailyEventValidation = ExtractValue(htmlContent, "__EVENTVALIDATION");
+                    }
                 }
 
                 string postData = "ctl00_BodyABC_ToolkitScriptManager1_HiddenField=%3B%3BAjaxControlToolkit%2C+Version%3D3.0.20229.20843%2C+Culture%3Dneutral%2C+PublicKeyToken%3D28f01b0e84b6d53e%3Afr-FR%3A3b7d1b28-161f-426a-ab77-b345f2c428f5%3A865923e8%3A9b7907bc%3A411fea1c%3Ae7c87f07%3A91bd373d%3Abbfda34c%3A30a78ec5%3A9349f837%3Ad4245214%3A77c58d20%3A14b56adc%3A8e72a662%3Aacd642d2%3A596d588c%3A269a19ae&"
@@ -1110,7 +1112,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 // Send POST request
                 string url = "https://www.abcbourse.com/download/historiques.aspx";
-                if (dailyViewState == string.Empty)
+                if (dailyViewState == string.Empty || dailyViewStateGenerator == string.Empty)
                 {
                     // Get ViewState 
                     using (WebClient webClient = new WebClient())
