@@ -478,7 +478,7 @@ namespace StockAnalyzerApp
                     for (int j = 40; j <= 60; j++)
                     {
                         StockSplashScreen.ProgressText = "Generating SRD STOCK" + i + " Daily...";
-                      //  GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
+                        //  GenerateIndex_Event("CAC40", "STOCK", StockSerie.StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
                     }
                 }
                 for (int i = 2; i <= 50; i += 1)
@@ -5608,6 +5608,11 @@ border:1px solid black;
                             }
                         }
                         break;
+                    case Keys.F3:
+                        {
+                            this.ShowMultiTimeFrameDlg();
+                        }
+                        break;
                     case Keys.F5:
                         {
                             this.DownloadStock();
@@ -5669,6 +5674,13 @@ border:1px solid black;
                 }
             }
             return true;
+        }
+
+        private void ShowMultiTimeFrameDlg()
+        {
+            MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
+            mtg.ApplyTheme(this.currentStockSerie);
+            mtg.ShowDialog();
         }
 
         private StockRiskCalculatorDlg riskCalculatorDlg = null;
@@ -6059,8 +6071,12 @@ border:1px solid black;
 
         public Dictionary<string, List<string>> GetCurrentTheme()
         {
+            if (!this.themeDictionary.ContainsKey(this.CurrentTheme))
+                // LoadTheme
+                LoadCurveTheme(currentTheme);
             return this.themeDictionary[this.CurrentTheme];
         }
+
 
         public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
         public event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;

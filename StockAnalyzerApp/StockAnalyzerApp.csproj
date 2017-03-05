@@ -178,6 +178,12 @@
     <Compile Include="CustomControl\FixedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\FullGraphUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\FullGraphUserControl.Designer.cs">
+      <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -205,6 +211,12 @@
     </Compile>
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\TrendToColorConverter.cs" />
+    <Compile Include="CustomControl\MultiTimeFrameChartDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\MultiTimeFrameChartDlg.Designer.cs">
+      <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
@@ -532,6 +544,9 @@
     <EmbeddedResource Include="CustomControl\FinancialDlg\StockFinancialForm.resx">
       <DependentUpon>StockFinancialForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
+      <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -545,6 +560,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\MultiTimeFrameDlg\MTFDlg.resx">
       <DependentUpon>MTFDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
+      <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.resx">
       <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
