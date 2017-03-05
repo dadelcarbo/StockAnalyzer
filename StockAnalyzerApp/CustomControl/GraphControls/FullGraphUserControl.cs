@@ -414,14 +414,21 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     // Reinitialise drawing
                     this.Cursor = Cursors.Arrow;
-                    this.graphCloseControl.OnZoomChanged(startIndex, endIndex);
-                    this.graphVolumeControl.OnZoomChanged(startIndex, endIndex);
+                    this.OnZoomChanged(startIndex, endIndex);
                 }
 
                 catch (Exception ex)
                 {
                     StockAnalyzerException.MessageBox(ex);
                 }
+            }
+        }
+
+        private void OnZoomChanged(int startIndex, int endIndex)
+        {
+            foreach (var graph in this.graphList)
+            {
+                graph.OnZoomChanged(startIndex, endIndex);
             }
         }
     }

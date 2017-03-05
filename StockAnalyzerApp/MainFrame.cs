@@ -5679,7 +5679,7 @@ border:1px solid black;
         private void ShowMultiTimeFrameDlg()
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
-            mtg.ApplyTheme(this.currentStockSerie);
+            mtg.Initialize(this.selectedGroup ,this.currentStockSerie);
             mtg.ShowDialog();
         }
 
