@@ -49,60 +49,65 @@ namespace StockAnalyzerApp.CustomControl
             this.tableLayoutPanel1.Controls.Add(this.fullGraphUserControl2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.fullGraphUserControl3, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 29);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 30);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(735, 366);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(735, 428);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // fullGraphUserControl1
             // 
+            this.fullGraphUserControl1.CurrentStockSerie = null;
             this.fullGraphUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl1.EndIndex = 0;
             this.fullGraphUserControl1.Location = new System.Drawing.Point(3, 3);
             this.fullGraphUserControl1.Name = "fullGraphUserControl1";
-            this.fullGraphUserControl1.Size = new System.Drawing.Size(239, 360);
+            this.fullGraphUserControl1.Size = new System.Drawing.Size(239, 422);
             this.fullGraphUserControl1.StartIndex = 0;
             this.fullGraphUserControl1.TabIndex = 0;
             // 
             // fullGraphUserControl2
             // 
+            this.fullGraphUserControl2.CurrentStockSerie = null;
             this.fullGraphUserControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl2.EndIndex = 0;
             this.fullGraphUserControl2.Location = new System.Drawing.Point(248, 3);
             this.fullGraphUserControl2.Name = "fullGraphUserControl2";
-            this.fullGraphUserControl2.Size = new System.Drawing.Size(239, 360);
+            this.fullGraphUserControl2.Size = new System.Drawing.Size(239, 422);
             this.fullGraphUserControl2.StartIndex = 0;
             this.fullGraphUserControl2.TabIndex = 1;
             // 
             // fullGraphUserControl3
             // 
+            this.fullGraphUserControl3.CurrentStockSerie = null;
             this.fullGraphUserControl3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl3.EndIndex = 0;
             this.fullGraphUserControl3.Location = new System.Drawing.Point(493, 3);
             this.fullGraphUserControl3.Name = "fullGraphUserControl3";
-            this.fullGraphUserControl3.Size = new System.Drawing.Size(239, 360);
+            this.fullGraphUserControl3.Size = new System.Drawing.Size(239, 422);
             this.fullGraphUserControl3.StartIndex = 0;
             this.fullGraphUserControl3.TabIndex = 2;
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.stockNameComboBox, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.532663F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93.46734F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(741, 398);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(737, 461);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // stockNameComboBox
             // 
+            this.stockNameComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.stockNameComboBox.FormattingEnabled = true;
             this.stockNameComboBox.Location = new System.Drawing.Point(3, 3);
             this.stockNameComboBox.Name = "stockNameComboBox";
@@ -114,7 +119,7 @@ namespace StockAnalyzerApp.CustomControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(741, 398);
+            this.ClientSize = new System.Drawing.Size(737, 461);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Name = "MultiTimeFrameChartDlg";
             this.Text = "MultiTimeFrameGraph";

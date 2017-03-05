@@ -5680,6 +5680,7 @@ border:1px solid black;
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
             mtg.Initialize(this.selectedGroup ,this.currentStockSerie);
+            mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
         }
 

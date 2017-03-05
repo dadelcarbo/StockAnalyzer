@@ -28,18 +28,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
            // this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(graphScrollerControl_ZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphCloseControl.OnZoomChanged);
-            //this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator2Control.OnZoomChanged);
-            //this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator3Control.OnZoomChanged);
-            //this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
+            this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator2Control.OnZoomChanged);
+            this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator3Control.OnZoomChanged);
+            this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
 
 
             // Fill the control list
             this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphScrollerControl);
-            //this.graphList.Add(this.graphIndicator1Control);
-            //this.graphList.Add(this.graphIndicator2Control);
-            //this.graphList.Add(this.graphIndicator3Control);
+            this.graphList.Add(this.graphIndicator1Control);
+            this.graphList.Add(this.graphIndicator2Control);
+            this.graphList.Add(this.graphIndicator3Control);
             this.graphList.Add(this.graphVolumeControl);
 
             foreach (var graph in graphList)
@@ -47,6 +47,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             }
 
+            this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(StockSerie.StockBarDuration)).Cast<object>().ToArray());
+            this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
+        }
+
+        void durationComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (currentStockSerie != null)
+            {
+                this.ApplyTheme((StockSerie.StockBarDuration)this.durationComboBox.SelectedItem);
+            }
         }
         private List<GraphControl> graphList = new List<GraphControl>();
 
@@ -102,15 +112,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             this.graphCloseControl.Deactivate(msg, false);
             this.graphScrollerControl.Deactivate(msg, false);
-            //this.graphIndicator1Control.Deactivate(msg, false);
-            //this.graphIndicator2Control.Deactivate(msg, false);
-            //this.graphIndicator3Control.Deactivate(msg, false);
+            this.graphIndicator1Control.Deactivate(msg, false);
+            this.graphIndicator2Control.Deactivate(msg, false);
+            this.graphIndicator3Control.Deactivate(msg, false);
             this.graphVolumeControl.Deactivate(msg, false);
             this.Cursor = Cursors.Arrow;
         }
 
         private int startIndex;
-
         public int StartIndex
         {
             get { return startIndex; }
@@ -118,19 +127,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
 
         private int endIndex;
-
         public int EndIndex
         {
             get { return endIndex; }
             set { endIndex = value; }
         }
+
+        private StockSerie currentStockSerie;
+        public StockSerie CurrentStockSerie
+        {
+            get { return currentStockSerie; }
+            set { currentStockSerie = value; }
+        }
         
-        
-        
-        public void ApplyTheme(StockSerie currentStockSerie, StockSerie.StockBarDuration barDuration)
+
+        public void ApplyTheme(StockSerie.StockBarDuration barDuration)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
+                this.durationComboBox.SelectedItem = barDuration;
                 try
                 {
                     var currentTheme = StockAnalyzerForm.MainFrame.GetCurrentTheme();
@@ -150,7 +165,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     // Set the bar duration
                     currentStockSerie.BarDuration = barDuration;
 
-                    this.StartIndex = Math.Max(0, currentStockSerie.Count - 100);
+                    this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                     this.EndIndex = currentStockSerie.Count-1;
 
                     if (currentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
@@ -193,15 +208,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 case "SCROLLGRAPH":
                                     graphControl = this.graphScrollerControl;
                                     break;
-                                //case "INDICATOR1GRAPH":
-                                //    graphControl = this.graphIndicator1Control;
-                                //    break;
-                                //case "INDICATOR2GRAPH":
-                                //    graphControl = this.graphIndicator2Control;
-                                //    break;
-                                //case "INDICATOR3GRAPH":
-                                //    graphControl = this.graphIndicator3Control;
-                                //    break;
+                                case "INDICATOR1GRAPH":
+                                    graphControl = this.graphIndicator1Control;
+                                    break;
+                                case "INDICATOR2GRAPH":
+                                    graphControl = this.graphIndicator2Control;
+                                    break;
+                                case "INDICATOR3GRAPH":
+                                    graphControl = this.graphIndicator3Control;
+                                    break;
                                 case "VOLUMEGRAPH":
                                     if (currentStockSerie.HasVolume)
                                     {

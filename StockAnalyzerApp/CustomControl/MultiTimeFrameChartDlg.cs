@@ -23,18 +23,21 @@ namespace StockAnalyzerApp.CustomControl
         public void Initialize(StockSerie.Groups group, StockSerie stockSerie)
         {
             this.selectedGroup = group;
-            InitialiseStockCombo();
-
             this.CurrentStockSerie = stockSerie;
+
+            InitialiseStockCombo();
         }
 
         public void ApplyTheme()
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                this.fullGraphUserControl1.ApplyTheme(currentStockSerie, StockSerie.StockBarDuration.Bar_6);
-                this.fullGraphUserControl2.ApplyTheme(currentStockSerie, StockSerie.StockBarDuration.Bar_3);
-                this.fullGraphUserControl3.ApplyTheme(currentStockSerie, StockSerie.StockBarDuration.Daily);
+                this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
+                this.fullGraphUserControl1.ApplyTheme(StockSerie.StockBarDuration.Bar_6);
+                this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
+                this.fullGraphUserControl2.ApplyTheme(StockSerie.StockBarDuration.Bar_3);
+                this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
+                this.fullGraphUserControl3.ApplyTheme(StockSerie.StockBarDuration.Daily);
             }
         }
 
@@ -68,6 +71,7 @@ namespace StockAnalyzerApp.CustomControl
                     stockNameComboBox.Items.Add(stockName);
                 }
             }
+            stockNameComboBox.SelectedItem = this.currentStockSerie.StockName;
         }
 
         private StockSerie currentStockSerie;
