@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.CustomControl.GraphControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,9 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
+            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Bar_6);
+            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.Bar_3);
+            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily);
             InitializeComponent();
         }
 
@@ -24,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl
         {
             this.selectedGroup = group;
             this.CurrentStockSerie = stockSerie;
-
+            
             InitialiseStockCombo();
         }
 
@@ -33,11 +37,11 @@ namespace StockAnalyzerApp.CustomControl
             using (MethodLogger ml = new MethodLogger(this))
             {
                 this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl1.ApplyTheme(StockSerie.StockBarDuration.Bar_6);
+                this.fullGraphUserControl1.ApplyTheme();
                 this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl2.ApplyTheme(StockSerie.StockBarDuration.Bar_3);
+                this.fullGraphUserControl2.ApplyTheme();
                 this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl3.ApplyTheme(StockSerie.StockBarDuration.Daily);
+                this.fullGraphUserControl3.ApplyTheme();
             }
         }
 

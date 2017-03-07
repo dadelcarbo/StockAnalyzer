@@ -22,9 +22,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 {
     public partial class FullGraphUserControl : UserControl
     {
-        public FullGraphUserControl()
+        public FullGraphUserControl(StockSerie.StockBarDuration duration)
         {
             InitializeComponent();
+         
+            this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(StockSerie.StockBarDuration)).Cast<object>().ToArray());
+            this.durationComboBox.SelectedItem = duration;
+            this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
 
            // this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(graphScrollerControl_ZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphCloseControl.OnZoomChanged);
@@ -46,16 +50,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             }
-
-            this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(StockSerie.StockBarDuration)).Cast<object>().ToArray());
-            this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
         }
 
         void durationComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             if (currentStockSerie != null)
             {
-                this.ApplyTheme((StockSerie.StockBarDuration)this.durationComboBox.SelectedItem);
+                this.ApplyTheme();
             }
         }
         private List<GraphControl> graphList = new List<GraphControl>();
@@ -141,11 +142,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         
 
-        public void ApplyTheme(StockSerie.StockBarDuration barDuration)
+        public void ApplyTheme()
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                this.durationComboBox.SelectedItem = barDuration;
                 try
                 {
                     var currentTheme = StockAnalyzerForm.MainFrame.GetCurrentTheme();
@@ -163,7 +163,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
 
                     // Set the bar duration
-                    currentStockSerie.BarDuration = barDuration;
+                    currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.durationComboBox.SelectedItem;
 
                     this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                     this.EndIndex = currentStockSerie.Count-1;

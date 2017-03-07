@@ -30,9 +30,6 @@ namespace StockAnalyzerApp.CustomControl
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.fullGraphUserControl1 = new FullGraphUserControl();
-            this.fullGraphUserControl2 = new FullGraphUserControl();
-            this.fullGraphUserControl3 = new FullGraphUserControl();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.stockNameComboBox = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
