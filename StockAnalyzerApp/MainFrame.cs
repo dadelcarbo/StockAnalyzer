@@ -778,13 +778,15 @@ namespace StockAnalyzerApp
                 busy = false;
             }
         }
+        private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenUp");
+        private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenDown");
 
-        private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-        private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
-        private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
-        private StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-        private StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-        private StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
+        //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
+        //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
+        //private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
+        //private StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
+        //private StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
+        //private StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
 
         private List<StockAlertDef> alertDefs = new List<StockAlertDef>();
 
@@ -805,12 +807,13 @@ namespace StockAnalyzerApp
             busy = true;
 
             alertDefs.Clear();
-            alertDefs.Add(cciEx);
-            alertDefs.Add(barAbove);
-            alertDefs.Add(barBelow);
-            alertDefs.Add(trailHL);
-            alertDefs.Add(ResistanceBroken);
-            alertDefs.Add(trailHLSR);
+            alertDefs.Add(rsiTrailDown);
+            alertDefs.Add(rsiTrailUp);
+            //alertDefs.Add(barAbove);
+            //alertDefs.Add(barBelow);
+            //alertDefs.Add(trailHL);
+            //alertDefs.Add(ResistanceBroken);
+            //alertDefs.Add(trailHLSR);
 
             try
             {
@@ -4358,6 +4361,14 @@ namespace StockAnalyzerApp
             bool first = true;
             foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.Financial != null && s.Initialise()))
             {
+                float yield = stockSerie.Financial.Dividend / stockSerie.Last().Value.CLOSE;
+                Console.WriteLine(stockSerie.StockGroup + "," + stockSerie.StockName + "," + stockSerie.Financial.Dividend + "," + stockSerie.Last().Value.CLOSE + "," + yield.ToString("P2"));
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.Financial != null && s.Initialise()))
+            {
                 stockSerie.Financial.Value = stockSerie.Values.Last().CLOSE;
                 stockSerie.Financial.CalculateRatios();
                 if (stockSerie.Financial.Ratios != null && stockSerie.Financial.Ratios.Count > 0)
@@ -5679,7 +5690,7 @@ border:1px solid black;
         private void ShowMultiTimeFrameDlg()
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
-            mtg.Initialize(this.selectedGroup ,this.currentStockSerie);
+            mtg.Initialize(this.selectedGroup, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
         }

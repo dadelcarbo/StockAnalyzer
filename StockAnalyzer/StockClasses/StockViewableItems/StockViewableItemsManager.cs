@@ -176,7 +176,7 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart
 GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
 
      
-      private static int indCount;
+      private static int indCount = 1;
 
       private static string AppendThemeLine(IStockViewableSeries indicator, string theme)
       {
@@ -216,6 +216,22 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
                         System.Environment.NewLine + "@Indicator" + indCount);
                   }
                }
+            }
+            if (indicator is IStockTrail)
+            {
+                IStockTrail trail = indicator as IStockTrail;
+                IStockIndicator decoratedIndicator = StockIndicatorManager.CreateIndicator(trail.TrailedItem);
+                theme = theme.Replace("@Indicator" + indCount,
+                   decoratedIndicator.ToThemeString() + System.Environment.NewLine + "@Indicator" + indCount);
+                if (decoratedIndicator.HorizontalLines != null && decoratedIndicator.HorizontalLines.Count() > 0)
+                {
+                    foreach (HLine hline in decoratedIndicator.HorizontalLines)
+                    {
+                        theme = theme.Replace("@Indicator" + indCount,
+                           "LINE|" + hline.Level.ToString() + "|" + GraphCurveType.PenToString(hline.LinePen) +
+                           System.Environment.NewLine + "@Indicator" + indCount);
+                    }
+                }
             }
             theme = theme.Replace("@Indicator" + indCount, indicator.ToThemeString());
 
