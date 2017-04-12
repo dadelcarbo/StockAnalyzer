@@ -12,6 +12,7 @@ using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -210,6 +211,14 @@ namespace StockAnalyzerApp.CustomControl
                                 filterIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
                             }
                         }
+                        else if (this.filterIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.filterIndicatorTextBox.Text.Replace("TRAIL|","")))
+                        {
+                            string[] fields = this.filterIndicatorTextBox.Text.Split('|');
+                            if (fields.Length == 3)
+                            {
+                                filterIndicator = StockTrailManager.CreateTrail(fields[1], fields[2]);
+                            }
+                        }
                     }
                 }
             }
@@ -242,7 +251,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             else
             {
-                MessageBox.Show("Cannot create indicator1Name " + this.filterIndicatorTextBox.Text + " , check syntax please");
+                MessageBox.Show("Cannot create filter indicator " + this.filterIndicatorTextBox.Text + " , check syntax please");
             }
         }
 
@@ -281,6 +290,14 @@ namespace StockAnalyzerApp.CustomControl
                                 triggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
                             }
                         }
+                        else if (this.triggerIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.triggerIndicatorTextBox.Text.Replace("TRAIL|","")))
+                        {
+                            string[] fields = this.triggerIndicatorTextBox.Text.Split('|');
+                            if (fields.Length == 3)
+                            {
+                                triggerIndicator = StockTrailManager.CreateTrail(fields[1], fields[2]);
+                            }
+                        }
                     }
                 }
             }
@@ -312,7 +329,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             else
             {
-                MessageBox.Show("Cannot create indicator1Name, check syntax please");
+                MessageBox.Show("Cannot create trigger indicator " + this.triggerIndicatorTextBox.Text + " , check syntax please");
             }
         }
 
