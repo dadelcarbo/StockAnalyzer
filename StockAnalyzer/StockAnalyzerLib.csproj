@@ -181,7 +181,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_POSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />

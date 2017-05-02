@@ -1038,14 +1038,17 @@
   <data name="&gt;&gt;graphMenuStrip.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>32, 19</value>
+  </data>
   <data name="addDecoratorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>151, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="addDecoratorToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Decorator</value>
-  </data> 
+  </data>
   <data name="addTrailToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>151, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="addTrailToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Trail</value>
@@ -1058,6 +1061,12 @@
   </data>
   <data name="removeStripMenuItem.Text" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="copyStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="copyStripMenuItem.Text" xml:space="preserve">
+    <value>Copy Text To Clipboard</value>
   </data>
   <data name="indicatorMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>152, 48</value>
@@ -1239,6 +1248,12 @@
   <data name="&gt;&gt;addTrailStopsToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;copyToolStripMenuItem.Name" xml:space="preserve">
+    <value>copyToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;copyToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;addDecoratorToolStripMenuItem.Name" xml:space="preserve">
     <value>addDecoratorToolStripMenuItem</value>
   </data>
@@ -1255,6 +1270,12 @@
     <value>removeStripMenuItem</value>
   </data>
   <data name="&gt;&gt;removeStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
+    <value>toolStripMenuItem1</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
