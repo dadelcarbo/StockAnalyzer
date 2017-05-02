@@ -613,10 +613,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                                         aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, Math.Max(points.Last().Y - 8, GraphRectangle.Top));
                                     }
-                                    if (stockIndicator.SeriePens[i].DashStyle == DashStyle.Custom && stockIndicator is IRange)
+                                    if (stockIndicator.SeriePens[i].DashStyle == DashStyle.Custom)
                                     {
-                                        var range = stockIndicator as IRange;
-                                        PointF center = GetScreenPointFromValuePoint(0, (range.Max - range.Min) / 2.0f);
+                                        PointF center = GetScreenPointFromValuePoint(0, 0f);
+                                        if (stockIndicator is IRange)
+                                        {
+                                            var range = stockIndicator as IRange;
+                                            center = GetScreenPointFromValuePoint(0, (range.Max - range.Min) / 2.0f);
+                                        }
                                         int pointIndex = 0;
                                         float barWidth = Math.Max(1f, 0.80f * GraphRectangle.Width / (float)points.Count());
                                         foreach (PointF point in points)
