@@ -80,8 +80,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     halfPosition = value;
                     if (halfPosition)
                     {
-                        this.Stop = this.Position.CurrentValue * 0.9f;
-                        this.Target = this.Position.CurrentValue * 1.1f;
+                        this.Stop = this.Position.CurrentValue.CLOSE * 0.9f;
+                        this.Target = this.Position.CurrentValue.CLOSE * 1.1f;
                     }
                     else
                     {
@@ -150,6 +150,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         private int nbTrade = 0;
         private int nbWinTrade = 0;
+        private int nbTargets = 0;
+        private int nbStops = 0;
         private int nbLostTrade = 0;
 
         List<float> tradeGains = new List<float>();
@@ -163,9 +165,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
                              "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
                              "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                             "NbTargets:\t\t" + nbTargets + Environment.NewLine +
+                             "NbStops:\t\t\t" + nbStops + Environment.NewLine +
                              "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
                              "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2");
+                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2") + Environment.NewLine +
+                             "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
 
                 MessageBox.Show(msg);
 
@@ -206,10 +211,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
 
                     // Random pick
-
                     Random rand = new Random(DateTime.Now.Millisecond);
                     var series =
-                       StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.COUNTRY))
+                       StockDictionary.StockDictionarySingleton.Values.Where(s => !s.IsPortofolioSerie && s.BelongsToGroup(StockSerie.Groups.EURO_A))
                           .Select(s => s.StockName);
 
                     StockSerie serie = null;
@@ -253,7 +257,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                     this.Position.Number = 0;
                     this.Position.OpenValue = 0;
-                    this.Position.CurrentValue = replaySerie.Values.Last().CLOSE;
+                    this.Position.CurrentValue = replaySerie.Values.Last();
                     this.totalValue = 0;
 
                     started = true;
@@ -305,7 +309,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 replaySerie.Initialise();
                 dailyValue = dailyVal;
 
-                this.Position.CurrentValue = dailyValue.CLOSE;
+                this.Position.CurrentValue = dailyValue;
                 this.Variation = dailyValue.VARIATION;
 
                 this.Position.ValidatePosition();
@@ -406,26 +410,26 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
         private void PerformSell(StockDailyValue dailyValue, int qty, float value)
         {
-            this.Position.Close();
-
             // Statistics
-            //nbTrade++;
-            //if (AddedValue > 0)
-            //{
-            //    nbWinTrade++;
-            //}
-            //else
-            //{
-            //    nbLostTrade++;
-            //}
-            //tradeGains.Add(this.CalculateAddedValuePercent(value));
+            nbTrade++;
+            if (this.Position.AddedValuePercent > 0)
+            {
+                nbWinTrade++;
+            }
+            else
+            {
+                nbLostTrade++;
+            }
+            tradeGains.Add(this.Position.AddedValuePercent);
 
-            //this.totalValue += 1000f * this.CalculateAddedValuePercent(value);
-            //OnPropertyChanged("TotalValue");
+            this.totalValue += this.Position.AddedValuePercent;
+            OnPropertyChanged("TotalValue");
 
 
             StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName, StockOrder.OrderType.SellAtMarketClose, (bool)(this.Position.Number < 0), dailyValue.DATE, dailyValue.DATE, 1, value, 0);
             this.portfolio.OrderList.Add(stockOrder);
+
+            this.Position.Close();
 
             nextButton.Focus();
 

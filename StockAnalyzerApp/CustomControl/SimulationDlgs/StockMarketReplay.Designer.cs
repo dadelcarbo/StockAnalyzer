@@ -68,7 +68,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             this.startButton.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.startButton.Location = new System.Drawing.Point(197, 367);
+            this.startButton.Location = new System.Drawing.Point(197, 365);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 1;
@@ -125,7 +125,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             // totalTextBox
             // 
-            this.totalTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this, "TotalValue", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "N2"));
+            this.totalTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this, "TotalValue", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, "0", "P2"));
             this.totalTextBox.Location = new System.Drawing.Point(76, 183);
             this.totalTextBox.Name = "totalTextBox";
             this.totalTextBox.Size = new System.Drawing.Size(68, 20);
@@ -211,7 +211,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.elementHost1.Location = new System.Drawing.Point(15, 212);
+            this.elementHost1.Location = new System.Drawing.Point(15, 210);
             this.elementHost1.Name = "elementHost1";
             this.elementHost1.Size = new System.Drawing.Size(257, 149);
             this.elementHost1.TabIndex = 0;
@@ -247,7 +247,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 402);
+            this.ClientSize = new System.Drawing.Size(284, 400);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.totalTextBox);

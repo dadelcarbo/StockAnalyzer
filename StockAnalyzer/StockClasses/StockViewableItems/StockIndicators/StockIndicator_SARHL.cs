@@ -20,23 +20,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             return IndicatorDisplayStyle.SupportResistance;
          }
       }
-      public override string Definition
-      {
-         get { return "SARHL(int hlPeriod, float step, float maximum)"; }
-      }
 
       public override string[] ParameterNames
       {
-         get { return new string[] { "HLPeriod", "Step", "Max" }; }
+         get { return new string[] { "HLPeriod", "Step", "Max", "ErrorMargin" }; }
       }
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 3, 0.002f, 0.02f }; }
+         get { return new Object[] { 3, 0.002f, 0.02f, 0.05f }; }
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.00001f, 10.0f), new ParamRangeFloat(0.0001f, 100.0f) }; }
+          get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.00001f, 10.0f), new ParamRangeFloat(0.0001f, 100.0f), new ParamRangeFloat(0.0f, 1.0f) }; }
       }
 
       public override string[] SerieNames { get { return new string[] { "SARHL.S", "SARHL.R" }; } }
@@ -58,11 +54,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          int period = (int)this.parameters[0];
          float accelerationFactorStep = (float)this.parameters[1];
          float accelerationFactorMax = (float)this.parameters[2];
+         float margin = (float)this.parameters[3];
 
          FloatSerie sarSupport;
          FloatSerie sarResistance;
 
-         stockSerie.CalculateSARHL(period, accelerationFactorStep, accelerationFactorStep, accelerationFactorMax, out sarSupport, out sarResistance);
+         stockSerie.CalculateSARHL(period, accelerationFactorStep, accelerationFactorStep, accelerationFactorMax, margin, out sarSupport, out sarResistance);
 
          this.Series[0] = sarSupport;
          this.Series[1] = sarResistance;

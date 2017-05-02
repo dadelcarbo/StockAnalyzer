@@ -159,14 +159,18 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             int nbClosedPosition = 0;
             for (int i = 0; !inPosition && i < stockSerie.Count - 50; i++)
             {
-                // Open position whitout condition
-                buy = closeSerie[i];
-                S1 = buy * stopRatio;
-                R1 = buy * targetRatio;
-                inPosition = true;
+                if (stockEvent.Events[eventIndex][i])
+                {
+                    // Open position whitout condition
+                    buy = closeSerie[i];
+                    S1 = buy * stopRatio;
+                    R1 = buy * targetRatio;
+                    inPosition = true;
+                }
 
                 // Manage running position
-                for (int j = i + 1; inPosition && j < stockSerie.Count; j++)
+                int j;
+                for (j = i + 1; inPosition && j < stockSerie.Count; j++)
                 {
                     if (lowSerie[j] <= S1) // Stop loass reached, sell...
                     {
@@ -183,6 +187,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                         nbClosedPosition++;
                     }
                 }
+                i = j;
             }
             this.Results.Add(new StatisticsResult()
             {

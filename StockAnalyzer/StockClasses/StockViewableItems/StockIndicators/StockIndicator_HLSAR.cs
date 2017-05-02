@@ -23,17 +23,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Init", "Step", "Max", "HLPeriod" }; }
+            get { return new string[] { "Margin", "Step", "Max", "HLPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 2f, 2f, 20f, 1 }; }
+            get { return new Object[] { 0f, 2f, 20f, 1 }; }
         }
 
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 1.0f), new ParamRangeFloat(0.0f, 10.0f), new ParamRangeFloat(0.01f, 100.0f), new ParamRangeInt(1, 500) }; }
         }
 
         public override string[] SerieNames
@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            float accelerationFactorStart = (float)this.parameters[0];
+            float margin = (float)this.parameters[0];
             float accelerationFactorStep = (float)this.parameters[1]/100f;
             float accelerationFactorMax = (float)this.parameters[2]/100f;
             int hlPeriod = (int)this.parameters[3];
@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie sarSupport;
             FloatSerie sarResistance;
 
-            stockSerie.CalculateHLSAR(accelerationFactorStep, accelerationFactorStart, accelerationFactorMax, out sarSupport, out sarResistance, hlPeriod);
+            stockSerie.CalculateHLSAR(accelerationFactorStep, margin, accelerationFactorMax, out sarSupport, out sarResistance, hlPeriod);
 
             this.Series[0] = sarSupport;
             this.Series[1] = sarResistance;

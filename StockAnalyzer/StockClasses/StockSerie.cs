@@ -814,7 +814,7 @@ namespace StockAnalyzer.StockClasses
 
                     // Force indicator,data,event and other to null;
                     PreInitialise();
-                    
+
                     if (this.barDuration == StockBarDuration.Daily &&
                         !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
                     {
@@ -4689,8 +4689,9 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        public void CalculateHLSAR(float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int hlPeriod)
+        public void CalculateHLSAR(float accelerationFactorStep, float margin, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance, int hlPeriod)
         {
+            float accelerationFactorInit = 0;
             float accelerationFactorUp = accelerationFactorInit;
             float accelerationFactorDown = accelerationFactorInit;
             bool isUpTrend = false;
@@ -4745,7 +4746,7 @@ namespace StockAnalyzer.StockClasses
                         }
                         isUpTrend = true;
                         accelerationFactorUp = accelerationFactorInit;
-                        sarSerieSupport[i] = previousLow = previousSARUp = low;
+                        sarSerieSupport[i] = previousLow = previousSARUp = low * (1.0f - margin);
                     }
                     else
                     {
@@ -4773,17 +4774,17 @@ namespace StockAnalyzer.StockClasses
                     if (float.IsNaN(resistanceSerie[i - 1]) && !float.IsNaN(resistanceSerie[i])) // Down  trend starts
                     {
                         float high = highSerie[i - 1];
-                        int index = i-1;
+                        int index = i - 1;
                         while (--index > 0 && float.IsNaN(resistanceSerie[index]))
                         {
-                            if (highSerie[index]>high)
+                            if (highSerie[index] > high)
                             {
                                 high = highSerie[index];
                             }
                         }
                         isDownTrend = true;
                         accelerationFactorDown = accelerationFactorInit;
-                        sarSerieResistance[i] = previousHigh = previousSARDown = high;
+                        sarSerieResistance[i] = previousHigh = previousSARDown = high * (1.0f + margin);
                     }
                     else
                     {
@@ -4855,7 +4856,7 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        public void CalculateSARHL(int HLPeriod, float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance)
+        public void CalculateSARHL(int HLPeriod, float accelerationFactorStep, float accelerationFactorInit, float accelerationFactorMax, float margin, out FloatSerie sarSerieSupport, out FloatSerie sarSerieResistance)
         {
             IStockEvent trailHRSR = this.GetTrailStop("TRAILHL(" + HLPeriod + ")");
             BoolSerie upBreakSerie = trailHRSR.Events[2];
@@ -4882,7 +4883,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         isUpTrend = false;
                         accelerationFactor = accelerationFactorInit * (1f + (((previousExtremum - closeSerie[i]) / closeSerie[i]) * 100f));
-                        previousSAR = previousExtremum;
+                        previousSAR = previousExtremum * (1.0f + margin);
                         sarSerieResistance[i] = previousSAR;
                         sarSerieSupport[i] = float.NaN;
                     }
@@ -4906,7 +4907,7 @@ namespace StockAnalyzer.StockClasses
                         isUpTrend = true;
                         accelerationFactor = accelerationFactorInit * (1f + (((closeSerie[i] - previousExtremum) / closeSerie[i]) * 100f));
                         accelerationFactor = accelerationFactorInit;
-                        previousSAR = previousExtremum;
+                        previousSAR = previousExtremum * (1.0f - margin); ;
                         sarSerieSupport[i] = previousSAR;
                         sarSerieResistance[i] = float.NaN;
                     }

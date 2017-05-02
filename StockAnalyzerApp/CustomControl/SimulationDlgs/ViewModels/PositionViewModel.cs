@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using StockAnalyzer.StockClasses;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
@@ -48,7 +50,26 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             }
         }
 
-        private float currentValue;
+        private float drawdown;
+        public float Drawdown
+        {
+            get { return drawdown; }
+            set
+            {
+                if (drawdown != value)
+                {
+                    drawdown = value;
+                    OnPropertyChanged("Drawdown");
+                }
+            }
+        }
+
+        private float maxDrawdown;
+        public float MaxDrawdown
+        {
+            get { return maxDrawdown; }
+            set { maxDrawdown = value; }
+        }
 
         public ObservableCollection<OrderViewModel> Orders { get; set; }
         public OrderViewModel StopOrder { get; set; }
@@ -82,7 +103,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             this.Orders.Add(this.TargetOrder);
         }
 
-        public float CurrentValue
+        private StockDailyValue currentValue;
+        public StockDailyValue CurrentValue
         {
             get { return currentValue; }
             set
@@ -99,15 +121,20 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
 
         public float AddedValue
         {
-            get { return (CurrentValue - OpenValue) * this.Number; }
+            get
+            {
+                if (this.currentValue == null) return 0;
+                return (currentValue.CLOSE - OpenValue) * this.Number;
+            }
         }
+
         public float AddedValuePercent
         {
-            get { return CalculateAddedValuePercent(this.currentValue); }
-        }
-        private float CalculateAddedValuePercent(float value)
-        {
-            return openValue == 0f ? 0.0f : (value - OpenValue) / OpenValue;
+            get
+            {
+                if (this.currentValue == null) return 0;
+                else return openValue == 0f ? 0.0f : Math.Sign(this.Number) * (currentValue.CLOSE - OpenValue) / OpenValue;
+            }
         }
 
         public void Close()
@@ -117,6 +144,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             this.Orders.Clear();
             this.StopOrder = null;
             this.TargetOrder = null;
+            this.Drawdown = 0;
+            this.MaxDrawdown = Math.Max(this.MaxDrawdown, this.Drawdown);
             if (this.OnPositionClosed != null)
             {
                 this.OnPositionClosed();
@@ -136,19 +165,27 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
         public float ValidatePosition()
         {
             float addedValue = 0f;
+            if (this.Number > 0)
+            {
+                this.Drawdown = Math.Max((this.openValue - currentValue.LOW) / this.openValue, this.Drawdown);
+            }
+            else if (this.Number < 0)
+            {
+                this.Drawdown = Math.Max((currentValue.HIGH - this.openValue) / this.openValue, this.Drawdown);
+            }
             if (StopOrder != null)
             {
-                if (StopOrder.Value * this.Number >= currentValue * this.Number)
+                if (StopOrder.Value * this.Number >= currentValue.CLOSE * this.Number)
                 {
-                    if (this.OnStopTouched!=null) this.OnStopTouched(StopOrder);
+                    if (this.OnStopTouched != null) this.OnStopTouched(StopOrder);
                     if (StopOrder.Number == this.Number)
                     {
-                        addedValue = (currentValue - this.openValue) * this.number;
+                        addedValue = (currentValue.CLOSE - this.openValue) * this.number;
                         this.Close();
                     }
                     else
                     {
-                        addedValue = (currentValue - this.openValue) * StopOrder.Number;
+                        addedValue = (currentValue.CLOSE - this.openValue) * StopOrder.Number;
                         this.Number -= StopOrder.Number;
                         this.Orders.Remove(this.StopOrder);
                         this.StopOrder = null;
@@ -158,17 +195,17 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             }
             if (TargetOrder != null)
             {
-                if (TargetOrder.Value * this.Number <= currentValue * this.Number)
+                if (TargetOrder.Value * this.Number <= currentValue.CLOSE * this.Number)
                 {
-                    if (this.OnTargetTouched!=null) this.OnTargetTouched(TargetOrder);
+                    if (this.OnTargetTouched != null) this.OnTargetTouched(TargetOrder);
                     if (TargetOrder.Number == this.Number)
                     {
-                        addedValue = (currentValue - this.openValue) * this.number;
+                        addedValue = (currentValue.CLOSE - this.openValue) * this.number;
                         this.Close();
                     }
                     else
                     {
-                        addedValue = (currentValue - this.openValue) * TargetOrder.Number;
+                        addedValue = (currentValue.CLOSE - this.openValue) * TargetOrder.Number;
                         this.Number -= TargetOrder.Number;
                         this.Orders.Remove(this.TargetOrder);
                         this.TargetOrder = null;
@@ -179,5 +216,5 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             return 0.0f;
         }
     }
-    #endregion
+        #endregion
 }

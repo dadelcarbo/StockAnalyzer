@@ -23,7 +23,8 @@
                 <DataGridTextColumn Header="Qty" Binding="{Binding Number, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Entry" Binding="{Binding OpenValue, Mode=OneWay, StringFormat=\{0:F3\}}"/>
                 <DataGridTextColumn Header="%" Binding="{Binding AddedValuePercent, Mode=OneWay, StringFormat=\{0:P2\}}"/>
-                <DataGridTextColumn Header="Value" Binding="{Binding CurrentValue, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding CurrentValue.CLOSE, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+                <DataGridTextColumn Header="Drawdown" Binding="{Binding Drawdown, Mode=OneWay, StringFormat=\{0:P2\}}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Label Grid.Row="2" Content="Orders"></Label>

@@ -12,26 +12,26 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <ComboBox SelectedItem="{Binding IndicatorType}"  ItemsSource="{Binding IndicatorTypes}"  Width="80"/>
-            <TextBox Text="{Binding Indicator}" Width="200" Margin="0,1"/>
+            <TextBox Text="{Binding Indicator}" Width="200" Margin="2" />
             <Label Content="Group " Width="56"/>
             <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="R1 Percent " Width="75"/>
             <TextBox Text="{Binding R1Percent}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></TextBox>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
             <Label Content="Event" Width="80"/>
-            <ComboBox SelectedItem="{Binding Event}" ItemsSource="{Binding Events}" Width="200" Margin="0,1"/>
+            <ComboBox SelectedItem="{Binding Event, Mode=TwoWay}" ItemsSource="{Binding Events}" Width="200" Margin="2"/>
             <Label Content="Duration" Width="56"/>
             <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="S1 Percent " Width="75"/>
             <TextBox Text="{Binding S1Percent}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></TextBox>
         </StackPanel>
-        <DataGrid Grid.Row="2" ItemsSource="{Binding Results}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"/>
-        <DataGrid Grid.Row="3" ItemsSource="{Binding Summary}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"/>
+        <DataGrid Grid.Row="2" Margin="2" ItemsSource="{Binding Results}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"/>
+        <DataGrid Grid.Row="3" Margin="2" ItemsSource="{Binding Summary}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"/>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="2">
             <Button Content="Calculate" Click="CalculateBtn_OnClick"/>
         </StackPanel>
     </Grid>

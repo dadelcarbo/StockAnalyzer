@@ -5624,6 +5624,11 @@ border:1px solid black;
                             this.ShowMultiTimeFrameDlg();
                         }
                         break;
+                    case Keys.F6:
+                        {
+                            this.GenerateHistogram();
+                        }
+                        break;
                     case Keys.F5:
                         {
                             this.DownloadStock();
@@ -5632,6 +5637,11 @@ border:1px solid black;
                     case Keys.Control | Keys.F5:
                         {
                             this.DownloadStockGroup();
+                        }
+                        break;
+                    case Keys.F7:
+                        {
+                            this.statisticsMenuItem_Click(null,null);
                         }
                         break;
                     case Keys.Control | Keys.F8: // Display Risk Calculator Windows
@@ -5685,6 +5695,116 @@ border:1px solid black;
                 }
             }
             return true;
+        }
+
+        private void GenerateEMAHistogram()
+        {
+            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
+            histogram.Add(0, 0);
+            for (int i = 1; i < 100; i++)
+            {
+                histogram.Add(i, 0);
+                histogram.Add(-i, 0);
+            }
+            int period = 6;
+            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
+            for (int i = period; i < this.currentStockSerie.Count; i++)
+            {
+                var value = this.currentStockSerie.ValueArray[i];
+                float distPercent = (emaSerie[i] - value.CLOSE) / value.CLOSE;
+                int rank = (int)Math.Round(distPercent * 100);
+                rank = Math.Min(99, rank);
+                histogram[rank]++;
+            }
+            for (int i = -99; i < 100; i++)
+            {
+                Console.WriteLine(i.ToString() + "," + histogram[i]);
+            }
+        }
+        private void GenerateNbUpDaysHistogram()
+        {
+            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
+            histogram.Add(0, 0);
+            for (int i = 1; i < 100; i++)
+            {
+                histogram.Add(-i, 0);
+                histogram.Add(i, 0);
+            }
+            int period = 6;
+            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
+            bool up = true;
+            int cumul = 0;
+            for (int i = 1; i < this.currentStockSerie.Count; i++)
+            {
+                var value = this.currentStockSerie.ValueArray[i];
+                if (up)
+                {
+                    if (value.VARIATION > 0) cumul++;
+                    else
+                    {
+                        histogram[cumul]++;
+                        cumul = 0;
+                        up = false;
+                    }
+                }
+                else
+                {
+                    if (value.VARIATION < 0) cumul++;
+                    else
+                    {
+                        histogram[-cumul]++;
+                        cumul = 0;
+                        up = true;
+                    }
+                }
+            }
+            for (int i = -99; i < 100; i++)
+            {
+                Console.WriteLine(i.ToString() + "," + histogram[i]);
+            }
+        }
+
+        private void GenerateHistogram()
+        {
+            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
+            histogram.Add(0, 0);
+            for (int i = 1; i < 100; i++)
+            {
+                histogram.Add(-i, 0);
+                histogram.Add(i, 0);
+            }
+            int period = 6;
+            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
+            bool up = true;
+            int cumul = 0;
+            for (int i = 1; i < this.currentStockSerie.Count; i++)
+            {
+                var value = this.currentStockSerie.ValueArray[i];
+                if (up)
+                {
+                    if (value.VARIATION > 0) cumul++;
+                    else
+                    {
+                        histogram[cumul]++;
+                        cumul = 0;
+                        up = false;
+                    }
+                }
+                else
+                {
+                    if (value.VARIATION < 0) cumul++;
+                    else
+                    {
+                        histogram[-cumul]++;
+                        cumul = 0;
+                        up = true;
+                    }
+                }
+            }
+            for (int i = -99; i < 100; i++)
+            {
+                Console.WriteLine(i.ToString() + "," + histogram[i]);
+            }
         }
 
         private void ShowMultiTimeFrameDlg()

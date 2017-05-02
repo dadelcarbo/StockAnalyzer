@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie ema = stockSerie.GetIndicator("EMA(" + period + ")").Series[0];
          FloatSerie highEma = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA(period);
          FloatSerie lowEma = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA(period);
-         FloatSerie diff = highEma - lowEma;
+         FloatSerie diff = ema*0.1f;
 
          FloatSerie atr = stockSerie.GetIndicator("ATR(" + period + ")").Series[0];
 
