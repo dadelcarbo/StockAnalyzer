@@ -326,4 +326,10 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Configuration des graphiques</value>
   </data>
+  <data name="copyStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="copyStripMenuItem.Text" xml:space="preserve">
+    <value>Copier le texte dans le presse papier</value>
+  </data>
 </root>

@@ -613,7 +613,56 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                                         aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, Math.Max(points.Last().Y - 8, GraphRectangle.Top));
                                     }
-                                    aGraphic.DrawLines(stockIndicator.SeriePens[i], points);
+                                    if (stockIndicator.SeriePens[i].DashStyle == DashStyle.Custom)
+                                    {
+                                        PointF center = GetScreenPointFromValuePoint(0, 0f);
+                                        if (stockIndicator is IRange)
+                                        {
+                                            var range = stockIndicator as IRange;
+                                            center = GetScreenPointFromValuePoint(0, (range.Max - range.Min) / 2.0f);
+                                        }
+                                        int pointIndex = 0;
+                                        float barWidth = Math.Max(1f, 0.80f * GraphRectangle.Width / (float)points.Count());
+                                        foreach (PointF point in points)
+                                        {
+                                            // Select brush color
+                                            if (point.Y < center.Y)
+                                            {
+                                                if (pointIndex == 0)
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Green, point.X, point.Y, barWidth / 2, center.Y - point.Y);
+                                                }
+                                                else if (i == points.Count() - 1)
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Green, point.X - barWidth / 2, point.Y, barWidth / 2, center.Y - point.Y);
+                                                }
+                                                else
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Green, point.X - barWidth / 2, point.Y, barWidth, center.Y - point.Y);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (pointIndex == 0)
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Red, point.X, center.Y, barWidth / 2, point.Y - center.Y);
+                                                }
+                                                else if (i == points.Count() - 1)
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Red, point.X - barWidth / 2, center.Y, barWidth / 2, point.Y - center.Y);
+                                                }
+                                                else
+                                                {
+                                                    aGraphic.FillRectangle(Brushes.Red, point.X - barWidth / 2, center.Y, barWidth, point.Y - center.Y);
+                                                }
+                                            }
+                                            pointIndex++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        aGraphic.DrawLines(stockIndicator.SeriePens[i], points);
+                                    }
                                 }
                             }
                         }
