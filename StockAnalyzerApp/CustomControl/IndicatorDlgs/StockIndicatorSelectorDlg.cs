@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Resources;
 using System.Windows.Forms;
-using System.Linq;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -913,7 +912,26 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                     else
                     {
-                        g.DrawLines(curveNode.CurvePen, points);
+                        if (curveNode.CurvePen.DashStyle == DashStyle.Custom)
+                        {
+                            float center = (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / -2.0f;
+                            for (x = g.VisibleClipBounds.Left + 3; x < g.VisibleClipBounds.Right; x += 8)
+                            {
+                                y = (Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                                if (y < 0)
+                                {
+                                    g.FillRectangle(Brushes.Green, (float)x, (float)y + center, 6.0f, (float)-y);
+                                }
+                                else
+                                {
+                                    g.FillRectangle(Brushes.Red, (float)x, center, 6.0f, (float)y);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            g.DrawLines(curveNode.CurvePen, points);
+                        }
                     }
                 }
             }
@@ -1037,8 +1055,18 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 using (Pen pen = new Pen(Color.Black, 2))
                 {
                     pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), ((ComboBox)sender).Items[e.Index].ToString());
-                    g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
-                                    rect.Width - 10, rect.Y + rect.Height / 2);
+                    if (pen.DashStyle == DashStyle.Custom)
+                    {
+                        int barWidth = rect.Width / 10 - 2;
+                        for (int x = rect.X + barWidth; x < rect.Width - barWidth; x += rect.Width / 10)
+                        {
+                            g.FillRectangle(Brushes.Black, x, rect.Y + 1, barWidth, rect.Height - 1);
+                        }
+                    }
+                    else
+                    {
+                        g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2, rect.Width - 10, rect.Y + rect.Height / 2);
+                    }
                 }
             }
         }

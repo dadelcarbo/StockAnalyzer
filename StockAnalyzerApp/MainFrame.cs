@@ -6398,7 +6398,7 @@ border:1px solid black;
                             }
                             catch (System.Exception e)
                             {
-                                StockLog.Write("Exception londing theme: " + this.currentTheme);
+                                StockLog.Write("Exception loading theme: " + this.currentTheme);
                                 foreach (string line in this.themeDictionary[currentTheme][entry])
                                 {
                                     StockLog.Write(line);
