@@ -1105,7 +1105,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-        private bool DownloadFileFromProvider2(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
+        private bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
         {
             bool success = true;
             try
@@ -1179,7 +1179,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return success;
         }
 
-        private bool DownloadFileFromProvider(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
+        private bool DownloadFileFromProvider2(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
         {
             bool success = true;
             try
