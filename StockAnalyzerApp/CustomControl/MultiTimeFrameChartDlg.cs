@@ -22,6 +22,15 @@ namespace StockAnalyzerApp.CustomControl
             this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.Bar_3);
             this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily);
             InitializeComponent();
+
+            this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
+            this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl3.MouseDateChanged;
+
+            this.fullGraphUserControl2.OnMouseDateChanged += fullGraphUserControl1.MouseDateChanged;
+            this.fullGraphUserControl2.OnMouseDateChanged += fullGraphUserControl3.MouseDateChanged;
+
+            this.fullGraphUserControl3.OnMouseDateChanged += fullGraphUserControl1.MouseDateChanged;
+            this.fullGraphUserControl3.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
         }
 
         public void Initialize(StockSerie.Groups group, StockSerie stockSerie)

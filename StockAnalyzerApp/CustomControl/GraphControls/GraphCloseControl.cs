@@ -995,10 +995,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if ((key & Keys.Control) != 0)
                         {
                             DrawMouseCross(mouseValuePoint, mouseOverThis);
+                            this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
                         }
                         else
                         {
                             RefreshMouseMarquee(index, e.Location, false);
+                            this.RaiseDateChangedEvent(null, this.dateSerie[index], 0, false);
                         }
                     }
                     else
@@ -1086,7 +1088,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawString(this.foregroundGraphic, comment, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                             }
                         }
-                    } 
+                    }
                     if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
                          (mousePoint.Y <= this.GraphRectangle.Bottom) &&
                          (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
@@ -1320,7 +1322,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 if (index < 200) return;
                 HalfLine2D support, resistance;
-               
+
                 StockPaintBar_CONVEXHULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])

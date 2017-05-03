@@ -22,6 +22,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
     }
 
+    public delegate void MouseDateChangedHandler(FullGraphUserControl sender, DateTime date, float value, bool crossMode);
+
     public enum GraphChartMode
     {
         Line,
@@ -52,6 +54,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
     public partial class GraphControl : Panel
     {
+        public event MouseDateChangedHandler OnMouseDateChanged;
 
         // Constants
         protected const int MARGIN_SIZE = 20;
@@ -871,8 +874,87 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.matrixValueToScreen.TransformPoints(points);
             return points[0];
         }
+        public int IndexOf(DateTime date)
+        {
+            if (date < dateSerie[0]) { return -1; }
+            if (date > dateSerie[dateSerie.Length - 1]) { return -1; }
+            return IndexOfRec(date, 0, dateSerie.Length - 1);
+        }
+        private int IndexOfRec(DateTime date, int startIndex, int endIndex)
+        {
+            if (startIndex < endIndex)
+            {
+                if (dateSerie[startIndex] == date)
+                {
+                    return startIndex;
+                }
+                if (dateSerie[endIndex] == date)
+                {
+                    return endIndex;
+                }
+                int midIndex = (startIndex + endIndex) / 2;
+                int comp = date.CompareTo(dateSerie[midIndex]);
+                if (comp == 0)
+                {
+                    return midIndex;
+                }
+                else if (comp < 0)
+                {// 
+                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
+                }
+                else
+                {
+                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
+                }
+            }
+            else
+            {
+                if (startIndex == endIndex && dateSerie[startIndex] == date)
+                {
+                    return startIndex;
+                }
+                return -1;
+            }
+        }
+
         #endregion
         #region MOUSE EVENTS
+
+        public void MouseDateChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
+            {
+                if (this.IsInitialized)
+                {
+                    int index = IndexOf(date);
+                    if (index == -1) return;
+                    PointF valuePoint = new PointF(index, value);
+                    PointF mousePoint = GetScreenPointFromValuePoint(valuePoint);
+
+                    if (mousePoint.X > this.GraphRectangle.Left && mousePoint.X < this.GraphRectangle.Right)
+                    {
+                        if (crossMode)
+                        {
+                            DrawMouseCross(valuePoint, true);
+                        }
+                        else
+                        {
+                            // Display under mouse info
+                            DrawMousePos(index);
+                        }
+
+                        PaintForeground();
+                    }
+                }
+            }
+        }
+        protected void RaiseDateChangedEvent(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        {
+            if (this.OnMouseDateChanged != null)
+            {
+                this.OnMouseDateChanged(sender, date, value, crossMode);
+            }
+        }
         virtual public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -884,8 +966,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
-                            DrawMouseCross(GetValuePointFromScreenPoint(mousePoint), mouseOverThis);
+                            var valuePoint = GetValuePointFromScreenPoint(mousePoint);
+                            DrawMouseCross(valuePoint, mouseOverThis);
                             PaintForeground();
+
+                            if (mouseOverThis && this.OnMouseDateChanged != null)
+                            {
+                                int index = RoundToIndex(mousePoint);
+                                this.OnMouseDateChanged(null, this.dateSerie[index], 0, true);
+                            }
                         }
                         return;
                     }
@@ -895,12 +984,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
                             // Refresh the mouse marquee
-                            int currentMouseIndex = RoundToIndex(mousePoint);
+                            int index = RoundToIndex(mousePoint);
 
                             // Display under mouse info
-                            DrawMousePos(currentMouseIndex, e.Y);
+                            DrawMousePos(index);
 
-                            lastMouseIndex = currentMouseIndex;
+                            lastMouseIndex = index;
                             PaintForeground();
                         }
                         return;
@@ -915,12 +1004,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         {
                             PointF mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                             // Refresh the mouse marquee
-                            int currentMouseIndex = RoundToIndex(mousePoint);
+                            int index = RoundToIndex(mousePoint);
 
                             // Display under mouse info
-                            DrawMousePos(currentMouseIndex, e.Y);
+                            DrawMousePos(index);
 
-                            lastMouseIndex = currentMouseIndex;
+                            lastMouseIndex = index;
+
+                            if (this.OnMouseDateChanged != null)
+                            {
+                                this.OnMouseDateChanged(null, this.dateSerie[index], 0, false);
+                            }
                         }
                     }
                     this.PaintForeground();
@@ -994,7 +1088,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
         #region DRAWING FUNCTIONS
-        protected virtual void DrawMousePos(int mouseIndex, int y)
+        protected virtual void DrawMousePos(int mouseIndex, int y = 0)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {

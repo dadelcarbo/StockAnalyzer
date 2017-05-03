@@ -22,6 +22,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 {
     public partial class FullGraphUserControl : UserControl
     {
+        public event MouseDateChangedHandler OnMouseDateChanged;
+
         public FullGraphUserControl(StockSerie.StockBarDuration duration)
         {
             InitializeComponent();
@@ -49,6 +51,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (var graph in graphList)
             {
                 graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
+                if (graph != this.graphScrollerControl)
+                {
+                    graph.OnMouseDateChanged += graph_OnMouseDateChanged;
+                }
+            }
+        }
+
+        void graph_OnMouseDateChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        {
+            if (this.OnMouseDateChanged != null)
+            {
+                this.OnMouseDateChanged(this, date, value, crossMode);
             }
         }
 
@@ -139,8 +153,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             get { return currentStockSerie; }
             set { currentStockSerie = value; }
-        }
-        
+        }        
 
         public void ApplyTheme()
         {
@@ -444,6 +457,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (var graph in this.graphList)
             {
                 graph.OnZoomChanged(startIndex, endIndex);
+            }
+        }
+
+        internal void MouseDateChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        {
+            if (sender != this)
+            {
+                foreach (GraphControl graph in graphList)
+                {
+                    if (graph.IsInitialized)
+                    {
+                        graph.MouseDateChanged(sender, date, value, crossMode);
+                    }
+                }
             }
         }
     }
