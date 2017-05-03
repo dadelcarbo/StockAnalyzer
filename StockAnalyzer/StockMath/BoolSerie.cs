@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace StockAnalyzer.StockMath
 {
@@ -23,11 +24,18 @@ namespace StockAnalyzer.StockMath
          this.Name = name;
       }
 
+      public BoolSerie(string name, IEnumerable<bool> enumerable)
+      {
+          this.Name = name;
+          this.Values = enumerable.ToArray();
+      }
+
       public bool this[int index]
       {
          get { return this.Values[index]; }
          set { this.Values[index] = value; }
       }
+
       public int Count
       {
          get { return this.Values.Count(); }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Drawing;
 using StockAnalyzer.StockMath;
 
@@ -61,14 +62,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             this.series[0] = speedSerie;
             this.Series[0].Name = this.Name;
+            CreateEventSeries(stockSerie.Count);
+
+            this.Events[0] = new BoolSerie(this.EventNames[0], speedSerie.Values.Select(a => a >= 0));
+            this.Events[1] = new BoolSerie(this.EventNames[1], speedSerie.Values.Select(a => a < 0));
         }
 
-        static string[] eventNames = new string[] { };
+        static string[] eventNames = new string[] { "Positive", "Negative" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { };
+
+        static readonly bool[] isEvent = new bool[] { false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

@@ -7200,9 +7200,7 @@ namespace StockAnalyzer.StockClasses
 
             // Check if has saved cache
             DateTime cacheEndDate = DateTime.Now;
-            if (
-               StockDataProviderBase.LoadIntradayDurationArchive(
-                  StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, barDuration))
+            if (StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, barDuration))
             {
                 cachedStockValues = this.BarSerieDictionary[barDuration];
                 this.BarSerieDictionary.Remove(barDuration);
