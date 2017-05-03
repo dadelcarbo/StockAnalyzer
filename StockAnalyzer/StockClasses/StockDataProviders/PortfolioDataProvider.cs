@@ -19,6 +19,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       
       public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
       {
+          if (PortfolioDataProvider.StockPortofolioList != null && PortfolioDataProvider.StockPortofolioList.Count > 0)
+              return;
+
           if (string.IsNullOrEmpty(Settings.Default.PortofolioFile))
           {
               Settings.Default.PortofolioFile = "Portfolio.xml";

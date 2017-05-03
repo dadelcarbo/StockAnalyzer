@@ -1160,7 +1160,7 @@ namespace StockAnalyzerApp
                 this.Cursor = Cursors.WaitCursor;
             }
             this.currentStockSerie = newSerie;
-            if (!newSerie.Initialise())
+            if (!newSerie.Initialise() || newSerie.Count == 0)
             {
                 DeactivateGraphControls("No data to display");
                 this.Text = "Ultimate Chartist - " + "Failure Loading data selected";
@@ -6995,9 +6995,11 @@ border:1px solid black;
         }
         private void configDataProviderMenuItem_Click(object sender, System.EventArgs e)
         {
-            if (((IConfigDialog)((ToolStripMenuItem)sender).Tag).ShowDialog(this.StockDictionary) == System.Windows.Forms.DialogResult.OK)
+            var configDialog = ((IConfigDialog) ((ToolStripMenuItem) sender).Tag);
+            if (configDialog.ShowDialog(this.StockDictionary) == System.Windows.Forms.DialogResult.OK)
             {
-                StockDataProviderBase.InitStockDictionary(Settings.Default.RootFolder, this.StockDictionary, Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(), new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+                var dataProvider = (IStockDataProvider)configDialog;
+                dataProvider.InitDictionary(Settings.Default.RootFolder, this.StockDictionary, true);
                 this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
                 this.CreateRelativeStrengthMenuItem();
