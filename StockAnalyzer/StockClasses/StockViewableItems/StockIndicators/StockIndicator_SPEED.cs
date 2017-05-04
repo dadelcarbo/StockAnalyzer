@@ -64,17 +64,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[0].Name = this.Name;
             CreateEventSeries(stockSerie.Count);
 
-            this.Events[0] = new BoolSerie(this.EventNames[0], speedSerie.Values.Select(a => a >= 0));
-            this.Events[1] = new BoolSerie(this.EventNames[1], speedSerie.Values.Select(a => a < 0));
+            this.Events[2] = new BoolSerie(this.EventNames[2], speedSerie.Values.Select(a => a >= 0));
+            this.Events[3] = new BoolSerie(this.EventNames[3], speedSerie.Values.Select(a => a < 0));
+            for (int i = 1; i < stockSerie.Count; i++)
+            {
+                this.eventSeries[0][i] = this.Events[2][i] && this.Events[3][i-1];
+                this.eventSeries[1][i] = this.Events[3][i] && this.Events[2][i-1];
+            }
         }
 
-        static string[] eventNames = new string[] { "Positive", "Negative" };
+        static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Positive", "Negative" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
 
-        static readonly bool[] isEvent = new bool[] { false, false };
+        static readonly bool[] isEvent = new bool[] { true, true, false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }
