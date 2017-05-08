@@ -83,6 +83,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
          }
       }
+      virtual protected void SetSerieNames()
+      {
+          for (int i = 0; i < this.SerieNames.Length; i++)
+          {
+              this.Series[i].Name = this.SerieNames[i];
+          }
+      }
       #endregion
 
    }

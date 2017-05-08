@@ -110,8 +110,8 @@ namespace StockAnalyzer.StockClasses
             }
             this.Ratios.Add(header);
 
-            var resOp = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat net");
-            if (resOp != null)
+            var resNet = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat net");
+            if (resNet != null)
             {
                 List<String> resOpString = new List<string>();
                 List<String> distribRatioString = new List<string>();
@@ -122,15 +122,28 @@ namespace StockAnalyzer.StockClasses
                 resOpString.Add("EPS");
                 distribRatioString.Add("Distrib Ratio");
                 PERString.Add("PER");
-                for (int i = 1; i < resOp.Count; i++)
+                for (int i = 1; i < resNet.Count; i++)
                 {
-                    long resultat = resOp[i] == null ? 0 : long.Parse(resOp[i].Replace(" ", ""));
+                    long resultat = resNet[i] == null ? 0 : long.Parse(resNet[i].Replace(" ", ""));
                     float eps = (1000.0f * resultat / (float)this.ShareNumber);
                     resOpString.Add(eps.ToString("0.##"));
                     float per = this.Value / eps;
                     PERString.Add(per.ToString("0.##"));
                     float distribRatio = this.Dividend / eps;
                     distribRatioString.Add(distribRatio.ToString("0.##"));
+                }
+            }
+            var resOpLine = this.IncomeStatement.FirstOrDefault(i => i.First() == "Résultat opérationnel");
+            if (resOpLine != null)
+            {
+                List<String> resOpCAString = new List<string>();
+                this.Ratios.Add(resOpCAString);
+                resOpCAString.Add("Cap/RO");
+                for (int i = 1; i < resOpLine.Count; i++)
+                {
+                    long ca = resOpLine[i] == null ? 0 : long.Parse(resOpLine[i].Replace(" ", ""));
+                    float caCap = (float)this.MarketCap / (1000.0f * ca);
+                    resOpCAString.Add(caCap.ToString("0.##"));
                 }
             }
 
@@ -154,7 +167,7 @@ namespace StockAnalyzer.StockClasses
                 List<String> capActifString = new List<string>();
                 this.Ratios.Add(capActifString);
                 capActifString.Add("Cap/Actif");
-                for (int i = 1; i < resOp.Count; i++)
+                for (int i = 1; i < resNet.Count; i++)
                 {
                     long totalActif = actif[i] == null ? 0 : long.Parse(actif[i].Replace(" ", ""));
                     float capActif = ((float)this.MarketCap / (float)(totalActif * 1000f));
@@ -168,7 +181,7 @@ namespace StockAnalyzer.StockClasses
                 List<String> capCashString = new List<string>();
                 this.Ratios.Add(capCashString);
                 capCashString.Add("Cap/Cash");
-                for (int i = 1; i < resOp.Count; i++)
+                for (int i = 1; i < resNet.Count; i++)
                 {
                     long totalCash = cash[i] == null ? 0 : long.Parse(cash[i].Replace(" ", ""));
                     float capCash = ((float)this.MarketCap / (float)(totalCash * 1000f));

@@ -37,6 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 if (seriePens == null)
                 {
                     seriePens = new Pen[] { new Pen(Color.Black) };
+                    seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
                 }
                 return seriePens;
             }

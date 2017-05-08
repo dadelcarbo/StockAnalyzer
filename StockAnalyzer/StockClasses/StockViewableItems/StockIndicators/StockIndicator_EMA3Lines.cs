@@ -54,6 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[1] = mediumSerie;
             this.Series[2] = slowSerie;
 
+            this.SetSerieNames();
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 

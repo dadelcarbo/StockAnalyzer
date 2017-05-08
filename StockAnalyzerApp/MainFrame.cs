@@ -2820,7 +2820,20 @@ namespace StockAnalyzerApp
 
         private void inverseSerieMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
+            if (this.currentStockSerie == null || !this.currentStockSerie.Initialise()) return;
+
+            if (this.currentStockSerie.StockName.EndsWith("_INV"))
+            {
+                stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(this.currentStockSerie.StockName.Replace("_INV", ""));
+                OnNeedReinitialise(true);
+                return;
+            }
+            if (this.StockDictionary.ContainsKey(this.currentStockSerie.StockName + "_INV"))
+            {
+                stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(this.currentStockSerie.StockName + "_INV");
+                OnNeedReinitialise(true);
+                return;
+            }
             StockSerie newSerie = this.CurrentStockSerie.GenerateInverseStockSerie();
             AddNewSerie(newSerie);
         }
@@ -5552,6 +5565,9 @@ border:1px solid black;
                         this.graphCloseControl.Focus();
                         this.hideIndicatorsStockMenuItem.Checked = !this.hideIndicatorsStockMenuItem.Checked;
                         this.hideIndicatorsStockMenuItem_Click(null, null);
+                        break;
+                    case Keys.Control | Keys.I:
+                        inverseSerieMenuItem_Click(this, null);
                         break;
                     case Keys.Control | Keys.D:
                         this.showDrawingsMenuItem.Checked = !this.showDrawingsMenuItem.Checked;

@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D
                   };
 
-        public const int ARCHIVE_START_YEAR = 2006;
+        public const int ARCHIVE_START_YEAR = 1999;
         public const int LOAD_START_YEAR = 2006;
 
         #region CONSTANTS

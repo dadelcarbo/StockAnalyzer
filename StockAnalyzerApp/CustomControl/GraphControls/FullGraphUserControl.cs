@@ -27,12 +27,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public FullGraphUserControl(StockSerie.StockBarDuration duration)
         {
             InitializeComponent();
-         
+
             this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(StockSerie.StockBarDuration)).Cast<object>().ToArray());
             this.durationComboBox.SelectedItem = duration;
             this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
 
-           // this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(graphScrollerControl_ZoomChanged);
+            // this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(graphScrollerControl_ZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphCloseControl.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator2Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator3Control.OnZoomChanged);
@@ -50,7 +50,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             foreach (var graph in graphList)
             {
-                graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
+                graph.MouseMove += this.MouseMoveOverGraphControl;
+
                 if (graph != this.graphScrollerControl)
                 {
                     graph.OnMouseDateChanged += graph_OnMouseDateChanged;
@@ -153,7 +154,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             get { return currentStockSerie; }
             set { currentStockSerie = value; }
-        }        
+        }
 
         public void ApplyTheme()
         {
@@ -179,7 +180,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.durationComboBox.SelectedItem;
 
                     this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
-                    this.EndIndex = currentStockSerie.Count-1;
+                    this.EndIndex = currentStockSerie.Count - 1;
 
                     if (currentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
@@ -466,7 +467,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 foreach (GraphControl graph in graphList)
                 {
-                    if (graph.IsInitialized)
+                    if (!(graph is GraphScrollerControl) && graph.IsInitialized)
                     {
                         graph.MouseDateChanged(sender, date, value, crossMode);
                     }
