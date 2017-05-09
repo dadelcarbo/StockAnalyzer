@@ -508,8 +508,8 @@ namespace StockAnalyzerApp.CustomControl
             this.exitTriggerIndicatorTextBox.Text = strategy.ExitTriggerName;
             exitTriggerIndicatorTextBox_TextChanged(null, null);
 
-            this.buyTriggerComboBox.SelectedItem = strategy.BuyTriggerEventName;
-            this.shortTriggerComboBox.SelectedItem = strategy.ShortTriggerEventName;
+            this.sellTriggerComboBox.SelectedItem = strategy.SellTriggerEventName;
+            this.coverTriggerComboBox.SelectedItem = strategy.CoverTriggerEventName;
         }
 
     }
