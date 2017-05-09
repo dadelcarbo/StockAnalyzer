@@ -104,8 +104,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 isOverBought = erSerie[i] >= overbought;
                 this.eventSeries[4][i] = isOverBought;
                 this.eventSeries[5][i] = isOverSold;
-                this.eventSeries[6][i] = (!isOverSold) && this.eventSeries[3][i - 1];
-                this.eventSeries[7][i] = (!isOverBought) && this.eventSeries[2][i - 1];
+                this.eventSeries[6][i] = (!isOverSold) && this.eventSeries[5][i - 1];
+                this.eventSeries[7][i] = (!isOverBought) && this.eventSeries[4][i - 1];
             }
         }
 

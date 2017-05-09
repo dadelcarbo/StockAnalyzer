@@ -67,7 +67,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             {
                for (int i = 0; i < this.ParameterNames.Length; i++)
                {
-                  name += this.ParameterDefaultValues[i].GetType().ToString() + " " + this.ParameterNames[i];
+                  name += this.ParameterDefaultValues[i].GetType().ToString().Replace("System.","") + " " + this.ParameterNames[i];
                   if (i + 1 < parameters.Length)
                   {
                      name += ",";

@@ -86,7 +86,9 @@ namespace StockAnalyzerApp.CustomControl
             if (filterIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyFilterComboBox.SelectedItem.ToString()) ||
                 string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
             {
-                MessageBox.Show("Invalid filter: " + filterIndicatorTextBox.Text);
+                this.filterIndicatorTextBox.Text = "TRUE(1)";
+                this.buyFilterComboBox.SelectedItem = "True";
+                this.shortFilterComboBox.SelectedItem = "True";
                 return;
             }
 

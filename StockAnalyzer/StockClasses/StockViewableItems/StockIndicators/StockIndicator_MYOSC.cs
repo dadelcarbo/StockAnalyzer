@@ -100,8 +100,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             this.eventSeries[0][i] = (oscSerie[i] > signalSerie[i]);
             this.eventSeries[1][i] = (oscSerie[i] < signalSerie[i]);
-            this.eventSeries[0][i] = eventSeries[0][i] & !eventSeries[0][i - 1];
-            this.eventSeries[1][i] = eventSeries[1][i] & !eventSeries[1][i - 1];
+            this.eventSeries[2][i] = eventSeries[0][i] & !eventSeries[0][i - 1];
+            this.eventSeries[3][i] = eventSeries[1][i] & !eventSeries[1][i - 1];
          }
 
 
