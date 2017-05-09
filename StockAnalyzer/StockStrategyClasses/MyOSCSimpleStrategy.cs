@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public MyOSCSimpleStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("MYOSC(25)");
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("MYOSC(25)");
       }
 
       FloatSerie oscSerie = null;
@@ -38,9 +38,9 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
-         if (this.oscSerie == null) this.oscSerie = (this.TriggerIndicator as IStockIndicator).Series[0];
+         if (this.oscSerie == null) this.oscSerie = (this.EntryTriggerIndicator as IStockIndicator).Series[0];
 
          if (this.oscSerie[index - 1] < 0 && this.oscSerie[index] > 0)
          {
@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
          trailActivated = trailActivated ? true : !float.IsNaN(trailStop.Series[0][index]);
 

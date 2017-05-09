@@ -21,8 +21,8 @@ namespace StockAnalyzer.StockStrategyClasses
       IStockIndicator hilbertSR;
       public HilbertStopStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("HILBERTSR(3,15)");
-         hilbertSR = (IStockIndicator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("HILBERTSR(3,15)");
+         hilbertSR = (IStockIndicator)this.EntryTriggerIndicator;
       }
 
       public override void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
          if (this.SupportShortSelling)
          {
@@ -56,7 +56,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
          if (LastBuyOrder.IsShortOrder)
          {

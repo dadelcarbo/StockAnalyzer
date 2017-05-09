@@ -176,7 +176,7 @@ namespace StockAnalyzerApp.CustomControl
          resources.ApplyResources(this.refreshDataCheckBox, "refreshDataCheckBox");
          this.refreshDataCheckBox.Name = "refreshDataCheckBox";
          this.refreshDataCheckBox.UseVisualStyleBackColor = true;
-         this.refreshDataCheckBox.CheckState = CheckState.Checked;
+         this.refreshDataCheckBox.CheckState = CheckState.Unchecked;
          // 
          // statisticsButton
          // 

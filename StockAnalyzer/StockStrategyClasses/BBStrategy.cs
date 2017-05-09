@@ -24,8 +24,8 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public BBStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(9)");
-         SRIndicator = (IStockIndicator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(9)");
+         SRIndicator = (IStockIndicator)this.EntryTriggerIndicator;
 
          bbBand = StockIndicatorManager.CreateIndicator("BB(100,1.75,-1.75)");
 

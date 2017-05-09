@@ -37,8 +37,8 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public _ADXStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator(triggerName);
-         adxIndicator = (IStockIndicator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator(triggerName);
+         adxIndicator = (IStockIndicator)this.EntryTriggerIndicator;
 
          this.adxDecorator = StockDecoratorManager.CreateDecorator("DIV(1)", triggerName);
          exhaustionSellIndex = adxDecorator.EventNames.ToList().IndexOf("ExhaustionBottom");
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockStrategyClasses
          base.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
          this.SRTrailStop = stockSerie.GetTrailStop(trailName);
 
-         this.adxDecorator = stockSerie.GetDecorator("DIV(1)", ((IStockIndicator)TriggerIndicator).Name);
+         this.adxDecorator = stockSerie.GetDecorator("DIV(1)", ((IStockIndicator)EntryTriggerIndicator).Name);
       }
 
 

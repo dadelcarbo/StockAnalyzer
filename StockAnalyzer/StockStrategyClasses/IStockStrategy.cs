@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockStrategyClasses
         bool SupportShortSelling { get; }
         StockSerie Serie { get; set; }
         StockOrder LastBuyOrder { get; set; }
-        IStockEvent TriggerIndicator { get; set; }
+        IStockEvent EntryTriggerIndicator { get; set; }
 
         void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling);
 

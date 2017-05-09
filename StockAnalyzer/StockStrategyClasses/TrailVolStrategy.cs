@@ -17,8 +17,8 @@ namespace StockAnalyzer.StockStrategyClasses
       private IStockTrailStop trailStop;
       public TrailVolStrategy()
       {
-         this.TriggerIndicator = StockTrailStopManager.CreateTrailStop("TRAILVOL()");
-         trailStop = (IStockTrailStop)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockTrailStopManager.CreateTrailStop("TRAILVOL()");
+         trailStop = (IStockTrailStop)this.EntryTriggerIndicator;
       }
 
       override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)

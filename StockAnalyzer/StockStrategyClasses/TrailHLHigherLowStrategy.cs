@@ -25,8 +25,8 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public _TrailHLHigherLowStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(3)");
-         SRIndicator = (IStockIndicator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("TRAILHLSR(3)");
+         SRIndicator = (IStockIndicator)this.EntryTriggerIndicator;
 
          higherLowEventIndex = SRIndicator.EventNames.ToList().IndexOf("HigherLow");
          lowerHightEventIndex = SRIndicator.EventNames.ToList().IndexOf("LowerHigh");

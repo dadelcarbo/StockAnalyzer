@@ -22,8 +22,8 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public SARFilteredStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("SAR(.02,.2)");
-         SAR = (IStockIndicator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("SAR(.02,.2)");
+         SAR = (IStockIndicator)this.EntryTriggerIndicator;
 
          sarBrokenUpEventIndex = SAR.EventNames.ToList().IndexOf("SupportDetected");
          sarBrokenDownEventIndex = SAR.EventNames.ToList().IndexOf("ResistanceDetected");
@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
          if (this.SupportShortSelling)
          {
@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          benchmark = dailyValue.CLOSE;
 
-         if (this.TriggerIndicator == null) { return null; }
+         if (this.EntryTriggerIndicator == null) { return null; }
 
          if (LastBuyOrder.IsShortOrder)
          {

@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public _BBSTOCKStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("STOKS(12,6,3)");
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("STOKS(12,6,3)");
 
          this.FilterIndicator = StockTrailStopManager.CreateTrailStop("TRAILBB(50,2.5,-2.5)");
 

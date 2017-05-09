@@ -16,8 +16,8 @@ namespace StockAnalyzer.StockStrategyClasses
         private IStockIndicator atr;
         public SimBuyTrailingOrder()
         {
-            this.TriggerIndicator = StockIndicatorManager.CreateIndicator("ATR(5)");
-            atr = (IStockIndicator)this.TriggerIndicator;
+            this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("ATR(5)");
+            atr = (IStockIndicator)this.EntryTriggerIndicator;
         }
 
         override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)

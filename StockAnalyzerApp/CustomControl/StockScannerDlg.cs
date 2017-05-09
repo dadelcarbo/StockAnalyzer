@@ -185,6 +185,14 @@ namespace StockAnalyzerApp.CustomControl
 
         void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
+            if (groupComboBox.SelectedItem.ToString() == "INTRADAY")
+            {
+                this.refreshDataCheckBox.CheckState = CheckState.Checked;
+            }
+            else
+            {
+                this.refreshDataCheckBox.CheckState = CheckState.Unchecked;
+            }
             if (SelectStockGroupChanged != null)
             {
                 SelectStockGroupChanged(groupComboBox.SelectedItem.ToString());

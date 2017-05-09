@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockStrategyClasses
       public bool SupportShortSelling { get; protected set; }
       public StockSerie Serie { get; set; }
       public StockOrder LastBuyOrder { get; set; }
-      public IStockEvent TriggerIndicator { get; set; }
+      public IStockEvent EntryTriggerIndicator { get; set; }
       #endregion
       #region StockStrategy Methods
       virtual public void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockStrategyClasses
          this.LastBuyOrder = lastBuyOrder;
          this.SupportShortSelling = supportShortSelling;
 
-         IStockViewableSeries triggerSerie = this.TriggerIndicator as IStockViewableSeries;
+         IStockViewableSeries triggerSerie = this.EntryTriggerIndicator as IStockViewableSeries;
          if (triggerSerie != null)
          {
             if (stockSerie.HasVolume || !triggerSerie.RequiresVolumeData)

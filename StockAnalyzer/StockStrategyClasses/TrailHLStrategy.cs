@@ -20,8 +20,8 @@ namespace StockAnalyzer.StockStrategyClasses
       private IStockIndicator movingAverage;
       public TrailHLStrategy()
       {
-         this.TriggerIndicator = StockTrailStopManager.CreateTrailStop("TRAILHL(3)");
-         trailStop = (IStockTrailStop)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockTrailStopManager.CreateTrailStop("TRAILHL(3)");
+         trailStop = (IStockTrailStop)this.EntryTriggerIndicator;
          movingAverage = (IStockIndicator)StockIndicatorManager.CreateIndicator("HMA(100)");
       }
 

@@ -21,8 +21,8 @@ namespace StockAnalyzer.StockStrategyClasses
       private IStockDecorator momex;
       public MOMEXSimpleStrategy()
       {
-         this.TriggerIndicator = StockDecoratorManager.CreateDecorator("DIV(2)", "BUYMOMEX(12,False,2)");
-         momex = (IStockDecorator)this.TriggerIndicator;
+         this.EntryTriggerIndicator = StockDecoratorManager.CreateDecorator("DIV(2)", "BUYMOMEX(12,False,2)");
+         momex = (IStockDecorator)this.EntryTriggerIndicator;
       }
 
       override public StockOrder TryToBuy(StockDailyValue dailyValue, int index, float amount, ref float benchmark)

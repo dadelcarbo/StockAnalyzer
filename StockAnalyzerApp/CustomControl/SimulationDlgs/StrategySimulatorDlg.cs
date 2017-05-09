@@ -77,7 +77,7 @@ namespace StockAnalyzerApp.CustomControl
       void simulationParameterControl_SelectedStrategyChanged(string strategyName)
       {
          this.SelectedStrategy = StrategyManager.CreateStrategy(strategyName, this.stockDictionary[this.SelectedStockName], null, simulationParameterControl.supportShortSelling);
-         this.parametrizableControl.ViewableItem = this.SelectedStrategy.TriggerIndicator as IStockViewableSeries;
+         this.parametrizableControl.ViewableItem = this.SelectedStrategy.EntryTriggerIndicator as IStockViewableSeries;
       }
 
       private void simulateTradingBtn_Click(object sender, EventArgs e)

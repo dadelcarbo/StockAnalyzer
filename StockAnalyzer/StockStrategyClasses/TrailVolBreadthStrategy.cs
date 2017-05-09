@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
         public TrailVolBreadthStrategy()
         {
-            this.TriggerIndicator = StockIndicatorManager.CreateIndicator("OSC(3,6)");
+            this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("OSC(3,6)");
         }
         FloatSerie OSCSerie;
         public override void Initialise(StockSerie stockSerie, StockOrder lastBuyOrder, bool supportShortSelling)
@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockStrategyClasses
                 StockSerie breadthSerie = StockDictionary.StockDictionarySingleton["TB." + stockSerie.StockName];
                 if (breadthSerie.Initialise())
                 {
-                    IStockIndicator OSCIndicator = breadthSerie.GetIndicator(((IStockIndicator)TriggerIndicator).Name);
+                    IStockIndicator OSCIndicator = breadthSerie.GetIndicator(((IStockIndicator)EntryTriggerIndicator).Name);
                     if (OSCIndicator != null)
                     {
                         OSCSerie = OSCIndicator.Series[0];

@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockStrategyClasses
 
       public _DONCHIANStrategy()
       {
-         this.TriggerIndicator = StockIndicatorManager.CreateIndicator("DONCHIAN(52)");
+         this.EntryTriggerIndicator = StockIndicatorManager.CreateIndicator("DONCHIAN(52)");
       }
 
       private FloatSerie middleUpBandSerie;
@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockStrategyClasses
       {
          base.Initialise(stockSerie, lastBuyOrder, supportShortSelling);
 
-         IStockIndicator indicator = TriggerIndicator as IStockIndicator;
+         IStockIndicator indicator = EntryTriggerIndicator as IStockIndicator;
          middleUpBandSerie = indicator.Series[1];
          middleBandSerie = indicator.Series[2];
          middleDownBandSerie = indicator.Series[3];
