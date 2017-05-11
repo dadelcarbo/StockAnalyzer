@@ -645,6 +645,8 @@ namespace StockAnalyzerApp
             //
             InitialiseStrategyCombo();
 
+            InitialiseWatchListComboBox();
+
             this.Show();
             this.progressBar.Value = 0;
             this.showShowStatusBarMenuItem.Checked = Settings.Default.ShowStatusBar;
@@ -740,6 +742,30 @@ namespace StockAnalyzerApp
             }
         }
 
+        private void InitialiseWatchListComboBox()
+        {
+            if (this.WatchLists != null)
+            {
+                // 
+                System.Windows.Forms.ToolStripItem[] watchListMenuItems =
+                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
+                ToolStripMenuItem watchListSubMenuItem;
+                System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems =
+                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
+                ToolStripMenuItem addToWatchListSubMenuItem;
+
+                int i = 0;
+                foreach (StockWatchList watchList in WatchLists)
+                {
+                    // Create add to wath list menu items
+                    addToWatchListSubMenuItem = new ToolStripMenuItem(watchList.Name);
+                    addToWatchListSubMenuItem.Click += new EventHandler(addToWatchListSubMenuItem_Click);
+                    addToWatchListMenuItems[i++] = addToWatchListSubMenuItem;
+                }
+                this.AddToWatchListToolStripDropDownButton.DropDownItems.Clear();
+                this.AddToWatchListToolStripDropDownButton.DropDownItems.AddRange(addToWatchListMenuItems);
+            }
+        }
 
         #region TIMER MANAGEMENT
 
@@ -778,8 +804,10 @@ namespace StockAnalyzerApp
                 busy = false;
             }
         }
-        private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenUp");
-        private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenDown");
+        private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenUp");
+        private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,75,25,3)", "BrokenDown");
+        private StockAlertDef crossedUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BullishCrossing");
+        private StockAlertDef crossedDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BearishCrossing");
 
         //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
         //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
@@ -801,6 +829,12 @@ namespace StockAnalyzerApp
             alertThread.Start();
         }
 
+        public void ClearAlert()
+        {
+            StockAlertLog stockAlertLog = StockAlertLog.Instance;
+            stockAlertLog.Clear();
+        }
+
         public void GenerateAlert()
         {
             if (busy) return;
@@ -809,6 +843,8 @@ namespace StockAnalyzerApp
             alertDefs.Clear();
             alertDefs.Add(rsiTrailDown);
             alertDefs.Add(rsiTrailUp);
+            alertDefs.Add(crossedUp);
+            alertDefs.Add(crossedDown);
             //alertDefs.Add(barAbove);
             //alertDefs.Add(barBelow);
             //alertDefs.Add(trailHL);

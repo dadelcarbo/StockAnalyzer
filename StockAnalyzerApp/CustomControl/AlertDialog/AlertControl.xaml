@@ -15,7 +15,8 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
-            <Button Content="Refresh" Name="RefreshBtn" Click="RefreshBtn_OnClick"/>
+            <Button Content="Refresh" Name="RefreshBtn" Click="RefreshBtn_OnClick" Margin="1,1,5,1"/>
+            <Button Content="Clear" Name="ClearBtn" Click="ClearBtn_OnClick" Margin="1,1,5,1"/>
             <Label Content="Alert date:"/>
             <Label Content="{Binding LastRefreshDate}"></Label>
         </StackPanel>

@@ -119,6 +119,12 @@ namespace StockAnalyzer.StockClasses
          }
       }
 
+      public void Clear()
+      {
+          string fileName = Path.GetTempPath() + "AlertLog.xml";
+          if (File.Exists(fileName)) File.Delete(fileName);
+          if (this.Alerts != null) this.Alerts.Clear();
+      }
       public event PropertyChangedEventHandler PropertyChanged;
 
       private void NotifyPropertyChanged(string name)

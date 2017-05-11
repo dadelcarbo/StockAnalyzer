@@ -19,40 +19,46 @@ using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
-   /// <summary>
-   /// Interaction logic for AlertControl.xaml
-   /// </summary>
-   public partial class AlertControl : UserControl
-   {
-      public AlertControl()
-      {
-         InitializeComponent();
-      }
+    /// <summary>
+    /// Interaction logic for AlertControl.xaml
+    /// </summary>
+    public partial class AlertControl : UserControl
+    {
+        public AlertControl()
+        {
+            InitializeComponent();
+        }
 
-      public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
-      private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
-      {
-         try
-         {
-            Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert);
-             alertThread.Name = "Alert";
-            alertThread.Start();
-         }
-         catch (Exception ex)
-         {
-            StockLog.Write(ex);
-         }
-      }
 
-      private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-      {
-         // Open on the alert stock
-         StockAlert alert = ((DataGrid) sender).SelectedItem as StockAlert;
+        private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.ClearAlert();
+        }
 
-         if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
+        private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert);
+                alertThread.Name = "Alert";
+                alertThread.Start();
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+        }
 
-         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Alert.Remove(alert.Alert.IndexOf("=>")));
-      }
-   }
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // Open on the alert stock
+            StockAlert alert = ((DataGrid)sender).SelectedItem as StockAlert;
+
+            if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
+
+            StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Alert.Remove(alert.Alert.IndexOf("=>")));
+        }
+    }
 }
