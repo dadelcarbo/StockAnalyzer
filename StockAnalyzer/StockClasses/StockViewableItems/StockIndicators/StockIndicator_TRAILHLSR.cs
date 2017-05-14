@@ -56,12 +56,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            Queue<float> resistanceQueue = new Queue<float>(new float[] { float.MinValue, float.MinValue });
-            Queue<float> supportQueue = new Queue<float>(new float[] { float.MaxValue, float.MaxValue });
-
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             int period = (int)this.Parameters[0];
 
             IStockTrailStop trailStop = stockSerie.GetTrailStop("TRAILHL(" + period + ")");
@@ -69,20 +63,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie longStopSerie = trailStop.Series[0];
             FloatSerie shortStopSerie = trailStop.Series[1];
 
-            BoolSerie brokenUpSerie = trailStop.Events[2];
-            BoolSerie brokenDownSerie = trailStop.Events[3];
+            BoolSerie supportDetectedSerie = trailStop.Events[2];
+            BoolSerie resistanceDetectedSerie = trailStop.Events[3];
 
             FloatSerie supportSerie = new FloatSerie(stockSerie.Count, "TRAILHL.S"); supportSerie.Reset(float.NaN);
             FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, "TRAILHL.R"); resistanceSerie.Reset(float.NaN);
-
 
             this.Series[0] = supportSerie;
             this.Series[1] = resistanceSerie;
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            this.Events[0] = brokenUpSerie;
-            this.Events[1] = brokenDownSerie;
+
+            Queue<float> resistanceQueue = new Queue<float>(new float[] { float.MinValue, float.MinValue });
+            Queue<float> supportQueue = new Queue<float>(new float[] { float.MaxValue, float.MaxValue });
+
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+
+            this.Events[0] = supportDetectedSerie;
+            this.Events[1] = resistanceDetectedSerie;
 
             // Begin Sequence
 
@@ -90,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float extremum = lowSerie[0];
             bool waitingForEndOfTrend = false;
             int i = 0;
-            for (; i < stockSerie.Count && (!brokenUpSerie[i] && !brokenDownSerie[i]); i++)
+            for (; i < stockSerie.Count && (!supportDetectedSerie[i] && !resistanceDetectedSerie[i]); i++)
             {
                 //if (float.IsNaN(longStopSerie[i]))
                 //{
@@ -114,12 +115,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             if (i < stockSerie.Count)
             {
-                if (brokenUpSerie[i])
+                if (supportDetectedSerie[i])
                 {
                     this.UpDownState[i] = StockSerie.Trend.UpTrend;
                     extremum = lowSerie.GetMin(0, i);
                 }
-                if (brokenDownSerie[i])
+                if (resistanceDetectedSerie[i])
                 {
                     this.UpDownState[i] = StockSerie.Trend.DownTrend;
                     extremum = highSerie.GetMax(0, i);
@@ -134,7 +135,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[8][i] = upSwing;
                 this.Events[9][i] = !upSwing;
 
-                if (brokenUpSerie[i])
+                if (supportDetectedSerie[i])
                 {
                     supportSerie[i] = extremum;
                     supportQueue.Dequeue();
@@ -165,7 +166,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
                     extremum = highSerie[i];
                 }
-                else if (brokenDownSerie[i])
+                else if (resistanceDetectedSerie[i])
                 {
                     supportSerie[i] = float.NaN;
                     resistanceSerie[i] = extremum;

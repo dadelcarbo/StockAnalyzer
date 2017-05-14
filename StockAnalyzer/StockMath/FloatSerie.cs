@@ -381,6 +381,15 @@ namespace StockAnalyzer.StockMath
             this.Values = new float[size];
             this.Name = name;
         }
+        public FloatSerie(int size, string name, float val)
+        {
+            this.Values = new float[size];
+            this.Name = name;
+            for (int i = 0; i < size; i++)
+            {
+                this.Values[i] = val;
+            }
+        }
         public FloatSerie(float[] values, string name)
         {
             this.Values = values;
@@ -948,6 +957,16 @@ namespace StockAnalyzer.StockMath
             }
             return new FloatSerie(absSerie, this.Name);
         }
+        public FloatSerie Sign()
+        {
+            float[] signSerie = new float[this.Values.Count()];
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                signSerie[i] = this[i] >= 0 ? 1.0f : -1.0f;
+            }
+            return new FloatSerie(signSerie, this.Name + "_Sign");
+        }
         /// <summary>
         /// Calculate Power of 2
         /// </summary>
@@ -990,6 +1009,20 @@ namespace StockAnalyzer.StockMath
             for (int i = 0; i < this.Values.Count(); i++)
             {
                 sqrtSerie[i] = (float)Math.Sqrt(this[i]);
+            }
+            return new FloatSerie(sqrtSerie);
+        }
+        /// <summary>
+        /// Calculate the square root series
+        /// </summary>
+        /// <returns></returns>
+        public FloatSerie SqrtSigned()
+        {
+            float[] sqrtSerie = new float[this.Values.Count()];
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                sqrtSerie[i] = this[i] >= 0 ? (float)Math.Sqrt(this[i]) : (float)Math.Sqrt(-this[i]);
             }
             return new FloatSerie(sqrtSerie);
         }

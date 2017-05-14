@@ -4,14 +4,14 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_HILBERT : StockIndicatorBase, IRange
+    public class StockIndicator_HILBERTTREND : StockIndicatorBase
     {
-        public StockIndicator_HILBERT()
+        public StockIndicator_HILBERTTREND()
         {
         }
         public override IndicatorDisplayTarget DisplayTarget
         {
-            get { return IndicatorDisplayTarget.RangedIndicator; }
+            get { return IndicatorDisplayTarget.NonRangedIndicator; }
         }
         public float Max
         {
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "HILBERT", "HILBERTL" }; } }
+        public override string[] SerieNames { get { return new string[] { "HILBERTTREND" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -45,29 +45,34 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
+                    seriePens = new Pen[] { new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Custom } };
                 }
                 return seriePens;
             }
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie sineSerie = null;
-            FloatSerie sineLeadSerie = null;
-            stockSerie.CalculateHilbertSineWave(stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.parameters[0]), ref sineSerie, ref sineLeadSerie);
+            var hilbertIndicator = stockSerie.GetIndicator(this.Name.Replace("TREND", ""));
+            FloatSerie trendSerie = hilbertIndicator.Series[0] - hilbertIndicator.Series[1];
 
-            this.series[0] = sineSerie;
-            this.series[1] = sineLeadSerie;
+            //var stockastikSerie = stockSerie.GetIndicator("STOKS(30,3,3,75,25)").Series[0];
+            //stockastikSerie = (stockastikSerie - 50f) / 50f;
+            trendSerie = trendSerie;
+
+            this.series[0] = trendSerie;
+
+            this.SetSerieNames();
+
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            for (int i = 10; i < sineSerie.Count; i++)
+            for (int i = 10; i < trendSerie.Count; i++)
             {
-                this.eventSeries[0][i] = sineLeadSerie[i] > sineSerie[i];
-                this.eventSeries[1][i] = !this.eventSeries[0][i];
-                this.eventSeries[2][i] = this.eventSeries[0][i] && !this.eventSeries[0][i - 1];
-                this.eventSeries[3][i] = this.eventSeries[1][i] && !this.eventSeries[1][i - 1];
+                this.eventSeries[0][i] = trendSerie[i] > 0;
+                this.eventSeries[1][i] = trendSerie[i] < 0;
+                this.eventSeries[2][i] = trendSerie[i] > 0 && trendSerie[i - 1] < 0;
+                this.eventSeries[3][i] = trendSerie[i] < 0 && trendSerie[i - 1] > 0;
             }
         }
 

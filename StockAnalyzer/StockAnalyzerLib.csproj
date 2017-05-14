@@ -165,6 +165,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERTTREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MEMA.cs" />
@@ -377,6 +379,7 @@
     <Compile Include="StockDrawing\StockDrawingItems.cs" />
     <Compile Include="StockLogging\StockLog.cs" />
     <Compile Include="StockMath\BoolSerie.cs" />
+    <Compile Include="StockMath\Complex.cs" />
     <Compile Include="StockMath\FloatPropertyRange.cs" />
     <Compile Include="StockMath\FloatRandom.cs" />
     <Compile Include="StockMath\FloatRange.cs" />
