@@ -19,10 +19,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return "VAR(" + this.Parameters[0].ToString() + ")"; }
         }
 
-        public override string Definition
-        {
-            get { return "VAR(int Period)"; }
-        }
         public override object[] ParameterDefaultValues
         {
             get { return new Object[] { 20 }; }
@@ -36,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "Period" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")", "VAR2(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -44,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Black) };
+                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
                 }
                 return seriePens;
             }
@@ -62,30 +58,35 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie varSerie = new FloatSerie(stockSerie.Count);
+            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
             FloatSerie emaSerie = varSerie.CalculateEMA((int)this.parameters[0]);
 
-            int period = (int)this.parameters[0];
-            for (int i = period; i < stockSerie.Count; i++)
-            {
-                float close1 = stockSerie.ValueArray[i - period].CLOSE;
-                float close2 = stockSerie.ValueArray[i].CLOSE;
-                float var = 0;
-                if (close2 < close1)
-                {
-                    var = (close2 - close1) / close1;
-                }
-                else
-                {
-                    close2 = 1f / close2;
-                    close1 = 1f / close1;
-                    var = -(close2 - close1) / close1;
-                }
-                varSerie[i] = var*100f;
-            }
+            FloatSerie ema2Serie = (varSerie.SquareSigned()).CalculateEMA((int)this.parameters[0]).SqrtSigned();
 
-            this.series[0] = varSerie;
+            //int period = (int)this.parameters[0];
+            //for (int i = period; i < stockSerie.Count; i++)
+            //{
+            //    float close1 = stockSerie.ValueArray[i - period].CLOSE;
+            //    float close2 = stockSerie.ValueArray[i].CLOSE;
+            //    float var = 0;
+            //    if (close2 < close1)
+            //    {
+            //        var = (close2 - close1) / close1;
+            //    }
+            //    else
+            //    {
+            //        close2 = 1f / close2;
+            //        close1 = 1f / close1;
+            //        var = -(close2 - close1) / close1;
+            //    }
+            //    varSerie[i] = var*100f;
+            //}
+
+            this.series[0] = emaSerie;
             this.Series[0].Name = this.Name;
+
+            this.series[1] = ema2Serie;
+            this.Series[1].Name = this.Name;
         }
 
         static string[] eventNames = new string[] { };

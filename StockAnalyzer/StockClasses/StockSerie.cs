@@ -2710,7 +2710,74 @@ namespace StockAnalyzer.StockClasses
                 previousIsUpCycle = isUpCycle;
             }
         }
+        public void CalculateOverboughtSR(FloatSerie serie, float overbought, float oversold, out FloatSerie supportSerie, out FloatSerie resistanceSerie)
+        {
+            supportSerie = new FloatSerie(this.Count, serie.Name + ".S", float.NaN);
+            resistanceSerie = new FloatSerie(this.Count, serie.Name + ".R", float.NaN);
 
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+
+            supportSerie[0] = float.NaN;
+            resistanceSerie[0] = this.First().Value.LOW;
+            float latestHigh = this.First().Value.HIGH;
+            float latestLow = this.First().Value.LOW;
+
+            bool isOverbought = false;
+            bool isOversold = false;
+            for (int i = 1; i < this.Count; i++)
+            {
+                if (isOverbought)
+                {
+                    if (serie[i] < overbought)
+                    {
+                        // Resistance detected
+                        resistanceSerie[i] = latestHigh;
+                        supportSerie[i] = float.NaN;
+                        isOverbought = false;
+                    }
+                    else
+                    {
+                        resistanceSerie[i] = resistanceSerie[i - 1];
+                        supportSerie[i] = supportSerie[i - 1];
+                    }
+                }
+                else if (isOversold)
+                {
+                    if (serie[i] > oversold)
+                    {
+                        // Support detected
+                        supportSerie[i] = latestLow;
+                        resistanceSerie[i] = float.NaN;
+                        isOversold = false;
+                    }
+                    else
+                    {
+                        resistanceSerie[i] = resistanceSerie[i - 1];
+                        supportSerie[i] = supportSerie[i - 1];
+                    }
+                }
+                else
+                {
+                    resistanceSerie[i] = resistanceSerie[i - 1];
+                    supportSerie[i] = supportSerie[i - 1];
+                    if (serie[i] > overbought)
+                    {
+                        latestHigh = highSerie[i];
+                        isOverbought = true;
+                    }
+                    if (serie[i] < oversold)
+                    {
+                        latestLow = lowSerie[i];
+                        isOversold = true;
+                    }
+                }
+
+                latestHigh = Math.Max(highSerie[i], Math.Max(highSerie[i - 1], latestHigh));
+                latestLow = Math.Min(lowSerie[i], Math.Min(lowSerie[i - 1], latestLow));
+            }
+        }
         #endregion
         #region Indicators calculation
 
@@ -6932,6 +6999,46 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Generate related series
         public StockSerie GenerateRandomSerie()
+        {
+            string stockName = "RANDOM UNIFORM";
+            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Yahoo);
+            stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
+
+            float previousClose = 1000.0f;
+            float open, tmp1, tmp2, close, high, low;
+            // Calculate ratio foreach values
+            StockDailyValue newValue = null;
+            float volatity = 15;
+
+            int period1 = 19;
+            int period2 = 85;
+
+
+            DateTime startDate = this.Values.Last().DATE.AddDays(-this.Values.Count * 10);
+
+            for (int i = 0; i < this.Values.Count * 2; i++)
+            {
+                open = previousClose;
+                close = open +
+                    (float)Math.Sin(2 * Math.PI * (i % period1) / (double)period1) +
+                    1.5f * (float)Math.Sin(2 * Math.PI * (i % period2) / (double)period2);
+
+                high = Math.Max(open, close);
+                low = Math.Min(open, close);
+
+                newValue = new StockDailyValue(stockName, open, high, low, close, 1000, startDate);
+                stockSerie.Add(startDate, newValue);
+
+                previousClose = close;
+                startDate = startDate.AddDays(1);
+            }
+
+            // Initialise the serie
+            stockSerie.Initialise();
+            return stockSerie;
+        }
+
+        public StockSerie GenerateRandomSerie2()
         {
             string stockName = "RANDOM UNIFORM";
             StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Yahoo);
