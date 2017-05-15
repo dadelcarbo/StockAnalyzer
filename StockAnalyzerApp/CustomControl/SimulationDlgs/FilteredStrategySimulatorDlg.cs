@@ -93,6 +93,16 @@ namespace StockAnalyzerApp.CustomControl
                 return;
             }
 
+            if (stopTriggerIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(stopLongTriggerComboBox.SelectedItem.ToString()) ||
+                string.IsNullOrEmpty(stopShortTriggerComboBox.SelectedItem.ToString()))
+            {
+                this.stopTriggerIndicatorTextBox.Text = "TRUE(1)";
+                this.stopTriggerIndicatorTextBox_TextChanged(null, null);
+                this.stopLongTriggerComboBox.SelectedItem = "False";
+                this.stopShortTriggerComboBox.SelectedItem = "False";
+                return;
+            }
+
             if (entryTriggerIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(buyTriggerComboBox.SelectedItem.ToString()) ||
                 string.IsNullOrEmpty(shortTriggerComboBox.SelectedItem.ToString()))
             {
@@ -104,6 +114,13 @@ namespace StockAnalyzerApp.CustomControl
                 string.IsNullOrEmpty(coverTriggerComboBox.SelectedItem.ToString()))
             {
                 MessageBox.Show("Invalid exit trigger: " + exitTriggerIndicatorTextBox.Text);
+                return;
+            }
+
+            if (stopTriggerIndicatorTextBox.Text == string.Empty || string.IsNullOrEmpty(stopLongTriggerComboBox.SelectedItem.ToString()) ||
+                string.IsNullOrEmpty(stopShortTriggerComboBox.SelectedItem.ToString()))
+            {
+                MessageBox.Show("Invalid stop trigger: " + stopTriggerIndicatorTextBox.Text);
                 return;
             }
             //
@@ -127,11 +144,11 @@ namespace StockAnalyzerApp.CustomControl
             StockSerie stockSerie = this.stockDictionary[this.SelectedStockName];
             if (!stockSerie.Initialise()) { return; }
 
-            StockFilteredStrategyBase filteredStrategy = new StockFilteredStrategyBase(filterEvents, 
-                entryTriggerEvents, buyTriggerComboBox.Text, shortTriggerComboBox.Text, 
+            StockFilteredStrategyBase filteredStrategy = new StockFilteredStrategyBase(
+                filterEvents, buyFilterComboBox.Text, shortFilterComboBox.Text,
+                entryTriggerEvents, buyTriggerComboBox.Text, shortTriggerComboBox.Text,
                 exitTriggerEvents, sellTriggerComboBox.Text, coverTriggerComboBox.Text,
-                buyFilterComboBox.Text, shortFilterComboBox.Text);
-
+                stopTriggerEvents, stopLongTriggerComboBox.Text, stopShortTriggerComboBox.Text);
 
             StockAnalyzerForm.MainFrame.SetThemeFromStrategy(filteredStrategy);
 
@@ -222,7 +239,7 @@ namespace StockAnalyzerApp.CustomControl
                                 filterIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
                             }
                         }
-                        else if (this.filterIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.filterIndicatorTextBox.Text.Replace("TRAIL|","")))
+                        else if (this.filterIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.filterIndicatorTextBox.Text.Replace("TRAIL|", "")))
                         {
                             string[] fields = this.filterIndicatorTextBox.Text.Split('|');
                             if (fields.Length == 3)
@@ -301,7 +318,7 @@ namespace StockAnalyzerApp.CustomControl
                                 triggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
                             }
                         }
-                        else if (this.entryTriggerIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.entryTriggerIndicatorTextBox.Text.Replace("TRAIL|","")))
+                        else if (this.entryTriggerIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.entryTriggerIndicatorTextBox.Text.Replace("TRAIL|", "")))
                         {
                             string[] fields = this.entryTriggerIndicatorTextBox.Text.Split('|');
                             if (fields.Length == 3)
@@ -423,6 +440,84 @@ namespace StockAnalyzerApp.CustomControl
             }
         }
 
+        private string previousStopTriggerIndicator = string.Empty;
+        private IStockEvent stopTriggerEvents = null;
+        private void stopTriggerIndicatorTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (stopTriggerIndicatorTextBox.Text == string.Empty) return;
+            if (previousStopTriggerIndicator == stopTriggerIndicatorTextBox.Text) return;
+            previousStopTriggerIndicator = stopTriggerIndicatorTextBox.Text;
+
+            IStockViewableSeries triggerIndicator = null;
+            if (StockIndicatorManager.Supports(this.stopTriggerIndicatorTextBox.Text))
+            {
+                triggerIndicator = StockIndicatorManager.CreateIndicator(this.stopTriggerIndicatorTextBox.Text);
+            }
+            else
+            {
+                if (StockTrailStopManager.Supports(this.stopTriggerIndicatorTextBox.Text))
+                {
+                    triggerIndicator = StockTrailStopManager.CreateTrailStop(this.stopTriggerIndicatorTextBox.Text);
+                }
+                else
+                {
+                    if (StockPaintBarManager.Supports(this.stopTriggerIndicatorTextBox.Text))
+                    {
+                        triggerIndicator = StockPaintBarManager.CreatePaintBar(this.stopTriggerIndicatorTextBox.Text);
+                    }
+                    else
+                    {
+                        if (StockDecoratorManager.Supports(this.stopTriggerIndicatorTextBox.Text))
+                        {
+                            string[] fields = this.stopTriggerIndicatorTextBox.Text.Split('|');
+                            if (fields.Length == 2)
+                            {
+                                triggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                            }
+                        }
+                        else if (this.stopTriggerIndicatorTextBox.Text.StartsWith("TRAIL|") && StockTrailManager.Supports(this.stopTriggerIndicatorTextBox.Text.Replace("TRAIL|", "")))
+                        {
+                            string[] fields = this.stopTriggerIndicatorTextBox.Text.Split('|');
+                            if (fields.Length == 3)
+                            {
+                                triggerIndicator = StockTrailManager.CreateTrail(fields[1], fields[2]);
+                            }
+                        }
+                    }
+                }
+            }
+            if (triggerIndicator != null)
+            {
+                stopTriggerEvents = triggerIndicator as IStockEvent;
+
+                stopLongTriggerComboBox.Items.Clear();
+                stopLongTriggerComboBox.Items.AddRange(stopTriggerEvents.EventNames.Cast<object>().ToArray());
+                if (stopLongTriggerComboBox.Items.Contains(stopLongTriggerComboBox.Text))
+                {
+                    stopLongTriggerComboBox.SelectedItem = stopLongTriggerComboBox.Text;
+                }
+                else
+                {
+                    stopLongTriggerComboBox.SelectedIndex = 0;
+                }
+
+                stopShortTriggerComboBox.Items.Clear();
+                stopShortTriggerComboBox.Items.AddRange(stopTriggerEvents.EventNames.Cast<object>().ToArray());
+                if (stopShortTriggerComboBox.Items.Contains(stopShortTriggerComboBox.Text))
+                {
+                    stopShortTriggerComboBox.SelectedItem = stopShortTriggerComboBox.Text;
+                }
+                else
+                {
+                    stopShortTriggerComboBox.SelectedIndex = 0;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot create stop trigger indicator " + this.stopTriggerIndicatorTextBox.Text + " , check syntax please");
+            }
+        }
+
         private void saveButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(this.strategyNameTextBox.Text))
@@ -453,10 +548,11 @@ namespace StockAnalyzerApp.CustomControl
                 return;
             }
 
-            StockFilteredStrategyBase filteredStrategy = new StockFilteredStrategyBase(filterEvents, 
+            StockFilteredStrategyBase filteredStrategy = new StockFilteredStrategyBase(
+                filterEvents, buyFilterComboBox.Text, shortFilterComboBox.Text,
                 entryTriggerEvents, buyTriggerComboBox.Text, shortTriggerComboBox.Text,
                 exitTriggerEvents, sellTriggerComboBox.Text, coverTriggerComboBox.Text,
-           buyFilterComboBox.Text, shortFilterComboBox.Text);
+                stopTriggerEvents, stopLongTriggerComboBox.Text, stopShortTriggerComboBox.Text);
 
             filteredStrategy.Name = this.strategyNameTextBox.Text;
 
@@ -485,12 +581,12 @@ namespace StockAnalyzerApp.CustomControl
                 this.shortTriggerComboBox.Items.Clear();
                 this.shortTriggerComboBox.Text = string.Empty;
 
-                this.exitTriggerIndicatorTextBox.Text = string.Empty;
-                previousExitTriggerIndicator = string.Empty;
-                this.sellTriggerComboBox.Items.Clear();
-                this.sellTriggerComboBox.Text = string.Empty;
-                this.coverTriggerComboBox.Items.Clear();
-                this.coverTriggerComboBox.Text = string.Empty;
+                this.stopTriggerIndicatorTextBox.Text = string.Empty;
+                previousStopTriggerIndicator = string.Empty;
+                this.stopLongTriggerComboBox.Items.Clear();
+                this.stopLongTriggerComboBox.Text = string.Empty;
+                this.stopShortTriggerComboBox.Items.Clear();
+                this.stopShortTriggerComboBox.Text = string.Empty;
 
                 return;
             }
@@ -513,6 +609,12 @@ namespace StockAnalyzerApp.CustomControl
 
             this.sellTriggerComboBox.SelectedItem = strategy.SellTriggerEventName;
             this.coverTriggerComboBox.SelectedItem = strategy.CoverTriggerEventName;
+
+            this.stopTriggerIndicatorTextBox.Text = strategy.StopTriggerName;
+            stopTriggerIndicatorTextBox_TextChanged(null, null);
+
+            this.stopLongTriggerComboBox.SelectedItem = strategy.StopLongTriggerEventName;
+            this.stopShortTriggerComboBox.SelectedItem = strategy.StopShortTriggerEventName;
         }
 
     }

@@ -35,124 +35,7 @@ namespace StockAnalyzer.StockStrategyClasses
         [XmlIgnore]
         public StockOrder LastBuyOrder { get; set; }
 
-        [XmlIgnore]
-        public IStockEvent EntryTriggerIndicator { get; set; }
-
-        public string EntryTriggerName
-        {
-            get
-            {
-                if (this.EntryTriggerIndicator == null)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    if (this.EntryTriggerIndicator is IStockDecorator)
-                    {
-                        IStockDecorator decorator = this.EntryTriggerIndicator as IStockDecorator;
-                        return decorator.Name + "|" + decorator.DecoratedItem;
-                    }
-                    else
-                    {
-                        return (this.EntryTriggerIndicator as IStockViewableSeries).Name;
-                    }
-                }
-            }
-            set
-            {
-                string indicatorName = value.Split('(')[0];
-                if (StockIndicatorManager.Supports(indicatorName))
-                {
-                    EntryTriggerIndicator = StockIndicatorManager.CreateIndicator(value);
-                }
-                else
-                {
-                    if (StockTrailStopManager.Supports(indicatorName))
-                    {
-                        EntryTriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
-                    }
-                    else
-                    {
-                        if (StockPaintBarManager.Supports(indicatorName))
-                        {
-                            EntryTriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
-                        }
-                        else
-                        {
-                            if (StockDecoratorManager.Supports(indicatorName))
-                            {
-                                string[] fields = value.Split('|');
-                                if (fields.Length == 2)
-                                {
-                                    EntryTriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public IStockEvent ExitTriggerIndicator { get; set; }
-
-        public string ExitTriggerName
-        {
-            get
-            {
-                if (this.ExitTriggerIndicator == null)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    if (this.ExitTriggerIndicator is IStockDecorator)
-                    {
-                        IStockDecorator decorator = this.ExitTriggerIndicator as IStockDecorator;
-                        return decorator.Name + "|" + decorator.DecoratedItem;
-                    }
-                    else
-                    {
-                        return (this.ExitTriggerIndicator as IStockViewableSeries).Name;
-                    }
-                }
-            }
-            set
-            {
-                string indicatorName = value.Split('(')[0];
-                if (StockIndicatorManager.Supports(indicatorName))
-                {
-                    ExitTriggerIndicator = StockIndicatorManager.CreateIndicator(value);
-                }
-                else
-                {
-                    if (StockTrailStopManager.Supports(indicatorName))
-                    {
-                        ExitTriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
-                    }
-                    else
-                    {
-                        if (StockPaintBarManager.Supports(indicatorName))
-                        {
-                            ExitTriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
-                        }
-                        else
-                        {
-                            if (StockDecoratorManager.Supports(indicatorName))
-                            {
-                                string[] fields = value.Split('|');
-                                if (fields.Length == 2)
-                                {
-                                    ExitTriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        #region Filter
         private IStockEvent filterIndicator { get; set; }
         [XmlIgnore]
         public IStockEvent FilterIndicator { get; set; }
@@ -212,29 +95,219 @@ namespace StockAnalyzer.StockStrategyClasses
             }
         }
 
+        public string OkToBuyFilterEventName { get; set; }
+        public string OkToShortFilterEventName { get; set; }
 
+        protected int OkToBuyFilterEventIndex = -1;
+        protected int OkToShortFilterEventIndex = -1;
+        #endregion
+
+        #region Entry
+        [XmlIgnore]
+        public IStockEvent EntryTriggerIndicator { get; set; }
+
+        public string EntryTriggerName
+        {
+            get
+            {
+                if (this.EntryTriggerIndicator == null)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    if (this.EntryTriggerIndicator is IStockDecorator)
+                    {
+                        IStockDecorator decorator = this.EntryTriggerIndicator as IStockDecorator;
+                        return decorator.Name + "|" + decorator.DecoratedItem;
+                    }
+                    else
+                    {
+                        return (this.EntryTriggerIndicator as IStockViewableSeries).Name;
+                    }
+                }
+            }
+            set
+            {
+                string indicatorName = value.Split('(')[0];
+                if (StockIndicatorManager.Supports(indicatorName))
+                {
+                    EntryTriggerIndicator = StockIndicatorManager.CreateIndicator(value);
+                }
+                else
+                {
+                    if (StockTrailStopManager.Supports(indicatorName))
+                    {
+                        EntryTriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
+                    }
+                    else
+                    {
+                        if (StockPaintBarManager.Supports(indicatorName))
+                        {
+                            EntryTriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
+                        }
+                        else
+                        {
+                            if (StockDecoratorManager.Supports(indicatorName))
+                            {
+                                string[] fields = value.Split('|');
+                                if (fields.Length == 2)
+                                {
+                                    EntryTriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public string BuyTriggerEventName { get; set; }
         public string ShortTriggerEventName { get; set; }
 
         protected int BuyTriggerEventIndex = -1;
         protected int ShortTriggerEventIndex = -1;
 
+        #endregion
+
+        #region Exit
+        [XmlIgnore]
+        public IStockEvent ExitTriggerIndicator { get; set; }
+
+        public string ExitTriggerName
+        {
+            get
+            {
+                if (this.ExitTriggerIndicator == null)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    if (this.ExitTriggerIndicator is IStockDecorator)
+                    {
+                        IStockDecorator decorator = this.ExitTriggerIndicator as IStockDecorator;
+                        return decorator.Name + "|" + decorator.DecoratedItem;
+                    }
+                    else
+                    {
+                        return (this.ExitTriggerIndicator as IStockViewableSeries).Name;
+                    }
+                }
+            }
+            set
+            {
+                string indicatorName = value.Split('(')[0];
+                if (StockIndicatorManager.Supports(indicatorName))
+                {
+                    ExitTriggerIndicator = StockIndicatorManager.CreateIndicator(value);
+                }
+                else
+                {
+                    if (StockTrailStopManager.Supports(indicatorName))
+                    {
+                        ExitTriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
+                    }
+                    else
+                    {
+                        if (StockPaintBarManager.Supports(indicatorName))
+                        {
+                            ExitTriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
+                        }
+                        else
+                        {
+                            if (StockDecoratorManager.Supports(indicatorName))
+                            {
+                                string[] fields = value.Split('|');
+                                if (fields.Length == 2)
+                                {
+                                    ExitTriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public string SellTriggerEventName { get; set; }
         public string CoverTriggerEventName { get; set; }
 
         protected int SellTriggerEventIndex = -1;
         protected int CoverTriggerEventIndex = -1;
+        #endregion
 
-        public string OkToBuyFilterEventName { get; set; }
-        public string OkToShortFilterEventName { get; set; }
+        #region Stop
+        [XmlIgnore]
+        public IStockEvent StopTriggerIndicator { get; set; }
 
-        protected int OkToBuyFilterEventIndex = -1;
-        protected int OkToShortFilterEventIndex = -1;
+        public string StopTriggerName
+        {
+            get
+            {
+                if (this.StopTriggerIndicator == null)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    if (this.StopTriggerIndicator is IStockDecorator)
+                    {
+                        IStockDecorator decorator = this.StopTriggerIndicator as IStockDecorator;
+                        return decorator.Name + "|" + decorator.DecoratedItem;
+                    }
+                    else
+                    {
+                        return (this.StopTriggerIndicator as IStockViewableSeries).Name;
+                    }
+                }
+            }
+            set
+            {
+                string indicatorName = value.Split('(')[0];
+                if (StockIndicatorManager.Supports(indicatorName))
+                {
+                    StopTriggerIndicator = StockIndicatorManager.CreateIndicator(value);
+                }
+                else
+                {
+                    if (StockTrailStopManager.Supports(indicatorName))
+                    {
+                        StopTriggerIndicator = StockTrailStopManager.CreateTrailStop(value);
+                    }
+                    else
+                    {
+                        if (StockPaintBarManager.Supports(indicatorName))
+                        {
+                            StopTriggerIndicator = StockPaintBarManager.CreatePaintBar(value);
+                        }
+                        else
+                        {
+                            if (StockDecoratorManager.Supports(indicatorName))
+                            {
+                                string[] fields = value.Split('|');
+                                if (fields.Length == 2)
+                                {
+                                    StopTriggerIndicator = StockDecoratorManager.CreateDecorator(fields[0], fields[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public string StopLongTriggerEventName { get; set; }
+        public string StopShortTriggerEventName { get; set; }
+
+        protected int StopLongTriggerEventIndex = -1;
+        protected int StopShortTriggerEventIndex = -1;
+        #endregion
 
         #endregion
         #region StockStrategy Methods
 
-        public StockFilteredStrategyBase(IStockEvent filterEvent, IStockEvent entryTriggerEvent, string buyTriggerEventName, string shortTriggerEventName, IStockEvent exitTriggerEvent, string sellTriggerEventName, string coverTriggerEventName, string okToBuyFilterEventName, string okToShortFilterEventName)
+        public StockFilteredStrategyBase(IStockEvent filterEvent, string okToBuyFilterEventName, string okToShortFilterEventName,
+            IStockEvent entryTriggerEvent, string buyTriggerEventName, string shortTriggerEventName,
+            IStockEvent exitTriggerEvent, string sellTriggerEventName, string coverTriggerEventName,
+            IStockEvent stopTriggerEvent, string stopLongTriggerEventName, string stopShortTriggerEventName)
         {
             EntryTriggerIndicator = entryTriggerEvent;
             BuyTriggerEventName = buyTriggerEventName;
@@ -243,6 +316,10 @@ namespace StockAnalyzer.StockStrategyClasses
             ExitTriggerIndicator = exitTriggerEvent;
             SellTriggerEventName = sellTriggerEventName;
             CoverTriggerEventName = coverTriggerEventName;
+
+            StopTriggerIndicator = stopTriggerEvent;
+            StopLongTriggerEventName = stopLongTriggerEventName;
+            StopShortTriggerEventName = stopShortTriggerEventName;
 
             FilterIndicator = filterEvent;
             OkToBuyFilterEventName = okToBuyFilterEventName;
@@ -318,6 +395,37 @@ namespace StockAnalyzer.StockStrategyClasses
                     throw new System.Exception("This indicator has no triggering event" + exitTriggerSerie.Name + "(" + CoverTriggerEventName + ")");
                 }
             }
+
+            // Initialise trigger indicator
+            IStockViewableSeries stopTriggerSerie = this.StopTriggerIndicator as IStockViewableSeries;
+            if (stopTriggerSerie != null)
+            {
+                if (stockSerie.HasVolume || !stopTriggerSerie.RequiresVolumeData)
+                {
+                    this.StopTriggerIndicator = stockSerie.GetStockEvents(stopTriggerSerie);
+                }
+                else
+                {
+                    throw new System.Exception("This serie has no volume information but is required for " + stopTriggerSerie.Name);
+                }
+                try
+                {
+                    StopLongTriggerEventIndex = this.StopTriggerIndicator.EventNames.ToList().IndexOf(StopLongTriggerEventName);
+                }
+                catch
+                {
+                    throw new System.Exception("This indicator has no triggering event" + stopTriggerSerie.Name + "(" + StopLongTriggerEventName + ")");
+                }
+                try
+                {
+                    StopShortTriggerEventIndex = this.StopTriggerIndicator.EventNames.ToList().IndexOf(StopShortTriggerEventName);
+                }
+                catch
+                {
+                    throw new System.Exception("This indicator has no triggering event" + stopTriggerSerie.Name + "(" + StopShortTriggerEventName + ")");
+                }
+            }
+
             // Initialise filter indicator
             IStockViewableSeries filterSerie = this.FilterIndicator as IStockViewableSeries;
             if (filterSerie != null)
@@ -372,7 +480,8 @@ namespace StockAnalyzer.StockStrategyClasses
         {
             if (LastBuyOrder.IsShortOrder)
             {
-                if (this.ExitTriggerIndicator.Events[this.CoverTriggerEventIndex][index])
+                if (this.ExitTriggerIndicator.Events[this.CoverTriggerEventIndex][index] || 
+                    (this.StopTriggerIndicator != null && this.StopTriggerIndicator.Events[this.StopShortTriggerEventIndex][index]))
                 {
                     return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                         dailyValue.DATE.AddDays(30), number, true);
@@ -380,7 +489,8 @@ namespace StockAnalyzer.StockStrategyClasses
             }
             else
             {
-                if (this.ExitTriggerIndicator.Events[this.SellTriggerEventIndex][index])
+                if (this.ExitTriggerIndicator.Events[this.SellTriggerEventIndex][index] ||
+                    (this.StopTriggerIndicator != null && this.StopTriggerIndicator.Events[this.StopLongTriggerEventIndex][index]))
                 {
                     return StockOrder.CreateSellAtMarketOpenStockOrder(dailyValue.NAME, dailyValue.DATE,
                         dailyValue.DATE.AddDays(30), number, false);
@@ -447,6 +557,9 @@ GRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
             theme = AppendThemeLine(indicator, theme);
 
             indicator = (IStockViewableSeries)this.ExitTriggerIndicator;
+            theme = AppendThemeLine(indicator, theme);
+
+            indicator = (IStockViewableSeries)this.StopTriggerIndicator;
             theme = AppendThemeLine(indicator, theme);
 
             return theme;

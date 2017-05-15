@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl
             this.entryTriggerIndicatorTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
-            this.simulationParameterControl = new SimulationDlgs.FilteredSimulationParameterControl();
+            this.simulationParameterControl = new FilteredSimulationParameterControl();
             this.strategyNameTextBox = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.coverTriggerComboBox = new System.Windows.Forms.ComboBox();
@@ -60,9 +60,17 @@ namespace StockAnalyzerApp.CustomControl
             this.label9 = new System.Windows.Forms.Label();
             this.exitTriggerIndicatorTextBox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.stopShortTriggerComboBox = new System.Windows.Forms.ComboBox();
+            this.stopLongTriggerComboBox = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.stopTriggerIndicatorTextBox = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // Portofolio
@@ -137,7 +145,7 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.filterIndicatorTextBox);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 312);
+            this.groupBox1.Location = new System.Drawing.Point(12, 418);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(292, 100);
             this.groupBox1.TabIndex = 8;
@@ -186,7 +194,7 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.entryTriggerIndicatorTextBox);
             this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Location = new System.Drawing.Point(12, 418);
+            this.groupBox2.Location = new System.Drawing.Point(12, 312);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(292, 100);
             this.groupBox2.TabIndex = 8;
@@ -263,7 +271,7 @@ namespace StockAnalyzerApp.CustomControl
             this.simulationParameterControl.Size = new System.Drawing.Size(402, 487);
             this.simulationParameterControl.StartDate = new System.DateTime(((long)(0)));
             this.simulationParameterControl.TabIndex = 10;
-            this.simulationParameterControl.SelectedStrategyChanged += new SimulationDlgs.FilteredSimulationParameterControl.SelectedStrategyHandler(this.simulationParameterControl_SelectedStrategyChanged);
+            this.simulationParameterControl.SelectedStrategyChanged += new FilteredSimulationParameterControl.SelectedStrategyHandler(this.simulationParameterControl_SelectedStrategyChanged);
             // 
             // strategyNameTextBox
             // 
@@ -280,7 +288,7 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.exitTriggerIndicatorTextBox);
             this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Location = new System.Drawing.Point(310, 418);
+            this.groupBox3.Location = new System.Drawing.Point(310, 312);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(292, 100);
             this.groupBox3.TabIndex = 8;
@@ -338,6 +346,72 @@ namespace StockAnalyzerApp.CustomControl
             this.label10.TabIndex = 6;
             this.label10.Text = "Indicator";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.stopShortTriggerComboBox);
+            this.groupBox4.Controls.Add(this.stopLongTriggerComboBox);
+            this.groupBox4.Controls.Add(this.label11);
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Controls.Add(this.stopTriggerIndicatorTextBox);
+            this.groupBox4.Controls.Add(this.label13);
+            this.groupBox4.Location = new System.Drawing.Point(310, 418);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(292, 100);
+            this.groupBox4.TabIndex = 8;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Stop";
+            // 
+            // stopShortTriggerComboBox
+            // 
+            this.stopShortTriggerComboBox.FormattingEnabled = true;
+            this.stopShortTriggerComboBox.Location = new System.Drawing.Point(70, 73);
+            this.stopShortTriggerComboBox.Name = "stopShortTriggerComboBox";
+            this.stopShortTriggerComboBox.Size = new System.Drawing.Size(216, 21);
+            this.stopShortTriggerComboBox.TabIndex = 10;
+            // 
+            // stopLongTriggerComboBox
+            // 
+            this.stopLongTriggerComboBox.FormattingEnabled = true;
+            this.stopLongTriggerComboBox.Location = new System.Drawing.Point(70, 49);
+            this.stopLongTriggerComboBox.Name = "stopLongTriggerComboBox";
+            this.stopLongTriggerComboBox.Size = new System.Drawing.Size(216, 21);
+            this.stopLongTriggerComboBox.TabIndex = 10;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(8, 77);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(43, 13);
+            this.label11.TabIndex = 9;
+            this.label11.Text = "Cover if";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 52);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(32, 13);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "Sell if";
+            // 
+            // stopTriggerIndicatorTextBox
+            // 
+            this.stopTriggerIndicatorTextBox.Location = new System.Drawing.Point(70, 19);
+            this.stopTriggerIndicatorTextBox.Name = "stopTriggerIndicatorTextBox";
+            this.stopTriggerIndicatorTextBox.Size = new System.Drawing.Size(216, 20);
+            this.stopTriggerIndicatorTextBox.TabIndex = 7;
+            this.stopTriggerIndicatorTextBox.Leave += new System.EventHandler(this.stopTriggerIndicatorTextBox_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 22);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(48, 13);
+            this.label13.TabIndex = 6;
+            this.label13.Text = "Indicator";
+            // 
             // FilteredStrategySimulatorDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,6 +419,7 @@ namespace StockAnalyzerApp.CustomControl
             this.ClientSize = new System.Drawing.Size(612, 594);
             this.Controls.Add(this.strategyNameTextBox);
             this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -362,6 +437,8 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -398,5 +475,12 @@ namespace StockAnalyzerApp.CustomControl
       private System.Windows.Forms.Label label9;
       private System.Windows.Forms.TextBox exitTriggerIndicatorTextBox;
       private System.Windows.Forms.Label label10;
+      private System.Windows.Forms.GroupBox groupBox4;
+      private System.Windows.Forms.ComboBox stopShortTriggerComboBox;
+      private System.Windows.Forms.ComboBox stopLongTriggerComboBox;
+      private System.Windows.Forms.Label label11;
+      private System.Windows.Forms.Label label12;
+      private System.Windows.Forms.TextBox stopTriggerIndicatorTextBox;
+      private System.Windows.Forms.Label label13;
    }
 }

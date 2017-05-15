@@ -20,7 +20,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return IndicatorDisplayStyle.SupportResistance; }
         }
 
-
         public override string[] ParameterNames
         {
             get { return new string[] { "Indicator", "Overbought", "Oversold" }; }
@@ -28,11 +27,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { "STOKS(30,3,3,75,25)", 75, 25 }; }
+            get { return new Object[] { "STOKS(30,3,3,75,25)", 75f, 25f }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) }; }
         }
 
         public override string[] SerieNames { get { return new string[] { "STOK.S", "STOK.R" }; } }
@@ -54,7 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie supportSerie, resistanceSerie, secondarySupport, secondaryResistance;
             IStockIndicator stokIndicator = stockSerie.GetIndicator(this.Parameters[0].ToString().Replace("_", ","));
 
-            stockSerie.CalculateOverboughtSR(stokIndicator.Series[0], (int)this.Parameters[1], (int)this.Parameters[2], out supportSerie, out resistanceSerie);
+            stockSerie.CalculateOverboughtSR(stokIndicator.Series[0], (float)this.Parameters[1], (float)this.Parameters[2], out supportSerie, out resistanceSerie);
             this.Series[0] = supportSerie;
             this.Series[1] = resistanceSerie;
 
@@ -92,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         brokenSupport = previousSupport;
                         supportBrokenSerie[i] = true;
                     }
-                } 
+                }
                 if (float.IsNaN(brokenResistance))
                 {
                     if (closeSerie[i] > previousResistance)

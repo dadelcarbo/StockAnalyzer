@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get
          {
-            HLine[] lines = new HLine[] { new HLine(50, new Pen(Color.LightGray)), new HLine(80, new Pen(Color.Gray)), new HLine(20, new Pen(Color.Gray)) };
+             HLine[] lines = new HLine[] { new HLine(50, new Pen(Color.LightGray)), new HLine((float)this.parameters[3], new Pen(Color.Gray)), new HLine((float)this.parameters[4], new Pen(Color.Gray)) };
             lines[0].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
             lines[1].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
             lines[2].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
