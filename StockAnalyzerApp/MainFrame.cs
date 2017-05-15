@@ -6570,6 +6570,7 @@ border:1px solid black;
                             }
                             catch (System.Exception e)
                             {
+                                StockAnalyzerException.MessageBox(e);
                                 StockLog.Write("Exception loading theme: " + this.currentTheme);
                                 foreach (string line in this.themeDictionary[currentTheme][entry])
                                 {

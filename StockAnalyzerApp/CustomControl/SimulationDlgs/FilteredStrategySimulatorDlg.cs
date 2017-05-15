@@ -87,6 +87,7 @@ namespace StockAnalyzerApp.CustomControl
                 string.IsNullOrEmpty(shortFilterComboBox.SelectedItem.ToString()))
             {
                 this.filterIndicatorTextBox.Text = "TRUE(1)";
+                this.filterIndicatorTextBox_TextChanged(null, null);
                 this.buyFilterComboBox.SelectedItem = "True";
                 this.shortFilterComboBox.SelectedItem = "True";
                 return;
