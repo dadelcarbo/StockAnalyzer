@@ -34,6 +34,11 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\lib\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -44,7 +49,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -122,6 +126,7 @@
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
     <Compile Include="StockClasses\StockAgenda.cs" />
+    <Compile Include="StockClasses\StockDataProviders\YahooIntradayJson.cs" />
     <Compile Include="StockClasses\StockFinancial.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
@@ -519,6 +524,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="StockPortofolio\Portfolio.cd" />
   </ItemGroup>
   <ItemGroup>
@@ -530,7 +536,9 @@
   <ItemGroup>
     <Content Include="HTMLPage1.htm" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

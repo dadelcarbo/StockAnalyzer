@@ -141,7 +141,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#"))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
                             StockSerie stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0].ToUpper());
@@ -171,7 +171,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#"))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
                             if (!stockDictionary.ContainsKey(row[1].ToUpper()))
@@ -203,7 +203,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#"))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
                             StockSerie stockSerie = new StockSerie(row[1], row[3], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC);
@@ -1411,7 +1411,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         while (!sr.EndOfStream)
                         {
                             line = sr.ReadLine();
-                            if (!line.StartsWith("#"))
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                             {
                                 string[] row = line.Split(';');
                                 cac40List.Add(row[1].ToUpper());
@@ -1449,7 +1449,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         while (!sr.EndOfStream)
                         {
                             line = sr.ReadLine();
-                            if (!line.StartsWith("#"))
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                             {
                                 string[] row = line.Split(';');
                                 srdList.Add(row[1].ToUpper());
@@ -1488,7 +1488,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         while (!sr.EndOfStream)
                         {
                             line = sr.ReadLine();
-                            if (!line.StartsWith("#"))
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                             {
                                 string[] row = line.Split(';');
                                 srdloList.Add(row[1].ToUpper());

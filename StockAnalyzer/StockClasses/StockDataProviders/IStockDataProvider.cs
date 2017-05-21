@@ -3,6 +3,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     public enum StockDataProvider
     {
         ABC,
+        BarChart,
+        BarChartIntraday,
         Yahoo,
         YahooIntraday,
         Google,
@@ -20,8 +22,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Ratio,
         COT,
         NASDACQShortInterest,
-        BarChart,
-        BarChartIntraday,
         FINRA
     }
 

@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                  while (!sr.EndOfStream)
                  {
                      line = sr.ReadLine();
-                     if (!line.StartsWith("#"))
+                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                      {
                          string[] row = line.Split(',');
                          StockSerie stockSerie = new StockSerie(row[1], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Rydex);

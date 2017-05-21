@@ -340,11 +340,11 @@ namespace StockAnalyzerApp
                 LoadAnalysis(Settings.Default.AnalysisFile);
             }
 
-            if (this.StockDictionary.ContainsKey("SP500"))
-            {
-                StockSerie cashSerie = this.StockDictionary["SP500"].GenerateCashStockSerie();
-                this.StockDictionary.Add(cashSerie.StockName, cashSerie);
-            }
+            //if (this.StockDictionary.ContainsKey("SP500"))
+            //{
+            //    StockSerie cashSerie = this.StockDictionary["SP500"].GenerateCashStockSerie();
+            //    this.StockDictionary.Add(cashSerie.StockName, cashSerie);
+            //}
 
 #if DEBUG
             bool fastStart = true;
@@ -384,7 +384,7 @@ namespace StockAnalyzerApp
 
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
-                this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
+                //this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
                 this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
                 this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
 

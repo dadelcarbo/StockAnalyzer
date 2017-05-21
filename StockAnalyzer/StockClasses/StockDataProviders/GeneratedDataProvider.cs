@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#"))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(',');
                             stockDictionary.Add(row[0], new StockSerie(row[0], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Generated));
