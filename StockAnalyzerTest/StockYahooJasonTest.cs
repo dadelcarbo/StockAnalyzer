@@ -11,35 +11,35 @@ namespace StockAnalyzerTest
     [TestClass]
     public class StockYahooJasonTest
     {
-        [TestMethod]
-        [DeploymentItem(@"YahooJson\EURGBP=X_INT_FX_EUR_GBP_INTRADAY.json")]
-        public void ParseJSon()
-        {
-            YahooIntradayDataProvider dp = new YahooIntradayDataProvider();
+        //[TestMethod]
+        //[DeploymentItem(@"YahooJson\EURGBP=X_INT_FX_EUR_GBP_INTRADAY.json")]
+        //public void ParseJSon()
+        //{
+        //    //YahooIntradayDataProvider dp = new YahooIntradayDataProvider();
 
-            using (var fs = File.OpenRead(@"EURGBP=X_INT_FX_EUR_GBP_INTRADAY.json"))
-            {
-                string csv = dp.YahooJsonToCSV(fs);
-            }
-        }
+        //    //using (var fs = File.OpenRead(@"EURGBP=X_INT_FX_EUR_GBP_INTRADAY.json"))
+        //    //{
+        //    //    string csv = dp.YahooJsonToCSV(fs);
+        //    //}
+        //}
 
-        [TestMethod]
-        public void DownloadYahooIntraday()
-        {
-            string url = "https://l1-query.finance.yahoo.com/v8/finance/chart/SPY?period2=1495228978&period1=1494883378&interval=1m&indicators=quote&includeTimestamps=true&includePrePost=false&events=div%7Csplit%7Cearn&corsDomain=finance.yahoo.com";
+        //[TestMethod]
+        //public void DownloadYahooIntraday()
+        //{
+        //    string url = "https://l1-query.finance.yahoo.com/v8/finance/chart/SPY?period2=1495228978&period1=1494883378&interval=1m&indicators=quote&includeTimestamps=true&includePrePost=false&events=div%7Csplit%7Cearn&corsDomain=finance.yahoo.com";
 
-            using (WebClient wc = new WebClient())
-            {
-                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+        //    using (WebClient wc = new WebClient())
+        //    {
+        //        wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                var data = wc.DownloadString(url);
+        //        var data = wc.DownloadString(url);
 
-                YahooIntradayDataProvider dp = new YahooIntradayDataProvider();
+        //        YahooIntradayDataProvider dp = new YahooIntradayDataProvider();
 
-                string csv = dp.YahooJsonToCSV(new MemoryStream(Encoding.UTF8.GetBytes(data)));
-                Assert.AreNotEqual(string.Empty, csv);
-            }
-        }
+        //        string csv = dp.YahooJsonToCSV(new MemoryStream(Encoding.UTF8.GetBytes(data)));
+        //        Assert.AreNotEqual(string.Empty, csv);
+        //    }
+        //}
 
         [TestMethod]
         public void DownloadYahooDailyTest()

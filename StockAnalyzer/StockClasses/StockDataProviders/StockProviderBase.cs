@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using System.Xml.Serialization;
@@ -189,12 +190,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             foreach (StockDataProvider dataProviderType in Enum.GetValues(typeof(StockDataProvider)))
             {
-                IStockDataProvider dataProvider = GetDataProvider(dataProviderType);
-                if (dataProvider != null)
+                try
                 {
-                    dataProvider.DownloadStarted += downloadListener;
-                    dataProvider.InitDictionary(rootFolder, stockDictionary, download);
-                    dataProvider.DownloadStarted -= downloadListener;
+                    IStockDataProvider dataProvider = GetDataProvider(dataProviderType);
+                    if (dataProvider != null)
+                    {
+                        dataProvider.DownloadStarted += downloadListener;
+                        dataProvider.InitDictionary(rootFolder, stockDictionary, download);
+                        dataProvider.DownloadStarted -= downloadListener;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
             }
         }
@@ -309,7 +317,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // File format
                 // Date,Open,High,Low,Close,Volume,Adj Close (UpVolume, Tick, Uptick)
                 // 2010-06-18,10435.00,10513.75,10379.60,10450.64,4555360000,10450.64
-                string[] row = sr.ReadLine().Split(',');
+                string[] row = sr.ReadLine().Replace("\"", "").Split(',');
+
                 switch (row.Length)
                 {
                     case 5: // Date,Open,High,Low,Close
@@ -376,6 +385,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                     float.Parse(row[4], usCulture),
                                     long.Parse(row[5], usCulture),
                                     DateTime.Parse(row[0], usCulture));
+                        }
+                        break;
+                    case 9:
+                        // BARCART CSV 
+                        {
+                            // File format
+                            // symbol,timestamp,tradingDay,open,high,low,close,volume,openInterest
+
+                            DateTime day = DateTime.Parse(row[2], usCulture);
+                            stockValue = new StockDailyValue(
+                                stockName,
+                                float.Parse(row[3], usCulture),
+                                float.Parse(row[4], usCulture),
+                                float.Parse(row[5], usCulture),
+                                float.Parse(row[6], usCulture),
+                                long.Parse(row[7], usCulture),
+                                day);
                         }
                         break;
                     case 10: // Date,Open,High,Low,Close,Volume,Adj Close (UpVolume, Tick, Uptick)

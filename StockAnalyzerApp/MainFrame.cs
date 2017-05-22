@@ -385,12 +385,12 @@ namespace StockAnalyzerApp
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
                 //this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
-                this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
-                this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
+                //this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
+                //this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
 
                 //GeneratePosition(groups);
 
-                // Generate Vix Premiu
+                // Generate Vix Premium
                 StockSplashScreen.ProgressText = "Generating VIX Premium data...";
                 //GenerateVixPremium();
                 #region Test Automatic Indices

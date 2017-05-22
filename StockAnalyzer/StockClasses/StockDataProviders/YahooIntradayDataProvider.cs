@@ -5,8 +5,6 @@ using System.Net;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -216,52 +214,52 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
 
-        internal string YahooJsonToCSV(Stream fs)
-        {
-            string csv = string.Empty;
-            try
-            {
-                using (StreamReader sr = new StreamReader(fs))
-                {
-                    string line = sr.ReadToEnd();
+        //internal string YahooJsonToCSV(Stream fs)
+        //{
+        //    string csv = string.Empty;
+        //    try
+        //    {
+        //        using (StreamReader sr = new StreamReader(fs))
+        //        {
+        //            string line = sr.ReadToEnd();
 
-                    var data = JsonConvert.DeserializeObject<RootObject>(line);
+        //            var data = JsonConvert.DeserializeObject<RootObject>(line);
 
-                    var res = data.chart.result.FirstOrDefault();
-                    if (res == null) return string.Empty;
+        //            var res = data.chart.result.FirstOrDefault();
+        //            if (res == null) return string.Empty;
 
-                    var values = res.indicators.quote[0];
-                    if (values == null) return string.Empty;
+        //            var values = res.indicators.quote[0];
+        //            if (values == null) return string.Empty;
 
-                    List<StockDailyValue> bars = new List<StockDailyValue>();
+        //            List<StockDailyValue> bars = new List<StockDailyValue>();
 
-                    DateTime now = DateTime.Now;
-                    DateTime utcNow = now.ToUniversalTime();
-                    int gmtoffset = (int)((now - utcNow).TotalSeconds);
-                    DateTime startDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(res.meta.firstTradeDate);
-                    DateTime init = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(gmtoffset);
+        //            DateTime now = DateTime.Now;
+        //            DateTime utcNow = now.ToUniversalTime();
+        //            int gmtoffset = (int)((now - utcNow).TotalSeconds);
+        //            DateTime startDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(res.meta.firstTradeDate);
+        //            DateTime init = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(gmtoffset);
 
-                    for (int i = 0; i < res.timestamp.Count; i++)
-                    {
-                        DateTime date = init.AddSeconds(res.timestamp[i]);
-                        float open = values.open[i].HasValue ? values.open[i].Value : float.NaN;
-                        float high = values.high[i].HasValue ? values.high[i].Value : float.NaN;
-                        float low = values.low[i].HasValue ? values.low[i].Value : float.NaN;
-                        float close = values.close[i].HasValue ? values.close[i].Value : float.NaN;
+        //            for (int i = 0; i < res.timestamp.Count; i++)
+        //            {
+        //                DateTime date = init.AddSeconds(res.timestamp[i]);
+        //                float open = values.open[i].HasValue ? values.open[i].Value : float.NaN;
+        //                float high = values.high[i].HasValue ? values.high[i].Value : float.NaN;
+        //                float low = values.low[i].HasValue ? values.low[i].Value : float.NaN;
+        //                float close = values.close[i].HasValue ? values.close[i].Value : float.NaN;
 
-                        if (float.IsNaN(open) || float.IsNaN(high) || float.IsNaN(low) || float.IsNaN(close))
-                            continue;
+        //                if (float.IsNaN(open) || float.IsNaN(high) || float.IsNaN(low) || float.IsNaN(close))
+        //                    continue;
 
-                        csv += new StockDailyValue(res.meta.symbol, open, high, low, close, values.volume[i].HasValue ? values.volume[i].Value : 0, date).ToString() + Environment.NewLine;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                csv = string.Empty;
-            }
-            return csv;
-        }
+        //                csv += new StockDailyValue(res.meta.symbol, open, high, low, close, values.volume[i].HasValue ? values.volume[i].Value : 0, date).ToString() + Environment.NewLine;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        csv = string.Empty;
+        //    }
+        //    return csv;
+        //}
 
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {

@@ -148,33 +148,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return true;
         }
-        protected override StockDailyValue ReadMarketDataFromCSVStream(StreamReader sr, string stockName, bool useAdjusted)
-        {
-            StockDailyValue stockValue = null;
-            try
-            {
-                // File format
-                // Date,Open,High,Low,Close,Volume,Adj Close (UpVolume, Tick, Uptick)
-                // 2010-06-18,10435.00,10513.75,10379.60,10450.64,4555360000,10450.64
-                string[] row = sr.ReadLine().Replace("\"", "").Split(',');
-
-                DateTime day = DateTime.Parse(row[2], usCulture);
-                stockValue = new StockDailyValue(
-                   stockName,
-                   float.Parse(row[3], usCulture),
-                   float.Parse(row[4], usCulture),
-                   float.Parse(row[5], usCulture),
-                   float.Parse(row[6], usCulture),
-                   long.Parse(row[7], usCulture),
-                   day);
-            }
-            catch (System.Exception ex)
-            {
-                StockLog.Write(ex.Message);
-                // Assume input is right, Ignore invalid lines
-            }
-            return stockValue;
-        }
+       
 
         private bool ParseBarChartFile(StockSerie stockSerie, string fileName)
         {
@@ -295,7 +269,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     NotifyProgress("Creating archive for " + stockSerie.StockName + " - " + stockSerie.StockGroup.ToString());
                     DateTime lastDate = new DateTime(DateTime.Today.Year, 01, 01);
-                    for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
+                    int archive_start_year = DateTime.Now.Year - 2;
+                    for (int i = lastDate.Year - 1; i >= archive_start_year ; i--)
                     {
                         if (!this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), shortName))
                         {

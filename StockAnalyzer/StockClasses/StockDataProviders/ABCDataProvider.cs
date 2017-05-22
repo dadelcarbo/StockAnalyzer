@@ -746,6 +746,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 byte[] data = Encoding.ASCII.GetBytes(postData);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.Credentials = CredentialCache.DefaultCredentials;
 
                 req.CookieContainer = new CookieContainer();
                 req.ContentType = "application/x-www-form-urlencoded";
