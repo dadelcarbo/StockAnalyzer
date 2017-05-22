@@ -384,9 +384,10 @@ namespace StockAnalyzerApp
 
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
-                //this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
-                //this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
-                //this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
+                this.GroupReference.Add(StockSerie.Groups.COMMODITY, this.StockDictionary["GOLD"]);
+                this.GroupReference.Add(StockSerie.Groups.COUNTRY, this.StockDictionary["SP500"]);
+                this.GroupReference.Add(StockSerie.Groups.CURRENCY, this.StockDictionary["SP500"]);
+                this.GroupReference.Add(StockSerie.Groups.SECTORS, this.StockDictionary["SP500"]);
 
                 //GeneratePosition(groups);
 
@@ -5693,7 +5694,7 @@ border:1px solid black;
                         break;
                     case Keys.F7:
                         {
-                            this.statisticsMenuItem_Click(null,null);
+                            this.statisticsMenuItem_Click(null, null);
                         }
                         break;
                     case Keys.Control | Keys.F8: // Display Risk Calculator Windows
@@ -7048,7 +7049,7 @@ border:1px solid black;
         }
         private void configDataProviderMenuItem_Click(object sender, System.EventArgs e)
         {
-            var configDialog = ((IConfigDialog) ((ToolStripMenuItem) sender).Tag);
+            var configDialog = ((IConfigDialog)((ToolStripMenuItem)sender).Tag);
             if (configDialog.ShowDialog(this.StockDictionary) == System.Windows.Forms.DialogResult.OK)
             {
                 var dataProvider = (IStockDataProvider)configDialog;

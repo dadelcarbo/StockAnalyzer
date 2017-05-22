@@ -247,7 +247,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
                         this.DownloadFileFromProvider(rootFolder + FOLDER, fileName, startDate, DateTime.Today, shortName);
 
-                        if (stockSerie.StockName == "ADIDAS") // Check if something new has been downloaded using ANGLO AMERICAN as the reference for all downloads
+                        if (stockSerie.StockName == "SPY") // Check if something new has been downloaded using ANGLO AMERICAN as the reference for all downloads
                         {
                             this.ParseCSVFile(stockSerie, rootFolder + FOLDER + "\\" + fileName);
                             if (lastDate == stockSerie.Keys.Last())
