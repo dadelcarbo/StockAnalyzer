@@ -11,8 +11,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class BarChartIntradayDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\BarChart";
-        static private string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\BarChart";
+        static private string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\BarChartIntraday";
+        static private string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\BarChartIntraday";
         static private string CONFIG_FILE = @"\BarChartIntradayDownload.cfg";
         static private string CONFIG_FILE_USER = @"\BarChartIntradayDownload.user.cfg";
 

@@ -13,8 +13,6 @@ namespace StockAnalyzer.StockClasses
          BBUnderrun,
          EMA3Overrun,
          EMA3Underrun,
-         RSIOverrun,
-         RSIUnderrun,
          VIXOverrun,
          VIXUnderrun,
          GVZOverrun,
@@ -66,8 +64,6 @@ namespace StockAnalyzer.StockClasses
       }
       #endregion
       #region CONSTANTS
-      public const float RSI_UP_BOUND = 75.0f;
-      public const float RSI_LOW_BOUND = 25.0f;
       public const float VAR_TRESHOLD = 0.03f;  // 3%
       public const float EVENT_TOLERANCE = 0.03f; // 5%
       public const float DAYS = 5;

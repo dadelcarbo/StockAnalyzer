@@ -185,8 +185,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQEX.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_QQE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VARCUMUL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
@@ -419,7 +417,6 @@
     <Compile Include="StockSecurity\StockUser.cs" />
     <Compile Include="StockStrategyClasses\ADXStrategy.cs" />
     <Compile Include="StockStrategyClasses\BBStrategy.cs" />
-    <Compile Include="StockStrategyClasses\BBSTOCKStrategy.cs" />
     <Compile Include="StockStrategyClasses\DONCHIANStrategy.cs" />
     <Compile Include="StockStrategyClasses\SARFilteredStrategy.cs" />
     <Compile Include="StockStrategyClasses\SimBuyWithCloseDirection.cs" />

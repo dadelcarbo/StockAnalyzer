@@ -1653,26 +1653,6 @@ namespace StockAnalyzer.StockClasses
                         }
                         break;
                     #endregion
-                    case StockEvent.EventType.RSIOverrun:
-                        // Detect RSI Events
-                        {
-                            float currentRSI = this.GetSerie(StockIndicatorType.RSI).Values.ElementAt(index);
-                            if (currentRSI > StockEvent.RSI_UP_BOUND)
-                            {
-                                return true;
-                            }
-                        }
-                        break;
-                    case StockEvent.EventType.RSIUnderrun:
-                        // Detect RSI Events
-                        {
-                            float currentRSI = this.GetSerie(StockIndicatorType.RSI).Values.ElementAt(index);
-                            if (currentRSI < StockEvent.RSI_LOW_BOUND)
-                            {
-                                return true;
-                            }
-                        }
-                        break;
                     #endregion
                     case StockEvent.EventType.GapUp:
                         if (currentValue.LOW > previousValue.HIGH)

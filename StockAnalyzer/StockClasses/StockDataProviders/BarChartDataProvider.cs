@@ -256,13 +256,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                         }
                     }
-                    else
-                    {
-                        if (stockSerie.StockName == "ADIDAS")
-                        {
-                            this.needDownload = false;
-                        }
-                    }
                     stockSerie.IsInitialised = isUpTodate;
                 }
                 else
