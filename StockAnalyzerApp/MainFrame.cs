@@ -783,6 +783,9 @@ namespace StockAnalyzerApp
         private StockAlertDef crossedUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BullishCrossing");
         private StockAlertDef crossedDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BearishCrossing");
 
+        private StockAlertDef stokUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected");
+        private StockAlertDef stokDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected");
+
         //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
         //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
         //private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
@@ -819,6 +822,8 @@ namespace StockAnalyzerApp
             alertDefs.Add(rsiTrailUp);
             alertDefs.Add(crossedUp);
             alertDefs.Add(crossedDown);
+            alertDefs.Add(stokUp);
+            alertDefs.Add(stokDown);
             //alertDefs.Add(barAbove);
             //alertDefs.Add(barBelow);
             //alertDefs.Add(trailHL);

@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie slowK = stockSerie.CalculateFastOscillator((int)this.parameters[0]).CalculateEMA((int)this.parameters[1]);
-            FloatSerie slowD = slowK.CalculateEMATrailStop((int)this.parameters[2], 1);
+            FloatSerie slowD = slowK.CalculateEMA((int)this.parameters[2]);
             this.series[0] = slowK;
             this.series[0].Name = this.SerieNames[0];
             this.series[1] = slowD;
