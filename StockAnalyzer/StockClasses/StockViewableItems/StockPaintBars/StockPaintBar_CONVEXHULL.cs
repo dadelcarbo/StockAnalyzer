@@ -99,6 +99,33 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 DrawingItem.CreatePersistent = false;
             }
         }
+        static public void GetSR(StockSerie stockSerie, int startIndex, int endIndex)
+        {
+            if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            {
+                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
+            }
+            else
+            {
+                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+            }
+            StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
+
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+            float highest = highSerie.GetMax(startIndex, endIndex-5);
+            float lowest = lowSerie.GetMin(startIndex, endIndex-5);
+
+            PointF A, B, C, D;
+            A = new PointF(startIndex, highest);
+            B = new PointF(endIndex, highest);
+            C = new PointF(startIndex, lowest);
+            D = new PointF(endIndex, lowest);
+
+            drawingItems.Add(new Segment2D(A, B, Pens.DarkCyan));
+            drawingItems.Add(new Segment2D(C, D, Pens.DarkCyan));
+        }
 
         static public void GetConvexCull(bool convex, StockSerie stockSerie, int startIndex, int endIndex, out HalfLine2D resistance, out HalfLine2D support,Pen resistancePen, Pen supportPen)
         {

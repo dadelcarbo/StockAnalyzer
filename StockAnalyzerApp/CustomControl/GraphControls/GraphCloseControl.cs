@@ -1200,7 +1200,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddSAR:
-                    DrawTmpConvexHull(this.foregroundGraphic, mouseValuePoint);
+                    DrawTmpSR(this.foregroundGraphic, mouseValuePoint);
                     //if (this.DrawingStep == GraphDrawingStep.SelectItem)
                     //{
                     //    // first point is already selected, draw new line
@@ -1324,6 +1324,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 HalfLine2D support, resistance;
 
                 StockPaintBar_CONVEXHULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
+
+                foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
+                {
+                    DrawTmpItem(graphics, item.Pen, item, true, true);
+                }
+            }
+        }
+        private void DrawTmpSR(Graphics graphics, PointF mouseValuePoint)
+        {
+            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
+            {
+                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
+
+                if (index < 200) return;
+
+                StockPaintBar_CONVEXHULL.GetSR(StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index);
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
                 {
