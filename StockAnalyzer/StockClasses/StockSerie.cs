@@ -2690,6 +2690,63 @@ namespace StockAnalyzer.StockClasses
                 previousIsUpCycle = isUpCycle;
             }
         }
+        public void CalculateCrossSR(FloatSerie fastSerie, int smoothing, out FloatSerie supportSerie, out FloatSerie resistanceSerie)
+        {
+            supportSerie = new FloatSerie(this.Count, fastSerie.Name + ".S", float.NaN);
+            resistanceSerie = new FloatSerie(this.Count, fastSerie.Name + ".R", float.NaN);
+
+            FloatSerie slowSerie = fastSerie.CalculateEMA(smoothing);
+
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+
+            supportSerie[0] = float.NaN;
+            resistanceSerie[0] = this.First().Value.LOW;
+            float latestHigh = this.First().Value.HIGH;
+            float latestLow = this.First().Value.LOW;
+
+            bool isUp = true;
+            for (int i = 1; i < this.Count; i++)
+            {
+                if (isUp)
+                {
+                    if (fastSerie[i] < slowSerie[i])
+                    {
+                        // Resistance detected
+                        resistanceSerie[i] = latestHigh;
+                        supportSerie[i] = float.NaN;
+                        isUp = false;
+                        latestLow = lowSerie[i];
+                    }
+                    else
+                    {
+                        resistanceSerie[i] = resistanceSerie[i - 1];
+                        supportSerie[i] = supportSerie[i - 1];
+                    }
+                }
+                else 
+                {
+                    if (fastSerie[i] > slowSerie[i])
+                    {
+                        // Support detected
+                        supportSerie[i] = latestLow;
+                        resistanceSerie[i] = float.NaN;
+                        isUp = true;
+                        latestHigh = highSerie[i];
+                    }
+                    else
+                    {
+                        resistanceSerie[i] = resistanceSerie[i - 1];
+                        supportSerie[i] = supportSerie[i - 1];
+                    }
+                }
+
+                latestHigh = Math.Max(highSerie[i], Math.Max(highSerie[i - 1], latestHigh));
+                latestLow = Math.Min(lowSerie[i], Math.Min(lowSerie[i - 1], latestLow));
+            }
+        }
+
         public void CalculateOverboughtSR(FloatSerie serie, float overbought, float oversold, out FloatSerie supportSerie, out FloatSerie resistanceSerie)
         {
             supportSerie = new FloatSerie(this.Count, serie.Name + ".S", float.NaN);

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_OVERBOUGHTSR : StockUpDownIndicatorBase
+    public class StockIndicator_CROSSSR : StockUpDownIndicatorBase
     {
-        public StockIndicator_OVERBOUGHTSR()
+        public StockIndicator_CROSSSR()
         {
         }
         public override IndicatorDisplayTarget DisplayTarget
@@ -22,19 +22,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Indicator", "Overbought", "Oversold" }; }
+            get { return new string[] { "Indicator", "Smoothing" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { "STOKS(30_3_3)", 75f, 25f }; }
+            get { return new Object[] { "STOKS(30_3_3)", 3 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) }; }
+            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "OVERBOUGHT.S", "OVERBOUGHT.R" }; } }
+        public override string[] SerieNames { get { return new string[] { "CROSS.S", "CROSS.R" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -53,7 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie supportSerie, resistanceSerie, secondarySupport, secondaryResistance;
             IStockIndicator stokIndicator = stockSerie.GetIndicator(this.Parameters[0].ToString().Replace("_", ","));
 
-            stockSerie.CalculateOverboughtSR(stokIndicator.Series[0], (float)this.Parameters[1], (float)this.Parameters[2], out supportSerie, out resistanceSerie);
+            stockSerie.CalculateCrossSR(stokIndicator.Series[0], (int)this.Parameters[1], out supportSerie, out resistanceSerie);
             this.Series[0] = supportSerie;
             this.Series[1] = resistanceSerie;
 
