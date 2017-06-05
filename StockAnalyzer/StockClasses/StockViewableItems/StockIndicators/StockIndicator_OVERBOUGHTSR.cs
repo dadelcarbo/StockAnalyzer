@@ -69,7 +69,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             BoolSerie resistanceBrokenSerie = this.Events[6];
             BoolSerie supportBrokenSerie = this.Events[7];
             BoolSerie bullishSerie = this.Events[8];
-            BoolSerie bearishDetectedSerie = this.Events[9];
+            BoolSerie bearishSerie = this.Events[9];
             BoolSerie higherHighDetectedSerie = this.Events[10];
             BoolSerie lowerLowDetectedSerie = this.Events[11];
             int i;
@@ -82,6 +82,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             bool waitForEndOfUpTrend = false;
             bool waitForEndOfDownTrend = false;
 
+            bool isBullish = false;
+            bool isBearish = false;
+
             for (i = 1; i < stockSerie.Count; i++)
             {
                 if (float.IsNaN(brokenSupport))
@@ -90,6 +93,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         brokenSupport = previousSupport;
                         supportBrokenSerie[i] = true;
+                        isBullish = false;
+                        isBearish = true;
                     }
                 }
                 if (float.IsNaN(brokenResistance))
@@ -98,6 +103,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         brokenResistance = previousResistance;
                         resistanceBrokenSerie[i] = true;
+                        isBullish = true;
+                        isBearish = false;
                     }
                 }
                 if (!float.IsNaN(supportSerie[i])) // Support exists
@@ -176,16 +183,32 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         }
                     }
                     previousResistance = resistanceSerie[i];
+
                 }
+                bullishSerie[i] = isBullish;
+                bearishSerie[i] = isBearish;
             }
         }
 
-        static string[] eventNames = new string[] { "SupportDetected", "ResistanceDetected", "Pullback", "EndOfTrend", "HigherLow", "LowerHigh", "ResistanceBroken", "SupportBroken", "Bullish", "Bearish", "HigherHigh", "LowerLow" };
+        static string[] eventNames = new string[] {
+            "SupportDetected", "ResistanceDetected",
+            "Pullback", "EndOfTrend",
+            "HigherLow", "LowerHigh",
+            "ResistanceBroken", "SupportBroken",
+            "Bullish", "Bearish",
+            "HigherHigh", "LowerLow"
+        };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false, true, true };
+        static readonly bool[] isEvent = new bool[] { 
+            true, true, 
+            true, true, 
+            true, true, 
+            true, true, 
+            false, false, 
+            true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }

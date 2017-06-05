@@ -2,7 +2,7 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-   public class StockPaintBar_HILBERTSR : StockPaintBarIndicatorEventBase
+    public class StockPaintBar_CROSSSR : StockPaintBarIndicatorEventBase
    {
       public override System.Drawing.Pen[] SeriePens
       {
@@ -14,7 +14,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
-                   new Pen(Color.Green), new Pen(Color.Red) };
+                   new Pen(Color.Green), new Pen(Color.Red),
+                   new Pen(Color.Green), new Pen(Color.Red),
+                   new Pen(Color.Green), new Pen(Color.Red)
+               };
             }
             return seriePens;
          }

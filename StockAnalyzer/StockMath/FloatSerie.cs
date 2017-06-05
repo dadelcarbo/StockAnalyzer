@@ -622,7 +622,7 @@ namespace StockAnalyzer.StockMath
                 serie[i] = serie[i - 1] + alpha * (stock - serie[i - 1]);
             }
 
-            return new FloatSerie(serie, "STOC_" + period);
+            return new FloatSerie(serie, "STOK_" + period);
         }
         public FloatSerie CalculateFisher(int smoothing)
         {
