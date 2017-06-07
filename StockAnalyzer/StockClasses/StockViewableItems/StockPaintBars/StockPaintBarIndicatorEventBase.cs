@@ -78,7 +78,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
       abstract public Pen[] SeriePens { get; }
 
-      private bool[] serieVisibility;
+      protected bool[] serieVisibility;
       public bool[] SerieVisibility { get { return this.serieVisibility; } }
 
       public void Initialise(string[] parameters)

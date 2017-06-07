@@ -3,14 +3,20 @@
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_CROSSSR : StockPaintBarIndicatorEventBase
-   {
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+    {
+        public StockPaintBar_CROSSSR()
+        {
+            this.serieVisibility[8] = true;
+            this.serieVisibility[9] = true;
+        }
+
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { 
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { 
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
@@ -18,9 +24,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red)
                };
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
-   }
+        }
+    }
 }

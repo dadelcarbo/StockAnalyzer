@@ -189,7 +189,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { "SupportDetected", "ResistanceDetected", "Pullback", "EndOfTrend", "HigherLow", "LowerHigh", "ResistanceBroken", "SupportBroken", "Bullish", "Bearish", "HigherHigh", "LowerLow" };
+        static string[] eventNames = new string[] { 
+            "SupportDetected", "ResistanceDetected",
+            "Pullback", "EndOfTrend",
+            "HigherLow", "LowerHigh",
+            "ResistanceBroken", "SupportBroken",
+            "Bullish", "Bearish",
+            "HigherHigh", "LowerLow" };
         public override string[] EventNames
         {
             get { return eventNames; }
