@@ -571,7 +571,7 @@ namespace StockAnalyzerApp
 
                 string best = string.Empty;
                 float max = float.MinValue;
-                foreach ( StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INDICES_CALC)))
+                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INDICES_CALC)))
                 {
                     if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
                     {
@@ -5137,24 +5137,20 @@ border:1px solid black;
 
             #region Generate report from Events
 
-            StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.Daily, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-            StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarAbove");
-            StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HMA(30)", "FirstBarBelow");
-            StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-            StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-            StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
             List<StockAlertDef> alerts = new List<StockAlertDef>();
 
             alerts.Clear();
-            alerts.Add(cciEx);
-            alerts.Add(barAbove);
-            alerts.Add(barBelow);
-            alerts.Add(trailHL);
-            alerts.Add(ResistanceBroken);
-            alerts.Add(trailHLSR);
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
-            foreach (
-               StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40)))
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
+            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
+         
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
             {
                 //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
                 //this.CurrentTheme = "Empty";
@@ -5163,7 +5159,7 @@ border:1px solid black;
                 StockSplashScreen.ProgressVal++;
                 StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-                if (!stockSerie.Initialise() || stockSerie.Count < 200) continue;
+                if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE)>30000) continue;
 
                 string alertMsg = string.Empty;
                 foreach (StockAlertDef alert in alerts)
