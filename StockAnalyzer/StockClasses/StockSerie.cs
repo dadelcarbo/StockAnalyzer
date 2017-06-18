@@ -54,7 +54,9 @@ namespace StockAnalyzer.StockClasses
             SRD,
             SRD_LO,
             EURO_A,
+            EURO_A_B,
             EURO_B,
+            EURO_A_B_C,
             EURO_C,
             ALTERNEXT,
             EURONEXT,
@@ -75,7 +77,7 @@ namespace StockAnalyzer.StockClasses
             BOND,
             COT,
             TICK,
-            RANGE, // @@@@ TEST PURPOSE
+            RANGE,
             INTRADAY,
             USER1,
             USER2,
@@ -6391,8 +6393,12 @@ namespace StockAnalyzer.StockClasses
                     return (this.StockGroup == Groups.EURO_A);
                 case Groups.EURO_B:
                     return (this.StockGroup == Groups.EURO_B);
+                case Groups.EURO_A_B:
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B);
                 case Groups.EURO_C:
                     return (this.StockGroup == Groups.EURO_C);
+                case Groups.EURO_A_B_C:
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B)||(this.StockGroup == Groups.EURO_C);
                 case Groups.ALTERNEXT:
                     return (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.CACALL:
