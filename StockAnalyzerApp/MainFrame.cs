@@ -1150,7 +1150,27 @@ namespace StockAnalyzerApp
 
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
-                this.stockNameComboBox.Items.Add(stockName);
+                if (this.StockDictionary.ContainsKey(stockName))
+                {
+                    var stockSerie = this.StockDictionary[stockName];
+
+                    StockSerie.Groups newGroup = stockSerie.StockGroup;
+                    if (this.selectedGroup != newGroup)
+                    {
+                        this.selectedGroup = newGroup;
+
+                        foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                        {
+                            groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
+                        }
+
+                        InitialiseStockCombo();
+                    }
+                }
+                else
+                {
+                    this.stockNameComboBox.Items.Add(stockName);
+                }
             }
             this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
             this.stockNameComboBox.Text = stockName;
@@ -5149,7 +5169,7 @@ border:1px solid black;
             alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
             alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
             alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
-         
+
             foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
             {
                 //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
@@ -5159,7 +5179,7 @@ border:1px solid black;
                 StockSplashScreen.ProgressVal++;
                 StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-                if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE)>30000) continue;
+                if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 30000) continue;
 
                 string alertMsg = string.Empty;
                 foreach (StockAlertDef alert in alerts)
