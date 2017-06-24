@@ -100,6 +100,7 @@ namespace StockAnalyzer.StockClasses
             Weekly_EMA6,
             Weekly_EMA9,
             Weekly_EMA12,
+            Monthly,
             Bar_2,
             Bar_3,
             Bar_6,
@@ -150,7 +151,6 @@ namespace StockAnalyzer.StockClasses
             ThreeLineBreak_TER,
             SixLineBreak,
             TLB_Weekly,
-            Monthly,
             RENKO_1,
             RENKO_2,
             RENKO_5,
@@ -7751,6 +7751,7 @@ namespace StockAnalyzer.StockClasses
                                    dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                 beginDate = dailyValue.DATE;
                                 previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                                newValue.IsComplete = false;
                             }
                             else
                             {
@@ -7766,16 +7767,19 @@ namespace StockAnalyzer.StockClasses
                                 else
                                 {
                                     // We switched to next week
+                                    newValue.IsComplete = true;
                                     newBarList.Add(newValue);
                                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                                        dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                     beginDate = dailyValue.DATE;
                                     previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                                    newValue.IsComplete = false;
                                 }
                             }
                         }
                         if (newValue != null)
                         {
+                            if (previousDayOfWeek == DayOfWeek.Friday) newValue.IsComplete = true;
                             newBarList.Add(newValue);
                         }
                     }
@@ -7795,12 +7799,13 @@ namespace StockAnalyzer.StockClasses
                                    dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                 beginDate = dailyValue.DATE;
                                 previousMonth = dailyValue.DATE.Month;
+                                newValue.IsComplete = false;
                             }
                             else
                             {
                                 if (previousMonth == dailyValue.DATE.Month)
                                 {
-                                    // We are in the week
+                                    // We are in the month
                                     newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
                                     newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
                                     newValue.VOLUME += dailyValue.VOLUME;
@@ -7809,12 +7814,14 @@ namespace StockAnalyzer.StockClasses
                                 }
                                 else
                                 {
-                                    // We switched to next week
+                                    // We switched to next month
+                                    newValue.IsComplete = true;
                                     newBarList.Add(newValue);
                                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                                        dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                     beginDate = dailyValue.DATE;
                                     previousMonth = dailyValue.DATE.Month;
+                                    newValue.IsComplete = false;
                                 }
                             }
                         }
