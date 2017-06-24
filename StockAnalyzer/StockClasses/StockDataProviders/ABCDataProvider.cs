@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
-            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "alterp", StockSerie.Groups.ALTERNEXT);
+            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "eurogp", StockSerie.Groups.ALTERNEXT);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "indicessecp", StockSerie.Groups.SECTORS_CAC);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_FOLDER, "sp500u", StockSerie.Groups.SP500);
@@ -264,7 +264,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     abcGroup = "eurolistcp";
                     break;
                 case StockSerie.Groups.ALTERNEXT:
-                    abcGroup = "alterp";
+                    abcGroup = "eurogp";
                     break;
                 case StockSerie.Groups.SECTORS_CAC:
                     abcGroup = "indicessecp";
@@ -528,7 +528,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistap");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistbp");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistcp");
-                                DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "alterp");
+                                DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurogp");
                                 //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "srdp");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "sp500u");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "indicessecp");
@@ -557,7 +557,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistap");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
-                            DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
+                            DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurogp");
                             //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
@@ -580,7 +580,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistap");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
-                                DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "alterp");
+                                DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurogp");
                                 //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
@@ -985,7 +985,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         + "ctl00%24BodyABC%24$GROUPNAME=on&"
                         + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
 
-                    postData = "__VIEWSTATE=%2FwEPDwULLTEzOTkwMTQxNjkPZBYCZg9kFgICBA9kFgYCCQ9kFgICVQ9kFgJmDxYCHgdWaXNpYmxlZ2QCDQ9kFgJmDxYCHwBnZAIPD2QWAgIBDw8WAh4EVGV4dAUpQmFzY3VsZXIgc3VyIGxhIHZlcnNpb24gY2xhc3NpcXVlIGR1IHNpdGVkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WKQUVY3RsMDAkQm9keUFCQyR4Y2FjNDBwBRZjdGwwMCRCb2R5QUJDJHhzYmYxMjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNhdHAFFmN0bDAwJEJvZHlBQkMkeGNhY24yMHAFGGN0bDAwJEJvZHlBQkMkeGNhY3NtYWxscAUVY3RsMDAkQm9keUFCQyR4Y2FjNjBwBRZjdGwwMCRCb2R5QUJDJHhjYWNsNjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNtc3AFFWN0bDAwJEJvZHlBQkMkeGJlbDIwZwUVY3RsMDAkQm9keUFCQyR4YWV4MjVuBRFjdGwwMCRCb2R5QUJDJGRqdQUSY3RsMDAkQm9keUFCQyRuYXN1BRRjdGwwMCRCb2R5QUJDJHNwNTAwdQUWY3RsMDAkQm9keUFCQyRnZXJtYW55ZgURY3RsMDAkQm9keUFCQyR1a2UFEmN0bDAwJEJvZHlBQkMkYmVsZwUSY3RsMDAkQm9keUFCQyRkZXZwBRRjdGwwMCRCb2R5QUJDJHNwYWlubQUVY3RsMDAkQm9keUFCQyRpdGFsaWFpBRNjdGwwMCRCb2R5QUJDJGhvbGxuBRVjdGwwMCRCb2R5QUJDJGxpc2JvYWwFFGN0bDAwJEJvZHlBQkMkc3dpdHpzBRJjdGwwMCRCb2R5QUJDJHVzYXUFFGN0bDAwJEJvZHlBQkMkYWx0ZXJwBRFjdGwwMCRCb2R5QUJDJGJzcAUYY3RsMDAkQm9keUFCQyRldXJvbGlzdEFwBRhjdGwwMCRCb2R5QUJDJGV1cm9saXN0QnAFGGN0bDAwJEJvZHlBQkMkZXVyb2xpc3RDcAUZY3RsMDAkQm9keUFCQyRldXJvbGlzdHplcAUaY3RsMDAkQm9keUFCQyRldXJvbGlzdGh6ZXAFGGN0bDAwJEJvZHlBQkMkaW5kaWNlc21rcAUZY3RsMDAkQm9keUFCQyRpbmRpY2Vzc2VjcAURY3RsMDAkQm9keUFCQyRtbHAFE2N0bDAwJEJvZHlBQkMkb2JsMnAFEmN0bDAwJEJvZHlBQkMkb2JscAUXY3RsMDAkQm9keUFCQyRvcGN2bTM2MHAFEmN0bDAwJEJvZHlBQkMkc3JkcAUUY3RsMDAkQm9keUFCQyRzcmRsb3AFFGN0bDAwJEJvZHlBQkMkdHJhY2twBRZjdGwwMCRCb2R5QUJDJHdhcnJhbnRzBRVjdGwwMCRCb2R5QUJDJGNiUGxhY2XV7VAmF5gdwy7DIiJT1Q8P3geCLQ%3D%3D&__VIEWSTATEGENERATOR=63AB8707&__EVENTVALIDATION=%2FwEdAC2uMiOe5%2Bi%2BKBXO4l4QxQh92AGy%2BFRpYOz7XDkkbfjubp9UXI7RwI%2BukRHnd%2BAlDZ7yE4oeSMQcqAToKX4%2BVY%2FoKwHPZ3LL3fdWqV0S%2FvWmetYHl%2BXtIMfr4sJ5HoKPeEGaXWKkENsUVjCs33ftb%2Bk6Vh68XGlO5A7hLzsl2zmozVHKtnVHMqNjuSl%2FVTLUSxGOrSXMajdQMItHxDOD4gI5oZA%2FrQy55rsm3Yy%2BuTl0%2FnRrfHed0TzZAp%2F%2By2dFmxusO8axFlSjvdrqSAJF9oAESNvpV6G124LKs01uIQT%2BzPLtwgDb4ZnV8AzgWlnJDQlBhudEBAhKHZIsMbDqQKObxt6eBSEoHlSQ0h6eQsjG3FU1EY8C1%2F0GGZDF0VWO2oYTcspg%2FQJIEo7yz4CR037atiIVgEYIzEhkb9KlYZmye7%2FnJk8Wqab3FraRKRA4NH4SMkbr0ssfhDNp48vrt1aToLK%2FxuYkxeDUJ2jyEChuCcZNAzb5On4rHEP9HywghYEYPSSOqNVqe2KgYnr%2BNJRx9At%2BumCzYS2uPoXq%2FdVJByyB7RsbMXUq2lzc8dt95PO%2BkCFfVa1MgDkVN3T3jY%2FKQIBPK12FXYyMGO0%2F5KPgqmM77ItwinSXDlQBQcTHG5JyTAMHmjunt2bP%2Fj%2FgPFOe%2F%2Baf%2FiQDbqNtvcnRfkH2ohjdh6dUQ5m%2B2VTNYWkGxattRg9EKKE5vey1FPRlCqZyDgvrv9lvrlshrlzdNlGwotAGLfLMcs2vyw1rETiNehQSuxs4fVNVenj9bBwNMtd92XoZ0fgAFx0VYRpgUubx6SaFj1P1ns1k7saP20CtOv40Vh1fIBS7G3r7SNtlzk3C0A%2F4Rmw2%2BXo6xnkHUnscHL5GCzjGbRjxavMDrnvi92ihmau6VuJALuZvH2%2BXItM49krxVbbQbx%2BrvmYdNFMYrxrqfXKoG%2FeBbQYV684ncHXIr7RWAGAEkKq%2FpI3%2Bjw0KrRp1bA%3D%3D&ctl00%24txtAutoComplete=&ctl00%24BodyABC%24$GROUPNAME=on&ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
+                  //  postData = "__VIEWSTATE=%2FwEPDwULLTEzOTkwMTQxNjkPZBYCZg9kFgICBA9kFgYCCQ9kFgICVQ9kFgJmDxYCHgdWaXNpYmxlZ2QCDQ9kFgJmDxYCHwBnZAIPD2QWAgIBDw8WAh4EVGV4dAUpQmFzY3VsZXIgc3VyIGxhIHZlcnNpb24gY2xhc3NpcXVlIGR1IHNpdGVkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WKQUVY3RsMDAkQm9keUFCQyR4Y2FjNDBwBRZjdGwwMCRCb2R5QUJDJHhzYmYxMjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNhdHAFFmN0bDAwJEJvZHlBQkMkeGNhY24yMHAFGGN0bDAwJEJvZHlBQkMkeGNhY3NtYWxscAUVY3RsMDAkQm9keUFCQyR4Y2FjNjBwBRZjdGwwMCRCb2R5QUJDJHhjYWNsNjBwBRVjdGwwMCRCb2R5QUJDJHhjYWNtc3AFFWN0bDAwJEJvZHlBQkMkeGJlbDIwZwUVY3RsMDAkQm9keUFCQyR4YWV4MjVuBRFjdGwwMCRCb2R5QUJDJGRqdQUSY3RsMDAkQm9keUFCQyRuYXN1BRRjdGwwMCRCb2R5QUJDJHNwNTAwdQUWY3RsMDAkQm9keUFCQyRnZXJtYW55ZgURY3RsMDAkQm9keUFCQyR1a2UFEmN0bDAwJEJvZHlBQkMkYmVsZwUSY3RsMDAkQm9keUFCQyRkZXZwBRRjdGwwMCRCb2R5QUJDJHNwYWlubQUVY3RsMDAkQm9keUFCQyRpdGFsaWFpBRNjdGwwMCRCb2R5QUJDJGhvbGxuBRVjdGwwMCRCb2R5QUJDJGxpc2JvYWwFFGN0bDAwJEJvZHlBQkMkc3dpdHpzBRJjdGwwMCRCb2R5QUJDJHVzYXUFFGN0bDAwJEJvZHlBQkMkYWx0ZXJwBRFjdGwwMCRCb2R5QUJDJGJzcAUYY3RsMDAkQm9keUFCQyRldXJvbGlzdEFwBRhjdGwwMCRCb2R5QUJDJGV1cm9saXN0QnAFGGN0bDAwJEJvZHlBQkMkZXVyb2xpc3RDcAUZY3RsMDAkQm9keUFCQyRldXJvbGlzdHplcAUaY3RsMDAkQm9keUFCQyRldXJvbGlzdGh6ZXAFGGN0bDAwJEJvZHlBQkMkaW5kaWNlc21rcAUZY3RsMDAkQm9keUFCQyRpbmRpY2Vzc2VjcAURY3RsMDAkQm9keUFCQyRtbHAFE2N0bDAwJEJvZHlBQkMkb2JsMnAFEmN0bDAwJEJvZHlBQkMkb2JscAUXY3RsMDAkQm9keUFCQyRvcGN2bTM2MHAFEmN0bDAwJEJvZHlBQkMkc3JkcAUUY3RsMDAkQm9keUFCQyRzcmRsb3AFFGN0bDAwJEJvZHlBQkMkdHJhY2twBRZjdGwwMCRCb2R5QUJDJHdhcnJhbnRzBRVjdGwwMCRCb2R5QUJDJGNiUGxhY2XV7VAmF5gdwy7DIiJT1Q8P3geCLQ%3D%3D&__VIEWSTATEGENERATOR=63AB8707&__EVENTVALIDATION=%2FwEdAC2uMiOe5%2Bi%2BKBXO4l4QxQh92AGy%2BFRpYOz7XDkkbfjubp9UXI7RwI%2BukRHnd%2BAlDZ7yE4oeSMQcqAToKX4%2BVY%2FoKwHPZ3LL3fdWqV0S%2FvWmetYHl%2BXtIMfr4sJ5HoKPeEGaXWKkENsUVjCs33ftb%2Bk6Vh68XGlO5A7hLzsl2zmozVHKtnVHMqNjuSl%2FVTLUSxGOrSXMajdQMItHxDOD4gI5oZA%2FrQy55rsm3Yy%2BuTl0%2FnRrfHed0TzZAp%2F%2By2dFmxusO8axFlSjvdrqSAJF9oAESNvpV6G124LKs01uIQT%2BzPLtwgDb4ZnV8AzgWlnJDQlBhudEBAhKHZIsMbDqQKObxt6eBSEoHlSQ0h6eQsjG3FU1EY8C1%2F0GGZDF0VWO2oYTcspg%2FQJIEo7yz4CR037atiIVgEYIzEhkb9KlYZmye7%2FnJk8Wqab3FraRKRA4NH4SMkbr0ssfhDNp48vrt1aToLK%2FxuYkxeDUJ2jyEChuCcZNAzb5On4rHEP9HywghYEYPSSOqNVqe2KgYnr%2BNJRx9At%2BumCzYS2uPoXq%2FdVJByyB7RsbMXUq2lzc8dt95PO%2BkCFfVa1MgDkVN3T3jY%2FKQIBPK12FXYyMGO0%2F5KPgqmM77ItwinSXDlQBQcTHG5JyTAMHmjunt2bP%2Fj%2FgPFOe%2F%2Baf%2FiQDbqNtvcnRfkH2ohjdh6dUQ5m%2B2VTNYWkGxattRg9EKKE5vey1FPRlCqZyDgvrv9lvrlshrlzdNlGwotAGLfLMcs2vyw1rETiNehQSuxs4fVNVenj9bBwNMtd92XoZ0fgAFx0VYRpgUubx6SaFj1P1ns1k7saP20CtOv40Vh1fIBS7G3r7SNtlzk3C0A%2F4Rmw2%2BXo6xnkHUnscHL5GCzjGbRjxavMDrnvi92ihmau6VuJALuZvH2%2BXItM49krxVbbQbx%2BrvmYdNFMYrxrqfXKoG%2FeBbQYV684ncHXIr7RWAGAEkKq%2FpI3%2Bjw0KrRp1bA%3D%3D&ctl00%24BodyABC%24$GROUPNAME=on&ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger";
                     postData = postData.Replace("$GROUPNAME", groupName);
                     byte[] data = Encoding.ASCII.GetBytes(postData);
                     HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
