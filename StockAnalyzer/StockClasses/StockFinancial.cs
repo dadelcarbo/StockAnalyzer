@@ -49,10 +49,17 @@ namespace StockAnalyzer.StockClasses
         [StockFinancialAttibute]
         public float TangibleBookValuePerShare { get; set; }
         [StockFinancialAttibute]
-        public float PriceTangibleBookValueRatio { get
+        public float BookValuePriceRatio { get
         {
-            return (!float.IsNaN(TangibleBookValuePerShare) && TangibleBookValuePerShare != 0)
-                ? this.Value / TangibleBookValuePerShare
+            return (!float.IsNaN(BookValuePerShare))
+                ?  BookValuePerShare / this.Value
+                : float.NaN;
+        }}
+        [StockFinancialAttibute]
+        public float TangibleBookValuePriceRatio { get
+        {
+            return (!float.IsNaN(TangibleBookValuePerShare))
+                ? TangibleBookValuePerShare / this.Value
                 : float.NaN;
         }}
 
