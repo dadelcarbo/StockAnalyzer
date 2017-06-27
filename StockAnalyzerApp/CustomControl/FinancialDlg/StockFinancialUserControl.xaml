@@ -8,8 +8,14 @@
     <Grid >
         <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
             <TabItem Header="General">
-                <StackPanel Name="propertyPanel">
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Name="generalPropertyPanel1"/>
+                    <StackPanel Grid.Column="1" Name="generalPropertyPanel2"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Income Statement">
                 <Grid Background="#FFE5E5E5">

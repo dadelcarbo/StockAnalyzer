@@ -9,21 +9,53 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockFinancial
     {
+        [StockGeneralAttibute]
         public DateTime DownloadDate { get; set; }
+        [StockGeneralAttibute]
         public string Indices { get; set; }
+        [StockGeneralAttibute]
         public string Sector { get; set; }
-        [XmlIgnore]
+        [XmlIgnore,StockGeneralAttibute]
         public long MarketCap { get { return (long)(this.ShareNumber * this.Value); } }
+        [StockGeneralAttibute]
         public long ShareNumber { get; set; }
-        [XmlIgnore]
+        [XmlIgnore, StockFinancialAttibute]
         public float Value { get; set; }
+        [StockGeneralAttibute]
         public string SRD { get; set; }
+        [StockGeneralAttibute]
         public string PEA { get; set; }
+        [StockGeneralAttibute]
+        public string Activity { get; set; }
+        [StockFinancialAttibute]
         public string Coupon { get; set; }
+        [StockFinancialAttibute]
         public float Dividend { get; set; }
+        [StockPercent, StockFinancialAttibute]
         public float Yield { get { return this.Dividend / this.Value; } }
 
-        public string Activity { get; set; }
+        [StockFinancialAttibute]
+        public float GrossMargin { get; set; }
+        [StockPercent, StockFinancialAttibute]
+        public float NetProfitMargin { get; set; }
+        [StockPercent, StockFinancialAttibute]
+        public float OperatingMargin { get; set; }
+
+
+        [StockFinancialAttibute]
+        public float CashFlowPerShare { get; set; }
+        [StockFinancialAttibute]
+        public float BookValuePerShare { get; set; }
+        [StockFinancialAttibute]
+        public float TangibleBookValuePerShare { get; set; }
+        [StockFinancialAttibute]
+        public float PriceTangibleBookValueRatio { get
+        {
+            return (!float.IsNaN(TangibleBookValuePerShare) && TangibleBookValuePerShare != 0)
+                ? this.Value / TangibleBookValuePerShare
+                : float.NaN;
+        }}
+
 
         public List<List<string>> IncomeStatement { get; set; }
         [XmlIgnore]
@@ -101,7 +133,7 @@ namespace StockAnalyzer.StockClasses
 
         public void CalculateRatios()
         {
-            if (this.IncomeStatement.Count <= 0) return;
+            if (this.IncomeStatement==null || this.IncomeStatement.Count <= 0) return;
             this.Ratios = new List<List<string>>();
             List<String> header = new List<string>() { "Ratios" };
             for (int i = 1; i < this.IncomeStatement[0].Count; i++)

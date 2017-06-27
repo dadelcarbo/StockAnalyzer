@@ -124,6 +124,9 @@
     <Compile Include="StockClasses\StockAgenda.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooIntradayJson.cs" />
     <Compile Include="StockClasses\StockFinancial.cs" />
+    <Compile Include="StockClasses\StockFinancialAttibute.cs" />
+    <Compile Include="StockClasses\StockGeneralAttibute.cs" />
+    <Compile Include="StockClasses\StockPercent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
