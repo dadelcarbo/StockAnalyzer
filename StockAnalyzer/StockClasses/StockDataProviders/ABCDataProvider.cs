@@ -356,27 +356,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 res |= ParseCSVFile(stockSerie, fileName);
             }
             // Read intraday
-            if (res && stockSerie.Keys.Last() != DateTime.Today)
-            {
-                if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
-                {
-                    fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
-                    ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD, true);
-                    return true;
-                }
-                else if (stockSerie.BelongsToGroup(StockSerie.Groups.SP500))
-                {
-                    fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SP500.csv";
-                    ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500, true);
-                    return true;
-                }
-                else if (stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
-                {
-                    fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFR.csv";
-                    ParseABCIntradayFile(stockSerie, fileName);
-                    return true;
-                }
-            }
+            // @@@@ Removed intraday
+            //if (res && stockSerie.Keys.Last() != DateTime.Today)
+            //{
+            //    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
+            //    {
+            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
+            //        ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD, true);
+            //        return true;
+            //    }
+            //    else if (stockSerie.BelongsToGroup(StockSerie.Groups.SP500))
+            //    {
+            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SP500.csv";
+            //        ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500, true);
+            //        return true;
+            //    }
+            //    else if (stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
+            //    {
+            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFR.csv";
+            //        ParseABCIntradayFile(stockSerie, fileName);
+            //        return true;
+            //    }
+            //}
             return res;
         }
 
@@ -603,7 +604,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
 
-                if (!stockSerie.Initialise())
+                if (!stockSerie.Initialise() || stockSerie.Count == 0)
                 {
                     return false;
                 }

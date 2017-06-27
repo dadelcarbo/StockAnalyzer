@@ -1809,7 +1809,7 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
                                                      stockSerie.StockName;
 
-                    if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.SRD) || stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.EURONEXT))
+                    if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL))
                     {
                         try
                         {
