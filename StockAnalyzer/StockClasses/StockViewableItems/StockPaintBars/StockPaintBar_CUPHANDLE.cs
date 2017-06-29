@@ -137,7 +137,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
             finally
             {
-                DrawingItem.CreatePersistent = false;
+                DrawingItem.CreatePersistent = true;
             }
         }
     }

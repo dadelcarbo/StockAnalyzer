@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
       public IndicatorDisplayStyle DisplayStyle { get { return IndicatorDisplayStyle.PaintBar; } }
       public ViewableItemType Type { get { return ViewableItemType.PaintBar; } }
 
-      public virtual bool RequiresVolumeData { get { return false; } }
+      public virtual bool RequiresVolumeData { get { return baseIndicator.RequiresVolumeData; } }
 
       public string ToThemeString()
       {

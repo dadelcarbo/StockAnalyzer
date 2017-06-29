@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
             finally
             {
-                DrawingItem.CreatePersistent = false;
+                DrawingItem.CreatePersistent = true;
             }
         }
         static public void GetSR(StockSerie stockSerie, int startIndex, int endIndex)
