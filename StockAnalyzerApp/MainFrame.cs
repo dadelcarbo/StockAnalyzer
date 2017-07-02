@@ -4409,14 +4409,13 @@ namespace StockAnalyzerApp
             filteredStrategySimulatorDlg.Show();
         }
 
-
         private void exportFinancialsMenuItem_Click(object sender, System.EventArgs e)
         {
             bool first = true;
-            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.Financial != null && s.Initialise()))
+            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL) && s.Initialise() && s.Financial != null))
             {
                 float yield = stockSerie.Financial.Dividend / stockSerie.Last().Value.CLOSE;
-                Console.WriteLine(stockSerie.StockGroup + "," + stockSerie.StockName + "," + stockSerie.Financial.Dividend + "," + stockSerie.Last().Value.CLOSE + "," + yield.ToString("P2"));
+                Console.WriteLine(stockSerie.StockGroup + "," + stockSerie.StockName + "," + stockSerie.Financial.Dividend + "," + stockSerie.Last().Value.CLOSE + "," + yield.ToString("P2") + "," + stockSerie.Financial.BookValuePerShare + "," + stockSerie.Financial.TangibleBookValuePerShare);
             }
             Console.WriteLine();
             Console.WriteLine();

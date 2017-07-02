@@ -143,6 +143,21 @@
   <data name="closeHdr.Text" xml:space="preserve">
     <value>End</value>
   </data>
+  <data name="bookValueHdr.DisplayIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="bookValueHdr.Text" xml:space="preserve">
+    <value>Book Value</value>
+  </data>
+  <data name="tangibleBookValueHdr.DisplayIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="tangibleBookValueHdr.Text" xml:space="preserve">
+    <value>Tangible Book Value</value>
+  </data>
+  <data name="ROCEXHdr.DisplayIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
   <data name="ROCEXHdr.Text" xml:space="preserve">
     <value>ROCEX</value>
   </data>
@@ -473,6 +488,18 @@
   </data>
   <data name="&gt;&gt;saveToFileToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;bookValueHdr.Name" xml:space="preserve">
+    <value>bookValueHdr</value>
+  </data>
+  <data name="&gt;&gt;bookValueHdr.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tangibleBookValueHdr.Name" xml:space="preserve">
+    <value>tangibleBookValueHdr</value>
+  </data>
+  <data name="&gt;&gt;tangibleBookValueHdr.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>PalmaresDlg</value>

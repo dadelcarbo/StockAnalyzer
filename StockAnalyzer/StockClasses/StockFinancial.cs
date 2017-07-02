@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses
         public string Indices { get; set; }
         [StockGeneralAttibute]
         public string Sector { get; set; }
-        [XmlIgnore,StockGeneralAttibute]
+        [XmlIgnore, StockGeneralAttibute]
         public long MarketCap { get { return (long)(this.ShareNumber * this.Value); } }
         [StockGeneralAttibute]
         public long ShareNumber { get; set; }
@@ -48,20 +48,46 @@ namespace StockAnalyzer.StockClasses
         public float BookValuePerShare { get; set; }
         [StockFinancialAttibute]
         public float TangibleBookValuePerShare { get; set; }
-        [StockFinancialAttibute]
-        public float BookValuePriceRatio { get
+
+        public float BookValuePriceRatio
         {
-            return (!float.IsNaN(BookValuePerShare))
-                ?  BookValuePerShare / this.Value
-                : float.NaN;
-        }}
+            get
+            {
+                return (!float.IsNaN(BookValuePerShare))
+                    ? BookValuePerShare / this.Value
+                    : float.NaN;
+            }
+        }
         [StockFinancialAttibute]
-        public float TangibleBookValuePriceRatio { get
+        public float PriceBookValueRatio
         {
-            return (!float.IsNaN(TangibleBookValuePerShare))
-                ? TangibleBookValuePerShare / this.Value
-                : float.NaN;
-        }}
+            get
+            {
+                return (!float.IsNaN(BookValuePerShare))
+                    ? this.Value / BookValuePerShare
+                    : float.NaN;
+            }
+        }
+        public float TangibleBookValuePriceRatio
+        {
+            get
+            {
+                return (!float.IsNaN(TangibleBookValuePerShare))
+                    ? TangibleBookValuePerShare / this.Value
+                    : float.NaN;
+            }
+        }
+
+        [StockFinancialAttibute]
+        public float PriceTangibleBookValueRatio
+        {
+            get
+            {
+                return (!float.IsNaN(TangibleBookValuePerShare))
+                    ? this.Value / TangibleBookValuePerShare
+                    : float.NaN;
+            }
+        }
 
 
         public List<List<string>> IncomeStatement { get; set; }
@@ -140,7 +166,7 @@ namespace StockAnalyzer.StockClasses
 
         public void CalculateRatios()
         {
-            if (this.IncomeStatement==null || this.IncomeStatement.Count <= 0) return;
+            if (this.IncomeStatement == null || this.IncomeStatement.Count <= 0) return;
             this.Ratios = new List<List<string>>();
             List<String> header = new List<string>() { "Ratios" };
             for (int i = 1; i < this.IncomeStatement[0].Count; i++)
