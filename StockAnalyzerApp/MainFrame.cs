@@ -786,6 +786,9 @@ namespace StockAnalyzerApp
         private StockAlertDef stokUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected");
         private StockAlertDef stokDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected");
 
+        private StockAlertDef flagUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenUp");
+        private StockAlertDef flagDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenDown");
+
         private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
         private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
 
@@ -827,6 +830,8 @@ namespace StockAnalyzerApp
             alertDefs.Add(crossedDown);
             alertDefs.Add(stokUp);
             alertDefs.Add(stokDown);
+            alertDefs.Add(flagUp);
+            alertDefs.Add(flagDown);
             alertDefs.Add(resistanceBroken);
             alertDefs.Add(supportBroken);
             //alertDefs.Add(barAbove);
