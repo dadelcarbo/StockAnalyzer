@@ -5174,20 +5174,32 @@ border:1px solid black;
             alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
             alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
+
+            foreach (StockAlertDef alert in alerts)
             {
-                //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
-                //this.CurrentTheme = "Empty";
-                //this.CurrentStockSerie = stockSerie;
-
-                StockSplashScreen.ProgressVal++;
-                StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
-
-                if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 30000) continue;
-
                 string alertMsg = string.Empty;
-                foreach (StockAlertDef alert in alerts)
+                commentTitle = "\r\n" + alert.ToString() + "\r\n";
+
+                // Build report from html template
+                //mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
+                //   .Replace(commentTemplate, commentBody)
+                //   //.Replace(imageFileCID, cid);
+                //mailReport += eventTypeString;
+                //.Replace(imageFileLink,
+                //   fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
+                //      "./").Replace(@"\", "/"));
+                //htmlReport += alertMsg;
+                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
                 {
+                    //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
+                    //this.CurrentTheme = "Empty";
+                    //this.CurrentStockSerie = stockSerie;
+
+                    StockSplashScreen.ProgressVal++;
+                    StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
+
+                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 30000) continue;
+
                     if (stockSerie.MatchEvent(alert))
                     {
                         var values = stockSerie.GetValues(alert.BarDuration);
@@ -5197,22 +5209,8 @@ border:1px solid black;
                         alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE + "</br>";
                     }
                 }
-                if (!string.IsNullOrEmpty(alertMsg))
-                {
-                    commentTitle = "\r\n" + stockSerie.StockName + " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n";
-
-                    // Build report from html template
-                    //mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                    //   .Replace(commentTemplate, commentBody)
-                    //   //.Replace(imageFileCID, cid);
-                    //mailReport += eventTypeString;
-                    htmlReport += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle)
-                       .Replace(commentTemplate, alertMsg);
-                    //.Replace(imageFileLink,
-                    //   fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
-                    //      "./").Replace(@"\", "/"));
-                    //htmlReport += alertMsg;
-                }
+                htmlReport += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle)
+                   .Replace(commentTemplate, alertMsg);
             }
 
             //this.snapshotToolStripButton_Click(null, null);
