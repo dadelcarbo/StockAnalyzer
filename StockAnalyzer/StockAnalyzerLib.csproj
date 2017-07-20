@@ -127,6 +127,13 @@
     <Compile Include="StockClasses\StockFinancialAttibute.cs" />
     <Compile Include="StockClasses\StockGeneralAttibute.cs" />
     <Compile Include="StockClasses\StockPercent.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\IStockMatchPattern.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_Any.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarDown.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_StockAlert.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarUp.cs" />
+    <Compile Include="StockClasses\StockStatistic\StockPatternIndex.cs" />
+    <Compile Include="StockClasses\StockStatistic\StockStatisticsEngine.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />

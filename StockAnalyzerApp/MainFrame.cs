@@ -45,6 +45,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzer.StockClasses.StockStatistic;
+using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 
 namespace StockAnalyzerApp
 {
@@ -2834,6 +2836,19 @@ namespace StockAnalyzerApp
                                  varMinSerie[i]);
                 }
             }
+        }
+
+        private void patternRecognitionMenuItem_Click(object sender, System.EventArgs e)
+        {
+            StockStatisticsEngine engine = new StockStatisticsEngine();
+
+            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
+//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
+//            var pattern = new StockMatchPattern_BarUp();
+
+            StockSerie serie = engine.FindPattern(this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)), BarDuration, pattern);
+
+            AddNewSerie(serie);
         }
 
         private void logSerieMenuItem_Click(object sender, System.EventArgs e)
