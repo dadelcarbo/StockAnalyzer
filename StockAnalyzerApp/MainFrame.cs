@@ -2840,15 +2840,22 @@ namespace StockAnalyzerApp
 
         private void patternRecognitionMenuItem_Click(object sender, System.EventArgs e)
         {
-            StockStatisticsEngine engine = new StockStatisticsEngine();
+            int before = 50;
+            StockStatisticsEngine engine = new StockStatisticsEngine(before, 200);
 
-            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
+//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
 //            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
 //            var pattern = new StockMatchPattern_BarUp();
+//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(20)", "Highest"));
+            var pattern = new StockMatchPattern_ROD(25);
 
             StockSerie serie = engine.FindPattern(this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)), BarDuration, pattern);
 
+           // serie.StockAnalysis.DrawingItems.Add(StockSerie.StockBarDuration.Daily, new Line2D(new PointF(before, 0), 0, 1));
+
             AddNewSerie(serie);
+
+
         }
 
         private void logSerieMenuItem_Click(object sender, System.EventArgs e)

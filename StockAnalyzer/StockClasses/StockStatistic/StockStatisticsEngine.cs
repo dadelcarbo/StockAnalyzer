@@ -9,16 +9,19 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 {
     public class StockStatisticsEngine
     {
-        public StockStatisticsEngine()
+        private int sampleBefore = 0;
+        private int sampleAfter = 0;
+        private int sampleSize = 0;
+
+        public StockStatisticsEngine(int before, int after)
         {
             this.Patterns = new List<StockPatternIndex>();
-
+            sampleBefore = before;
+            sampleAfter = after;
+            sampleSize = before + after;
         }
         private List<StockPatternIndex> Patterns { get; set; }
 
-        const int sampleBefore = 20;
-        const int sampleAfter = 200;
-        const int sampleSize = sampleBefore + sampleAfter;
 
         public StockSerie FindPattern(IEnumerable<StockSerie> stockSeries, StockSerie.StockBarDuration duration, IStockMatchPattern patternMatch)
         {
@@ -29,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 
                 stockSerie.BarDuration = duration;
 
-                for (int i = sampleBefore; i < stockSerie.Count - sampleAfter -1 ; i++)
+                for (int i = sampleBefore; i < stockSerie.Count - sampleAfter - 1; i++)
                 {
                     if (patternMatch.MatchPattern(stockSerie, i))
                     {
@@ -50,8 +53,8 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 
         private StockSerie GetTypicalSerie()
         {
-            float []close = new float[sampleSize];
-            long []nbSample = new long[sampleSize];
+            float[] close = new float[sampleSize];
+            long[] nbSample = new long[sampleSize];
 
             float initialValue = 100.0f;
 
@@ -60,13 +63,13 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 
             foreach (var pattern in Patterns)
             {
-                float ratio = 100.0f / pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index +1);
+                float ratio = 100.0f / pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index + 1);
 
                 for (int i = 0; i < sampleSize; i++)
                 {
                     if (pattern.Index + i > 0 && pattern.Index + i < pattern.Serie.Count)
                     {
-                        close[i]+= pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index + i)* ratio;
+                        close[i] += pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index + i) * ratio;
                         nbSample[i]++;
                     }
                 }
@@ -76,7 +79,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic
             DateTime date = DateTime.Today;
             for (int i = 0; i < sampleSize; i++)
             {
-                float closeVal = nbSample[i] != 0 ? close[i] /= nbSample[i]:0.0f;
+                float closeVal = nbSample[i] != 0 ? close[i] /= nbSample[i] : 0.0f;
 
                 if (closeVal != 0.0f)
                 {

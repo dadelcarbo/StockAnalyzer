@@ -8,9 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_OVERBOUGHTSR : StockUpDownIndicatorBase
     {
-        public StockIndicator_OVERBOUGHTSR()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
