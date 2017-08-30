@@ -342,7 +342,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     maxValue = float.MinValue;
                     this.CurveList.GetMinMax(StartIndex, EndIndex, ref minValue, ref maxValue, this.ScaleInvisible);
 
-                    if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
+                    if (minValue == 0.0f && maxValue == 0.0f)
+                    {
+                        minValue = -1.0f;
+                        maxValue = 1.0f;
+                    } 
+                    else if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
                     {
                         this.Deactivate("Input data is corrupted and cannot be displayed...", false);
                         return false;
