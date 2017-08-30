@@ -131,7 +131,6 @@
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_Any.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarDown.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_ROD.cs" />
-    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_StockAlert - Copy.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_StockAlert.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarUp.cs" />
     <Compile Include="StockClasses\StockStatistic\StockPatternIndex.cs" />
@@ -161,6 +160,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
