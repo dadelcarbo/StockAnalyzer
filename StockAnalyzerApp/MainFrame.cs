@@ -2840,22 +2840,34 @@ namespace StockAnalyzerApp
 
         private void patternRecognitionMenuItem_Click(object sender, System.EventArgs e)
         {
-            int before = 50;
-            StockStatisticsEngine engine = new StockStatisticsEngine(before, 200);
+            int before = 10;
+            int after = 200;
+            StockStatisticsEngine engine = new StockStatisticsEngine(before, after);
 
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-//            var pattern = new StockMatchPattern_BarUp();
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(20)", "Highest"));
-            var pattern = new StockMatchPattern_ROD(25);
+            //this.CurrentTheme = "PATTERN";
 
-            StockSerie serie = engine.FindPattern(this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)), BarDuration, pattern);
+            //AddNewSerie(engine.GenerateSerie("Test"));
 
-           // serie.StockAnalysis.DrawingItems.Add(StockSerie.StockBarDuration.Daily, new Line2D(new PointF(before, 0), 0, 1));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHL(50)", "TrailedDown"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "ER(60,6,1,0.8)", "Oversold"));
+            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
+            //var pattern = new StockMatchPattern_Any();
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(200)", "Highest"));
+            //var pattern = new StockMatchPattern_ROR(20);
+
+            var series = this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
+            //var series = this.StockDictionary.Values.Where(s => s.StockName == "Test");
+            StockSerie serie = engine.FindPattern(series, BarDuration, pattern);
+
+            var drawingItems = new StockDrawingItems();
+            drawingItems.Add(new Line2D(new PointF(before, 0), 0, 1));
+            serie.StockAnalysis.DrawingItems.Add(StockSerie.StockBarDuration.Daily, drawingItems);
 
             AddNewSerie(serie);
-
-
         }
 
         private void logSerieMenuItem_Click(object sender, System.EventArgs e)

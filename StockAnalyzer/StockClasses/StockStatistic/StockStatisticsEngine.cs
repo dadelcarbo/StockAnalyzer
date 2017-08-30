@@ -48,49 +48,121 @@ namespace StockAnalyzer.StockClasses.StockStatistic
                 stockSerie.BarDuration = previousDuration;
             }
 
-            return this.GetTypicalSerie();
+            return this.GetTypicalSerie(patternMatch);
         }
 
-        private StockSerie GetTypicalSerie()
+        private StockSerie GetTypicalSerie(IStockMatchPattern patternMatch)
         {
-            float[] close = new float[sampleSize];
+            double[] close = new double[sampleSize];
             long[] nbSample = new long[sampleSize];
 
-            float initialValue = 100.0f;
+            double initialValue = 100.0;
 
             // Calculate average daily returns
-            StockSerie typicalSerie = new StockSerie("Typical", "Typical", StockSerie.Groups.NONE, StockDataProvider.Generated);
+            StockSerie typicalSerie = new StockSerie("Pattern_" + patternMatch.Suffix, "Pattern_" + patternMatch.Suffix, StockSerie.Groups.NONE, StockDataProvider.Generated);
 
             foreach (var pattern in Patterns)
             {
-                float ratio = 100.0f / pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index + 1);
+                double ratio = initialValue / pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index-sampleBefore);
 
                 for (int i = 0; i < sampleSize; i++)
                 {
-                    if (pattern.Index + i > 0 && pattern.Index + i < pattern.Serie.Count)
+                    int index = pattern.Index - sampleBefore + i;
+                    if (index >= 0 && index < pattern.Serie.Count)
                     {
-                        close[i] += pattern.Serie.GetValue(StockDataType.CLOSE, pattern.Index + i) * ratio;
+                        double value = pattern.Serie.GetValue(StockDataType.CLOSE, index);
+                        double newValue = value * ratio;
+                        close[i] += newValue;
                         nbSample[i]++;
                     }
                 }
             }
 
-
             DateTime date = DateTime.Today;
             for (int i = 0; i < sampleSize; i++)
             {
-                float closeVal = nbSample[i] != 0 ? close[i] /= nbSample[i] : 0.0f;
+                close[i] = nbSample[i] != 0 ? close[i] / nbSample[i] : 0.0f;
+            }
+
+            double coef = initialValue / close[sampleBefore];
+            for (int i = 0; i < sampleSize; i++)
+            {
+                float closeVal = (float)(close[i]*coef);
 
                 if (closeVal != 0.0f)
                 {
-                    typicalSerie.Add(date,
-                        new StockDailyValue(typicalSerie.StockName, closeVal, closeVal, closeVal,
-                            closeVal, nbSample[i], date));
-
+                    typicalSerie.Add(date, new StockDailyValue(typicalSerie.StockName, closeVal, closeVal, closeVal, closeVal, nbSample[i], date));
                     date = date.AddDays(1);
                 }
             }
             return typicalSerie;
+        }
+        public StockSerie GenerateSerie2(string name)
+        {
+            float[] close = new float[sampleSize];
+
+            float initialValue = 100.0f;
+            int size = 2000;
+
+            // Calculate average daily returns
+            StockSerie newSerie = new StockSerie(name, name, StockSerie.Groups.NONE, StockDataProvider.Generated);
+
+            DateTime date = DateTime.Today;
+            float closeVal = 100f;
+            for (int i = 0; i < size; i++)
+            {
+                //  float closeVal = i % 2 == 0 ? initialValue + 10 : initialValue - 10;
+                closeVal += closeVal * 0.001f;
+                if (closeVal != 0.0f)
+                {
+                    newSerie.Add(date,
+                        new StockDailyValue(newSerie.StockName, closeVal, closeVal, closeVal,
+                            closeVal, i, date));
+
+                    date = date.AddDays(1);
+                }
+            }
+            return newSerie;
+        }
+
+        public StockSerie GenerateSerie(string name)
+        {
+            double[] close = new double[sampleSize];
+
+            float initialValue = 100.0f;
+            int size = 100000;
+
+            // Calculate average daily returns
+            StockSerie newSerie = new StockSerie(name, name, StockSerie.Groups.NONE, StockDataProvider.Generated);
+
+            DateTime date = DateTime.Today;
+            double closeVal = initialValue;
+
+            Random rand = new Random();
+            for (int i = 0; i < size; i++)
+            {
+                //closeVal = i % 2 == 0 ? closeVal * (1.0 + 5.0/95.0) : closeVal * 0.95;
+                closeVal += (float)Math.Cos(0.08 * Math.PI * i)*10;
+                closeVal += (float)Math.Sin(0.04 * Math.PI * i)*5;
+                //closeVal *= 0.9999;
+                //double percentChange = (rand.NextDouble() - 0.5) * 0.10;
+                //if (percentChange > 0)
+                //{
+                //    closeVal /= 1.0f - percentChange;
+                //}
+                //else
+                //{
+                //    closeVal *= 1.0f + percentChange;
+                //}
+                if (closeVal != 0.0f)
+                {
+                    float closeFloat = (float)closeVal;
+                    newSerie.Add(date, new StockDailyValue(newSerie.StockName, closeFloat, closeFloat, closeFloat, closeFloat, i, date));
+
+                    date = date.AddDays(1);
+                }
+            }
+            return newSerie;
         }
 
         private void Clear()

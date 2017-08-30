@@ -2,30 +2,31 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 {
-    public class StockMatchPattern_ROD : IStockMatchPattern
+    public class StockMatchPattern_ROR : IStockMatchPattern
     {
-        public StockMatchPattern_ROD(float trigger)
+        public StockMatchPattern_ROR(float trigger)
         {
             this.Trigger = trigger;
         }
 
         public float Trigger { get; set; }
 
-        int lookback = 50;
+        int lookback= 50;
+
         public bool MatchPattern(StockSerie stockSerie, int index)
         {
             if (index < lookback) return false;
-            var rod = stockSerie.GetIndicator("ROD(" + lookback + ",1,1)").Series[1];
+            var ror = stockSerie.GetIndicator("ROR("+lookback+",1,1)").Series[1];
             for (int i = index - lookback; i < index; i++)
             {
-                if (rod[i] > Trigger) return false;
+                if (ror[i] > Trigger) return false;
             }
-            return rod[index] > Trigger;
+            return ror[index]>Trigger;
         }
 
         public string Suffix
         {
-            get { return "ROD(" + lookback + ",1,1)"; }
+            get { return "ROR(" + lookback + ",1,1)"; }
         }
     }
 }
