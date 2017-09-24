@@ -378,6 +378,12 @@ namespace StockAnalyzerApp
                 // Generate Vix Premium
                 StockSplashScreen.ProgressText = "Generating VIX Premium data...";
                 //GenerateVixPremium();
+
+                this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
+                this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
+
+                GeneratePosition(new List<StockSerie.Groups> { StockSerie.Groups.CAC40 });
+
                 #region Test Automatic Indices
 
                 //GenerateCACEqualWeight();
@@ -2840,22 +2846,34 @@ namespace StockAnalyzerApp
 
         private void patternRecognitionMenuItem_Click(object sender, System.EventArgs e)
         {
-            int before = 50;
-            StockStatisticsEngine engine = new StockStatisticsEngine(before, 200);
+            int before = 10;
+            int after = 200;
+            StockStatisticsEngine engine = new StockStatisticsEngine(before, after);
 
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-//            var pattern = new StockMatchPattern_BarUp();
-//            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(20)", "Highest"));
-            var pattern = new StockMatchPattern_ROD(25);
+            //this.CurrentTheme = "PATTERN";
 
-            StockSerie serie = engine.FindPattern(this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)), BarDuration, pattern);
+            //AddNewSerie(engine.GenerateSerie("Test"));
 
-           // serie.StockAnalysis.DrawingItems.Add(StockSerie.StockBarDuration.Daily, new Line2D(new PointF(before, 0), 0, 1));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "TRAILSTOP", "TRAILHL(50)", "TrailedDown"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "ER(60,6,1,0.8)", "Oversold"));
+            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
+            //var pattern = new StockMatchPattern_Any();
+            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(200)", "Highest"));
+            //var pattern = new StockMatchPattern_ROR(20);
+
+            var series = this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
+            //var series = this.StockDictionary.Values.Where(s => s.StockName == "Test");
+            StockSerie serie = engine.FindPattern(series, BarDuration, pattern);
+
+            var drawingItems = new StockDrawingItems();
+            drawingItems.Add(new Line2D(new PointF(before, 0), 0, 1));
+            serie.StockAnalysis.DrawingItems.Add(StockSerie.StockBarDuration.Daily, drawingItems);
 
             AddNewSerie(serie);
-
-
         }
 
         private void logSerieMenuItem_Click(object sender, System.EventArgs e)
@@ -3725,144 +3743,144 @@ namespace StockAnalyzerApp
 
         }
 
-        //private void GeneratePosition(List<StockSerie.Groups> groups)
-        //{
-        //    string folderName = Settings.Default.RootFolder + POSITION_SUBFOLDER;
-        //    if (!System.IO.Directory.Exists(folderName))
-        //    {
-        //        System.IO.Directory.CreateDirectory(folderName);
-        //    }
+        private void GeneratePosition(List<StockSerie.Groups> groups)
+        {
+            string folderName = Settings.Default.RootFolder + POSITION_SUBFOLDER;
+            if (!System.IO.Directory.Exists(folderName))
+            {
+                System.IO.Directory.CreateDirectory(folderName);
+            }
 
-        //    Settings.Default.MomentumIndicator = "ROR(100,6,1)";
+            Settings.Default.MomentumIndicator = "ROR(100,6,1)";
 
-        //    foreach (StockSerie.Groups group in groups)
-        //    {
+            foreach (StockSerie.Groups group in groups)
+            {
 
-        //        StockSplashScreen.ProgressText = "Generating position data for " + group;
-        //        var groupSeries =
-        //           StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
+                StockSplashScreen.ProgressText = "Generating position data for " + group;
+                var groupSeries =
+                   StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
 
-        //        // Find last date
-        //        DateTime lastDate = DateTime.MinValue;
-        //        StockSplashScreen.ProgressSubText = "Initialising series";
-        //        foreach (StockSerie serie in groupSeries)
-        //        {
-        //            serie.BarDuration = StockSerie.StockBarDuration.Daily;
-        //            if (lastDate < serie.Keys.Last())
-        //            {
-        //                lastDate = serie.Keys.Last();
-        //            }
-        //        }
+                // Find last date
+                DateTime lastDate = DateTime.MinValue;
+                StockSplashScreen.ProgressSubText = "Initialising series";
+                foreach (StockSerie serie in groupSeries)
+                {
+                    serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                    if (lastDate < serie.Keys.Last())
+                    {
+                        lastDate = serie.Keys.Last();
+                    }
+                }
 
-        //        // Parse Variation cache
-        //        string fileName = folderName + @"\" + group + ".csv";
-        //        StockSplashScreen.ProgressSubText = "Loading cache data";
-        //        DateTime lastCacheDate = DateTime.MinValue;
-        //        if (File.Exists(fileName))
-        //        {
-        //            using (StreamReader sr = new StreamReader(fileName))
-        //            {
-        //                DateTime date = DateTime.MinValue;
-        //                do
-        //                {
-        //                    string line = sr.ReadLine();
-        //                    string[] fields = line.Split(',');
-        //                    date = DateTime.Parse(fields[0]);
+                // Parse Variation cache
+                string fileName = folderName + @"\" + group + ".csv";
+                StockSplashScreen.ProgressSubText = "Loading cache data";
+                DateTime lastCacheDate = DateTime.MinValue;
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName))
+                    {
+                        DateTime date = DateTime.MinValue;
+                        do
+                        {
+                            string line = sr.ReadLine();
+                            string[] fields = line.Split(',');
+                            date = DateTime.Parse(fields[0]);
 
-        //                    for (int i = 1; i < fields.Count(); i++)
-        //                    {
-        //                        string[] values = fields[i].Split(':');
-        //                        this.StockDictionary[values[0]][date].POSITION = float.Parse(values[1], usCulture);
-        //                    }
-        //                } while (!sr.EndOfStream);
-        //                lastCacheDate = date;
-        //            }
-        //        }
+                            for (int i = 1; i < fields.Count(); i++)
+                            {
+                                string[] values = fields[i].Split(':');
+                                this.StockDictionary[values[0]][date].POSITION = float.Parse(values[1], usCulture);
+                            }
+                        } while (!sr.EndOfStream);
+                        lastCacheDate = date;
+                    }
+                }
 
-        //        if (lastDate == lastCacheDate)
-        //        {
-        //            foreach (StockSerie serie in groupSeries)
-        //            {
-        //                serie.PreInitialise();
-        //            }
-        //            continue;
-        //        }
+                if (lastDate == lastCacheDate)
+                {
+                    foreach (StockSerie serie in groupSeries)
+                    {
+                        serie.PreInitialise();
+                    }
+                    continue;
+                }
 
-        //        // Find reference stock in group (first date)
-        //        StockSerie stockSerie = this.GroupReference[group];
-        //        stockSerie.Initialise();
-        //        DateTime firstDate = stockSerie.Keys.First();
+                // Find reference stock in group (first date)
+                StockSerie stockSerie = this.GroupReference[group];
+                stockSerie.Initialise();
+                DateTime firstDate = stockSerie.Keys.First();
 
-        //        firstDate = lastCacheDate > firstDate ? lastCacheDate : firstDate;
+                firstDate = lastCacheDate > firstDate ? lastCacheDate : firstDate;
 
-        //        // Calculate positions for each stocks in group
-        //        SortedDictionary<DateTime, List<MomentumSerie>> positions =
-        //           new SortedDictionary<DateTime, List<MomentumSerie>>();
+                // Calculate positions for each stocks in group
+                SortedDictionary<DateTime, List<MomentumSerie>> positions =
+                   new SortedDictionary<DateTime, List<MomentumSerie>>();
 
-        //        foreach (var date in stockSerie.Keys.Where(d => d > firstDate && d.Date == d))
-        //        {
-        //            StockSplashScreen.ProgressSubText = "Calculating positions " + date.ToShortDateString();
-        //            List<MomentumSerie> momSeries = new List<MomentumSerie>();
-        //            int dateIndex = -1;
-        //            foreach (StockSerie serie in groupSeries)
-        //            {
-        //                if ((dateIndex = serie.IndexOf(date)) != -1)
-        //                {
-        //                    momSeries.Add(new MomentumSerie()
-        //                    {
-        //                        MomentumSlow = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
-        //                        MomentumFast = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
-        //                        StockSerie = serie
-        //                    });
-        //                }
-        //            }
-        //            if (momSeries.Count > 1)
-        //            {
-        //                var moms = momSeries.OrderBy(ms => ms.MomentumSlow);
-        //                int count = moms.Count();
-        //                int i = 0;
-        //                foreach (var m in moms)
-        //                {
-        //                    m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
-        //                }
+                foreach (var date in stockSerie.Keys.Where(d => d > firstDate && d.Date == d))
+                {
+                    StockSplashScreen.ProgressSubText = "Calculating positions " + date.ToShortDateString();
+                    List<MomentumSerie> momSeries = new List<MomentumSerie>();
+                    int dateIndex = -1;
+                    foreach (StockSerie serie in groupSeries)
+                    {
+                        if ((dateIndex = serie.IndexOf(date)) != -1)
+                        {
+                            momSeries.Add(new MomentumSerie()
+                            {
+                                MomentumSlow = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
+                                MomentumFast = serie.GetIndicator(Settings.Default.MomentumIndicator).Series[0][dateIndex],
+                                StockSerie = serie
+                            });
+                        }
+                    }
+                    if (momSeries.Count > 1)
+                    {
+                        var moms = momSeries.OrderBy(ms => ms.MomentumSlow);
+                        int count = moms.Count();
+                        int i = 0;
+                        foreach (var m in moms)
+                        {
+                            m.PositionSlow = -100f + 200f * (float)(i++) / (count - 1);
+                        }
 
-        //                moms = momSeries.OrderBy(ms => ms.MomentumFast);
-        //                i = 0;
-        //                foreach (var m in moms)
-        //                {
-        //                    m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
-        //                    m.StockSerie[date].POSITION = m.Position;
-        //                }
-        //                positions.Add(date, momSeries);
-        //            }
-        //        }
+                        moms = momSeries.OrderBy(ms => ms.MomentumFast);
+                        i = 0;
+                        foreach (var m in moms)
+                        {
+                            m.PositionFast = -100f + 200f * (float)(i++) / (count - 1);
+                            m.StockSerie[date].POSITION = m.Position;
+                        }
+                        positions.Add(date, momSeries);
+                    }
+                }
 
-        //        StockSplashScreen.ProgressSubText = "PreInitialising";
-        //        // In order to get Variation attribute set in DailyValues
-        //        foreach (StockSerie serie in groupSeries)
-        //        {
-        //            serie.PreInitialise();
-        //        }
+                StockSplashScreen.ProgressSubText = "PreInitialising";
+                // In order to get Variation attribute set in DailyValues
+                foreach (StockSerie serie in groupSeries)
+                {
+                    serie.PreInitialise();
+                }
 
-        //        // Serialise positions
-        //        StockSplashScreen.ProgressSubText = "Saving position cache";
-        //        using (StreamWriter sw = new StreamWriter(fileName, true))
-        //        {
-        //            foreach (var pair in positions)
-        //            {
-        //                sw.Write(pair.Key + ",");
-        //                int count = pair.Value.Count;
-        //                int i = 0;
-        //                foreach (var m in pair.Value)
-        //                {
-        //                    sw.Write(m.StockSerie.StockName + ":" + m.Position.ToString(usCulture));
-        //                    if (++i < count) sw.Write(",");
-        //                }
-        //                sw.WriteLine();
-        //            }
-        //        }
-        //    }
-        //}
+                // Serialise positions
+                StockSplashScreen.ProgressSubText = "Saving position cache";
+                using (StreamWriter sw = new StreamWriter(fileName, true))
+                {
+                    foreach (var pair in positions)
+                    {
+                        sw.Write(pair.Key + ",");
+                        int count = pair.Value.Count;
+                        int i = 0;
+                        foreach (var m in pair.Value)
+                        {
+                            sw.Write(m.StockSerie.StockName + ":" + m.Position.ToString(usCulture));
+                            if (++i < count) sw.Write(",");
+                        }
+                        sw.WriteLine();
+                    }
+                }
+            }
+        }
 
         private void GenerateVixPremium()
         {

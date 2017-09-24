@@ -7,5 +7,10 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
             if (index < stockSerie.Count) return stockSerie.GetValue(StockDataType.VARIATION, index) < 0.0f;
             return false;
         }
+
+        public string Suffix
+        {
+            get { return "BarDown"; }
+        }
     }
 }

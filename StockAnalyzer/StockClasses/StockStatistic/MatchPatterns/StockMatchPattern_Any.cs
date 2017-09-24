@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 {
     public class StockMatchPattern_Any : IStockMatchPattern
@@ -5,6 +8,11 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
         public bool MatchPattern(StockSerie stockSerie, int index)
         {
             return true;
+        }
+
+        public string Suffix
+        {
+            get { return "ANY"; }
         }
     }
 }

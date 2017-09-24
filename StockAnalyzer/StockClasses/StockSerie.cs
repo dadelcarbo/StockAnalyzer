@@ -8332,6 +8332,8 @@ namespace StockAnalyzer.StockClasses
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             StockDailyValue newValue = null;
 
+            if (stockDailyValueList.Count == 0) return newBarList;
+
             previousValues.Enqueue(stockDailyValueList[0]);
 
             int i = 0;

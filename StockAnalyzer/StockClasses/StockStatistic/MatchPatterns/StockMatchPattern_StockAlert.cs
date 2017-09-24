@@ -1,20 +1,24 @@
-using System.Linq;
+﻿using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 {
-    public class StockMatchPattern_ROR : IStockMatchPattern
+    public class StockMatchPattern_StockAlert : IStockMatchPattern
     {
-        public StockMatchPattern_ROR(float trigger)
+        public StockMatchPattern_StockAlert(StockAlertDef alert)
         {
-            this.Trigger = trigger;
+            this.Alert = alert;
         }
 
-        public float Trigger { get; set; }
+        public StockAlertDef Alert { get; set; }
 
         public bool MatchPattern(StockSerie stockSerie, int index)
         {
-            var ror = stockSerie.GetIndicator("ROR(50,1,1)").Series[1];
-            return ror[index]>Trigger;
+            return stockSerie.MatchEvent(Alert, index);
+        }
+
+        public string Suffix
+        {
+            get { return this.Alert.ToString(); }
         }
     }
 }
