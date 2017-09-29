@@ -45,6 +45,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses.StockStatistic;
 using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 
@@ -5734,6 +5735,11 @@ border:1px solid black;
                             this.DownloadStockGroup();
                         }
                         break;
+                    case Keys.F9:
+                        {
+                            this.RunAgentEngine();
+                        }
+                        break;
                     case Keys.F7:
                         {
                             this.statisticsMenuItem_Click(null, null);
@@ -5790,6 +5796,15 @@ border:1px solid black;
                 }
             }
             return true;
+        }
+
+        private void RunAgentEngine()
+        {
+            StockAgentEngine engine = new StockAgentEngine(this.CurrentStockSerie);
+
+            engine.Perform();
+
+
         }
 
         private void GenerateEMAHistogram()
