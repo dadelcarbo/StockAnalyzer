@@ -14,6 +14,12 @@ namespace StockAnalyzer.StockAgent
 
     public interface IStockAgent
     {
+        void Randomize();
+
         TradeAction Decide();
+
+        IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren);
+
+        string ToLog();
     }
 }

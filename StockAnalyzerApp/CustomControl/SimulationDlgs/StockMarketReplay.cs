@@ -169,7 +169,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                              "NbStops:\t\t\t" + nbStops + Environment.NewLine +
                              "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
                              "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                             "AvgGain:\t\t\t" + (tradeGains.Sum() / nbTrade).ToString("P2") + Environment.NewLine +
+                             "AvgGain:\t\t\t" + tradeGains.Average().ToString("P2") + Environment.NewLine +
                              "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
 
                 MessageBox.Show(msg);
