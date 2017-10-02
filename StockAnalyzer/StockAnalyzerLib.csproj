@@ -56,6 +56,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="StockAgent\IStockAgent.cs" />
+    <Compile Include="StockAgent\StockAgentBase.cs" />
+    <Compile Include="StockAgent\StockAgentEngine.cs" />
+    <Compile Include="StockAgent\StockContext.cs" />
+    <Compile Include="StockAgent\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\ShortInterestSerie.cs" />
     <Compile Include="StockClasses\StockAlertDef.cs" />
