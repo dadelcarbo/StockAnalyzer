@@ -5735,6 +5735,11 @@ border:1px solid black;
                             this.DownloadStockGroup();
                         }
                         break;
+                    case Keys.Control | Keys.F9: // Display Risk Calculator Windows
+                        {
+                            this.RunAgentEngineOnGroup();
+                        }
+                        break;
                     case Keys.F9:
                         {
                             this.RunAgentEngine();
@@ -5800,11 +5805,17 @@ border:1px solid black;
 
         private void RunAgentEngine()
         {
-            StockAgentEngine engine = new StockAgentEngine(this.CurrentStockSerie);
+            StockAgentEngine engine = new StockAgentEngine();
+            var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
 
-            engine.Perform();
+            engine.GeneticSelection(20, 100, stockSeries, 100);
+        }
+        private void RunAgentEngineOnGroup()
+        {
+            var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise());
 
-
+            StockAgentEngine engine = new StockAgentEngine();
+            engine.GeneticSelection(20, 100, stockSeries, 100);
         }
 
         private void GenerateEMAHistogram()
@@ -7179,6 +7190,30 @@ border:1px solid black;
                 else
                 {
                     MessageBox.Show("No financial information for this stock");
+                }
+            }
+        }
+
+        internal void OpenInFTMenu()
+        {
+            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+            {
+                string url = "https://markets.ft.com/data/equities/tearsheet/financials?s=%SYMBOL%:PAR";
+                url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
+                {
+                    Process.Start(url);
+                }
+            }
+        }
+
+        internal void OpenInABCMenu()
+        {
+            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+            {
+                string url = "https://www.abcbourse.com/graphes/display.aspx?s=%SYMBOL%p";
+                url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
+                {
+                    Process.Start(url);
                 }
             }
         }

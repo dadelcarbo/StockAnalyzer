@@ -1903,6 +1903,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
         }
+        void openInFTMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInFTMenu();
+        }
+        void openInABCMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInABCMenu();
+        }
         #endregion
     }
 }
