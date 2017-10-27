@@ -147,6 +147,8 @@ namespace StockAnalyzerApp
             this.followUpCheckBox = new ToolStripCheckedBox();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
             this.commentBtn = new System.Windows.Forms.ToolStripButton();
+            this.searchText = new System.Windows.Forms.ToolStripTextBox();
+            this.goBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.themeToolStrip = new System.Windows.Forms.ToolStrip();
             this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
@@ -1084,6 +1086,8 @@ namespace StockAnalyzerApp
             this.stockNameComboBox,
             this.barDurationComboBox,
             this.downloadBtn,
+            this.searchText,
+            this.goBtn,
             this.toolStripSeparator6,
             this.rewindBtn,
             this.fastForwardBtn,
@@ -1210,6 +1214,22 @@ namespace StockAnalyzerApp
             this.commentBtn.Text = "Comment";
             this.commentBtn.ToolTipText = "Edit a comment";
             this.commentBtn.Click += new System.EventHandler(this.commentBtn_Click);
+            // 
+            // searchText
+            // 
+            this.searchText.Name = "searchText";
+            this.searchText.Size = new System.Drawing.Size(200, 20);
+            // 
+            // goBtn
+            // 
+            this.goBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.goBtn.Image = global::StockAnalyzerApp.Properties.Resources.search;
+            this.goBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.goBtn.Name = "goBtn";
+            this.goBtn.Size = new System.Drawing.Size(23, 20);
+            this.goBtn.Text = "Go to stock";
+            this.goBtn.ToolTipText = "Go to stock";
+            this.goBtn.Click += new System.EventHandler(this.goBtn_Click);
             // 
             // toolStripSeparator5
             // 
@@ -1519,7 +1539,6 @@ namespace StockAnalyzerApp
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-
         #endregion
 
         private System.Windows.Forms.MenuStrip mainMenu;
@@ -1655,5 +1674,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem newAnalysisMenuItem;
         private ToolStripSeparator toolStripSeparator19;
         private ToolStripSeparator toolStripSeparator21;
+        private ToolStripTextBox searchText;
+        private ToolStripButton goBtn;
     }
 }

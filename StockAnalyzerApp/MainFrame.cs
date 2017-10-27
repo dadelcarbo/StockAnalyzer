@@ -723,7 +723,46 @@ namespace StockAnalyzerApp
                 }
                 if (needDirectAlertCheck) alertTimer_Tick(null, null);
             }
+
+            AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
+            allowedTypes.AddRange(this.StockDictionary.Select(p => p.Key).ToArray());
+            searchText.AutoCompleteCustomSource = allowedTypes;
+            searchText.AutoCompleteMode = AutoCompleteMode.Suggest;
+            searchText.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
+
+
+
+        private void goBtn_Click(object sender, System.EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(searchText.Text) || !this.StockDictionary.ContainsKey(searchText.Text)) return;
+
+            StockSerie serie = this.StockDictionary[searchText.Text];
+
+            // Update Group
+            if (this.selectedGroup != serie.StockGroup)
+            {
+
+                this.selectedGroup = serie.StockGroup;
+
+                foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                {
+                    groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
+                }
+
+                InitialiseStockCombo();
+            }
+
+            // Update Stock
+            if (this.currentStockSerie != serie)
+            {
+                //StockAnalyzerForm_StockSerieChanged(serie, false);
+                this.stockNameComboBox.SelectedItem = serie.StockName;
+
+            }
+        }
+
+
 
         private void InitialiseWatchListComboBox()
         {
@@ -5625,7 +5664,10 @@ border:1px solid black;
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (searchText.Focused) return false;
+
             if (this.currentStockSerie == null) return false;
+
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
 
