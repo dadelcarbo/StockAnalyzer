@@ -63,6 +63,7 @@
     <Compile Include="StockAgent\StockContext.cs" />
     <Compile Include="StockAgent\StockTrade.cs" />
     <Compile Include="StockAgent\StockTradeSummary.cs" />
+    <Compile Include="StockAgent\HigherLowAgent.cs" />
     <Compile Include="StockAgent\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\ShortInterestSerie.cs" />
@@ -547,6 +548,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="StockAgent\StockAgentEngine.cd" />
     <None Include="StockPortofolio\Portfolio.cd" />
   </ItemGroup>
   <ItemGroup>

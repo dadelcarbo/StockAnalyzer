@@ -1219,6 +1219,7 @@ namespace StockAnalyzerApp
             // 
             this.searchText.Name = "searchText";
             this.searchText.Size = new System.Drawing.Size(200, 20);
+            this.searchText.Validated += new System.EventHandler(this.goBtn_Click);
             // 
             // goBtn
             // 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using StockAnalyzer.StockClasses;
@@ -67,13 +68,25 @@ namespace StockAnalyzer.StockAgent
         }
 
         static Random rnd = new Random();
+
         public void Randomize()
         {
             var parameters = StockAgentBase.GetParams(this.GetType());
             foreach (var param in parameters)
             {
-                float newValue = (float)rnd.NextDouble() * (param.Value.Max - param.Value.Min) + param.Value.Min;
-                param.Key.SetValue(this, newValue, null);
+                float newValue = (float) rnd.NextDouble()*(param.Value.Max - param.Value.Min) + param.Value.Min;
+                if (param.Key.PropertyType == typeof (int))
+                {
+                    param.Key.SetValue(this,(int) Math.Round(newValue), null);
+                }
+                else if (param.Key.PropertyType == typeof (float))
+                {
+                    param.Key.SetValue(this, newValue, null);
+                }
+                else
+                {
+                    throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
+                }
             }
         }
 
@@ -89,16 +102,37 @@ namespace StockAnalyzer.StockAgent
                 {
                     var property = param.Key;
 
-                    float val1 = (float)property.GetValue(this, null);
-                    float val2 = (float)property.GetValue(partner, null);
+                    if (param.Key.PropertyType == typeof (int))
+                    {
+                        int val1 = (int)property.GetValue(this, null);
+                        int val2 = (int)property.GetValue(partner, null);
 
-                    float mean = (val1 + val2) / 2.0f;
-                    float stdev = Math.Abs(val1 - val2) / 4.0f;
+                        float mean = (val1 + val2) / 2.0f;
+                        float stdev = Math.Abs(val1 - val2) / 4.0f;
 
-                    float newValue = FloatRandom.NextGaussian(mean, stdev);
-                    newValue = Math.Min(newValue, param.Value.Max);
-                    newValue = Math.Max(newValue, param.Value.Min);
-                    param.Key.SetValue(agent, newValue, null);
+                        float newValue = FloatRandom.NextGaussian(mean, stdev);
+                        newValue = Math.Min(newValue, param.Value.Max);
+                        newValue = Math.Max(newValue, param.Value.Min);
+                        param.Key.SetValue(agent, (int)Math.Round(newValue), null);
+                    }
+                    else if (param.Key.PropertyType == typeof (float))
+                    {
+                        float val1 = (float) property.GetValue(this, null);
+                        float val2 = (float) property.GetValue(partner, null);
+
+                        float mean = (val1 + val2)/2.0f;
+                        float stdev = Math.Abs(val1 - val2)/4.0f;
+
+                        float newValue = FloatRandom.NextGaussian(mean, stdev);
+                        newValue = Math.Min(newValue, param.Value.Max);
+                        newValue = Math.Max(newValue, param.Value.Min);
+                        param.Key.SetValue(agent, newValue, null);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
+                    }
+
                 }
                 children.Add(agent);
             }

@@ -31,8 +31,6 @@ namespace StockAnalyzer.StockAgent
 
         protected override TradeAction TryToOpenPosition()
         {
-            FloatSerie closeSerie = context.Serie.GetSerie(StockDataType.CLOSE);
-
             int i = context.CurrentIndex;
             float close = closeSerie[i];
             float high = closeSerie.GetMax(i - this.LookBack, i);

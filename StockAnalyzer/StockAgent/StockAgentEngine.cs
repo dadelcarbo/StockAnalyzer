@@ -26,7 +26,8 @@ namespace StockAnalyzer.StockAgent
             // Create Agents
             for (int i = 0; i < nbAgents; i++)
             {
-                IStockAgent agent = new StupidAgent(this.Context);
+                //IStockAgent agent = new StupidAgent(this.Context);
+                IStockAgent agent = new HigherLowAgent(this.Context);
                 agent.Randomize();
                 agents.Add(agent);
             }
