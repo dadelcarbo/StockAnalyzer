@@ -61,7 +61,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            IStockIndicator indicator = stockSerie.GetIndicator(this.Name.Replace("NORM", ""));
+            string indicatorName = "STOKS(" + this.parameters[0] + "," + this.parameters[1] + ',' + this.parameters[2] + ")";
+            IStockIndicator indicator = stockSerie.GetIndicator(indicatorName);
             FloatSerie slowK = indicator.Series[0];
             var range = indicator as IRange;
             if (range != null)
