@@ -999,6 +999,20 @@ namespace StockAnalyzer.StockMath
             return new FloatSerie(squareSerie);
         }
         /// <summary>
+        /// Calculate the Powe root series
+        /// </summary>
+        /// <returns></returns>
+        public FloatSerie Pow(double power)
+        {
+            float[] sqrtSerie = new float[this.Values.Count()];
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                sqrtSerie[i] = (float)Math.Pow(this[i], power);
+            }
+            return new FloatSerie(sqrtSerie);
+        }
+        /// <summary>
         /// Calculate the square root series
         /// </summary>
         /// <returns></returns>

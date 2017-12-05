@@ -203,6 +203,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MFI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NORMSTOKS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ShortInterest.cs" />
