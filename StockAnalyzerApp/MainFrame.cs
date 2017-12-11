@@ -7240,7 +7240,7 @@ border:1px solid black;
         {
             if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
             {
-                string url = "https://markets.ft.com/data/equities/tearsheet/financials?s=%SYMBOL%:PAR";
+                string url = "https://markets.ft.com/data/equities/tearsheet/profile?s=%SYMBOL%:PAR";
                 url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
                 {
                     Process.Start(url);

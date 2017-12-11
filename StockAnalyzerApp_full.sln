@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerApp", "StockAnalyzerApp\StockAnalyzerApp.csproj", "{4160792F-0A7C-4ABE-AD3D-83603AD6DF29}"
 	ProjectSection(ProjectDependencies) = postProject
 		{723891D8-B467-4277-BFC7-9D4E71DEF426} = {723891D8-B467-4277-BFC7-9D4E71DEF426}
@@ -12,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerSettings", "St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockDownloader", "StockDownloader\StockDownloader.csproj", "{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerTest", "StockAnalyzerTest\StockAnalyzerTest.csproj", "{2E86E4B0-E6ED-471E-B56E-BEB216575142}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerTest", "StockAnalyzerTest\StockAnalyzerTest.csproj", "{87F4F775-6F91-4702-B25C-84A50FC87026}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F92D739E-9B6C-434F-AF40-912E9639E03C}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,9 +28,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockLicenseKeyGenerator", "StockLicenseKeyGenerator\StockLicenseKeyGenerator.csproj", "{DD32CBB8-4471-4292-99F3-B6064DF7D6D0}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = StockAnalyzerApp.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -78,16 +77,16 @@ Global
 		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|Mixed Platforms.Build.0 = Release|x86
 		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|x86.ActiveCfg = Release|x86
 		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|x86.Build.0 = Release|x86
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2E86E4B0-E6ED-471E-B56E-BEB216575142}.Release|x86.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|x86.ActiveCfg = Release|Any CPU
 		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -111,5 +110,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0894F80A-7D5B-464E-80BB-0C9C99103054}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = StockAnalyzerApp.vsmdi
 	EndGlobalSection
 EndGlobal

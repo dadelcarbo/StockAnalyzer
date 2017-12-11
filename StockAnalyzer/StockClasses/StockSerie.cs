@@ -171,6 +171,7 @@ namespace StockAnalyzer.StockClasses
         #region public properties
         public string StockName { get; private set; }
         public string ShortName { get; private set; }
+        public string Exchange { get; set; }
         public StockDataProvider DataProvider { get; private set; }
         public string ISIN { get; set; }
         public string SectorID { get; set; }

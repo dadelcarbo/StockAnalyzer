@@ -66,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Get last value
             this.mainSerie = CurveList.Find(c => c.DataSerie.Name == "VOLUME").DataSerie;
 
-            float lastValue = this.mainSerie.Last;
+            float lastValue = this.mainSerie[EndIndex];
             string lastValueString;
             if (lastValue > 100000000)
             {

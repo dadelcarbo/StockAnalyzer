@@ -564,7 +564,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                    GraphRectangle.Height);
 
                 // Display values and dates
-                string lastValue = closeCurveType.DataSerie.Last.ToString();
+                string lastValue = closeCurveType.DataSerie[EndIndex].ToString();
                 aGraphic.DrawString(lastValue, axisFont, Brushes.Black, GraphRectangle.Right + 1,
                    tmpPoints[tmpPoints.Count() - 1].Y - 8);
 

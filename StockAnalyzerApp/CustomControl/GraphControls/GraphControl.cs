@@ -604,7 +604,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     {
                                         this.mainSerie = stockIndicator.Series[i];
                                         // Display values and dates
-                                        float lastValue = this.mainSerie.Last;
+                                        float lastValue = this.mainSerie[EndIndex];
                                         string lastValueString;
                                         if (lastValue > 100000000)
                                         {
