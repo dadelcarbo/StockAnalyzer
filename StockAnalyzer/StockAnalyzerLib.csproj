@@ -171,6 +171,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NORMRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
