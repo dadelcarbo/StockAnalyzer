@@ -217,6 +217,17 @@
     <Compile Include="CustomControl\MultiTimeFrameChartDlg.Designer.cs">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.Designer.cs">
+      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerViewModel.cs" />
+    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml.cs">
+      <DependentUpon>PortofolioRiskManagerUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
@@ -352,9 +363,7 @@
     <Compile Include="CustomControl\GraphControls\GraphCloseControl.Designer.cs">
       <DependentUpon>GraphCloseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\GraphControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControl\GraphControls\GraphControl.cs" />
     <Compile Include="CustomControl\GraphControls\GraphControl.Designer.cs">
       <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
@@ -567,6 +576,9 @@
     <EmbeddedResource Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.resx">
       <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.resx">
+      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.resx">
       <DependentUpon>StockRiskCalculatorDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -751,7 +763,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="CustomControl\SimulationDlgs\ViewModels\Replay.cd" />
-    <None Include="Properties\DataSources\StockAnalyzer.Portofolio.StockPosition.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockClasses.StockSerie.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.IndicatorDlgs.HilbertSineWaveConfigDlg.datasource" />
@@ -913,6 +924,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -922,6 +937,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

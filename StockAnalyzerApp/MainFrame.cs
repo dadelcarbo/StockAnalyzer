@@ -48,6 +48,7 @@ using System.Xml.Serialization;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses.StockStatistic;
 using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
+using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
 
 namespace StockAnalyzerApp
 {
@@ -5739,6 +5740,16 @@ border:1px solid black;
                             ZoomIn();
                         }
                         break;
+                    case Keys.F2:
+                        {
+                            this.portfolioRiskManager_Click(null, null);
+                        }
+                        break;
+                    case Keys.F3:
+                        {
+                            this.ShowMultiTimeFrameDlg();
+                        }
+                        break;
                     case Keys.F4:
                         {
                             if (marketReplay == null)
@@ -5757,16 +5768,6 @@ border:1px solid black;
                             }
                         }
                         break;
-                    case Keys.F3:
-                        {
-                            this.ShowMultiTimeFrameDlg();
-                        }
-                        break;
-                    case Keys.F6:
-                        {
-                            this.GenerateHistogram();
-                        }
-                        break;
                     case Keys.F5:
                         {
                             this.DownloadStock();
@@ -5777,14 +5778,9 @@ border:1px solid black;
                             this.DownloadStockGroup();
                         }
                         break;
-                    case Keys.Control | Keys.F9: // Display Risk Calculator Windows
+                    case Keys.F6:
                         {
-                            this.RunAgentEngineOnGroup();
-                        }
-                        break;
-                    case Keys.F9:
-                        {
-                            this.RunAgentEngine();
+                            this.GenerateHistogram();
                         }
                         break;
                     case Keys.F7:
@@ -5836,6 +5832,16 @@ border:1px solid black;
                             MTFDlg mtfDlg = new MTFDlg();
                             mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                             mtfDlg.Show();
+                        }
+                        break;
+                    case Keys.F9:
+                        {
+                            this.RunAgentEngine();
+                        }
+                        break;
+                    case Keys.Control | Keys.F9: // Display Risk Calculator Windows
+                        {
+                            this.RunAgentEngineOnGroup();
                         }
                         break;
                     default:
@@ -5977,6 +5983,28 @@ border:1px solid black;
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
         }
+
+
+        private void portfolioRiskManager_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+                PortfolioRiskManagerDlg dlg = new PortfolioRiskManagerDlg();
+
+                this.Cursor = Cursors.Arrow;
+                dlg.ShowDialog(this);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+        }
+
 
         private StockRiskCalculatorDlg riskCalculatorDlg = null;
 

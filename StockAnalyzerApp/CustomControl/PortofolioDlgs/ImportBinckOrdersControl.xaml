@@ -51,6 +51,19 @@
                 <DataGridTextColumn Header="Number" Binding="{Binding Number, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Value" Binding="{Binding Value, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Fee" Binding="{Binding Fee, Mode=OneWay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Entry Comment" Binding="{Binding Comment, StringFormat=\{0:N2\}}" IsReadOnly="False" Width="250">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    <DataGridTextColumn.EditingElementStyle>
+                        <Style TargetType="TextBox">
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                            <Setter Property="AcceptsReturn" Value="true" />
+                        </Style>
+                    </DataGridTextColumn.EditingElementStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn Header="Execution Date">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

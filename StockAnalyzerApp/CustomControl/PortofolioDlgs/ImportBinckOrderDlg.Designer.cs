@@ -46,10 +46,10 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(855, 273);
+         this.ClientSize = new System.Drawing.Size(1000, 400);
          this.Controls.Add(this.elementHost1);
          this.Name = "ImportBinckOrderDlg";
-         this.Text = "ImportBinckOrderDlg";
+         this.Text = "Import Binck Order";
          this.ResumeLayout(false);
 
       }

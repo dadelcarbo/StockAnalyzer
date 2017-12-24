@@ -59,7 +59,13 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
       }
 
 
-      private StockOrder order;
+        public string Comment
+        {
+            get { return order.Comment; }
+            set { order.Comment = value; }
+        }
+
+        private StockOrder order;
       public StockOrder Order { get { return this.order; } }
    }
 }

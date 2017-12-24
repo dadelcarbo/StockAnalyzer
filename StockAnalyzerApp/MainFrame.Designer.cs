@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using global::StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.GraphControls;
 
@@ -101,6 +102,7 @@ namespace StockAnalyzerApp
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newOrderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importBinckOrders = new System.Windows.Forms.ToolStripMenuItem();
+            this.portfolioRiskManager = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -715,6 +717,7 @@ namespace StockAnalyzerApp
             this.newOrderMenuItem,
             this.toolStripSeparator19,
             this.importBinckOrders,
+            this.portfolioRiskManager,
             this.toolStripSeparator21,
             this.portofolioDetailsMenuItem,
             this.orderListMenuItem});
@@ -741,7 +744,16 @@ namespace StockAnalyzerApp
             this.importBinckOrders.Name = "importBinckOrders";
             this.importBinckOrders.Size = new System.Drawing.Size(236, 22);
             this.importBinckOrders.Text = "Import Orders";
+            this.importBinckOrders.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
             this.importBinckOrders.Click += new System.EventHandler(this.importBinckOrders_Click);
+            // 
+            // portfolioRiskManager
+            // 
+            this.portfolioRiskManager.Name = "portfolioRiskManager";
+            this.portfolioRiskManager.Size = new System.Drawing.Size(236, 22);
+            this.portfolioRiskManager.Text = "Risk Manager";
+            this.portfolioRiskManager.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.F2)));
+            this.portfolioRiskManager.Click += new System.EventHandler(this.portfolioRiskManager_Click);
             // 
             // portofolioDetailsMenuItem
             // 
@@ -1582,6 +1594,7 @@ namespace StockAnalyzerApp
         private ToolStripProgressBar progressBar;
         private ToolStripMenuItem newOrderMenuItem;
         private ToolStripMenuItem importBinckOrders;
+        private ToolStripMenuItem portfolioRiskManager;
         private ToolStripMenuItem orderListMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;

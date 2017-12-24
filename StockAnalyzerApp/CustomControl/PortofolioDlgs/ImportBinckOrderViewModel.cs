@@ -112,11 +112,11 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
 
       const int idIndex = 0;
       const int directionIndex = 1;
-      const int qtyIndex = 5;
       const int nameIndex = 3;
       const int statusIndex = 4;
-      const int valueIndex = 6;
-      const int dateIndex = 8;
+      const int qtyIndex = 6;
+      const int valueIndex = 7;
+      const int dateIndex = 9;
 
       public void Import()
       {
@@ -130,7 +130,7 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs
                int index = 0;
                while ((line = stream.ReadLine()) != null)
                {
-                  string[] fields = line.Replace("\t\t", "\t").Split('\t');
+                  string[] fields = line.Trim().Replace("\t\t", "\t").Split('\t');
                   int id = int.Parse(fields[idIndex]);
                   if (!this.Orders.Any(o => o.ID == id) &&
                       (fields[statusIndex] == "Exécuté" || fields[statusIndex].StartsWith("Partiellement exécuté")))
