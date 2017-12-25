@@ -29,12 +29,9 @@
         <DataGrid ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding StockName}" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Entry Date" Binding="{Binding EntryDate, StringFormat=\{0:d\}}"  IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Qty" Binding="{Binding EntryQty}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Value" Binding="{Binding EntryValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Current Value" Binding="{Binding CurrentValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Portfolio %" Binding="{Binding PortfolioPercent, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stop" Binding="{Binding Stop, StringFormat=\{0:N2\}}"/>
+                <DataGridTextColumn Header="Entry&#x0a;Date" Binding="{Binding EntryDate, StringFormat=\{0:d\}}"  IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
+                <DataGridTextColumn Header="Entry&#x0a;Qty" Binding="{Binding EntryQty}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
+                <DataGridTextColumn Header="Entry&#x0a;Value" Binding="{Binding EntryValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
@@ -42,8 +39,41 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Risk" Binding="{Binding Risk, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Portfolio Risk" Binding="{Binding PortfolioRisk, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Current&#x0a;Value" Binding="{Binding CurrentValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
+                <DataGridTextColumn Header="Current&#x0a;Gain %" Binding="{Binding Gain, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="" IsReadOnly="True" Width="1"/>
+                <DataGridTextColumn Header="Portfolio %" Binding="{Binding PortfolioPercent, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Portfolio&#x0a;Gain%" Binding="{Binding PortofolioGain, StringFormat=\{0:P2\}}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PortofolioExtraLoss}" Value="True">
+                                    <Setter Property="Background" Value="IndianRed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PortofolioExtraGain}" Value="True">
+                                    <Setter Property="Background" Value="ForestGreen" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="" IsReadOnly="True" Width="0"/>
+                <DataGridTextColumn Header="Trade&#x0a;Stop" Binding="{Binding Stop, StringFormat=\{0:N2\}}"/>
+                <DataGridTextColumn Header="Trade&#x0a;Risk" Binding="{Binding Risk, StringFormat=\{0:P2\}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Portfolio&#x0a;Risk" Binding="{Binding PortfolioRisk, StringFormat=\{0:P2\}}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PortofolioExtraRisk}" Value="True">
+                                    <Setter Property="Background" Value="IndianRed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PortofolioExtraRisk}" Value="False">
+                                    <Setter Property="Background" Value="ForestGreen" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </StackPanel>
