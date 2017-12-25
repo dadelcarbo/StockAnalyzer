@@ -6919,9 +6919,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie floatSerie = this.GetSerie(dataType);
             return floatSerie.Min;
         }
-        public float GetMin(StockIndicatorType inidicatorType)
+        public float GetMin(StockIndicatorType indicatorType)
         {
-            FloatSerie floatSerie = this.GetSerie(inidicatorType);
+            FloatSerie floatSerie = this.GetSerie(indicatorType);
             return floatSerie.Min;
         }
         public float GetMin(GraphCurveType curveType)
@@ -6944,9 +6944,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie floatSerie = this.GetSerie(dataType);
             return floatSerie.GetMin(startIndex, endIndex);
         }
-        public float GetMin(int startIndex, int endIndex, StockIndicatorType inidicatorType)
+        public float GetMin(int startIndex, int endIndex, StockIndicatorType indicatorType)
         {
-            FloatSerie floatSerie = this.GetSerie(inidicatorType);
+            FloatSerie floatSerie = this.GetSerie(indicatorType);
             return floatSerie.GetMin(startIndex, endIndex);
         }
         public float GetMin(int startIndex, int endIndex, GraphCurveType curveType)
@@ -6971,9 +6971,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie floatSerie = this.GetSerie(dataType);
             return floatSerie.Max;
         }
-        public float GetMax(StockIndicatorType inidicatorType)
+        public float GetMax(StockIndicatorType indicatorType)
         {
-            FloatSerie floatSerie = this.GetSerie(inidicatorType);
+            FloatSerie floatSerie = this.GetSerie(indicatorType);
             return floatSerie.Max;
         }
         public float GetMax(GraphCurveType curveType)
@@ -7022,9 +7022,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie floatSerie = this.GetSerie(dataType);
             floatSerie.GetMinMax(ref minValue, ref maxValue);
         }
-        public void GetMinMax(StockIndicatorType inidicatorType, ref float minValue, ref float maxValue)
+        public void GetMinMax(StockIndicatorType indicatorType, ref float minValue, ref float maxValue)
         {
-            FloatSerie floatSerie = this.GetSerie(inidicatorType);
+            FloatSerie floatSerie = this.GetSerie(indicatorType);
             floatSerie.GetMinMax(ref minValue, ref maxValue);
         }
         public void GetMinMax(GraphCurveType curveType, ref float minValue, ref float maxValue)
@@ -7048,9 +7048,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie floatSerie = this.GetSerie(dataType);
             floatSerie.GetMinMax(startIndex, endIndex, ref minValue, ref maxValue);
         }
-        public void GetMinMax(int startIndex, int endIndex, StockIndicatorType inidicatorType, ref float minValue, ref float maxValue)
+        public void GetMinMax(int startIndex, int endIndex, StockIndicatorType indicatorType, ref float minValue, ref float maxValue)
         {
-            FloatSerie floatSerie = this.GetSerie(inidicatorType);
+            FloatSerie floatSerie = this.GetSerie(indicatorType);
             floatSerie.GetMinMax(startIndex, endIndex, ref minValue, ref maxValue);
         }
         //public void GetMinMax(int startIndex, int endIndex, GraphCurveType curveType, ref float minValue, ref float maxValue)

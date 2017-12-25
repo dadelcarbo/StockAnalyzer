@@ -400,7 +400,7 @@ namespace StockAnalyzerApp
             this.hideIndicatorsStockMenuItem.CheckOnClick = true;
             this.hideIndicatorsStockMenuItem.Name = "hideIndicatorsStockMenuItem";
             this.hideIndicatorsStockMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.hideIndicatorsStockMenuItem.Text = "Hide inidicators";
+            this.hideIndicatorsStockMenuItem.Text = "Hide indicators";
             this.hideIndicatorsStockMenuItem.Click += new System.EventHandler(this.hideIndicatorsStockMenuItem_Click);
             // 
             // barTypeMenuItem

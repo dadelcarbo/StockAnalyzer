@@ -32,7 +32,7 @@
                 <DataGridTextColumn Header="Entry&#x0a;Date" Binding="{Binding EntryDate, StringFormat=\{0:d\}}"  IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Entry&#x0a;Qty" Binding="{Binding EntryQty}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Entry&#x0a;Value" Binding="{Binding EntryValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
-                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200" IsReadOnly="True">
+                <DataGridTextColumn Header="Entry&#x0a;Comment" Binding="{Binding Comment}" Width="200" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" >
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="TextWrapping" Value="Wrap" />

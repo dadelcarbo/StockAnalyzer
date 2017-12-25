@@ -220,6 +220,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VIXFIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLBB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMONEY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD3.cs" />

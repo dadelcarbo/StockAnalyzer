@@ -362,6 +362,22 @@ namespace StockAnalyzer.StockPortfolio
             State = OrderStatus.Pending;
             this.ExecutedNumber = 0;
         }
+
+        private string Concat(string s1, string s2)
+        {
+            if (s1 == null)
+            {
+                return s2;
+            }
+            if (s2 == null)
+            {
+                return s1;
+            }
+            else
+            {
+                return s1 + Environment.NewLine + s2;
+            }
+        }
         /// <summary>
         /// Return a new order matching new position. THis method should be rewritten using StockPositions.
         /// </summary>
@@ -374,6 +390,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 int newNumber = 0;
                 float newValue = 0;
+                StockOrder newOrder = null;
                 if (this.IsBuyOrder())
                 {
                     if (stockOrder.IsBuyOrder())
@@ -381,7 +398,9 @@ namespace StockAnalyzer.StockPortfolio
                         // Add new order to current position
                         newNumber = this.Number + stockOrder.Number;
                         newValue = (this.Value * this.Number + stockOrder.Value * stockOrder.Number) / (float)newNumber;
-                        return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                        newOrder = CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                        newOrder.Comment = Concat(this.Comment, stockOrder.Comment);
+                        return newOrder;
                     }
                     else // Sell order
                     {
@@ -395,8 +414,9 @@ namespace StockAnalyzer.StockPortfolio
                         //{
                         // Keep same value as initial order when selling it partially.
                         newValue = this.Value;
-                        return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
-                        //}
+                        newOrder = CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                        newOrder.Comment = Concat(this.Comment, stockOrder.Comment);
+                        return newOrder;
                     }
                 }
                 else // Sell order
@@ -412,7 +432,9 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             // Keep same value as initial order when covering it partially.
                             newValue = (stockOrder.Value * stockOrder.Number - this.Value * this.Number) / (float)newNumber;
-                            return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                            newOrder = CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                            newOrder.Comment = Concat(this.Comment, stockOrder.Comment);
+                            return newOrder;
                         }
                     }
                     else // Sell order
@@ -420,7 +442,9 @@ namespace StockAnalyzer.StockPortfolio
                         // TODO test
                         newNumber = this.Number + stockOrder.Number;
                         newValue = (this.Value * this.Number + stockOrder.Value * stockOrder.Number) / (float)newNumber;
-                        return CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                        newOrder = CreateExecutedOrder(this.StockName, this.Type, false, this.CreationDate, stockOrder.ExecutionDate, newNumber, newValue, this.Fee + stockOrder.Fee);
+                        newOrder.Comment = Concat(this.Comment, stockOrder.Comment);
+                        return newOrder;
                     }
                 }
             }
