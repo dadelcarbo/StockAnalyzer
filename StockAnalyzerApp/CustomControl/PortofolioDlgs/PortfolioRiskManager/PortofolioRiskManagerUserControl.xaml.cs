@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,19 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager
     /// </summary>
     public partial class PortofolioRiskManagerUserControl : UserControl
     {
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public PortofolioRiskManagerUserControl()
         {
             InitializeComponent();
+
+            this.PositionDataGrid.MouseDoubleClick += PositionDataGrid_MouseDoubleClick;
+        }
+
+        private void PositionDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var data = PositionDataGrid.CurrentItem as PositionViewModel;
+            if (data == null || !StockDictionary.StockDictionarySingleton.ContainsKey(data.StockName)) return;
+            this.SelectedStockChanged?.Invoke(data.StockName, false);
         }
     }
 }

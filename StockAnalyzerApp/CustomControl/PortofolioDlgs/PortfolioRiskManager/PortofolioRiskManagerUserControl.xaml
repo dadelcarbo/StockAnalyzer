@@ -12,7 +12,6 @@
         <local:PortfolioRiskManagerViewModel x:Key="ViewModel"/>
         <Style x:Key="ReadOnlyCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
             <Setter Property="Background" Value="LightGray"/>
-            <Setter Property="IsEnabled" Value="False"/>
         </Style>
     </UserControl.Resources>
     <StackPanel DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}">
@@ -26,9 +25,9 @@
             <Label Content="   Cash:"/>
             <Label Content="{Binding Path=Portfolio.AvailableLiquitidity}"/>
         </StackPanel>
-        <DataGrid ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader">
+        <DataGrid Name="PositionDataGrid" ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding StockName}" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding StockName}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Entry&#x0a;Date" Binding="{Binding EntryDate, StringFormat=\{0:d\}}"  IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Entry&#x0a;Qty" Binding="{Binding EntryQty}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />
                 <DataGridTextColumn Header="Entry&#x0a;Value" Binding="{Binding EntryValue, StringFormat=\{0:N2\}}" IsReadOnly="True" CellStyle="{Binding Mode=OneWay, Source={StaticResource ReadOnlyCellStyle}}" />

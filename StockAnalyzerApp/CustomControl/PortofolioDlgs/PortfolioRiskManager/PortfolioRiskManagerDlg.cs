@@ -12,9 +12,18 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager
 {
     public partial class PortfolioRiskManagerDlg : Form
     {
+
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+
         public PortfolioRiskManagerDlg()
         {
             InitializeComponent();
+            portofolioRiskManagerUserControl1.SelectedStockChanged += PortofolioRiskManagerUserControl1_SelectedStockChanged;
+        }
+
+        private void PortofolioRiskManagerUserControl1_SelectedStockChanged(string stockName, bool activateMainWindow)
+        {
+            this.SelectedStockChanged?.Invoke(stockName, activateMainWindow);
         }
     }
 }

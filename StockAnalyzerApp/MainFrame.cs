@@ -54,8 +54,8 @@ namespace StockAnalyzerApp
 {
     public partial class StockAnalyzerForm : Form
     {
-        public delegate void SelectedStockChangedEventHandler(string stockName, bool ativateMainWindow);
-        public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockSerie.StockBarDuration barDuration, bool ativateMainWindow);
+        public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
+        public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockSerie.StockBarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
 
@@ -67,9 +67,9 @@ namespace StockAnalyzerApp
 
         public delegate void NotifyStrategyChangedEventHandler(string newStrategy);
 
-        public delegate void SelectedPortofolioChangedEventHandler(StockPortofolio portofolio, bool ativateMainWindow);
+        public delegate void SelectedPortofolioChangedEventHandler(StockPortofolio portofolio, bool activateMainWindow);
 
-        public delegate void SelectedPortofolioNameChangedEventHandler(string portofolioName, bool ativateMainWindow);
+        public delegate void SelectedPortofolioNameChangedEventHandler(string portofolioName, bool activateMainWindow);
 
         public delegate void SimulationCompletedEventHandler(SimulationParameterControl simulationParameterControl);
 
@@ -5984,16 +5984,23 @@ border:1px solid black;
             mtg.ShowDialog();
         }
 
-
+        private PortfolioRiskManagerDlg portfolioRiskManagerDlg = null;
         private void portfolioRiskManager_Click(object sender, EventArgs e)
         {
+            if (portfolioRiskManagerDlg!= null)
+            {
+                portfolioRiskManagerDlg.Activate();
+                return;
+            }
             try
             {
                 this.Cursor = Cursors.WaitCursor;
-                PortfolioRiskManagerDlg dlg = new PortfolioRiskManagerDlg();
+                portfolioRiskManagerDlg = new PortfolioRiskManagerDlg();
+                portfolioRiskManagerDlg.FormClosed += PortfolioRiskManagerDlg_FormClosed;
+                portfolioRiskManagerDlg.SelectedStockChanged += OnSelectedStockChanged;
 
                 this.Cursor = Cursors.Arrow;
-                dlg.ShowDialog(this);
+                portfolioRiskManagerDlg.Show(this);
             }
             catch(Exception ex)
             {
@@ -6005,6 +6012,11 @@ border:1px solid black;
             }
         }
 
+        private void PortfolioRiskManagerDlg_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.portfolioRiskManagerDlg.SelectedStockChanged -= OnSelectedStockChanged;
+            this.portfolioRiskManagerDlg = null;
+        }
 
         private StockRiskCalculatorDlg riskCalculatorDlg = null;
 
