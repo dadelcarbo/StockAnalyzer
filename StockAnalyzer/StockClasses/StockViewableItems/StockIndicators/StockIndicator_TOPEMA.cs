@@ -28,7 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 0.0f,1, 1 }; }
+            get { return new Object[] { 0.0f, 1, 1 }; }
         }
 
         public override ParamRange[] ParameterRanges
@@ -156,23 +156,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         private static string[] eventNames = new string[]
       {
          "SupportDetected", "ResistanceDetected", // 0,1
-         "Pullback", "EndOfTrend", // 2,3
-         "HigherLow", "LowerHigh", // 4,5
-         "ResistanceBroken", "SupportBroken", // 6,7
-         "Bullish", "Bearish" // 8,9
+         "Pullback", "EndOfTrend",                // 2,3
+         "HigherLow", "LowerHigh",                // 4,5
+         "ResistanceBroken", "SupportBroken",     // 6,7
+         "Bullish", "Bearish"                     // 8,9
       };
 
-        //static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
 
         private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
-        //static readonly bool[] isEvent = new bool[] { false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
