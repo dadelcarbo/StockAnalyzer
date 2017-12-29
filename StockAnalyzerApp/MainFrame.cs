@@ -351,7 +351,7 @@ namespace StockAnalyzerApp
             //}
 
 #if DEBUG
-            bool fastStart = true;
+            bool fastStart = false;
 #else
             bool fastStart = false;
 #endif
@@ -384,7 +384,7 @@ namespace StockAnalyzerApp
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
 
-                GeneratePosition(new List<StockSerie.Groups> { StockSerie.Groups.CAC40 });
+                //GeneratePosition(new List<StockSerie.Groups> { StockSerie.Groups.CAC40 });
 
                 #region Test Automatic Indices
 

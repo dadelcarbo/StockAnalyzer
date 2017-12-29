@@ -212,6 +212,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RISKSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VARCUMUL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOPSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOP.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RISKSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLBB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_WEDGE.cs" />

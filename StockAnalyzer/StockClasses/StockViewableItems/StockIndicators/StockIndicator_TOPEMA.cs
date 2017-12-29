@@ -68,7 +68,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             stockSerie.CalculateTOPEMA(period, initGap, out sarSupport, out sarResistance, inputSmooting);
 
             this.Series[0] = sarSupport;
+            this.Series[0].Name = this.SerieNames[0];
             this.Series[1] = sarResistance;
+            this.Series[1].Name = this.SerieNames[1];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
