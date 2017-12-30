@@ -6,11 +6,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
-using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class BarChartIntradayDataProvider : StockDataProviderBase, IConfigDialog
+    public class BarChartIntradayDataProvider2 : StockDataProviderBase, IConfigDialog
     {
         static private string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\BarChartIntraday";
         static private string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\BarChartIntraday";
@@ -139,19 +138,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static string BARCHART_API_KEY = "ebc71dae1c7ca3157e243600383649e7";
 
-        public string FormatIntradayURL(string symbol, DateTime startDate)
-        {
-            int interval = 5;
-            long from = (long)((startDate - refDate).TotalSeconds);
-            long to = (long)((DateTime.Now - refDate).TotalSeconds);
-
-            string code = mapping[symbol];
-
-            return $"https://tvc4.forexpros.com/53292ef9724e99752ee3d551f552400d/1514587812/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
-        }
-        
-
-        public static string FormatIntradayURL2(string symbol, DateTime startDate)
+        public static string FormatIntradayURL(string symbol, DateTime startDate)
         {
             //period = "minutes";
             string period = "minutes";
@@ -198,15 +185,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
                     string url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-60));
-
+                    
                     wc.DownloadFile(url, fileName);
                     stockSerie.IsInitialised = false;
                 }
             }
             return true;
         }
-
-        private static SortedDictionary<string, string> mapping = new SortedDictionary<string, string>();
 
         private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
         {
@@ -223,17 +208,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             string[] row = line.Split(',');
 
-                            string shortName = row[1];
-                            StockSerie stockSerie = new StockSerie(row[2], shortName, (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.BarChartIntraday);
+                            string shortName = row[0].Contains(':') ? row[0].Split(':')[1] : row[0];
+                            StockSerie stockSerie = new StockSerie(row[1], shortName, (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.BarChart);
 
                             if (!stockDictionary.ContainsKey(row[1]))
                             {
-                                stockDictionary.Add(row[2], stockSerie);
-                                mapping.Add(shortName, row[0]);
+                                stockDictionary.Add(row[1], stockSerie);
                             }
                             else
                             {
-                                StockLog.Write("BarChart Entry: " + row[2] + " already in stockDictionary");
+                                StockLog.Write("BarChart Entry: " + row[1] + " already in stockDictionary");
                             }
                             if (download && this.needDownload)
                             {
@@ -244,8 +228,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-
-        static DateTime refDate = new DateTime(1970, 01, 01);
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             bool res = false;
@@ -253,28 +235,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 using (StreamReader sr = new StreamReader(fileName))
                 {
-                    string json = sr.ReadToEnd();
-
-                    var barchartJson = BarChartJSon.FromJson(json);
-                    var ticksPerSeconds = TimeSpan.FromSeconds(1).Ticks;
-
-
-                    for (int i = 0; i < barchartJson.C.Length; i++)
+                    while (!sr.EndOfStream)
                     {
-                        DateTime openDate = refDate.AddSeconds(barchartJson.T[i]);
+                        string line = sr.ReadLine();
+                        string[] row = line.Split(',');
+
+                        DateTime openDate = DateTime.Parse(row[0]);
+                        float value = float.Parse(row[1]);
 
                         if (!stockSerie.ContainsKey(openDate))
                         {
                             StockDailyValue dailyValue = new StockDailyValue(stockSerie.StockName,
-                                   barchartJson.O[i],
-                                   barchartJson.H[i],
-                                   barchartJson.L[i],
-                                   barchartJson.C[i],
+                                   value,
+                                   value,
+                                   value,
+                                   value,
                                    0,
                                    openDate);
                             stockSerie.Add(dailyValue.DATE, dailyValue);
                         }
                     }
+
                     stockSerie.ClearBarDurationCache();
 
                     res = true;
