@@ -73,7 +73,6 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
-    <Compile Include="StockClasses\StockDataProviders\BarChartIntradayDataProvider2.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\FINRADataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />

@@ -149,24 +149,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             return $"https://tvc4.forexpros.com/53292ef9724e99752ee3d551f552400d/1514587812/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
         }
-        
 
-        public static string FormatIntradayURL2(string symbol, DateTime startDate)
-        {
-            //period = "minutes";
-            string period = "minutes";
-            int interval = 1;
-            string start = startDate.ToString("yyyyMMdd");
-
-            string url = "http://marketdata.websol.barchart.com/getHistory.csv?key=$KEY&symbol=$NAME&type=$PERIOD&interval=$INTERVAL&startDate=$START";
-            url = url.Replace("$KEY", BARCHART_API_KEY);
-            url = url.Replace("$NAME", symbol);
-            url = url.Replace("$PERIOD", period);
-            url = url.Replace("$START", start);
-            url = url.Replace("$INTERVAL", interval.ToString());
-
-            return url;
-        }
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
         {
             string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
@@ -197,7 +180,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                    string url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-60));
+                    string url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-30));
 
                     wc.DownloadFile(url, fileName);
                     stockSerie.IsInitialised = false;
@@ -261,8 +244,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     for (int i = 0; i < barchartJson.C.Length; i++)
                     {
-                        DateTime openDate = refDate.AddSeconds(barchartJson.T[i]);
 
+                        if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
+                            continue;
+
+                        DateTime openDate = refDate.AddSeconds(barchartJson.T[i]);
                         if (!stockSerie.ContainsKey(openDate))
                         {
                             StockDailyValue dailyValue = new StockDailyValue(stockSerie.StockName,
@@ -272,6 +258,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                    barchartJson.C[i],
                                    0,
                                    openDate);
+
                             stockSerie.Add(dailyValue.DATE, dailyValue);
                         }
                     }

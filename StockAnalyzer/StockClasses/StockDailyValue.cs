@@ -254,14 +254,14 @@ namespace StockAnalyzer.StockClasses
          {
             this.OPEN = open;
          }
-         this.HIGH = Math.Max(Math.Max(Math.Max(high, open), close), low);
+         this.HIGH = Math.Max(Math.Max(Math.Max(high, this.OPEN), close), low);
          if (low == 0.0f)
          {
             this.LOW = Math.Min(this.OPEN, close);
          }
          else
          {
-            this.LOW = Math.Min(Math.Min(Math.Min(low, this.OPEN), close), high);
+            this.LOW = Math.Min(Math.Min(Math.Min(low, this.OPEN), close), this.HIGH);
          }
          this.CLOSE = close;
          this.VOLUME = volume;
@@ -279,7 +279,7 @@ namespace StockAnalyzer.StockClasses
          {
             this.OPEN = open;
          }
-         this.HIGH = Math.Max(Math.Max(high, open), close);
+         this.HIGH = Math.Max(Math.Max(high, this.OPEN), close);
          if (low == 0.0f)
          {
             this.LOW = Math.Min(this.OPEN, close);
