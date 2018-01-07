@@ -638,6 +638,7 @@ namespace StockAnalyzerApp
             this.showDrawingsMenuItem.Checked = Settings.Default.ShowDrawings;
             this.showEventMarqueeMenuItem.Checked = Settings.Default.ShowEventMarquee;
             this.showIndicatorDivMenuItem.Checked = Settings.Default.ShowIndicatorDiv;
+            this.showIndicatorTextMenuItem.Checked = Settings.Default.ShowIndicatorText;
 
             this.StockSerieChanged += new OnStockSerieChangedHandler(StockAnalyzerForm_StockSerieChanged);
             this.ThemeChanged += new OnThemeChangedHandler(StockAnalyzerForm_ThemeChanged);
@@ -804,7 +805,8 @@ namespace StockAnalyzerApp
             {
                 if (this.currentStockSerie != null &&
                     (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY ||
-                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
+                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO ||
+                     this.currentStockSerie.StockGroup == StockSerie.Groups.FUTURE))
                 {
                     this.Cursor = Cursors.WaitCursor;
 
@@ -841,6 +843,9 @@ namespace StockAnalyzerApp
         private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
         private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
 
+        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "TOPEMA(0,80,1)", "ResistanceBroken");
+        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "TOPEMA(0,80,1)", "SupportBroken");
+
         //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
         //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
         //private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
@@ -873,16 +878,18 @@ namespace StockAnalyzerApp
             busy = true;
 
             alertDefs.Clear();
-            alertDefs.Add(rsiTrailDown);
-            alertDefs.Add(rsiTrailUp);
-            alertDefs.Add(crossedUp);
-            alertDefs.Add(crossedDown);
-            alertDefs.Add(stokUp);
-            alertDefs.Add(stokDown);
-            alertDefs.Add(flagUp);
-            alertDefs.Add(flagDown);
-            alertDefs.Add(resistanceBroken);
-            alertDefs.Add(supportBroken);
+            //alertDefs.Add(rsiTrailDown);
+            //alertDefs.Add(rsiTrailUp);
+            //alertDefs.Add(crossedUp);
+            //alertDefs.Add(crossedDown);
+            //alertDefs.Add(stokUp);
+            //alertDefs.Add(stokDown);
+            //alertDefs.Add(flagUp);
+            //alertDefs.Add(flagDown);
+            //alertDefs.Add(resistanceBroken);
+            //alertDefs.Add(supportBroken);
+            alertDefs.Add(resistanceBroken2);
+            alertDefs.Add(supportBroken2);
             //alertDefs.Add(barAbove);
             //alertDefs.Add(barBelow);
             //alertDefs.Add(trailHL);

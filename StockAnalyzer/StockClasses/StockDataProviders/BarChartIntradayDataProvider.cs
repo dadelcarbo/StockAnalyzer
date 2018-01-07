@@ -228,7 +228,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01);
+        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow) ;
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             bool res = false;

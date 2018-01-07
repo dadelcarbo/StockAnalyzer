@@ -145,19 +145,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         }
                     }
                 }
-                this.Events[2][i] = bullish;
-                this.Events[3][i] = bearish;
+                this.Events[8][i] = bullish;
+                this.Events[9][i] = bearish;
             }
         }
 
         static string[] eventNames = new string[] {
-            "SupportBroken", "ResistanceBroken",
-            "Bullish", "Bearish" };
+            "SupportBroken", "ResistanceBroken",        // 0,1
+            "Pullback", "EndOfTrend",                   // 2,3
+            "HigherLow", "LowerHigh",                   // 4,5
+            "ResistanceBroken", "SupportBroken",        // 6,7
+            "Bullish", "Bearish"                        // 8,9
+             };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, false, false };
+        static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

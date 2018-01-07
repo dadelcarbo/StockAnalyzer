@@ -15,13 +15,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        static public
-                   StockSerie.StockBarDuration[] cacheDurations = new StockSerie.StockBarDuration[]
+        static public StockSerie.StockBarDuration[] cacheDurations = new StockSerie.StockBarDuration[]
                   {
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_3D,
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_6D,
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_3,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_6,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_9,
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_27
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;

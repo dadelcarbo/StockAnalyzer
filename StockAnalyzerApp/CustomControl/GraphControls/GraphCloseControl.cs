@@ -312,14 +312,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             srPoint = GetScreenPointFromValuePoint(index, sr);
                                             aGraphic.FillEllipse(srBrush, srPoint.X - pointSize, srPoint.Y - pointSize,
                                                2 * pointSize, 2 * pointSize);
-                                            const int textOffset = 4;
 
-                                            float yPos = isSupport
-                                               ? srPoint.Y + pointSize
-                                               : srPoint.Y - 2 * pointSize - 12;
 
                                             if (this.ShowIndicatorText)
                                             {
+                                                const int textOffset = 4;
+
+                                                float yPos = isSupport
+                                                   ? srPoint.Y + pointSize
+                                                   : srPoint.Y - 2 * pointSize - 12;
+
                                                 // Draw PB and EndOfTrend text
                                                 if (stockIndicator.Events[2][index])
                                                 {

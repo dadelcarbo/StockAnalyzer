@@ -15,7 +15,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                    new Pen(Color.Green), new Pen(Color.Red), //"Pullback", "EndOfTrend",                // 2,3
                    new Pen(Color.Green), new Pen(Color.Red), //"HigherLow", "LowerHigh",                // 4,5
                    new Pen(Color.Green), new Pen(Color.Red), //"ResistanceBroken", "SupportBroken",     // 6,7
-                   new Pen(Color.Green), new Pen(Color.Red)  //"Bullish", "Bearish"                     // 8,9
+                   new Pen(Color.Green), new Pen(Color.Red),  //"Bullish", "Bearish"                     // 8,9
+                   new Pen(Color.Green), new Pen(Color.Red)  //"FirstResistanceBroken", "FirstSupportBroken"      // 10,11
                     };
                 }
                 return seriePens;

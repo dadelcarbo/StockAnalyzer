@@ -141,6 +141,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 else
                 {
                     isBullish = !float.IsNaN(sarSupport[i]) && float.IsNaN(sarResistance[i]);
+                    this.Events[10][i] = isBullish; // FirstResistanceBroken
                 }
                 if (isBearish)
                 {
@@ -149,6 +150,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 else
                 {
                     isBearish = float.IsNaN(sarSupport[i]) && !float.IsNaN(sarResistance[i]);
+                    this.Events[11][i] = isBearish; // FirstSupportBroken
                 }
 
                 this.Events[8][i] = isBullish;
@@ -157,16 +159,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         private static string[] eventNames = new string[]
       {
-         "SupportDetected", "ResistanceDetected", // 0,1
-         "Pullback", "EndOfTrend",                // 2,3
-         "HigherLow", "LowerHigh",                // 4,5
-         "ResistanceBroken", "SupportBroken",     // 6,7
-         "Bullish", "Bearish"                     // 8,9
+         "SupportDetected", "ResistanceDetected",           // 0,1
+         "Pullback", "EndOfTrend",                          // 2,3
+         "HigherLow", "LowerHigh",                          // 4,5
+         "ResistanceBroken", "SupportBroken",               // 6,7
+         "Bullish", "Bearish",                              // 8,9
+         "FirstResistanceBroken", "FirstSupportBroken"      // 10,11
       };
 
         public override string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false, true, true };
         public override bool[] IsEvent => isEvent;
     }
 }
