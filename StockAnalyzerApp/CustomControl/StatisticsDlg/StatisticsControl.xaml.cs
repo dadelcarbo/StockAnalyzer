@@ -20,7 +20,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
     /// </summary>
     public partial class StatisticsControl : UserControl
     {
-        StatisticsViewModel viewModel = new StatisticsViewModel("TRAILHL(9)", "BrokenUp", 6);
+        StatisticsViewModel viewModel = new StatisticsViewModel("TOPEMA(0,80,1)", "Bullish", 6);
 
         public StatisticsControl()
         {

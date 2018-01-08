@@ -18,12 +18,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         #region IRange Implementation
         public float Max
         {
-            get { return 1.0f; }
+            get { return 1.05f; }
         }
 
         public float Min
         {
-            get { return -1.0f; }
+            get { return -1.05f; }
         }
         #endregion
 

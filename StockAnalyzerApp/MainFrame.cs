@@ -378,7 +378,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Generate Vix Premium
-                StockSplashScreen.ProgressText = "Generating VIX Premium data...";
+                //StockSplashScreen.ProgressText = "Generating VIX Premium data...";
                 //GenerateVixPremium();
 
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
@@ -600,9 +600,7 @@ namespace StockAnalyzerApp
             }
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
-#if !DEBUG
             ReadPortofolios();
-#endif
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";

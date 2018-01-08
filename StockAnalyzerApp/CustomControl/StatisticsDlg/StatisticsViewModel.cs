@@ -118,15 +118,15 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
         public StatisticsViewModel(string indicator, string eventName, int lookbackPeriod)
         {
             lookback = lookbackPeriod;
-            this.IndicatorType = "TrailStop";
+            this.IndicatorType = "PaintBar";
             Indicator = indicator;
             this.Event = eventName;
             this.Results = new ObservableCollection<StatisticsResult>();
             this.Summary = new ObservableCollection<StatisticsResult>();
             this.BarDuration = StockSerie.StockBarDuration.Daily;
             this.Group = StockSerie.Groups.CAC40;
-            this.S1Percent = 0.05f;
-            this.R1Percent = 0.05f;
+            this.S1Percent = 0.15f;
+            this.R1Percent = 0.15f;
         }
         public bool CalculateFixedStopProfit(string name)
         {
@@ -172,7 +172,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                 int j;
                 for (j = i + 1; inPosition && j < stockSerie.Count; j++)
                 {
-                    if (lowSerie[j] <= S1) // Stop loass reached, sell...
+                    if (lowSerie[j] <= S1) // Stop loss reached, sell...
                     {
                         S1Count++;
                         inPosition = false;
