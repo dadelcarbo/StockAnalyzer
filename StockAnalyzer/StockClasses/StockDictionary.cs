@@ -1176,7 +1176,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateTOPSARSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateTOPEMASerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))
@@ -1262,14 +1262,15 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (index != -1)
                     {
-                        IStockIndicator trailStop = serie.GetIndicator("TOPSAR(0,0.001,0.2,3)");
-                        if (trailStop != null && trailStop.Series[0].Count > 0)
+                        serie.BarDuration = StockSerie.StockBarDuration.Daily_EMA20;
+                        IStockIndicator trailStop = serie.GetIndicator("TOPEMA(0,30,1)");
+                        if (trailStop != null && trailStop.Events[0].Count > 0)
                         {
-                            if (float.IsNaN(trailStop.Series[1][index]))
+                            if (trailStop.Events[8][index])
                             {
                                 val++;
                             }
-                            if (float.IsNaN(trailStop.Series[0][index]))
+                            else
                             {
                                 val--;
                             }
@@ -1280,7 +1281,6 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    //val = (val - 0.5f) * 2.0f;
                     breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
                 }
             }
