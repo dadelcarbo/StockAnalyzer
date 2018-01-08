@@ -773,7 +773,6 @@ namespace StockAnalyzerApp
                 // 
                 System.Windows.Forms.ToolStripItem[] watchListMenuItems =
                    new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
-                ToolStripMenuItem watchListSubMenuItem;
                 System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems =
                    new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
                 ToolStripMenuItem addToWatchListSubMenuItem;
@@ -829,22 +828,25 @@ namespace StockAnalyzerApp
                 busy = false;
             }
         }
-        private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenUp");
-        private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenDown");
-        private StockAlertDef crossedUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BullishCrossing");
-        private StockAlertDef crossedDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BearishCrossing");
+        //private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenUp");
+        //private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenDown");
+        //private StockAlertDef crossedUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BullishCrossing");
+        //private StockAlertDef crossedDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BearishCrossing");
 
-        private StockAlertDef stokUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected");
-        private StockAlertDef stokDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected");
+        //private StockAlertDef stokUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected");
+        //private StockAlertDef stokDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected");
 
-        private StockAlertDef flagUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenUp");
-        private StockAlertDef flagDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenDown");
+        //private StockAlertDef flagUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenUp");
+        //private StockAlertDef flagDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenDown");
 
-        private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
-        private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
+        //private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
+        //private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
 
-        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "TOPEMA(0,80,1)", "ResistanceBroken");
-        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "TOPEMA(0,80,1)", "SupportBroken");
+        private StockAlertDef resistanceBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstResistanceBroken");
+        private StockAlertDef supportBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstSupportBroken");
+
+        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstResistanceBroken");
+        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstSupportBroken");
 
         //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
         //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
@@ -888,6 +890,8 @@ namespace StockAnalyzerApp
             //alertDefs.Add(flagDown);
             //alertDefs.Add(resistanceBroken);
             //alertDefs.Add(supportBroken);
+            alertDefs.Add(resistanceBroken1);
+            alertDefs.Add(supportBroken1);
             alertDefs.Add(resistanceBroken2);
             alertDefs.Add(supportBroken2);
             //alertDefs.Add(barAbove);

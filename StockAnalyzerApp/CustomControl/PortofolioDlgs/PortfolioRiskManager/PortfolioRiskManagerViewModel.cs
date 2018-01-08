@@ -53,7 +53,6 @@ namespace StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager
             Positions = new ObservableCollection<PositionViewModel>();
 
             var nbActiveStocks = this.portfolio.OrderList.GetNbActiveStock();
-            StockDailyValue beforeLastStockValue;
             var stockDictionary = StockDictionary.StockDictionarySingleton;
             foreach (string stockName in nbActiveStocks.Keys)
             {

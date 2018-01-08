@@ -1755,12 +1755,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             valuePoint2D.Y = stockOrder.UnitCost;
             return this.GetScreenPointFromValuePoint(valuePoint2D);
         }
-        public int IndexOf(DateTime date)
-        {
-            if (date < dateSerie[0]) { return -1; }
-            if (date > dateSerie[dateSerie.Length - 1]) { return -1; }
-            return IndexOfRec(date, 0, dateSerie.Length - 1);
-        }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
             if (startIndex < endIndex)
