@@ -49,6 +49,7 @@ using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses.StockStatistic;
 using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
+using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzerApp
 {
@@ -900,6 +901,8 @@ namespace StockAnalyzerApp
 
             try
             {
+                string alertString = string.Empty;
+
                 var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
                 if (AlertDetectionStarted != null)
                 {
@@ -958,6 +961,7 @@ namespace StockAnalyzerApp
 
                                     if (stockAlertLog.Alerts.All(a => a != stockAlert))
                                     {
+                                        alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
                                             this.Invoke(new Action(() => stockAlertLog.Alerts.Insert(0, stockAlert)));
@@ -974,6 +978,11 @@ namespace StockAnalyzerApp
                     stockSerie.BarDuration = previouBarDuration;
                 }
                 stockAlertLog.Save();
+
+                if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
+                {
+                    StockMail.SendEmail("Ultimate Chartist - Intraday Alert", alertString);
+                }
 
                 if (this.AlertDetected != null)
                 {
@@ -5253,21 +5262,21 @@ border:1px solid black;
 
             #region Generate report from Events
 
-            List<StockAlertDef> alerts = new List<StockAlertDef>();
+            //List<StockAlertDef> alerts = new List<StockAlertDef>();
 
-            alerts.Clear();
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
+            //alerts.Clear();
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-            alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
+            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
 
-            foreach (StockAlertDef alert in alerts)
+            foreach (StockAlertDef alert in alertDefs)
             {
                 string alertMsg = string.Empty;
                 commentTitle = "\r\n" + alert.ToString() + "\r\n";
