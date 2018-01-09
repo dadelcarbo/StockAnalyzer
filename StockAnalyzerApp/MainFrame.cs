@@ -4026,6 +4026,9 @@ namespace StockAnalyzerApp
                     case StockSerie.Groups.TURBO:
                         this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
                         break;
+                    case StockSerie.Groups.FUTURE:
+                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
+                        break;
                     case StockSerie.Groups.INTRADAY:
                         this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
                         break;
