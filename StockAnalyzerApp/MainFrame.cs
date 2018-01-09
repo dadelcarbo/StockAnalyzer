@@ -694,7 +694,7 @@ namespace StockAnalyzerApp
             // Checks for alert every x minutes.
             if (Settings.Default.RaiseAlerts)
             {
-                string alertFileName = Settings.Default.RootFolder + @"\Alerts.xml";
+                string alertFileName = Settings.Default.RootFolder + @"\AlertIntraday.xml";
                 // Parse alert lists
                 if (System.IO.File.Exists(alertFileName))
                 {
@@ -5029,11 +5029,11 @@ border:1px solid black;
             StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[]
          {
             StockSerie.StockBarDuration.Daily,
-            StockSerie.StockBarDuration.Daily_EMA3,
+            StockSerie.StockBarDuration.Daily_EMA20,
             StockSerie.StockBarDuration.TLB,
-            StockSerie.StockBarDuration.TLB_EMA3,
+            StockSerie.StockBarDuration.TLB_EMA20,
             StockSerie.StockBarDuration.TLB_3D,
-            StockSerie.StockBarDuration.TLB_3D_EMA3
+            StockSerie.StockBarDuration.TLB_3D_EMA20
          };
 
             // Generate header
@@ -5262,7 +5262,26 @@ border:1px solid black;
 
             #region Generate report from Events
 
-            //List<StockAlertDef> alerts = new List<StockAlertDef>();
+            List<StockAlertDef> reportAlerts = null;
+            string alertFileName = Settings.Default.RootFolder + @"\AlertReport.xml";
+            // Parse alert lists
+            if (System.IO.File.Exists(alertFileName))
+            {
+                using (var fs = new FileStream(alertFileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                    {
+                        IgnoreWhitespace = true
+                    };
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                    reportAlerts = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                }
+            }
+            else
+            {
+                reportAlerts = new List<StockAlertDef>();
+            }
 
             //alerts.Clear();
             //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
@@ -5276,30 +5295,17 @@ border:1px solid black;
             //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
 
-            foreach (StockAlertDef alert in alertDefs)
+            foreach (StockAlertDef alert in reportAlerts)
             {
                 string alertMsg = string.Empty;
                 commentTitle = "\r\n" + alert.ToString() + "\r\n";
 
-                // Build report from html template
-                //mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                //   .Replace(commentTemplate, commentBody)
-                //   //.Replace(imageFileCID, cid);
-                //mailReport += eventTypeString;
-                //.Replace(imageFileLink,
-                //   fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
-                //      "./").Replace(@"\", "/"));
-                //htmlReport += alertMsg;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
                 {
-                    //this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
-                    //this.CurrentTheme = "Empty";
-                    //this.CurrentStockSerie = stockSerie;
-
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 30000) continue;
+                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 50000) continue;
 
                     if (stockSerie.MatchEvent(alert))
                     {
@@ -5314,54 +5320,12 @@ border:1px solid black;
                    .Replace(commentTemplate, alertMsg);
             }
 
-            //this.snapshotToolStripButton_Click(null, null);
-            //Image bitmap = Clipboard.GetImage();
-
-            //string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-            //if (!System.IO.File.Exists(fileName))
-            //{
-            //   bitmap.Save(fileName, imageFormat);
-            //   fileNameList.Add(fileName);
-
-            //   // Get image CID
-            //   string cid = "Image_" + imageCount++;
-            //   cidList.Add(cid);
-
-            //   commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " + " - " +
-            //                  stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
-
-            //   // Build report from html template
-            //   mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-            //      .Replace(commentTemplate, commentBody)
-            //      .Replace(imageFileCID, cid);
-            //   mailReport += eventTypeString;
-            //   htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-            //      .Replace(commentTemplate, commentBody)
-            //      .Replace(imageFileLink,
-            //         fileName.Replace(StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\",
-            //            "./").Replace(@"\", "/"));
-            //   htmlReport += eventTypeString;
-            //}
-
             #endregion
-
-
-            //AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailReport, null, "text/html");
-            //int index = 0;
-            //foreach (string cid in cidList)
-            //{
-            //    LinkedResource imagelink = new LinkedResource(fileNameList[index++], "image/" + imageFormat.ToString());
-            //    imagelink.ContentId = cid;
-            //    imagelink.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
-            //    htmlView.LinkedResources.Add(imagelink);
-            //}
-            //email.AlternateViews.Add(htmlView);
 
             using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report.html"))
             {
                 sw.Write(htmlReport);
             }
-            // ftp.uploadDirectory("www/CommentReport", Settings.Default.RootFolder + @"\CommentReport");
 
             //           Process.Start("http://www.ultimatechartist.com/CommentReport/report.html");
             Process.Start(Settings.Default.RootFolder + @"\CommentReport\report.html");
