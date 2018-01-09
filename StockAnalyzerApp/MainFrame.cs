@@ -840,11 +840,11 @@ namespace StockAnalyzerApp
         //private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
         //private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
 
-        private StockAlertDef resistanceBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstResistanceBroken");
-        private StockAlertDef supportBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstSupportBroken");
+        private StockAlertDef resistanceBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstResistanceBroken");
+        private StockAlertDef supportBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstSupportBroken");
 
-        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstResistanceBroken");
-        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,80,1)", "FirstSupportBroken");
+        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstResistanceBroken");
+        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstSupportBroken");
 
         //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
         //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
