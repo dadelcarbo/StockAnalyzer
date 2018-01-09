@@ -693,6 +693,26 @@ namespace StockAnalyzerApp
             // Checks for alert every x minutes.
             if (Settings.Default.RaiseAlerts)
             {
+                string alertFileName = Settings.Default.RootFolder + @"\Alerts.xml";
+                // Parse alert lists
+                if (System.IO.File.Exists(alertFileName))
+                {
+                    using (var fs = new FileStream(alertFileName, FileMode.Open))
+                    {
+                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                        {
+                            IgnoreWhitespace = true
+                        };
+                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                        var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                        alertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                    }
+                }
+                else
+                {
+                    alertDefs = new List<StockAlertDef>();
+                }
+
                 int minutes = Settings.Default.AlertsFrequency;
                 alertTimer = new System.Windows.Forms.Timer(new Container());
                 alertTimer.Tick += new EventHandler(alertTimer_Tick);
@@ -860,6 +880,7 @@ namespace StockAnalyzerApp
             if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
                 DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
+            if (this.alertDefs == null || this.alertDefs.Count == 0) return;
 
             Thread alertThread = new Thread(GenerateAlert);
             alertThread.Name = "alertTimer";
@@ -877,30 +898,8 @@ namespace StockAnalyzerApp
             if (busy) return;
             busy = true;
 
-            alertDefs.Clear();
-            //alertDefs.Add(rsiTrailDown);
-            //alertDefs.Add(rsiTrailUp);
-            //alertDefs.Add(crossedUp);
-            //alertDefs.Add(crossedDown);
-            //alertDefs.Add(stokUp);
-            //alertDefs.Add(stokDown);
-            //alertDefs.Add(flagUp);
-            //alertDefs.Add(flagDown);
-            //alertDefs.Add(resistanceBroken);
-            //alertDefs.Add(supportBroken);
-            alertDefs.Add(resistanceBroken1);
-            alertDefs.Add(supportBroken1);
-            alertDefs.Add(resistanceBroken2);
-            alertDefs.Add(supportBroken2);
-            //alertDefs.Add(barAbove);
-            //alertDefs.Add(barBelow);
-            //alertDefs.Add(trailHL);
-            //alertDefs.Add(ResistanceBroken);
-            //alertDefs.Add(trailHLSR);
-
             try
             {
-
                 var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
                 if (AlertDetectionStarted != null)
                 {
@@ -942,7 +941,7 @@ namespace StockAnalyzerApp
 
                     lock (alertDefs)
                     {
-                        foreach (StockAlertDef alertDef in alertDefs)
+                        foreach (var alertDef in alertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -957,7 +956,7 @@ namespace StockAnalyzerApp
                                         dailyValue.CLOSE,
                                         stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
 
-                                    if (!stockAlertLog.Alerts.Any(a => a == stockAlert))
+                                    if (stockAlertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         if (this.InvokeRequired)
                                         {
@@ -5999,7 +5998,7 @@ border:1px solid black;
         private PortfolioRiskManagerDlg portfolioRiskManagerDlg = null;
         private void portfolioRiskManager_Click(object sender, EventArgs e)
         {
-            if (portfolioRiskManagerDlg!= null)
+            if (portfolioRiskManagerDlg != null)
             {
                 portfolioRiskManagerDlg.Activate();
                 return;
@@ -6014,7 +6013,7 @@ border:1px solid black;
                 this.Cursor = Cursors.Arrow;
                 portfolioRiskManagerDlg.Show(this);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
