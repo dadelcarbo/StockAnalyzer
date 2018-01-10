@@ -4856,14 +4856,14 @@ namespace StockAnalyzer.StockClasses
             emaSerieSupport[0] = emaSerieSupport[1] = float.NaN;
 
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
 
             for (int i = 2; i < this.Values.Count(); i++)
             {
                 if (isUpTrend)
                 {
-                    float nextEMA = previousEMAUp + alpha * (closeSerie[i] - previousEMAUp);
+                    float nextEMA = Math.Max(previousEMAUp, previousEMAUp + alpha * (lowSerie[i] - previousEMAUp));
                     if (nextEMA >= closeSerie[i]) // UpTrendBroken
                     {
                         isUpTrend = false;
@@ -4889,7 +4889,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 if (isDownTrend)
                 {
-                    float nextEMA = previousEMADown + alpha * (closeSerie[i] - previousEMADown);
+                    float nextEMA = Math.Min(previousEMADown, previousEMADown + alpha * (highSerie[i] - previousEMADown));
                     if (nextEMA <= closeSerie[i]) // DownTrendBroken
                     {
                         isDownTrend = false;

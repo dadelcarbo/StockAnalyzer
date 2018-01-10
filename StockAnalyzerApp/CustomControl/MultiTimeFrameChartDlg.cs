@@ -2,13 +2,8 @@
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl
@@ -18,9 +13,9 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
-            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Bar_6);
-            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.Bar_3);
-            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily);
+            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Weekly_EMA6);
+            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.TLB_EMA6);
+            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily_EMA6);
             InitializeComponent();
 
             this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
