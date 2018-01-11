@@ -16,13 +16,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
       private StockAlertLog alertLog;
       private AlertControl alertControl;
 
-      public AlertDlg()
+      public AlertDlg(StockAlertLog log)
       {
          InitializeComponent();
 
          this.alertControl = this.elementHost1.Child as AlertControl;
 
-         alertLog = StockAlertLog.Instance;
+         alertLog = log;
          this.alertControl.DataContext = alertLog;
 
          StockAnalyzerForm.MainFrame.AlertDetected += MainFrame_AlertDetected;

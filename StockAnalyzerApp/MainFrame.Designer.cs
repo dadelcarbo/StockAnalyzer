@@ -69,7 +69,8 @@ namespace StockAnalyzerApp
             this.selectEventForMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showIntradayAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showDailyAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -373,7 +374,8 @@ namespace StockAnalyzerApp
             this.selectEventForMarqueeMenuItem,
             this.toolStripSeparator16,
             this.showHorseRaceViewMenuItem,
-            this.showAlertMenuItem,
+            this.showIntradayAlertMenuItem,
+            this.showDailyAlertMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
@@ -504,11 +506,19 @@ namespace StockAnalyzerApp
             // 
             // showAlertMenuItem
             // 
-            this.showAlertMenuItem.Name = "showAlertMenuItem";
-            this.showAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.showAlertMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.showAlertMenuItem.Text = "Alert View";
-            this.showAlertMenuItem.Click += showAlertViewMenuItem_Click;
+            this.showIntradayAlertMenuItem.Name = "showIntradayAlertMenuItem";
+            this.showIntradayAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.showIntradayAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showIntradayAlertMenuItem.Text = "Intraday Alert View";
+            this.showIntradayAlertMenuItem.Click += showIntradayAlertViewMenuItem_Click;
+            // 
+            // showAlertMenuItem
+            // 
+            this.showDailyAlertMenuItem.Name = "showDailyAlertMenuItem";
+            this.showDailyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A)));
+            this.showDailyAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showDailyAlertMenuItem.Text = "Report Alert View";
+            this.showDailyAlertMenuItem.Click += showDailyAlertViewMenuItem_Click;
             // 
             // toolStripSeparator15
             // 
@@ -1624,7 +1634,8 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem currentPortofolioMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
-        private ToolStripMenuItem showAlertMenuItem;
+        private ToolStripMenuItem showIntradayAlertMenuItem;
+        private ToolStripMenuItem showDailyAlertMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
         private ToolStripMenuItem indexRelativeStrengthMenuItem;

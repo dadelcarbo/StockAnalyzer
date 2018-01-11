@@ -41,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert);
+                Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
                 alertThread.Name = "Alert";
                 alertThread.Start();
             }

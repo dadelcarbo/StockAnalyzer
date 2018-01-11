@@ -13,126 +13,127 @@ using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
-   public class StockAlertLog : INotifyPropertyChanged
-   {
-      private static StockAlertLog instance;
+    public class StockAlertLog : INotifyPropertyChanged
+    {
+        private DateTime lastRefreshDate;
 
-      public static StockAlertLog Instance
-      {
-         get
-         {
-            if (instance == null)
+        public DateTime LastRefreshDate
+        {
+            get { return lastRefreshDate; }
+            set
             {
-               instance = new StockAlertLog();
-               instance.Load(Path.GetTempPath() + "AlertLog.xml");
+                if (value != lastRefreshDate)
+                {
+                    lastRefreshDate = value;
+                    NotifyPropertyChanged("LastRefreshDate");
+                }
             }
-            return instance;
-         }
-      }
+        }
 
-      private DateTime lastRefreshDate;
+        private ObservableCollection<StockAlert> alerts;
 
-      public DateTime LastRefreshDate
-      {
-         get { return lastRefreshDate; }
-         set
-         {
-            if (value != lastRefreshDate)
+        public ObservableCollection<StockAlert> Alerts
+        {
+            get { return alerts; }
+            set
             {
-               lastRefreshDate = value;
-               NotifyPropertyChanged("LastRefreshDate");
+                if (value != alerts)
+                {
+                    alerts = value;
+                    NotifyPropertyChanged("Alerts");
+                    NotifyPropertyChanged("StockNames");
+                }
             }
-         }
-      }
+        }
 
-      private ObservableCollection<StockAlert> alerts;
+        private string selectedStock;
+        public string SelectedStock { get { return selectedStock; } set { if (value != selectedStock) { selectedStock = value; NotifyPropertyChanged("SelectedStock"); } } }
 
-      public ObservableCollection<StockAlert> Alerts
-      {
-         get { return alerts; }
-         set
-         {
-            if (value != alerts)
+        public IEnumerable<string> StockNames { get { return this.Alerts.Select(a => a.StockName).Distinct(); } }
+
+        private int progressValue;
+        public int ProgressValue { get { return progressValue; } set { if (value != progressValue) { progressValue = value; NotifyPropertyChanged("ProgressValue"); } } }
+
+        private int progressMax;
+        public int ProgressMax { get { return progressMax; } set { if (value != progressMax) { progressMax = value; NotifyPropertyChanged("ProgressMax"); } } }
+
+        private bool progressVisibility;
+        public bool ProgressVisibility { get { return progressVisibility; } set { if (value != progressVisibility) { progressVisibility = value; NotifyPropertyChanged("ProgressVisibility"); } } }
+
+        private string progressName;
+        public string ProgressName { get { return progressName; } set { if (value != progressName) { progressName = value; NotifyPropertyChanged("ProgressName"); } } }
+
+        private readonly string fileName;
+        public StockAlertLog(string fileName)
+        {
+            this.lastRefreshDate = DateTime.MinValue;
+            this.alerts = new ObservableCollection<StockAlert>();
+            this.progressVisibility = false;
+            this.fileName = fileName;
+
+            this.Load();
+        }
+
+        private void Load()
+        {
+            string filepath = Path.GetTempPath() + this.fileName;
+            if (File.Exists(filepath))
             {
-               alerts = value;
-               NotifyPropertyChanged("Alerts");
-               NotifyPropertyChanged("StockNames");
+                LastRefreshDate = File.GetLastWriteTime(filepath);
             }
-         }
-      }
+            else
+            {
+                LastRefreshDate = DateTime.MinValue;
+                return;
+            }
+            using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
+            {
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(List<StockAlert>));
+                this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as List<StockAlert>).OrderByDescending(a => a.Date));
+            }
+        }
 
-      private string selectedStock;
-      public string SelectedStock { get { return selectedStock; } set { if (value != selectedStock) { selectedStock = value; NotifyPropertyChanged("SelectedStock"); } } }
+        public void Save()
+        {
+            string filepath = Path.GetTempPath() + this.fileName;
+            this.LastRefreshDate = DateTime.Now;
+            using (FileStream fs = new FileStream(filepath, FileMode.Create))
+            {
+                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
+                {
+                    Indent = true,
+                    NewLineOnAttributes = true
+                };
+                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof (List<StockAlert>));
+                DateTime limitDate = DateTime.Today.AddDays(-7);
+                serializer.Serialize(xmlWriter, alerts.Where(a => a.Date >= limitDate).OrderByDescending(a => a.Date).ToList());
+            }
+        }
 
-      public IEnumerable<string> StockNames { get { return this.Alerts.Select(a => a.StockName).Distinct(); } }
+        public void Clear()
+        {
+            string filePath = Path.GetTempPath() + this.fileName;
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+            this.Alerts?.Clear();
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-      private int progressValue;
-      public int ProgressValue { get { return progressValue; } set { if (value != progressValue) { progressValue = value; NotifyPropertyChanged("ProgressValue"); } } }
+        private void NotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
-      private int progressMax;
-      public int ProgressMax { get { return progressMax; } set { if (value != progressMax) { progressMax = value; NotifyPropertyChanged("ProgressMax"); } } }
-
-      private bool progressVisibility;
-      public bool ProgressVisibility { get { return progressVisibility; } set { if (value != progressVisibility) { progressVisibility = value; NotifyPropertyChanged("ProgressVisibility"); } } }
-
-      private string progressName;
-      public string ProgressName { get { return progressName; } set { if (value != progressName) { progressName = value; NotifyPropertyChanged("ProgressName"); } } }
-
-      private StockAlertLog()
-      {
-         this.lastRefreshDate = DateTime.MinValue;
-         this.alerts = new ObservableCollection<StockAlert>();
-         this.progressVisibility = false;
-      }
-      
-      private void Load(string fileName)
-      {
-         if (File.Exists(fileName)) LastRefreshDate = File.GetLastWriteTime(fileName);
-         else
-         {
-            LastRefreshDate = DateTime.MinValue;
-            return;
-         }
-         using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
-         {
-            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-            settings.IgnoreWhitespace = true;
-            System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-            XmlSerializer serializer = new XmlSerializer(typeof (List<StockAlert>));
-            this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as List<StockAlert>).OrderByDescending(a => a.Date));
-         }
-      }
-
-      public void Save()
-      {
-         string fileName = Path.GetTempPath() + "AlertLog.xml";
-         this.LastRefreshDate = DateTime.Now;
-         using (FileStream fs = new FileStream(fileName, FileMode.Create))
-         {
-            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineOnAttributes = true;
-            System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-            XmlSerializer serializer = new XmlSerializer(typeof (List<StockAlert>));
-            DateTime limitDate = DateTime.Today.AddDays(-7);
-            serializer.Serialize(xmlWriter, alerts.Where(a=>a.Date >= limitDate).ToList());
-         }
-      }
-
-      public void Clear()
-      {
-          string fileName = Path.GetTempPath() + "AlertLog.xml";
-          if (File.Exists(fileName)) File.Delete(fileName);
-          if (this.Alerts != null) this.Alerts.Clear();
-      }
-      public event PropertyChangedEventHandler PropertyChanged;
-
-      private void NotifyPropertyChanged(string name)
-      {
-         if (PropertyChanged != null)
-         {
-            this.PropertyChanged(this, new PropertyChangedEventArgs(name));
-         }
-      }
-   }
+        public bool IsUpToDate(DateTime date)
+        {
+            return LastRefreshDate >= date;
+        }
+    }
 }

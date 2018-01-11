@@ -35,7 +35,6 @@
                 <DataGridTextColumn Header="Duration" Binding="{Binding BarDuration, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Event" Binding="{Binding Alert, Mode=OneWay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Alert Close" Binding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Current Close" Binding="{Binding CurrentClose, Mode=OneWay}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -683,6 +683,33 @@ namespace StockAnalyzerApp
             refreshTimer.Interval = 120 * 1000;
             refreshTimer.Start();
 
+            #region DailyAlerts
+            // Parse alert lists            
+            string dailyAlertFileName = Settings.Default.RootFolder + @"\AlertReport.xml";
+            if (System.IO.File.Exists(dailyAlertFileName))
+            {
+                using (var fs = new FileStream(dailyAlertFileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                    {
+                        IgnoreWhitespace = true
+                    };
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                    reportAlerts = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                }
+            }
+            else
+            {
+                reportAlerts = new List<StockAlertDef>();
+            }
+
+            if (!dailyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            {
+                GenerateDailyAlert();
+            }
+            #endregion
+
             if (Settings.Default.GenerateDailyReport)
             {
                 string fileName = Settings.Default.RootFolder + @"\CommentReport\report.html";
@@ -706,12 +733,12 @@ namespace StockAnalyzerApp
                         };
                         System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                         var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                        alertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                        intradayAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
                     }
                 }
                 else
                 {
-                    alertDefs = new List<StockAlertDef>();
+                    intradayAlertDefs = new List<StockAlertDef>();
                 }
 
                 int minutes = Settings.Default.AlertsFrequency;
@@ -847,54 +874,28 @@ namespace StockAnalyzerApp
                 busy = false;
             }
         }
-        //private StockAlertDef rsiTrailUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenUp");
-        //private StockAlertDef rsiTrailDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "TRAIL", "SAR(0.01,0.01)|RSI(40,3)", "BrokenDown");
-        //private StockAlertDef crossedUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BullishCrossing");
-        //private StockAlertDef crossedDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "CROSSING(EMAL(6),EMA(80))", "BearishCrossing");
 
-        //private StockAlertDef stokUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected");
-        //private StockAlertDef stokDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected");
-
-        //private StockAlertDef flagUp = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenUp");
-        //private StockAlertDef flagDown = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D, "PAINTBAR", "FLAG(120,5)", "BrokenDown");
-
-        //private StockAlertDef resistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken");
-        //private StockAlertDef supportBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken");
-
-        private StockAlertDef resistanceBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstResistanceBroken");
-        private StockAlertDef supportBroken1 = new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstSupportBroken");
-
-        private StockAlertDef resistanceBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstResistanceBroken");
-        private StockAlertDef supportBroken2 = new StockAlertDef(StockSerie.StockBarDuration.TLB_6D_EMA6, "INDICATOR", "TOPEMA(0,30,1)", "FirstSupportBroken");
-
-        //private StockAlertDef cciEx = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "DECORATOR", "DIVWAIT(1.5,1)|CCIEX(50,12,20,0.0195,75,-75)", "ExhaustionBottom");
-        //private StockAlertDef barAbove = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarAbove");
-        //private StockAlertDef barBelow = new StockAlertDef(StockSerie.StockBarDuration.TLB_27D_EMA3, "INDICATOR", "HMA(30)", "FirstBarBelow");
-        //private StockAlertDef ResistanceBroken = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "PAINTBAR", "TRENDLINEHL(1,10)", "ResistanceBroken");
-        //private StockAlertDef trailHL = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D_EMA3, "TRAILSTOP", "TRAILHLS(2,3)", "BrokenUp");
-        //private StockAlertDef trailHLSR = new StockAlertDef(StockSerie.StockBarDuration.TLB_9D, "INDICATOR", "TRAILHLSR(5)", "ResistanceBroken");
-
-        private List<StockAlertDef> alertDefs = new List<StockAlertDef>();
+        private List<StockAlertDef> reportAlerts;
+        private List<StockAlertDef> intradayAlertDefs;
+        private StockAlertLog intradayAlertLog = new StockAlertLog("AlertLogIntraday.xml");
+        private StockAlertLog dailyAlertLog = new StockAlertLog("AlertLogDaily.xml");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
             if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
                 DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
-            if (this.alertDefs == null || this.alertDefs.Count == 0) return;
+            if (this.intradayAlertDefs == null || this.intradayAlertDefs.Count == 0) return;
 
-            Thread alertThread = new Thread(GenerateAlert);
-            alertThread.Name = "alertTimer";
+            Thread alertThread = new Thread(GenerateIntradayAlert) { Name = "alertTimer" };
             alertThread.Start();
         }
 
         public void ClearAlert()
         {
-            StockAlertLog stockAlertLog = StockAlertLog.Instance;
-            stockAlertLog.Clear();
+            intradayAlertLog.Clear();
         }
-
-        public void GenerateAlert()
+        public void GenerateIntradayAlert()
         {
             if (busy) return;
             busy = true;
@@ -915,8 +916,6 @@ namespace StockAnalyzerApp
                         this.AlertDetectionStarted(stockList.Count);
                     }
                 }
-
-                StockAlertLog stockAlertLog = StockAlertLog.Instance;
 
                 DateTime lookBackDate = DateTime.Today.AddDays(-7);
 
@@ -942,9 +941,9 @@ namespace StockAnalyzerApp
 
                     StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (alertDefs)
+                    lock (intradayAlertDefs)
                     {
-                        foreach (var alertDef in alertDefs)
+                        foreach (var alertDef in intradayAlertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -956,19 +955,18 @@ namespace StockAnalyzerApp
                                     StockAlert stockAlert = new StockAlert(alertDef,
                                         dailyValue.DATE,
                                         stockSerie.StockName,
-                                        dailyValue.CLOSE,
-                                        stockSerie.GetValues(StockSerie.StockBarDuration.Daily).Last().CLOSE);
+                                        dailyValue.CLOSE);
 
-                                    if (stockAlertLog.Alerts.All(a => a != stockAlert))
+                                    if (intradayAlertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => stockAlertLog.Alerts.Insert(0, stockAlert)));
+                                            this.Invoke(new Action(() => intradayAlertLog.Alerts.Insert(0, stockAlert)));
                                         }
                                         else
                                         {
-                                            stockAlertLog.Alerts.Insert(0, stockAlert);
+                                            intradayAlertLog.Alerts.Insert(0, stockAlert);
                                         }
                                     }
                                 }
@@ -977,7 +975,7 @@ namespace StockAnalyzerApp
                     }
                     stockSerie.BarDuration = previouBarDuration;
                 }
-                stockAlertLog.Save();
+                intradayAlertLog.Save();
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
@@ -997,6 +995,101 @@ namespace StockAnalyzerApp
             }
         }
 
+        public void GenerateDailyAlert()
+        {
+            if (busy || reportAlerts == null ) return;
+            busy = true;
+
+            try
+            {
+                string alertString = string.Empty;
+
+                var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)).ToList();
+
+                if (AlertDetectionStarted != null)
+                {
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(this.AlertDetectionStarted, stockList.Count);
+                    }
+                    else
+                    {
+                        this.AlertDetectionStarted(stockList.Count);
+                    }
+                }
+
+                DateTime lookBackDate = DateTime.Today.AddDays(-20);
+                foreach (var stockSerie in stockList)
+                {
+                    if (AlertDetectionProgress != null)
+                    {
+                        if (this.InvokeRequired)
+                        {
+                            this.Invoke(this.AlertDetectionProgress, stockSerie.StockName);
+                        }
+                        else
+                        {
+                            this.AlertDetectionProgress(stockSerie.StockName);
+                        }
+                    }
+
+                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 50000) continue;
+
+                    StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
+
+                    lock (reportAlerts)
+                    {
+                        foreach (var alertDef in reportAlerts)
+                        {
+                            stockSerie.BarDuration = alertDef.BarDuration;
+                            var values = stockSerie.GetValues(alertDef.BarDuration);
+                            for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
+                            {
+                                var dailyValue = values.ElementAt(i);
+                                if (stockSerie.MatchEvent(alertDef, i))
+                                {
+                                    StockAlert stockAlert = new StockAlert(alertDef,
+                                        dailyValue.DATE,
+                                        stockSerie.StockName,
+                                        dailyValue.CLOSE);
+
+                                    if (dailyAlertLog.Alerts.All(a => a != stockAlert))
+                                    {
+                                        alertString += stockAlert.ToString() + Environment.NewLine;
+                                        if (this.InvokeRequired)
+                                        {
+                                            this.Invoke(new Action(() => dailyAlertLog.Alerts.Insert(0, stockAlert)));
+                                        }
+                                        else
+                                        {
+                                            dailyAlertLog.Alerts.Insert(0, stockAlert);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    stockSerie.BarDuration = previouBarDuration;
+                }
+                dailyAlertLog.Save();
+
+                if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
+                {
+                    StockMail.SendEmail("Ultimate Chartist - daily Alert", alertString);
+                }
+
+                if (this.AlertDetected != null)
+                {
+                    this.Invoke(this.AlertDetected);
+                }
+
+                StockSplashScreen.CloseForm(true);
+            }
+            finally
+            {
+                busy = false;
+            }
+        }
         #endregion
 
         private System.Windows.Forms.Timer refreshTimer;
@@ -5130,6 +5223,7 @@ border:1px solid black;
 
             #endregion
 
+            #region From Report.cfg
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
             StockSerie.StockBarDuration previousBarDuration =
@@ -5211,6 +5305,7 @@ border:1px solid black;
                 //#endregion
             }
 
+            #endregion
             #region Generate report from Portfolio
 
             //List<String> stockNames = this.StockPortofolioList.GetStockNames();
@@ -5261,38 +5356,6 @@ border:1px solid black;
             #endregion
 
             #region Generate report from Events
-
-            List<StockAlertDef> reportAlerts = null;
-            string alertFileName = Settings.Default.RootFolder + @"\AlertReport.xml";
-            // Parse alert lists
-            if (System.IO.File.Exists(alertFileName))
-            {
-                using (var fs = new FileStream(alertFileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                    {
-                        IgnoreWhitespace = true
-                    };
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    reportAlerts = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                }
-            }
-            else
-            {
-                reportAlerts = new List<StockAlertDef>();
-            }
-
-            //alerts.Clear();
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Daily_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
-
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceBroken"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportBroken"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "ResistanceDetected"));
-            //alerts.Add(new StockAlertDef(StockSerie.StockBarDuration.Weekly_EMA3, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
 
 
             foreach (StockAlertDef alert in reportAlerts)
@@ -6329,11 +6392,25 @@ border:1px solid black;
         #endregion
         #region ALERT DIALOG
         AlertDlg alertDlg = null;
-        void showAlertViewMenuItem_Click(object sender, System.EventArgs e)
+        void showIntradayAlertViewMenuItem_Click(object sender, System.EventArgs e)
         {
             if (alertDlg == null)
             {
-                alertDlg = new AlertDlg();
+                alertDlg = new AlertDlg(intradayAlertLog);
+                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertDlg.Disposed += alertDlg_Disposed;
+                alertDlg.Show();
+            }
+            else
+            {
+                alertDlg.Activate();
+            }
+        }
+        void showDailyAlertViewMenuItem_Click(object sender, System.EventArgs e)
+        {
+            if (alertDlg == null)
+            {
+                alertDlg = new AlertDlg(dailyAlertLog);
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDlg.Disposed += alertDlg_Disposed;
                 alertDlg.Show();

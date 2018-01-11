@@ -18,20 +18,18 @@ namespace StockAnalyzer.StockClasses
         public string Alert { get; set; }
         public StockSerie.StockBarDuration BarDuration { get; set; }
         public float AlertClose { get; set; }
-        public float CurrentClose { get; set; }
 
         public StockAlert()
         {
         }
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, float alertClose, float currentClose)
+        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, float alertClose)
         {
             this.Alert = alertDef.EventFullName;
             this.BarDuration = alertDef.BarDuration;
             Date = date;
             StockName = stockName;
             AlertClose = alertClose;
-            CurrentClose = currentClose;
         }
 
         public override string ToString()
