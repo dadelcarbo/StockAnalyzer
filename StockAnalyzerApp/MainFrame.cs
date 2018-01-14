@@ -659,7 +659,6 @@ namespace StockAnalyzerApp
             }
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
-            StockSplashScreen.CloseForm(true);
 
             // Initialise event call backs (because of a bug in the designer)
             this.graphCloseControl.MouseClick +=
@@ -674,8 +673,6 @@ namespace StockAnalyzerApp
                 new System.Windows.Forms.MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick +=
                 new System.Windows.Forms.MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
-
-            this.Focus();
 
             // Refreshes intraday every 2 minutes.
             refreshTimer = new System.Windows.Forms.Timer();
@@ -777,6 +774,10 @@ namespace StockAnalyzerApp
             searchText.AutoCompleteCustomSource = allowedTypes;
             searchText.AutoCompleteMode = AutoCompleteMode.Suggest;
             searchText.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+            // Ready to start
+            StockSplashScreen.CloseForm(true);
+            this.Focus();
         }
 
 
@@ -1018,7 +1019,6 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                DateTime lookBackDate = DateTime.Today.AddDays(-20);
                 foreach (var stockSerie in stockList)
                 {
                     if (AlertDetectionProgress != null)
@@ -1033,7 +1033,7 @@ namespace StockAnalyzerApp
                         }
                     }
 
-                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 50000) continue;
+                    if (!stockSerie.Initialise() ) continue;
 
                     StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
@@ -1043,7 +1043,9 @@ namespace StockAnalyzerApp
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
-                            for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
+
+                            int stopIndex = Math.Max(10, stockSerie.LastCompleteIndex - 10);
+                            for (int i = stockSerie.LastCompleteIndex; i > stopIndex; i--)
                             {
                                 var dailyValue = values.ElementAt(i);
                                 if (stockSerie.MatchEvent(alertDef, i))
