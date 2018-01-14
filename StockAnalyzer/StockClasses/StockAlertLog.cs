@@ -88,11 +88,21 @@ namespace StockAnalyzer.StockClasses
             }
             using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
             {
-                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                settings.IgnoreWhitespace = true;
-                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(List<StockAlert>));
-                this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as List<StockAlert>).OrderByDescending(a => a.Date));
+                try
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                    {
+                        IgnoreWhitespace = true
+                    };
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
+                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date));
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading alert file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    this.Alerts = new ObservableCollection<StockAlert>();
+                }
             }
         }
 
@@ -108,9 +118,10 @@ namespace StockAnalyzer.StockClasses
                     NewLineOnAttributes = true
                 };
                 System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof (List<StockAlert>));
+                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
                 DateTime limitDate = DateTime.Today.AddDays(-7);
-                serializer.Serialize(xmlWriter, alerts.Where(a => a.Date >= limitDate).OrderByDescending(a => a.Date).ToList());
+                this.alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= limitDate).OrderByDescending(a => a.Date));
+                serializer.Serialize(xmlWriter, this.alerts);
             }
         }
 
