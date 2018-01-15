@@ -6399,6 +6399,7 @@ border:1px solid black;
             if (alertDlg == null)
             {
                 alertDlg = new AlertDlg(intradayAlertLog);
+                alertDlg.Text = "Intraday Alerts";
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDlg.Disposed += alertDlg_Disposed;
                 alertDlg.Show();
@@ -6413,6 +6414,7 @@ border:1px solid black;
             if (alertDlg == null)
             {
                 alertDlg = new AlertDlg(dailyAlertLog);
+                alertDlg.Text = "Daily Alerts";
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDlg.Disposed += alertDlg_Disposed;
                 alertDlg.Show();

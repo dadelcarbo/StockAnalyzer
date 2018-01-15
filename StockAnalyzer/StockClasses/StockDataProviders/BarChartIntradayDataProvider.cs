@@ -147,7 +147,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             string code = mapping[symbol];
 
-            return $"https://tvc4.forexpros.com/53292ef9724e99752ee3d551f552400d/1514587812/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
+        //    https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol=1&resolution=5&from=1515597598&to=1516029658
+
+            return $"https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
