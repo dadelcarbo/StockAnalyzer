@@ -1200,6 +1200,31 @@ namespace StockAnalyzer.StockMath
 
             return new FloatSerie(serie);
         }
+
+        public static FloatSerie MaxSerie(FloatSerie serie1, FloatSerie serie2)
+        {
+            if (serie1.Count != serie2.Count) throw new InvalidOperationException("Cannot get maximun serie as size in different");
+
+            float[] serie = new float[serie1.Count];
+
+            for (int i = 0; i < serie1.Count; i++)
+            {
+                serie[i] = Math.Max(serie1[i], serie2[i]);
+            }
+            return new FloatSerie(serie);
+        }
+        public static FloatSerie MinSerie(FloatSerie serie1, FloatSerie serie2)
+        {
+            if (serie1.Count != serie2.Count) throw new InvalidOperationException("Cannot get minimun serie as size in different");
+
+            float[] serie = new float[serie1.Count];
+
+            for (int i = 0; i < serie1.Count; i++)
+            {
+                serie[i] = Math.Min(serie1[i], serie2[i]);
+            }
+            return new FloatSerie(serie);
+        }
         #endregion
 
         public FloatSerie ApplySmoothing(StockMathToolkit.SmoothingType smoothingType, float scale)
