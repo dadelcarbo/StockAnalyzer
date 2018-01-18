@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames => new string[] { "Period", "Ratio" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 20, 0.5f };
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 0.75f };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f) };
 
@@ -71,67 +71,31 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             bool upTrend = true;
 
+            bool previousBullish = false;
+            bool previousBearish = false;
+
             for (int i = period; i < stockSerie.Count; i++)
             {
-                count = 0;
+                float close = closeSerie[i];
+                bool bullish = close > midUpLine[i];
+                this.Events[0][i] = bullish;
+                this.Events[2][i] = bullish && !previousBullish;
+                this.Events[4][i] = !bullish && previousBullish;
+                previousBullish = bullish;
 
-                //if (upTrend)
-                //{
-                //    upTrend = midLine[i] >= midLine[i - 1];
-                //}
-                //else
-                //{
-                //    upTrend = midLine[i] > midLine[i - 1];
-                //}
-
-                //this.Events[count++][i] = upTrend;
-                //this.Events[count++][i] = !upTrend;
-                //this.Events[count++][i] = (!this.Events[0][i - 1]) && (this.Events[0][i]);
-                //this.Events[count++][i] = (this.Events[0][i - 1]) && (!this.Events[0][i]);
-
-                //this.Events[count++][i] = closeSerie[i] > upLine[i];
-                //this.Events[count++][i] = closeSerie[i] > midLine[i];
-                //this.Events[count++][i] = closeSerie[i] < midLine[i];
-                //this.Events[count++][i] = closeSerie[i] < downLine[i];
-
-                //this.Events[count++][i] = highSerie[i] > upLine[i];
-                //this.Events[count++][i] = highSerie[i] > midLine[i];
-                //this.Events[count++][i] = highSerie[i] < midLine[i];
-                //this.Events[count++][i] = highSerie[i] < downLine[i];
-
-                //this.Events[count++][i] = lowSerie[i] > upLine[i];
-                //this.Events[count++][i] = lowSerie[i] > midLine[i];
-                //this.Events[count++][i] = lowSerie[i] < midLine[i];
-                //this.Events[count++][i] = lowSerie[i] < downLine[i];
-
-                //this.Events[count++][i] = lowSerie[i - 1] <= midLine[i - 1] && lowSerie[i] > midLine[i];
-                //this.Events[count++][i] = lowSerie[i - 1] <= downLine[i - 1] && lowSerie[i] > downLine[i];
-
-                //this.Events[count++][i] = highSerie[i - 1] >= upLine[i - 1] && highSerie[i] < upLine[i];
-                //this.Events[count][i] = highSerie[i - 1] >= midLine[i - 1] && highSerie[i] < midLine[i];
+                bool bearish = close < midDownLine[i];
+                this.Events[1][i] = bearish;
+                this.Events[3][i] = bearish && !previousBearish;
+                this.Events[5][i] = !bearish && previousBearish;
+                previousBearish = bearish;
             }
         }
 
-        private static string[] eventNames = new string[]
-        {
-            "Uptrend", "DownTrend", "BrokenUp", "BrokenDown",
-            "CloseAboveUpLine", "CloseAboveMidLine", "CloseBelowMidLine", "CloseBelowLowLine",
-            "HighAboveUpLine", "HighAboveMidLine", "HighBelowMidLine", "HighBelowLowLine",
-            "LowAboveUpLine", "LowAboveMidLine", "LowBelowMidLine", "LowBelowLowLine",
-            "TouchedDownMidLine", "TouchedDownLowLine",
-            "TouchedUpUpLine", "TouchedUpMidLine",
-        };
+        private static readonly string[] eventNames = { "Bullish", "Bearish", "StartBullish", "StopBullish", "BrokenUp", "BrokenDown" };
         public override string[] EventNames => eventNames;
 
-        static readonly bool[] isEvent = new bool[]
-         {
-            false, false, true, true,
-            false, false, false, false,
-            false, false, false, false,
-            false, false, false, false,
-            true, true,
-            true, true
-         };
+        static readonly bool[] isEvent = { false, false, true, true, true, true };
+
         public override bool[] IsEvent => isEvent;
     }
 }
