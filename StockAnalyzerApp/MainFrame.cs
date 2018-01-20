@@ -2092,7 +2092,7 @@ namespace StockAnalyzerApp
             {
                 if (fanLineBtn.Checked)
                 {
-                    graphControl.DrawingMode = GraphDrawMode.AndrewPitchFork;
+                    graphControl.DrawingMode = GraphDrawMode.XABCD;
                     graphControl.DrawingStep = GraphDrawingStep.SelectItem;
                 }
                 else

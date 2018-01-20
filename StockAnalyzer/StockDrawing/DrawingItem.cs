@@ -37,6 +37,15 @@ namespace StockAnalyzer.StockDrawing
             matrixValueToScreen.TransformPoints(points);
         }
 
+        public static PointF Middle(PointF A, PointF B)
+        {
+            return new PointF
+            {
+                X = (A.X + B.X) / 2f,
+                Y = (A.Y + B.Y) / 2f
+            };
+        }
+
         #region XML SERIALISATION
         public abstract System.Xml.Schema.XmlSchema GetSchema();
         public abstract void ReadXml(System.Xml.XmlReader reader);

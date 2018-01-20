@@ -28,6 +28,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 this.drawingMode = value;
                 this.andrewPitchFork = null;
+                this.XABCD = null;
             }
         }
 
@@ -47,6 +48,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private PointF selectedValuePoint;
 
         private AndrewPitchFork andrewPitchFork;
+        private XABCD XABCD;
 
         protected bool ShowOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowOrders; } }
         protected bool ShowSummaryOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowSummaryOrders; } }
@@ -1218,7 +1220,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // first point is already selected, draw new line
                         if (!selectedValuePoint.Equals(mouseValuePoint))
                         {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true, true);
+                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
                         }
                     }
                     break;
@@ -1228,7 +1230,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // first point is already selected, draw new line
                         if (!selectedValuePoint.Equals(mouseValuePoint))
                         {
-                            DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true, true);
+                            DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
                         }
                     }
                     break;
@@ -1238,7 +1240,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // first point is already selected, draw new line
                         if (!selectedValuePoint.Equals(mouseValuePoint))
                         {
-                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true, true);
+                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
                         }
                     }
                     break;
@@ -1248,7 +1250,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // first point is already selected, draw new line
                         if (!selectedValuePoint.Equals(mouseValuePoint))
                         {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true, true);
+                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
                         }
                     }
                     break;
@@ -1258,7 +1260,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.SelectItem: // Selecting the second point
                             if (andrewPitchFork != null && !andrewPitchFork.Point1.Equals(mouseValuePoint))
                             {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, andrewPitchFork.Point1, mouseValuePoint, true, true);
+                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, andrewPitchFork.Point1, mouseValuePoint, true);
                             }
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting third point
@@ -1272,7 +1274,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 foreach (Line2DBase newLine in andrewPitchFork.GetLines(this.DrawingPen))
                                 {
-                                    DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true, true);
+                                    DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
                                 }
                             }
                             catch (System.ArithmeticException)
@@ -1281,6 +1283,29 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             break;
                         default:   // Shouldn't come there
                             break;
+                    }
+                    break;
+                case GraphDrawMode.XABCD:
+                    if (XABCD != null)
+                    {
+                        if (XABCD.NbPoint == 1)
+                        {
+                            if (!XABCD.X.Equals(mouseValuePoint)) {
+                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, XABCD.X, mouseValuePoint, true);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var newLine in XABCD.GetLines(this.DrawingPen))
+                            {
+                                DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
+                            }
+                            var lastPoint = XABCD.GetLastPoint();
+                            if (!lastPoint.Equals(mouseValuePoint))
+                            {
+                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, lastPoint, mouseValuePoint, true);
+                            }
+                        }
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1293,7 +1318,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (selectedLineIndex != -1)
                             {
                                 Line2D paraLine = ((Line2DBase)this.drawingItems[selectedLineIndex]).GetParallelLine(mouseValuePoint);
-                                this.DrawTmpItem(this.foregroundGraphic, this.DrawingPen, paraLine, true, true);
+                                this.DrawTmpItem(this.foregroundGraphic, this.DrawingPen, paraLine, true);
                             }
                             break;
                         default:   // Shouldn't come there
@@ -1329,7 +1354,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
                 {
-                    DrawTmpItem(graphics, item.Pen, item, true, true);
+                    DrawTmpItem(graphics, item.Pen, item, true);
                 }
             }
         }
@@ -1345,7 +1370,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
                 {
-                    DrawTmpItem(graphics, item.Pen, item, true, true);
+                    DrawTmpItem(graphics, item.Pen, item, true);
                 }
             }
         }
@@ -1522,6 +1547,38 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             break;
                         default:   // Shouldn't come there
                             break;
+                    }
+                    break;
+                case GraphDrawMode.XABCD:
+                    if (XABCD==null)
+                    {
+                        XABCD = new XABCD();
+                        XABCD.AddPoint(mouseValuePoint);
+                    }
+                    else
+                    {
+                        if (XABCD.NbPoint<4)
+                        {
+                            XABCD.AddPoint(mouseValuePoint);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                XABCD.AddPoint(mouseValuePoint);
+                                foreach (var newLine in XABCD.GetLines(this.DrawingPen))
+                                {
+                                    drawingItems.Add(newLine);
+                                    AddToUndoBuffer(GraphActionType.AddItem, newLine);
+                                }
+                                this.BackgroundDirty = true; // The new line becomes a part of the background
+                                selectedLineIndex = -1;
+                                XABCD = null;
+                            }
+                            catch (System.ArithmeticException)
+                            {
+                            }
+                        }
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1731,7 +1788,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems.Where(d => d.IsPersistent)) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (Line2DBase line2D in this.drawingItems.Where(d => (d is Line2DBase) && d.IsPersistent)) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
                 line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
                 currentDistance = line.DistanceTo(point2D);

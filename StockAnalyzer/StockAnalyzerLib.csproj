@@ -410,6 +410,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\Triangle2D.cs" />
+    <Compile Include="StockDrawing\Text2D.cs" />
     <Compile Include="StockDrawing\Bullet2D.cs" />
     <Compile Include="StockDrawing\CandleStick.cs" />
     <Compile Include="StockDrawing\AndrewPitchFork.cs" />
@@ -423,6 +425,7 @@
     <Compile Include="StockDrawing\Rectangle2D.cs" />
     <Compile Include="StockDrawing\Segment2D.cs" />
     <Compile Include="StockDrawing\StockDrawingItems.cs" />
+    <Compile Include="StockDrawing\XABCD.cs" />
     <Compile Include="StockLogging\StockLog.cs" />
     <Compile Include="StockMath\BoolSerie.cs" />
     <Compile Include="StockMath\Complex.cs" />

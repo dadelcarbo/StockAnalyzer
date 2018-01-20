@@ -41,6 +41,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         CopyLine,
         CutLine,
         AndrewPitchFork,
+        XABCD,
         DeleteItem
     }
     public enum GraphDrawingStep
@@ -1205,20 +1206,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 forceNoValueBoxDisplay = true;
             }
         }
-        protected void DrawTmpItem(Graphics graph, Pen pen, DrawingItem item, bool useTransform, bool temporary)
+        protected void DrawTmpItem(Graphics graph, Pen pen, DrawingItem item, bool useTransform)
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
             if (useTransform)
             {
-                item.Draw(graph, pen, this.matrixValueToScreen, rect2D, this.IsLogScale);
+                item.Draw(graph, this.matrixValueToScreen, rect2D, this.IsLogScale);
             }
             else
             {
-                item.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, this.IsLogScale);
+                item.Draw(graph, GraphControl.matrixIdentity, rect2D, this.IsLogScale);
             }
         }
-        protected void DrawTmpSegment(Graphics graph, Pen pen, PointF point1, PointF point2, bool useTransform, bool temporary)
+        protected void DrawTmpSegment(Graphics graph, Pen pen, PointF point1, PointF point2, bool useTransform)
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
@@ -1232,7 +1233,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 newLine.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
             }
         }
-        protected void DrawTmpHalfLine(Graphics graph, Pen pen, PointF point1, PointF point2, bool useTransform, bool temporary)
+        protected void DrawTmpHalfLine(Graphics graph, Pen pen, PointF point1, PointF point2, bool useTransform)
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
