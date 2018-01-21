@@ -108,7 +108,10 @@ namespace StockAnalyzer.StockClasses
             Bar_3,
             Bar_6,
             Bar_9,
+            Bar_12,
+            Bar_24,
             Bar_27,
+            Bar_48,
             MY,
             HA,
             HA_3D,
@@ -6023,6 +6026,63 @@ namespace StockAnalyzer.StockClasses
             //StartRanging
 
         }
+        public List<PointF> generateZigzagPoints(int startIndex, int endIndex, int hlPeriod)
+        {
+            var points = new List<PointF>();
+            try
+            {
+                IStockIndicator hlTrailSR = this.GetIndicator("TRAILHLSR(" + hlPeriod + ")");
+
+                BoolSerie supportDetected = hlTrailSR.Events[0];
+                BoolSerie resistanceDetected = hlTrailSR.Events[1];
+
+                FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+                FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+                FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+                FloatSerie supportSerie = hlTrailSR.Series[0];
+                FloatSerie resistanceSerie = hlTrailSR.Series[1];
+
+                Segment2D latestLine = new Segment2D(startIndex - 1, highSerie[startIndex], startIndex, highSerie[startIndex]);
+
+                Segment2D newLine;
+
+                // Start Creating lines
+                int j;
+                for (int i = startIndex + 1; i <= endIndex; i++)
+                {
+                    if (supportDetected[i])
+                    {
+                        // Find previous Low value
+                        for (j = i; j > latestLine.Point2.X && lowSerie[j] != supportSerie[i]; j--) ;
+                        newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, lowSerie[j]);
+
+                        points.Add(newLine.Point2);
+
+                        latestLine = newLine;
+                    }
+                    if (resistanceDetected[i])
+                    {
+                        // Find previous Low value
+                        for (j = i; j > latestLine.Point2.X && highSerie[j] != resistanceSerie[i]; j--) ;
+                        newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, highSerie[j]);
+
+                        points.Add(newLine.Point2);
+
+                        latestLine = newLine;
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                StockLog.Write(e);
+            }
+            finally
+            {
+            }
+            return points;
+        }
+
         public void generateZigzagLines(int startIndex, int endIndex, int hlPeriod, ref BoolSerie[] events)
         {
             DrawingItem.CreatePersistent = false;
@@ -6407,7 +6467,7 @@ namespace StockAnalyzer.StockClasses
                 case Groups.EURO_C:
                     return (this.StockGroup == Groups.EURO_C);
                 case Groups.EURO_A_B_C:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B)||(this.StockGroup == Groups.EURO_C);
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C);
                 case Groups.ALTERNEXT:
                     return (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.CACALL:

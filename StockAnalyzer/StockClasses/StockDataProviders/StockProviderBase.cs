@@ -21,10 +21,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_6D,
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_9D,
                      StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_3,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_6,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_9,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_27
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_3, // 15 Min
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_6, // 30 Min
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_12,// 1h
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_24,// 2h
+                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_48 // 4h
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;

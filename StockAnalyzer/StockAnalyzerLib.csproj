@@ -335,6 +335,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MOMENTUM.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HARMONIC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ZIGZAGLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DOWLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs" />
@@ -410,6 +411,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\StockHarmonicPatternRatio.cs" />
     <Compile Include="StockDrawing\Triangle2D.cs" />
     <Compile Include="StockDrawing\Text2D.cs" />
     <Compile Include="StockDrawing\Bullet2D.cs" />

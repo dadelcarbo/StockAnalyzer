@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockMath;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -7,22 +6,6 @@ using System.Text;
 
 namespace StockAnalyzer.StockDrawing
 {
-    public class HarmonicPatternRatio
-    {
-        public string Name { get; set; }
-        public FloatRange XB { get; set; } // AB/XA
-        public FloatRange AC { get; set; } // BC/AB
-        public FloatRange BD { get; set; } // CD/BC
-        public FloatRange XD { get; set; } // XB/BD
-
-
-        //static const float accuracy = 0.1f;
-        //static public List<HarmonicPatternRatio> HarmonicPatterns = new List<HarmonicPatternRatio> {
-        //    new HarmonicPatternRatio { Name = "Bat", AB = new FloatRange(0.5f,0.62f), BC = new FloatRange(0.62f,0.886f), CD = FloatRange.FromAccuracy(0.786f,accuracy)},
-        //    new HarmonicPatternRatio { Name = "Gartley", AB = new FloatRange(0.5f,0.62f), BC = new FloatRange(0.62f,0.886f), CD = FloatRange.FromAccuracy(0.786f,accuracy)},
-        //    new HarmonicPatternRatio { Name = "Gartley", AB = new FloatRange(0.5f,0.62f), BC = new FloatRange(0.5f,0.62f), CD = new FloatRange(0.5f,0.62f)}
-        //};
-    }
 
     [Serializable]
     public class XABCD : DrawingItem
@@ -48,16 +31,18 @@ namespace StockAnalyzer.StockDrawing
 
         public bool IsComplete => NbPoint == 5;
 
-        private float XA => Math.Abs(A.Y - X.Y);
-        private float AB => Math.Abs(B.Y - A.Y);
-        private float AD => Math.Abs(D.Y - A.Y);
-        private float BC => Math.Abs(C.Y - B.Y);
-        private float CD => Math.Abs(D.Y - C.Y);
 
-        public float AC => BC / AB;
-        public float XB => AB / XA;
-        public float BD => CD / BC;
-        public float XD => AD / XA;
+        private float xa => Math.Abs(A.Y - X.Y);
+        private float ab => Math.Abs(B.Y - A.Y);
+        private float ad => Math.Abs(D.Y - A.Y);
+        private float bc => Math.Abs(C.Y - B.Y);
+        private float cd => Math.Abs(D.Y - C.Y);
+
+        public float XD => ad / xa;
+        public float AB => ab / xa;
+        public float AC => bc / ab;
+        public float BD => cd / bc;
+        public float XB => ab / xa;
 
         public PointF GetLastPoint()
         {
@@ -74,6 +59,7 @@ namespace StockAnalyzer.StockDrawing
             }
             throw new InvalidOperationException("There are already five points in the XABCD pattern");
         }
+
         public void AddPoint(PointF point)
         {
             if (NbPoint == 5) throw new InvalidOperationException("There are already five points in the XABCD pattern");
@@ -99,10 +85,13 @@ namespace StockAnalyzer.StockDrawing
         }
 
         static Pen dashPen = new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-        static Pen fillPen = new Pen(Color.FromArgb(100, Color.Purple)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-        public IEnumerable<DrawingItem> GetLines(Pen drawingPen)
+        static Pen fillBullishPen = new Pen(Color.FromArgb(80, Color.DarkGreen)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
+        static Pen fillBearishPen = new Pen(Color.FromArgb(80, Color.DarkRed)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
+        public IEnumerable<DrawingItem> GetLines(Pen drawingPen, bool showRatioText = true)
         {
             var lines = new List<DrawingItem>();
+
+            var fillPen = IsBullish ? fillBullishPen : fillBearishPen;
 
             if (NbPoint > 1)
             {
@@ -115,7 +104,7 @@ namespace StockAnalyzer.StockDrawing
                 lines.Add(new Segment2D(this.A, this.B));
                 lines.Add(new Bullet2D(this.B, 3f));
                 lines.Add(new Segment2D(this.X, this.B, dashPen));
-                lines.Add(new Text2D(Text2D.Middle(X, B), this.XB.ToString("#.###")));
+                if (showRatioText) lines.Add(new Text2D(Middle(X, B), this.XB.ToString("#.###")));
                 lines.Add(new Triangle2D(X, A, B, fillPen));
             }
             if (NbPoint > 3)
@@ -123,20 +112,37 @@ namespace StockAnalyzer.StockDrawing
                 lines.Add(new Segment2D(this.B, this.C));
                 lines.Add(new Bullet2D(this.C, 3f));
                 lines.Add(new Segment2D(this.A, this.C, dashPen));
-                lines.Add(new Text2D(Text2D.Middle(A, C), this.AC.ToString("#.###")));
+                if (showRatioText) lines.Add(new Text2D(Middle(A, C), this.AC.ToString("#.###")));
             }
             if (NbPoint > 4)
             {
                 lines.Add(new Segment2D(this.C, this.D));
                 lines.Add(new Bullet2D(this.D, 3f));
                 lines.Add(new Segment2D(this.B, this.D, dashPen));
-                lines.Add(new Text2D(Text2D.Middle(B, D), BD.ToString("#.###")));
+                if (showRatioText) lines.Add(new Text2D(Middle(B, D), BD.ToString("#.###")));
                 lines.Add(new Segment2D(this.X, this.D, dashPen));
-                lines.Add(new Text2D(Text2D.Middle(X, D), this.XD.ToString("#.###")));
+                if (showRatioText) lines.Add(new Text2D(Middle(X, D), this.XD.ToString("#.###")));
                 lines.Add(new Triangle2D(B, C, D, fillPen));
+                var name = GetPatternName();
+                if (name != null)
+                {
+                    if (IsBullish)
+                    {
+                        lines.Add(new Text2D(new PointF(A.X, D.Y), name));
+                    }
+                    else
+                    {
+                        lines.Add(new Text2D(new PointF(A.X, D.Y + (D.Y - C.Y) / 5f), name));
+                    }
+                }
             }
 
             return lines;
+        }
+
+        public string GetPatternName()
+        {
+            return StockHarmonicPatternRatio.MatchPattern(this);
         }
 
         public override void Draw(System.Drawing.Graphics g, System.Drawing.Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
