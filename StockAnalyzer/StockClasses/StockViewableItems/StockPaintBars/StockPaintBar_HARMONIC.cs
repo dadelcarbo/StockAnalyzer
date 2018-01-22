@@ -1,4 +1,6 @@
-﻿using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -34,40 +36,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             get { return new ParamRange[] { new ParamRangeInt(1, 100) }; }
         }
 
-        static string[] eventNames = null;
-        public override string[] EventNames
-        {
-            get
-            {
-                if (eventNames == null)
-                {
-                    eventNames = Enum.GetNames(typeof(StockSerie.DowEvent));
-                }
-                return eventNames;
-            }
-        }
-        static readonly bool[] isEvent = new bool[] { false, false, false, true, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
-
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Black) };
-                    foreach (Pen pen in seriePens)
-                    {
-                        pen.Width = 2;
-                    }
-                }
-                return seriePens;
-            }
-        }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             // Detecting events
@@ -84,7 +52,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
 
             DrawingItem.CreatePersistent = false;
-            var points = stockSerie.generateZigzagPoints(0, stockSerie.Count - 1, (int)this.parameters[0]);
+            int hlPeriod = (int)this.parameters[0];
+            var points = stockSerie.generateZigzagPoints(0, stockSerie.Count - 1, hlPeriod);
+
+            IStockIndicator hlTrailSR = stockSerie.GetIndicator("TRAILHLSR(" + hlPeriod + ")");
+            
+            BoolSerie supportDetected = hlTrailSR.Events[0];
+            BoolSerie resistanceDetected = hlTrailSR.Events[1];
+
             for (int i = 5; i < points.Count; i++)
             {
                 var xabcd = new XABCD();
@@ -100,9 +75,62 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     {
                         stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(p);
                     }
+
+                    // Detect Event
+                    for(int j = (int)points[i].X; j < stockSerie.Count; j++)
+                    {
+                        if(xabcd.IsBullish && supportDetected[j])
+                        {
+                            this.Events[0][j] = true;
+                            break;
+                        }
+                        if (!xabcd.IsBullish && resistanceDetected[j])
+                        {
+                            this.Events[1][j] = true;
+                            break;
+                        }
+                    }
                 }
             }
             DrawingItem.CreatePersistent = true;
         }
+
+        
+        static readonly bool[] isEvent = new bool[] { true, true};
+        public override bool[] IsEvent
+        {
+            get { return isEvent; }
+        }
+
+
+        static string[] eventNames = null;
+        public override string[] EventNames
+        {
+            get
+            {
+                if (eventNames == null)
+                {
+                    eventNames = new string[] { "BullishPattern", "BearishPattern"};
+                }
+                return eventNames;
+            }
+        }
+
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
+            {
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
+                    foreach (Pen pen in seriePens)
+                    {
+                        pen.Width = 2;
+                    }
+                }
+                return seriePens;
+            }
+        }
+
     }
 }
