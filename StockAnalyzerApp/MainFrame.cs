@@ -716,6 +716,9 @@ namespace StockAnalyzerApp
                 }
             }
             // Checks for alert every x minutes.
+
+
+            intradayAlertDefs = new List<StockAlertDef>();
             if (Settings.Default.RaiseAlerts)
             {
                 string alertFileName = Settings.Default.RootFolder + @"\AlertIntraday.xml";
@@ -732,10 +735,6 @@ namespace StockAnalyzerApp
                         var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
                         intradayAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
                     }
-                }
-                else
-                {
-                    intradayAlertDefs = new List<StockAlertDef>();
                 }
 
                 int minutes = Settings.Default.AlertsFrequency;
@@ -998,7 +997,7 @@ namespace StockAnalyzerApp
 
         public void GenerateDailyAlert()
         {
-            if (busy || reportAlerts == null ) return;
+            if (busy || reportAlerts == null) return;
             busy = true;
 
             try
@@ -1033,7 +1032,7 @@ namespace StockAnalyzerApp
                         }
                     }
 
-                    if (!stockSerie.Initialise() ) continue;
+                    if (!stockSerie.Initialise()) continue;
 
                     StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
 

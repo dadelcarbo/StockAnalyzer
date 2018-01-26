@@ -184,11 +184,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     string url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-30));
 
-                    wc.DownloadFile(url, fileName);
-                    stockSerie.IsInitialised = false;
+                    int nbTries = 3;
+                    while (nbTries > 0)
+                    {
+                        try
+                        {
+                            wc.DownloadFile(url, fileName);
+                            stockSerie.IsInitialised = false;
+                            return true;
+                        }
+                        catch (Exception e)
+                        {
+                            nbTries--;
+                        }
+                    }
                 }
             }
-            return true;
+            return false;
         }
 
         private static SortedDictionary<string, string> mapping = new SortedDictionary<string, string>();
