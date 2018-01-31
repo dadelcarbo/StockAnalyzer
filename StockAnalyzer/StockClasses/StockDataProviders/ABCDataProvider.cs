@@ -117,17 +117,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             // Download sector libelle
-            foreach (string sectorID in SectorCodes.Keys)
-            {
-                if (DownloadSectorFromABC(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID))
-                {
-                    AssignSector(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID);
-                }
-                else
-                {
-                    break;
-                }
-            }
+            //foreach (string sectorID in SectorCodes.Keys)
+            //{
+            //    if (DownloadSectorFromABC(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID))
+            //    {
+            //        AssignSector(rootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorID);
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
         }
 
         private void AssignSector(string destFolder, string sectorID)
