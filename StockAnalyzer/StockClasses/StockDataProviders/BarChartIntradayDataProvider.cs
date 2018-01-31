@@ -181,18 +181,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
                     var url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-30));
 
-                    try
+                    int nbTries = 3;
+                    while (nbTries > 0)
                     {
-                        wc.DownloadFile(url, fileName);
-                        stockSerie.IsInitialised = false;
-                    }
-                    catch
-                    {
-                        return false;
+                        try
+                        {
+                            wc.DownloadFile(url, fileName);
+                            stockSerie.IsInitialised = false;
+                            return true;
+                        }
+                        catch (Exception e)
+                        {
+                            nbTries--;
+                        }
                     }
                 }
             }
-            return true;
+            return false;
         }
 
         private static readonly SortedDictionary<string, string> mapping = new SortedDictionary<string, string>();
