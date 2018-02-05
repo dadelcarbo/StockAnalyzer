@@ -497,7 +497,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
 
                                 CandleStick candleStick = new CandleStick();
-                                candleStick.Width = 0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count();
+                                candleStick.Width = 0.35f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count();
                                 for (int i = 0; i < tmpPoints.Count(); i++)
                                 {
                                     candleStick.X = tmpPoints[i].X;
