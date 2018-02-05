@@ -67,6 +67,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
+        public void SetDuration(StockSerie.StockBarDuration duration)
+        {
+            this.durationComboBox.SelectedItem = duration;
+        }
         void durationComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             if (currentStockSerie != null)

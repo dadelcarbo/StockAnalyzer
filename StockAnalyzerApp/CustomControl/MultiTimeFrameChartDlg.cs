@@ -13,9 +13,9 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
-            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Weekly_EMA6);
-            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.TLB_EMA6);
-            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily_EMA6);
+            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Weekly_EMA3);
+            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.TLB_EMA3);
+            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily_EMA3);
             InitializeComponent();
 
             this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
@@ -32,7 +32,21 @@ namespace StockAnalyzerApp.CustomControl
         {
             this.selectedGroup = group;
             this.CurrentStockSerie = stockSerie;
-            
+
+            switch (this.selectedGroup)
+            {
+                case StockSerie.Groups.FUTURE:
+                    fullGraphUserControl1.SetDuration(StockSerie.StockBarDuration.TLB_9D_EMA3);
+                    fullGraphUserControl2.SetDuration(StockSerie.StockBarDuration.TLB_3D_EMA3);
+                    fullGraphUserControl3.SetDuration(StockSerie.StockBarDuration.TLB_EMA3);
+                    break;
+                case StockSerie.Groups.INTRADAY:
+                    fullGraphUserControl1.SetDuration(StockSerie.StockBarDuration.TLB_9D_EMA3);
+                    fullGraphUserControl2.SetDuration(StockSerie.StockBarDuration.TLB_3D_EMA3);
+                    fullGraphUserControl3.SetDuration(StockSerie.StockBarDuration.TLB_EMA3);
+                    break;
+            }
+
             InitialiseStockCombo();
         }
 
@@ -83,6 +97,7 @@ namespace StockAnalyzerApp.CustomControl
         }
 
         private StockSerie currentStockSerie;
+
         public StockSerie CurrentStockSerie
         {
             get { return currentStockSerie; }
