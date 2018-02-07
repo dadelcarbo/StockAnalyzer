@@ -257,7 +257,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                StockDailyValue readValue = null;
 
-               while (!sr.ReadLine().EndsWith("P/C Ratio") && !sr.EndOfStream) ;
+               while (!sr.EndOfStream && !sr.ReadLine().EndsWith("P/C Ratio")) ;
 
                while (!sr.EndOfStream)
                {

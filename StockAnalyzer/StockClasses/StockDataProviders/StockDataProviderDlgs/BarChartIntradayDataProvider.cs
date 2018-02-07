@@ -145,7 +145,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             var code = mapping[symbol];
 
-            //    https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol=1&resolution=5&from=1515597598&to=1516029658
+        //    https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol=1&resolution=5&from=1515597598&to=1516029658
 
             return $"https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
         }
@@ -223,16 +223,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockDictionary.ContainsKey(row[1]))
                             {
                                 stockDictionary.Add(row[2], stockSerie);
-                                if (mapping.ContainsKey(shortName))
-                                {
-                                    MessageBox.Show($"Duplicate entry\r\n erroneous line: {line}",
-                                        @"Error in Bar Chart Intraday config file", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-                                }
-                                else
-                                {
-                                    mapping.Add(shortName, row[0]);
-                                }
+                                mapping.Add(shortName, row[0]);
                             }
                             else
                             {
@@ -248,7 +239,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
+        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow) ;
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             var res = false;

@@ -38,17 +38,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public static BarChartJSon FromJson(string json) => JsonConvert.DeserializeObject<BarChartJSon>(json, Converter.Settings);
     }
 
-    public static class Serialize
+    public static partial class Serialize
     {
         public static string ToJson(this BarChartJSon self) => JsonConvert.SerializeObject(self, Converter.Settings);
-    }
-
-    public class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-        };
     }
 }
