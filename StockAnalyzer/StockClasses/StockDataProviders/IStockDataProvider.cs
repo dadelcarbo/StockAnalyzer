@@ -5,6 +5,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         ABC,
         BarChart,
         BarChartIntraday,
+        BNPIntraday,
         Yahoo,
         YahooIntraday,
         Google,
