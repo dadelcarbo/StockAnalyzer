@@ -179,7 +179,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-30));
+                    var url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-20));
 
                     int nbTries = 3;
                     while (nbTries > 0)
@@ -256,11 +256,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 using (var sr = new StreamReader(fileName))
                 {
-                    var json = sr.ReadToEnd();
-
-                    var barchartJson = BarChartJSon.FromJson(json);
-                    var ticksPerSeconds = TimeSpan.FromSeconds(1).Ticks;
-
+                    var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
 
                     for (var i = 0; i < barchartJson.C.Length; i++)
                     {
