@@ -17,9 +17,9 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          StockSerie.Trend trend = (StockSerie.Trend) value;
          return
             trend == StockSerie.Trend.DownTrend
-               ? Brushes.DarkRed
+               ? Brushes.Red
                : trend == StockSerie.Trend.UpTrend
-                  ? Brushes.DarkGreen
+                  ? Brushes.Green
                   : Brushes.Transparent; // For NoTrend
       }
 

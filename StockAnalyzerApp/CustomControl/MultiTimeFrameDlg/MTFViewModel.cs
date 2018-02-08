@@ -123,15 +123,16 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
       public MTFViewModel()
       {
-         indicatorName = "TRAILHL(2)";
+         indicatorName = "TRAILHL(1)";
 
-         this.group = StockSerie.Groups.EURONEXT;
+         this.group = StockSerie.Groups.FUTURE;
          this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group)).ToList();
          this.NbStocks = stockSeries.Count();
+
          this.Trends = new ObservableCollection<MTFTrend>();
-         this.barDuration1 = StockSerie.StockBarDuration.Daily;
-         this.barDuration2 = StockSerie.StockBarDuration.TLB;
-         this.BarDuration3 = StockSerie.StockBarDuration.TLB_3D;
+         this.barDuration1 = StockSerie.StockBarDuration.TLB_EMA3;
+         this.BarDuration2 = StockSerie.StockBarDuration.TLB_3D_EMA3;
+         this.barDuration3 = StockSerie.StockBarDuration.TLB_9D_EMA3;
 
          dispatcher = Dispatcher.CurrentDispatcher;
       }
