@@ -56,10 +56,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             var points = stockSerie.generateZigzagPoints(0, stockSerie.Count - 1, hlPeriod);
 
             IStockIndicator hlTrailSR = stockSerie.GetIndicator("TRAILHLSR(" + hlPeriod + ")");
-            
+
             BoolSerie supportDetected = hlTrailSR.Events[0];
             BoolSerie resistanceDetected = hlTrailSR.Events[1];
 
+            Console.WriteLine(XABCD.DumpHeader());
             for (int i = 5; i < points.Count; i++)
             {
                 var xabcd = new XABCD();
@@ -69,6 +70,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 xabcd.AddPoint(points[i - 1]);
                 xabcd.AddPoint(points[i]);
 
+                Console.WriteLine(xabcd.Dump());
+
                 if (xabcd.GetPatternName() != null)
                 {
                     foreach (var p in xabcd.GetLines(SeriePens[0], false))
@@ -77,9 +80,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     }
 
                     // Detect Event
-                    for(int j = (int)points[i].X; j < stockSerie.Count; j++)
+                    for (int j = (int)points[i].X; j < stockSerie.Count; j++)
                     {
-                        if(xabcd.IsBullish && supportDetected[j])
+                        if (xabcd.IsBullish && supportDetected[j])
                         {
                             this.Events[0][j] = true;
                             break;
@@ -95,8 +98,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             DrawingItem.CreatePersistent = true;
         }
 
-        
-        static readonly bool[] isEvent = new bool[] { true, true};
+
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
@@ -110,7 +113,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "BullishPattern", "BearishPattern"};
+                    eventNames = new string[] { "BullishPattern", "BearishPattern" };
                 }
                 return eventNames;
             }

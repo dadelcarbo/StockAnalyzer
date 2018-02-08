@@ -5857,26 +5857,6 @@ border:1px solid black;
                         break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                         {
-                            List<string> indicators = new List<string> { "TRAILSTOP|TRAILHLS(2,1)" };
-                            List<StockSerie.StockBarDuration> durations = new List<StockSerie.StockBarDuration>
-                            {
-                                StockSerie.StockBarDuration.Daily,
-                                StockSerie.StockBarDuration.Daily_EMA6,
-                                StockSerie.StockBarDuration.TLB,
-                                StockSerie.StockBarDuration.TLB_EMA6,
-                                StockSerie.StockBarDuration.TLB_3D,
-                                StockSerie.StockBarDuration.TLB_3D_EMA6,
-                            };
-                            //MultiTimeFrameGrid grid = new MultiTimeFrameGrid();
-
-                            //this.Cursor = Cursors.WaitCursor;
-
-                            //grid.LoadData(durations, indicators, this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.currentStockSerie.StockGroup)).ToList());
-
-                            //this.Cursor = Cursors.Arrow;
-
-                            //grid.Show(this);
-
                             MTFDlg mtfDlg = new MTFDlg();
                             mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                             mtfDlg.Show();

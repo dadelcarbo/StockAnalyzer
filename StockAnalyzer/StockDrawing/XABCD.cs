@@ -86,6 +86,16 @@ namespace StockAnalyzer.StockDrawing
 
         static Pen dashPen = new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
         static Pen fillBullishPen = new Pen(Color.FromArgb(80, Color.DarkGreen)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
+
+        static public string DumpHeader()
+        {
+            return "AB,AC,BD,XB,XD,Bullish";
+        }
+        public string Dump()
+        {
+            return AB + "," + AC + "," + BD + "," + XB + "," + X + "," + IsBullish;
+        }
+
         static Pen fillBearishPen = new Pen(Color.FromArgb(80, Color.DarkRed)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
         public IEnumerable<DrawingItem> GetLines(Pen drawingPen, bool showRatioText = true)
         {
