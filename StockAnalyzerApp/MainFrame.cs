@@ -6318,6 +6318,11 @@ border:1px solid black;
 
         public void SetThemeFromIndicator(string fullName)
         {
+            if (this.themeDictionary.ContainsKey(this.currentTheme) && this.themeDictionary[this.currentTheme].Values.Any(v => v.Any(vv => vv.Contains(fullName))))
+            {
+                return;
+            }
+
             using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(StockViewableItemsManager.GetTheme(fullName))))
             {
                 using (StreamReader sr = new StreamReader(ms))
