@@ -347,7 +347,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         minValue = -1.0f;
                         maxValue = 1.0f;
-                    } 
+                    }
                     else if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
                     {
                         this.Deactivate("Input data is corrupted and cannot be displayed...", false);
@@ -1115,13 +1115,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                         else
                             if (value > 1000000)
-                            {
-                                valueString = (value / 1000).ToString("0.#") + "K";
-                            }
-                            else
-                            {
-                                valueString = value.ToString("0.##");
-                            }
+                        {
+                            valueString = (value / 1000).ToString("0.#") + "K";
+                        }
+                        else
+                        {
+                            valueString = value.ToString("0.##");
+                        }
                         this.DrawString(this.foregroundGraphic, valueString, axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
                     }
                 }
@@ -1141,6 +1141,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF initialValue = GetValuePointFromScreenPoint(mouseDownPos);
                 PointF newValue = GetValuePointFromScreenPoint(e.Location);
                 float variation = (newValue.Y - initialValue.Y) / initialValue.Y;
+                float points = newValue.Y - initialValue.Y;
 
                 // Draw selection zone and Finbonacci retracements
                 float fiboY = 0.0f;
@@ -1199,7 +1200,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(foregroundGraphic,
                     "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
                     "Value:\t" + fiboPoint.Y.ToString("#.###") + "   " + Environment.NewLine +
-                    "Var:\t" + variation.ToString("P2"),
+                    "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
+                    "Diff:\t" + points.ToString("0.##"),
                     toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
 
                 // force the value box not to display.
@@ -1622,13 +1624,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             else
                 if (value > 1000000)
-                {
-                    valueString = (value / 1000).ToString("0.###") + "K";
-                }
-                else
-                {
-                    valueString = value.ToString("0.###");
-                }
+            {
+                valueString = (value / 1000).ToString("0.###") + "K";
+            }
+            else
+            {
+                valueString = value.ToString("0.###");
+            }
             return (type + ":").PadRight(tabLocation) + valueString;
         }
         protected string BuildTabbedString(string type, string value, int tabLocation)
