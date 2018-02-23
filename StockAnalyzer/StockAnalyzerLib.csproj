@@ -216,6 +216,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NORMSTOKS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ShortInterest.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTSMALLSPEC.cs" />
