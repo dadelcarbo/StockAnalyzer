@@ -3883,8 +3883,8 @@ namespace StockAnalyzer.StockClasses
             longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
             shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
 
-            FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW);
-            FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH);
+            FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
+            FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
             FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
 
             StockDailyValue previousValue = this.Values.First();
@@ -3918,8 +3918,8 @@ namespace StockAnalyzer.StockClasses
                     }
                     else
                     {
-                        // Trail the stop  
-                        longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
+                        // Trail the stop
+                        longStopSerie[i] = longStopSerie[i - 1] + alpha * (lowEMASerie[i] - longStopSerie[i - 1]);
                         shortStopSerie[i] = float.NaN;
                         extremum = Math.Max(extremum, highEMASerie[i]);
                     }
@@ -3938,7 +3938,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         // Trail the stop  
                         longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
+                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (highEMASerie[i] - shortStopSerie[i - 1]);
                         extremum = Math.Min(extremum, lowEMASerie[i]);
                     }
                 }
