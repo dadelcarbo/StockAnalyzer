@@ -5,84 +5,62 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-   public class StockTrailStop_TRAILVAR : StockTrailStopBase
-   {
-      public StockTrailStop_TRAILVAR()
-      {
-      }
-      public override IndicatorDisplayTarget DisplayTarget
-      {
-         get { return IndicatorDisplayTarget.PriceIndicator; }
-      }
-      public override bool RequiresVolumeData { get { return false; } }
-      public override string[] ParameterNames
-      {
-         get { return new string[] { "Period", "Indicator", "IndicatorMax", "IndicatorCenter", "IndicatorWeight" }; }
-      }
+    public class StockTrailStop_TRAILVAR : StockTrailStopBase
+    {
+        public StockTrailStop_TRAILVAR()
+        {
+        }
+        public override IndicatorDisplayTarget DisplayTarget
+        {
+            get { return IndicatorDisplayTarget.PriceIndicator; }
+        }
+        public override bool RequiresVolumeData { get { return false; } }
+        public override string[] ParameterNames
+        {
+            get { return new string[] { "Period", "Indicator", "IndicatorMax", "IndicatorCenter", "IndicatorWeight" }; }
+        }
 
-      public override Object[] ParameterDefaultValues
-      {
-         get { return new Object[] { 2, "ER(20_1_1)", 1f, 0f, 1f }; }
-      }
-      public override ParamRange[] ParameterRanges
-      {
-         get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeIndicator(), new ParamRangeFloat(0f, float.MaxValue), new ParamRangeFloat(0f, float.MaxValue), new ParamRangeFloat() }; }
-      }
+        public override Object[] ParameterDefaultValues
+        {
+            get { return new Object[] { 2, "ER(20_1_1)", 1f, 0f, 1f }; }
+        }
+        public override ParamRange[] ParameterRanges
+        {
+            get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeIndicator(), new ParamRangeFloat(0f, float.MaxValue), new ParamRangeFloat(0f, float.MaxValue), new ParamRangeFloat() }; }
+        }
 
-      public override string[] SerieNames { get { return new string[] { "TRAILVAR.LS", "TRAILVAR.SS" }; } }
+        public override string[] SerieNames { get { return new string[] { "TRAILVAR.LS", "TRAILVAR.SS" }; } }
 
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
-      public override void ApplyTo(StockSerie stockSerie)
-      {
-         FloatSerie longStopSerie;
-         FloatSerie shortStopSerie;
-         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+        }
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            FloatSerie longStopSerie;
+            FloatSerie shortStopSerie;
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-         float indicatorMax = (float)this.Parameters[2];
-         float indicatorCenter = (float)this.Parameters[3];
-         float indicatorWeight = (float)this.Parameters[4];
+            float indicatorMax = (float)this.Parameters[2];
+            float indicatorCenter = (float)this.Parameters[3];
+            float indicatorWeight = (float)this.Parameters[4];
 
 
-         stockSerie.CalculateVarTrailStop((int)this.Parameters[0], ((string)this.Parameters[1]).Replace('_', ','), indicatorMax, indicatorCenter, indicatorWeight, out longStopSerie, out shortStopSerie);
-         this.Series[0] = longStopSerie;
-         this.Series[1] = shortStopSerie;
+            stockSerie.CalculateVarTrailStop((int)this.Parameters[0], ((string)this.Parameters[1]).Replace('_', ','), indicatorMax, indicatorCenter, indicatorWeight, out longStopSerie, out shortStopSerie);
+            this.Series[0] = longStopSerie;
+            this.Series[1] = shortStopSerie;
 
-         // Detecting events
-         this.CreateEventSeries(stockSerie.Count);
+            // Generate events
+            this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
+        }
 
-         for (int i = (int)this.Parameters[0]; i < stockSerie.Count; i++)
-         {
-            this.Events[0][i] = !float.IsNaN(longStopSerie[i]);
-            this.Events[1][i] = !float.IsNaN(shortStopSerie[i]);
-            this.Events[2][i] = float.IsNaN(longStopSerie[i - 1]) && !float.IsNaN(longStopSerie[i]);
-            this.Events[3][i] = float.IsNaN(shortStopSerie[i - 1]) && !float.IsNaN(shortStopSerie[i]);
-            this.Events[4][i] = !float.IsNaN(longStopSerie[i - 1]) && !float.IsNaN(longStopSerie[i]) && longStopSerie[i - 1] < longStopSerie[i];
-            this.Events[5][i] = !float.IsNaN(shortStopSerie[i - 1]) && !float.IsNaN(shortStopSerie[i]) && shortStopSerie[i - 1] > shortStopSerie[i];
-            this.Events[6][i] = !float.IsNaN(longStopSerie[i]) && !float.IsNaN(longStopSerie[i - 1]) && lowSerie[i] > longStopSerie[i] && lowSerie[i - 1] <= longStopSerie[i - 1];
-            this.Events[7][i] = !float.IsNaN(shortStopSerie[i]) && !float.IsNaN(shortStopSerie[i - 1]) && highSerie[i] < shortStopSerie[i] && highSerie[i - 1] >= shortStopSerie[i - 1];
-         }
-      }
-
-      static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "TrailedUp", "TrailedDown", "TouchedDown", "TouchedUp" };
-      public override string[] EventNames
-      {
-         get { return eventNames; }
-      }
-      static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false, true, true };
-      public override bool[] IsEvent
-      {
-         get { return isEvent; }
-      }
-   }
+    }
 }

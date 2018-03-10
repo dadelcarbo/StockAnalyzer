@@ -4,108 +4,206 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-   public abstract class StockTrailStopBase : Parameterizable, IStockTrailStop
-   {
-      public StockTrailStopBase()
-      {
-         this.series = new FloatSerie[this.SeriesCount];
-         if (EventCount != 0)
-         {
-            this.eventSeries = new BoolSerie[this.EventCount];
-         }
-         this.serieVisibility = new bool[this.SeriesCount];
-         for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
-      }
-      public abstract IndicatorDisplayTarget DisplayTarget { get; }
-      public IndicatorDisplayStyle DisplayStyle
-      {
-         get { return IndicatorDisplayStyle.TrailStop; }
-      }
-      public ViewableItemType Type { get { return ViewableItemType.TrailStop; } }
-      public virtual bool RequiresVolumeData { get { return false; } }
-
-      public string ToThemeString()
-      {
-         string themeString = "TRAILSTOP|" + this.Name;
-         for (int i = 0; i < this.SeriesCount; i++)
-         {
-            themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
-         }
-         return themeString;
-      }
-
-      protected FloatSerie[] series;
-      public FloatSerie[] Series { get { return series; } }
-
-      abstract public Pen[] SeriePens { get; }
-      private bool[] serieVisibility;
-      public bool[] SerieVisibility { get { return this.serieVisibility; } }
-
-      public void Initialise(string[] parameters)
-      {
-         this.ParseInputParameters(parameters);
-      }
-
-      abstract public void ApplyTo(StockSerie stockSerie);
-
-      #region IStockEvent implementation
-      protected BoolSerie[] eventSeries;
-      public int EventCount
-      {
-         get
-         {
-            if (EventNames != null)
+    public abstract class StockTrailStopBase : Parameterizable, IStockTrailStop
+    {
+        public StockTrailStopBase()
+        {
+            this.series = new FloatSerie[this.SeriesCount];
+            if (EventCount != 0)
             {
-               return EventNames.Length;
+                this.eventSeries = new BoolSerie[this.EventCount];
             }
-            else
+            this.serieVisibility = new bool[this.SeriesCount];
+            for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
+        }
+
+        public abstract IndicatorDisplayTarget DisplayTarget { get; }
+        public IndicatorDisplayStyle DisplayStyle
+        {
+            get { return IndicatorDisplayStyle.TrailStop; }
+        }
+        public ViewableItemType Type { get { return ViewableItemType.TrailStop; } }
+        public virtual bool RequiresVolumeData { get { return false; } }
+
+        public string ToThemeString()
+        {
+            string themeString = "TRAILSTOP|" + this.Name;
+            for (int i = 0; i < this.SeriesCount; i++)
             {
-               return 0;
+                themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
             }
-         }
-      }
+            return themeString;
+        }
 
-      abstract public string[] EventNames { get; }
-      abstract public bool[] IsEvent { get; }
+        protected FloatSerie[] series;
+        public FloatSerie[] Series { get { return series; } }
 
-      public BoolSerie[] Events
-      {
-         get { return eventSeries; }
-      }
-      virtual protected void CreateEventSeries(int count)
-      {
-         for (int i = 0; i < this.EventCount; i++)
-         {
-            this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
-         }
-      }
-      #endregion
+        abstract public Pen[] SeriePens { get; }
+        private bool[] serieVisibility;
+        public bool[] SerieVisibility { get { return this.serieVisibility; } }
 
+        public void Initialise(string[] parameters)
+        {
+            this.ParseInputParameters(parameters);
+        }
 
-      private StockSerie.Trend[] upDownState = null;
+        abstract public void ApplyTo(StockSerie stockSerie);
 
-      public StockSerie.Trend[] UpDownState
-      {
-         get
-         {
-            if (upDownState == null)
+        #region IStockEvent implementation
+        protected BoolSerie[] eventSeries;
+        public int EventCount
+        {
+            get
             {
-               BoolSerie boolSerie = this.Events[0];
-               upDownState = new StockSerie.Trend[boolSerie.Count];
-               for (int i = 0; i < boolSerie.Count; i++)
-               {
-                  upDownState[i] = BoolToTrend(boolSerie[i]);
-               }
+                if (EventNames != null)
+                {
+                    return EventNames.Length;
+                }
+                else
+                {
+                    return 0;
+                }
             }
-            return upDownState;
-         }
-      }
+        }
 
-      public static StockSerie.Trend BoolToTrend(bool? upTrend)
+        public BoolSerie[] Events
+        {
+            get { return eventSeries; }
+        }
+        virtual protected void CreateEventSeries(int count)
+        {
+            for (int i = 0; i < this.EventCount; i++)
+            {
+                this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
+            }
+        }
+        #endregion
+
+
+        private StockSerie.Trend[] upDownState = null;
+
+        public StockSerie.Trend[] UpDownState
+        {
+            get
+            {
+                if (upDownState == null)
+                {
+                    BoolSerie boolSerie = this.Events[0];
+                    upDownState = new StockSerie.Trend[boolSerie.Count];
+                    for (int i = 0; i < boolSerie.Count; i++)
+                    {
+                        upDownState[i] = BoolToTrend(boolSerie[i]);
+                    }
+                }
+                return upDownState;
+            }
+        }
+
+        public static StockSerie.Trend BoolToTrend(bool? upTrend)
+        {
+            if (upTrend == null) return StockSerie.Trend.NoTrend;
+            if (upTrend.Value) return StockSerie.Trend.UpTrend;
+            return StockSerie.Trend.DownTrend;
+        }
+
+        private static string[] eventNames = new string[]
       {
-         if (upTrend == null) return StockSerie.Trend.NoTrend;
-         if (upTrend.Value) return StockSerie.Trend.UpTrend;
-         return StockSerie.Trend.DownTrend;
-      }
-   }
+         "SupportDetected", "ResistanceDetected",           // 0,1
+         "Pullback", "EndOfTrend",                          // 2,3
+         "HigherLow", "LowerHigh",                          // 4,5
+         "ResistanceBroken", "SupportBroken",               // 6,7
+         "Bullish", "Bearish"                              // 8,9
+      };
+
+        public string[] EventNames => eventNames;
+
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
+        public bool[] IsEvent => isEvent;
+
+        protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
+        {
+            this.CreateEventSeries(stockSerie.Count);
+
+            float previousHigh = stockSerie.GetSerie(StockDataType.HIGH).GetMax(0, 4);
+            float previousLow = stockSerie.GetSerie(StockDataType.LOW).GetMin(0, 4);
+            float previousHigh2 = previousHigh;
+            float previousLow2 = previousLow;
+            bool waitingForEndOfTrend = false;
+            bool isBullish = false;
+            bool isBearish = false;
+            for (int i = 5; i < stockSerie.Count; i++)
+            {
+                if (!float.IsNaN(longStopSerie[i]) && float.IsNaN(longStopSerie[i - 1]))
+                {
+                    this.Events[0][i] = true; // SupportDetected
+
+                    if (waitingForEndOfTrend)
+                    {
+                        this.Events[3][i] = true; // EndOfTrend
+                        waitingForEndOfTrend = false;
+                    }
+
+                    if (longStopSerie[i] > previousLow)
+                    {
+                        this.Events[4][i] = true; // HigherLow
+
+                        if (longStopSerie[i] > previousHigh2)
+                        {
+                            this.Events[2][i] = true; // PB
+                            waitingForEndOfTrend = true;
+                        }
+                    }
+                    previousLow2 = previousLow;
+                    previousLow = longStopSerie[i];
+                }
+                if (!float.IsNaN(shortStopSerie[i]) && float.IsNaN(shortStopSerie[i - 1]))
+                {
+                    this.Events[1][i] = true; // ResistanceDetected
+
+                    if (waitingForEndOfTrend)
+                    {
+                        this.Events[3][i] = true; // EndOfTrend
+                        waitingForEndOfTrend = false;
+                    }
+
+                    if (shortStopSerie[i] < previousHigh)
+                    {
+                        this.Events[5][i] = true; // LowerHigh
+                        if (shortStopSerie[i] < previousLow2)
+                        {
+                            this.Events[2][i] = true; // PB
+                            waitingForEndOfTrend = true;
+                        }
+                    }
+                    previousHigh2 = previousHigh;
+                    previousHigh = shortStopSerie[i];
+                }
+
+                bool supportBroken = float.IsNaN(longStopSerie[i]) && !float.IsNaN(longStopSerie[i - 1]);
+                this.Events[7][i] = supportBroken;
+                bool resistanceBroken = float.IsNaN(shortStopSerie[i]) && !float.IsNaN(shortStopSerie[i - 1]);
+                this.Events[6][i] = resistanceBroken;
+
+                if (isBullish)
+                {
+                    isBullish = !supportBroken;
+                }
+                else
+                {
+                    isBullish = !float.IsNaN(longStopSerie[i]) && float.IsNaN(shortStopSerie[i]);
+                }
+                if (isBearish)
+                {
+                    isBearish = !resistanceBroken;
+                }
+                else
+                {
+                    isBearish = float.IsNaN(longStopSerie[i]) && !float.IsNaN(shortStopSerie[i]);
+                }
+
+                this.Events[8][i] = isBullish;
+                this.Events[9][i] = isBearish;
+            }
+        }
+    }
 }

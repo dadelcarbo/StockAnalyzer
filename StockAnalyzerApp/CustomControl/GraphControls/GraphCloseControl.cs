@@ -257,29 +257,96 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];
                         Pen longPen = this.CurveList.TrailStop.SeriePens[0];
                         Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
-                        PointF srPoint1;
-                        PointF srPoint2;
-                        if (float.IsNaN(shortStopSerie[this.StartIndex]))
-                        {
-                            srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, longStopSerie[this.StartIndex]);
-                        }
-                        else
-                        {
-                            srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, shortStopSerie[this.StartIndex]);
-                        }
-                        for (int i = StartIndex + 1; i <= this.EndIndex; i++)
-                        {
-                            if (float.IsNaN(shortStopSerie[i])) // upTrend
+
+                        using (Brush longBrush = new SolidBrush(longPen.Color)) {
+                            using (Brush shortBrush = new SolidBrush(shortPen.Color))
                             {
-                                srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
-                                aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                PointF srPoint1;
+                                PointF srPoint2;
+                                if (float.IsNaN(shortStopSerie[this.StartIndex]))
+                                {
+                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, longStopSerie[this.StartIndex]);
+                                }
+                                else
+                                {
+                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, shortStopSerie[this.StartIndex]);
+                                }
+                                for (int i = StartIndex + 1; i <= this.EndIndex; i++)
+                                {
+                                    bool isSupport = float.IsNaN(shortStopSerie[i]);
+                                    if (isSupport) // upTrend
+                                    {
+                                        srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
+                                        aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                    }
+                                    else
+                                    {
+                                        srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
+                                        aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                    }
+                                    srPoint1 = srPoint2;
+
+                                    if (this.ShowIndicatorText)
+                                    {
+                                        const int textOffset = 4;
+
+                                        float yPos = float.IsNaN(shortStopSerie[i])
+                                           ? srPoint1.Y + 2
+                                           : srPoint1.Y - 2 * 2 - 12;
+
+                                        // Draw PB and EndOfTrend text
+                                        if (this.CurveList.TrailStop.Events[2][i])
+                                        {
+                                            if (isSupport)
+                                            {
+                                                // Pullback in up trend detected
+                                                this.DrawString(aGraphic, "PB", axisFont, longBrush,
+                                                   this.backgroundBrush, srPoint1.X - textOffset, yPos, false);
+                                            }
+                                            else
+                                            {
+                                                // Pullback in down trend detected
+                                                this.DrawString(aGraphic, "PB", axisFont, shortBrush,
+                                                   this.backgroundBrush, srPoint1.X - textOffset, yPos, false);
+                                            }
+                                        }
+                                        else if (this.CurveList.TrailStop.Events[3][i])
+                                        {
+                                            if (isSupport)
+                                            {
+                                                // End of down trend detected
+                                                this.DrawString(aGraphic, "End", axisFont, shortBrush,
+                                               this.backgroundBrush, srPoint1.X - textOffset,
+                                               yPos, false);
+                                            }
+                                            else
+                                            {
+                                                // End of down trend detected
+                                                this.DrawString(aGraphic, "End", axisFont, longBrush,
+                                               this.backgroundBrush, srPoint1.X - textOffset,
+                                               yPos, false);
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (this.CurveList.TrailStop.Events[4][i])
+                                            {
+                                                this.DrawString(aGraphic, "HL", axisFont, longBrush,
+                                                   this.backgroundBrush,
+                                                   srPoint1.X - textOffset, yPos, false);
+
+                                            }
+                                            if (this.CurveList.TrailStop.Events[5][i])
+                                            {
+                                                this.DrawString(aGraphic, "LH", axisFont, shortBrush,
+                                                   this.backgroundBrush,
+                                                   srPoint1.X - textOffset, yPos, false);
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            else
-                            {
-                                srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
-                                aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
-                            }
-                            srPoint1 = srPoint2;
                         }
                     }
 
