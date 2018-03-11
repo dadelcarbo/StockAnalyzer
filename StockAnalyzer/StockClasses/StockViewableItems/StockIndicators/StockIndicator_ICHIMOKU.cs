@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             FloatSerie SenkouSpanA = (TenkanSenSerie + KijunSenSerie) / 2.0f;
 
-            SenkouSpanA = SenkouSpanA.ShiftForward((int) this.parameters[1]);
+            SenkouSpanA = SenkouSpanA.ShiftForward((int)this.parameters[1]);
             this.series[2] = SenkouSpanA;
             SenkouSpanA.Name = "SenkouSpanA";
 
@@ -119,8 +119,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-        }
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
+            for (int i = period; i < stockSerie.Count; i++)
+            {
+                bool above = closeSerie[i] > Math.Max(TenkanSenSerie[i], KijunSenSerie[i]);
+                bool below = closeSerie[i] < Math.Min(TenkanSenSerie[i], KijunSenSerie[i]);
+                this.Events[0][i] = above;
+                this.Events[1][i] = !(above||below);
+                this.Events[2][i] = below;
+            }
+        }
         static string[] eventNames = new string[] { "AboveCloud", "InCloud", "BelowCloud" };
         public override string[] EventNames
         {
