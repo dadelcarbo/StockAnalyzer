@@ -108,11 +108,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         private static string[] eventNames = new string[]
       {
-         "SupportDetected", "ResistanceDetected",           // 0,1
-         "Pullback", "EndOfTrend",                          // 2,3
-         "HigherLow", "LowerHigh",                          // 4,5
-         "ResistanceBroken", "SupportBroken",               // 6,7
-         "Bullish", "Bearish"                              // 8,9
+         "BrokenUp", "BrokenDown",           // 0,1
+         "Pullback", "EndOfTrend",           // 2,3
+         "HigherLow", "LowerHigh",           // 4,5
+         "Bullish", "Bearish"                // 6,7
       };
 
         public string[] EventNames => eventNames;
@@ -180,9 +179,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
 
                 bool supportBroken = float.IsNaN(longStopSerie[i]) && !float.IsNaN(longStopSerie[i - 1]);
-                this.Events[7][i] = supportBroken;
                 bool resistanceBroken = float.IsNaN(shortStopSerie[i]) && !float.IsNaN(shortStopSerie[i - 1]);
-                this.Events[6][i] = resistanceBroken;
 
                 if (isBullish)
                 {
@@ -201,8 +198,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     isBearish = float.IsNaN(longStopSerie[i]) && !float.IsNaN(shortStopSerie[i]);
                 }
 
-                this.Events[8][i] = isBullish;
-                this.Events[9][i] = isBearish;
+                this.Events[6][i] = isBullish;
+                this.Events[7][i] = isBearish;
             }
         }
     }

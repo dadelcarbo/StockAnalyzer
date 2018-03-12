@@ -3923,7 +3923,9 @@ namespace StockAnalyzer.StockClasses
                     else
                     {
                         // Trail the stop
-                        longStopSerie[i] = longStopSerie[i - 1] + alpha * (lowEMASerie[i] - longStopSerie[i - 1]);
+                        float longStop = longStopSerie[i - 1];
+                        longStopSerie[i] = Math.Max(longStop, longStop + alpha * (lowEMASerie[i] - longStop));
+                        //longStopSerie[i] = longStopSerie[i - 1] + alpha * (lowEMASerie[i] - longStopSerie[i - 1]);
                         shortStopSerie[i] = float.NaN;
                         extremum = Math.Max(extremum, highEMASerie[i]);
                     }
@@ -3942,7 +3944,8 @@ namespace StockAnalyzer.StockClasses
                     {
                         // Trail the stop  
                         longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (highEMASerie[i] - shortStopSerie[i - 1]);
+                        float shortStop = shortStopSerie[i - 1];
+                        shortStopSerie[i] = Math.Min(shortStop, shortStop + alpha * (highEMASerie[i] - shortStop));
                         extremum = Math.Min(extremum, lowEMASerie[i]);
                     }
                 }
