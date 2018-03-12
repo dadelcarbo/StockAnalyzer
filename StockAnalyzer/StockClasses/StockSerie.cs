@@ -2038,8 +2038,12 @@ namespace StockAnalyzer.StockClasses
                 if (eventIndex == -1)
                 {
                     StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                    return false;
                 }
-                if (stockEvent.Events[eventIndex][index]) return true;
+                else
+                {
+                    if (stockEvent.Events[eventIndex][index]) return true;
+                }
             }
             finally
             {
