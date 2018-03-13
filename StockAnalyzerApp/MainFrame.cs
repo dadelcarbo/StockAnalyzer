@@ -653,6 +653,10 @@ namespace StockAnalyzerApp
             {
                 this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_6D;
             }
+            if (this.CurrentStockSerie.StockName.StartsWith("FUT_"))
+            {
+                this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_3D_EMA3;
+            }
             else
             {
                 this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
@@ -4129,7 +4133,7 @@ namespace StockAnalyzerApp
                         this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
                         break;
                     case StockSerie.Groups.FUTURE:
-                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
+                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA3, true);
                         break;
                     case StockSerie.Groups.INTRADAY:
                         this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
