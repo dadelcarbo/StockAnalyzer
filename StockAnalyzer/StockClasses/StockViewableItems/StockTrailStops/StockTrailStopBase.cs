@@ -116,7 +116,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false };
         public bool[] IsEvent => isEvent;
 
         protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
