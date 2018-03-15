@@ -953,9 +953,9 @@ namespace StockAnalyzerApp
                             var values = stockSerie.GetValues(alertDef.BarDuration);
                             for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
                             {
-                                var dailyValue = values.ElementAt(i);
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
+                                var dailyValue = values.ElementAt(i+1);
                                     StockAlert stockAlert = new StockAlert(alertDef,
                                         dailyValue.DATE,
                                         stockSerie.StockName,
