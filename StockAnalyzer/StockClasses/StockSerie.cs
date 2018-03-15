@@ -3876,7 +3876,83 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
+        public void CalculateDecayTrailStop(int period, float decayPercent, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        {
+            float alpha = 2.0f / (float)(period + 1);
+            float decay = 1.0f + decayPercent;
 
+            longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
+            shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
+
+            FloatSerie lowEMASerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
+            FloatSerie highEMASerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
+            FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
+
+            StockDailyValue previousValue = this.Values.First();
+            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
+            int i = 1;
+            float extremum;
+            if (upTrend)
+            {
+                longStopSerie[0] = previousValue.LOW;
+                shortStopSerie[0] = float.NaN;
+                extremum = previousValue.HIGH;
+            }
+            else
+            {
+                longStopSerie[0] = float.NaN;
+                shortStopSerie[0] = previousValue.HIGH;
+                extremum = previousValue.LOW;
+            }
+
+            foreach (StockDailyValue currentValue in this.Values.Skip(1))
+            {
+                if (upTrend)
+                {
+                    if (closeEMASerie[i] < longStopSerie[i - 1])
+                    {
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = false;
+                        longStopSerie[i] = float.NaN;
+                        shortStopSerie[i] = extremum;
+                        extremum = lowEMASerie[i];
+                        alpha = 2.0f / (float)(period + 1);
+                    }
+                    else
+                    {
+                        // Trail the stop
+                        float longStop = longStopSerie[i - 1];
+                        longStopSerie[i] = Math.Max(longStop, longStop + alpha * (lowEMASerie[i] - longStop));
+                        alpha *= decay;
+                        shortStopSerie[i] = float.NaN;
+                        extremum = Math.Max(extremum, highEMASerie[i]);
+                    }
+                }
+                else
+                {
+                    if (closeEMASerie[i] > shortStopSerie[i - 1])
+                    {
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = true;
+                        longStopSerie[i] = extremum;
+                        shortStopSerie[i] = float.NaN;
+                        extremum = highEMASerie[i];
+                        alpha = 2.0f / (float)(period + 1);
+                    }
+                    else
+                    {
+                        // Trail the stop  
+                        longStopSerie[i] = float.NaN;
+                        float shortStop = shortStopSerie[i - 1];
+                        shortStopSerie[i] = Math.Min(shortStop, shortStop + alpha * (highEMASerie[i] - shortStop));
+                        alpha *= decay;
+                        extremum = Math.Min(extremum, lowEMASerie[i]);
+                    }
+                }
+                previousValue = currentValue;
+                i++;
+            }
+        }
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float alpha = 2.0f / (float)(period + 1);
