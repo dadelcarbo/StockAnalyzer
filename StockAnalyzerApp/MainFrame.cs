@@ -955,11 +955,11 @@ namespace StockAnalyzerApp
                             {
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
-                                var dailyValue = values.ElementAt(i+1);
-                                    StockAlert stockAlert = new StockAlert(alertDef,
+                                    var dailyValue = values.ElementAt(i + 1);
+                                    var stockAlert = new StockAlert(alertDef,
                                         dailyValue.DATE,
                                         stockSerie.StockName,
-                                        dailyValue.CLOSE);
+                                        dailyValue.OPEN);
 
                                     if (intradayAlertLog.Alerts.All(a => a != stockAlert))
                                     {
