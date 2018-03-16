@@ -63,8 +63,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie longStopSerie = trailStop.Series[0];
             FloatSerie shortStopSerie = trailStop.Series[1];
 
-            BoolSerie supportDetectedSerie = trailStop.Events[2];
-            BoolSerie resistanceDetectedSerie = trailStop.Events[3];
+            BoolSerie supportDetectedSerie = trailStop.Events[0];
+            BoolSerie resistanceDetectedSerie = trailStop.Events[1];
 
             FloatSerie supportSerie = new FloatSerie(stockSerie.Count, "TRAILHL.S"); supportSerie.Reset(float.NaN);
             FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, "TRAILHL.R"); resistanceSerie.Reset(float.NaN);
