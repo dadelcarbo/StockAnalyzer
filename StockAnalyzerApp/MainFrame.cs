@@ -881,8 +881,8 @@ namespace StockAnalyzerApp
 
         private List<StockAlertDef> reportAlerts;
         private List<StockAlertDef> intradayAlertDefs;
-        private StockAlertLog intradayAlertLog = new StockAlertLog("AlertLogIntraday.xml");
-        private StockAlertLog dailyAlertLog = new StockAlertLog("AlertLogDaily.xml");
+        private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml");
+        private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
