@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Xml.Serialization;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using DataGrid = System.Windows.Controls.DataGrid;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
@@ -59,6 +61,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
 
             StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Alert.Remove(alert.Alert.IndexOf("=>")));
+
+            StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
+
         }
     }
 }
