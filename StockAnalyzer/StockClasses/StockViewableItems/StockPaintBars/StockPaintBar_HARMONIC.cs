@@ -55,10 +55,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             int hlPeriod = (int)this.parameters[0];
             var points = stockSerie.generateZigzagPoints(0, stockSerie.Count - 1, hlPeriod);
 
-            IStockIndicator hlTrailSR = stockSerie.GetIndicator("TRAILHLSR(" + hlPeriod + ")");
-
-            BoolSerie supportDetected = hlTrailSR.Events[0];
-            BoolSerie resistanceDetected = hlTrailSR.Events[1];
+            IStockEvent events = stockSerie.GetTrailStop("TRAILEMA(" + hlPeriod + ")");
+            BoolSerie supportDetected = events.Events[0];
+            BoolSerie resistanceDetected = events.Events[1];
 
             Console.WriteLine(XABCD.DumpHeader());
             for (int i = 5; i < points.Count; i++)
