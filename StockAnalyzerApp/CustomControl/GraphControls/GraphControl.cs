@@ -58,7 +58,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public event MouseDateChangedHandler OnMouseDateChanged;
 
         // Constants
-        protected const int MARGIN_SIZE = 20;
+        protected const int MARGIN_SIZE = 18;
         protected const int MOUSE_MARQUEE_SIZE = 3;
         protected const int EVENT_MARQUEE_SIZE = 4;
 
@@ -269,7 +269,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Initialise graphics
                 this.graphic = this.CreateGraphics();
                 RectangleF rect = this.graphic.VisibleClipBounds;
-                rect.Inflate(new SizeF(-this.XMargin, -this.YMargin));
+                rect.Inflate(new SizeF(-this.XMargin * 1.5f, -this.YMargin));
+                rect.Offset(new PointF(this.XMargin * -.5f, 0));
                 this.GraphRectangle = rect;
 
                 this.IsInitialized = true;
