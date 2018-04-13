@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -14,13 +15,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f) };
 
-        public override string[] SerieNames => new string[] { "HIGH", "FIBHIGH", "FIBLOW", "LOW" };
+        public override string[] SerieNames => new string[] { "HIGH", "FIBHIGH", "FIBLOW", "LOW", "MID" };
 
         public override System.Drawing.Pen[] SeriePens => seriePens ??
                                                           (seriePens =
                                                               new Pen[]
                                                               {
-                                                                 new Pen(Color.DarkGreen), new Pen(Color.Black), new Pen(Color.Black), new Pen(Color.DarkRed)
+                                                                 new Pen(Color.DarkGreen), new Pen(Color.Black), new Pen(Color.Black), new Pen(Color.DarkRed), new Pen(Color.Black) {DashStyle = DashStyle.Dash}
                                                               });
 
         public override void ApplyTo(StockSerie stockSerie)
@@ -32,6 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Calculate FIBOCHANNEL Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
             FloatSerie midUpLine = new FloatSerie(stockSerie.Count);
+            FloatSerie midLine = new FloatSerie(stockSerie.Count);
             FloatSerie midDownLine = new FloatSerie(stockSerie.Count);
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
@@ -42,6 +44,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             upLine[0] = closeSerie[0];
             downLine[0] = closeSerie[0];
             midUpLine[0] = closeSerie[0];
+            midLine[0] = closeSerie[0];
             midDownLine[0] = closeSerie[0];
 
             float up, down;
@@ -51,6 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 downLine[i] = down = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
                 midUpLine[i] = (up * upRatio + down * downRatio);
                 midDownLine[i] = (down * upRatio + up * downRatio);
+                midLine[i] = (up + down)/2.0f;
             }
 
             int count = 0;
@@ -66,6 +70,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[++count] = downLine;
             this.Series[count].Name = this.SerieNames[count];
 
+            this.series[++count] = midLine;
+            this.Series[count].Name = this.SerieNames[count];
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
@@ -73,17 +80,49 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             bool previousBullish = false;
             bool previousBearish = false;
+            bool bullish = false;
+            bool bearish = false;
 
             for (int i = period; i < stockSerie.Count; i++)
             {
                 float close = closeSerie[i];
-                bool bullish = close > midUpLine[i];
+                if (bullish)
+                {
+                    if (highSerie[i] < midLine[i])
+                    {
+                        bullish = false;
+                    }
+                }
+                else
+                {
+                    if (closeSerie[i] > midUpLine[i])
+                    {
+                        bullish = true;
+                    }
+                }
+
+                if (bearish)
+                {
+                    if (lowSerie[i] > midLine[i])
+                    {
+                        bearish = false;
+                    }
+                }
+                else
+                {
+                    if (closeSerie[i] < midDownLine[i])
+                    {
+                        bearish = true;
+                    }
+                }
+                
+                //bool bullish = close > midUpLine[i];
                 this.Events[0][i] = bullish;
                 this.Events[2][i] = bullish && !previousBullish;
                 this.Events[4][i] = !bullish && previousBullish;
                 previousBullish = bullish;
 
-                bool bearish = close < midDownLine[i];
+               // bool bearish = close < midDownLine[i];
                 this.Events[1][i] = bearish;
                 this.Events[3][i] = bearish && !previousBearish;
                 this.Events[5][i] = !bearish && previousBearish;

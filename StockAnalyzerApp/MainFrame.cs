@@ -783,18 +783,22 @@ namespace StockAnalyzerApp
             this.Focus();
         }
 
-
-
         private void goBtn_Click(object sender, System.EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(searchText.Text) || !this.StockDictionary.ContainsKey(searchText.Text)) return;
+            if (string.IsNullOrWhiteSpace(searchText.Text)) return;
 
-            StockSerie serie = this.StockDictionary[searchText.Text];
+            var text = searchText.Text.ToUpper();
+            if (text == this.currentStockSerie.StockName.ToUpper()) return;
+
+            var serie = this.StockDictionary.Values.FirstOrDefault(s => s.StockName.ToUpper() == text);
+
+            if (serie == null) return;
+            searchText.Text = serie.StockName;
+            searchText.Select(0, serie.StockName.Length);
 
             // Update Group
             if (this.selectedGroup != serie.StockGroup)
             {
-
                 this.selectedGroup = serie.StockGroup;
 
                 foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
