@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             BoolSerie supportDetected = events.Events[0];
             BoolSerie resistanceDetected = events.Events[1];
 
-            Console.WriteLine(XABCD.DumpHeader());
+            //Console.WriteLine(XABCD.DumpHeader());
             for (int i = 5; i < points.Count; i++)
             {
                 var xabcd = new XABCD();
@@ -69,7 +69,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 xabcd.AddPoint(points[i - 1]);
                 xabcd.AddPoint(points[i]);
 
-                Console.WriteLine(xabcd.Dump());
+                //Console.WriteLine(xabcd.Dump());
 
                 if (xabcd.GetPatternName() != null)
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -32,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "Period" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")", "VAR2(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -40,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
+                    seriePens = new Pen[] { new Pen(Color.Black) { DashStyle = DashStyle.Custom } };
                 }
                 return seriePens;
             }
@@ -50,54 +51,38 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                HLine[] lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
-                lines[0].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                HLine[] lines = new HLine[] { new HLine(0, new Pen(Color.Black)) };
                 return lines;
             }
         }
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
+            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION) * (100f * (int)this.parameters[0]);
             FloatSerie emaSerie = varSerie.CalculateEMA((int)this.parameters[0]);
-
-            FloatSerie ema2Serie = (varSerie.SquareSigned()).CalculateEMA((int)this.parameters[0]).SqrtSigned();
-
-            //int period = (int)this.parameters[0];
-            //for (int i = period; i < stockSerie.Count; i++)
-            //{
-            //    float close1 = stockSerie.ValueArray[i - period].CLOSE;
-            //    float close2 = stockSerie.ValueArray[i].CLOSE;
-            //    float var = 0;
-            //    if (close2 < close1)
-            //    {
-            //        var = (close2 - close1) / close1;
-            //    }
-            //    else
-            //    {
-            //        close2 = 1f / close2;
-            //        close1 = 1f / close1;
-            //        var = -(close2 - close1) / close1;
-            //    }
-            //    varSerie[i] = var*100f;
-            //}
-
             this.series[0] = emaSerie;
-            this.Series[0].Name = this.Name;
+            this.Series[0].Name = this.SerieNames[0];
 
-            this.series[1] = ema2Serie;
-            this.Series[1].Name = this.Name;
+            // Detecting events
+            this.CreateEventSeries(stockSerie.Count);
+
+            bool bull = true, previousBull = true;
+            for (int i = 2; i < stockSerie.Count; i++)
+            {
+                bull = emaSerie[i] > 0;
+                this.eventSeries[0][i] = bull && ! previousBull;
+                this.eventSeries[1][i] = !bull & previousBull;
+                this.eventSeries[2][i] = bull;
+                this.eventSeries[3][i] = !bull;
+
+                previousBull = bull;
+            }
         }
 
-        static string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
-        static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        static readonly string[] eventNames = new string[] { "CrossUp", "CrossDown", "Bullish", "Bearish" };
+        public override string[] EventNames => eventNames;
+
+        static readonly bool[] isEvent = new bool[] { true, true, false, false };
+        public override bool[] IsEvent => isEvent;
     }
 }
