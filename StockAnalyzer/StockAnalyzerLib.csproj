@@ -13,20 +13,20 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -176,6 +176,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DELTA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />

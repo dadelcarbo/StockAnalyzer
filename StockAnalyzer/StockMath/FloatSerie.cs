@@ -407,6 +407,16 @@ namespace StockAnalyzer.StockMath
                 this[i] = value;
             }
         }
+
+        public FloatSerie CalculateDerivative() {
+            var derivative = new FloatSerie(this.Count);
+            for(int i = 1; i < this.Count; i++)
+            {
+                derivative[i] = (this[i] - this[i - 1]) / this[i - 1];
+            }
+            return derivative;
+        }
+
         private void CalculateRSI_U_D(float yesterValue, float currentValue, out float U, out float D, bool useLog)
         {
             if (yesterValue < currentValue)

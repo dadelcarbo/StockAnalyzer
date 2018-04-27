@@ -41,13 +41,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            upLine[0] = closeSerie[0];
-            downLine[0] = closeSerie[0];
-            midUpLine[0] = closeSerie[0];
-            midLine[0] = closeSerie[0];
-            midDownLine[0] = closeSerie[0];
-
             float up, down;
+            upLine[0] = up = highSerie[0];
+            downLine[0] = down = lowSerie[0];
+            midUpLine[0] = (up * upRatio + down * downRatio);
+            midDownLine[0] = (down * upRatio + up * downRatio);
+            midLine[0] = (up + down) / 2.0f;
+
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 upLine[i] = up = highSerie.GetMax(Math.Max(0, i - period - 1), i - 1);
@@ -83,7 +83,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             bool bullish = false;
             bool bearish = false;
 
-            for (int i = period; i < stockSerie.Count; i++)
+            for (int i = 1; i < stockSerie.Count; i++)
             {
                 float close = closeSerie[i];
                 if (bullish)
@@ -119,18 +119,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 //bool bullish = close > midUpLine[i];
                 this.Events[0][i] = bullish;
                 this.Events[2][i] = bullish && !previousBullish;
-                this.Events[4][i] = !bullish && previousBullish;
+                this.Events[3][i] = !bullish && previousBullish;
                 previousBullish = bullish;
 
                // bool bearish = close < midDownLine[i];
                 this.Events[1][i] = bearish;
-                this.Events[3][i] = bearish && !previousBearish;
+                this.Events[4][i] = bearish && !previousBearish;
                 this.Events[5][i] = !bearish && previousBearish;
                 previousBearish = bearish;
             }
         }
 
-        private static readonly string[] eventNames = { "Bullish", "Bearish", "StartBullish", "StopBullish", "BrokenUp", "BrokenDown" };
+        private static readonly string[] eventNames = { "Bullish", "Bearish", "BullStart", "BullStop", "BearStart", "BearStop" };
         public override string[] EventNames => eventNames;
 
         static readonly bool[] isEvent = { false, false, true, true, true, true };
