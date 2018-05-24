@@ -50,6 +50,7 @@ namespace StockAnalyzer.StockWeb
         public bool DownloadCOT(string destRootFolder, ref bool upToDate)
         {
             upToDate = true;
+            return upToDate;
 
             // 
             DownloadCOTArchive(destRootFolder, ref upToDate);
@@ -108,6 +109,7 @@ namespace StockAnalyzer.StockWeb
 
         public bool DownloadCOTArchive(string destRootFolder, ref bool upToDate)
         {
+            return true;
             upToDate = false;
 
             string folder = destRootFolder + COT_SUBFOLDER;

@@ -34,7 +34,8 @@ namespace StockAnalyzer.StockWeb
                         }
                         else
                         {
-                            message.From = new MailAddress("noreply@ultimatechartist.com");
+                            return;
+                            //message.From = new MailAddress("david.carbonel@volvo.com");
                         }
                         string[] toList = To.Split(';');
                         foreach (var address in toList)

@@ -88,11 +88,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             {
                 if (upDownState == null)
                 {
+                    FloatSerie longStop = this.Series[0];
+                    FloatSerie shortStop = this.Series[1];
                     BoolSerie boolSerie = this.Events[0];
                     upDownState = new StockSerie.Trend[boolSerie.Count];
                     for (int i = 0; i < boolSerie.Count; i++)
                     {
-                        upDownState[i] = BoolToTrend(boolSerie[i]);
+                        if (!float.IsNaN(longStop[i]))
+                            upDownState[i] = StockSerie.Trend.UpTrend;
+                        else if (!float.IsNaN(shortStop[i]))
+                            upDownState[i] = StockSerie.Trend.DownTrend;
+                        else
+                            upDownState[i] = StockSerie.Trend.NoTrend;
                     }
                 }
                 return upDownState;

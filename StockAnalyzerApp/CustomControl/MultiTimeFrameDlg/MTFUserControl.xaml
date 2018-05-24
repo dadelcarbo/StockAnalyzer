@@ -25,11 +25,11 @@
         </StackPanel>
         <StackPanel  Grid.Row="1" Orientation="Horizontal">
             <Label Content="TF1"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration1}" Width="120" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="TF2"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration2}" Width="120" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
             <Label Content="TF3"/>
-            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration3}" Width="130" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
         </StackPanel>
         <ProgressBar  Grid.Row="1" Minimum="0" Maximum="{Binding NbStocks}" Visibility="{Binding ProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Value="{Binding CurrentStock}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="16"  Width="100" Margin="0,0,5,0"/>
         <Grid  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" Margin="0,0,5,0">

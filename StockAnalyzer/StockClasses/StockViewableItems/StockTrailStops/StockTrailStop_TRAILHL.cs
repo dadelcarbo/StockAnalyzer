@@ -9,30 +9,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public StockTrailStop_TRAILHL()
         {
         }
-        public override string Definition
-        {
-            get { return "TRAILHL(int period)"; }
-        }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override string Definition => "TRAILHL(int period)";
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 2 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(0, 500) }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override string[] SerieNames { get { return new string[] { "TRAILHL.LS", "TRAILHL.SS" }; } }
+        public override string[] ParameterNames => new string[] { "Period" };
+
+        public override Object[] ParameterDefaultValues => new Object[] { 2 };
+
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
+
+        public override string[] SerieNames => new string[] { "TRAILHL.LS", "TRAILHL.SS" };
 
         public override System.Drawing.Pen[] SeriePens
         {
