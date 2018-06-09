@@ -2031,6 +2031,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInABCMenu();
         }
+        void statMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.statMenu_Click();
+        }
         #endregion
     }
 }

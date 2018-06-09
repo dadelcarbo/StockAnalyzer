@@ -387,28 +387,31 @@ namespace StockAnalyzer.StockClasses
             if (ExactDataDurationMapping == null)
             {
                 ExactDataDurationMapping = new SortedDictionary<StockBarDuration, StockBarDuration>();
-                //ExactDataDurationMapping.Add(StockBarDuration.Bar_1_EMA3, StockBarDuration.Daily);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi, StockBarDuration.Daily);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B, StockBarDuration.TLB);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_3D, StockBarDuration.TwoLineBreaks_3D);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_6D, StockBarDuration.TwoLineBreaks_6D);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_9D, StockBarDuration.TwoLineBreaks_9D);
-                //ExactDataDurationMapping.Add(StockBarDuration.HeikinAshi2B_27D, StockBarDuration.TwoLineBreaks_27D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA3, StockBarDuration.TLB);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA3, StockBarDuration.TwoLineBreaks_3D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA3, StockBarDuration.TwoLineBreaks_6D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA3, StockBarDuration.TwoLineBreaks_9D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA3, StockBarDuration.TwoLineBreaks_27D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA6, StockBarDuration.TLB);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA6, StockBarDuration.TwoLineBreaks_3D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA6, StockBarDuration.TwoLineBreaks_6D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA6, StockBarDuration.TwoLineBreaks_9D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA6, StockBarDuration.TwoLineBreaks_27D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA12, StockBarDuration.TLB);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA12, StockBarDuration.TwoLineBreaks_3D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA12, StockBarDuration.TwoLineBreaks_6D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA12, StockBarDuration.TwoLineBreaks_9D);
-                //ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA12, StockBarDuration.TwoLineBreaks_27D);
+                ExactDataDurationMapping.Add(StockBarDuration.Daily_EMA3, StockBarDuration.Daily);
+                ExactDataDurationMapping.Add(StockBarDuration.Daily_EMA6, StockBarDuration.Daily);
+                ExactDataDurationMapping.Add(StockBarDuration.Daily_EMA9, StockBarDuration.Daily);
+                ExactDataDurationMapping.Add(StockBarDuration.Daily_EMA12, StockBarDuration.Daily);
+                ExactDataDurationMapping.Add(StockBarDuration.Daily_EMA20, StockBarDuration.Daily);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA3, StockBarDuration.TLB);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA3, StockBarDuration.TLB_3D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA3, StockBarDuration.TLB_6D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA3, StockBarDuration.TLB_9D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA3, StockBarDuration.TLB_27D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA6, StockBarDuration.TLB);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA6, StockBarDuration.TLB_3D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA6, StockBarDuration.TLB_6D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA6, StockBarDuration.TLB_9D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA6, StockBarDuration.TLB_27D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA12, StockBarDuration.TLB);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA12, StockBarDuration.TLB_3D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA12, StockBarDuration.TLB_6D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA12, StockBarDuration.TLB_9D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA12, StockBarDuration.TLB_27D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_EMA20, StockBarDuration.TLB);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_3D_EMA20, StockBarDuration.TLB_3D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_6D_EMA20, StockBarDuration.TLB_6D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_9D_EMA20, StockBarDuration.TLB_9D);
+                ExactDataDurationMapping.Add(StockBarDuration.TLB_27D_EMA20, StockBarDuration.TLB_27D);
             }
             if (ExactDataDurationMapping.ContainsKey(this.barDuration))
             {

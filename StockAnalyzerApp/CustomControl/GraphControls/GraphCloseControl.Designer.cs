@@ -23,6 +23,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.agendaMenu = new MenuItem();
             this.openInFTMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
+            this.statMenu = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
             // 
@@ -38,7 +39,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.financialMenu,
             this.separator2,
             this.openInFTMenu,
-            this.openInABCMenu});
+            this.openInABCMenu,
+            this.statMenu});
             // 
             // buyMenu
             // 
@@ -98,6 +100,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
+            // statMenu
+            // 
+            this.statMenu.Index = 10;
+            this.statMenu.Text = "Make Stats";
+            this.statMenu.Click += new System.EventHandler(this.statMenu_Click);
+            // 
             // GraphCloseControl
             // 
             this.Name = "GraphCloseControl";
@@ -116,6 +124,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem agendaMenu;
         private MenuItem openInFTMenu;
         private MenuItem openInABCMenu;
+        private MenuItem statMenu;
 
         #endregion
 

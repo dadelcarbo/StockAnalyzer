@@ -2904,6 +2904,55 @@ namespace StockAnalyzerApp
 
             return upTrend[i] && roc[i] > 0 && (upBar[i] && !upBar[i - 1]);
         }
+
+        struct stat
+        {
+            public int nbr;
+            public float var;
+        }
+
+        public void statMenu_Click()
+        {
+            if (this.CurrentStockSerie != null && this.CurrentStockSerie.Initialise())
+            {
+                var trailStop = this.CurrentStockSerie.GetTrailStop("TRAILEMA(12,1)");
+                bool found = false;
+                int nb = 0;
+                float close = 0f;
+                List<stat> stats = new List<stat>();
+                int eventIndex = 1;
+               // var closeSerie = this.currentStockSerie.GetSerie(StockDataType.CLOSE);
+                var closeSerie = this.currentStockSerie.GetExactValues().Select(dv=>dv.CLOSE).ToArray();
+                for (int i = 1; i < this.currentStockSerie.Count; i++)
+                {
+                    if (found)
+                    {
+                        if (float.IsNaN(trailStop.Series[0][i]))
+                        {
+                            stats.Add(new stat() { nbr = nb, var = (closeSerie[i] - close) / close });
+                            found = false;
+                        }
+                        else
+                        {
+                            nb++;
+                        }
+                    }
+                    else
+                    {
+                        if (!float.IsNaN(trailStop.Series[0][i]))
+                        {
+                            nb = 1;
+                            close = closeSerie[i];
+                            found = true;
+                        }
+                    }
+                }
+
+                string result = stats.Select(s => s.nbr + " " + s.var.ToString().Replace(".", ",")).Aggregate((i, j) => i + Environment.NewLine + j);
+                Clipboard.SetText(result);
+            }
+        }
+
         private void statisticsMenuItem_Click(object sender, System.EventArgs e)
         {
             StatisticsDlg statisticsDlg = new StatisticsDlg();
