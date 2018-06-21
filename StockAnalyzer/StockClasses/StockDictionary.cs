@@ -1379,7 +1379,7 @@ namespace StockAnalyzer.StockClasses
                     isIntraday = true;
                 }
                 int index = -1;
-                foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Keys.Count > 0 && s.Keys.First() <= value.DATE))
+                foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50 && s.Keys.First() <= value.DATE))
                 {
                     index = -1;
                     if (isIntraday && serie.Values.Last().DATE == lastIndiceDate.Date)
