@@ -839,7 +839,7 @@ namespace StockAnalyzer.StockClasses
                     }
 
                     // Flag initialisation as completed
-                    this.isInitialised = true;
+                    this.isInitialised = this.Count > 0;
                 }
                 return isInitialised;
             }
