@@ -3154,35 +3154,19 @@ namespace StockAnalyzer.StockClasses
             }
             return OBV;
         }
-        public FloatSerie CalculateOnBalanceVolumeEx()
+        public FloatSerie CalculateOnBalanceVolumeEx(int period)
         {
             if (!this.HasVolume)
             {
                 return new FloatSerie(0, "OBVEX");
             }
-            FloatSerie OBVEX = new FloatSerie(this.Count, "OBVEX");
-            FloatSerie vol = this.GetSerie(StockDataType.VOLUME);
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            float previousClose = closeSerie[0];
-            float var = 0.0f;
+            var volume = this.Values.Select(v=>(float)(v.VARIATION>=0?v.VOLUME:-v.VOLUME)).ToArray();
 
-            for (int i = 1; i < this.Count; i++)
-            {
-                float close = closeSerie[i];
-                var = (close - previousClose) / previousClose;
-                OBVEX[i] = OBVEX[i - 1] + vol[i] * var;
-                previousClose = close;
-            }
+            FloatSerie volumeSerie = new FloatSerie(volume);
+            var OBVEX = volumeSerie.CalculateEMA(period);
+            OBVEX.Name = $"OBVEX({period}";
+
             return OBVEX;
-
-            //FloatSerie OBVEX = new FloatSerie(this.Count);
-            //FloatSerie upVol = this.GetSerie(StockDataType.UPVOLUME);
-            //FloatSerie downVol = this.GetSerie(StockDataType.DOWNVOLUME);
-            //FloatSerie openSerie = this.GetSerie(StockDataType.OPEN);
-            //for (int i = 1; i < this.Count; i++)
-            //{
-            //    OBVEX[i] = OBVEX[i - 1] + upVol[i] - downVol[i];
-            //}
         }
         public FloatSerie CalculateVolatility(int period)
         {
