@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.IO;
 using System.Net;
 using System.Text;
 using Ionic.Zip;
 using StockAnalyzer.StockLogging;
+using System.Net.Http;
 
 namespace StockAnalyzer.StockWeb
 {
@@ -376,5 +378,37 @@ namespace StockAnalyzer.StockWeb
 
             return DownloadFile(destFolder, fileName, url);
         }
+
+        #region Investing.com
+        private static string urlTemplate =
+            "https://tvc4.forexpros.com/f224d6c61fa87c49c5d7ca273393f2ad/1534757074/1/1/8/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
+
+        private static HttpClient httpClient;
+
+        public IEnumerable<StockDetails> GetInvestingStockDetails(string searchText, string exchange = "")
+        {
+            string url = urlTemplate.Replace("%SEARCHTEXT%", searchText);
+            url = url.Replace("%EXCHANGE%", exchange);
+
+            try
+            {
+                // Request information
+                if (httpClient == null) httpClient = new HttpClient();
+
+                var result = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
+
+                // Parse response
+                if (string.IsNullOrWhiteSpace(result) || result == "[]") return new List<StockDetails>(); ;
+
+                return StockDetails.FromJson(result);
+
+            }
+            catch (Exception ex)
+            {
+                throw new StockWebHelperException($"Error getting stock details for {searchText}", ex);
+            }
+        }
+        #endregion
+
     }
 }

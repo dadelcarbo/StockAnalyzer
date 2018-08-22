@@ -185,6 +185,10 @@ namespace StockAnalyzer.StockClasses
         public string Exchange { get; set; }
         public StockDataProvider DataProvider { get; private set; }
         public string ISIN { get; set; }
+        /// <summary>
+        /// Investing.com ticker used for download
+        /// </summary>
+        public long Ticker { get; set; }
         public string SectorID { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
