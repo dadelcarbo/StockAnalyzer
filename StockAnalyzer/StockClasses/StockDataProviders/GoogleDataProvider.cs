@@ -24,6 +24,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
         {
+            return; // Google API not running anymore.
             // Parse Google.cfg file// Create data folder if not existing
             if (!Directory.Exists(rootFolder + FOLDER))
             {
