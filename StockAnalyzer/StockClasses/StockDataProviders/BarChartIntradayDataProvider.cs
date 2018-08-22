@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
 
             // Load tickers from ISIN
-            if (!File.Exists(TICKER_FILE))
+            if (!File.Exists(rootFolder + TICKER_FILE))
             {
                 StockWebHelper wh = new StockWebHelper();
                 var results = new List<StockDetails>();
