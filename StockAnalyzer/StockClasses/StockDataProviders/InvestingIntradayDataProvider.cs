@@ -11,13 +11,13 @@ using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class BarChartIntradayDataProvider : StockDataProviderBase, IConfigDialog
+    public class InvestingIntradayDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\BarChartIntraday";
-        static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\BarChartIntraday";
-        static private readonly string CONFIG_FILE = @"\BarChartIntradayDownload.cfg";
+        static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\InvestingIntraday";
+        static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\InvestingIntraday";
+        static private readonly string CONFIG_FILE = @"\InvestingIntradayDownload.cfg";
         static private readonly string TICKER_FILE = @"\InvestingTickers.cfg";
-        static private readonly string CONFIG_FILE_USER = @"\BarChartIntradayDownload.user.cfg";
+        static private readonly string CONFIG_FILE_USER = @"\InvestingIntradayDownload.user.cfg";
 
         public string UserConfigFileName => CONFIG_FILE_USER;
 
@@ -190,19 +190,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        static string BARCHART_API_KEY = "ebc71dae1c7ca3157e243600383649e7";
-
-        public string FormatIntradayURL(string symbol, DateTime startDate)
+        public string FormatIntradayURL(long ticker, DateTime startDate)
         {
             var interval = 5;
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((DateTime.Now - refDate).TotalSeconds);
 
-            var code = mapping[symbol];
-
-            //    https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol=1&resolution=5&from=1515597598&to=1516029658
-
-            return $"https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol={code}&resolution={interval}&from={from}&to={to}";
+            return $"https://tvc4.forexpros.com/ff7ac8140917544c3e1d9f93fef42180/1516029580/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
@@ -234,7 +228,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.ShortName, DateTime.Today.AddDays(-20));
+                    var url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-20));
 
                     int nbTries = 3;
                     while (nbTries > 0)
@@ -255,8 +249,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return false;
         }
 
-        private static readonly SortedDictionary<string, string> mapping = new SortedDictionary<string, string>();
-
         private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
         {
             string line;
@@ -268,35 +260,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                        var row = line.Split(',');
+                        if (!stockDictionary.ContainsKey(row[2]))
                         {
-                            var row = line.Split(',');
+                            var stockSerie = new StockSerie(row[2], row[1],
+                                (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
+                                StockDataProvider.InvestingIntraday);
+                            stockSerie.Ticker = long.Parse(row[0]);
 
-                            var shortName = row[1];
-                            var stockSerie = new StockSerie(row[2], shortName, (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.BarChartIntraday);
-
-                            if (!stockDictionary.ContainsKey(row[1]))
-                            {
-                                stockDictionary.Add(row[2], stockSerie);
-                                if (mapping.ContainsKey(shortName))
-                                {
-                                    MessageBox.Show($"Duplicate entry\r\n erroneous line: {line}",
-                                        @"Error in Bar Chart Intraday config file", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-                                }
-                                else
-                                {
-                                    mapping.Add(shortName, row[0]);
-                                }
-                            }
-                            else
-                            {
-                                StockLog.Write("BarChart Entry: " + row[2] + " already in stockDictionary");
-                            }
+                            stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
                                 this.DownloadDailyData(rootFolder, stockSerie);
                             }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
                         }
                     }
                 }
@@ -315,7 +297,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     for (var i = 0; i < barchartJson.C.Length; i++)
                     {
-
                         if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
                             continue;
 
@@ -348,11 +329,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            //BarChartDataProviderConfigDlg configDlg = new BarChartDataProviderConfigDlg(stockDico);
+            //var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico);
             //return configDlg.ShowDialog();
             throw new NotImplementedException();
         }
 
-        public string DisplayName => "CommerzBank Intraday";
+        public string DisplayName => "Investing Intraday";
     }
 }

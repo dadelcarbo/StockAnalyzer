@@ -160,8 +160,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.BarChart:
                     dataProvider = new BarChartDataProvider();
                     break;
-                case StockDataProvider.BarChartIntraday:
-                    dataProvider = new BarChartIntradayDataProvider();
+                case StockDataProvider.InvestingIntraday:
+                    dataProvider = new InvestingIntradayDataProvider();
                     break;
                 case StockDataProvider.BNPIntraday:
                     dataProvider = new BNPIntradayDataProvider();

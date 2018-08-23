@@ -622,6 +622,23 @@ namespace StockAnalyzerApp
             // Watchlist menu item
             this.LoadWatchList();
 
+            // Create Intraday Config file
+            //using (var sw = new StreamWriter(Settings.Default.RootFolder + @"\InvestingIntraday.xml"))
+            //{
+            //    var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList.Where(s=>s.StartsWith("INT_")).Select(s=>s.Replace("INT_",""));
+            //    var stocks = StockDictionary.Values.Where(v => v.Ticker != 0);
+            //    foreach (var stockName in stockList)
+            //    {
+            //        var stock = stocks.FirstOrDefault(s => s.StockName == stockName);
+            //        if (stock!=null)
+            //        {
+            //            sw.WriteLine($"{stock.Ticker},{stock.ShortName},INT_{stock.StockName},INTRADAY");
+            //        }
+
+            //        // 13994,TSLA,INT_US_TESLA,INTRADAY
+            //    }
+            //}
+
             // 
             InitialiseStockCombo();
 
@@ -2921,8 +2938,8 @@ namespace StockAnalyzerApp
                 float close = 0f;
                 List<stat> stats = new List<stat>();
                 int eventIndex = 1;
-               // var closeSerie = this.currentStockSerie.GetSerie(StockDataType.CLOSE);
-                var closeSerie = this.currentStockSerie.GetExactValues().Select(dv=>dv.CLOSE).ToArray();
+                // var closeSerie = this.currentStockSerie.GetSerie(StockDataType.CLOSE);
+                var closeSerie = this.currentStockSerie.GetExactValues().Select(dv => dv.CLOSE).ToArray();
                 for (int i = 1; i < this.currentStockSerie.Count; i++)
                 {
                     if (found)
