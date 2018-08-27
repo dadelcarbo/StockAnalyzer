@@ -7370,7 +7370,7 @@ namespace StockAnalyzer.StockClasses
         public StockSerie GenerateRandomSerie()
         {
             string stockName = "RANDOM UNIFORM";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Yahoo);
+            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated);
             stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
 
             float previousClose = 1000.0f;
@@ -7410,7 +7410,7 @@ namespace StockAnalyzer.StockClasses
         public StockSerie GenerateRandomSerie2()
         {
             string stockName = "RANDOM UNIFORM";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Yahoo);
+            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated);
             stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
             Random r = new Random();
 
