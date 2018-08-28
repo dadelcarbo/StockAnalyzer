@@ -236,7 +236,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-40));
+                        url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
                     }
 
                     int nbTries = 3;
