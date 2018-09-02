@@ -312,7 +312,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
                         string fileContent = wc.DownloadString(url);
-
+                        if (fileContent.StartsWith("You have reached the maximum number of requests"))
+                            return false;
                         fileContent = fileContent.Replace("Request.JSONP.request_map.request_1(", "");
                         fileContent = fileContent.Replace("Request.JSONP.request_map.request_2(", "");
                         fileContent = fileContent.Replace(")", "");
