@@ -3164,7 +3164,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return new FloatSerie(0, "OBVEX");
             }
-            var volume = this.Values.Select(v=>(float)(v.VARIATION>=0?v.VOLUME:-v.VOLUME)).ToArray();
+            var volume = this.Values.Select(v => (float)(v.VARIATION >= 0 ? v.VOLUME : -v.VOLUME)).ToArray();
 
             FloatSerie volumeSerie = new FloatSerie(volume);
             var OBVEX = volumeSerie.CalculateEMA(period);
@@ -6202,21 +6202,27 @@ namespace StockAnalyzer.StockClasses
                     {
                         // Find previous Low value
                         for (j = i; j > latestLine.Point2.X && lowSerie[j] != supportSerie[i]; j--) ;
-                        newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, lowSerie[j]);
+                        if (latestLine.Point2.X != j)
+                        {
+                            newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, lowSerie[j]);
 
-                        points.Add(newLine.Point2);
+                            points.Add(newLine.Point2);
 
-                        latestLine = newLine;
+                            latestLine = newLine;
+                        }
                     }
                     if (resistanceDetected[i])
                     {
                         // Find previous Low value
                         for (j = i; j > latestLine.Point2.X && highSerie[j] != resistanceSerie[i]; j--) ;
-                        newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, highSerie[j]);
+                        if (latestLine.Point2.X != j)
+                        {
+                            newLine = new Segment2D(latestLine.Point2.X, latestLine.Point2.Y, j, highSerie[j]);
 
-                        points.Add(newLine.Point2);
+                            points.Add(newLine.Point2);
 
-                        latestLine = newLine;
+                            latestLine = newLine;
+                        }
                     }
                 }
             }
