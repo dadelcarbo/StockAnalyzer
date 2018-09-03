@@ -2,12 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
-using System.Collections.Generic;
-using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -227,7 +224,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var url = string.Empty;
                     if (stockSerie.IsInitialised)
                     {
-                        url = FormatIntradayURL(stockSerie.Ticker, stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-1));
+                        url = FormatIntradayURL(stockSerie.Ticker, stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7));
                     }
                     else
                     {
