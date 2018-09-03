@@ -89,58 +89,62 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
 
-            // Load tickers from ISIN
-            if (!File.Exists(rootFolder + TICKER_FILE))
-            {
-                StockWebHelper wh = new StockWebHelper();
-                var results = new List<StockDetails>();
+            #region Load Tickers from Investing.com
 
-                foreach (var stock in stockDictionary.Values.Where(v => v.ISIN != null && v.ISIN.StartsWith("FR")))
-                {
-                    var stockDetails = wh.GetInvestingStockDetails(stock.ISIN, "PA");
-                    switch (stockDetails.Count())
-                    {
-                        case 0:
-                            Console.WriteLine($"Not found for {stock.ShortName} - {stock.ISIN} ");
-                            break;
-                        case 1:
-                            var stockDetail = stockDetails.First();
-                            Console.WriteLine($"Found: {stockDetail.Description} ticker is {stockDetail.Ticker}");
-                            stock.Ticker = stockDetail.Ticker;
-                            results.Add(stockDetail);
-                            break;
-                        default:
-                            Console.WriteLine($"Multiple entries found: {stockDetails.Count()}");
-                            break;
-                    }
-                }
+            //// Load tickers from ISIN
+            //if (!File.Exists(rootFolder + TICKER_FILE))
+            //{
+            //    StockWebHelper wh = new StockWebHelper();
+            //    var results = new List<StockDetails>();
 
-                // Create Ticker file
-                using (var sw = new StreamWriter(rootFolder + TICKER_FILE))
-                {
-                    foreach (var stock in stockDictionary.Values.Where(v => v.Ticker != 0))
-                    {
-                        sw.WriteLine($"{stock.StockName},{stock.ISIN},{stock.Ticker}");
-                    }
-                }
-            }
-            else
-            {
-                using (var sr = new StreamReader(rootFolder + TICKER_FILE))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        var line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line)) continue;
+            //    foreach (var stock in stockDictionary.Values.Where(v => v.ISIN != null && v.ISIN.StartsWith("FR")))
+            //    {
+            //        var stockDetails = wh.GetInvestingStockDetails(stock.ISIN, "PA");
+            //        switch (stockDetails.Count())
+            //        {
+            //            case 0:
+            //                Console.WriteLine($"Not found for {stock.ShortName} - {stock.ISIN} ");
+            //                break;
+            //            case 1:
+            //                var stockDetail = stockDetails.First();
+            //                Console.WriteLine($"Found: {stockDetail.Description} ticker is {stockDetail.Ticker}");
+            //                stock.Ticker = stockDetail.Ticker;
+            //                results.Add(stockDetail);
+            //                break;
+            //            default:
+            //                Console.WriteLine($"Multiple entries found: {stockDetails.Count()}");
+            //                break;
+            //        }
+            //    }
 
-                        var split = line.Split(',');
-                        if (stockDictionary.ContainsKey(split[0]))
-                        {
-                            stockDictionary[split[0]].Ticker = long.Parse(split[2]);
-                        }
-                    }
-                }
-            }
+            //    // Create Ticker file
+            //    using (var sw = new StreamWriter(rootFolder + TICKER_FILE))
+            //    {
+            //        foreach (var stock in stockDictionary.Values.Where(v => v.Ticker != 0))
+            //        {
+            //            sw.WriteLine($"{stock.StockName},{stock.ISIN},{stock.Ticker}");
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    using (var sr = new StreamReader(rootFolder + TICKER_FILE))
+            //    {
+            //        while (!sr.EndOfStream)
+            //        {
+            //            var line = sr.ReadLine();
+            //            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            //            var split = line.Split(',');
+            //            if (stockDictionary.ContainsKey(split[0]))
+            //            {
+            //                stockDictionary[split[0]].Ticker = long.Parse(split[2]);
+            //            }
+            //        }
+            //    }
+            //}
+
+            #endregion
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -201,15 +205,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
         {
-            var fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                              stockSerie.StockGroup.ToString() + ".txt";
-            if (File.Exists(fileName))
-            {
-                var fileDate = File.GetLastWriteTime(fileName);
-                if (fileDate.Date == DateTime.Today)
-                    return false;
-            }
-            this.DownloadIntradayData(rootFolder, stockSerie);
             return true;
         }
         public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
