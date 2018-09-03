@@ -666,20 +666,21 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
 
             StockSplashScreen.ProgressText = "Loading " + this.CurrentStockSerie.StockName + " data...";
-            if (this.CurrentStockSerie.StockName.StartsWith("INT_"))
-            {
-                this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_6D;
-            }
-            if (this.CurrentStockSerie.StockName.StartsWith("FUT_"))
-            {
-                this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_3D_EMA3;
-            }
-            else
-            {
-                this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
-            }
-            this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
+            //if (this.CurrentStockSerie.StockName.StartsWith("INT_"))
+            //{
+            //    this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_6D;
+            //}
+            //if (this.CurrentStockSerie.StockName.StartsWith("FUT_"))
+            //{
+            //    this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.TLB_3D_EMA3;
+            //}
+            //else
+            //{
+            //    this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
+            //}
 
+            SetStockGroup(this.CurrentStockSerie.StockGroup);
+            this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
             // Initialise event call backs (because of a bug in the designer)
             this.graphCloseControl.MouseClick +=
@@ -4200,22 +4201,7 @@ namespace StockAnalyzerApp
             StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
             if (this.selectedGroup != newGroup)
             {
-                // In order to speed the intraday display.
-                switch (newGroup)
-                {
-                    case StockSerie.Groups.TURBO:
-                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
-                        break;
-                    case StockSerie.Groups.FUTURE:
-                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA3, true);
-                        break;
-                    case StockSerie.Groups.INTRADAY:
-                        this.ForceBarDuration(StockSerie.StockBarDuration.TLB_6D, true);
-                        break;
-                    default:
-                        this.ForceBarDuration(StockSerie.StockBarDuration.Daily, true);
-                        break;
-                }
+                SetStockGroup(newGroup);
 
                 this.selectedGroup = newGroup;
 
@@ -4225,6 +4211,26 @@ namespace StockAnalyzerApp
                 }
 
                 InitialiseStockCombo();
+            }
+        }
+
+        private void SetStockGroup(StockSerie.Groups newGroup)
+        {
+            // In order to speed the intraday display.
+            switch (newGroup)
+            {
+                case StockSerie.Groups.TURBO:
+                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
+                    break;
+                case StockSerie.Groups.FUTURE:
+                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
+                    break;
+                case StockSerie.Groups.INTRADAY:
+                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
+                    break;
+                default:
+                    this.ForceBarDuration(StockSerie.StockBarDuration.Daily, true);
+                    break;
             }
         }
 
