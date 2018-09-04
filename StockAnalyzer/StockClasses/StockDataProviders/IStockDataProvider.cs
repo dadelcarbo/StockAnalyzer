@@ -23,7 +23,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Ratio,
         //COT,
         //NASDACQShortInterest,
-        FINRA
+        FINRA,
+        Investing
     }
 
    public delegate void DownloadingStockEventHandler(string text);
