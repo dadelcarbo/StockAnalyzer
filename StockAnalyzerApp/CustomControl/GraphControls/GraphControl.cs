@@ -629,7 +629,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         if (stockIndicator is IRange)
                                         {
                                             var range = stockIndicator as IRange;
-                                            center = GetScreenPointFromValuePoint(0, (range.Max - range.Min) / 2.0f);
+                                            center = GetScreenPointFromValuePoint(0, (range.Max + range.Min) / 2.0f);
                                         }
                                         int pointIndex = 0;
                                         float barWidth = Math.Max(1f, 0.80f * GraphRectangle.Width / (float)points.Count());
