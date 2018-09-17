@@ -178,12 +178,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var openDate = refDate.AddSeconds(barchartJson.T[i]).Date;
                         if (!stockSerie.ContainsKey(openDate))
                         {
+                            var volString = barchartJson.V[i];
+                            long vol = 0;
+                            long.TryParse(barchartJson.V[i], out vol);
                             var dailyValue = new StockDailyValue(stockSerie.StockName,
                                    barchartJson.O[i],
                                    barchartJson.H[i],
                                    barchartJson.L[i],
                                    barchartJson.C[i],
-                                   long.Parse(barchartJson.V[i]),
+                                   vol,
                                    openDate);
 
                             stockSerie.Add(dailyValue.DATE, dailyValue);
