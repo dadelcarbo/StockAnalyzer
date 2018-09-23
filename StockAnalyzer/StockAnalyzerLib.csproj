@@ -156,6 +156,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMODIST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SENOSC.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CONVEXHULL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CROSSING.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CROSSSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FLAG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
