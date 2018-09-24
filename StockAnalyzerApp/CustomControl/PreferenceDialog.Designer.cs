@@ -34,7 +34,6 @@
          this.okBtn = new System.Windows.Forms.Button();
          this.cancelBtn = new System.Windows.Forms.Button();
          this.downloadDataCheckBox = new System.Windows.Forms.CheckBox();
-         this.intradaySupportCheckBox = new System.Windows.Forms.CheckBox();
          this.generateBreadthCheckBox = new System.Windows.Forms.CheckBox();
          this.enableLoggingCheckBox = new System.Windows.Forms.CheckBox();
          this.label2 = new System.Windows.Forms.Label();
@@ -98,13 +97,6 @@
          this.downloadDataCheckBox.Name = "downloadDataCheckBox";
          this.downloadDataCheckBox.UseVisualStyleBackColor = true;
          this.downloadDataCheckBox.CheckedChanged += new System.EventHandler(this.downloadDataCheckBox_CheckedChanged);
-         // 
-         // intradaySupportCheckBox
-         // 
-         resources.ApplyResources(this.intradaySupportCheckBox, "intradaySupportCheckBox");
-         this.intradaySupportCheckBox.Name = "intradaySupportCheckBox";
-         this.intradaySupportCheckBox.UseVisualStyleBackColor = true;
-         this.intradaySupportCheckBox.CheckedChanged += new System.EventHandler(this.intradaySupportCheckBox_CheckedChanged);
          // 
          // generateBreadthCheckBox
          // 
@@ -332,7 +324,6 @@
          this.Controls.Add(this.groupBox1);
          this.Controls.Add(this.userIDTextBox);
          this.Controls.Add(this.label2);
-         this.Controls.Add(this.intradaySupportCheckBox);
          this.Controls.Add(this.enableLoggingCheckBox);
          this.Controls.Add(this.cancelBtn);
          this.Controls.Add(this.okBtn);
@@ -365,7 +356,6 @@
       private System.Windows.Forms.Button okBtn;
       private System.Windows.Forms.Button cancelBtn;
       private System.Windows.Forms.CheckBox downloadDataCheckBox;
-      private System.Windows.Forms.CheckBox intradaySupportCheckBox;
       private System.Windows.Forms.CheckBox generateBreadthCheckBox;
       private System.Windows.Forms.CheckBox enableLoggingCheckBox;
       private System.Windows.Forms.Label label2;
