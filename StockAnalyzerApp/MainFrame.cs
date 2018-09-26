@@ -1866,22 +1866,26 @@ namespace StockAnalyzerApp
             }
             else
             {
-                DownloadStock();
+                DownloadStock(false);
             }
             busy = false;
         }
-
-        private void DownloadStock()
+        
+        private void DownloadStock(bool showSplash)
         {
             if (this.currentStockSerie != null)
             {
-                StockSplashScreen.FadeInOutSpeed = 0.25;
-                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                 this.currentStockSerie.StockName;
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = 100;
-                StockSplashScreen.ProgressMin = 0;
-                StockSplashScreen.ShowSplashScreen();
+                this.Cursor = Cursors.WaitCursor;
+                if (showSplash)
+                {
+                    StockSplashScreen.FadeInOutSpeed = 0.25;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
+                                                     this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressVal = 0;
+                    StockSplashScreen.ProgressMax = 100;
+                    StockSplashScreen.ProgressMin = 0;
+                    StockSplashScreen.ShowSplashScreen();
+                }
 
                 if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
                 {
@@ -1909,7 +1913,11 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                StockSplashScreen.CloseForm(true);
+                if (showSplash)
+                {
+                    StockSplashScreen.CloseForm(true);
+                }
+                this.Cursor = Cursors.Arrow;
             }
         }
 
@@ -5838,7 +5846,7 @@ border:1px solid black;
                         break;
                     case Keys.F5:
                         {
-                            this.DownloadStock();
+                            this.DownloadStock(false);
                         }
                         break;
                     case Keys.Control | Keys.F5:
