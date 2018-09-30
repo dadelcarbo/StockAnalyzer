@@ -218,18 +218,6 @@ namespace StockAnalyzerSettings.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SupportIntraday {
-            get {
-                return ((bool)(this["SupportIntraday"]));
-            }
-            set {
-                this["SupportIntraday"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool GenerateBreadth {
             get {
                 return ((bool)(this["GenerateBreadth"]));

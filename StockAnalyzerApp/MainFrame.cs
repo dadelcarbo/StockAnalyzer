@@ -358,14 +358,6 @@ namespace StockAnalyzerApp
 #endif
             if (!fastStart)
             {
-                if (Settings.Default.SupportIntraday)
-                {
-                    //
-                    StockSplashScreen.ProgressText = "Parsing intraday data...";
-                    StockSplashScreen.ProgressVal = 50;
-                    ParseIntraday();
-                }
-
                 // Generate breadth 
                 if (Settings.Default.GenerateBreadth)
                 {
@@ -1488,62 +1480,6 @@ namespace StockAnalyzerApp
             this.IsClosing = true;
         }
 
-        private void ParseIntraday()
-        {
-            // Parse Intraday data
-            string stockName = null;
-            string shortName = null;
-            string previousStockName = null;
-
-            StockBarSerie tickBarSerie1 = null;
-            StockBarSerie intradayBarSerie = null;
-            StockBarSerie rangeBarSerie1 = null;
-
-            if (Directory.Exists(Settings.Default.RootFolder + INTRADAY_SUBFOLDER))
-            {
-                foreach (
-                   string fileFullName in
-                      Directory.GetFiles(Settings.Default.RootFolder + INTRADAY_SUBFOLDER).OrderBy(s => s))
-                {
-                    StockTick[] ticks = StockTick.ParseEuronextFile(fileFullName, -1);
-                    stockName = fileFullName.Split('_')[1];
-                    shortName = fileFullName.Split('_')[0];
-
-                    if (stockName != previousStockName)
-                    {
-                        StockSplashScreen.ProgressText = "Parsing intraday data " + stockName;
-                        if (previousStockName != null)
-                        {
-                            this.StockDictionary.Add(tickBarSerie1.Name, new StockSerie(tickBarSerie1, StockSerie.Groups.TICK));
-                            this.StockDictionary.Add(intradayBarSerie.Name,
-                               new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
-                            this.StockDictionary.Add(rangeBarSerie1.Name,
-                               new StockSerie(rangeBarSerie1, StockSerie.Groups.RANGE));
-                        }
-                        previousStockName = stockName;
-                        tickBarSerie1 = StockBarSerie.CreateTickBarSerie(stockName + "_TICK1", shortName,
-                           Math.Max(ticks.Length / 720, 5), ticks);
-                        intradayBarSerie = StockBarSerie.CreateIntradayBarSerie(stockName + "_5MIN", shortName, 5, ticks);
-                        rangeBarSerie1 = StockBarSerie.CreateRangeBarSerie(stockName + "_range1", shortName,
-                           ticks.Last().Value / 200, ticks);
-                    }
-                    else
-                    {
-                        tickBarSerie1.Append(ticks);
-                        intradayBarSerie.Append(ticks);
-                        rangeBarSerie1.Append(ticks);
-                    }
-                }
-                if (tickBarSerie1 != null)
-                {
-                    this.StockDictionary.Add(tickBarSerie1.Name, new StockSerie(tickBarSerie1, StockSerie.Groups.TICK));
-                    this.StockDictionary.Add(intradayBarSerie.Name,
-                       new StockSerie(intradayBarSerie, StockSerie.Groups.INTRADAY));
-                    this.StockDictionary.Add(rangeBarSerie1.Name, new StockSerie(rangeBarSerie1, StockSerie.Groups.RANGE));
-                }
-            }
-        }
-
         public void OnSerieEventProcessed()
         {
             this.progressBar.Value++;
@@ -1930,22 +1866,26 @@ namespace StockAnalyzerApp
             }
             else
             {
-                DownloadStock();
+                DownloadStock(false);
             }
             busy = false;
         }
-
-        private void DownloadStock()
+        
+        private void DownloadStock(bool showSplash)
         {
             if (this.currentStockSerie != null)
             {
-                StockSplashScreen.FadeInOutSpeed = 0.25;
-                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                 this.currentStockSerie.StockName;
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = 100;
-                StockSplashScreen.ProgressMin = 0;
-                StockSplashScreen.ShowSplashScreen();
+                this.Cursor = Cursors.WaitCursor;
+                if (showSplash)
+                {
+                    StockSplashScreen.FadeInOutSpeed = 0.25;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
+                                                     this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressVal = 0;
+                    StockSplashScreen.ProgressMax = 100;
+                    StockSplashScreen.ProgressMin = 0;
+                    StockSplashScreen.ShowSplashScreen();
+                }
 
                 if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
                 {
@@ -1973,7 +1913,11 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                StockSplashScreen.CloseForm(true);
+                if (showSplash)
+                {
+                    StockSplashScreen.CloseForm(true);
+                }
+                this.Cursor = Cursors.Arrow;
             }
         }
 
@@ -5902,7 +5846,7 @@ border:1px solid black;
                         break;
                     case Keys.F5:
                         {
-                            this.DownloadStock();
+                            this.DownloadStock(false);
                         }
                         break;
                     case Keys.Control | Keys.F5:

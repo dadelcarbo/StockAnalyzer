@@ -13,7 +13,6 @@ namespace StockAnalyzerApp.CustomControl
          InitializeComponent();
 
          this.downloadDataCheckBox.Checked = Settings.Default.DownloadData;
-         this.intradaySupportCheckBox.Checked = Settings.Default.SupportIntraday;
          this.shortSellSupportCheckBox.Checked = Settings.Default.SupportShortSelling;
          this.generateBreadthCheckBox.Checked = Settings.Default.GenerateBreadth;
          this.enableLoggingCheckBox.Checked = Settings.Default.LoggingEnabled;
@@ -33,7 +32,6 @@ namespace StockAnalyzerApp.CustomControl
       {
          // Save to properties
          Settings.Default.DownloadData = this.downloadDataCheckBox.Checked;
-         Settings.Default.SupportIntraday = this.intradaySupportCheckBox.Checked;
          Settings.Default.SupportShortSelling = this.shortSellSupportCheckBox.Checked;
          Settings.Default.GenerateBreadth = this.generateBreadthCheckBox.Checked;
          Settings.Default.LoggingEnabled = this.enableLoggingCheckBox.Checked;
