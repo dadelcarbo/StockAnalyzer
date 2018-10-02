@@ -52,8 +52,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             // Detecting events
-            float lowest = 0f, highest = 0f;
-
             bool bullish = false;
             bool bearish = false;
 
