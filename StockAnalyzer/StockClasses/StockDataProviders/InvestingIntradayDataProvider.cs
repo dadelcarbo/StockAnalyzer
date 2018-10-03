@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -202,7 +202,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
         {
-            return true;
+            return DownloadIntradayData(rootFolder, stockSerie);
         }
         public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
         {
@@ -274,7 +274,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
-                                this.DownloadDailyData(rootFolder, stockSerie);
+                                this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
                             }
                         }
                         else
