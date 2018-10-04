@@ -696,7 +696,7 @@ namespace StockAnalyzerApp
 
             #region DailyAlerts
             // Parse alert lists            
-            string dailyAlertFileName = Settings.Default.RootFolder + @"\AlertReport.xml";
+            string dailyAlertFileName = Settings.Default.RootFolder + @"\AlertDailyReport.xml";
             if (System.IO.File.Exists(dailyAlertFileName))
             {
                 using (var fs = new FileStream(dailyAlertFileName, FileMode.Open))
@@ -707,31 +707,82 @@ namespace StockAnalyzerApp
                     };
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    reportAlerts = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                    dailyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
                 }
             }
             else
             {
-                reportAlerts = new List<StockAlertDef>();
+                dailyAlertDefs = new List<StockAlertDef>();
             }
 
             if (!dailyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
                 GenerateDailyAlert();
             }
+
+            string weeklyAlertFileName = Settings.Default.RootFolder + @"\AlertWeeklyReport.xml";
+            if (System.IO.File.Exists(weeklyAlertFileName))
+            {
+                using (var fs = new FileStream(weeklyAlertFileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                    {
+                        IgnoreWhitespace = true
+                    };
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                    weeklyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                }
+            }
+            else
+            {
+                weeklyAlertDefs = new List<StockAlertDef>();
+            }
             #endregion
 
             if (Settings.Default.GenerateDailyReport)
             {
-                string fileName = Settings.Default.RootFolder + @"\CommentReport\report.html";
+                // Daily report
+                string fileName = Settings.Default.RootFolder + @"\CommentReport\Daily\Report.html";
                 if (!File.Exists(fileName) || File.GetLastWriteTime(fileName).Date != DateTime.Today)
                 {
-                    GenerateDailyReport();
+                    var durations = new StockSerie.StockBarDuration[]
+                         {
+                            StockSerie.StockBarDuration.Daily,
+                            StockSerie.StockBarDuration.Daily_EMA20,
+                            StockSerie.StockBarDuration.TLB,
+                            StockSerie.StockBarDuration.TLB_EMA20,
+                            StockSerie.StockBarDuration.TLB_3D,
+                            StockSerie.StockBarDuration.TLB_3D_EMA20
+                         };
+
+                    GenerateReport(durations, dailyAlertDefs);
+                }
+
+                fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
+                var lastUpdate = File.GetLastWriteTime(fileName).Date;
+                if (!File.Exists(fileName) || lastUpdate != DateTime.Today)
+                {
+                    if (lastUpdate < DateTime.Today.AddDays(-7) ||
+                         (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastUpdate < DateTime.Today.AddDays(-1)) ||
+                         (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastUpdate < DateTime.Today.AddDays(-2)) ||
+                         (DateTime.Today.DayOfWeek == DayOfWeek.Monday && lastUpdate < DateTime.Today.AddDays(-3)))
+                    {
+                        var durations = new StockSerie.StockBarDuration[]
+                             {
+                            StockSerie.StockBarDuration.Weekly,
+                            StockSerie.StockBarDuration.Weekly_EMA3,
+                            StockSerie.StockBarDuration.Weekly_EMA6,
+                            StockSerie.StockBarDuration.Weekly_EMA12,
+                            StockSerie.StockBarDuration.Weekly_EMA20
+                             };
+
+                        GenerateReport(durations, weeklyAlertDefs);
+                    }
                 }
             }
+
             // Checks for alert every x minutes.
-
-
             intradayAlertDefs = new List<StockAlertDef>();
             if (Settings.Default.RaiseAlerts)
             {
@@ -827,9 +878,7 @@ namespace StockAnalyzerApp
 
             }
         }
-
-
-
+               
         private void InitialiseWatchListComboBox()
         {
             if (this.WatchLists != null)
@@ -893,10 +942,12 @@ namespace StockAnalyzerApp
             }
         }
 
-        private List<StockAlertDef> reportAlerts;
         private List<StockAlertDef> intradayAlertDefs;
+        private List<StockAlertDef> dailyAlertDefs;
+        private List<StockAlertDef> weeklyAlertDefs;
         private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml");
         private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml");
+        private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -1015,7 +1066,7 @@ namespace StockAnalyzerApp
 
         public void GenerateDailyAlert()
         {
-            if (busy || reportAlerts == null) return;
+            if (busy || dailyAlertDefs == null) return;
             busy = true;
 
             try
@@ -1054,9 +1105,9 @@ namespace StockAnalyzerApp
 
                     StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (reportAlerts)
+                    lock (dailyAlertDefs)
                     {
-                        foreach (var alertDef in reportAlerts)
+                        foreach (var alertDef in dailyAlertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -1870,7 +1921,7 @@ namespace StockAnalyzerApp
             }
             busy = false;
         }
-        
+
         private void DownloadStock(bool showSplash)
         {
             if (this.currentStockSerie != null)
@@ -2643,7 +2694,7 @@ namespace StockAnalyzerApp
                 }
                 this.endIndex = this.CurrentStockSerie.Count - 1;
                 this.startIndex = Math.Max(0, this.endIndex - NbBars);
-                if (endIndex-startIndex < 25)
+                if (endIndex - startIndex < 25)
                 {
                     this.DeactivateGraphControls("Not enough data to display...");
                     return;
@@ -5121,14 +5172,19 @@ border:1px solid black;
         string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
 
         string CELL_DIR_IMG_TEMPLATE =
-           "<td><img alt=\"%DIR%\" src=\"../img/%DIR%.png\"/></td>" +
+           "<td><img alt=\"%DIR%\" src=\"../../img/%DIR%.png\"/></td>" +
            Environment.NewLine;
         string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
         string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
-        private string GenerateDailyReport()
+        private string GenerateReport(StockSerie.StockBarDuration[] durations, List<StockAlertDef> alertDefs)
         {
-            CleanImageFolder();
+            string timeFrame = durations.First().ToString();
+            string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
+            CleanReportFolder(folderName);
+
+            string fileName = folderName + @"\Report.html";
+
 
             string mailReport = string.Empty;
             string htmlReport = string.Empty;
@@ -5147,16 +5203,6 @@ border:1px solid black;
             //string[] files = ftp.directoryListDetailed(".");
 
             #region report multi TimeFrame
-
-            StockSerie.StockBarDuration[] durations = new StockSerie.StockBarDuration[]
-         {
-            StockSerie.StockBarDuration.Daily,
-            StockSerie.StockBarDuration.Daily_EMA20,
-            StockSerie.StockBarDuration.TLB,
-            StockSerie.StockBarDuration.TLB_EMA20,
-            StockSerie.StockBarDuration.TLB_3D,
-            StockSerie.StockBarDuration.TLB_3D_EMA20
-         };
 
             // Generate header
             string rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", "Stock Name");
@@ -5185,8 +5231,6 @@ border:1px solid black;
 
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
-
-                    //StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, serie);
 
                     foreach (StockSerie.StockBarDuration duration in durations)
                     {
@@ -5220,12 +5264,7 @@ border:1px solid black;
             string table = MULTITIMEFRAME_HEADER + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) +
                            MULTITIMEFRAME_FOOTER;
 
-            if (!Directory.Exists(Settings.Default.RootFolder + "\\CommentReport"))
-            {
-                Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport");
-                Directory.CreateDirectory(Settings.Default.RootFolder + "\\CommentReport\\img");
-            }
-            using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report_table.html"))
+            using (StreamWriter sw = new StreamWriter(folderName + @"\report_table.html"))
             {
                 sw.Write(table);
             }
@@ -5255,139 +5294,11 @@ border:1px solid black;
             #region From Report.cfg
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
-            StockSerie.StockBarDuration previousBarDuration =
-               (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
-
-            using (StreamReader sr = new StreamReader(Settings.Default.RootFolder + @"\report.cfg"))
-            {
-                //#region Report from config file
-
-                //while (!sr.EndOfStream)
-                //{
-                //    string line = sr.ReadLine();
-                //    //continue;
-                //    if (string.IsNullOrWhiteSpace(line))
-                //    {
-                //        continue;
-                //    }
-
-                //    string[] fields = line.Split(';');
-                //    if (fields[0].StartsWith("#Title", StringComparison.InvariantCultureIgnoreCase))
-                //    {
-                //        mailReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
-                //        htmlReport += htmlTitleTemplate.Replace(titleTemplate, fields[1]);
-                //    }
-
-                //    if (fields.Length == 0 || !this.StockDictionary.ContainsKey(fields[0]))
-                //    {
-                //        continue;
-                //    }
-
-
-                //    this.barDurationComboBox.SelectedItem =
-                //       (StockSerie.StockBarDuration)Enum.Parse(typeof(StockSerie.StockBarDuration), fields[2]);
-                //    this.CurrentStockSerie = this.StockDictionary[fields[0]];
-                //    this.CurrentTheme = fields[1];
-
-                //    if (fields.Length >= 4)
-                //    {
-                //        int nbBars = int.Parse(fields[3]);
-                //        this.ChangeZoom(Math.Max(0, CurrentStockSerie.Count - 1 - nbBars), CurrentStockSerie.Count - 1);
-                //    }
-
-                //    StockSerie stockSerie = this.CurrentStockSerie;
-
-                //    // Extract indicators
-                //    string eventTypeString = ExtractEventsForReport();
-
-                //    this.snapshotToolStripButton_Click(null, null);
-                //    Image bitmap = Clipboard.GetImage();
-
-                //    string fileName = GetFileName(DateTime.Now, stockSerie, imageFormat.ToString().ToLower());
-                //    if (!System.IO.File.Exists(fileName))
-                //    {
-                //        bitmap.Save(fileName, imageFormat);
-                //        fileNameList.Add(fileName);
-
-                //        // Get image CID
-                //        string cid = "Image_" + imageCount++;
-                //        cidList.Add(cid);
-
-                //        commentTitle = "\r\n" + stockSerie.StockName + "( " + fields[2] + ") - " + fields[1] + " - " +
-                //                       stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
-
-                //        // Build report from html template
-                //        mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                //           .Replace(commentTemplate, commentBody)
-                //           .Replace(imageFileCID, cid);
-                //        mailReport += eventTypeString;
-                //        htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-                //           .Replace(commentTemplate, commentBody)
-                //           .Replace(imageFileLink,
-                //              fileName.Replace(
-                //                 StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
-                //                 .Replace(@"\", "/"));
-                //        htmlReport += eventTypeString;
-                //    }
-                //}
-
-                //#endregion
-            }
-
-            #endregion
-            #region Generate report from Portfolio
-
-            //List<String> stockNames = this.StockPortofolioList.GetStockNames();
-            //foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => stockNames.Contains(s.StockName)))
-            //{
-            //   this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Bar_3;
-            //   this.CurrentTheme = "TrendLine";
-            //   this.CurrentStockSerie = stockSerie;
-
-            //   string eventTypeString = ExtractEventsForReport();
-
-            //   if (string.IsNullOrWhiteSpace(eventTypeString))
-            //   {
-            //      continue;
-            //   }
-
-            //   this.snapshotToolStripButton_Click(null, null);
-            //   Image bitmap = Clipboard.GetImage();
-
-            //   string fileName = GetFileName(DateTime.Today, stockSerie, imageFormat.ToString().ToLower());
-            //   if (!System.IO.File.Exists(fileName))
-            //   {
-            //      bitmap.Save(fileName, imageFormat);
-            //      fileNameList.Add(fileName);
-
-            //      // Get image CID
-            //      string cid = "Image_" + imageCount++;
-            //      cidList.Add(cid);
-
-            //      commentTitle = "\r\n" + stockSerie.StockName + "( " + this.barDurationComboBox.SelectedItem + ") - " +
-            //                     " - " + stockSerie.Keys.Last().ToShortDateString() + "\r\n\r\n";
-
-            //      // Build report from html template
-            //      mailReport += htmlMailCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-            //         .Replace(commentTemplate, commentBody)
-            //         .Replace(imageFileCID, cid);
-            //      mailReport += eventTypeString;
-            //      htmlReport += htmlCommentTemplate.Replace(commentTitleTemplate, commentTitle)
-            //         .Replace(commentTemplate, commentBody)
-            //         .Replace(imageFileLink,
-            //            fileName.Replace(
-            //               StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\", "./")
-            //               .Replace(@"\", "/"));
-            //      htmlReport += eventTypeString;
-            //   }
-            //}
-
+            StockSerie.StockBarDuration previousBarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
             #endregion
 
             #region Generate report from Events
-
-
-            foreach (StockAlertDef alert in reportAlerts)
+            foreach (StockAlertDef alert in alertDefs)
             {
                 string alertMsg = string.Empty;
                 commentTitle = "\r\n" + alert.ToString() + "\r\n";
@@ -5414,13 +5325,13 @@ border:1px solid black;
 
             #endregion
 
-            using (StreamWriter sw = new StreamWriter(Settings.Default.RootFolder + @"\CommentReport\report.html"))
+            using (StreamWriter sw = new StreamWriter(fileName))
             {
                 sw.Write(htmlReport);
             }
 
             //           Process.Start("http://www.ultimatechartist.com/CommentReport/report.html");
-            Process.Start(Settings.Default.RootFolder + @"\CommentReport\report.html");
+            Process.Start(fileName);
             this.CurrentStockSerie = previousStockSerie;
             this.CurrentTheme = previousTheme;
             this.barDurationComboBox.SelectedItem = previousBarDuration;
@@ -5602,37 +5513,24 @@ border:1px solid black;
         }
 
         private static int imageID = 0;
-        private static string GetFileName(DateTime readDate, StockSerie serie, string extension)
+        private static void CleanReportFolder(string folderName)
         {
-            imageID++;
-            string directoryName = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\";
-            if (!System.IO.Directory.Exists(directoryName))
+            if (System.IO.Directory.Exists(folderName))
             {
-                System.IO.Directory.CreateDirectory(directoryName);
-            }
-            directoryName += readDate.ToString("dd_MM_yyyy");
-            if (!System.IO.Directory.Exists(directoryName))
-            {
-                System.IO.Directory.CreateDirectory(directoryName);
-            }
-            string fileName = directoryName + @"\" + serie.StockName.Replace("/", "_") + "_" + imageID + "." + extension;
-            return fileName;
-        }
-        private static void CleanImageFolder()
-        {
-            string directoryName = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\CommentReport\";
-
-            if (System.IO.Directory.Exists(directoryName))
-            {
-                foreach (string directory in (System.IO.Directory.EnumerateDirectories(directoryName)))
+                foreach (string directory in (System.IO.Directory.EnumerateDirectories(folderName)))
                 {
                     System.IO.Directory.Delete(directory, true);
                 }
-                foreach (string file in (System.IO.Directory.EnumerateFiles(directoryName)))
+                foreach (string file in (System.IO.Directory.EnumerateFiles(folderName)))
                 {
                     System.IO.File.Delete(file);
                 }
-                System.IO.Directory.Delete(directoryName, true);
+                System.IO.Directory.Delete(folderName, true);
+            }
+            else
+            {
+                Directory.CreateDirectory(folderName);
+                Directory.CreateDirectory(folderName + "\\img");
             }
         }
 
@@ -5645,7 +5543,17 @@ border:1px solid black;
         }
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
-            this.GenerateDailyReport();
+            var durations = new StockSerie.StockBarDuration[]
+            {
+            StockSerie.StockBarDuration.Daily,
+            StockSerie.StockBarDuration.Daily_EMA20,
+            StockSerie.StockBarDuration.TLB,
+            StockSerie.StockBarDuration.TLB_EMA20,
+            StockSerie.StockBarDuration.TLB_3D,
+            StockSerie.StockBarDuration.TLB_3D_EMA20
+            };
+
+            GenerateReport(durations, dailyAlertDefs);
         }
         #endregion
         private void selectEventForMarqueeMenuItem_Click(object sender, EventArgs e)
