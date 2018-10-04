@@ -204,6 +204,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return DownloadIntradayData(rootFolder, stockSerie);
         }
+        static bool first = true;
         public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -214,8 +215,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 if (File.Exists(fileName))
                 {
-                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
+                    if (first && File.GetLastWriteTime(fileName) > DateTime.Now.AddHours(-4))
+                    {
+                        first = false;
                         return false;
+                    }
+                    else
+                    {
+                        if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
+                            return false;
+                    }
                 }
                 using (var wc = new WebClient())
                 {
