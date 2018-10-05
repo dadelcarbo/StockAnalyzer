@@ -717,7 +717,7 @@ namespace StockAnalyzerApp
 
             if (!dailyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                GenerateDailyAlert();
+                GenerateAlert(dailyAlertDefs, dailyAlertLog);
             }
 
             string weeklyAlertFileName = Settings.Default.RootFolder + @"\AlertWeeklyReport.xml";
@@ -737,6 +737,10 @@ namespace StockAnalyzerApp
             else
             {
                 weeklyAlertDefs = new List<StockAlertDef>();
+            }
+            if (!weeklyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            {
+                GenerateAlert(weeklyAlertDefs, weeklyAlertLog);
             }
             #endregion
 
@@ -1064,9 +1068,9 @@ namespace StockAnalyzerApp
             }
         }
 
-        public void GenerateDailyAlert()
+        public void GenerateAlert(List<StockAlertDef> alertDefs, StockAlertLog alertLog)
         {
-            if (busy || dailyAlertDefs == null) return;
+            if (busy || alertDefs == null) return;
             busy = true;
 
             try
@@ -1105,9 +1109,9 @@ namespace StockAnalyzerApp
 
                     StockSerie.StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (dailyAlertDefs)
+                    lock (alertDefs)
                     {
-                        foreach (var alertDef in dailyAlertDefs)
+                        foreach (var alertDef in alertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -1123,16 +1127,16 @@ namespace StockAnalyzerApp
                                         stockSerie.StockName,
                                         dailyValue.CLOSE);
 
-                                    if (dailyAlertLog.Alerts.All(a => a != stockAlert))
+                                    if (alertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => dailyAlertLog.Alerts.Insert(0, stockAlert)));
+                                            this.Invoke(new Action(() => alertLog.Alerts.Insert(0, stockAlert)));
                                         }
                                         else
                                         {
-                                            dailyAlertLog.Alerts.Insert(0, stockAlert);
+                                            alertLog.Alerts.Insert(0, stockAlert);
                                         }
                                     }
                                 }
@@ -1141,7 +1145,7 @@ namespace StockAnalyzerApp
                     }
                     stockSerie.BarDuration = previouBarDuration;
                 }
-                dailyAlertLog.Save();
+                alertLog.Save();
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
@@ -5179,6 +5183,7 @@ border:1px solid black;
 
         private string GenerateReport(StockSerie.StockBarDuration[] durations, List<StockAlertDef> alertDefs)
         {
+            var duration = durations.First();
             string timeFrame = durations.First().ToString();
             string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
             CleanReportFolder(folderName);
@@ -5207,9 +5212,9 @@ border:1px solid black;
             // Generate header
             string rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", "Stock Name");
             string headerRow = string.Empty;
-            foreach (StockSerie.StockBarDuration duration in durations)
+            foreach (StockSerie.StockBarDuration d in durations)
             {
-                rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", duration.ToString());
+                rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", d.ToString());
             }
             headerRow = ROW_TEMPLATE.Replace("%ROW%", rowContent);
 
@@ -5232,9 +5237,9 @@ border:1px solid black;
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
 
-                    foreach (StockSerie.StockBarDuration duration in durations)
+                    foreach (StockSerie.StockBarDuration d in durations)
                     {
-                        serie.BarDuration = duration;
+                        serie.BarDuration = d;
                         if (serie.Initialise() && serie.Count > 50)
                         {
                             IStockTrailStop trailStop = serie.GetTrailStop("TRAILHL(1)");
@@ -5278,13 +5283,13 @@ border:1px solid black;
             string rankLeaderIndicatorName = "ROR(100,1,6)";
             string rankLoserIndicatorName = "ROD(100,1,6)";
             int nbLeaders = 10;
-            string htmlLeaders = GenerateLeaderLoserTable(StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
 
-            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GenerateLeaderLoserTable(StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
 
             mailReport += htmlLeaders;
             htmlReport += htmlLeaders;
@@ -5339,7 +5344,7 @@ border:1px solid black;
             return mailReport;
         }
 
-        private string GenerateLeaderLoserTable(StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
+        private string GenerateLeaderLoserTable(StockSerie.StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
         {
             string html = "<table><tr><td>";
 
@@ -5348,7 +5353,7 @@ border:1px solid black;
             {
                 if (stockSerie.Initialise() && stockSerie.Count > 100)
                 {
-                    stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                    stockSerie.BarDuration = duration;
                     IStockIndicator indicator = stockSerie.GetIndicator(rankLeaderIndicatorName);
                     leadersDico.Add(new RankedSerie()
                     {
@@ -5378,7 +5383,7 @@ border:1px solid black;
                 var lastValue = pair.stockSerie.ValueArray.Last();
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rank).ToString("#.##")).
+                    Replace("%COL2%", (pair.rank/100f).ToString("P2")).
                     Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                     Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
                 if (pair.previousRank <= pair.rank)
@@ -5422,7 +5427,7 @@ border:1px solid black;
                 var lastValue = pair.stockSerie.ValueArray.Last();
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rank).ToString("#.##")).
+                    Replace("%COL2%", (pair.rank / 100f).ToString("P2")).
                     Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                     Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
                 if (pair.previousRank <= pair.rank)
@@ -6335,6 +6340,22 @@ border:1px solid black;
             {
                 alertDlg = new AlertDlg(dailyAlertLog);
                 alertDlg.Text = "Daily Alerts";
+                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertDlg.Disposed += alertDlg_Disposed;
+                alertDlg.Show();
+            }
+            else
+            {
+                alertDlg.Activate();
+            }
+        }
+
+        void showWeeklyAlertViewMenuItem_Click(object sender, System.EventArgs e)
+        {
+            if (alertDlg == null)
+            {
+                alertDlg = new AlertDlg(weeklyAlertLog);
+                alertDlg.Text = "Weekly Alerts";
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDlg.Disposed += alertDlg_Disposed;
                 alertDlg.Show();
