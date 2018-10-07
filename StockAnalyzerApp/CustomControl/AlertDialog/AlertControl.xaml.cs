@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Xml.Serialization;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using Telerik.Windows.Controls;
 using DataGrid = System.Windows.Controls.DataGrid;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -56,11 +57,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // Open on the alert stock
-            StockAlert alert = ((DataGrid)sender).SelectedItem as StockAlert;
+            StockAlert alert = ((RadGridView)sender).SelectedItem as StockAlert;
 
             if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
 
-            StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Alert.Remove(alert.Alert.IndexOf("=>")));
+            StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
 
             StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
 

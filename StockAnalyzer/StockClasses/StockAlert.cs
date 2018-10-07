@@ -16,6 +16,28 @@ namespace StockAnalyzer.StockClasses
         public DateTime Date { get; set; }
         public string StockName { get; set; }
         public string Alert { get; set; }
+        [XmlIgnore]
+        public string Event
+        {
+            get
+            {
+                if (Alert == null || !Alert.Contains("=>"))
+                    return null;
+                var index = Alert.IndexOf("=>");
+                return Alert.Remove(0, index + 2);
+            }
+        }
+        [XmlIgnore]
+        public string Indicator
+        {
+            get
+            {
+                if (Alert == null || !Alert.Contains("=>"))
+                    return null;
+                var index = Alert.IndexOf("=>");
+                return Alert.Substring(0, index);
+            }
+        }
         public StockSerie.StockBarDuration BarDuration { get; set; }
         public float AlertClose { get; set; }
 
@@ -56,6 +78,10 @@ namespace StockAnalyzer.StockClasses
             if (System.Object.ReferenceEquals(this, other))
             {
                 return true;
+            }
+            if (System.Object.ReferenceEquals(other, null))
+            {
+                return false;
             }
             return this.StockName == other.StockName &&
                    this.Date == other.Date &&
