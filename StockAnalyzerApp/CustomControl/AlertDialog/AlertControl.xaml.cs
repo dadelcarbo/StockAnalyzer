@@ -16,7 +16,9 @@ using System.Windows.Navigation;
 using System.Xml.Serialization;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using Telerik.Windows;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.GridView;
 using DataGrid = System.Windows.Controls.DataGrid;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -30,6 +32,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         public AlertControl()
         {
             InitializeComponent();
+
+            this.grid.AddHandler(GridViewCellBase.CellDoubleClickEvent, new EventHandler<RadRoutedEventArgs>(OnCellDoubleClick), true);
         }
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
@@ -54,17 +58,18 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             }
         }
 
-        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void OnCellDoubleClick(object sender, RadRoutedEventArgs e)
         {
             // Open on the alert stock
             StockAlert alert = ((RadGridView)sender).SelectedItem as StockAlert;
+
+            if (alert == null) return;
 
             if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
 
             StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
 
             StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
-
         }
     }
 }

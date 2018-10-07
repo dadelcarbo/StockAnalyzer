@@ -26,20 +26,9 @@
                      Maximum="{Binding ProgressMax}"
                      Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Label Content="{Binding ProgressName}" HorizontalAlignment="Right" Width="300" Margin="0,1,5,0" Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <!--<DataGrid Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  ItemsSource="{Binding Alerts}" AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date, Mode=OneWay, ConverterCulture=en-GB}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stock" Binding="{Binding StockName, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Duration" Binding="{Binding BarDuration, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Event" Binding="{Binding Alert, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Alert Close" Binding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>-->
         <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding Alerts}"  IsReadOnly="True" 
-                             AutoGenerateColumns="False" MouseDoubleClick="DataGrid_MouseDoubleClick">
+                             AutoGenerateColumns="False"
+                             Name="grid">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date,ConverterCulture=en-GB}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
