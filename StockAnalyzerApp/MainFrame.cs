@@ -5530,7 +5530,6 @@ border:1px solid black;
                 {
                     System.IO.File.Delete(file);
                 }
-                System.IO.Directory.Delete(folderName, true);
             }
             else
             {
