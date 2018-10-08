@@ -1,8 +1,11 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockStatistic;
+using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -14,6 +17,7 @@ using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockStrategyClasses;
+using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
@@ -23,6 +27,7 @@ using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs;
+using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.StatisticsDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
@@ -45,11 +50,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockClasses.StockStatistic;
-using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
-using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
-using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzerApp
 {
@@ -881,7 +881,7 @@ namespace StockAnalyzerApp
 
             }
         }
-               
+
         private void InitialiseWatchListComboBox()
         {
             if (this.WatchLists != null)
@@ -1555,6 +1555,11 @@ namespace StockAnalyzerApp
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
                     this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
+
+                    foreach (var watchList in this.WatchLists)
+                    {
+                        watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
+                    }
                 }
             }
             else
@@ -2307,6 +2312,7 @@ namespace StockAnalyzerApp
             {
                 foreach (StockWatchList watchList in this.WatchLists)
                 {
+                    watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
                     watchList.StockList.Sort();
                 }
 
@@ -4220,11 +4226,8 @@ namespace StockAnalyzerApp
                 case StockSerie.Groups.TURBO:
                     this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
                     break;
-                case StockSerie.Groups.FUTURE:
-                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
-                    break;
                 case StockSerie.Groups.INTRADAY:
-                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA6, true);
+                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA3, true);
                     break;
                 default:
                     this.ForceBarDuration(StockSerie.StockBarDuration.Daily, true);
@@ -5382,7 +5385,7 @@ border:1px solid black;
                 var lastValue = pair.stockSerie.ValueArray.Last();
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rank/100f).ToString("P2")).
+                    Replace("%COL2%", (pair.rank / 100f).ToString("P2")).
                     Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                     Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
                 if (pair.previousRank <= pair.rank)
