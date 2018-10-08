@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog"
+             xmlns:l="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
              d:DesignHeight="300" Width="700">
     <UserControl.Resources>
@@ -25,17 +26,17 @@
                      Maximum="{Binding ProgressMax}"
                      Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Label Content="{Binding ProgressName}" HorizontalAlignment="Right" Width="300" Margin="0,1,5,0" Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <DataGrid Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  ItemsSource="{Binding Alerts}" AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  IsReadOnly="True" MouseDoubleClick="DataGrid_MouseDoubleClick">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date, Mode=OneWay, ConverterCulture=en-GB}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stock" Binding="{Binding StockName, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Duration" Binding="{Binding BarDuration, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Event" Binding="{Binding Alert, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Alert Close" Binding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding Alerts}"  IsReadOnly="True" 
+                             AutoGenerateColumns="False"
+                             Name="grid">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date,ConverterCulture=en-GB}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration}" Header="Duration" DataMemberBinding="{Binding BarDuration, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Indicator}" Header="Indicator" DataMemberBinding="{Binding Indicator, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Event}" Header="Event" DataMemberBinding="{Binding Event, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertClose}" Header="Alert Close" DataMemberBinding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
     </Grid>
 </UserControl>
