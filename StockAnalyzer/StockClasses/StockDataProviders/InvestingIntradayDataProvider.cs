@@ -342,9 +342,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            //var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico);
-            //return configDlg.ShowDialog();
-            throw new NotImplementedException();
+            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico);
+            return configDlg.ShowDialog();
         }
 
         public string DisplayName => "Investing Intraday";
