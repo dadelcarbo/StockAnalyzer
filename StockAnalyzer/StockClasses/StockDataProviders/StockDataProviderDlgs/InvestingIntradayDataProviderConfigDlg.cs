@@ -1,22 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
     public partial class InvestingIntradayDataProviderConfigDlg : Form
     {
-        public InvestingIntradayDataProviderConfigDlg(StockDictionary stockDico)
+        public InvestingIntradayDataProviderConfigDlg(StockDictionary stockDico, string fileName)
         {
             InitializeComponent();
 
-            (this.elementHost1.Child as InvestingConfigControl).ViewModel.StockDico = stockDico;
+            var vm = (this.elementHost1.Child as InvestingConfigControl).ViewModel;
+
+            vm.StockDico = stockDico;
+            vm.Initialize(fileName);
+        }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+            (this.elementHost1.Child as InvestingConfigControl).ViewModel.Save();
         }
     }
 }

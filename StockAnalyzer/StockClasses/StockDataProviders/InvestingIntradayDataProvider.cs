@@ -266,7 +266,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 using (var sr = new StreamReader(fileName, true))
                 {
-                    sr.ReadLine(); // Skip first line
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
@@ -288,7 +287,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         else
                         {
-                            MessageBox.Show("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
+                            Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
+                            //MessageBox.Show("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
                         }
                     }
                 }
@@ -342,7 +342,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico);
+            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, this.UserConfigFileName);
             return configDlg.ShowDialog();
         }
 

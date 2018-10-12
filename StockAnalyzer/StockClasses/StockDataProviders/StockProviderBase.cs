@@ -229,6 +229,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 //configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
                 configDialogs.Add((IConfigDialog)new ABCDataProvider());
                 configDialogs.Add((IConfigDialog)new InvestingIntradayDataProvider());
+                configDialogs.Add((IConfigDialog)new InvestingDataProvider());
             }
             return configDialogs;
         }

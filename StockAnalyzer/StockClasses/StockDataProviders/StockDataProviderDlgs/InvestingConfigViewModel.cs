@@ -30,6 +30,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             }
         }
 
+        internal void Initialize(string fileName)
+        {
+            this.FileName = fileName;
+            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.RootFolder + FileName));
+        }
+
         private string searchText;
         public string SearchText
         {
@@ -49,41 +55,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 }
             }
         }
-        
+
         public bool AddEnabled
         {
             get
             {
-                return this.SelectedItem != null && !this.Entries.Any(e => e.Ticker == this.SelectedItem.Ticker);
+                return this.SelectedItem != null
+                       && !this.Entries.Any(e => e.Ticker == this.SelectedItem.Ticker || StockDico.Values.Any(s => s.Ticker == e.Ticker));
             }
         }
 
 
-        private ICommand _clickCommand;
+        private ICommand _addCommand;
         public ICommand AddCommand
         {
             get
             {
-                return _clickCommand ?? (_clickCommand = new CommandBase(AddEntry));
+                return _addCommand ?? (_addCommand = new CommandBase(AddEntry));
             }
         }
-        public void AddEntry()
-        {
-            this.Entries.Insert(0, new InvestingConfigEntry() {
-                Group = "FUTURE",
-                ShortName = this.SelectedItem.Symbol,
-                StockName = this.SelectedItem.FullName,
-                Ticker = this.SelectedItem.Ticker
-            });
-        }
         public StockDictionary StockDico { get; set; }
+        public string FileName { get; private set; }
 
         public InvestingConfigViewModel()
         {
-            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.RootFolder + new InvestingIntradayDataProvider().UserConfigFileName));
             this.SearchResults = new List<StockDetails>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void Save()
+        {
+            InvestingConfigEntry.SaveToFile(this.Entries, Settings.Default.RootFolder + FileName);
+        }
+        public void AddEntry()
+        {
+            this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
+            {
+                Group = "FUTURE",
+                ShortName = this.SelectedItem.Symbol,
+                StockName = this.SelectedItem.FullName
+            });
+
+            this.PropertyChanged(this, new PropertyChangedEventArgs("AddEnabled"));
+        }
+
     }
 }
