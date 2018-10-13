@@ -30,10 +30,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             }
         }
 
-        internal void Initialize(string fileName)
+        IEnumerable<StockSerie> existing;
+        bool isIntraday = false;
+        internal void Initialize(string fileName, StockDictionary stockDico)
         {
             this.FileName = fileName;
+            isIntraday = fileName.ToLower().Contains("intraday");
             this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.RootFolder + FileName));
+            this.StockDico = stockDico;
+            if (isIntraday)
+            {
+                existing = stockDico.Values.Where(s => s.Ticker != 0 && s.DataProvider == StockDataProvider.InvestingIntraday);
+            }
+            else
+            {
+                existing = stockDico.Values.Where(s => s.Ticker != 0 && s.DataProvider == StockDataProvider.Investing);
+            }
         }
 
         private string searchText;
@@ -60,8 +72,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             get
             {
-                return this.SelectedItem != null
-                       && !this.Entries.Any(e => e.Ticker == this.SelectedItem.Ticker || StockDico.Values.Any(s => s.Ticker == e.Ticker));
+                if (this.SelectedItem == null) return false;
+                if (this.Entries.Any(e => e.Ticker == this.SelectedItem.Ticker)) return false;
+                if (existing.Any(s => s.Ticker == this.SelectedItem.Ticker)) return false;
+                return true;
             }
         }
 
@@ -74,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 return _addCommand ?? (_addCommand = new CommandBase(AddEntry));
             }
         }
-        public StockDictionary StockDico { get; set; }
+        public StockDictionary StockDico { get; private set; }
         public string FileName { get; private set; }
 
         public InvestingConfigViewModel()

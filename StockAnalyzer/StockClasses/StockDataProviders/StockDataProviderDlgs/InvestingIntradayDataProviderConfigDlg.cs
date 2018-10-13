@@ -11,8 +11,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
             var vm = (this.elementHost1.Child as InvestingConfigControl).ViewModel;
 
-            vm.StockDico = stockDico;
-            vm.Initialize(fileName);
+            vm.Initialize(fileName, stockDico);
+            if (fileName.ToLower().Contains("intraday"))
+            {
+                this.Text = "Investing Intraday Data Provider Configuration";
+            }
+            else
+            {
+                this.Text = "Investing Data Provider Configuration";
+            }
         }
 
         private void okButton_Click(object sender, EventArgs e)
