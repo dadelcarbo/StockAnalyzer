@@ -1,16 +1,15 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockWeb;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
-using System.Threading;
-using StockAnalyzer.StockMath;
-using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -1618,7 +1617,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return float.NaN;
             if (html.Contains("%"))
             {
-                return float.Parse(html.Replace("%",""))/100.0f;
+                return float.Parse(html.Replace("%", "")) / 100.0f;
             }
             else
             {
