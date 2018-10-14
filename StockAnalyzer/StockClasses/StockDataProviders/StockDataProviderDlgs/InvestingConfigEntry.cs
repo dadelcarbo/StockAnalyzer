@@ -26,7 +26,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             {
                 using (var sr = new StreamReader(fileName, true))
                 {
-                    sr.ReadLine(); // Skip first line
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
@@ -34,13 +33,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
                         var row = line.Split(',');
 
-                        entries.Add(new InvestingConfigEntry(long.Parse(row[0]))
+                        entries.Add(new InvestingConfigEntry(long.Parse(row[0])) // 8894,CC,FUT_COM_COCOA,FUTURE
                         {
                             ShortName = row[1],
                             StockName = row[2],
                             Group = row[3]
                         });
-                        // 8894,CC,FUT_COM_COCOA,FUTURE
                     }
                 }
             }
@@ -51,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             using (var sr = new StreamWriter(fileName, false))
             {
-                foreach(var entry in entries.OrderBy(e=>e.StockName))
+                foreach(var entry in entries.OrderBy(e => e.Group).ThenBy(e=>e.StockName))
                 {
                     sr.WriteLine(
                         entry.Ticker + "," +

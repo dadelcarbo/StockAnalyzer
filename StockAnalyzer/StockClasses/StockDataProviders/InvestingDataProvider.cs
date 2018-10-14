@@ -55,7 +55,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 using (var sr = new StreamReader(fileName, true))
                 {
-                    sr.ReadLine(); // Skip first line
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
