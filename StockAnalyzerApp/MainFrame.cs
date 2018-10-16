@@ -5279,7 +5279,6 @@ border:1px solid black;
 
             #region Report leaders
 
-            this.CurrentTheme = "ReportTheme";
             this.barDurationComboBox.SelectedItem = StockSerie.StockBarDuration.Daily;
 
             string rankLeaderIndicatorName = "ROR(100,1,6)";
