@@ -308,7 +308,6 @@ namespace StockAnalyzer.StockClasses
         public CotSerie CotSerie { get; set; }
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
-        public bool HasShortInterest { get; set; }
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
@@ -6527,8 +6526,6 @@ namespace StockAnalyzer.StockClasses
             {
                 case Groups.ALL:
                     return true;
-                case Groups.ShortInterest:
-                    return this.HasShortInterest;
                 case Groups.COT:
                     return this.CotSerie != null;
                 case Groups.CAC40:
