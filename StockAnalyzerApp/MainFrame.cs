@@ -752,11 +752,8 @@ namespace StockAnalyzerApp
                     var durations = new StockSerie.StockBarDuration[]
                          {
                             StockSerie.StockBarDuration.Daily,
-                            StockSerie.StockBarDuration.Daily_EMA20,
                             StockSerie.StockBarDuration.TLB,
-                            StockSerie.StockBarDuration.TLB_EMA20,
-                            StockSerie.StockBarDuration.TLB_3D,
-                            StockSerie.StockBarDuration.TLB_3D_EMA20
+                            StockSerie.StockBarDuration.TLB_3D
                          };
 
                     GenerateReport(durations, dailyAlertDefs);
@@ -773,11 +770,7 @@ namespace StockAnalyzerApp
                     {
                         var durations = new StockSerie.StockBarDuration[]
                              {
-                            StockSerie.StockBarDuration.Weekly,
-                            StockSerie.StockBarDuration.Weekly_EMA3,
-                            StockSerie.StockBarDuration.Weekly_EMA6,
-                            StockSerie.StockBarDuration.Weekly_EMA12,
-                            StockSerie.StockBarDuration.Weekly_EMA20
+                            StockSerie.StockBarDuration.Weekly
                              };
 
                         GenerateReport(durations, weeklyAlertDefs);
@@ -1451,7 +1444,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                this.currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem;
+                this.currentStockSerie.SetBarDuration((StockSerie.StockBarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
             }
             if (!ignoreLinkedTheme
                 && newSerie.StockAnalysis != null
@@ -2685,6 +2678,11 @@ namespace StockAnalyzerApp
             {
                 this.barDurationComboBox.Items.Add(barDuration);
             }
+            foreach (int barSmoothing in new List<int> { 1, 3, 6, 9, 12, 20 })
+            {
+                this.barSmoothingComboBox.Items.Add(barSmoothing);
+            }
+            this.barSmoothingComboBox.SelectedItem = this.barSmoothingComboBox.Items.OfType<int>().First();
         }
 
         private void barDurationComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -2715,6 +2713,37 @@ namespace StockAnalyzerApp
                 {
                     this.NotifyBarDurationChanged(barDuration);
                 }
+            }
+        }
+
+        private void barSmootingComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.currentStockSerie == null) return;
+
+            int barSmoothing = (int)barSmoothingComboBox.SelectedItem;
+            if (this.CurrentStockSerie.BarSmoothing != barSmoothing)
+            {
+                int previousBarCount = this.CurrentStockSerie.Count;
+                this.CurrentStockSerie.BarSmoothing = barSmoothing;
+
+                if (previousBarCount != this.CurrentStockSerie.Count)
+                {
+                    NbBars = Settings.Default.DefaultBarNumber;
+                }
+                this.endIndex = this.CurrentStockSerie.Count - 1;
+                this.startIndex = Math.Max(0, this.endIndex - NbBars);
+                if (endIndex - startIndex < 25)
+                {
+                    this.DeactivateGraphControls("Not enough data to display...");
+                    return;
+                }
+                OnNeedReinitialise(true);
+                this.ApplyTheme();
+
+                //if (NotifyBarSmoothingChanged != null)
+                //{
+                //    this.NotifyBarSmoothingChanged(barDuration);
+                //}
             }
         }
 
@@ -3095,7 +3124,7 @@ namespace StockAnalyzerApp
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "ER(60,6,1,0.8)", "Oversold"));
-            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
+            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, 1, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
             //var pattern = new StockMatchPattern_Any();
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockSerie.StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(200)", "Highest"));
             //var pattern = new StockMatchPattern_ROR(20);
@@ -3115,27 +3144,6 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie == null) return;
             StockSerie newSerie = this.CurrentStockSerie.GenerateLogStockSerie();
-            AddNewSerie(newSerie);
-        }
-
-        private void uniformRandomWalkMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockSerie newSerie = this.CurrentStockSerie.GenerateRandomSerie();
-            AddNewSerie(newSerie);
-        }
-
-        private void normalRandomWalkMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockSerie newSerie = this.CurrentStockSerie.GenerateNormalRandomSerie();
-            AddNewSerie(newSerie);
-        }
-
-        private void gauchyRandomWalkMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockSerie newSerie = this.CurrentStockSerie.GenerateGauchyRandomSerie();
             AddNewSerie(newSerie);
         }
 
@@ -3529,11 +3537,9 @@ namespace StockAnalyzerApp
 
             StockLog.Write(serieName + ";" + period + ";" + cacEWSerie.Values.Last().CLOSE);
         }
-        private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, float period,
-   string eventPattern, string eventName, bool stopOnLowBreadth)
+        private void GenerateCAC_Event(string indexName, StockSerie.StockBarDuration barDuration, float period, string eventPattern, string eventName, bool stopOnLowBreadth)
         {
-            var cacSeries =
-               this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
+            var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise()).ToList();
             string serieName = indexName + period + "_" + barDuration;
             string ieventName = eventPattern.Replace("%PERIOD%", period.ToString());
             int eventIndex =
@@ -4133,27 +4139,6 @@ namespace StockAnalyzerApp
             {
                 return;
             }
-            StockSerie vixPremium = new StockSerie("VIX_PREMIUM", "VIX_PREMIUM", StockSerie.Groups.INDICATOR,
-               StockDataProvider.Generated);
-
-            // Generate the VIX Premium
-            FloatSerie spVolatilitySerie = spSerie.GetSerie(StockIndicatorType.VOLATILITY_STDEV);
-            float spVolatility = 0;
-            int index = 0;
-            foreach (StockDailyValue vixValue in vixSerie.Values)
-            {
-                index = spSerie.IndexOf(vixValue.DATE);
-                if (index != -1)
-                {
-                    spVolatility = spVolatilitySerie[index];
-                    StockDailyValue dailyValue = new StockDailyValue(vixPremium.StockName, vixValue.OPEN / spVolatility,
-                       vixValue.HIGH / spVolatility, vixValue.LOW / spVolatility, vixValue.CLOSE / spVolatility, 0, vixValue.DATE);
-                    vixPremium.Add(dailyValue.DATE, dailyValue);
-                    dailyValue.Serie = vixPremium;
-                }
-            }
-            vixPremium.Initialise();
-            this.StockDictionary.Add(vixPremium.StockName, vixPremium);
         }
 
         #endregion
@@ -4227,7 +4212,7 @@ namespace StockAnalyzerApp
                     this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
                     break;
                 case StockSerie.Groups.INTRADAY:
-                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D_EMA3, true);
+                    this.ForceBarDuration(StockSerie.StockBarDuration.TLB_3D, true);
                     break;
                 default:
                     this.ForceBarDuration(StockSerie.StockBarDuration.Daily, true);
@@ -5551,11 +5536,8 @@ border:1px solid black;
             var durations = new StockSerie.StockBarDuration[]
             {
             StockSerie.StockBarDuration.Daily,
-            StockSerie.StockBarDuration.Daily_EMA20,
             StockSerie.StockBarDuration.TLB,
-            StockSerie.StockBarDuration.TLB_EMA20,
             StockSerie.StockBarDuration.TLB_3D,
-            StockSerie.StockBarDuration.TLB_3D_EMA20
             };
 
             GenerateReport(durations, dailyAlertDefs);

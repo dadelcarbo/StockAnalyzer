@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
-using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings.Properties;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -688,8 +688,8 @@ namespace StockAnalyzerApp.CustomControl
             Cursor = Cursors.WaitCursor;
 
             List<StockAlertDef> alertDefs = new List<StockAlertDef>();
-            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB_EMA3, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
-            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA3, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
+            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB, 1, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
+            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB_3D, 1, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
 
             var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
             try

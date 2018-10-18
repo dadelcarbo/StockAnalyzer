@@ -130,9 +130,9 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          this.NbStocks = stockSeries.Count();
 
          this.Trends = new ObservableCollection<MTFTrend>();
-         this.barDuration1 = StockSerie.StockBarDuration.TLB_9D_EMA3;
-         this.BarDuration2 = StockSerie.StockBarDuration.TLB_3D_EMA3;
-         this.barDuration3 = StockSerie.StockBarDuration.TLB_EMA3;
+         this.barDuration1 = StockSerie.StockBarDuration.TLB_9D;
+         this.BarDuration2 = StockSerie.StockBarDuration.TLB_3D;
+         this.barDuration3 = StockSerie.StockBarDuration.TLB;
 
          dispatcher = Dispatcher.CurrentDispatcher;
       }

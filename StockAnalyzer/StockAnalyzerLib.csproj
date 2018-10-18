@@ -161,7 +161,6 @@
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicator.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIVWAIT.cs" />
@@ -393,7 +392,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BB.cs" />
-    <Compile Include="StockClasses\StockPersonality.cs" />
     <Compile Include="StockClasses\StockSession.cs" />
     <Compile Include="StockClasses\StockSerie.cs" />
     <Compile Include="StockClasses\StockStatistics.cs" />

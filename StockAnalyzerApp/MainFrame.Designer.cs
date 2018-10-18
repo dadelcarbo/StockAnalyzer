@@ -79,9 +79,6 @@ namespace StockAnalyzerApp
             this.inverseSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.overnightSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uniformRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.normalRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gauchyRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -141,6 +138,7 @@ namespace StockAnalyzerApp
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.rewindBtn = new System.Windows.Forms.ToolStripButton();
@@ -384,10 +382,7 @@ namespace StockAnalyzerApp
             this.indexRelativeStrengthMenuItem,
             this.inverseSerieMenuItem,
             this.overnightSerieMenuItem,
-            this.logSerieMenuItem,
-            this.uniformRandomWalkMenuItem,
-            this.normalRandomWalkMenuItem,
-            this.gauchyRandomWalkMenuItem});
+            this.logSerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewMenuItem.Text = "View";
@@ -568,27 +563,6 @@ namespace StockAnalyzerApp
             this.logSerieMenuItem.Size = new System.Drawing.Size(244, 22);
             this.logSerieMenuItem.Text = "Log Serie";
             this.logSerieMenuItem.Click += new System.EventHandler(this.logSerieMenuItem_Click);
-            // 
-            // uniformRandomWalkMenuItem
-            // 
-            this.uniformRandomWalkMenuItem.Name = "uniformRandomWalkMenuItem";
-            this.uniformRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.uniformRandomWalkMenuItem.Text = "Generate Uniform Random Serie";
-            this.uniformRandomWalkMenuItem.Click += new System.EventHandler(this.uniformRandomWalkMenuItem_Click);
-            // 
-            // normalRandomWalkMenuItem
-            // 
-            this.normalRandomWalkMenuItem.Name = "normalRandomWalkMenuItem";
-            this.normalRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.normalRandomWalkMenuItem.Text = "Generate Normal Random Serie";
-            this.normalRandomWalkMenuItem.Click += new System.EventHandler(this.normalRandomWalkMenuItem_Click);
-            // 
-            // gauchyRandomWalkMenuItem
-            // 
-            this.gauchyRandomWalkMenuItem.Name = "gauchyRandomWalkMenuItem";
-            this.gauchyRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.gauchyRandomWalkMenuItem.Text = "Generate Gauchy Random Serie";
-            this.gauchyRandomWalkMenuItem.Click += new System.EventHandler(this.gauchyRandomWalkMenuItem_Click);
             // 
             // analysisMenuItem
             // 
@@ -1118,6 +1092,7 @@ namespace StockAnalyzerApp
             this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stockNameComboBox,
             this.barDurationComboBox,
+            this.barSmoothingComboBox,
             this.downloadBtn,
             this.searchText,
             this.goBtn,
@@ -1149,6 +1124,13 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.Name = "barDurationComboBox";
             this.barDurationComboBox.Size = new System.Drawing.Size(175, 25);
             this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
+            // 
+            // barSmoothingComboBox
+            // 
+            this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.barSmoothingComboBox.Name = "barSmoothingComboBox";
+            this.barSmoothingComboBox.Size = new System.Drawing.Size(50, 25);
+            this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.barSmootingComboBox_SelectedIndexChanged);
             // 
             // downloadBtn
             // 
@@ -1587,6 +1569,7 @@ namespace StockAnalyzerApp
         private CustomControl.GraphControls.GraphVolumeControl graphVolumeControl;
         private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
+        private ToolStripComboBox barSmoothingComboBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
         private ToolStripMenuItem optionsMenuItem;
@@ -1652,9 +1635,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator10;
         private ToolStripMenuItem indexRelativeStrengthMenuItem;
         private ToolStripMenuItem logSerieMenuItem;
-        private ToolStripMenuItem uniformRandomWalkMenuItem;
-        private ToolStripMenuItem normalRandomWalkMenuItem;
-        private ToolStripMenuItem gauchyRandomWalkMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripButton addToReportStripBtn;
