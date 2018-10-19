@@ -2678,7 +2678,7 @@ namespace StockAnalyzerApp
             {
                 this.barDurationComboBox.Items.Add(barDuration);
             }
-            foreach (int barSmoothing in new List<int> { 1, 3, 6, 9, 12, 20 })
+            foreach (int barSmoothing in new List<int> { 1, 3, 6, 9, 12, 20, 50, 100 })
             {
                 this.barSmoothingComboBox.Items.Add(barSmoothing);
             }
