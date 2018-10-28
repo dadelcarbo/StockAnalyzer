@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses
                 return Alert.Substring(0, index);
             }
         }
-        public StockSerie.StockBarDuration BarDuration { get; set; }
+        public StockBarDuration BarDuration { get; set; }
         public int BarSmoothing { get; set; }
         public float AlertClose { get; set; }
 

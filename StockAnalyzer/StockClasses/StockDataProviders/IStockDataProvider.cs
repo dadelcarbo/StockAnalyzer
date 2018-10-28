@@ -40,6 +40,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       bool DownloadIntradayData(string rootFolder, StockSerie stockSerie);
       void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
 
-      bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration);
+      bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration);
    }
 }

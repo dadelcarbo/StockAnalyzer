@@ -17,9 +17,9 @@ namespace StockAnalyzerApp.CustomControl
       {
          InitializeComponent();
 
-         StockSerie.StockBarDuration currentBarDuration = stockSerie.BarDuration;
+         StockBarDuration currentBarDuration = stockSerie.BarDuration;
          this.stockSerie = stockSerie;
-         stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+         stockSerie.BarDuration = StockBarDuration.Daily;
 
          this.Text += ": " + stockSerie.StockName;
 
@@ -108,8 +108,8 @@ namespace StockAnalyzerApp.CustomControl
       {
          this.stockSerie.StockAnalysis.Comments.Clear();
          this.commentBox.Text = string.Empty;
-         StockSerie.StockBarDuration currentBarDuration = this.stockSerie.BarDuration;
-         this.stockSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+         StockBarDuration currentBarDuration = this.stockSerie.BarDuration;
+         this.stockSerie.BarDuration = StockBarDuration.Daily;
 
          this.InitDateCombo();
 

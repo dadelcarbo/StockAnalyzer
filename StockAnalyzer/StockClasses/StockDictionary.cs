@@ -452,7 +452,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -569,7 +569,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -692,7 +692,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public bool GenerateERBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateERBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -814,7 +814,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateVarBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateVarBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -932,7 +932,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -1054,7 +1054,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateBullishOverboughtSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateBullishOverboughtSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -1176,7 +1176,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateTOPEMASerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateTOPEMASerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))
@@ -1262,7 +1262,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (index != -1)
                     {
-                        serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                        serie.BarDuration = StockBarDuration.Daily;
                         serie.BarSmoothing= 20;
                         IStockIndicator trailStop = serie.GetIndicator("TOPEMA(0,30,1)");
                         if (trailStop != null && trailStop.Events[0].Count > 0)
@@ -1302,7 +1302,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))

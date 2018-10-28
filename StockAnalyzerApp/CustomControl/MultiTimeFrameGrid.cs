@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl
          }
       }
 
-      public void LoadData(List<StockSerie.StockBarDuration> durations, List<string> indicators,
+      public void LoadData(List<StockBarDuration> durations, List<string> indicators,
           List<StockSerie> stockSeries)
       {
          // add columns.
@@ -41,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl
          dataGridView.Columns[0].Name = "Name";
          foreach (string indicator in indicators)
          {
-            foreach (StockSerie.StockBarDuration duration in durations)
+            foreach (StockBarDuration duration in durations)
             {
                dataGridView.Columns[i].Name = indicator + System.Environment.NewLine + duration.ToString();
                i++;

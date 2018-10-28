@@ -13,9 +13,9 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
-            this.fullGraphUserControl1 = new FullGraphUserControl(StockSerie.StockBarDuration.Weekly);
-            this.fullGraphUserControl2 = new FullGraphUserControl(StockSerie.StockBarDuration.TLB);
-            this.fullGraphUserControl3 = new FullGraphUserControl(StockSerie.StockBarDuration.Daily);
+            this.fullGraphUserControl1 = new FullGraphUserControl(StockBarDuration.Weekly);
+            this.fullGraphUserControl2 = new FullGraphUserControl(StockBarDuration.TLB);
+            this.fullGraphUserControl3 = new FullGraphUserControl(StockBarDuration.Daily);
             InitializeComponent();
 
             this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
@@ -36,14 +36,14 @@ namespace StockAnalyzerApp.CustomControl
             switch (this.selectedGroup)
             {
                 case StockSerie.Groups.FUTURE:
-                    fullGraphUserControl1.SetDuration(StockSerie.StockBarDuration.TLB_9D);
-                    fullGraphUserControl2.SetDuration(StockSerie.StockBarDuration.TLB_3D);
-                    fullGraphUserControl3.SetDuration(StockSerie.StockBarDuration.TLB);
+                    fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
+                    fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
+                    fullGraphUserControl3.SetDuration(StockBarDuration.TLB);
                     break;
                 case StockSerie.Groups.INTRADAY:
-                    fullGraphUserControl1.SetDuration(StockSerie.StockBarDuration.TLB_9D);
-                    fullGraphUserControl2.SetDuration(StockSerie.StockBarDuration.TLB_3D);
-                    fullGraphUserControl3.SetDuration(StockSerie.StockBarDuration.TLB);
+                    fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
+                    fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
+                    fullGraphUserControl3.SetDuration(StockBarDuration.TLB);
                     break;
             }
 

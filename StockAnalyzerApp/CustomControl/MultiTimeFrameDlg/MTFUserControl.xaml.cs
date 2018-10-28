@@ -40,7 +40,7 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          
          MTFViewModel.MTFTrend trend = dataGrid.SelectedCells[0].Item as MTFViewModel.MTFTrend;
 
-         StockSerie.StockBarDuration duration = StockSerie.StockBarDuration.Daily;
+         StockBarDuration duration = StockBarDuration.Daily;
          string headerName = dataGrid.SelectedCells[0].Column.Header.ToString();
          if (headerName != "Name" && dataGrid.SelectedCells.Count > 0)
             Enum.TryParse((dataGrid.SelectedCells[0].Column.Header as TextBlock).Text, out duration);

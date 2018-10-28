@@ -6,7 +6,7 @@
         {
             this.BarSmoothing = 1;
         }
-        public StockAlertDef(StockSerie.StockBarDuration barDuration, int barSmoothing, string indicatorType, string indicatorName, string eventName)
+        public StockAlertDef(StockBarDuration barDuration, int barSmoothing, string indicatorType, string indicatorName, string eventName)
         {
             this.BarDuration = barDuration;
             this.IndicatorType = indicatorType;
@@ -14,7 +14,7 @@
             this.EventName = eventName;
             this.BarSmoothing = barSmoothing;
         }
-        public StockSerie.StockBarDuration BarDuration { get; set; }
+        public StockBarDuration BarDuration { get; set; }
         public int BarSmoothing { get; set; }
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }

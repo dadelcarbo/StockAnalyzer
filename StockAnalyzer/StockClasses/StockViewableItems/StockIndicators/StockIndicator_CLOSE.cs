@@ -53,14 +53,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie closeSerie = null;
-            if (stockSerie.BarDuration == StockSerie.StockBarDuration.Daily)
+            if (stockSerie.BarDuration == StockBarDuration.Daily)
             {
                 closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             }
             else
             {
                 closeSerie = new FloatSerie(stockSerie.Count);
-                var dailySerie = stockSerie.GetValues(StockSerie.StockBarDuration.Daily).ToList();
+                var dailySerie = stockSerie.GetValues(StockBarDuration.Daily).ToList();
                 var valueSerie = stockSerie.Values;
 
                 int i = 0;

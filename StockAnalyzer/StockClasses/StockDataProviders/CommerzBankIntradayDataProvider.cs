@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
       public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
 
-      public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+      public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration)
       {
          StockLog.Write("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
          string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {
             Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
          }
-         foreach (StockSerie.StockBarDuration duration in cacheDurations)
+         foreach (StockBarDuration duration in cacheDurations)
          {
             string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration;
             if (!Directory.Exists(durationFileName))
@@ -114,8 +114,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                // Archive other time frames
                string durationFileName;
-               StockSerie.StockBarDuration previousDuration = stockSerie.BarDuration;
-               foreach (StockSerie.StockBarDuration duration in cacheDurations)
+               StockBarDuration previousDuration = stockSerie.BarDuration;
+               foreach (StockBarDuration duration in cacheDurations)
                {
                   durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 

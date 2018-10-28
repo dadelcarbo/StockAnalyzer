@@ -41,6 +41,40 @@ namespace StockAnalyzer.StockClasses
 
         }
     }
+    public enum StockBarDuration
+    {
+        Daily,
+        Weekly,
+        Monthly,
+        Bar_2,
+        Bar_3,
+        Bar_6,
+        Bar_9,
+        Bar_12,
+        Bar_24,
+        Bar_27,
+        Bar_48,
+        HA,
+        HA_3D,
+        MIN_5,
+        MIN_15,
+        MIN_60,
+        MIN_120,
+        TLB,
+        TLB_3D,
+        TLB_6D,
+        TLB_9D,
+        TLB_27D,
+        ThreeLineBreak,
+        ThreeLineBreak_BIS,
+        ThreeLineBreak_TER,
+        SixLineBreak,
+        TLB_Weekly,
+        RENKO_1,
+        RENKO_2,
+        RENKO_5,
+        RENKO_10,
+    }
 
     public partial class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
     {
@@ -88,40 +122,6 @@ namespace StockAnalyzer.StockClasses
             ALL,
             TURBO,
 
-        }
-        public enum StockBarDuration
-        {
-            Daily,
-            Weekly,
-            Monthly,
-            Bar_2,
-            Bar_3,
-            Bar_6,
-            Bar_9,
-            Bar_12,
-            Bar_24,
-            Bar_27,
-            Bar_48,
-            HA,
-            HA_3D,
-            MIN_5,
-            MIN_15,
-            MIN_60,
-            MIN_120,
-            TLB,
-            TLB_3D,
-            TLB_6D,
-            TLB_9D,
-            TLB_27D,
-            ThreeLineBreak,
-            ThreeLineBreak_BIS,
-            ThreeLineBreak_TER,
-            SixLineBreak,
-            TLB_Weekly,
-            RENKO_1,
-            RENKO_2,
-            RENKO_5,
-            RENKO_10,
         }
         public enum Trend
         {
@@ -376,7 +376,7 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                return GetValues(StockSerie.StockBarDuration.Daily);
+                return GetValues(StockBarDuration.Daily);
             }
         }
         public void SetBarDuration(StockBarDuration newBarDuration, int newBarSmoothing)
@@ -7953,7 +7953,7 @@ namespace StockAnalyzer.StockClasses
             return result;
         }
 
-        public bool ReadFromCSVFile(string fileName, StockSerie.StockBarDuration duration)
+        public bool ReadFromCSVFile(string fileName, StockBarDuration duration)
         {
             bool result = false;
             if (File.Exists(fileName))

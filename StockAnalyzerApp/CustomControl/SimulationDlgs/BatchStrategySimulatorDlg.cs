@@ -17,7 +17,7 @@ namespace StockAnalyzerApp.CustomControl
       private StockPortofolioList stockPortofolioList = null;
       private ToolStripProgressBar progressBar = null;
       private StockSerie.Groups group;
-      public StockSerie.StockBarDuration BarDuration { get; set; }
+      public StockBarDuration BarDuration { get; set; }
 
       public DateTime StartDate { get { return this.simulationParameterControl.StartDate; } set { this.simulationParameterControl.StartDate = value; } }
       public DateTime EndDate { get { return this.simulationParameterControl.EndDate; } set { this.simulationParameterControl.EndDate = value; } }
@@ -28,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl
 
       public event StockAnalyzerForm.SimulationCompletedEventHandler SimulationCompleted;
 
-      public BatchStrategySimulatorDlg(StockDictionary stockDictionary, StockPortofolioList stockPortofolioList, StockSerie.Groups group, StockSerie.StockBarDuration barDuration, ToolStripProgressBar progressBar)
+      public BatchStrategySimulatorDlg(StockDictionary stockDictionary, StockPortofolioList stockPortofolioList, StockSerie.Groups group, StockBarDuration barDuration, ToolStripProgressBar progressBar)
       {
          InitializeComponent();
 
@@ -43,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl
 
       }
 
-      public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
+      public void OnBarDurationChanged(StockBarDuration barDuration)
       {
          this.BarDuration = barDuration;
       }

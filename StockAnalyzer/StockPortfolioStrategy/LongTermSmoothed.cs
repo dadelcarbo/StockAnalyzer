@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
       List<StockDailyValue> cacDailyValues;
       protected override DateTime? InitialiseAllocation(DateTime startDate)
       {
-         cacDailyValues = this.StockDictionary["CAC40"].GetValues(StockSerie.StockBarDuration.Daily);
+         cacDailyValues = this.StockDictionary["CAC40"].GetValues(StockBarDuration.Daily);
 
          DateTime nextDate = startDate;
          DateTime lastDate = cacDailyValues.Last().DATE;
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockPortfolioStrategy
                   if (serie.GetTrailStop(trailHL).Events[3][index])
                   {
                      DateTime nextDay = serie.Keys.ElementAt(index + 1);
-                     float open = serie.GetValues(StockSerie.StockBarDuration.Daily).First(s => s.DATE == nextDay).OPEN;
+                     float open = serie.GetValues(StockBarDuration.Daily).First(s => s.DATE == nextDay).OPEN;
                      // Close position
                      StockLog.Write(" ==> " + applyDate.ToShortDateString() + "Selling " + position.Number + " " +
                                        position.StockName);

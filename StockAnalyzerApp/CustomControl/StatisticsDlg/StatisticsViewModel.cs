@@ -36,11 +36,11 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
         }
         static public Array BarDurations
         {
-            get { return Enum.GetValues(typeof(StockSerie.StockBarDuration)); }
+            get { return Enum.GetValues(typeof(StockBarDuration)); }
         }
 
-        private StockSerie.StockBarDuration barDuration1;
-        public StockSerie.StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
+        private StockBarDuration barDuration1;
+        public StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
 
         private static List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator" };
 
@@ -123,7 +123,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             this.Event = eventName;
             this.Results = new ObservableCollection<StatisticsResult>();
             this.Summary = new ObservableCollection<StatisticsResult>();
-            this.BarDuration = StockSerie.StockBarDuration.Daily;
+            this.BarDuration = StockBarDuration.Daily;
             this.Group = StockSerie.Groups.CAC40;
             this.S1Percent = 0.15f;
             this.R1Percent = 0.15f;

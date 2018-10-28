@@ -86,6 +86,7 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
+    <Compile Include="StockClasses\StockAnalysis2.cs" />
     <Compile Include="StockClasses\StockDataProviders\BNPJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\BNPIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
@@ -400,6 +401,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\StockDrawingItems2.cs" />
     <Compile Include="StockDrawing\StockHarmonicPatternRatio.cs" />
     <Compile Include="StockDrawing\Triangle2D.cs" />
     <Compile Include="StockDrawing\Text2D.cs" />
