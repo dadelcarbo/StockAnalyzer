@@ -31,6 +31,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public const int ARCHIVE_START_YEAR = 1999;
         public const int LOAD_START_YEAR = 2006;
 
+        private static string rootFolder = null;
+        public static string RootFolder
+        {
+            get
+            {
+                if (rootFolder == null) rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder;
+                return rootFolder;
+            }
+            set
+            {
+                rootFolder = value;
+            }
+        }
+
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\data\daily";
         static protected string INTRADAY_SUBFOLDER = @"\data\intraday";

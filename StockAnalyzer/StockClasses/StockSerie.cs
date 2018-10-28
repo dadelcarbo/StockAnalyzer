@@ -774,9 +774,7 @@ namespace StockAnalyzer.StockClasses
 
                     if (this.Count == 0)
                     {
-                        if (
-                            !LoadData(StockBar.StockBarType.Daily,
-                                StockAnalyzerSettings.Properties.Settings.Default.RootFolder))
+                        if (!LoadData(StockBar.StockBarType.Daily, StockDataProviderBase.RootFolder))
                         {
                             return false;
                         }
