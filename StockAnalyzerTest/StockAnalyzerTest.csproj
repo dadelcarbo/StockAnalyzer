@@ -60,6 +60,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockYahooJasonTest.cs" />
     <Compile Include="StockBarChartTest.cs" />
+    <Compile Include="StockAnalysisTest.cs" />
+    <Compile Include="StockSerieTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAnalyzer\StockAnalyzerLib.csproj">

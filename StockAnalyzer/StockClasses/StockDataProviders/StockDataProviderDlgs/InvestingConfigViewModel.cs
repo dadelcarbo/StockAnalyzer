@@ -10,9 +10,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
     public class InvestingConfigViewModel : INotifyPropertyChanged
     {
+        public InvestingConfigViewModel()
+        {
+            this.SearchResults = new List<StockDetails>();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<InvestingConfigEntry> Entries { get; set; }
         public IEnumerable<StockDetails> SearchResults { get; private set; }
-
         StockDetails selectedItem;
         public StockDetails SelectedItem
         {
@@ -90,13 +95,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         }
         public StockDictionary StockDico { get; private set; }
         public string FileName { get; private set; }
-
-        public InvestingConfigViewModel()
-        {
-            this.SearchResults = new List<StockDetails>();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public void Save()
         {

@@ -15,12 +15,12 @@ namespace StockAnalyzer.StockClasses
         public bool FollowUp { get; set; }
         public Dictionary<DateTime, String> Comments { get; set; }
 
-        public Dictionary<StockSerie.StockBarDuration, StockDrawingItems> DrawingItems { get; set; }
+        public Dictionary<StockBarDuration, StockDrawingItems> DrawingItems { get; set; }
 
         public StockAnalysis()
         {
             this.Comments = new Dictionary<DateTime, string>();
-            this.DrawingItems = new Dictionary<StockSerie.StockBarDuration, StockDrawingItems>();
+            this.DrawingItems = new Dictionary<StockBarDuration, StockDrawingItems>();
             this.Excluded = false;
             this.FollowUp = false;
             this.Theme = string.Empty;
@@ -63,8 +63,8 @@ namespace StockAnalyzer.StockClasses
                 XmlSerializer serializer = new XmlSerializer(typeof(StockDrawingItems));
                 while (reader.Name == "DrawingItems")
                 {
-                    StockSerie.StockBarDuration barDuration;
-                    if (StockSerie.StockBarDuration.TryParse(reader.GetAttribute("BarDuration"), out barDuration))
+                    StockBarDuration barDuration;
+                    if (StockBarDuration.TryParse(reader.GetAttribute("BarDuration"), out barDuration))
                     {
                         reader.ReadStartElement();
                         this.DrawingItems.Add(barDuration, (StockDrawingItems)serializer.Deserialize(reader));
@@ -115,7 +115,7 @@ namespace StockAnalyzer.StockClasses
             // Serialize drawing items
             if (hasDrawings)
             {
-                foreach (KeyValuePair<StockSerie.StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count > 0))
+                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count > 0))
                 {
                     writer.WriteStartElement("DrawingItems");
                     writer.WriteAttributeString("BarDuration", drawingItems.Key.ToString());
@@ -145,7 +145,7 @@ namespace StockAnalyzer.StockClasses
         public int DeleteTransientDrawings()
         {
             int count = 0;
-            foreach (StockSerie.StockBarDuration barDuration in this.DrawingItems.Keys)
+            foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
             {
                 count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => !d.IsPersistent));
             }

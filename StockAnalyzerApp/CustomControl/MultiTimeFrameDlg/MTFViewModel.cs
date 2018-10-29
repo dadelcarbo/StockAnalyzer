@@ -82,17 +82,17 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
       static public Array BarDurations
       {
-         get { return Enum.GetValues(typeof(StockSerie.StockBarDuration)); }
+         get { return Enum.GetValues(typeof(StockBarDuration)); }
       }
       
-      private StockSerie.StockBarDuration barDuration1;
-      public StockSerie.StockBarDuration BarDuration1 { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; DurationChanged("BarDuration1"); } } }
+      private StockBarDuration barDuration1;
+      public StockBarDuration BarDuration1 { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; DurationChanged("BarDuration1"); } } }
 
-      private StockSerie.StockBarDuration barDuration2;
-      public StockSerie.StockBarDuration BarDuration2 { get { return barDuration2; } set { if (value != barDuration2) { barDuration2 = value; DurationChanged("BarDuration2"); } } }
+      private StockBarDuration barDuration2;
+      public StockBarDuration BarDuration2 { get { return barDuration2; } set { if (value != barDuration2) { barDuration2 = value; DurationChanged("BarDuration2"); } } }
 
-      private StockSerie.StockBarDuration barDuration3;
-      public StockSerie.StockBarDuration BarDuration3 { get { return barDuration3; } set { if (value != barDuration3) { barDuration3 = value; DurationChanged("BarDuration3"); } } }
+      private StockBarDuration barDuration3;
+      public StockBarDuration BarDuration3 { get { return barDuration3; } set { if (value != barDuration3) { barDuration3 = value; DurationChanged("BarDuration3"); } } }
      
       private ObservableCollection<MTFTrend> trends;
       public ObservableCollection<MTFTrend> Trends { get { return trends; } set { if (value != trends) { trends = value; OnPropertyChanged("Trends"); } } }
@@ -130,9 +130,9 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          this.NbStocks = stockSeries.Count();
 
          this.Trends = new ObservableCollection<MTFTrend>();
-         this.barDuration1 = StockSerie.StockBarDuration.TLB_9D_EMA3;
-         this.BarDuration2 = StockSerie.StockBarDuration.TLB_3D_EMA3;
-         this.barDuration3 = StockSerie.StockBarDuration.TLB_EMA3;
+         this.barDuration1 = StockBarDuration.TLB_9D;
+         this.BarDuration2 = StockBarDuration.TLB_3D;
+         this.barDuration3 = StockBarDuration.TLB;
 
          dispatcher = Dispatcher.CurrentDispatcher;
       }

@@ -86,6 +86,7 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
+    <Compile Include="StockClasses\StockAnalysis2.cs" />
     <Compile Include="StockClasses\StockDataProviders\BNPJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\BNPIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicator.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIVWAIT.cs" />
@@ -182,7 +182,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMODIST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SENOSC.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NORMRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
@@ -207,25 +206,19 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERTTREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MEMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MFI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NORMSTOKS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ShortInterest.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTSMALLSPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VARCUMUL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ER.cs" />
@@ -252,7 +245,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADXDIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADX.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_WAD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWDAYS.cs" />
@@ -265,18 +257,15 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYOSC.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBUPBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTCOMMERCIAL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA3Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MACD.cs" />
@@ -358,18 +347,12 @@
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBHL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILDECAY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBOTOP.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFIBO.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHIGHLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILVAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLS.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHL2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStops.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -410,7 +393,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BB.cs" />
-    <Compile Include="StockClasses\StockPersonality.cs" />
     <Compile Include="StockClasses\StockSession.cs" />
     <Compile Include="StockClasses\StockSerie.cs" />
     <Compile Include="StockClasses\StockStatistics.cs" />
@@ -419,6 +401,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\StockDrawingItems2.cs" />
     <Compile Include="StockDrawing\StockHarmonicPatternRatio.cs" />
     <Compile Include="StockDrawing\Triangle2D.cs" />
     <Compile Include="StockDrawing\Text2D.cs" />

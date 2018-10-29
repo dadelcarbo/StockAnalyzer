@@ -223,7 +223,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                         serie = StockDictionary.StockDictionarySingleton[stockName];
                         serie.Initialise();
-                        serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                        serie.BarDuration = StockBarDuration.Daily;
                     }
                     while (serie.Count < 400);
 
@@ -293,12 +293,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             index++;
             DateTime currentDate = DateTime.Today;
-            refSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+            refSerie.BarDuration = StockBarDuration.Daily;
             if (index < refSerie.Count)
             {
                 replaySerie.IsInitialised = false;
                 replaySerie.ClearBarDurationCache();
-                replaySerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                replaySerie.BarDuration = StockBarDuration.Daily;
                 StockDailyValue dailyVal = null;
                 for (int i = 0; i < index; i++)
                 {
@@ -342,7 +342,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = false;
 
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
                 this.Position.OpenValue = dailyValue.CLOSE;
                 this.Position.Number = 2;
 
@@ -370,7 +370,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = true;
 
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
                 this.Position.OpenValue = dailyValue.CLOSE;
                 this.Position.Number = -2;
 
@@ -394,7 +394,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (started)
             {
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
 
                 PerformSell(dailyValue, this.Position.Number, dailyValue.CLOSE);
 

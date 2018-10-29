@@ -207,7 +207,7 @@ namespace StockAnalyzer.Portofolio
          }
          referenceSerie.Initialise();
 
-         foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Where(d => d.DATE.Year > 2014).Select(v => v.DATE.Date))
+         foreach (DateTime date in referenceSerie.GetValues(StockBarDuration.Daily).Where(d => d.DATE.Year > 2014).Select(v => v.DATE.Date))
          {
             // Calculate open value
 
@@ -236,7 +236,7 @@ namespace StockAnalyzer.Portofolio
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(numberOfShare, stockOrder.Value,
-                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockBarDuration.Daily)));
                      }
                      else
                      {
@@ -297,7 +297,7 @@ namespace StockAnalyzer.Portofolio
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(-numberOfShare, stockOrder.Value,
-                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockBarDuration.Daily)));
                      }
                      else
                      {

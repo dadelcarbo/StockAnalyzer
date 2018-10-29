@@ -58,11 +58,11 @@ namespace StockAnalyzerApp
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDrawingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showSummaryOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,9 +79,6 @@ namespace StockAnalyzerApp
             this.inverseSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.overnightSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uniformRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.normalRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gauchyRandomWalkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,14 +95,16 @@ namespace StockAnalyzerApp
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
             this.patternRecognitionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newOrderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.importBinckOrders = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioRiskManager = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,6 +117,33 @@ namespace StockAnalyzerApp
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.indicatorLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.themeToolStrip = new System.Windows.Forms.ToolStrip();
+            this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveThemeStripButton = new System.Windows.Forms.ToolStripButton();
+            this.defaultThemeStripButton = new System.Windows.Forms.ToolStripButton();
+            this.themeComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.browseToolStrip = new System.Windows.Forms.ToolStrip();
+            this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.smoothingLabel = new System.Windows.Forms.ToolStripLabel();
+            this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.downloadBtn = new System.Windows.Forms.ToolStripButton();
+            this.searchText = new System.Windows.Forms.ToolStripTextBox();
+            this.goBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.rewindBtn = new System.Windows.Forms.ToolStripButton();
+            this.fastForwardBtn = new System.Windows.Forms.ToolStripButton();
+            this.zoomOutBtn = new System.Windows.Forms.ToolStripButton();
+            this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
+            this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.followUpCheckBox = new CustomControl.ToolStripCheckedBox();
+            this.excludeButton = new System.Windows.Forms.ToolStripButton();
+            this.commentBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.drawToolStrip = new System.Windows.Forms.ToolStrip();
             this.magnetStripBtn = new System.Windows.Forms.ToolStripButton();
             this.sarLineStripBtn = new System.Windows.Forms.ToolStripButton();
@@ -138,50 +164,23 @@ namespace StockAnalyzerApp
             this.addToReportStripBtn = new System.Windows.Forms.ToolStripButton();
             this.generateDailyReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
             this.AddToWatchListToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.browseToolStrip = new System.Windows.Forms.ToolStrip();
-            this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.downloadBtn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.rewindBtn = new System.Windows.Forms.ToolStripButton();
-            this.fastForwardBtn = new System.Windows.Forms.ToolStripButton();
-            this.zoomOutBtn = new System.Windows.Forms.ToolStripButton();
-            this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
-            this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.followUpCheckBox = new ToolStripCheckedBox();
-            this.excludeButton = new System.Windows.Forms.ToolStripButton();
-            this.commentBtn = new System.Windows.Forms.ToolStripButton();
-            this.searchText = new System.Windows.Forms.ToolStripTextBox();
-            this.goBtn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.themeToolStrip = new System.Windows.Forms.ToolStrip();
-            this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
-            this.saveThemeStripButton = new System.Windows.Forms.ToolStripButton();
-            this.defaultThemeStripButton = new System.Windows.Forms.ToolStripButton();
-            this.themeComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.graphCloseControl = new GraphCloseControl();
-            this.graphScrollerControl = new GraphScrollerControl();
-            this.graphIndicator1Control = new GraphRangedControl();
-            this.graphIndicator2Control = new GraphRangedControl();
-            this.graphIndicator3Control = new GraphRangedControl();
-            this.graphVolumeControl = new GraphVolumeControl();
+            this.graphCloseControl = new CustomControl.GraphControls.GraphCloseControl();
+            this.graphScrollerControl = new CustomControl.GraphControls.GraphScrollerControl();
+            this.graphIndicator1Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphIndicator2Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphIndicator3Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphVolumeControl = new CustomControl.GraphControls.GraphVolumeControl();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.drawToolStrip.SuspendLayout();
-            this.browseToolStrip.SuspendLayout();
             this.themeToolStrip.SuspendLayout();
+            this.browseToolStrip.SuspendLayout();
+            this.drawToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -256,8 +255,8 @@ namespace StockAnalyzerApp
             // 
             this.saveAnalysisFileAsMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.SaveAnalysisAs;
             this.saveAnalysisFileAsMenuItem.Name = "saveAnalysisFileAsMenuItem";
-            this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-               | System.Windows.Forms.Keys.S)));
+            this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
             this.saveAnalysisFileAsMenuItem.Size = new System.Drawing.Size(262, 22);
             this.saveAnalysisFileAsMenuItem.Text = "Save Analysis File As...";
             this.saveAnalysisFileAsMenuItem.Click += new System.EventHandler(this.saveAnalysisFileAsMenuItem_Click);
@@ -354,7 +353,6 @@ namespace StockAnalyzerApp
             // 
             // stockFilterMenuItem
             // 
-            this.stockFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {});
             this.stockFilterMenuItem.Name = "stockFilterMenuItem";
             this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
             this.stockFilterMenuItem.Text = "Filter";
@@ -384,10 +382,7 @@ namespace StockAnalyzerApp
             this.indexRelativeStrengthMenuItem,
             this.inverseSerieMenuItem,
             this.overnightSerieMenuItem,
-            this.logSerieMenuItem,
-            this.uniformRandomWalkMenuItem,
-            this.normalRandomWalkMenuItem,
-            this.gauchyRandomWalkMenuItem});
+            this.logSerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewMenuItem.Text = "View";
@@ -396,7 +391,7 @@ namespace StockAnalyzerApp
             // 
             this.showShowStatusBarMenuItem.CheckOnClick = true;
             this.showShowStatusBarMenuItem.Name = "showShowStatusBarMenuItem";
-            this.showShowStatusBarMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showShowStatusBarMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showShowStatusBarMenuItem.Text = "Show Status bar";
             this.showShowStatusBarMenuItem.Click += new System.EventHandler(this.showShowStatusBarMenuItem_Click);
             // 
@@ -404,15 +399,9 @@ namespace StockAnalyzerApp
             // 
             this.hideIndicatorsStockMenuItem.CheckOnClick = true;
             this.hideIndicatorsStockMenuItem.Name = "hideIndicatorsStockMenuItem";
-            this.hideIndicatorsStockMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.hideIndicatorsStockMenuItem.Size = new System.Drawing.Size(233, 22);
             this.hideIndicatorsStockMenuItem.Text = "Hide indicators";
             this.hideIndicatorsStockMenuItem.Click += new System.EventHandler(this.hideIndicatorsStockMenuItem_Click);
-            // 
-            // barTypeMenuItem
-            // 
-            this.showAgendaMenuItem.Name = "showAgendaMenuItem";
-            this.showAgendaMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.showAgendaMenuItem.Text = "Show Agenda Entries";
             // 
             // showDrawingsMenuItem
             // 
@@ -420,7 +409,7 @@ namespace StockAnalyzerApp
             this.showDrawingsMenuItem.CheckOnClick = true;
             this.showDrawingsMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showDrawingsMenuItem.Name = "showDrawingsMenuItem";
-            this.showDrawingsMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showDrawingsMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showDrawingsMenuItem.Text = "Show Drawings";
             this.showDrawingsMenuItem.Click += new System.EventHandler(this.showDrawingsMenuItem_Click);
             // 
@@ -428,7 +417,7 @@ namespace StockAnalyzerApp
             // 
             this.showSummaryOrdersMenuItem.CheckOnClick = true;
             this.showSummaryOrdersMenuItem.Name = "showSummaryOrdersMenuItem";
-            this.showSummaryOrdersMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showSummaryOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showSummaryOrdersMenuItem.Text = "Show Summary Orders";
             this.showSummaryOrdersMenuItem.Click += new System.EventHandler(this.showSummaryOrdersMenuItem_Click);
             // 
@@ -438,14 +427,20 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem.CheckOnClick = true;
             this.showOrdersMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showOrdersMenuItem.Name = "showOrdersMenuItem";
-            this.showOrdersMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showOrdersMenuItem.Text = "Show Orders";
             this.showOrdersMenuItem.Click += new System.EventHandler(this.showOrdersMenuItem_Click);
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator14.Size = new System.Drawing.Size(230, 6);
+            // 
+            // showAgendaMenuItem
+            // 
+            this.showAgendaMenuItem.Name = "showAgendaMenuItem";
+            this.showAgendaMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.showAgendaMenuItem.Text = "Show Agenda Entries";
             // 
             // showEventMarqueeMenuItem
             // 
@@ -453,7 +448,7 @@ namespace StockAnalyzerApp
             this.showEventMarqueeMenuItem.CheckOnClick = true;
             this.showEventMarqueeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showEventMarqueeMenuItem.Name = "showEventMarqueeMenuItem";
-            this.showEventMarqueeMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showEventMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showEventMarqueeMenuItem.Text = "Show Event Marquees";
             this.showEventMarqueeMenuItem.Click += new System.EventHandler(this.showEventMarqueeMenuItem_Click);
             // 
@@ -463,7 +458,7 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem.CheckOnClick = true;
             this.showCommentMarqueeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showCommentMarqueeMenuItem.Name = "showCommentMarqueeMenuItem";
-            this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showCommentMarqueeMenuItem.Text = "Show Comment Marquees";
             this.showCommentMarqueeMenuItem.Click += new System.EventHandler(this.showCommentMarqueeMenuItem_Click);
             // 
@@ -473,7 +468,7 @@ namespace StockAnalyzerApp
             this.showIndicatorDivMenuItem.CheckOnClick = true;
             this.showIndicatorDivMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showIndicatorDivMenuItem.Name = "showIndicatorDivMenuItem";
-            this.showIndicatorDivMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showIndicatorDivMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorDivMenuItem.Text = "Show Divergences";
             this.showIndicatorDivMenuItem.Click += new System.EventHandler(this.showIndicatorDivMenuItem_Click);
             // 
@@ -483,112 +478,89 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem.CheckOnClick = true;
             this.showIndicatorTextMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showIndicatorTextMenuItem.Name = "showIndicatorTextMenuItem";
-            this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorTextMenuItem.Text = "Show Indicator Text";
             this.showIndicatorTextMenuItem.Click += new System.EventHandler(this.showIndicatorTextMenuItem_Click);
             // 
             // selectEventForMarqueeMenuItem
             // 
             this.selectEventForMarqueeMenuItem.Name = "selectEventForMarqueeMenuItem";
-            this.selectEventForMarqueeMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.selectEventForMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.selectEventForMarqueeMenuItem.Text = "Select Events";
             this.selectEventForMarqueeMenuItem.Click += new System.EventHandler(this.selectEventForMarqueeMenuItem_Click);
             // 
             // toolStripSeparator16
             // 
             this.toolStripSeparator16.Name = "toolStripSeparator16";
-            this.toolStripSeparator16.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator16.Size = new System.Drawing.Size(230, 6);
             // 
             // showHorseRaceViewMenuItem
             // 
             this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
             this.showHorseRaceViewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showHorseRaceViewMenuItem.Text = "Horse Race View";
-            this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
             // 
-            // showAlertMenuItem
+            // showIntradayAlertMenuItem
             // 
             this.showIntradayAlertMenuItem.Name = "showIntradayAlertMenuItem";
             this.showIntradayAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.showIntradayAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showIntradayAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIntradayAlertMenuItem.Text = "Intraday Alert View";
-            this.showIntradayAlertMenuItem.Click += showIntradayAlertViewMenuItem_Click;
             // 
-            // showAlertMenuItem
+            // showDailyAlertMenuItem
             // 
             this.showDailyAlertMenuItem.Name = "showDailyAlertMenuItem";
-            this.showDailyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A)));
-            this.showDailyAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showDailyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+            this.showDailyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showDailyAlertMenuItem.Text = "Daily Alert View";
-            this.showDailyAlertMenuItem.Click += showDailyAlertViewMenuItem_Click;
             // 
-            // showAlertMenuItem
+            // showWeeklyAlertMenuItem
             // 
             this.showWeeklyAlertMenuItem.Name = "showWeeklyAlertMenuItem";
-            this.showWeeklyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
-            this.showWeeklyAlertMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.showWeeklyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.A)));
+            this.showWeeklyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showWeeklyAlertMenuItem.Text = "Weekly Alert View";
-            this.showWeeklyAlertMenuItem.Click += showWeeklyAlertViewMenuItem_Click;
             // 
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size(241, 6);
+            this.toolStripSeparator15.Size = new System.Drawing.Size(230, 6);
             // 
             // secondarySerieMenuItem
             // 
             this.secondarySerieMenuItem.Name = "secondarySerieMenuItem";
-            this.secondarySerieMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.secondarySerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.secondarySerieMenuItem.Text = "Secondary Serie";
             // 
             // indexRelativeStrengthMenuItem
             // 
             this.indexRelativeStrengthMenuItem.Name = "indexRelativeStrengthMenuItem";
-            this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(233, 22);
             this.indexRelativeStrengthMenuItem.Text = "Index Relative Strength";
             // 
             // inverseSerieMenuItem
             // 
             this.inverseSerieMenuItem.Name = "inverseSerieMenuItem";
-            this.inverseSerieMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.inverseSerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.inverseSerieMenuItem.Text = "Inverse Serie";
             this.inverseSerieMenuItem.Click += new System.EventHandler(this.inverseSerieMenuItem_Click);
             // 
             // overnightSerieMenuItem
             // 
             this.overnightSerieMenuItem.Name = "overnightSerieMenuItem";
-            this.overnightSerieMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.overnightSerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.overnightSerieMenuItem.Text = "Overnight Serie";
             this.overnightSerieMenuItem.Click += new System.EventHandler(this.overnightSerieMenuItem_Click);
             // 
             // logSerieMenuItem
             // 
             this.logSerieMenuItem.Name = "logSerieMenuItem";
-            this.logSerieMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.logSerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.logSerieMenuItem.Text = "Log Serie";
             this.logSerieMenuItem.Click += new System.EventHandler(this.logSerieMenuItem_Click);
-            // 
-            // uniformRandomWalkMenuItem
-            // 
-            this.uniformRandomWalkMenuItem.Name = "uniformRandomWalkMenuItem";
-            this.uniformRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.uniformRandomWalkMenuItem.Text = "Generate Uniform Random Serie";
-            this.uniformRandomWalkMenuItem.Click += new System.EventHandler(this.uniformRandomWalkMenuItem_Click);
-            // 
-            // normalRandomWalkMenuItem
-            // 
-            this.normalRandomWalkMenuItem.Name = "normalRandomWalkMenuItem";
-            this.normalRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.normalRandomWalkMenuItem.Text = "Generate Normal Random Serie";
-            this.normalRandomWalkMenuItem.Click += new System.EventHandler(this.normalRandomWalkMenuItem_Click);
-            // 
-            // gauchyRandomWalkMenuItem
-            // 
-            this.gauchyRandomWalkMenuItem.Name = "gauchyRandomWalkMenuItem";
-            this.gauchyRandomWalkMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.gauchyRandomWalkMenuItem.Text = "Generate Gauchy Random Serie";
-            this.gauchyRandomWalkMenuItem.Click += new System.EventHandler(this.gauchyRandomWalkMenuItem_Click);
             // 
             // analysisMenuItem
             // 
@@ -712,17 +684,17 @@ namespace StockAnalyzerApp
             this.toolStripSeparator22.Name = "toolStripSeparator22";
             this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
             // 
-            // toolStripSeparator23
-            // 
-            this.toolStripSeparator23.Name = "toolStripSeparator23";
-            this.toolStripSeparator23.Size = new System.Drawing.Size(237, 6);
-            // 
             // statisticsMenuItem
             // 
             this.statisticsMenuItem.Name = "statisticsMenuItem";
             this.statisticsMenuItem.Size = new System.Drawing.Size(240, 22);
             this.statisticsMenuItem.Text = "Event Statistics";
             this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
+            // 
+            // toolStripSeparator23
+            // 
+            this.toolStripSeparator23.Name = "toolStripSeparator23";
+            this.toolStripSeparator23.Size = new System.Drawing.Size(237, 6);
             // 
             // patternRecognitionMenuItem
             // 
@@ -749,43 +721,53 @@ namespace StockAnalyzerApp
             // currentPortofolioMenuItem
             // 
             this.currentPortofolioMenuItem.Name = "currentPortofolioMenuItem";
-            this.currentPortofolioMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.currentPortofolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
             this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
             // 
             // newOrderMenuItem
             // 
             this.newOrderMenuItem.Name = "newOrderMenuItem";
-            this.newOrderMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.newOrderMenuItem.Size = new System.Drawing.Size(202, 22);
             this.newOrderMenuItem.Text = "New Order";
             this.newOrderMenuItem.Click += new System.EventHandler(this.newOrderMenuItem_Click);
+            // 
+            // toolStripSeparator19
+            // 
+            this.toolStripSeparator19.Name = "toolStripSeparator19";
+            this.toolStripSeparator19.Size = new System.Drawing.Size(199, 6);
             // 
             // importBinckOrders
             // 
             this.importBinckOrders.Name = "importBinckOrders";
-            this.importBinckOrders.Size = new System.Drawing.Size(236, 22);
-            this.importBinckOrders.Text = "Import Orders";
             this.importBinckOrders.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
+            this.importBinckOrders.Size = new System.Drawing.Size(202, 22);
+            this.importBinckOrders.Text = "Import Orders";
             this.importBinckOrders.Click += new System.EventHandler(this.importBinckOrders_Click);
             // 
             // portfolioRiskManager
             // 
             this.portfolioRiskManager.Name = "portfolioRiskManager";
-            this.portfolioRiskManager.Size = new System.Drawing.Size(236, 22);
+            this.portfolioRiskManager.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.portfolioRiskManager.Size = new System.Drawing.Size(202, 22);
             this.portfolioRiskManager.Text = "Risk Manager";
-            this.portfolioRiskManager.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.F2)));
             this.portfolioRiskManager.Click += new System.EventHandler(this.portfolioRiskManager_Click);
+            // 
+            // toolStripSeparator21
+            // 
+            this.toolStripSeparator21.Name = "toolStripSeparator21";
+            this.toolStripSeparator21.Size = new System.Drawing.Size(199, 6);
             // 
             // portofolioDetailsMenuItem
             // 
             this.portofolioDetailsMenuItem.Name = "portofolioDetailsMenuItem";
-            this.portofolioDetailsMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.portofolioDetailsMenuItem.Size = new System.Drawing.Size(202, 22);
             this.portofolioDetailsMenuItem.Text = "Portofolios";
             // 
             // orderListMenuItem
             // 
             this.orderListMenuItem.Name = "orderListMenuItem";
-            this.orderListMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.orderListMenuItem.Size = new System.Drawing.Size(202, 22);
             this.orderListMenuItem.Text = "Order List";
             // 
             // watchlistsMenuItem
@@ -836,7 +818,7 @@ namespace StockAnalyzerApp
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.indicatorLayoutPanel);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(975, 511);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(975, 509);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -846,9 +828,9 @@ namespace StockAnalyzerApp
             // 
             // toolStripContainer1.TopToolStripPanel
             // 
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
             // 
             // statusStrip1
             // 
@@ -891,8 +873,258 @@ namespace StockAnalyzerApp
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
-            this.indicatorLayoutPanel.Size = new System.Drawing.Size(975, 511);
+            this.indicatorLayoutPanel.Size = new System.Drawing.Size(975, 509);
             this.indicatorLayoutPanel.TabIndex = 0;
+            // 
+            // themeToolStrip
+            // 
+            this.themeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.themeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.indicatorConfigStripButton,
+            this.saveThemeStripButton,
+            this.defaultThemeStripButton,
+            this.themeComboBox,
+            this.deleteThemeStripButton,
+            this.toolStripSeparator1,
+            this.strategyComboBox});
+            this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
+            this.themeToolStrip.Name = "themeToolStrip";
+            this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
+            this.themeToolStrip.TabIndex = 2;
+            // 
+            // indicatorConfigStripButton
+            // 
+            this.indicatorConfigStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.indicatorConfigStripButton.Image = global::StockAnalyzerApp.Properties.Resources.gear;
+            this.indicatorConfigStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.indicatorConfigStripButton.Name = "indicatorConfigStripButton";
+            this.indicatorConfigStripButton.Size = new System.Drawing.Size(23, 22);
+            this.indicatorConfigStripButton.Text = "Configure displayed indicator1Name";
+            this.indicatorConfigStripButton.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
+            // 
+            // saveThemeStripButton
+            // 
+            this.saveThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveThemeStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveThemeStripButton.Image")));
+            this.saveThemeStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveThemeStripButton.Name = "saveThemeStripButton";
+            this.saveThemeStripButton.Size = new System.Drawing.Size(23, 22);
+            this.saveThemeStripButton.Text = "Save current theme";
+            this.saveThemeStripButton.Click += new System.EventHandler(this.saveThemeMenuItem_Click);
+            // 
+            // defaultThemeStripButton
+            // 
+            this.defaultThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.defaultThemeStripButton.Image = global::StockAnalyzerApp.Properties.Resources.SetDefaultTheme;
+            this.defaultThemeStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.defaultThemeStripButton.Name = "defaultThemeStripButton";
+            this.defaultThemeStripButton.Size = new System.Drawing.Size(23, 22);
+            this.defaultThemeStripButton.Text = "Set as default theme for this stock";
+            this.defaultThemeStripButton.Click += new System.EventHandler(this.defaultThemeStripButton_Click);
+            // 
+            // themeComboBox
+            // 
+            this.themeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.themeComboBox.Name = "themeComboBox";
+            this.themeComboBox.Size = new System.Drawing.Size(121, 25);
+            this.themeComboBox.Sorted = true;
+            this.themeComboBox.SelectedIndexChanged += new System.EventHandler(this.themeComboBox_SelectedIndexChanged);
+            // 
+            // deleteThemeStripButton
+            // 
+            this.deleteThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.deleteThemeStripButton.Image = global::StockAnalyzerApp.Properties.Resources.DeleteTheme;
+            this.deleteThemeStripButton.Name = "deleteThemeStripButton";
+            this.deleteThemeStripButton.Size = new System.Drawing.Size(23, 22);
+            this.deleteThemeStripButton.Text = "Delete selected theme";
+            this.deleteThemeStripButton.Click += new System.EventHandler(this.deleteThemeStripButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // strategyComboBox
+            // 
+            this.strategyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.strategyComboBox.Name = "strategyComboBox";
+            this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
+            this.strategyComboBox.Sorted = true;
+            this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
+            // 
+            // browseToolStrip
+            // 
+            this.browseToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stockNameComboBox,
+            this.barDurationComboBox,
+            this.smoothingLabel,
+            this.barSmoothingComboBox,
+            this.downloadBtn,
+            this.searchText,
+            this.goBtn,
+            this.toolStripSeparator6,
+            this.rewindBtn,
+            this.fastForwardBtn,
+            this.zoomOutBtn,
+            this.zoomInBtn,
+            this.logScaleBtn,
+            this.toolStripSeparator2,
+            this.followUpCheckBox,
+            this.excludeButton,
+            this.commentBtn,
+            this.toolStripSeparator5});
+            this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
+            this.browseToolStrip.Name = "browseToolStrip";
+            this.browseToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.browseToolStrip.Size = new System.Drawing.Size(517, 27);
+            this.browseToolStrip.TabIndex = 0;
+            // 
+            // stockNameComboBox
+            // 
+            this.stockNameComboBox.Name = "stockNameComboBox";
+            this.stockNameComboBox.Size = new System.Drawing.Size(250, 27);
+            this.stockNameComboBox.SelectedIndexChanged += new System.EventHandler(this.StockNameComboBox_SelectedIndexChanged);
+            // 
+            // barDurationComboBox
+            // 
+            this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.barDurationComboBox.Name = "barDurationComboBox";
+            this.barDurationComboBox.Size = new System.Drawing.Size(175, 27);
+            this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
+            // 
+            // smoothingLabel
+            // 
+            this.smoothingLabel.Name = "smoothingLabel";
+            this.smoothingLabel.Size = new System.Drawing.Size(52, 24);
+            this.smoothingLabel.Text = "Smooth:";
+            // 
+            // barSmoothingComboBox
+            // 
+            this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.barSmoothingComboBox.Name = "barSmoothingComboBox";
+            this.barSmoothingComboBox.Size = new System.Drawing.Size(75, 23);
+            this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.barSmootingComboBox_SelectedIndexChanged);
+            // 
+            // downloadBtn
+            // 
+            this.downloadBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.downloadBtn.Image = global::StockAnalyzerApp.Properties.Resources.Reload;
+            this.downloadBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.downloadBtn.Name = "downloadBtn";
+            this.downloadBtn.Size = new System.Drawing.Size(23, 20);
+            this.downloadBtn.Text = "Download";
+            this.downloadBtn.Click += new System.EventHandler(this.downloadBtn_Click);
+            // 
+            // searchText
+            // 
+            this.searchText.Name = "searchText";
+            this.searchText.Size = new System.Drawing.Size(200, 23);
+            this.searchText.TextChanged += new System.EventHandler(this.goBtn_Click);
+            // 
+            // goBtn
+            // 
+            this.goBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.goBtn.Image = global::StockAnalyzerApp.Properties.Resources.search;
+            this.goBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.goBtn.Name = "goBtn";
+            this.goBtn.Size = new System.Drawing.Size(23, 20);
+            this.goBtn.Text = "Go to stock";
+            this.goBtn.ToolTipText = "Go to stock";
+            this.goBtn.Click += new System.EventHandler(this.goBtn_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 27);
+            // 
+            // rewindBtn
+            // 
+            this.rewindBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.rewindBtn.Image = global::StockAnalyzerApp.Properties.Resources.Backward_icon;
+            this.rewindBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.rewindBtn.Name = "rewindBtn";
+            this.rewindBtn.Size = new System.Drawing.Size(23, 20);
+            this.rewindBtn.ToolTipText = "Rewind";
+            this.rewindBtn.Click += new System.EventHandler(this.rewindBtn_Click);
+            // 
+            // fastForwardBtn
+            // 
+            this.fastForwardBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.fastForwardBtn.Image = global::StockAnalyzerApp.Properties.Resources.Forward_icon;
+            this.fastForwardBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.fastForwardBtn.Name = "fastForwardBtn";
+            this.fastForwardBtn.Size = new System.Drawing.Size(23, 20);
+            this.fastForwardBtn.ToolTipText = "Forward";
+            this.fastForwardBtn.Click += new System.EventHandler(this.fastForwardBtn_Click);
+            // 
+            // zoomOutBtn
+            // 
+            this.zoomOutBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.zoomOutBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomOut;
+            this.zoomOutBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.zoomOutBtn.Name = "zoomOutBtn";
+            this.zoomOutBtn.Size = new System.Drawing.Size(23, 20);
+            this.zoomOutBtn.ToolTipText = "Zoom Out";
+            this.zoomOutBtn.Click += new System.EventHandler(this.ZoomOutBtn_Click);
+            // 
+            // zoomInBtn
+            // 
+            this.zoomInBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.zoomInBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomIn;
+            this.zoomInBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.zoomInBtn.Name = "zoomInBtn";
+            this.zoomInBtn.Size = new System.Drawing.Size(23, 20);
+            this.zoomInBtn.ToolTipText = "Zoon In";
+            this.zoomInBtn.Click += new System.EventHandler(this.ZoomInBtn_Click);
+            // 
+            // logScaleBtn
+            // 
+            this.logScaleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.logScaleBtn.Image = global::StockAnalyzerApp.Properties.Resources.Log;
+            this.logScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.logScaleBtn.Name = "logScaleBtn";
+            this.logScaleBtn.Size = new System.Drawing.Size(23, 20);
+            this.logScaleBtn.ToolTipText = "Log scale";
+            this.logScaleBtn.Click += new System.EventHandler(this.logScaleBtn_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // followUpCheckBox
+            // 
+            this.followUpCheckBox.Name = "followUpCheckBox";
+            this.followUpCheckBox.Size = new System.Drawing.Size(80, 19);
+            this.followUpCheckBox.Text = "Follow-up";
+            this.followUpCheckBox.Click += new System.EventHandler(this.followUpCheckBox_CheckedChanged);
+            // 
+            // excludeButton
+            // 
+            this.excludeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.excludeButton.Image = global::StockAnalyzerApp.Properties.Resources.Delete;
+            this.excludeButton.Name = "excludeButton";
+            this.excludeButton.Size = new System.Drawing.Size(23, 20);
+            this.excludeButton.Text = "Exclude";
+            this.excludeButton.ToolTipText = "Exclude value from list";
+            this.excludeButton.Click += new System.EventHandler(this.excludeButton_Click);
+            // 
+            // commentBtn
+            // 
+            this.commentBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.commentBtn.Image = global::StockAnalyzerApp.Properties.Resources.Comment;
+            this.commentBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.commentBtn.Name = "commentBtn";
+            this.commentBtn.Size = new System.Drawing.Size(23, 20);
+            this.commentBtn.Text = "Comment";
+            this.commentBtn.ToolTipText = "Edit a comment";
+            this.commentBtn.Click += new System.EventHandler(this.commentBtn_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 27);
             // 
             // drawToolStrip
             // 
@@ -917,7 +1149,7 @@ namespace StockAnalyzerApp
             this.addToReportStripBtn,
             this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
-            this.drawToolStrip.Location = new System.Drawing.Point(3, 0);
+            this.drawToolStrip.Location = new System.Drawing.Point(3, 27);
             this.drawToolStrip.Name = "drawToolStrip";
             this.drawToolStrip.Size = new System.Drawing.Size(421, 25);
             this.drawToolStrip.TabIndex = 1;
@@ -1112,252 +1344,18 @@ namespace StockAnalyzerApp
             this.AddToWatchListToolStripDropDownButton.Size = new System.Drawing.Size(29, 22);
             this.AddToWatchListToolStripDropDownButton.Text = "Add to watch list";
             // 
-            // browseToolStrip
-            // 
-            this.browseToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.stockNameComboBox,
-            this.barDurationComboBox,
-            this.downloadBtn,
-            this.searchText,
-            this.goBtn,
-            this.toolStripSeparator6,
-            this.rewindBtn,
-            this.fastForwardBtn,
-            this.zoomOutBtn,
-            this.zoomInBtn,
-            this.logScaleBtn,
-            this.toolStripSeparator2,
-            this.followUpCheckBox,
-            this.excludeButton,
-            this.commentBtn,
-            this.toolStripSeparator5});
-            this.browseToolStrip.Location = new System.Drawing.Point(424, 0);
-            this.browseToolStrip.Name = "browseToolStrip";
-            this.browseToolStrip.Size = new System.Drawing.Size(551, 25);
-            this.browseToolStrip.TabIndex = 0;
-            // 
-            // stockNameComboBox
-            // 
-            this.stockNameComboBox.Name = "stockNameComboBox";
-            this.stockNameComboBox.Size = new System.Drawing.Size(250, 25);
-            this.stockNameComboBox.SelectedIndexChanged += new System.EventHandler(this.StockNameComboBox_SelectedIndexChanged);
-            // 
-            // barDurationComboBox
-            // 
-            this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.barDurationComboBox.Name = "barDurationComboBox";
-            this.barDurationComboBox.Size = new System.Drawing.Size(175, 25);
-            this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
-            // 
-            // downloadBtn
-            // 
-            this.downloadBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.downloadBtn.Image = global::StockAnalyzerApp.Properties.Resources.Reload;
-            this.downloadBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.downloadBtn.Name = "downloadBtn";
-            this.downloadBtn.Size = new System.Drawing.Size(23, 22);
-            this.downloadBtn.Text = "Download";
-            this.downloadBtn.Click += new System.EventHandler(this.downloadBtn_Click);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
-            // rewindBtn
-            // 
-            this.rewindBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.rewindBtn.Image = global::StockAnalyzerApp.Properties.Resources.Backward_icon;
-            this.rewindBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.rewindBtn.Name = "rewindBtn";
-            this.rewindBtn.Size = new System.Drawing.Size(23, 22);
-            this.rewindBtn.ToolTipText = "Rewind";
-            this.rewindBtn.Click += new System.EventHandler(this.rewindBtn_Click);
-            // 
-            // fastForwardBtn
-            // 
-            this.fastForwardBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.fastForwardBtn.Image = global::StockAnalyzerApp.Properties.Resources.Forward_icon;
-            this.fastForwardBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.fastForwardBtn.Name = "fastForwardBtn";
-            this.fastForwardBtn.Size = new System.Drawing.Size(23, 22);
-            this.fastForwardBtn.ToolTipText = "Forward";
-            this.fastForwardBtn.Click += new System.EventHandler(this.fastForwardBtn_Click);
-            // 
-            // zoomOutBtn
-            // 
-            this.zoomOutBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.zoomOutBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomOut;
-            this.zoomOutBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.zoomOutBtn.Name = "zoomOutBtn";
-            this.zoomOutBtn.Size = new System.Drawing.Size(23, 20);
-            this.zoomOutBtn.ToolTipText = "Zoom Out";
-            this.zoomOutBtn.Click += new System.EventHandler(this.ZoomOutBtn_Click);
-            // 
-            // zoomInBtn
-            // 
-            this.zoomInBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.zoomInBtn.Image = global::StockAnalyzerApp.Properties.Resources.ZoomIn;
-            this.zoomInBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.zoomInBtn.Name = "zoomInBtn";
-            this.zoomInBtn.Size = new System.Drawing.Size(23, 20);
-            this.zoomInBtn.ToolTipText = "Zoon In";
-            this.zoomInBtn.Click += new System.EventHandler(this.ZoomInBtn_Click);
-            // 
-            // logScaleBtn
-            // 
-            this.logScaleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.logScaleBtn.Image = global::StockAnalyzerApp.Properties.Resources.Log;
-            this.logScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.logScaleBtn.Name = "logScaleBtn";
-            this.logScaleBtn.Size = new System.Drawing.Size(23, 20);
-            this.logScaleBtn.ToolTipText = "Log scale";
-            this.logScaleBtn.Click += new System.EventHandler(this.logScaleBtn_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // followUpCheckBox
-            // 
-            this.followUpCheckBox.Name = "followUpCheckBox";
-            this.followUpCheckBox.Size = new System.Drawing.Size(80, 19);
-            this.followUpCheckBox.Text = "Follow-up";
-            this.followUpCheckBox.Click += new System.EventHandler(this.followUpCheckBox_CheckedChanged);
-            // 
-            // excludeButton
-            // 
-            this.excludeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.excludeButton.Image = global::StockAnalyzerApp.Properties.Resources.Delete;
-            this.excludeButton.Name = "excludeButton";
-            this.excludeButton.Size = new System.Drawing.Size(23, 20);
-            this.excludeButton.Text = "Exclude";
-            this.excludeButton.ToolTipText = "Exclude value from list";
-            this.excludeButton.Click += new System.EventHandler(this.excludeButton_Click);
-            // 
-            // commentBtn
-            // 
-            this.commentBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.commentBtn.Image = global::StockAnalyzerApp.Properties.Resources.Comment;
-            this.commentBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.commentBtn.Name = "commentBtn";
-            this.commentBtn.Size = new System.Drawing.Size(23, 20);
-            this.commentBtn.Text = "Comment";
-            this.commentBtn.ToolTipText = "Edit a comment";
-            this.commentBtn.Click += new System.EventHandler(this.commentBtn_Click);
-            // 
-            // searchText
-            // 
-            this.searchText.Name = "searchText";
-            this.searchText.Size = new System.Drawing.Size(200, 20);
-            this.searchText.TextChanged += new System.EventHandler(this.goBtn_Click);
-            // 
-            // goBtn
-            // 
-            this.goBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.goBtn.Image = global::StockAnalyzerApp.Properties.Resources.search;
-            this.goBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.goBtn.Name = "goBtn";
-            this.goBtn.Size = new System.Drawing.Size(23, 20);
-            this.goBtn.Text = "Go to stock";
-            this.goBtn.ToolTipText = "Go to stock";
-            this.goBtn.Click += new System.EventHandler(this.goBtn_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // themeToolStrip
-            // 
-            this.themeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.themeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.indicatorConfigStripButton,
-            this.saveThemeStripButton,
-            this.defaultThemeStripButton,
-            this.themeComboBox,
-            this.deleteThemeStripButton,
-            this.toolStripSeparator1,
-            this.strategyComboBox});
-            this.themeToolStrip.Location = new System.Drawing.Point(3, 25);
-            this.themeToolStrip.Name = "themeToolStrip";
-            this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
-            this.themeToolStrip.TabIndex = 2;
-            // 
-            // indicatorConfigStripButton
-            // 
-            this.indicatorConfigStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.indicatorConfigStripButton.Image = global::StockAnalyzerApp.Properties.Resources.gear;
-            this.indicatorConfigStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.indicatorConfigStripButton.Name = "indicatorConfigStripButton";
-            this.indicatorConfigStripButton.Size = new System.Drawing.Size(23, 22);
-            this.indicatorConfigStripButton.Text = "Configure displayed indicator1Name";
-            this.indicatorConfigStripButton.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
-            // 
-            // saveThemeStripButton
-            // 
-            this.saveThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveThemeStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveThemeStripButton.Image")));
-            this.saveThemeStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveThemeStripButton.Name = "saveThemeStripButton";
-            this.saveThemeStripButton.Size = new System.Drawing.Size(23, 22);
-            this.saveThemeStripButton.Text = "Save current theme";
-            this.saveThemeStripButton.Click += new System.EventHandler(this.saveThemeMenuItem_Click);
-            // 
-            // defaultThemeStripButton
-            // 
-            this.defaultThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.defaultThemeStripButton.Image = global::StockAnalyzerApp.Properties.Resources.SetDefaultTheme;
-            this.defaultThemeStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.defaultThemeStripButton.Name = "defaultThemeStripButton";
-            this.defaultThemeStripButton.Size = new System.Drawing.Size(23, 22);
-            this.defaultThemeStripButton.Text = "Set as default theme for this stock";
-            this.defaultThemeStripButton.Click += new System.EventHandler(this.defaultThemeStripButton_Click);
-            // 
-            // themeComboBox
-            // 
-            this.themeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.themeComboBox.Name = "themeComboBox";
-            this.themeComboBox.Size = new System.Drawing.Size(121, 25);
-            this.themeComboBox.Sorted = true;
-            this.themeComboBox.SelectedIndexChanged += new System.EventHandler(this.themeComboBox_SelectedIndexChanged);
-            // 
-            // deleteThemeStripButton
-            // 
-            this.deleteThemeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.deleteThemeStripButton.Image = global::StockAnalyzerApp.Properties.Resources.DeleteTheme;
-            this.deleteThemeStripButton.Name = "deleteThemeStripButton";
-            this.deleteThemeStripButton.Size = new System.Drawing.Size(23, 22);
-            this.deleteThemeStripButton.Text = "Delete selected theme";
-            this.deleteThemeStripButton.Click += new System.EventHandler(this.deleteThemeStripButton_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // strategyComboBox
-            // 
-            this.strategyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.strategyComboBox.Name = "strategyComboBox";
-            this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
-            this.strategyComboBox.Sorted = true;
-            this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
-            // 
             // graphCloseControl
             // 
-            this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphCloseControl.ChartMode = GraphChartMode.Line;
-            this.graphCloseControl.Comments = null;
             this.graphCloseControl.Agenda = null;
+            this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
+            this.graphCloseControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphCloseControl.Comments = null;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphCloseControl.DrawingMode = GraphDrawMode.Normal;
+            this.graphCloseControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphCloseControl.DrawingPen = null;
-            this.graphCloseControl.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphCloseControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphCloseControl.EndIndex = 0;
             this.graphCloseControl.GridColor = System.Drawing.Color.Empty;
             this.graphCloseControl.HideIndicators = false;
@@ -1382,13 +1380,13 @@ namespace StockAnalyzerApp
             // 
             this.graphScrollerControl.AutoSize = true;
             this.graphScrollerControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphScrollerControl.ChartMode = GraphChartMode.Line;
+            this.graphScrollerControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphScrollerControl.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.graphScrollerControl.CurveList = null;
             this.graphScrollerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphScrollerControl.DrawingMode = GraphDrawMode.Normal;
+            this.graphScrollerControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphScrollerControl.DrawingPen = null;
-            this.graphScrollerControl.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphScrollerControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphScrollerControl.EndIndex = 0;
             this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
             this.graphScrollerControl.horizontalLines = null;
@@ -1408,13 +1406,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator1Control.AutoSize = true;
             this.graphIndicator1Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator1Control.ChartMode = GraphChartMode.Line;
+            this.graphIndicator1Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator1Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator1Control.CurveList = null;
             this.graphIndicator1Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator1Control.DrawingMode = GraphDrawMode.Normal;
+            this.graphIndicator1Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator1Control.DrawingPen = null;
-            this.graphIndicator1Control.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphIndicator1Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator1Control.EndIndex = 0;
             this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator1Control.horizontalLines = null;
@@ -1436,13 +1434,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator2Control.AutoSize = true;
             this.graphIndicator2Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator2Control.ChartMode = GraphChartMode.Line;
+            this.graphIndicator2Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator2Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator2Control.CurveList = null;
             this.graphIndicator2Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator2Control.DrawingMode = GraphDrawMode.Normal;
+            this.graphIndicator2Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator2Control.DrawingPen = null;
-            this.graphIndicator2Control.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphIndicator2Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator2Control.EndIndex = 0;
             this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator2Control.horizontalLines = null;
@@ -1464,13 +1462,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator3Control.AutoSize = true;
             this.graphIndicator3Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator3Control.ChartMode = GraphChartMode.Line;
+            this.graphIndicator3Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator3Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator3Control.CurveList = null;
             this.graphIndicator3Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator3Control.DrawingMode = GraphDrawMode.Normal;
+            this.graphIndicator3Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator3Control.DrawingPen = null;
-            this.graphIndicator3Control.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphIndicator3Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator3Control.EndIndex = 0;
             this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator3Control.horizontalLines = null;
@@ -1492,13 +1490,13 @@ namespace StockAnalyzerApp
             // 
             this.graphVolumeControl.AutoSize = true;
             this.graphVolumeControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphVolumeControl.ChartMode = GraphChartMode.Line;
+            this.graphVolumeControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphVolumeControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphVolumeControl.CurveList = null;
             this.graphVolumeControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphVolumeControl.DrawingMode = GraphDrawMode.Normal;
+            this.graphVolumeControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphVolumeControl.DrawingPen = null;
-            this.graphVolumeControl.DrawingStep = GraphDrawingStep.SelectItem;
+            this.graphVolumeControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphVolumeControl.EndIndex = 0;
             this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
             this.graphVolumeControl.horizontalLines = null;
@@ -1523,16 +1521,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
             this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator19
-            // 
-            this.toolStripSeparator19.Name = "toolStripSeparator19";
-            this.toolStripSeparator19.Size = new System.Drawing.Size(233, 6);
-            // 
-            // toolStripSeparator21
-            // 
-            this.toolStripSeparator21.Name = "toolStripSeparator21";
-            this.toolStripSeparator21.Size = new System.Drawing.Size(233, 6);
             // 
             // StockAnalyzerForm
             // 
@@ -1564,14 +1552,15 @@ namespace StockAnalyzerApp
             this.toolStripContainer1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.drawToolStrip.ResumeLayout(false);
-            this.drawToolStrip.PerformLayout();
-            this.browseToolStrip.ResumeLayout(false);
-            this.browseToolStrip.PerformLayout();
             this.themeToolStrip.ResumeLayout(false);
             this.themeToolStrip.PerformLayout();
+            this.browseToolStrip.ResumeLayout(false);
+            this.browseToolStrip.PerformLayout();
+            this.drawToolStrip.ResumeLayout(false);
+            this.drawToolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
         #endregion
 
@@ -1587,6 +1576,7 @@ namespace StockAnalyzerApp
         private CustomControl.GraphControls.GraphVolumeControl graphVolumeControl;
         private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
+        private ToolStripComboBox barSmoothingComboBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
         private ToolStripMenuItem optionsMenuItem;
@@ -1652,9 +1642,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator10;
         private ToolStripMenuItem indexRelativeStrengthMenuItem;
         private ToolStripMenuItem logSerieMenuItem;
-        private ToolStripMenuItem uniformRandomWalkMenuItem;
-        private ToolStripMenuItem normalRandomWalkMenuItem;
-        private ToolStripMenuItem gauchyRandomWalkMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripButton addToReportStripBtn;
@@ -1712,6 +1699,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator19;
         private ToolStripSeparator toolStripSeparator21;
         private ToolStripTextBox searchText;
+        private ToolStripLabel smoothingLabel;
         private ToolStripButton goBtn;
     }
 }

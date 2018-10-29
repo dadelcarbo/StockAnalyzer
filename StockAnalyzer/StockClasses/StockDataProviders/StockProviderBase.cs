@@ -15,21 +15,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        static public StockSerie.StockBarDuration[] cacheDurations = new StockSerie.StockBarDuration[]
+        static public StockBarDuration[] cacheDurations = new StockBarDuration[]
                   {
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_3D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_6D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_3, // 15 Min
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_6, // 30 Min
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_12,// 1h
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_24,// 2h
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_48 // 4h
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_3D,
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_6D,
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_9D,
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_27D,
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_3, // 15 Min
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_6, // 30 Min
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_12,// 1h
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_24,// 2h
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_48 // 4h
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;
         public const int LOAD_START_YEAR = 2006;
+
+        private static string rootFolder = null;
+        public static string RootFolder
+        {
+            get
+            {
+                if (rootFolder == null) rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder;
+                return rootFolder;
+            }
+            set
+            {
+                rootFolder = value;
+            }
+        }
 
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\data\daily";
@@ -88,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return dataProvider.LoadData(rootFolder, serie);
             }
         }
-        public static bool LoadIntradayDurationArchive(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+        public static bool LoadIntradayDurationArchive(string rootFolder, StockSerie serie, StockBarDuration duration)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
@@ -185,8 +199,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                StockSerie.StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                StockBarDuration currentBarDuration = serie.BarDuration;
+                serie.BarDuration = StockBarDuration.Daily;
                 bool res = dataProvider.DownloadDailyData(rootFolder, serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
@@ -494,7 +508,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #endregion
 
 
-        public virtual bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+        public virtual bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration)
         {
             return false;
         }

@@ -9,9 +9,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_TRAILHLSR : StockUpDownIndicatorBase
     {
-        public StockIndicator_TRAILHLSR()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }

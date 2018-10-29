@@ -4,12 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -102,9 +97,10 @@ namespace StockAnalyzer.StockClasses
                 LastRefreshDate = DateTime.MinValue;
                 return;
             }
-            using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
+
+            try
             {
-                try
+                using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
                 {
                     System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
                     {
@@ -112,13 +108,14 @@ namespace StockAnalyzer.StockClasses
                     };
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName).ThenBy(a=>a.StockName));
+                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName).ThenBy(a => a.StockName));
                 }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading alert file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                    this.Alerts.Clear();
-                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading alert file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                this.Alerts.Clear();
+                File.Delete(filepath);
             }
         }
 
