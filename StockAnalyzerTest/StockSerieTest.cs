@@ -14,6 +14,10 @@ namespace StockAnalyzerTest
             var serie = new StockSerie("BX4", "BX4", StockSerie.Groups.FUND, StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC);
 
             serie.Initialise();
+
+            serie.SetBarDuration(StockBarDuration.Daily, 1);
+            serie.SetBarDuration(StockBarDuration.Daily, 2);
+            serie.SetBarDuration(StockBarDuration.Daily, 1);
         }
     }
 }

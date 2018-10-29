@@ -333,9 +333,9 @@ namespace StockAnalyzer.StockClasses
         }
         public List<StockDailyValue> GetValues(StockBarDuration stockBarDuration)
         {
-            if (this.BarSerieDictionary.ContainsKey(stockBarDuration))
+            if (this.BarSmoothedDictionary.ContainsKey(stockBarDuration.ToString()))
             {
-                return this.BarSerieDictionary[stockBarDuration];
+                return this.BarSmoothedDictionary[stockBarDuration.ToString()];
             }
             else
             {
@@ -347,7 +347,7 @@ namespace StockAnalyzer.StockClasses
         }
         public List<StockDailyValue> GetSmoothedValues(StockBarDuration newBarDuration, int newBarSmoothing)
         {
-            string barSmoothedDuration = newBarSmoothing > 0 ? newBarDuration + "_EMA" + newBarSmoothing : newBarDuration.ToString();
+            string barSmoothedDuration = newBarSmoothing > 1 ? newBarDuration + "_EMA" + newBarSmoothing : newBarDuration.ToString();
             if (this.BarSmoothedDictionary.ContainsKey(barSmoothedDuration))
             {
                 return this.BarSmoothedDictionary[barSmoothedDuration];
@@ -408,47 +408,47 @@ namespace StockAnalyzer.StockClasses
             //    return;
             //}
 
-            if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
-            {
-                if (this.BarDuration == StockBarDuration.Daily)
-                {
-                    this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
-                }
-                else
-                {
-                    if (this.BarSerieDictionary.Count == 0)
-                    {
-                        // Reinitialise the serie.
-                        this.IsInitialised = false;
-                        this.barDuration = StockBarDuration.Daily;
-                        this.SetBarDuration(newBarDuration, this.barSmoothing);
-                    }
-                    return;
-                }
-            }
-            if (this.BarSerieDictionary.ContainsKey(newBarDuration))
-            {
-                this.IsInitialised = false;
-                foreach (StockDailyValue dailyValue in this.BarSerieDictionary[newBarDuration])
-                {
-                    this.Add(dailyValue.DATE, dailyValue);
-                }
-                this.Initialise();
-            }
-            else
-            {
-                this.IsInitialised = false;
-                List<StockDailyValue> newList = this.GenerateSerieForTimeSpanFromDaily(newBarDuration);
+            //if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
+            //{
+            //    if (this.BarDuration == StockBarDuration.Daily)
+            //    {
+            //        this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
+            //    }
+            //    else
+            //    {
+            //        if (this.BarSerieDictionary.Count == 0)
+            //        {
+            //            // Reinitialise the serie.
+            //            this.IsInitialised = false;
+            //            this.barDuration = StockBarDuration.Daily;
+            //            this.SetBarDuration(newBarDuration, this.barSmoothing);
+            //        }
+            //        return;
+            //    }
+            //}
+            //if (this.BarSerieDictionary.ContainsKey(newBarDuration))
+            //{
+            //    this.IsInitialised = false;
+            //    foreach (StockDailyValue dailyValue in this.BarSerieDictionary[newBarDuration])
+            //    {
+            //        this.Add(dailyValue.DATE, dailyValue);
+            //    }
+            //    this.Initialise();
+            //}
+            //else
+            //{
+            //    this.IsInitialised = false;
+            //    List<StockDailyValue> newList = this.GenerateSerieForTimeSpanFromDaily(newBarDuration);
 
-                foreach (StockDailyValue dailyValue in newList)
-                {
-                    this.Add(dailyValue.DATE, dailyValue);
-                }
-                this.Initialise();
-            }
-            this.barDuration = newBarDuration;
-            valueArray = StockDailyValuesAsArray();
-            return;
+            //    foreach (StockDailyValue dailyValue in newList)
+            //    {
+            //        this.Add(dailyValue.DATE, dailyValue);
+            //    }
+            //    this.Initialise();
+            //}
+            //this.barDuration = newBarDuration;
+            //valueArray = StockDailyValuesAsArray();
+            //return;
         }
         public void ClearBarDurationCache()
         {
@@ -771,23 +771,22 @@ namespace StockAnalyzer.StockClasses
                         Thread.Sleep(50);
                     this.initialisingThread = Thread.CurrentThread;
 
-
                     if (this.Count == 0)
                     {
                         if (!LoadData(StockBar.StockBarType.Daily, StockDataProviderBase.RootFolder))
                         {
                             return false;
                         }
+
+                        if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+                        {
+                            this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
+                            this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                        }
                     }
 
                     // Force indicator,data,event and other to null;
                     PreInitialise();
-
-                    if (this.barDuration == StockBarDuration.Daily &&
-                        !this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
-                    {
-                        this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
-                    }
 
                     // Flag initialisation as completed
                     this.isInitialised = this.Count > 0;
