@@ -1931,8 +1931,7 @@ namespace StockAnalyzerApp
                 if (showSplash)
                 {
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                     this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = 100;
                     StockSplashScreen.ProgressMin = 0;

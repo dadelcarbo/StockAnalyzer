@@ -1,13 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
-using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -200,13 +196,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             else
             {
                 StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = StockBarDuration.Daily;
+                int currentSmoothing = serie.BarSmoothing;
+                serie.SetBarDuration(StockBarDuration.Daily, 1);
                 bool res = dataProvider.DownloadDailyData(rootFolder, serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
                     res |= dataProvider.DownloadIntradayData(rootFolder, serie);
                 }
-                serie.BarDuration = currentBarDuration;
+                serie.SetBarDuration(currentBarDuration, currentSmoothing);
                 return res;
             }
         }
