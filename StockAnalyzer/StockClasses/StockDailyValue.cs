@@ -51,8 +51,6 @@ namespace StockAnalyzer.StockClasses
       public float Range { get { return this.HIGH - this.LOW; } }
       public long DOWNVOLUME { get { return this.VOLUME - this.UPVOLUME; } }
       public float SHORTINTEREST { get; set; }
-      public float POSITION { get; set; }
-
       public void CalculateUpVolume()
       {
          if (this.UPVOLUME == 0)

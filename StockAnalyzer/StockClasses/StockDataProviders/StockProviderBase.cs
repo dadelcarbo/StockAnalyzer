@@ -16,12 +16,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                      StockAnalyzer.StockClasses.StockBarDuration.TLB_3D,
                      StockAnalyzer.StockClasses.StockBarDuration.TLB_6D,
                      StockAnalyzer.StockClasses.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_27D,
                      StockAnalyzer.StockClasses.StockBarDuration.Bar_3, // 15 Min
                      StockAnalyzer.StockClasses.StockBarDuration.Bar_6, // 30 Min
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_12,// 1h
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_24,// 2h
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_48 // 4h
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;
@@ -196,14 +192,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             else
             {
                 StockBarDuration currentBarDuration = serie.BarDuration;
-                int currentSmoothing = serie.BarSmoothing;
-                serie.SetBarDuration(StockBarDuration.Daily, 1);
+                serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
                 bool res = dataProvider.DownloadDailyData(rootFolder, serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
                     res |= dataProvider.DownloadIntradayData(rootFolder, serie);
                 }
-                serie.SetBarDuration(currentBarDuration, currentSmoothing);
+                serie.BarDuration = currentBarDuration;
                 return res;
             }
         }

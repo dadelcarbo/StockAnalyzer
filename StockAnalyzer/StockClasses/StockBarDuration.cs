@@ -46,6 +46,11 @@ namespace StockAnalyzer.StockClasses
             this.Duration = duration;
             this.Smoothing = 1;
         }
+        public StockBarDuration(BarDuration duration, int smoothing)
+        {
+            this.Duration = duration;
+            this.Smoothing = smoothing;
+        }
 
         public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
         public static StockBarDuration TLB = new StockBarDuration(BarDuration.TLB);
@@ -59,7 +64,13 @@ namespace StockAnalyzer.StockClasses
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)
         {
-            throw new NotImplementedException();
+            BarDuration duration;
+            if (Enum.TryParse<BarDuration>(v, out duration)) {
+                barDuration = duration;
+                return true;
+            }
+            barDuration = StockBarDuration.Daily;
+            return false;
         }
 
         public static bool operator ==(StockBarDuration o1, StockBarDuration o2)
@@ -78,7 +89,7 @@ namespace StockAnalyzer.StockClasses
 
         public override string ToString()
         {
-            return this.Duration + "_" + this.Smoothing;
+            return this.Smoothing <= 1 ? this.Duration.ToString() : this.Duration + "_EMA" + this.Smoothing;
         }
         public override bool Equals(object obj)
         {

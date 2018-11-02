@@ -4,7 +4,7 @@
     {
         public StockAlertDef()
         {
-            this.BarSmoothing = 1;
+            this.BarDuration = StockBarDuration.Daily;
         }
         public StockAlertDef(StockBarDuration barDuration, int barSmoothing, string indicatorType, string indicatorName, string eventName)
         {
@@ -12,10 +12,8 @@
             this.IndicatorType = indicatorType;
             this.IndicatorName = indicatorName;
             this.EventName = eventName;
-            this.BarSmoothing = barSmoothing;
         }
         public StockBarDuration BarDuration { get; set; }
-        public int BarSmoothing { get; set; }
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }
         public string EventName { get; set; }
@@ -29,7 +27,7 @@
 
         public override string ToString()
         {
-            return this.BarDuration + "_EMA" + this.BarSmoothing + ";" + EventFullName;
+            return this.BarDuration.ToString() + ";" + EventFullName;
         }
     }
 

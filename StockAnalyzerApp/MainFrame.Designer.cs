@@ -84,7 +84,6 @@ namespace StockAnalyzerApp
             this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.bestReturnStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.strategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filteredStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.batchStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -569,7 +568,6 @@ namespace StockAnalyzerApp
             this.stockStrategyScannerMenuItem,
             this.palmaresMenuItem,
             this.toolStripSeparator10,
-            this.bestReturnStrategySimulationMenuItem,
             this.strategySimulationMenuItem,
             this.filteredStrategySimulationMenuItem,
             this.batchStrategySimulationMenuItem,
@@ -612,13 +610,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(237, 6);
-            // 
-            // bestReturnStrategySimulationMenuItem
-            // 
-            this.bestReturnStrategySimulationMenuItem.Name = "bestReturnStrategySimulationMenuItem";
-            this.bestReturnStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.bestReturnStrategySimulationMenuItem.Text = "Best Return Strategy Simulation";
-            this.bestReturnStrategySimulationMenuItem.Click += new System.EventHandler(this.bestReturnStrategySimulationMenuItem_Click);
             // 
             // strategySimulationMenuItem
             // 
@@ -991,7 +982,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barDurationComboBox.Name = "barDurationComboBox";
             this.barDurationComboBox.Size = new System.Drawing.Size(175, 27);
-            this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.barDurationComboBox_SelectedIndexChanged);
+            this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // smoothingLabel
             // 
@@ -1004,7 +995,7 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
             this.barSmoothingComboBox.Size = new System.Drawing.Size(75, 23);
-            this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.barSmootingComboBox_SelectedIndexChanged);
+            this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn
             // 
@@ -1617,7 +1608,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem analysisMenuItem;
         private ToolStripMenuItem strategySimulationMenuItem;
         private ToolStripMenuItem filteredStrategySimulationMenuItem;
-        private ToolStripMenuItem bestReturnStrategySimulationMenuItem;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem batchStrategySimulationMenuItem;
         private ToolStripSeparator toolStripSeparator6;

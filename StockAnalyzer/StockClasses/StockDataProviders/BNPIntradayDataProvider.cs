@@ -1,12 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
-using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -208,7 +206,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var row = line.Split(',');
 
                             var shortName = row[1];
-                            var stockSerie = new StockSerie(row[2], shortName, StockSerie.Groups.TURBO, StockDataProvider.BNPIntraday) {ISIN = row[0]};
+                            var stockSerie = new StockSerie(row[2], shortName, StockSerie.Groups.TURBO, StockDataProvider.BNPIntraday) { ISIN = row[0] };
 
                             if (!stockDictionary.ContainsKey(shortName))
                             {
@@ -228,7 +226,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow) ;
+        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             var res = false;
@@ -244,7 +242,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var dataSerie = bnpJson.Series.First();
                     foreach (var data in dataSerie.Data)
                     {
-                        var openDate = refDate.AddSeconds(data.X/1000);
+                        var openDate = refDate.AddSeconds(data.X / 1000);
                         if (!stockSerie.ContainsKey(openDate))
                         {
                             var dailyValue = new StockDailyValue(stockSerie.StockName,

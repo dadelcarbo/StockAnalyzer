@@ -1262,8 +1262,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (index != -1)
                     {
-                        serie.BarDuration = StockBarDuration.Daily;
-                        serie.BarSmoothing= 20;
+                        serie.BarDuration = barDuration;
                         IStockIndicator trailStop = serie.GetIndicator("TOPEMA(0,30,1)");
                         if (trailStop != null && trailStop.Events[0].Count > 0)
                         {

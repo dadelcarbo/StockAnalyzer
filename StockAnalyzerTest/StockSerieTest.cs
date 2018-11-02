@@ -15,9 +15,9 @@ namespace StockAnalyzerTest
 
             serie.Initialise();
 
-            serie.SetBarDuration(StockBarDuration.Daily, 1);
-            serie.SetBarDuration(StockBarDuration.Daily, 2);
-            serie.SetBarDuration(StockBarDuration.Daily, 1);
+            serie.BarDuration = StockBarDuration.Daily;
+            serie.BarDuration = new StockBarDuration() { Smoothing = 2 };
+            serie.BarDuration = new StockBarDuration() { Smoothing = 3 };
         }
     }
 }

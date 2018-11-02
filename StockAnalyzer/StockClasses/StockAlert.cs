@@ -54,7 +54,6 @@ namespace StockAnalyzer.StockClasses
             Date = date;
             StockName = stockName;
             AlertClose = alertClose;
-            this.BarSmoothing = alertDef.BarSmoothing;
         }
 
         public override string ToString()
