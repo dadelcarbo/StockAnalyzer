@@ -506,6 +506,7 @@ namespace StockAnalyzerApp
             this.showIntradayAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.showIntradayAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIntradayAlertMenuItem.Text = "Intraday Alert View";
+            this.showIntradayAlertMenuItem.Click += showIntradayAlertViewMenuItem_Click;
             // 
             // showDailyAlertMenuItem
             // 
@@ -514,6 +515,7 @@ namespace StockAnalyzerApp
             | System.Windows.Forms.Keys.A)));
             this.showDailyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showDailyAlertMenuItem.Text = "Daily Alert View";
+            this.showDailyAlertMenuItem.Click += showDailyAlertViewMenuItem_Click;
             // 
             // showWeeklyAlertMenuItem
             // 
@@ -522,6 +524,7 @@ namespace StockAnalyzerApp
             | System.Windows.Forms.Keys.A)));
             this.showWeeklyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showWeeklyAlertMenuItem.Text = "Weekly Alert View";
+            this.showWeeklyAlertMenuItem.Click += showWeeklyAlertViewMenuItem_Click;
             // 
             // toolStripSeparator15
             // 

@@ -39,12 +39,10 @@ namespace StockAnalyzer.StockClasses
             }
         }
         public StockBarDuration BarDuration { get; set; }
-        public int BarSmoothing { get; set; }
         public float AlertClose { get; set; }
 
         public StockAlert()
         {
-            this.BarSmoothing = 1;
         }
 
         public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, float alertClose)

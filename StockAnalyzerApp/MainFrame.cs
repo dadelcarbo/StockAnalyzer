@@ -4410,7 +4410,7 @@ border:1px solid black;
             #region From Report.cfg
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
-            StockBarDuration previousBarDuration = (StockBarDuration)this.barDurationComboBox.SelectedItem;
+            StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
             #endregion
 
             #region Generate report from Events
@@ -4450,7 +4450,8 @@ border:1px solid black;
             Process.Start(fileName);
             this.CurrentStockSerie = previousStockSerie;
             this.CurrentTheme = previousTheme;
-            this.barDurationComboBox.SelectedItem = previousBarDuration;
+            this.barDurationComboBox.SelectedItem = previousBarDuration.Duration;
+            this.barSmoothingComboBox.SelectedItem = previousBarDuration.Smoothing;
 
             return mailReport;
         }
@@ -4703,11 +4704,10 @@ border:1px solid black;
             if (stockScannerDlg == null)
             {
                 stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup,
-                    (StockBarDuration)this.barDurationComboBox.SelectedItem,
+                    this.CurrentStockSerie.BarDuration,
                     this.themeDictionary[this.currentTheme]);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                stockScannerDlg.SelectStockGroupChanged +=
-                    new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
+                stockScannerDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
                     this.NotifyThemeChanged -= stockScannerDlg.OnThemeChanged;
@@ -5425,58 +5425,65 @@ border:1px solid black;
         }
         #endregion
         #region ALERT DIALOG
-        AlertDlg alertDlg = null;
+        AlertDlg alertIntradayDlg = null;
         void showIntradayAlertViewMenuItem_Click(object sender, System.EventArgs e)
         {
-            if (alertDlg == null)
+            if (alertIntradayDlg == null)
             {
-                alertDlg = new AlertDlg(intradayAlertLog);
-                alertDlg.Text = "Intraday Alerts";
-                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertDlg.Disposed += alertDlg_Disposed;
-                alertDlg.Show();
+                alertIntradayDlg = new AlertDlg(intradayAlertLog);
+                alertIntradayDlg.Text = "Intraday Alerts";
+                alertIntradayDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertIntradayDlg.Disposed += delegate
+                {
+                    alertIntradayDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    this.alertIntradayDlg = null;
+                };
+                alertIntradayDlg.Show();
             }
             else
             {
-                alertDlg.Activate();
+                alertIntradayDlg.Activate();
             }
         }
+        AlertDlg alertDailyDlg = null;
         void showDailyAlertViewMenuItem_Click(object sender, System.EventArgs e)
         {
-            if (alertDlg == null)
+            if (alertDailyDlg == null)
             {
-                alertDlg = new AlertDlg(dailyAlertLog);
-                alertDlg.Text = "Daily Alerts";
-                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertDlg.Disposed += alertDlg_Disposed;
-                alertDlg.Show();
+                alertDailyDlg = new AlertDlg(dailyAlertLog);
+                alertDailyDlg.Text = "Daily Alerts";
+                alertDailyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertDailyDlg.Disposed += delegate
+                {
+                    alertDailyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    this.alertDailyDlg = null;
+                };
+                alertDailyDlg.Show();
             }
             else
             {
-                alertDlg.Activate();
+                alertDailyDlg.Activate();
             }
         }
-
+        AlertDlg alertWeeklyDlg = null;
         void showWeeklyAlertViewMenuItem_Click(object sender, System.EventArgs e)
         {
-            if (alertDlg == null)
+            if (alertWeeklyDlg == null)
             {
-                alertDlg = new AlertDlg(weeklyAlertLog);
-                alertDlg.Text = "Weekly Alerts";
-                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertDlg.Disposed += alertDlg_Disposed;
-                alertDlg.Show();
+                alertWeeklyDlg = new AlertDlg(weeklyAlertLog);
+                alertWeeklyDlg.Text = "Weekly Alerts";
+                alertWeeklyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertWeeklyDlg.Disposed += delegate
+                {
+                    alertWeeklyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    this.alertWeeklyDlg = null;
+                };
+                alertWeeklyDlg.Show();
             }
             else
             {
-                alertDlg.Activate();
+                alertWeeklyDlg.Activate();
             }
-        }
-
-        void alertDlg_Disposed(object sender, EventArgs e)
-        {
-            alertDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-            this.alertDlg = null;
         }
         #endregion
 

@@ -167,21 +167,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastDate.AddDays(-5).Date);
 
-                    // Archive other time frames
-                    string durationFileName;
-                    var previousDuration = stockSerie.BarDuration;
-                    foreach (var duration in cacheDurations)
-                    {
-                        durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                    //// Archive other time frames
+                    //string durationFileName;
+                    //var previousDuration = stockSerie.BarDuration;
+                    //foreach (var duration in cacheDurations)
+                    //{
+                    //    durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                        if (File.Exists(durationFileName) &&
-                            File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date) break; // Only cache once a day.
-                        stockSerie.BarDuration = duration;
-                        stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(-1).Date);
-                    }
+                    //    if (File.Exists(durationFileName) &&
+                    //        File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date) break; // Only cache once a day.
+                    //    stockSerie.BarDuration = duration;
+                    //    stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(-1).Date);
+                    //}
 
-                    // Set back to previous duration.
-                    stockSerie.BarDuration = previousDuration;
+                    //// Set back to previous duration.
+                    //stockSerie.BarDuration = previousDuration;
                 }
                 else
                 {

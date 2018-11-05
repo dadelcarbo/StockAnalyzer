@@ -267,9 +267,6 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
-        //[XmlIgnore]
-        //public SortedDictionary<StockBarDuration, List<StockDailyValue>> BarSerieDictionary { get; private set; }
-
         [XmlIgnore]
         public SortedDictionary<string, List<StockDailyValue>> BarSmoothedDictionary { get; private set; }
 
@@ -391,66 +388,9 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = newBarDuration;
             valueArray = StockDailyValuesAsArray();
             return;
-
-
-            //    if (!this.Initialise() || newBarDuration == this.BarDuration)
-            //{
-            //    if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
-            //    {
-            //        if (this.BarDuration == StockBarDuration.Daily && this.Values.Count != 0)
-            //        {
-            //            this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
-            //        }
-            //        this.barDuration = newBarDuration;
-            //    }
-            //    return;
-            //}
-
-            //if (!this.BarSerieDictionary.ContainsKey(StockBarDuration.Daily))
-            //{
-            //    if (this.BarDuration == StockBarDuration.Daily)
-            //    {
-            //        this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
-            //    }
-            //    else
-            //    {
-            //        if (this.BarSerieDictionary.Count == 0)
-            //        {
-            //            // Reinitialise the serie.
-            //            this.IsInitialised = false;
-            //            this.barDuration = StockBarDuration.Daily;
-            //            this.SetBarDuration(newBarDuration, this.barSmoothing);
-            //        }
-            //        return;
-            //    }
-            //}
-            //if (this.BarSerieDictionary.ContainsKey(newBarDuration))
-            //{
-            //    this.IsInitialised = false;
-            //    foreach (StockDailyValue dailyValue in this.BarSerieDictionary[newBarDuration])
-            //    {
-            //        this.Add(dailyValue.DATE, dailyValue);
-            //    }
-            //    this.Initialise();
-            //}
-            //else
-            //{
-            //    this.IsInitialised = false;
-            //    List<StockDailyValue> newList = this.GenerateSerieForTimeSpanFromDaily(newBarDuration);
-
-            //    foreach (StockDailyValue dailyValue in newList)
-            //    {
-            //        this.Add(dailyValue.DATE, dailyValue);
-            //    }
-            //    this.Initialise();
-            //}
-            //this.barDuration = newBarDuration;
-            //valueArray = StockDailyValuesAsArray();
-            //return;
         }
         public void ClearBarDurationCache()
         {
-            //this.BarSerieDictionary.Clear();
             this.BarSmoothedDictionary.Clear();
         }
         #endregion
@@ -744,10 +684,6 @@ namespace StockAnalyzer.StockClasses
             this.valueArray = null;
 
             // This initialisation is here a this method is called in all constructors.
-            //if (this.BarSerieDictionary == null)
-            //{
-            //    this.BarSerieDictionary = new SortedDictionary<StockBarDuration, List<StockDailyValue>>();
-            //}
             if (this.BarSmoothedDictionary == null)
             {
                 this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
@@ -778,7 +714,6 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
                     {
-                        // this.BarSerieDictionary.Add(StockBarDuration.Daily, this.Values.ToList());
                         this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
                     }
 
@@ -6721,164 +6656,14 @@ namespace StockAnalyzer.StockClasses
             stockSerie.Initialise();
             return stockSerie;
         }
-
-        //public List<StockDailyValue> GenerateSerieForTimeSpanFromDaily(StockBarDuration barDuration)
-        //{
-        //    if (barDuration.Smoothing != 1)
-        //    {
-        //        newStockValues = GenerateSmoothedBars(newStockValues, barDuration.Smoothing);
-        //    }
-        //    return newStockValues;
-
-        //    //List<StockDailyValue> cachedStockValues = null;
-
-        //    //List<StockDailyValue> dailyValueList = this.BarSmoothedDictionary[StockBarDuration.Daily.ToString()];
-
-        //    //// Check if has saved cache
-        //    //DateTime cacheEndDate = DateTime.Now;
-        //    //if (StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, barDuration))
-        //    //{
-        //    //    cachedStockValues = this.BarSerieDictionary[barDuration];
-        //    //    this.BarSerieDictionary.Remove(barDuration);
-        //    //    this.BarSmoothedDictionary.Clear();
-
-        //    //    cacheEndDate = cachedStockValues.Last().DATE;
-        //    //    DateTime cacheEndDate2 = cacheEndDate.AddDays(-1);
-
-        //    //    StockLog.Write("Has file cache from " + cachedStockValues.First().DATE + " to " + cacheEndDate);
-
-        //    //    dailyValueList = dailyValueList.Where(v => v.DATE >= cacheEndDate2).ToList();
-        //    //}
-
-        //    //// Managed smoothed durations
-        //    //string barDurationString = barDuration.ToString();
-        //    //int index = barDurationString.IndexOf("_EMA");
-        //    //if (index != -1)
-        //    //{
-        //    //    StockBarDuration duration = (StockBarDuration)Enum.Parse(typeof(StockBarDuration), barDurationString.Substring(0, index));
-        //    //    newStockValues = GenerateSerieForTimeSpanFromDaily(duration);
-
-        //    //    int smoothing = int.Parse(barDurationString.Substring(index + 4));
-
-        //    //    newStockValues = GenerateSmoothedBars(newStockValues, smoothing);
-        //    //    this.BarSerieDictionary.Add(barDuration, newStockValues);
-        //    //    return newStockValues;
-        //    //}
-
-        //    //int period;
-        //    //string[] timeSpanString = barDurationString.Split('_');
-        //    //switch (timeSpanString[0].ToUpper())
-        //    //{
-        //    //    case "BAR":
-        //    //        if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
-        //    //        {
-        //    //            if (period == 1)
-        //    //            {
-        //    //                return dailyValueList;
-        //    //            }
-        //    //            else
-        //    //            {
-        //    //                newStockValues = GenerateMultipleBar(dailyValueList, period);
-        //    //            }
-        //    //        }
-        //    //        break;
-        //    //    //case "RENKO":
-        //    //    //if (barDuration == StockBarDuration.RENKO_1)
-        //    //    //{
-        //    //    //    newStockValues = GenerateRenkoBarFromDaily(dailyValueList, 0.01f);
-        //    //    //}
-        //    //    //if (barDuration == StockBarDuration.RENKO_2)
-        //    //    //{
-        //    //    //    newStockValues = GenerateRenkoBarFromDaily(dailyValueList, 0.02f);
-        //    //    //}
-        //    //    //if (barDuration == StockBarDuration.RENKO_5)
-        //    //    //{
-        //    //    //    newStockValues = GenerateRenkoBarFromDaily(dailyValueList, 0.05f);
-        //    //    //}
-        //    //    //if (barDuration == StockBarDuration.RENKO_10)
-        //    //    //{
-        //    //    //    newStockValues = GenerateRenkoBarFromDaily(dailyValueList, 0.1f);
-        //    //    //}
-        //    //    //break;
-        //    //    //case "HA":
-        //    //    //    //HA_3D,
-        //    //    //    if (barDuration == StockBarDuration.HA)
-        //    //    //    {
-        //    //    //        newStockValues = GenerateHeikinAshiBarFromDaily(dailyValueList);
-        //    //    //    }
-        //    //    //    else
-        //    //    //    {
-        //    //    //        if (timeSpanString[1].EndsWith("D"))
-        //    //    //        {
-        //    //    //            newStockValues =
-        //    //    //               GenerateSerieForTimeSpanFromDaily(
-        //    //    //                  (StockBarDuration)
-        //    //    //                     Enum.Parse(typeof(StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
-        //    //    //            newStockValues = GenerateHeikinAshiBarFromDaily(newStockValues);
-        //    //    //        }
-        //    //    //    }
-        //    //    //    break;
-        //    //    //case "MIN":
-        //    //    //    newStockValues = GenerateMinuteBarsFromIntraday(dailyValueList, int.Parse(timeSpanString[1]));
-        //    //    //    break;
-        //    //    case "TLB":
-        //    //        //TLB_3D,
-        //    //        //TLB_EMA3,
-        //    //        //TLB_3D_EMA3,
-        //    //        if (barDuration == StockBarDuration.TLB)
-        //    //        {
-        //    //            newStockValues = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
-        //    //        }
-        //    //        else
-        //    //        {
-        //    //            if (timeSpanString[1].EndsWith("D"))
-        //    //            {
-        //    //                newStockValues =
-        //    //                   GenerateSerieForTimeSpanFromDaily(
-        //    //                      (StockBarDuration)
-        //    //                         Enum.Parse(typeof(StockBarDuration), "Bar_" + timeSpanString[1].Replace("D", "")));
-        //    //                newStockValues = GenerateNbLineBreakBarFromDaily(newStockValues, 2);
-        //    //            }
-        //    //            else if (timeSpanString[1] == "Weekly")
-        //    //            {
-        //    //                newStockValues =
-        //    //                      GenerateSerieForTimeSpanFromDaily(StockBarDuration.Weekly);
-        //    //                newStockValues = GenerateNbLineBreakBarFromDaily(newStockValues, 2);
-        //    //            }
-        //    //        }
-        //    //        break;
-        //    //    default:
-        //    //        newStockValues = GenerateSerieForTimeSpan(dailyValueList, barDuration);
-        //    //        break;
-        //    //}
-
-        //    //if (newStockValues == null)
-        //    //{
-        //    //    throw new StockAnalyzerException("BarDuration not supported: " + barDuration);
-        //    //}
-        //    //if (cachedStockValues != null)
-        //    //{
-        //    //    // Merge with cache values
-        //    //    foreach (StockDailyValue dailyValue in newStockValues.Where(b => b.DATE > cacheEndDate))
-        //    //    {
-        //    //        cachedStockValues.Add(dailyValue);
-        //    //    }
-        //    //    newStockValues = cachedStockValues;
-        //    //}
-        //    //this.BarSerieDictionary.Add(barDuration, newStockValues);
-        //    //return newStockValues;
-        //}
-
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, StockBarDuration timeSpan)
         {
-            StockLog.Write("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() +
-                              " CurrentBarDuration:" + this.BarDuration);
+            StockLog.Write("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() + " CurrentBarDuration:" + this.BarDuration);
             List<StockDailyValue> newBarList = null;
             if (dailyValueList.Count == 0) return new List<StockDailyValue>();
 
             // Load cache if exists
-            StockDataProviderBase.LoadIntradayDurationArchive(
-               StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, timeSpan);
+            //StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, timeSpan);
 
             switch (timeSpan.Duration)
             {
