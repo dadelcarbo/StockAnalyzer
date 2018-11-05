@@ -32,7 +32,7 @@
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date,ConverterCulture=en-GB}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Durration, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Duration, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Smoothing}" Header="Smoothing" DataMemberBinding="{Binding BarDuration.Smoothing, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Indicator}" Header="Indicator" DataMemberBinding="{Binding Indicator, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Event}" Header="Event" DataMemberBinding="{Binding Event, Mode=OneWay}" IsReadOnly="True"/>

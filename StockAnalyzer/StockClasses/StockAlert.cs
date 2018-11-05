@@ -41,6 +41,9 @@ namespace StockAnalyzer.StockClasses
         public StockBarDuration BarDuration { get; set; }
         public float AlertClose { get; set; }
 
+        public string Duration { get { return BarDuration.Duration.ToString(); } }
+
+
         public StockAlert()
         {
         }
