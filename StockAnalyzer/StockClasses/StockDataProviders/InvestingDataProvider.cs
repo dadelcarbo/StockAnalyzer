@@ -63,15 +63,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var row = line.Split(',');
                         if (!stockDictionary.ContainsKey(row[2]))
                         {
-                            var stockSerie = new StockSerie(row[2], row[1],
-                                (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
-                                StockDataProvider.Investing);
+                            var stockSerie = new StockSerie(row[2], row[1], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.Investing);
                             stockSerie.Ticker = long.Parse(row[0]);
 
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
-                                this.DownloadDailyData(rootFolder, stockSerie);
+                                this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
                             }
                         }
                         else
@@ -136,7 +134,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 if (File.Exists(fileName))
                 {
-                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
+                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-60))
                         return false;
                 }
                 using (var wc = new WebClient())

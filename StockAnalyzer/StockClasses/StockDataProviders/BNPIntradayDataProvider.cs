@@ -81,7 +81,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
 
-            // Parse CommerzBankDownload.cfg file
+            // Parse *.cfg file
             this.needDownload = download;
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
@@ -132,8 +132,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return true;
         }
-
-        static string BARCHART_API_KEY = "ebc71dae1c7ca3157e243600383649e7";
 
         public string FormatIntradayURL(string symbol, DateTime startDate)
         {
