@@ -582,11 +582,6 @@ namespace StockAnalyzerApp
                     }
                 }
                 StockLog.Write("Best index " + best);
-                //MessageBox.Show("Best index " + best);
-
-                //this.StockDictionary.GenerateHighLowDistributionInMonth();
-                //this.StockDictionary.GenerateHighLowDistributionIntraday();
-
                 #endregion
 
             }
@@ -3500,6 +3495,7 @@ namespace StockAnalyzerApp
                 case StockSerie.Groups.TURBO:
                     this.ForceBarDuration(StockBarDuration.TLB_3D, true);
                     break;
+                case StockSerie.Groups.FUTURE:
                 case StockSerie.Groups.INTRADAY:
                     this.ForceBarDuration(StockBarDuration.TLB_3D, true);
                     break;

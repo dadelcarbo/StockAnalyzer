@@ -85,10 +85,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(string rootFolder, StockSerie stockSerie)
         {
+            bool res = false;
             var archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
+                res = true;
             }
 
             var fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
@@ -110,8 +112,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     return false;
                 }
+                res = true;
             }
-            return true;
+            return res;
         }
 
         static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);

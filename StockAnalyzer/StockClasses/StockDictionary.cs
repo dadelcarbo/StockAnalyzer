@@ -2305,7 +2305,6 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
 
-
         public bool GenerateTrinSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
@@ -2423,107 +2422,6 @@ namespace StockAnalyzer.StockClasses
                 }
             }
             return true;
-        }
-        public void GenerateHighLowDistributionInMonth()
-        {
-            var stockSeries = this.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && !s.StockAnalysis.Excluded && s.Initialise());
-
-            int currentMonth = 1;
-            int lowIndex = 1;
-            int highIndex = 1;
-            float low = float.MaxValue;
-            float high = float.MinValue;
-            int[] highDistrib = new int[32];
-            int[] lowDistrib = new int[32];
-            foreach (var serie in stockSeries)
-            {
-                currentMonth = serie.Keys.First().Month;
-                foreach (var value in serie.Values)
-                {
-                    if (value.DATE.Month == currentMonth)
-                    {
-                        if (value.LOW < low)
-                        {
-                            low = value.LOW;
-                            lowIndex = value.DATE.Day;
-                        }
-                        if (value.HIGH > high)
-                        {
-                            high = value.HIGH;
-                            highIndex = value.DATE.Day;
-                        }
-                    }
-                    else
-                    {
-                        highDistrib[highIndex]++;
-                        lowDistrib[lowIndex]++;
-                        currentMonth = value.DATE.Month;
-                        lowIndex = value.DATE.Day;
-                        highIndex = value.DATE.Day;
-                        low = value.LOW;
-                        high = value.HIGH;
-                    }
-                }
-            }
-            Console.WriteLine("Month distrib start");
-            for (int i = 1; i < 32; i++)
-            {
-                Console.WriteLine(i.ToString() + ";" + highDistrib[i] + ";" + lowDistrib[i]);
-            }
-            Console.WriteLine("Month distrib end");
-        }
-
-        public void GenerateHighLowDistributionIntraday()
-        {
-            var stockSeries = this.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INTRADAY) && !s.StockAnalysis.Excluded
-                && !s.StockName.StartsWith("INT_FX")
-                && !s.StockName.StartsWith("INT_FUT")
-                && !s.StockName.StartsWith("INT_IND")
-                && s.Initialise());
-
-            int currentDay = 1;
-            int lowIndex = 1;
-            int highIndex = 1;
-            float low = float.MaxValue;
-            float high = float.MinValue;
-            int[] highDistrib = new int[32];
-            int[] lowDistrib = new int[32];
-            foreach (var serie in stockSeries.Where(s => s.Count > 0))
-            {
-                currentDay = serie.Keys.First().Day;
-                foreach (var value in serie.Values)
-                {
-                    if (value.DATE.Day == currentDay)
-                    {
-                        if (value.LOW < low)
-                        {
-                            low = value.LOW;
-                            lowIndex = value.DATE.Hour;
-                        }
-                        if (value.HIGH > high)
-                        {
-                            high = value.HIGH;
-                            highIndex = value.DATE.Hour;
-                        }
-                    }
-                    else
-                    {
-                        highDistrib[highIndex]++;
-                        lowDistrib[lowIndex]++;
-                        currentDay = value.DATE.Day;
-                        highIndex = value.DATE.Hour;
-                        lowIndex = value.DATE.Hour;
-                        low = value.LOW;
-                        high = value.HIGH;
-                    }
-                }
-            }
-            Console.WriteLine("Intraday distrib start");
-            for (int i = 1; i < 32; i++)
-            {
-                Console.WriteLine(i.ToString() + ";" + highDistrib[i] + ";" + lowDistrib[i]);
-            }
-            Console.WriteLine("Intraday distrib end");
         }
     }
 }

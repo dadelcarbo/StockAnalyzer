@@ -713,10 +713,13 @@ namespace StockAnalyzer.StockClasses
                         }
                         this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
                     }
-                    //if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
-                    //{
-                    //}
-
+                    else
+                    {
+                        if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+                        {
+                            this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                        }
+                    }
                     // Force indicator,data,event and other to null;
                     PreInitialise();
 
