@@ -425,7 +425,7 @@
   </data>
   <data name="msg1.Text" xml:space="preserve">
     <value>Ultimate chartist need to be restarted to take your changes into account.
-If the application doesn't restart, please close and reopen it.</value>
+Do you want to restart now ?</value>
   </data>
   <data name="msg1.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
