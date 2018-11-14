@@ -276,9 +276,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string[] files;
             if (abcGroup != null)
             {
-                try
+                if (loadedGroups.Contains(abcGroup))
                 {
-                    if (!loadedGroups.Contains(abcGroup))
+                    return false;
+                }
+                else
+                {
+                    try
                     {
                         if (loadingGroup == null)
                         {
@@ -325,17 +329,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
                         }
                     }
+                    catch (System.Exception ex)
+                    {
+                        StockLog.Write(ex);
+                    }
+                    finally
+                    {
+                        loadingGroup = null;
+                        loadedGroups.Add(abcGroup);
+                    }
                 }
-                catch (System.Exception ex)
-                {
-                    StockLog.Write(ex);
-                }
-                finally
-                {
-                    loadingGroup = null;
-                    loadedGroups.Add(abcGroup);
-                }
-                // @@@@ stockSerie.ClearBarDurationCache(); Removed as I don't know why it's here.
             }
 
             if (stockSerie.Count == 0)
