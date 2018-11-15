@@ -231,7 +231,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
                     var url = string.Empty;
-                    if (stockSerie.IsInitialised)
+                    if (stockSerie.Initialise())
                     {
                         url = FormatIntradayURL(stockSerie.Ticker, stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7));
                     }
