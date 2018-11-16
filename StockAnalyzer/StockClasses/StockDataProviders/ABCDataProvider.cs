@@ -548,6 +548,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                     }
                     stockSerie.IsInitialised = isUpTodate; // && !needReloadIntraday; Why need reload intraday ???
+                    if (!isUpTodate)
+                        stockSerie.ClearBarDurationCache();
                 }
                 else
                 {
