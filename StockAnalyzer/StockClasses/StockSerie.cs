@@ -377,7 +377,11 @@ namespace StockAnalyzer.StockClasses
         }
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
-            if (!this.Initialise() || (newBarDuration == this.barDuration)) return;
+            if (!this.Initialise() || (newBarDuration == this.barDuration))
+            {
+                this.barDuration = newBarDuration;
+                return;
+            }
 
             this.IsInitialised = false;
             foreach (StockDailyValue dailyValue in this.GetSmoothedValues(newBarDuration))

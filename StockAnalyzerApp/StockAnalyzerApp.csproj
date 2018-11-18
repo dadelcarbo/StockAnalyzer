@@ -249,6 +249,17 @@
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
       <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml.cs">
+      <DependentUpon>StatisticsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsDlg.Designer.cs">
+      <DependentUpon>StatisticsDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsResult.cs" />
+    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsViewModel.cs" />
     <Compile Include="CustomControl\StatisticsDlg\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
@@ -607,6 +618,9 @@
     <EmbeddedResource Include="CustomControl\SimulationDlgs\StockMarketReplay.resx">
       <DependentUpon>StockMarketReplay.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ExpectedValueDlg\StatisticsDlg.resx">
+      <DependentUpon>StatisticsDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StatisticsDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -947,6 +961,10 @@
     <Page Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\StatisticsDlg\StatisticsControl.xaml">
       <SubType>Designer</SubType>

@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
         }
         static public Array BarDurations
         {
-            get { return Enum.GetValues(typeof(StockBarDuration)); }
+            get { return Enum.GetValues(typeof(BarDuration)); }
         }
 
         private StockBarDuration barDuration1;

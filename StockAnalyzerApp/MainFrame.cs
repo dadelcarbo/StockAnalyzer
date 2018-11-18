@@ -29,7 +29,7 @@ using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
-using StockAnalyzerApp.CustomControl.StatisticsDlg;
+using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
