@@ -188,7 +188,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
             }
-            return true;
+            return stockSerie.Count>0;
         }
 
         public string FormatIntradayURL(long ticker, DateTime startDate)
