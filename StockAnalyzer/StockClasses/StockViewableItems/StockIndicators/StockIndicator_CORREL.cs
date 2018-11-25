@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public class StockIndicator_CORREL : StockIndicatorBase
    {
-      public StockIndicator_CORREL()
-      {
-      }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
