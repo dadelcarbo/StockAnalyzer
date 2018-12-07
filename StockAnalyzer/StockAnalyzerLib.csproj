@@ -164,6 +164,7 @@
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIVWAIT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.Designer.cs">
@@ -212,6 +213,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
