@@ -1,6 +1,6 @@
-﻿using System.Drawing;
-using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
@@ -114,12 +114,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
 
         private static string[] eventNames = new string[]
-      {
-         "BrokenUp", "BrokenDown",           // 0,1
-         "Pullback", "EndOfTrend",           // 2,3
-         "HigherLow", "LowerHigh",           // 4,5
-         "Bullish", "Bearish"                // 6,7
-      };
+          {
+             "BrokenUp", "BrokenDown",           // 0,1
+             "Pullback", "EndOfTrend",           // 2,3
+             "HigherLow", "LowerHigh",           // 4,5
+             "Bullish", "Bearish"                // 6,7
+          };
 
         public string[] EventNames => eventNames;
 

@@ -1133,7 +1133,7 @@ namespace StockAnalyzerApp
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
-                    StockMail.SendEmail("Ultimate Chartist - daily Alert", alertString);
+                    StockMail.SendEmail("Ultimate Chartist - "+ alertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
                 }
 
                 if (this.AlertDetected != null)

@@ -159,5 +159,7 @@ namespace StockAnalyzer.StockClasses
         {
             return LastRefreshDate >= date;
         }
+
+        public string FileName => fileName;
     }
 }

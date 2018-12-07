@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_VIXFIX : StockIndicatorBase
     {
-        public StockIndicator_VIXFIX()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
