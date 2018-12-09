@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            var lowSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             FloatSerie raw = new FloatSerie(stockSerie.Count);
 
