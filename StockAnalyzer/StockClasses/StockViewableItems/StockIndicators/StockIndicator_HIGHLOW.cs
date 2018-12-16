@@ -115,23 +115,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 this.eventSeries[0][i] = (slowSerie[i - 1] > fastSerie[i - 1] && slowSerie[i] < fastSerie[i]);
                 this.eventSeries[1][i] = (slowSerie[i - 1] < fastSerie[i - 1] && slowSerie[i] > fastSerie[i]);
+
                 this.eventSeries[2][i] = fastSerie[i] > slowSerie[i];
                 this.eventSeries[3][i] = fastSerie[i] < slowSerie[i];
+
                 this.eventSeries[4][i] = fastSerie[i - 1] > overbought && fastSerie.IsTop(i - 1);
                 this.eventSeries[5][i] = fastSerie[i - 1] < oversold && fastSerie.IsBottom(i - 1);
+
                 float min = 0, max = 0;
                 fastSerie.GetMinMax(i-period, i-1, ref min, ref max);
+
                 this.eventSeries[6][i] = fastSerie.IsTop(i - 1) && fastSerie[i - 1] < max;
                 this.eventSeries[7][i] = fastSerie.IsBottom(i - 1) && fastSerie[i - 1] > min;
+
+                this.eventSeries[8][i] = fastSerie[i] > 0;
+                this.eventSeries[9][i] = fastSerie[i] < 0;
             }
         }
 
-        static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Bullish", "Bearish", "OverboughtTop", "OversoldBottom", "LowerTop", "HigherLow" };
+        static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Bullish", "Bearish", "OverboughtTop", "OversoldBottom", "LowerTop", "HigherLow", "Positive", "Negative" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true, true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true, true, true, false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

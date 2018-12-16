@@ -176,6 +176,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COMPARE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DELTA.cs" />
