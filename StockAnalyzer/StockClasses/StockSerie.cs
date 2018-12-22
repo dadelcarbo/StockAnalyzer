@@ -6699,22 +6699,30 @@ namespace StockAnalyzer.StockClasses
                              GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2),
                                 3), 2), 3);
                     break;
-                //case StockBarDuration.ThreeLineBreak:
-                //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
-                //    break;
-                //case StockBarDuration.ThreeLineBreak_BIS:
-                //    newBarList =
-                //       GenerateNbLineBreakBarFromDaily(
-                //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
-                //    break;
-                //case StockBarDuration.ThreeLineBreak_TER:
-                //    newBarList =
-                //       GenerateNbLineBreakBarFromDaily(
-                //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
-                //    break;
-                //case StockBarDuration.SixLineBreak:
-                //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
-                //    break;
+                case StockClasses.BarDuration.HA:
+                    newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
+                    break;
+                case StockClasses.BarDuration.HA_3D:
+                    newBarList = GenerateHeikinAshiBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
+                    break;
+                /*
+            //case StockBarDuration.ThreeLineBreak:
+            //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
+            //    break;
+            //case StockBarDuration.ThreeLineBreak_BIS:
+            //    newBarList =
+            //       GenerateNbLineBreakBarFromDaily(
+            //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
+            //    break;
+            //case StockBarDuration.ThreeLineBreak_TER:
+            //    newBarList =
+            //       GenerateNbLineBreakBarFromDaily(
+            //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
+            //    break;
+            //case StockBarDuration.SixLineBreak:
+            //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
+            //    break;
+            */
                 case StockClasses.BarDuration.Weekly:
                     {
                         StockDailyValue newValue = null;
