@@ -61,6 +61,7 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
+        public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)
         {

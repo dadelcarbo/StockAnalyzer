@@ -21,6 +21,7 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
+using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
@@ -29,7 +30,6 @@ using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs;
 using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
-using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
@@ -736,6 +736,29 @@ namespace StockAnalyzerApp
             {
                 GenerateAlert(weeklyAlertDefs, weeklyAlertLog);
             }
+
+            string monthlyAlertFileName = Settings.Default.RootFolder + @"\AlertMonthlyReport.xml";
+            if (System.IO.File.Exists(monthlyAlertFileName))
+            {
+                using (var fs = new FileStream(monthlyAlertFileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                    {
+                        IgnoreWhitespace = true
+                    };
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                    monthlyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                }
+            }
+            else
+            {
+                monthlyAlertDefs = new List<StockAlertDef>();
+            }
+            if (!monthlyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            {
+                GenerateAlert(monthlyAlertDefs, monthlyAlertLog);
+            }
             #endregion
 
             if (Settings.Default.GenerateDailyReport)
@@ -751,7 +774,7 @@ namespace StockAnalyzerApp
                             StockBarDuration.TLB_3D
                          };
 
-                    GenerateReport(durations, dailyAlertDefs);
+                    GenerateReport("Daily Report", durations, dailyAlertDefs);
                 }
 
                 fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
@@ -768,8 +791,20 @@ namespace StockAnalyzerApp
                             StockBarDuration.Weekly
                              };
 
-                        GenerateReport(durations, weeklyAlertDefs);
+                        GenerateReport("Weekly Report", durations, weeklyAlertDefs);
                     }
+                }
+
+                fileName = Settings.Default.RootFolder + @"\CommentReport\Monthly\Report.html";
+                lastUpdate = File.GetLastWriteTime(fileName).Date;
+                if (!File.Exists(fileName) || lastUpdate.Month != DateTime.Today.Month)
+                {
+                    var durations = new StockBarDuration[]
+                         {
+                            StockBarDuration.Monthly
+                             };
+
+                    GenerateReport("Montly Report", durations, monthlyAlertDefs);
                 }
             }
 
@@ -936,9 +971,11 @@ namespace StockAnalyzerApp
         private List<StockAlertDef> intradayAlertDefs;
         private List<StockAlertDef> dailyAlertDefs;
         private List<StockAlertDef> weeklyAlertDefs;
+        private List<StockAlertDef> monthlyAlertDefs;
         private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml");
         private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml");
         private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml");
+        private readonly StockAlertLog monthlyAlertLog = StockAlertLog.Load("AlertLogMonthly.xml");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -1133,7 +1170,7 @@ namespace StockAnalyzerApp
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
-                    StockMail.SendEmail("Ultimate Chartist - "+ alertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
+                    StockMail.SendEmail("Ultimate Chartist - " + alertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
                 }
 
                 if (this.AlertDetected != null)
@@ -4274,7 +4311,8 @@ border:1px solid black;
 }
 </style>
 </head>
-<body>";
+<body>
+<h1>%TITLE%</h1>";
         string MULTITIMEFRAME_FOOTER = @"
 </body>
 </html>";
@@ -4286,7 +4324,7 @@ border:1px solid black;
         string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
         string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
-        private string GenerateReport(StockBarDuration[] durations, List<StockAlertDef> alertDefs)
+        private string GenerateReport(string title, StockBarDuration[] durations, List<StockAlertDef> alertDefs)
         {
             var duration = durations.First();
             string timeFrame = durations.First().ToString();
@@ -4297,7 +4335,7 @@ border:1px solid black;
 
 
             string mailReport = string.Empty;
-            string htmlReport = string.Empty;
+            string htmlReport = $"<h1 style=\"text-align: center;\">{title}</h1>";
 
             string commentTitle = string.Empty;
             string commentBody = string.Empty;
@@ -4371,8 +4409,7 @@ border:1px solid black;
             }
 
             StockSplashScreen.CloseForm(true);
-            string table = MULTITIMEFRAME_HEADER + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) +
-                           MULTITIMEFRAME_FOOTER;
+            string table = MULTITIMEFRAME_HEADER.Replace("%TITLE%", title) + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) + MULTITIMEFRAME_FOOTER;
 
             using (StreamWriter sw = new StreamWriter(folderName + @"\report_table.html"))
             {
@@ -4422,7 +4459,7 @@ border:1px solid black;
                     if (stockSerie.MatchEvent(alert))
                     {
                         var values = stockSerie.GetValues(alert.BarDuration);
-                        string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE.TimeOfDay +
+                        string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
                                            ";" + alert.ToString();
 
                         alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE + "</br>";
@@ -4431,7 +4468,6 @@ border:1px solid black;
                 htmlReport += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle)
                    .Replace(commentTemplate, alertMsg);
             }
-
             #endregion
 
             using (StreamWriter sw = new StreamWriter(fileName))
@@ -4659,7 +4695,7 @@ border:1px solid black;
             StockBarDuration.TLB_3D,
             };
 
-            GenerateReport(durations, dailyAlertDefs);
+            GenerateReport("Daily Report", durations, dailyAlertDefs);
         }
         #endregion
         private void selectEventForMarqueeMenuItem_Click(object sender, EventArgs e)

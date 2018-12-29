@@ -13,7 +13,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
       }
-
       public override string Name
       {
          get { return "FISHER(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")"; }
@@ -22,7 +21,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return "FISHER(int stochPeriod, int stochSmoothing, int fisherSmoothing)"; }
       }
-
       public override string[] ParameterNames
       {
          get { return new string[] { "stochPeriod", "stochSmoothing", "fisherSmoothing" }; }
@@ -35,9 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
       }
-
       public override string[] SerieNames { get { return new string[] { "FastFish(" + this.Parameters[0].ToString() + ")", "SlowFish(" + this.Parameters[1].ToString() + ")" }; } }
-
       public override System.Drawing.Pen[] SeriePens
       {
          get

@@ -182,6 +182,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DELTA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HEIKINASHI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />
