@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             baseIndicator = StockTrailStopManager.CreateTrailStop(this.ShortName);
             if (baseIndicator == null)
             {
-                throw new System.ApplicationException("Unable to create " + this.ShortName + " indicator");
+                throw new System.ApplicationException("Unable to create " + this.ShortName + " trail stop");
             }
             this.parameters = baseIndicator.ParameterDefaultValues;
 
@@ -76,7 +76,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         public override string[] SerieNames { get { return EventNames; } }
 
-        abstract public Pen[] SeriePens { get; }
+
+        public virtual Pen[] SeriePens
+        {
+            get
+            {
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] {
+                        new Pen(Color.Green), new Pen(Color.Red), // "BrokenUp", "BrokenDown",   // 0,1
+                        new Pen(Color.Green), new Pen(Color.Red), // "Pullback", "EndOfTrend",   // 2,3
+                        new Pen(Color.Green), new Pen(Color.Red), // "HigherLow", "LowerHigh",   // 4,5
+                        new Pen(Color.Green), new Pen(Color.Red)  // "Bullish", "Bearish"        // 6,7
+                    };
+                }
+                return seriePens;
+            }
+        }
 
         protected bool[] serieVisibility;
         public bool[] SerieVisibility { get { return this.serieVisibility; } }

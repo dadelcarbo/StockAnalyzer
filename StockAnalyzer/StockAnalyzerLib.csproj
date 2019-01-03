@@ -293,6 +293,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SCOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FLAG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILBB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SPEED.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FIBOCHANNEL.cs" />
