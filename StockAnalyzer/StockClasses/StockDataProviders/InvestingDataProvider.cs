@@ -123,8 +123,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var interval = "D";
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((endDate - refDate).TotalSeconds);
-
-            return $"https://tvc6.forexpros.com/594533c045d911db442ef05f2db3f33d/1536084049/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            return $"https://tvc4.forexpros.com/2bd285bdf76654cb12edc5fab9e6e4c9/1546513020/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
