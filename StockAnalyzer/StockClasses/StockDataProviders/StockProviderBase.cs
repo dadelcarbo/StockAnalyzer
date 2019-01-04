@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;
-        public const int LOAD_START_YEAR = 2006;
+        public const int LOAD_START_YEAR = 1999;
 
         private static string rootFolder = null;
         public static string RootFolder

@@ -15,8 +15,6 @@ namespace StockAnalyzer.StockClasses
         Bar_24,
         Bar_27,
         Bar_48,
-        HA,
-        HA_3D,
         MIN_5,
         MIN_15,
         MIN_60,
@@ -36,20 +34,25 @@ namespace StockAnalyzer.StockClasses
         public BarDuration Duration { get; set; }
         public int Smoothing { get; set; }
 
+        public bool HeikinAshi { get; set; }
+
         public StockBarDuration()
         {
             this.Duration = BarDuration.Daily;
             this.Smoothing = 1;
+            this.HeikinAshi = false;
         }
         public StockBarDuration(BarDuration duration)
         {
             this.Duration = duration;
             this.Smoothing = 1;
+            this.HeikinAshi = false;
         }
         public StockBarDuration(BarDuration duration, int smoothing)
         {
             this.Duration = duration;
             this.Smoothing = smoothing;
+            this.HeikinAshi = false;
         }
 
         public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
@@ -66,7 +69,8 @@ namespace StockAnalyzer.StockClasses
         internal static bool TryParse(string v, out StockBarDuration barDuration)
         {
             BarDuration duration;
-            if (Enum.TryParse<BarDuration>(v, out duration)) {
+            if (Enum.TryParse<BarDuration>(v, out duration))
+            {
                 barDuration = duration;
                 return true;
             }
@@ -90,7 +94,8 @@ namespace StockAnalyzer.StockClasses
 
         public override string ToString()
         {
-            return this.Smoothing <= 1 ? this.Duration.ToString() : this.Duration + "_EMA" + this.Smoothing;
+            var str = this.Smoothing <= 1 ? this.Duration.ToString() : this.Duration + "_EMA" + this.Smoothing;
+            return this.HeikinAshi ? str + "_HA" : str;
         }
         public override bool Equals(object obj)
         {
@@ -102,7 +107,7 @@ namespace StockAnalyzer.StockClasses
             else
             {
                 StockBarDuration p = (StockBarDuration)obj;
-                return (Duration == p.Duration) && (Smoothing == p.Smoothing);
+                return (Duration == p.Duration) && (Smoothing == p.Smoothing) && (HeikinAshi == p.HeikinAshi);
             }
         }
 

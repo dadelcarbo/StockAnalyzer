@@ -129,6 +129,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.smoothingLabel = new System.Windows.Forms.ToolStripLabel();
             this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.barHeikinAshiCheckBox = new ToolStripCheckedBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.searchText = new System.Windows.Forms.ToolStripTextBox();
             this.goBtn = new System.Windows.Forms.ToolStripButton();
@@ -954,6 +955,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox,
             this.smoothingLabel,
             this.barSmoothingComboBox,
+            this.barHeikinAshiCheckBox,
             this.downloadBtn,
             this.searchText,
             this.goBtn,
@@ -999,6 +1001,13 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
             this.barSmoothingComboBox.Size = new System.Drawing.Size(75, 23);
             this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
+            // 
+            // barHeikinAshiCheckBox
+            // 
+            this.barHeikinAshiCheckBox.Text = "Heikin Ashi";
+            this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
+            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(75, 23);
+            this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn
             // 
@@ -1571,6 +1580,7 @@ namespace StockAnalyzerApp
         private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
         private ToolStripComboBox barSmoothingComboBox;
+        private ToolStripCheckedBox barHeikinAshiCheckBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
         private ToolStripMenuItem optionsMenuItem;

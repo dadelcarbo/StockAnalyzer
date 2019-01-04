@@ -2722,6 +2722,7 @@ namespace StockAnalyzerApp
 
             StockBarDuration barDuration = (BarDuration)barDurationComboBox.SelectedItem;
             barDuration.Smoothing = (int)barSmoothingComboBox.SelectedItem;
+            barDuration.HeikinAshi = barHeikinAshiCheckBox.CheckBox.CheckState == CheckState.Checked;
             if (this.CurrentStockSerie.BarDuration != barDuration)
             {
                 int previousBarCount = this.CurrentStockSerie.Count;
@@ -2747,6 +2748,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
+
         public void ForceBarDuration(StockBarDuration barDuration, bool triggerEvent)
         {
             if (!triggerEvent)
