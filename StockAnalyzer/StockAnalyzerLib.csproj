@@ -306,6 +306,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FLAG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILFIBO.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILBB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SPEED.cs" />

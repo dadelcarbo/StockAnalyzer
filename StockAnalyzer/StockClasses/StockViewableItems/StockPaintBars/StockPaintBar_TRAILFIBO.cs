@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-    public class StockPaintBar_TRAILFIBO : StockPaintBarTrailStopEventBase
+    public class StockPaintBar_TRAILBB : StockPaintBarTrailStopEventBase
     {
     }
 }
