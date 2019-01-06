@@ -59,12 +59,13 @@ namespace StockAnalyzer.StockClasses
         public string ProgressName { get { return progressName; } set { if (value != progressName) { progressName = value; NotifyPropertyChanged("ProgressName"); } } }
 
         private readonly string fileName;
-        private StockAlertLog(string fileName)
+        private StockAlertLog(string fileName, DateTime startDate)
         {
             this.lastRefreshDate = DateTime.MinValue;
             this.alerts = new ObservableCollection<StockAlert>();
             this.progressVisibility = false;
             this.fileName = fileName;
+            this.StartDate = startDate;
 
             this.Load();
 
@@ -73,7 +74,8 @@ namespace StockAnalyzer.StockClasses
 
         private static SortedDictionary<string, StockAlertLog> alertLogs = new SortedDictionary<string, StockAlertLog>();
 
-        public static StockAlertLog Load(string fileName)
+        private DateTime StartDate { get; set; }
+        public static StockAlertLog Load(string fileName, DateTime startDate)
         {
             if (alertLogs.ContainsKey(fileName))
             {
@@ -81,7 +83,7 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                return new StockAlertLog(fileName);
+                return new StockAlertLog(fileName, startDate);
             }
         }
 
@@ -132,8 +134,7 @@ namespace StockAnalyzer.StockClasses
                 };
                 System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                 XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                DateTime limitDate = DateTime.Today.AddDays(-7);
-                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= limitDate).OrderByDescending(a => a.Date).ThenBy(a => a.Alert).ThenBy(a => a.StockName));
+                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.Alert).ThenBy(a => a.StockName));
                 serializer.Serialize(xmlWriter, this.alerts);
             }
         }

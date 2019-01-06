@@ -73,6 +73,7 @@ namespace StockAnalyzerApp
             this.showIntradayAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDailyAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showWeeklyAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showMonthlyAlertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -377,6 +378,7 @@ namespace StockAnalyzerApp
             this.showIntradayAlertMenuItem,
             this.showDailyAlertMenuItem,
             this.showWeeklyAlertMenuItem,
+            this.showMonthlyAlertMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
@@ -526,6 +528,15 @@ namespace StockAnalyzerApp
             this.showWeeklyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showWeeklyAlertMenuItem.Text = "Weekly Alert View";
             this.showWeeklyAlertMenuItem.Click += showWeeklyAlertViewMenuItem_Click;
+            // 
+            // showMonthlyAlertMenuItem
+            // 
+            this.showMonthlyAlertMenuItem.Name = "showMonthlyAlertMenuItem";
+            this.showMonthlyAlertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+            this.showMonthlyAlertMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.showMonthlyAlertMenuItem.Text = "Montly Alert View";
+            this.showMonthlyAlertMenuItem.Click += showMonthlyAlertMenuItem_Click;
             // 
             // toolStripSeparator15
             // 
@@ -1641,6 +1652,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showIntradayAlertMenuItem;
         private ToolStripMenuItem showDailyAlertMenuItem;
         private ToolStripMenuItem showWeeklyAlertMenuItem;
+        private ToolStripMenuItem showMonthlyAlertMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
         private ToolStripMenuItem indexRelativeStrengthMenuItem;

@@ -972,10 +972,10 @@ namespace StockAnalyzerApp
         private List<StockAlertDef> dailyAlertDefs;
         private List<StockAlertDef> weeklyAlertDefs;
         private List<StockAlertDef> monthlyAlertDefs;
-        private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml");
-        private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml");
-        private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml");
-        private readonly StockAlertLog monthlyAlertLog = StockAlertLog.Load("AlertLogMonthly.xml");
+        private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml", DateTime.Today.AddDays(-5));
+        private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml", DateTime.Today.AddDays(-10));
+        private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml", DateTime.Today.AddDays(-25));
+        private readonly StockAlertLog monthlyAlertLog = StockAlertLog.Load("AlertLogMonthly.xml", DateTime.Today.AddMonths(-5));
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -1091,7 +1091,14 @@ namespace StockAnalyzerApp
                 busy = false;
             }
         }
-
+        public void GenerateAlert_Thread(object param)
+        {
+            var tuple = (Tuple<List<StockAlertDef>, StockAlertLog>)param;
+            if (tuple != null)
+            {
+                this.GenerateAlert(tuple.Item1, tuple.Item2);
+            }
+        }
         public void GenerateAlert(List<StockAlertDef> alertDefs, StockAlertLog alertLog)
         {
             if (busy || alertDefs == null) return;
@@ -5461,7 +5468,7 @@ border:1px solid black;
         {
             if (alertIntradayDlg == null)
             {
-                alertIntradayDlg = new AlertDlg(intradayAlertLog);
+                alertIntradayDlg = new AlertDlg(intradayAlertLog, null);
                 alertIntradayDlg.Text = "Intraday Alerts";
                 alertIntradayDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertIntradayDlg.Disposed += delegate
@@ -5481,7 +5488,7 @@ border:1px solid black;
         {
             if (alertDailyDlg == null)
             {
-                alertDailyDlg = new AlertDlg(dailyAlertLog);
+                alertDailyDlg = new AlertDlg(dailyAlertLog, dailyAlertDefs);
                 alertDailyDlg.Text = "Daily Alerts";
                 alertDailyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDailyDlg.Disposed += delegate
@@ -5501,7 +5508,7 @@ border:1px solid black;
         {
             if (alertWeeklyDlg == null)
             {
-                alertWeeklyDlg = new AlertDlg(weeklyAlertLog);
+                alertWeeklyDlg = new AlertDlg(weeklyAlertLog, weeklyAlertDefs);
                 alertWeeklyDlg.Text = "Weekly Alerts";
                 alertWeeklyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertWeeklyDlg.Disposed += delegate
@@ -5514,6 +5521,26 @@ border:1px solid black;
             else
             {
                 alertWeeklyDlg.Activate();
+            }
+        }
+        AlertDlg alertMonthlyDlg = null;
+        void showMonthlyAlertMenuItem_Click(object sender, System.EventArgs e)
+        {
+            if (alertMonthlyDlg == null)
+            {
+                alertMonthlyDlg = new AlertDlg(monthlyAlertLog, monthlyAlertDefs);
+                alertMonthlyDlg.Text = "Monthly Alerts";
+                alertMonthlyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertMonthlyDlg.Disposed += delegate
+                {
+                    alertMonthlyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    this.alertMonthlyDlg = null;
+                };
+                alertMonthlyDlg.Show();
+            }
+            else
+            {
+                alertMonthlyDlg.Activate();
             }
         }
         #endregion

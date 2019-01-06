@@ -1,25 +1,13 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Xml.Serialization;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockLogging;
 using Telerik.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
-using DataGrid = System.Windows.Controls.DataGrid;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
@@ -38,6 +26,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
+        public List<StockAlertDef> AlertDefs { get; set; }
 
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
@@ -48,9 +37,18 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
-                alertThread.Name = "Alert";
-                alertThread.Start();
+                if (AlertDefs == null)
+                {
+                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
+                    alertThread.Name = "Intraday Alert";
+                    alertThread.Start();
+                }
+                else
+                {
+                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                    alertThread.Name = "Alert";
+                    alertThread.Start(Tuple.Create(AlertDefs, (StockAlertLog)this.DataContext));
+                }
             }
             catch (Exception ex)
             {
