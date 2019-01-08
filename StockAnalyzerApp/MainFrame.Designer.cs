@@ -997,7 +997,7 @@ namespace StockAnalyzerApp
             // 
             this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barDurationComboBox.Name = "barDurationComboBox";
-            this.barDurationComboBox.Size = new System.Drawing.Size(175, 27);
+            this.barDurationComboBox.Size = new System.Drawing.Size(125, 27);
             this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // smoothingLabel
@@ -1010,7 +1010,7 @@ namespace StockAnalyzerApp
             // 
             this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
-            this.barSmoothingComboBox.Size = new System.Drawing.Size(75, 23);
+            this.barSmoothingComboBox.Size = new System.Drawing.Size(25, 23);
             this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // barHeikinAshiCheckBox
