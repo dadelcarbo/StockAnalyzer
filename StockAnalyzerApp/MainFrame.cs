@@ -626,7 +626,7 @@ namespace StockAnalyzerApp
             //}
 
             // 
-            InitialiseStockCombo();
+            InitialiseStockCombo(true);
 
             //
             InitialiseStrategyCombo();
@@ -893,7 +893,7 @@ namespace StockAnalyzerApp
                     groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
                 }
 
-                InitialiseStockCombo();
+                InitialiseStockCombo(false);
             }
 
             // Update Stock
@@ -901,7 +901,6 @@ namespace StockAnalyzerApp
             {
                 //StockAnalyzerForm_StockSerieChanged(serie, false);
                 this.stockNameComboBox.SelectedItem = serie.StockName;
-
             }
         }
 
@@ -1430,7 +1429,7 @@ namespace StockAnalyzerApp
                             groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
                         }
 
-                        InitialiseStockCombo();
+                        InitialiseStockCombo(true);
                     }
                 }
                 else
@@ -1861,7 +1860,7 @@ namespace StockAnalyzerApp
 
         #endregion // COT
 
-        private void InitialiseStockCombo()
+        private void InitialiseStockCombo(bool setCurrentStock)
         {
             // Initialise Combo values
             stockNameComboBox.Items.Clear();
@@ -1877,7 +1876,7 @@ namespace StockAnalyzerApp
                 }
             }
             // 
-            if (stockNameComboBox.Items.Count != 0)
+            if (setCurrentStock && stockNameComboBox.Items.Count != 0)
             {
                 stockNameComboBox.SelectedIndex = 0;
                 if (!string.IsNullOrEmpty(stockNameComboBox.Items[0].ToString()))
@@ -3526,7 +3525,7 @@ namespace StockAnalyzerApp
                     groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
                 }
 
-                InitialiseStockCombo();
+                InitialiseStockCombo(true);
             }
         }
 
@@ -6385,7 +6384,7 @@ border:1px solid black;
                 this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
                 this.CreateRelativeStrengthMenuItem();
-                this.InitialiseStockCombo();
+                this.InitialiseStockCombo(true);
             }
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6412,8 +6411,6 @@ border:1px solid black;
             OnNeedReinitialise(true);
         }
         #endregion
-
-
         public void ShowFinancials()
         {
             if (this.currentStockSerie != null)
