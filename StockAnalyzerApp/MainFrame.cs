@@ -1411,7 +1411,9 @@ namespace StockAnalyzerApp
                 }
             }
 
-            this.barDurationComboBox.SelectedItem = barDuration;
+            this.barDurationComboBox.SelectedItem = barDuration.Duration;
+            this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
+            this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
 
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
@@ -2764,6 +2766,7 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = barDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
+            this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
 
             if (!triggerEvent)
             {
@@ -4489,6 +4492,7 @@ border:1px solid black;
             this.CurrentTheme = previousTheme;
             this.barDurationComboBox.SelectedItem = previousBarDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = previousBarDuration.Smoothing;
+            this.barHeikinAshiCheckBox.CheckBox.Checked = previousBarDuration.HeikinAshi;
 
             return mailReport;
         }
