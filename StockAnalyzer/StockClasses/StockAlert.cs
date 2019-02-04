@@ -64,10 +64,14 @@ namespace StockAnalyzer.StockClasses
 
         public static bool operator ==(StockAlert a, StockAlert b)
         {
+            if (object.ReferenceEquals(a, null))
+                return object.ReferenceEquals(b, null);
             return a.Equals(b);
         }
         public static bool operator !=(StockAlert a, StockAlert b)
         {
+            if (object.ReferenceEquals(a, null))
+                return !object.ReferenceEquals(b, null);
             return !a.Equals(b);
         }
 

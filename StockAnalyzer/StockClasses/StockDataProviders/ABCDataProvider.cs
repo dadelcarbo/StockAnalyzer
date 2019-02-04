@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         // IStockDataProvider Implementation
         public override bool SupportsIntradayDownload
         {
-            get { return true; }
+            get { return false; }
         }
         public override void InitDictionary(string rootFolder, StockDictionary dictionary, bool download)
         {
@@ -725,6 +725,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
 
                 // Send POST request
+
                 string url = "http://www.abcbourse.com/download/telechargement_intraday.aspx";
 
                 if (intradayViewState == string.Empty)
