@@ -20,11 +20,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Test,
         Replay,
         Breadth,
-        Ratio,
         //COT,
         //NASDACQShortInterest,
         FINRA,
-        Investing
+        Investing,
+        Ratio
     }
 
    public delegate void DownloadingStockEventHandler(string text);

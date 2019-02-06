@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
         {
-            return;
+            //return;
             string line;
             string fileName = rootFolder + "\\RatioIndicator.txt";
             // Parse yahoo.cfg file// Create data folder if not existing
