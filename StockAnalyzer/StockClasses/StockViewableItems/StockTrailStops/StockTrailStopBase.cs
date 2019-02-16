@@ -38,7 +38,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         protected FloatSerie[] series;
         public FloatSerie[] Series { get { return series; } }
 
-        abstract public Pen[] SeriePens { get; }
+        public virtual System.Drawing.Pen[] SeriePens
+        {
+            get
+            {
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
+                    seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                }
+                return seriePens;
+            }
+        }
         private bool[] serieVisibility;
         public bool[] SerieVisibility { get { return this.serieVisibility; } }
 

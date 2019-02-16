@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILHMA : StockTrailStopBase
+    public class StockTrailStop_TRAILSAR : StockTrailStopBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -13,19 +13,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override bool RequiresVolumeData { get { return false; } }
         public override string[] ParameterNames
         {
-            get { return new string[] { "SmoothPeriod", "InputSmoothing" }; }
+            get { return new string[] { "Step" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 3, 1 }; }
+            get { return new Object[] { 0.1f }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeFloat(0.001f, 20f) }; }
         }
+        public override string[] SerieNames { get { return new string[] { "TRAILSAR.LS", "TRAILSAR.SS" }; } }
 
-        public override string[] SerieNames { get { return new string[] { "TRAILHMA.LS", "TRAILHMA.SS" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;
@@ -33,13 +33,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            stockSerie.CalculateHMATrailStop((int)this.Parameters[0], (int)this.Parameters[1], out longStopSerie, out shortStopSerie);
+            float step = (float)this.parameters[0] / 100f;
+
+            stockSerie.CalculateSAR(step, 0, float.MaxValue, out longStopSerie, out shortStopSerie, 1);
+
             this.Series[0] = longStopSerie;
             this.Series[1] = shortStopSerie;
 
             // Generate events
             this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
         }
-
     }
 }

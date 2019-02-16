@@ -6,11 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILHL : StockTrailStopBase
     {
-        public StockTrailStop_TRAILHL()
-        {
-        }
-        public override string Definition => "TRAILHL(int period)";
-
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
 
@@ -21,18 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames => new string[] { "TRAILHL.LS", "TRAILHL.SS" };
-
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
-                }
-                return seriePens;
-            }
-        }
+        
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;
