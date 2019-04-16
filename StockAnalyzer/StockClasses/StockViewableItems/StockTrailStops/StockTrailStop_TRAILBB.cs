@@ -7,13 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILBB : StockTrailStopBase
     {
-        public StockTrailStop_TRAILBB()
-        {
-        }
-        public override string Definition
-        {
-            get { return "TRAILBB(int Period, float NbUpDev, float NbDownDev)"; }
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
