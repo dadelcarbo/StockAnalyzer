@@ -49,6 +49,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using System.Xml.Serialization;
 
 namespace StockAnalyzerApp
@@ -289,7 +290,10 @@ namespace StockAnalyzerApp
         {
             Thread.CurrentThread.CurrentUICulture = EnglishCulture;
             Thread.CurrentThread.CurrentCulture = EnglishCulture;
-            // Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+
+            System.Windows.FrameworkElement.LanguageProperty.OverrideMetadata
+                (typeof(System.Windows.FrameworkElement),
+                new System.Windows.FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             // Graphical initialisation
             StockSplashScreen.ProgressText = "Checking license";
