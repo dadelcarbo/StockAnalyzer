@@ -1594,6 +1594,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public static void DownloadFinancialOverview(StockFinancial financial, string shortName, StockSerie stockSerie)
         {
+            return;
             if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
 
             string url = "https://markets.ft.com/data/equities/tearsheet/financials?s=" + stockSerie.ShortName + ":PAR&subview=Overview";
