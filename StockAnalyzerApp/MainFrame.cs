@@ -34,7 +34,6 @@ using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings.Properties;
-using StockNeuralNetwork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,6 +55,9 @@ namespace StockAnalyzerApp
 {
     public partial class StockAnalyzerForm : Form
     {
+        public delegate void SelectedStockSerieChangedEventHandler(object sender, SelectedStockSerieChangedEventArgs args);
+        public event SelectedStockSerieChangedEventHandler OnSelectStockSerieChange;
+
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockBarDuration barDuration, bool activateMainWindow);
 
@@ -259,8 +261,7 @@ namespace StockAnalyzerApp
             this.FormClosing += new FormClosingEventHandler(StockAnalyzerForm_FormClosing);
 
             this.StockDictionary = new StockDictionary(new DateTime(DateTime.Now.Year, 01, 01));
-            this.StockDictionary.ReportProgress +=
-               new StockAnalyzer.StockClasses.StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
+            this.StockDictionary.ReportProgress += new StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
 
             NbBars = Settings.Default.DefaultBarNumber;
 
@@ -305,9 +306,7 @@ namespace StockAnalyzerApp
             StockLog.Write("GetFolderPath: " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
             // This is the first time the user runs the application.
-            Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                          @"\UltimateChartistRoot";
-
+            Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UltimateChartistRoot";
             string stockRootFolder = Settings.Default.RootFolder;
 
             // Root folder sanity check
@@ -1367,7 +1366,7 @@ namespace StockAnalyzerApp
 
         public void OnSelectedStockChanged(string stockName, bool activate)
         {
-            if (stockName.EndsWith("_P") || stockName == "Default")
+            if (stockName.EndsWith("_P") || stockName == StockPortofolio.SIMULATION)
             {
                 this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
                 if (this.StockDictionary.ContainsKey(stockName))
@@ -1400,7 +1399,7 @@ namespace StockAnalyzerApp
         }
         public void OnSelectedStockAndDurationChanged(string stockName, StockBarDuration barDuration, bool activate)
         {
-            if (stockName.EndsWith("_P") || stockName == "Default")
+            if (stockName.EndsWith("_P") || stockName == StockPortofolio.SIMULATION)
             {
                 this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
                 if (this.StockDictionary.ContainsKey(stockName))
@@ -3831,13 +3830,9 @@ namespace StockAnalyzerApp
             {
                 filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
                    this.stockNameComboBox.SelectedItem.ToString());
-                filteredStrategySimulatorDlg.SimulationCompleted +=
-                   new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(
-                      filteredStrategySimulatorDlg_SimulationCompleted);
-                filteredStrategySimulatorDlg.SelectedStockChanged +=
-                   new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                filteredStrategySimulatorDlg.SelectedPortofolioChanged +=
-                   new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+                filteredStrategySimulatorDlg.SimulationCompleted += new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(filteredStrategySimulatorDlg_SimulationCompleted);
+                filteredStrategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+                filteredStrategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
             }
             else
             {
@@ -3845,7 +3840,6 @@ namespace StockAnalyzerApp
             }
             filteredStrategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
 
-            filteredStrategySimulatorDlg.SelectedPortofolio = CurrentPortofolio;
             filteredStrategySimulatorDlg.Show();
         }
 
@@ -4041,10 +4035,10 @@ namespace StockAnalyzerApp
         {
             if (batchStrategySimulatorDlg == null || batchStrategySimulatorDlg.IsDisposed)
             {
-                batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-                   this.selectedGroup, (StockBarDuration)this.barDurationComboBox.SelectedItem, this.progressBar);
-                batchStrategySimulatorDlg.SimulationCompleted +=
-                   new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
+                var barDuration = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
+
+                batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.selectedGroup, barDuration, this.progressBar);
+                batchStrategySimulatorDlg.SimulationCompleted += new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
 
                 this.NotifyBarDurationChanged += batchStrategySimulatorDlg.OnBarDurationChanged;
             }
@@ -4978,6 +4972,9 @@ border:1px solid black;
             var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
 
             engine.GeneticSelection(20, 100, stockSeries, 100);
+
+
+
         }
         private void RunAgentEngineOnGroup()
         {
@@ -5190,40 +5187,6 @@ border:1px solid black;
 
             }
         }
-        public void teachNetworkMenuItem_Click(object sender, EventArgs e)
-        {
-            NeuralNetwork network = null;
-
-            // string fileName = Settings.Default.StockAnalyzerRootFolder + @"\StockNeuralNetwork\" + this.StockName + ".nntwk";
-            string fileName = Settings.Default.RootFolder + @"\StockNeuralNetwork\ALL_STOCKS.nntwk";
-            if (File.Exists(fileName))
-            {
-                network = NeuralNetwork.load(fileName);
-            }
-
-            this.progressBar.Value = 0;
-            this.progressBar.Maximum = this.StockDictionary.Values.Count;
-            foreach (StockSerie stockSerie in this.StockDictionary.Values)
-            {
-                if (!stockSerie.IsPortofolioSerie && stockSerie.Values.Count > 50)
-                {
-                    stockSerie.Initialise();
-                    // #### stockSerie.CalculateBuySellRateWithNN2(ref network, true);
-                }
-                else
-                {
-                    StockLog.Write("Skipping portofofolio serie: " + stockSerie.StockName);
-                }
-                this.progressBar.Value++;
-            }
-            this.progressBar.Value = 0;
-
-            if (!Directory.Exists(Settings.Default.RootFolder + @"\StockNeuralNetwork"))
-            {
-                Directory.CreateDirectory(Settings.Default.RootFolder + @"\StockNeuralNetwork");
-            }
-            network.save(fileName);
-        }
         #region SECONDARY SERIE MENU
         private void ClearSecondarySerie()
         {
@@ -5364,7 +5327,6 @@ border:1px solid black;
             }
         }
         #endregion
-
         #region THEME MANAGEMENT
         private string currentTheme;
         public string CurrentTheme

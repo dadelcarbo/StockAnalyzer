@@ -440,11 +440,6 @@
     <Compile Include="StockMath\FloatSerie.cs" />
     <Compile Include="StockMath\Histogram.cs" />
     <Compile Include="StockMath\StockMathToolkit.cs" />
-    <Compile Include="StockNeuralNetwork\ActivationFunctions.cs" />
-    <Compile Include="StockNeuralNetwork\Layer.cs" />
-    <Compile Include="StockNeuralNetwork\LearningAlgorithms.cs" />
-    <Compile Include="StockNeuralNetwork\NeuralNetwork.cs" />
-    <Compile Include="StockNeuralNetwork\Neuron.cs" />
     <Compile Include="StockPortfolioStrategy\BalancePortfolioStrategy.cs" />
     <Compile Include="StockPortfolioStrategy\HighPerformerPortfolioStrategy.cs" />
     <Compile Include="StockPortfolioStrategy\LongTermSmoothed.cs" />

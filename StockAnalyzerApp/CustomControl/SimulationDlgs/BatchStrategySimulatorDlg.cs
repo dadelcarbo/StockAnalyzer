@@ -32,15 +32,13 @@ namespace StockAnalyzerApp.CustomControl
       {
          InitializeComponent();
 
-         this.stockPortofolioList = stockPortofolioList;
+         this.stockPortofolioList = stockPortofolioList.GetSimulationPortofolios();
          this.stockDictionary = stockDictionary;
 
          this.progressBar = progressBar;
 
          this.group = group;
          this.BarDuration = barDuration;
-
-
       }
 
       public void OnBarDurationChanged(StockBarDuration barDuration)

@@ -43,7 +43,6 @@ namespace StockAnalyzerApp.CustomControl
         public StockPortofolio SelectedPortofolio
         {
             get { return this.stockPortofolioList.Get(this.portofolioComboBox.SelectedItem.ToString()); }
-            set { this.portofolioComboBox.SelectedIndex = this.portofolioComboBox.Items.IndexOf(value.Name); }
         }
 
         public delegate void SimulationCompletedEventHandler();
@@ -57,19 +56,12 @@ namespace StockAnalyzerApp.CustomControl
             this.stockDictionary = stockDictionary;
             this.portofolioComboBox.Enabled = true;
             this.portofolioComboBox.Items.Clear();
-            if (stockPortofolioList.Count == 0)
-            {
-                StockPortofolio portofolio = new StockPortofolio("SIMULATION");
-                stockPortofolioList.Add(portofolio);
-            }
-            foreach (string name in stockPortofolioList.GetPortofolioNames())
-            {
-                this.portofolioComboBox.Items.Add(name);
-            }
+
+            this.stockPortofolioList = stockPortofolioList.GetSimulationPortofolios();
+            this.portofolioComboBox.Items.AddRange(this.stockPortofolioList.Select(p => p.Name).ToArray());
             this.portofolioComboBox.SelectedItem = this.portofolioComboBox.Items[0];
 
             // Initialize stock combo
-            this.stockPortofolioList = stockPortofolioList;
             this.stockComboBox.Enabled = true;
             this.stockComboBox.Items.Clear();
             foreach (StockSerie stockSerie in stockDictionary.Values)

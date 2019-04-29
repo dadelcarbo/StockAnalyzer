@@ -547,6 +547,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>UltimateChartistStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="SelectedStockSerieChangedEventArgs.cs" />
     <Compile Include="StockAnalyzerApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockSplashScreen.cs">

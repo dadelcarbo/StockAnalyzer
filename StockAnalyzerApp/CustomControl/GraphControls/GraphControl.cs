@@ -547,7 +547,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
 
                 #region Draw vertical lines
-                if (this.ShowGrid)
+                if (this.ShowGrid && this.matrixValueToScreen != null)
                 {
                     DrawVerticalGridLines(aGraphic, false, this.StartIndex, this.EndIndex);
                 }

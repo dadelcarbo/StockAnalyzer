@@ -9,9 +9,11 @@ using StockAnalyzer.StockPortfolio;
 namespace StockAnalyzer.Portofolio
 {
    public class StockPortofolio
-   {
-      #region PUBLIC PROPERTIES
-      public string Name { get; set; }
+    {
+        public const string SIMULATION = "SIMULATION";
+
+        #region PUBLIC PROPERTIES
+        public string Name { get; set; }
       public float TotalDeposit { get; set; }
       public float OffsetLiquidity { get; set; }
       public StockSerie.Groups Group { get; set; }
@@ -88,12 +90,12 @@ namespace StockAnalyzer.Portofolio
          this.IsSimulation = true;
          this.IsVirtual = true;
       }
-      public StockPortofolio(string name, float totalDeposit)
+      public StockPortofolio(string name, float totalDeposit, bool isSimulation)
       {
          Group = StockSerie.Groups.ALL;
          this.Name = name;
          this.OrderList = new StockOrderList();
-         this.IsSimulation = false;
+         this.IsSimulation = isSimulation;
          this.IsVirtual = false;
          this.TotalDeposit = totalDeposit;
       }
