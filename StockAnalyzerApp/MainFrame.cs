@@ -140,7 +140,7 @@ namespace StockAnalyzerApp
 
         public StockBarDuration BarDuration
         {
-            get { return (StockBarDuration)this.barDurationComboBox.SelectedItem; }
+            get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
         }
 
         public StockPortofolio currentPortofolio;

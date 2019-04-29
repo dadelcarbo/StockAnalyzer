@@ -162,16 +162,18 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (started)
             {
-                string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
-                             "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
-                             "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
-                             "NbTargets:\t\t" + nbTargets + Environment.NewLine +
-                             "NbStops:\t\t\t" + nbStops + Environment.NewLine +
-                             "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
-                             "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                             "AvgGain:\t\t\t" + tradeGains.Average().ToString("P2") + Environment.NewLine +
-                             "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
-
+                string msg = "Replay serie was:\t" + refSerie.StockName;
+                if (this.tradeGains.Count > 0)
+                {
+                    msg += Environment.NewLine + "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
+                    "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                    "NbTargets:\t\t" + nbTargets + Environment.NewLine +
+                    "NbStops:\t\t\t" + nbStops + Environment.NewLine +
+                    "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
+                    "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
+                    "AvgGain:\t\t\t" + tradeGains.Average().ToString("P2") + Environment.NewLine +
+                    "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
+                }
                 MessageBox.Show(msg);
 
                 replaySerie = null;
@@ -189,7 +191,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.sellButton.Enabled = false;
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = false;
-
             }
             else
             {

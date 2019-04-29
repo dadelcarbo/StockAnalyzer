@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses
             this.Smoothing = 1;
             this.HeikinAshi = false;
         }
-        private StockBarDuration(BarDuration duration)
+        public StockBarDuration(BarDuration duration)
         {
             this.Duration = duration;
             this.Smoothing = 1;
