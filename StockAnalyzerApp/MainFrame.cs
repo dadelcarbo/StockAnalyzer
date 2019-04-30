@@ -576,7 +576,7 @@ namespace StockAnalyzerApp
 
                 string best = string.Empty;
                 float max = float.MinValue;
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INDICES_CALC)))
+                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INDICES_CALC)))
                 {
                     if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
                     {
@@ -1110,7 +1110,7 @@ namespace StockAnalyzerApp
             {
                 string alertString = string.Empty;
 
-                var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)).ToList();
+                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.CACALL)).ToList();
 
                 if (AlertDetectionStarted != null)
                 {
@@ -2644,8 +2644,7 @@ namespace StockAnalyzerApp
                 groupMenuItems[i] = new ToolStripMenuItem(group);
 
                 // 
-                var groupSeries =
-                   StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
+                var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
                 if (groupSeries.Count() != 0)
                 {
                     System.Windows.Forms.ToolStripMenuItem[] indexRelativeStrengthMenuItems =
@@ -2683,12 +2682,10 @@ namespace StockAnalyzerApp
                 groupMenuItems[i] = new ToolStripMenuItem(group);
 
                 // 
-                var groupSeries =
-                   StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
+                var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
                 if (groupSeries.Count() != 0)
                 {
-                    System.Windows.Forms.ToolStripMenuItem[] secondarySerieMenuItems =
-                       new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
+                    System.Windows.Forms.ToolStripMenuItem[] secondarySerieMenuItems = new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
                     ToolStripMenuItem secondarySerieSubMenuItem;
 
                     int n = 0;
@@ -3481,10 +3478,8 @@ namespace StockAnalyzerApp
             {
                 palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar);
                 palmaresDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                palmaresDlg.SelectedPortofolioChanged +=
-                   new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
-                palmaresDlg.SelectStockGroupChanged +=
-                   new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
+                palmaresDlg.SelectedPortofolioChanged += new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
+                palmaresDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
 
@@ -3511,12 +3506,10 @@ namespace StockAnalyzerApp
                 palmaresDlg.Activate();
             }
         }
-
         private void palmaresDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
             palmaresDlg = null;
         }
-
         private void OnSelectedStockGroupChanged(string stockGroup)
         {
             StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
@@ -4500,7 +4493,7 @@ border:1px solid black;
             string html = "<table><tr><td>";
 
             List<RankedSerie> leadersDico = new List<RankedSerie>();
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(reportGroup)))
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)))
             {
                 if (stockSerie.Initialise() && stockSerie.Count > 100)
                 {
@@ -4560,7 +4553,7 @@ border:1px solid black;
             html += "</td><td width=100></td><td>";
 
             leadersDico.Clear();
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(reportGroup)))
+            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)))
             {
                 if (stockSerie.Initialise() && stockSerie.Count > 100)
                 {
