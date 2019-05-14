@@ -30,8 +30,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             float step = (float)this.parameters[0] / 100f;
 
