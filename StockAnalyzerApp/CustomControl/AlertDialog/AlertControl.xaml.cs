@@ -30,7 +30,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            AlertDefs.Clear();
+            var alertLog = this.DataContext as StockAlertLog;
+            alertLog.Clear();
         }
 
         private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)

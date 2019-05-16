@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockClasses
             StockName = stockName;
             StockGroup = stockGroup;
             AlertClose = alertClose;
-            ExchangedMoney = (long)(alertClose * volume);
+            ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
         }
 
         public override string ToString()
@@ -87,15 +87,16 @@ namespace StockAnalyzer.StockClasses
 
         public bool Equals(StockAlert other)
         {
-            if (System.Object.ReferenceEquals(this, other))
+            if (Object.ReferenceEquals(this, other))
             {
                 return true;
             }
-            if (System.Object.ReferenceEquals(other, null))
+            if (Object.ReferenceEquals(other, null))
             {
                 return false;
             }
             return this.StockName == other.StockName &&
+                   this.StockGroup == other.StockGroup &&
                    this.Date == other.Date &&
                    this.Alert == other.Alert &&
                    this.BarDuration == other.BarDuration &&
