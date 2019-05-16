@@ -15,6 +15,7 @@ namespace StockAnalyzer.StockClasses
     {
         public DateTime Date { get; set; }
         public string StockName { get; set; }
+        public string StockGroup { get; set; }
         public string Alert { get; set; }
         [XmlIgnore]
         public string Event
@@ -39,22 +40,26 @@ namespace StockAnalyzer.StockClasses
             }
         }
         public StockBarDuration BarDuration { get; set; }
+
         public float AlertClose { get; set; }
 
-        public string Duration { get { return BarDuration.Duration.ToString(); } }
+        public long ExchangedMoney { get; set; }
 
+        public string Duration { get { return BarDuration.Duration.ToString(); } }
 
         public StockAlert()
         {
         }
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, float alertClose)
+        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume)
         {
             this.Alert = alertDef.EventFullName;
             this.BarDuration = alertDef.BarDuration;
             Date = date;
             StockName = stockName;
+            StockGroup = stockGroup;
             AlertClose = alertClose;
+            ExchangedMoney = (long)(alertClose * volume);
         }
 
         public override string ToString()

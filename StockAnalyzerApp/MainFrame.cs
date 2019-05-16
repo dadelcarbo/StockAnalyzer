@@ -1054,7 +1054,9 @@ namespace StockAnalyzerApp
                                     var stockAlert = new StockAlert(alertDef,
                                         dailyValue.DATE,
                                         stockSerie.StockName,
-                                        dailyValue.OPEN);
+                                        stockSerie.StockGroup.ToString(),
+                                        dailyValue.OPEN,
+                                        dailyValue.VOLUME);
 
                                     if (intradayAlertLog.Alerts.All(a => a != stockAlert))
                                     {
@@ -1155,7 +1157,12 @@ namespace StockAnalyzerApp
                                 var dailyValue = values.ElementAt(i);
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
-                                    StockAlert stockAlert = new StockAlert(alertDef, dailyValue.DATE, stockSerie.StockName, dailyValue.CLOSE);
+                                    StockAlert stockAlert = new StockAlert(alertDef,
+                                        dailyValue.DATE,
+                                        stockSerie.StockName,
+                                        stockSerie.StockGroup.ToString(),
+                                        dailyValue.CLOSE,
+                                        dailyValue.VOLUME);
 
                                     if (alertLog.Alerts.All(a => a != stockAlert))
                                     {

@@ -30,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            StockAnalyzerForm.MainFrame.ClearAlert();
+            AlertDefs.Clear();
         }
 
         private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
