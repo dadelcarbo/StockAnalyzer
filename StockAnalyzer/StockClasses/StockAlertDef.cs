@@ -6,7 +6,7 @@
         {
             this.BarDuration = StockBarDuration.Daily;
         }
-        public StockAlertDef(StockBarDuration barDuration, int barSmoothing, string indicatorType, string indicatorName, string eventName)
+        public StockAlertDef(StockBarDuration barDuration, string indicatorType, string indicatorName, string eventName)
         {
             this.BarDuration = barDuration;
             this.IndicatorType = indicatorType;

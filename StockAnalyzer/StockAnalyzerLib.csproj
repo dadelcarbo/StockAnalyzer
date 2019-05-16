@@ -83,6 +83,7 @@
     <Compile Include="StockAgent\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\ShortInterestSerie.cs" />
+    <Compile Include="StockClasses\StockAlertConfig.cs" />
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />

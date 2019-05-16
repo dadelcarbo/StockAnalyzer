@@ -812,25 +812,8 @@ namespace StockAnalyzerApp
             }
 
             // Checks for alert every x minutes.
-            intradayAlertDefs = new List<StockAlertDef>();
             if (Settings.Default.RaiseAlerts)
             {
-                string alertFileName = Settings.Default.RootFolder + @"\AlertIntraday.xml";
-                // Parse alert lists
-                if (System.IO.File.Exists(alertFileName))
-                {
-                    using (var fs = new FileStream(alertFileName, FileMode.Open))
-                    {
-                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                        {
-                            IgnoreWhitespace = true
-                        };
-                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                        var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                        intradayAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                    }
-                }
-
                 int minutes = Settings.Default.AlertsFrequency;
                 alertTimer = new System.Windows.Forms.Timer(new Container());
                 alertTimer.Tick += new EventHandler(alertTimer_Tick);
@@ -970,11 +953,10 @@ namespace StockAnalyzerApp
             }
         }
 
-        private List<StockAlertDef> intradayAlertDefs;
+        private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig("Intraday");
         private List<StockAlertDef> dailyAlertDefs;
         private List<StockAlertDef> weeklyAlertDefs;
         private List<StockAlertDef> monthlyAlertDefs;
-        private readonly StockAlertLog intradayAlertLog = StockAlertLog.Load("AlertLogIntraday.xml", DateTime.Today.AddDays(-5));
         private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml", DateTime.Today.AddDays(-10));
         private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml", DateTime.Today.AddDays(-25));
         private readonly StockAlertLog monthlyAlertLog = StockAlertLog.Load("AlertLogMonthly.xml", DateTime.Today.AddMonths(-5));
@@ -984,15 +966,10 @@ namespace StockAnalyzerApp
             if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
                 DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
-            if (this.intradayAlertDefs == null || this.intradayAlertDefs.Count == 0) return;
+            if (this.intradayAlertConfig == null || this.intradayAlertConfig.AlertDefs.Count == 0) return;
 
             Thread alertThread = new Thread(GenerateIntradayAlert) { Name = "alertTimer" };
             alertThread.Start();
-        }
-
-        public void ClearAlert()
-        {
-            intradayAlertLog.Clear();
         }
         public void GenerateIntradayAlert()
         {
@@ -1040,9 +1017,9 @@ namespace StockAnalyzerApp
 
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (intradayAlertDefs)
+                    lock (intradayAlertConfig)
                     {
-                        foreach (var alertDef in intradayAlertDefs)
+                        foreach (var alertDef in intradayAlertConfig.AlertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -1058,16 +1035,16 @@ namespace StockAnalyzerApp
                                         dailyValue.OPEN,
                                         dailyValue.VOLUME);
 
-                                    if (intradayAlertLog.Alerts.All(a => a != stockAlert))
+                                    if (intradayAlertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => intradayAlertLog.Alerts.Insert(0, stockAlert)));
+                                            this.Invoke(new Action(() => intradayAlertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
                                         }
                                         else
                                         {
-                                            intradayAlertLog.Alerts.Insert(0, stockAlert);
+                                            intradayAlertConfig.AlertLog.Alerts.Insert(0, stockAlert);
                                         }
                                     }
                                 }
@@ -1076,7 +1053,7 @@ namespace StockAnalyzerApp
                     }
                     stockSerie.BarDuration = previouBarDuration;
                 }
-                intradayAlertLog.Save();
+                intradayAlertConfig.AlertLog.Save();
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
@@ -3143,7 +3120,7 @@ namespace StockAnalyzerApp
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "ER(60,6,1,0.8)", "Oversold"));
-            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, 1, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
+            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
             //var pattern = new StockMatchPattern_Any();
             //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(200)", "Highest"));
             //var pattern = new StockMatchPattern_ROR(20);
@@ -5437,8 +5414,7 @@ border:1px solid black;
         {
             if (alertIntradayDlg == null)
             {
-                alertIntradayDlg = new AlertDlg(intradayAlertLog, null);
-                alertIntradayDlg.Text = "Intraday Alerts";
+                alertIntradayDlg = new AlertDlg(intradayAlertConfig);
                 alertIntradayDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertIntradayDlg.Disposed += delegate
                 {
@@ -5458,7 +5434,6 @@ border:1px solid black;
             if (alertDailyDlg == null)
             {
                 alertDailyDlg = new AlertDlg(dailyAlertLog, dailyAlertDefs);
-                alertDailyDlg.Text = "Daily Alerts";
                 alertDailyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDailyDlg.Disposed += delegate
                 {
@@ -5478,7 +5453,6 @@ border:1px solid black;
             if (alertWeeklyDlg == null)
             {
                 alertWeeklyDlg = new AlertDlg(weeklyAlertLog, weeklyAlertDefs);
-                alertWeeklyDlg.Text = "Weekly Alerts";
                 alertWeeklyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertWeeklyDlg.Disposed += delegate
                 {
@@ -5498,7 +5472,6 @@ border:1px solid black;
             if (alertMonthlyDlg == null)
             {
                 alertMonthlyDlg = new AlertDlg(monthlyAlertLog, monthlyAlertDefs);
-                alertMonthlyDlg.Text = "Monthly Alerts";
                 alertMonthlyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertMonthlyDlg.Disposed += delegate
                 {

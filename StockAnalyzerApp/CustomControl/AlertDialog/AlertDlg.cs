@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -6,43 +7,45 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
     public partial class AlertDlg : Form
     {
-        private StockAlertLog alertLog;
         private AlertControl alertControl;
+        StockAlertConfig alertConfig;
 
-        public AlertDlg(StockAlertLog log, List<StockAlertDef> alertDefs)
+        public AlertDlg(StockAlertConfig alertCfg)
         {
             InitializeComponent();
 
             this.alertControl = this.elementHost1.Child as AlertControl;
-
-            alertLog = log;
-            this.alertControl.DataContext = alertLog;
-            this.alertControl.AlertDefs = alertDefs;
+            this.alertConfig = alertCfg;
+            this.alertControl.SelectedTimeFrame = alertCfg;
 
             StockAnalyzerForm.MainFrame.AlertDetected += MainFrame_AlertDetected;
             StockAnalyzerForm.MainFrame.AlertDetectionProgress += MainFrame_AlertDetectionProgress;
-            StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;
-            
+            StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;            
+        }
+
+        public AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)
+        {
+            throw new NotImplementedException("AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)");
         }
 
         void MainFrame_AlertDetectionProgress(string stockName)
         {
-            alertLog.ProgressName = stockName;
-            alertLog.ProgressValue++;
+            alertConfig.AlertLog.ProgressName = stockName;
+            alertConfig.AlertLog.ProgressValue++;
         }
 
         void MainFrame_AlertDetectionStarted(int nbStock)
         {
-            alertLog.ProgressValue = 0;
-            alertLog.ProgressMax = nbStock;
-            alertLog.ProgressVisibility = true;
+            alertConfig.AlertLog.ProgressValue = 0;
+            alertConfig.AlertLog.ProgressMax = nbStock;
+            alertConfig.AlertLog.ProgressVisibility = true;
         }
 
         void MainFrame_AlertDetected()
         {
             this.Activate();
-            alertLog.ProgressValue = 0;
-            alertLog.ProgressVisibility = false;
+            alertConfig.AlertLog.ProgressValue = 0;
+            alertConfig.AlertLog.ProgressVisibility = false;
         }
     }
 }

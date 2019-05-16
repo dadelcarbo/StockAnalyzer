@@ -2,8 +2,10 @@
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using Telerik.Windows;
 using Telerik.Windows.Controls;
@@ -22,6 +24,31 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             InitializeComponent();
 
             this.grid.AddHandler(GridViewCellBase.CellDoubleClickEvent, new EventHandler<RadRoutedEventArgs>(OnCellDoubleClick), true);
+
+            foreach (var item in StockAlertConfig.GetConfigs())
+            {
+                this.TimeFrameComboBox.Items.Add(item);
+                if (this.selectedTimeFrame==null)
+                {
+                    this.selectedTimeFrame = item;
+                }
+            }
+        }
+        private StockAlertConfig selectedTimeFrame;
+
+        public StockAlertConfig SelectedTimeFrame {
+            get
+            {
+                return selectedTimeFrame;
+            }
+            set
+            {
+                if (selectedTimeFrame != value)
+                {
+                    selectedTimeFrame = value;
+                    this.TimeFrameComboBox.SelectedItem = selectedTimeFrame;
+                }
+            }
         }
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
