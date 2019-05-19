@@ -36,6 +36,22 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.stockPositionUserControl1.DataContext = this;
         }
 
+
+        private void createOrderButton_Click(object sender, EventArgs e)
+        {
+            if (this.Position.Number != 0)
+            {
+                if (this.Position.StopOrder == null)
+                {
+                    int nb = this.Position.Number;
+                    if (this.HalfPosition)
+                    {
+                        nb /= 2;
+                    }
+
+                }
+            }
+        }
         private void Position_OnTargetTouched(OrderViewModel order)
         {
             StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName,
@@ -85,8 +101,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     }
                     else
                     {
-                        this.Stop = 0;
-                        this.Target = 0;
+                        this.Stop = this.Position.CurrentValue.CLOSE * 0.9f;
+                        this.Target = this.Position.CurrentValue.CLOSE * 1.1f;
                     }
                     OnPropertyChanged("HalfPosition");
                 }

@@ -30,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
                 this.TimeFrameComboBox.Items.Add(item);
                 if (this.selectedTimeFrame==null)
                 {
-                    this.selectedTimeFrame = item;
+                    this.SelectedTimeFrame = item;
                 }
             }
         }
