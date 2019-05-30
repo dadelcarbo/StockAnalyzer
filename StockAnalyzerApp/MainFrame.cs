@@ -611,23 +611,6 @@ namespace StockAnalyzerApp
             // Watchlist menu item
             this.LoadWatchList();
 
-            // Create Intraday Config file
-            //using (var sw = new StreamWriter(Settings.Default.RootFolder + @"\InvestingIntraday.xml"))
-            //{
-            //    var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList.Where(s=>s.StartsWith("INT_")).Select(s=>s.Replace("INT_",""));
-            //    var stocks = StockDictionary.Values.Where(v => v.Ticker != 0);
-            //    foreach (var stockName in stockList)
-            //    {
-            //        var stock = stocks.FirstOrDefault(s => s.StockName == stockName);
-            //        if (stock!=null)
-            //        {
-            //            sw.WriteLine($"{stock.Ticker},{stock.ShortName},INT_{stock.StockName},INTRADAY");
-            //        }
-
-            //        // 13994,TSLA,INT_US_TESLA,INTRADAY
-            //    }
-            //}
-
             // 
             InitialiseStockCombo(true);
 
@@ -692,75 +675,20 @@ namespace StockAnalyzerApp
             refreshTimer.Start();
 
             #region DailyAlerts
-            // Parse alert lists            
-            string dailyAlertFileName = Settings.Default.RootFolder + @"\AlertDailyReport.xml";
-            if (System.IO.File.Exists(dailyAlertFileName))
+            
+            if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                using (var fs = new FileStream(dailyAlertFileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                    {
-                        IgnoreWhitespace = true
-                    };
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    dailyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                }
-            }
-            else
-            {
-                dailyAlertDefs = new List<StockAlertDef>();
+                GenerateAlert(dailyAlertConfig.AlertDefs, dailyAlertConfig.AlertLog);
             }
 
-            if (!dailyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                GenerateAlert(dailyAlertDefs, dailyAlertLog);
+                GenerateAlert(weeklyAlertConfig.AlertDefs, weeklyAlertConfig.AlertLog);
             }
 
-            string weeklyAlertFileName = Settings.Default.RootFolder + @"\AlertWeeklyReport.xml";
-            if (System.IO.File.Exists(weeklyAlertFileName))
+            if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                using (var fs = new FileStream(weeklyAlertFileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                    {
-                        IgnoreWhitespace = true
-                    };
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    weeklyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                }
-            }
-            else
-            {
-                weeklyAlertDefs = new List<StockAlertDef>();
-            }
-            if (!weeklyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            {
-                GenerateAlert(weeklyAlertDefs, weeklyAlertLog);
-            }
-
-            string monthlyAlertFileName = Settings.Default.RootFolder + @"\AlertMonthlyReport.xml";
-            if (System.IO.File.Exists(monthlyAlertFileName))
-            {
-                using (var fs = new FileStream(monthlyAlertFileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                    {
-                        IgnoreWhitespace = true
-                    };
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    monthlyAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                }
-            }
-            else
-            {
-                monthlyAlertDefs = new List<StockAlertDef>();
-            }
-            if (!monthlyAlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            {
-                GenerateAlert(monthlyAlertDefs, monthlyAlertLog);
+                GenerateAlert(monthlyAlertConfig.AlertDefs, monthlyAlertConfig.AlertLog);
             }
             #endregion
 
@@ -777,7 +705,7 @@ namespace StockAnalyzerApp
                             StockBarDuration.TLB_3D
                          };
 
-                    GenerateReport("Daily Report", durations, dailyAlertDefs);
+                    GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
                 }
 
                 fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
@@ -794,7 +722,7 @@ namespace StockAnalyzerApp
                             StockBarDuration.Weekly
                              };
 
-                        GenerateReport("Weekly Report", durations, weeklyAlertDefs);
+                        GenerateReport("Weekly Report", durations, weeklyAlertConfig.AlertDefs);
                     }
                 }
 
@@ -807,7 +735,7 @@ namespace StockAnalyzerApp
                             StockBarDuration.Monthly
                              };
 
-                    GenerateReport("Montly Report", durations, monthlyAlertDefs);
+                    GenerateReport("Montly Report", durations, monthlyAlertConfig.AlertDefs);
                 }
             }
 
@@ -954,12 +882,9 @@ namespace StockAnalyzerApp
         }
 
         private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig("Intraday");
-        private List<StockAlertDef> dailyAlertDefs;
-        private List<StockAlertDef> weeklyAlertDefs;
-        private List<StockAlertDef> monthlyAlertDefs;
-        private readonly StockAlertLog dailyAlertLog = StockAlertLog.Load("AlertLogDaily.xml", DateTime.Today.AddDays(-10));
-        private readonly StockAlertLog weeklyAlertLog = StockAlertLog.Load("AlertLogWeekly.xml", DateTime.Today.AddDays(-25));
-        private readonly StockAlertLog monthlyAlertLog = StockAlertLog.Load("AlertLogMonthly.xml", DateTime.Today.AddMonths(-5));
+        private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig("Daily");
+        private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig("Weekly");
+        private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig("Monthly");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -978,6 +903,7 @@ namespace StockAnalyzerApp
 
             try
             {
+                bool newAlert = false;
                 string alertString = string.Empty;
 
                 var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
@@ -1046,6 +972,7 @@ namespace StockAnalyzerApp
                                         {
                                             intradayAlertConfig.AlertLog.Alerts.Insert(0, stockAlert);
                                         }
+                                        newAlert = true;
                                     }
                                 }
                             }
@@ -1055,7 +982,7 @@ namespace StockAnalyzerApp
                 }
                 intradayAlertConfig.AlertLog.Save();
 
-                if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
+                if (newAlert && !string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
                     StockMail.SendEmail("Ultimate Chartist - Intraday Alert", alertString);
                 }
@@ -4682,7 +4609,7 @@ border:1px solid black;
             StockBarDuration.TLB_3D,
             };
 
-            GenerateReport("Daily Report", durations, dailyAlertDefs);
+            GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
         }
         #endregion
         private void selectEventForMarqueeMenuItem_Click(object sender, EventArgs e)
@@ -5409,80 +5336,23 @@ border:1px solid black;
         }
         #endregion
         #region ALERT DIALOG
-        AlertDlg alertIntradayDlg = null;
-        void showIntradayAlertViewMenuItem_Click(object sender, System.EventArgs e)
+        AlertDlg alertDlg = null;
+        void showAlertDialogMenuItem_Click(object sender, System.EventArgs e)
         {
-            if (alertIntradayDlg == null)
+            if (alertDlg == null)
             {
-                alertIntradayDlg = new AlertDlg(intradayAlertConfig);
-                alertIntradayDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertIntradayDlg.Disposed += delegate
+                alertDlg = new AlertDlg(intradayAlertConfig);
+                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertDlg.Disposed += delegate
                 {
-                    alertIntradayDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    this.alertIntradayDlg = null;
+                    alertDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    this.alertDlg = null;
                 };
-                alertIntradayDlg.Show();
+                alertDlg.Show();
             }
             else
             {
-                alertIntradayDlg.Activate();
-            }
-        }
-        AlertDlg alertDailyDlg = null;
-        void showDailyAlertViewMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (alertDailyDlg == null)
-            {
-                alertDailyDlg = new AlertDlg(dailyAlertLog, dailyAlertDefs);
-                alertDailyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertDailyDlg.Disposed += delegate
-                {
-                    alertDailyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    this.alertDailyDlg = null;
-                };
-                alertDailyDlg.Show();
-            }
-            else
-            {
-                alertDailyDlg.Activate();
-            }
-        }
-        AlertDlg alertWeeklyDlg = null;
-        void showWeeklyAlertViewMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (alertWeeklyDlg == null)
-            {
-                alertWeeklyDlg = new AlertDlg(weeklyAlertLog, weeklyAlertDefs);
-                alertWeeklyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertWeeklyDlg.Disposed += delegate
-                {
-                    alertWeeklyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    this.alertWeeklyDlg = null;
-                };
-                alertWeeklyDlg.Show();
-            }
-            else
-            {
-                alertWeeklyDlg.Activate();
-            }
-        }
-        AlertDlg alertMonthlyDlg = null;
-        void showMonthlyAlertMenuItem_Click(object sender, System.EventArgs e)
-        {
-            if (alertMonthlyDlg == null)
-            {
-                alertMonthlyDlg = new AlertDlg(monthlyAlertLog, monthlyAlertDefs);
-                alertMonthlyDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertMonthlyDlg.Disposed += delegate
-                {
-                    alertMonthlyDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    this.alertMonthlyDlg = null;
-                };
-                alertMonthlyDlg.Show();
-            }
-            else
-            {
-                alertMonthlyDlg.Activate();
+                alertDlg.Activate();
             }
         }
         #endregion
