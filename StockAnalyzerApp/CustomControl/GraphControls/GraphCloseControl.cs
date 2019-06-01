@@ -1046,7 +1046,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if (mouseDown)
                 {
-                    DrawSelectionZone(e);
+                    DrawSelectionZone(e, key);
                 }
                 else
                 {
