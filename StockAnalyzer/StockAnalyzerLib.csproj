@@ -178,6 +178,7 @@
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TARGET.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_SIGNAL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
