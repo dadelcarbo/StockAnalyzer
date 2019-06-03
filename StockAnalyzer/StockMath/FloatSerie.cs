@@ -1,8 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockMath
 {
@@ -119,7 +118,7 @@ namespace StockAnalyzer.StockMath
                 count = 0;
                 sum = 0.0f;
                 avg = ema[i];
-                for (int j = i - period; j <= i; j++)
+                for (int j = i - period + 1; j <= i; j++)
                 {
                     count++;
                     spread = this.Values[j] - avg;
@@ -231,7 +230,7 @@ namespace StockAnalyzer.StockMath
 
                     sum1 += diff1 * diff2;
 
-                    ssum1 += diff1 * diff1;                    
+                    ssum1 += diff1 * diff1;
                     ssum2 += diff2 * diff2;
                 }
                 correlSerie[i] = sum1 / (float)(Math.Sqrt(ssum1) * Math.Sqrt(ssum2));
