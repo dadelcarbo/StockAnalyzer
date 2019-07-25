@@ -3275,6 +3275,78 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
+        public void CalculateEMABBTrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        {
+            longStopSerie = new FloatSerie(this.Count, "TRAILEMABB.LS");
+            shortStopSerie = new FloatSerie(this.Count, "TRAILEMABB.SS");
+
+            FloatSerie lowSmoothSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
+            FloatSerie highSmoothSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
+            FloatSerie closeSmoothSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
+            FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(period);
+
+            StockDailyValue previousValue = this.Values.First();
+            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
+            int i = 1;
+            float extremum;
+            if (upTrend)
+            {
+                longStopSerie[0] = previousValue.LOW;
+                shortStopSerie[0] = float.NaN;
+                extremum = previousValue.HIGH;
+            }
+            else
+            {
+                longStopSerie[0] = float.NaN;
+                shortStopSerie[0] = previousValue.HIGH;
+                extremum = previousValue.LOW;
+            }
+
+            foreach (StockDailyValue currentValue in this.Values.Skip(1))
+            {
+                if (upTrend)
+                {
+                    if (closeSmoothSerie[i] < longStopSerie[i - 1])
+                    {
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = false;
+                        longStopSerie[i] = float.NaN;
+                        shortStopSerie[i] = extremum;
+                        extremum = lowSmoothSerie[i];
+                    }
+                    else
+                    {
+                        // Trail the stop
+                        float longStop = longStopSerie[i - 1];
+                        longStopSerie[i] = Math.Max(longStop, longStop + closeEMASerie[i] - closeEMASerie[i - 1]);
+                        shortStopSerie[i] = float.NaN;
+                        extremum = Math.Max(extremum, highSmoothSerie[i]);
+                    }
+                }
+                else
+                {
+                    if (closeSmoothSerie[i] > shortStopSerie[i - 1])
+                    {
+                        // Trailing stop has been broken => reverse trend
+                        upTrend = true;
+                        longStopSerie[i] = extremum;
+                        shortStopSerie[i] = float.NaN;
+                        extremum = highSmoothSerie[i];
+                    }
+                    else
+                    {
+                        // Trail the stop  
+                        longStopSerie[i] = float.NaN;
+                        float shortStop = shortStopSerie[i - 1];
+                        shortStopSerie[i] = Math.Min(shortStop, shortStop + closeEMASerie[i] - closeEMASerie[i - 1]);
+                        extremum = Math.Min(extremum, lowSmoothSerie[i]);
+                    }
+                }
+                previousValue = currentValue;
+                i++;
+            }
+        }
+
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float alpha = 2.0f / (float)(period + 1);
@@ -6703,31 +6775,31 @@ namespace StockAnalyzer.StockClasses
                              GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2),
                                 3), 2), 3);
                     break;
-              /*   
-               *   case StockClasses.BarDuration.HA:
-                    newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
-                    break;
-                case StockClasses.BarDuration.HA_3D:
-                    newBarList = GenerateHeikinAshiBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
-                    break;
-              
-            //case StockBarDuration.ThreeLineBreak:
-            //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
-            //    break;
-            //case StockBarDuration.ThreeLineBreak_BIS:
-            //    newBarList =
-            //       GenerateNbLineBreakBarFromDaily(
-            //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
-            //    break;
-            //case StockBarDuration.ThreeLineBreak_TER:
-            //    newBarList =
-            //       GenerateNbLineBreakBarFromDaily(
-            //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
-            //    break;
-            //case StockBarDuration.SixLineBreak:
-            //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
-            //    break;
-            */
+                /*   
+                 *   case StockClasses.BarDuration.HA:
+                      newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
+                      break;
+                  case StockClasses.BarDuration.HA_3D:
+                      newBarList = GenerateHeikinAshiBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
+                      break;
+
+              //case StockBarDuration.ThreeLineBreak:
+              //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
+              //    break;
+              //case StockBarDuration.ThreeLineBreak_BIS:
+              //    newBarList =
+              //       GenerateNbLineBreakBarFromDaily(
+              //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
+              //    break;
+              //case StockBarDuration.ThreeLineBreak_TER:
+              //    newBarList =
+              //       GenerateNbLineBreakBarFromDaily(
+              //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
+              //    break;
+              //case StockBarDuration.SixLineBreak:
+              //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
+              //    break;
+              */
                 case StockClasses.BarDuration.Weekly:
                     {
                         StockDailyValue newValue = null;
