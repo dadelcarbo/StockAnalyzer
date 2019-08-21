@@ -651,7 +651,7 @@ namespace StockAnalyzerApp
             //    this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
             //}
 
-            SetStockGroup(this.CurrentStockSerie.StockGroup);
+            SetDurationForStockGroup(this.CurrentStockSerie.StockGroup);
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
             // Initialise event call backs (because of a bug in the designer)
@@ -801,6 +801,8 @@ namespace StockAnalyzerApp
             if (this.selectedGroup != serie.StockGroup)
             {
                 this.selectedGroup = serie.StockGroup;
+
+                SetDurationForStockGroup(serie.StockGroup);
 
                 foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
                 {
@@ -3426,7 +3428,7 @@ namespace StockAnalyzerApp
             StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
             if (this.selectedGroup != newGroup)
             {
-                SetStockGroup(newGroup);
+                SetDurationForStockGroup(newGroup);
 
                 this.selectedGroup = newGroup;
 
@@ -3439,14 +3441,12 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void SetStockGroup(StockSerie.Groups newGroup)
+        private void SetDurationForStockGroup(StockSerie.Groups newGroup)
         {
             // In order to speed the intraday display.
             switch (newGroup)
             {
                 case StockSerie.Groups.TURBO:
-                    this.ForceBarDuration(StockBarDuration.TLB_3D, true);
-                    break;
                 case StockSerie.Groups.FUTURE:
                 case StockSerie.Groups.INTRADAY:
                     this.ForceBarDuration(StockBarDuration.TLB_3D, true);
