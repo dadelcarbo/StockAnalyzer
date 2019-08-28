@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
@@ -42,6 +43,14 @@ namespace StockAnalyzerTest
                     Assert.AreEqual(expectedAlertDefs[i].ToString(), actualAlertDefs[i].ToString());
                 }
             }
+        }
+
+        [TestMethod]
+        public void EqualityTest()
+        {
+            var alert1 = new StockAlert() { BarDuration = StockBarDuration.TLB_3D, Alert = "t1", AlertClose = 12, Date = DateTime.Today, ExchangedMoney = 1000, StockGroup = "CAC", StockName = "EDF" };
+            var alert2 = new StockAlert() { BarDuration = StockBarDuration.TLB_3D, Alert = "t1", AlertClose = 12, Date = DateTime.Today, ExchangedMoney = 1000, StockGroup = "CAC", StockName = "EDF" };
+            Assert.AreEqual(alert1, alert2);
         }
     }
 }

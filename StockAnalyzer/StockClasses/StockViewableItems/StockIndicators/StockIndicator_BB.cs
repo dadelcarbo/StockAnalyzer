@@ -7,9 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public class StockIndicator_BB : StockIndicatorBase
    {
-      public StockIndicator_BB()
-      {
-      }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }

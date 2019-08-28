@@ -1,9 +1,6 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
@@ -79,20 +76,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             bool isBullish = false;
             bool isBearish = false;
             float bullTrigger = closeSerie[0] * lowTriggerRatio;
-            float bullStop = closeSerie[0];
             float bearTrigger = closeSerie[0] * highTriggerRatio;
-            for (int i= 1; i<stockSerie.Count; i++)
+            for (int i = 1; i < stockSerie.Count; i++)
             {
                 var close = closeSerie[i];
-                if (close > bullTrigger)
+                if (isBullish)
                 {
-                    isBullish = true;
+                    bearTrigger = Math.Max(closeSerie[i] * highTriggerRatio, bearTrigger);
+                    if (close < bearTrigger)
+                    {
+                        isBullish = false;
+                        bullTrigger = closeSerie[i] * lowTriggerRatio;
+                    }
                 }
-                if (close<bearTrigger)
+                else
                 {
-                    isBearish = true;
+                    bullTrigger = Math.Min(closeSerie[i] * lowTriggerRatio, bullTrigger);
+                    if (close > bullTrigger)
+                    {
+                        isBullish = true;
+                        bearTrigger = closeSerie[i] * highTriggerRatio;
+                    }
                 }
-                if (isBearish  ^ isBullish )
+                if (isBearish ^ isBullish)
                 {
                     this.eventSeries[0][i] = isBullish;
                     this.eventSeries[1][i] = isBearish;
