@@ -197,7 +197,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((DateTime.Now - refDate).TotalSeconds);
 
-            return $"https://tvc4.forexpros.com/2bd285bdf76654cb12edc5fab9e6e4c9/1546513020/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            return $"http://tvc4.forexpros.com/0f8a29a810801b55700d8d096869fe1f/1567000256/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
