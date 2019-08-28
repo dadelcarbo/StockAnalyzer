@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -65,6 +66,19 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
         public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
+
+        public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
+            StockBarDuration.Daily,
+            StockBarDuration.TLB,
+            StockBarDuration.TLB_3D,
+            StockBarDuration.TLB_6D,
+            StockBarDuration.TLB_9D,
+            StockBarDuration.Bar_3,
+            StockBarDuration.Bar_6,
+            StockBarDuration.Bar_12,
+            StockBarDuration.Weekly,
+            StockBarDuration.Monthly
+        };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)
         {

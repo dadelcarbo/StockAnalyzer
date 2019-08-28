@@ -28,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             InitializeComponent();
 
-            this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(BarDuration)).Cast<object>().ToArray());
+            this.durationComboBox.Items.AddRange(StockBarDuration.Values.ToArray());
             this.durationComboBox.SelectedItem = duration;
             this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
 
