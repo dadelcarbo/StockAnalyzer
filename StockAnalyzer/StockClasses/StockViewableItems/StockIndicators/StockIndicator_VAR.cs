@@ -58,10 +58,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION) * (100f * (int)this.parameters[0]);
-            FloatSerie emaSerie = varSerie.CalculateEMA((int)this.parameters[0]);
-            this.series[0] = emaSerie;
+            int period = (int)this.parameters[0];
+            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION) * 100f;
+            this.series[0] = varSerie;
             this.Series[0].Name = this.SerieNames[0];
+
+            if (period > 1)
+            {
+                var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                for(int i = 0; i<=period;i++)
+                {
+                    varSerie[i] = 0f;
+                }
+                for (int i = period; i < stockSerie.Count; i++)
+                {
+                    var periodClose = closeSerie[i - period];
+                    varSerie[i] = 100f*(periodClose - closeSerie[i])/periodClose;
+                }
+            }
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
@@ -69,7 +83,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             bool bull = true, previousBull = true;
             for (int i = 2; i < stockSerie.Count; i++)
             {
-                bull = emaSerie[i] > 0;
+                bull = varSerie[i] > 0;
                 this.eventSeries[0][i] = bull && ! previousBull;
                 this.eventSeries[1][i] = !bull & previousBull;
                 this.eventSeries[2][i] = bull;
