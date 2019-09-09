@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 for (int i = period; i < stockSerie.Count; i++)
                 {
                     var periodClose = closeSerie[i - period];
-                    varSerie[i] = 100f*(periodClose - closeSerie[i])/periodClose;
+                    varSerie[i] = 100f*(closeSerie[i] - periodClose)/periodClose;
                 }
             }
 
