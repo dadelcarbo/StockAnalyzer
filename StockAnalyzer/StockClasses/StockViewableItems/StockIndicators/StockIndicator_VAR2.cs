@@ -5,21 +5,18 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_VAR : StockIndicatorBase
+    public class StockIndicator_VAR2 : StockIndicatorBase
     {
-        public StockIndicator_VAR()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
         }
 
-        public override string Definition => "Plots the variation over the period";
+        public override string Definition => "Plots the variation over the period and normalized";
 
         public override string Name
         {
-            get { return "VAR(" + this.Parameters[0].ToString() + ")"; }
+            get { return "VAR2(" + this.Parameters[0].ToString() + ")"; }
         }
 
         public override object[] ParameterDefaultValues
@@ -35,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "Period" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "VAR2(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -74,8 +71,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 for (int i = period; i < stockSerie.Count; i++)
                 {
-                    var periodClose = closeSerie[i - period];
-                    varSerie[i] = 100f*(closeSerie[i] - periodClose)/periodClose;
+                    var beginPeriodClose = closeSerie[i - period];
+                    var endPeriodClose = closeSerie[i];
+                    if (beginPeriodClose > endPeriodClose)
+                    {
+                        varSerie[i] = 100f * (endPeriodClose - beginPeriodClose) / beginPeriodClose;
+                    }
+                    else
+                    {
+                        varSerie[i] = 100f * (endPeriodClose - beginPeriodClose) / endPeriodClose;
+                    }
                 }
             }
 
