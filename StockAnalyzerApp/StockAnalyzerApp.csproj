@@ -205,6 +205,16 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GroupViewDlg\GroupLineViewModel.cs" />
+    <Compile Include="CustomControl\GroupViewDlg\GroupViewDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GroupViewDlg\GroupViewDlg.Designer.cs">
+      <DependentUpon>GroupViewDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\GroupViewDlg\GroupViewUserControl.xaml.cs">
+      <DependentUpon>GroupViewUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
       <DependentUpon>HorseRaceControl.xaml</DependentUpon>
     </Compile>
@@ -232,6 +242,7 @@
     <Compile Include="CustomControl\MultiTimeFrameChartDlg.Designer.cs">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GroupViewDlg\GroupViewModel.cs" />
     <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -582,6 +593,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GroupViewDlg\GroupViewDlg.resx">
+      <DependentUpon>GroupViewDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
@@ -939,6 +953,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\GroupViewDlg\GroupViewUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

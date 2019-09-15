@@ -24,6 +24,7 @@ using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzerApp.CustomControl.GroupViewDlg;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
@@ -4861,6 +4862,12 @@ border:1px solid black;
                     case Keys.Control | Keys.F9: // Display Risk Calculator Windows
                         {
                             this.RunAgentEngineOnGroup();
+                        }
+                        break;
+                    case Keys.Control | Keys.G: // Historical group view
+                        {
+                            var mtfDlg = new GroupViewDlg();
+                            mtfDlg.Show();
                         }
                         break;
                     default:
