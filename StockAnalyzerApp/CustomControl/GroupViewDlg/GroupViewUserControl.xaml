@@ -16,21 +16,56 @@
             <telerik:RadGridView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                                  ItemsSource="{Binding GroupLines}" AutoGenerateColumns="False">
                 <telerik:RadGridView.Columns>
-                    <telerik:GridViewDataColumn ToolTip="{Binding StockSerie.StockName}" Header="Stock" DataMemberBinding="{Binding StockSerie.StockName}" IsReadOnly="True"/>
+                    <telerik:GridViewDataColumn ToolTip="{Binding StockSerie.StockName}" Header="Stock" DataMemberBinding="{Binding StockSerie.StockName}" IsReadOnly="True">
+                    </telerik:GridViewDataColumn>
                     <telerik:GridViewDataColumn ToolTip="{Binding Yearly, StringFormat=P2}" Header="Yearly" DataMemberBinding="{Binding Yearly, StringFormat=P2}" IsReadOnly="True">
-                        <!--<telerik:GridViewDataColumn.CellStyle>
+                        <telerik:GridViewDataColumn.CellStyle>
                             <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="Background" Value="LightCoral" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Yearly, Converter={x:Static local:IsGreaterOrEqualThanConverter.Instance}, ConverterParameter=0}" Value="True">
-                                        <Setter Property="Background" Value="DarkGreen" />
+                                        <Setter Property="Background" Value="LightGreen" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </telerik:GridViewDataColumn.CellStyle>-->
+                        </telerik:GridViewDataColumn.CellStyle>
                     </telerik:GridViewDataColumn>
-                    <telerik:GridViewDataColumn ToolTip="{Binding Monthly, StringFormat=P2}" Header="Monthly" DataMemberBinding="{Binding Monthly, StringFormat=P2}" IsReadOnly="True"/>
-                    <telerik:GridViewDataColumn ToolTip="{Binding Weekly, StringFormat=P2}" Header="Weekly" DataMemberBinding="{Binding Weekly, StringFormat=P2}" IsReadOnly="True"/>
-                    <telerik:GridViewDataColumn ToolTip="{Binding Daily, StringFormat=P2}" Header="Daily" DataMemberBinding="{Binding Daily, StringFormat=P2}" IsReadOnly="True"/>
+                    <telerik:GridViewDataColumn ToolTip="{Binding Monthly, StringFormat=P2}" Header="Monthly" DataMemberBinding="{Binding Monthly, StringFormat=P2}" IsReadOnly="True">
+                        <telerik:GridViewDataColumn.CellStyle>
+                            <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="Background" Value="LightCoral" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Monthly, Converter={x:Static local:IsGreaterOrEqualThanConverter.Instance}, ConverterParameter=0}" Value="True">
+                                        <Setter Property="Background" Value="LightGreen" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:GridViewDataColumn.CellStyle>
+                    </telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn ToolTip="{Binding Weekly, StringFormat=P2}" Header="Weekly" DataMemberBinding="{Binding Weekly, StringFormat=P2}" IsReadOnly="True">
+                        <telerik:GridViewDataColumn.CellStyle>
+                            <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="Background" Value="LightCoral" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Weekly, Converter={x:Static local:IsGreaterOrEqualThanConverter.Instance}, ConverterParameter=0}" Value="True">
+                                        <Setter Property="Background" Value="LightGreen" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:GridViewDataColumn.CellStyle>
+                    </telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn ToolTip="{Binding Daily, StringFormat=P2}" Header="Daily" DataMemberBinding="{Binding Daily, StringFormat=P2}" IsReadOnly="True">
+                        <telerik:GridViewDataColumn.CellStyle>
+                            <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="Background" Value="LightCoral" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Daily, Converter={x:Static local:IsGreaterOrEqualThanConverter.Instance}, ConverterParameter=0}" Value="True">
+                                        <Setter Property="Background" Value="LightGreen" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:GridViewDataColumn.CellStyle>
+                    </telerik:GridViewDataColumn>
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
         </StackPanel>
