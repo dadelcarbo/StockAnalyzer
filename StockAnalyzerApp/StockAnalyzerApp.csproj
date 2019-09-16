@@ -215,6 +215,7 @@
     <Compile Include="CustomControl\GroupViewDlg\GroupViewUserControl.xaml.cs">
       <DependentUpon>GroupViewUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GroupViewDlg\IsGreaterOrEqualThanConverter.cs" />
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
       <DependentUpon>HorseRaceControl.xaml</DependentUpon>
     </Compile>

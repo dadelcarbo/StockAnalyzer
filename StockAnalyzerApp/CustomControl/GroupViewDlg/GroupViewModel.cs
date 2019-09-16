@@ -58,5 +58,9 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
         {
             this.Group = group;
         }
+        public GroupViewModel()
+        {
+            this.Group = StockSerie.Groups.SECTORS;
+        }
     }
 }
