@@ -4867,6 +4867,11 @@ border:1px solid black;
                     case Keys.Control | Keys.G: // Historical group view
                         {
                             var mtfDlg = new GroupViewDlg();
+                            mtfDlg.groupUserViewControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                            mtfDlg.Disposed += delegate
+                            {
+                                mtfDlg.groupUserViewControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                            };
                             mtfDlg.Show();
                         }
                         break;

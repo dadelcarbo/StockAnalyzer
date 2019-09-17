@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using StockAnalyzer.StockClasses;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StockAnalyzerApp.CustomControl.GroupViewDlg
 {
@@ -20,9 +9,22 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
     /// </summary>
     public partial class GroupUserViewControl : UserControl
     {
+        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+
         public GroupUserViewControl()
         {
             InitializeComponent();
+        }
+
+        private void RadGridView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = this.grid.SelectedItem as GroupLineViewModel;
+            if (viewModel == null) return;
+
+            if (SelectedStockChanged != null)
+                this.SelectedStockChanged(viewModel.StockSerie.StockName, StockBarDuration.Daily, true);
+
+            StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
     }
 }
