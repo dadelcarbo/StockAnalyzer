@@ -1,6 +1,8 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using System;
+using System.Globalization;
+using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.GroupViewDlg
 {
@@ -22,15 +24,58 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
                 stockSerie.BarDuration = BarDuration.Daily;
 
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                var count = closeSerie.Count;
-                if (count < MIN_BARS)
+                var lastIndex = closeSerie.LastIndex;
+                if (lastIndex < MIN_BARS)
                     throw new ArgumentException($"StockSerie contain at elast {MIN_BARS} daily bars");
-                var lastClose = closeSerie[count - 1];
+                var lastClose = closeSerie[lastIndex];
+                var lastDate = stockSerie.Keys.Last();
 
-                this.Daily = (lastClose - closeSerie[count - 2]) / closeSerie[count - 2];
-                this.Weekly = (lastClose - closeSerie[count - 5]) / closeSerie[count - 5];
-                this.Monthly = (lastClose - closeSerie[count - 20]) / closeSerie[count - 20];
-                this.Yearly = (lastClose - closeSerie[count - 200]) / closeSerie[count - 200];
+                this.Daily = (lastClose - closeSerie[lastIndex - 1]) / closeSerie[lastIndex - 1];
+
+                // Calculate Weekly Index
+                int lastWeekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(lastDate, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+                int index = lastIndex - 1;
+                for (; index > 0; index--)
+                {
+                    var date = stockSerie.Keys.ElementAt(index);
+                    int weekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+                    if (weekNum != lastWeekNum)
+                        break;
+                }
+                this.Weekly = (lastClose - closeSerie[index]) / closeSerie[index];
+
+                // Calculate Monthly Index
+                int lastMonth = lastDate.Month;
+                index = lastIndex - 1;
+                for (; index > 0; index--)
+                {
+                    var date = stockSerie.Keys.ElementAt(index);
+                    if (date.Month != lastMonth)
+                        break;
+                }
+                this.Monthly = (lastClose - closeSerie[index]) / closeSerie[index];
+
+                // Calculate YTD Index
+                int lastYear = lastDate.Year;
+                index = lastIndex - 1;
+                for (; index > 0; index--)
+                {
+                    var date = stockSerie.Keys.ElementAt(index);
+                    if (date.Year != lastYear)
+                        break;
+                }
+                this.YTD = (lastClose - closeSerie[index]) / closeSerie[index];
+
+                // Calculate Yearly Index
+                var lastYearDate = lastDate.AddYears(-1);
+                index = lastIndex - 1;
+                for (; index > 0; index--)
+                {
+                    var date = stockSerie.Keys.ElementAt(index);
+                    if (date < lastYearDate)
+                        break;
+                }
+                this.Yearly = (lastClose - closeSerie[index]) / closeSerie[index];
             }
             finally
             {
@@ -42,5 +87,6 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
         public float Weekly { get; }
         public float Monthly { get; }
         public float Yearly { get; }
+        public float YTD { get; }
     }
 }

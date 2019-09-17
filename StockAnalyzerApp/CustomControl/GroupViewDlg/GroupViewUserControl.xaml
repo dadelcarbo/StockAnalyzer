@@ -30,6 +30,18 @@
                             </Style>
                         </telerik:GridViewDataColumn.CellStyle>
                     </telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn ToolTip="{Binding YTD, StringFormat=P2}" Header="YTD" DataMemberBinding="{Binding YTD, StringFormat=P2}" IsReadOnly="True">
+                        <telerik:GridViewDataColumn.CellStyle>
+                            <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="Background" Value="LightCoral" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding YTD, Converter={x:Static local:IsGreaterOrEqualThanConverter.Instance}, ConverterParameter=0}" Value="True">
+                                        <Setter Property="Background" Value="LightGreen" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </telerik:GridViewDataColumn.CellStyle>
+                    </telerik:GridViewDataColumn>
                     <telerik:GridViewDataColumn ToolTip="{Binding Monthly, StringFormat=P2}" Header="Monthly" DataMemberBinding="{Binding Monthly, StringFormat=P2}" IsReadOnly="True">
                         <telerik:GridViewDataColumn.CellStyle>
                             <Style TargetType="telerik:GridViewCell">
