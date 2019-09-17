@@ -21,10 +21,43 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
             {
                 if (value != group)
                 {
-                    group = value;
-                    var stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise());
 
-                    this.GroupLines = new ObservableCollection<GroupLineViewModel>(stockSeries.Select(x => new GroupLineViewModel(x)));
+                    // Graphical initialisation
+                    StockSplashScreen.ProgressText = "Initialising Series";
+                    StockSplashScreen.ProgressVal = 0;
+                    StockSplashScreen.ProgressMax = 100;
+                    StockSplashScreen.ProgressMin = 0;
+                    StockSplashScreen.ShowSplashScreen();
+
+                    group = value;
+                    var stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
+
+                    this.GroupLines = new ObservableCollection<GroupLineViewModel>();
+                    int count = 0;
+                    foreach (var s in stockSeries)
+                    {
+                        var barDuration = s.BarDuration;
+                        try
+                        {
+                            s.BarDuration = BarDuration.Daily;
+
+                            count++;
+                            StockSplashScreen.ProgressText = s.StockName;
+
+                            if (s.LastIndex > GroupLineViewModel.MIN_BARS && s.Last().Key.AddDays(5) > DateTime.Today)
+                            {
+                                this.GroupLines.Add(new GroupLineViewModel(s));
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            s.BarDuration = barDuration;
+                        }
+                    }
+                    StockSplashScreen.CloseForm(true);
                 }
             }
         }

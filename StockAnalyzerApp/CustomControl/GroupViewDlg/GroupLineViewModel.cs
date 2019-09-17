@@ -15,72 +15,55 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
         {
             this.StockSerie = stockSerie;
 
-            if (!stockSerie.IsInitialised)
-                throw new ArgumentException("StockSerie must be initialized");
+            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var lastIndex = closeSerie.LastIndex;
+            var lastClose = closeSerie[lastIndex];
+            var lastDate = stockSerie.Keys.Last();
 
-            var barDuration = stockSerie.BarDuration;
-            try
+            this.Daily = (lastClose - closeSerie[lastIndex - 1]) / closeSerie[lastIndex - 1];
+
+            // Calculate Weekly Index
+            int lastWeekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(lastDate, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            int index = lastIndex - 1;
+            for (; index > 0; index--)
             {
-                stockSerie.BarDuration = BarDuration.Daily;
-
-                var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                var lastIndex = closeSerie.LastIndex;
-                if (lastIndex < MIN_BARS)
-                    throw new ArgumentException($"StockSerie contain at elast {MIN_BARS} daily bars");
-                var lastClose = closeSerie[lastIndex];
-                var lastDate = stockSerie.Keys.Last();
-
-                this.Daily = (lastClose - closeSerie[lastIndex - 1]) / closeSerie[lastIndex - 1];
-
-                // Calculate Weekly Index
-                int lastWeekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(lastDate, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-                int index = lastIndex - 1;
-                for (; index > 0; index--)
-                {
-                    var date = stockSerie.Keys.ElementAt(index);
-                    int weekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-                    if (weekNum != lastWeekNum)
-                        break;
-                }
-                this.Weekly = (lastClose - closeSerie[index]) / closeSerie[index];
-
-                // Calculate Monthly Index
-                int lastMonth = lastDate.Month;
-                index = lastIndex - 1;
-                for (; index > 0; index--)
-                {
-                    var date = stockSerie.Keys.ElementAt(index);
-                    if (date.Month != lastMonth)
-                        break;
-                }
-                this.Monthly = (lastClose - closeSerie[index]) / closeSerie[index];
-
-                // Calculate YTD Index
-                int lastYear = lastDate.Year;
-                index = lastIndex - 1;
-                for (; index > 0; index--)
-                {
-                    var date = stockSerie.Keys.ElementAt(index);
-                    if (date.Year != lastYear)
-                        break;
-                }
-                this.YTD = (lastClose - closeSerie[index]) / closeSerie[index];
-
-                // Calculate Yearly Index
-                var lastYearDate = lastDate.AddYears(-1);
-                index = lastIndex - 1;
-                for (; index > 0; index--)
-                {
-                    var date = stockSerie.Keys.ElementAt(index);
-                    if (date < lastYearDate)
-                        break;
-                }
-                this.Yearly = (lastClose - closeSerie[index]) / closeSerie[index];
+                var date = stockSerie.Keys.ElementAt(index);
+                int weekNum = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+                if (weekNum != lastWeekNum)
+                    break;
             }
-            finally
+            this.Weekly = (lastClose - closeSerie[index]) / closeSerie[index];
+
+            // Calculate Monthly Index
+            int lastMonth = lastDate.Month;
+            index = lastIndex - 1;
+            for (; index > 0; index--)
             {
-                stockSerie.BarDuration = barDuration;
+                var date = stockSerie.Keys.ElementAt(index);
+                if (date.Month != lastMonth)
+                    break;
             }
+            this.Monthly = (lastClose - closeSerie[index]) / closeSerie[index];
+
+            // Calculate YTD Index
+            int lastYear = lastDate.Year;
+            for (; index > 0; index--)
+            {
+                var date = stockSerie.Keys.ElementAt(index);
+                if (date.Year != lastYear)
+                    break;
+            }
+            this.YTD = (lastClose - closeSerie[index]) / closeSerie[index];
+
+            // Calculate Yearly Index
+            var lastYearDate = lastDate.AddYears(-1);
+            for (; index > 0; index--)
+            {
+                var date = stockSerie.Keys.ElementAt(index);
+                if (date < lastYearDate)
+                    break;
+            }
+            this.Yearly = (lastClose - closeSerie[index]) / closeSerie[index];
         }
 
         public float Daily { get; }
