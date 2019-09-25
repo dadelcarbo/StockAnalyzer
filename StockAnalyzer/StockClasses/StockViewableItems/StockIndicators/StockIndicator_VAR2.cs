@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -58,14 +58,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION) * 100f;
+            FloatSerie varSerie = new FloatSerie(stockSerie.Count);
             this.series[0] = varSerie;
             this.Series[0].Name = this.SerieNames[0];
 
-            if (period > 1)
+            if (period < stockSerie.Count)
             {
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                for(int i = 0; i<=period;i++)
+                for (int i = 0; i <= period; i++)
                 {
                     varSerie[i] = 0f;
                 }
@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (int i = 2; i < stockSerie.Count; i++)
             {
                 bull = varSerie[i] > 0;
-                this.eventSeries[0][i] = bull && ! previousBull;
+                this.eventSeries[0][i] = bull && !previousBull;
                 this.eventSeries[1][i] = !bull & previousBull;
                 this.eventSeries[2][i] = bull;
                 this.eventSeries[3][i] = !bull;
