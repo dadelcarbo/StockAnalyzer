@@ -775,7 +775,7 @@ namespace StockAnalyzerApp
             }
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
-            allowedTypes.AddRange(this.StockDictionary.Select(p => p.Key).ToArray());
+            allowedTypes.AddRange(this.StockDictionary.Select(p => p.Key.ToUpper()).ToArray());
             searchText.AutoCompleteCustomSource = allowedTypes;
             searchText.AutoCompleteMode = AutoCompleteMode.Suggest;
             searchText.AutoCompleteSource = AutoCompleteSource.CustomSource;
