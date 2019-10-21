@@ -1125,6 +1125,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             try
             {
                 // Send POST request
+                //             https://www.abcbourse.com/download/download.aspx?s=PX1p
+
                 string url = "https://www.abcbourse.com/download/historiques.aspx";
                 if (dailyViewState == string.Empty || dailyViewStateGenerator == string.Empty)
                 {
@@ -1193,77 +1195,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return success;
         }
 
-        private bool DownloadFileFromProvider2(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
-        {
-            bool success = true;
-            try
-            {
-                // Send POST request
-                //string url = "http://www.abcbourse.com/download/historiques.aspx";
-                string url = "https://www.abcbourse.com/download/download.aspx?s=" + ISIN;
-                if (dailyViewState == string.Empty)
-                {
-                    // Get ViewState 
-                    using (WebClient webClient = new WebClient())
-                    {
-                        webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36");
-                        byte[] response = webClient.DownloadData(url);
-
-                        string htmlContent = Encoding.ASCII.GetString(response);
-                        dailyViewState = ExtractValue(htmlContent, "__VIEWSTATE");
-                        dailyEventValidation = ExtractValue(htmlContent, "__EVENTVALIDATION");
-                    }
-                }
-
-                string postData = "ctl00_BodyABC_ToolkitScriptManager1_HiddenField=%3B%3BAjaxControlToolkit%2C+Version%3D3.0.20229.20843%2C+Culture%3Dneutral%2C+PublicKeyToken%3D28f01b0e84b6d53e%3Afr-FR%3A3b7d1b28-161f-426a-ab77-b345f2c428f5%3A865923e8%3A9b7907bc%3A411fea1c%3Ae7c87f07%3A91bd373d%3Abbfda34c%3A30a78ec5%3A9349f837%3Ad4245214%3A77c58d20%3A14b56adc%3A8e72a662%3Aacd642d2%3A596d588c%3A269a19ae&"
-                    + "__EVENTTARGET=&"
-                    + "__EVENTARGUMENT=&"
-                    + "__VIEWSTATE=" + dailyViewState + "&"
-                    + "__EVENTVALIDATION=" + dailyEventValidation + "&"
-                    + "ctl00%24txtAutoComplete=&"
-                    + "ctl00%24BodyABC%24txtFrom=$START_DAY%2F$START_MONTH%2F$START_YEAR&"
-                    + "ctl00%24BodyABC%24txtTo=$END_DAY%2F$END_MONTH%2F$END_YEAR&"
-                    + "ctl00%24BodyABC%24Button1=T%C3%A9l%C3%A9charger&"
-                    + "ctl00%24BodyABC%24dlFormat=w&"
-                    + "ctl00%24BodyABC%24listFormat=isin";
-
-                postData = postData.Replace("$ISIN", ISIN);
-
-                postData = postData.Replace("$START_DAY", startDate.Day.ToString());
-                postData = postData.Replace("$START_MONTH", startDate.Month.ToString());
-                postData = postData.Replace("$START_YEAR", startDate.Year.ToString());
-                postData = postData.Replace("$END_DAY", endDate.Day.ToString());
-                postData = postData.Replace("$END_MONTH", endDate.Month.ToString());
-                postData = postData.Replace("$END_YEAR", endDate.Year.ToString());
-
-                byte[] data = Encoding.ASCII.GetBytes(postData);
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-
-                req.CookieContainer = new CookieContainer();
-                req.ContentType = "application/x-www-form-urlencoded";
-                req.ContentLength = data.Length;
-                req.Method = "POST";
-                req.AllowAutoRedirect = false;
-                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-                req.Headers.Add("Accept-Language", "fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3");
-                req.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36";
-                req.Referer = url;
-
-                Stream newStream = req.GetRequestStream();
-                // Send the data.
-                newStream.Write(data, 0, data.Length);
-                newStream.Close();
-
-                success = SaveResponseToFile(destFolder + @"\" + fileName, req);
-            }
-            catch (System.Exception ex)
-            {
-                StockLog.Write(ex);
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
-                success = false;
-            }
-            return success;
-        }
         private bool SaveResponseToFile(string fileName, HttpWebRequest req)
         {
             bool success = true;
@@ -1523,126 +1454,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return srdloList.Contains(stockSerie.StockName);
         }
 
-
-        //public static void DownloadFinancial2(StockSerie stockSerie)
-        //{
-        //    if (stockSerie.StockAnalysis.Financial != null && stockSerie.StockAnalysis.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
-
-        //    string url = "http://www.abcbourse.com/analyses/chiffres.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
-        //    url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1rP$ShortName".Replace("$ShortName", stockSerie.ShortName);
-        //    StockWebHelper swh = new StockWebHelper();
-        //    string html = swh.DownloadHtml(url);
-
-        //    WebBrowser browser = new WebBrowser();
-        //    browser.ScriptErrorsSuppressed = true;
-        //    browser.DocumentText = html;
-        //    browser.Document.OpenNew(true);
-        //    browser.Document.Write(html);
-        //    browser.Refresh();
-
-        //    HtmlDocument doc = browser.Document;
-
-        //    HtmlElementCollection tables = doc.GetElementsByTagName("div");
-        //    List<List<string>> data = new List<List<string>>();
-
-        //    StockFinancial financial = new StockFinancial();
-
-        //    HtmlElement tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Marché"));
-        //    if (tbl != null)
-        //    {
-        //        //ParseFinancialGeneral(stockSerie, financial, tbl);
-        //    }
-        //    bool found = false;
-        //    int count = 0;
-        //    foreach (HtmlElement table in tables)
-        //    {
-        //        if (found)
-        //        {
-        //            switch (count)
-        //            {
-        //                case 0:
-        //                    financial.IncomeStatement = getTableData(table);
-        //                    count++;
-        //                    break;
-        //                case 1:
-        //                    financial.BalanceSheet = getTableData(table);
-        //                    count++;
-        //                    break;
-        //                case 2:
-        //                    financial.Ratios = getTableData(table);
-        //                    count++;
-        //                    break;
-        //                case 3:
-        //                    financial.Quaterly = getTableData(table);
-        //                    count++;
-        //                    break;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            found = table.InnerText.StartsWith("Compte de");
-        //        }
-        //    }
-
-        //    if (found)
-        //        tbl = tables.Cast<HtmlElement>().FirstOrDefault(t => t.InnerText.StartsWith("Compte"));
-        //    if (tbl != null)
-        //    {
-        //        ParseFinancialDetails(stockSerie, financial, tbl);
-        //    }
-        //}
-
-        public static void DownloadFinancialOverview(StockFinancial financial, string shortName, StockSerie stockSerie)
-        {
-            return;
-            if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
-
-            string url = "https://markets.ft.com/data/equities/tearsheet/financials?s=" + stockSerie.ShortName + ":PAR&subview=Overview";
-
-            StockWebHelper swh = new StockWebHelper();
-            string html = swh.DownloadHtml(url, null);
-
-            if (string.IsNullOrWhiteSpace(html) || html.Contains("Equities results")) return;
-
-            financial.GrossMargin = GetFromFTOverView(html, "Gross margin");
-            financial.NetProfitMargin = GetFromFTOverView(html, "Net profit margin");
-            financial.OperatingMargin = GetFromFTOverView(html, "Operating margin");
-            financial.CashFlowPerShare = GetFromFTOverView(html, "Cash flow per share");
-            financial.BookValuePerShare = GetFromFTOverView(html, "Book value per share");
-            financial.TangibleBookValuePerShare = GetFromFTOverView(html, "Tangible book value per share");
-        }
-
-        private static float GetFromFTOverView(string html, string search)
-        {
-            int index = html.IndexOf(search + "<");
-            if (index <= 0) return 0.0f;
-
-            index += search.Length;
-
-            html = html.Substring(index);
-            index = html.IndexOf("<td>");
-            if (index <= 0) return 0.0f;
-
-            index += 4;
-            html = html.Substring(index, html.IndexOf("</td>") - index);
-
-            if (html.Contains("--"))
-                return float.NaN;
-            if (html.Contains("%"))
-            {
-                return float.Parse(html.Replace("%", "")) / 100.0f;
-            }
-            else
-            {
-                return float.Parse(html);
-            }
-        }
-
         public static void DownloadFinancialSummary(StockFinancial financial, string shortName, StockSerie stockSerie)
         {
-            // Download from FT.com
-            DownloadFinancialOverview(financial, shortName, stockSerie);
-
             string url = "http://www.boursorama.com/bourse/profil/resume_societe.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
             StockWebHelper swh = new StockWebHelper();
             string html = swh.DownloadHtml(url, null);
