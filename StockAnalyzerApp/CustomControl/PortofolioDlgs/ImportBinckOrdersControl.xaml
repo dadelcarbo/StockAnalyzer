@@ -50,12 +50,12 @@
                 </telerik:GridViewDataColumn>
                 <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn Header="Number" DataMemberBinding="{Binding Number, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn Header="Fee" DataMemberBinding="{Binding Fee, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn Header="Entry Comment" DataMemberBinding="{Binding Comment, StringFormat=\{0:N2\}}" IsReadOnly="False" Width="250">
-                </telerik:GridViewDataColumn>
-                <telerik:GridViewDataColumn  Header="Execution Date"  DataMemberBinding="{Binding ExecutionDate, Mode=TwoWay}">
-                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value, Mode=OneWay, StringFormat=\{0:N2\}}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn  Header="Execution Date" 
+                                             DataMemberBinding="{Binding ExecutionDate, Mode=TwoWay, ConverterCulture=en-GB, StringFormat=\{0:d\}}" 
+                                             FilterMemberPath="ExecutionDate"/>
+                <telerik:GridViewDataColumn Header="Fee" DataMemberBinding="{Binding Fee, Mode=OneWay, StringFormat=\{0:N2\}}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn Header="Entry Comment" DataMemberBinding="{Binding Comment}" IsReadOnly="False" Width="250"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

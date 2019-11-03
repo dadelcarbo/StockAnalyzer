@@ -2272,21 +2272,6 @@ namespace StockAnalyzer.StockClasses
             }
             return distanceSerie;
         }
-        //public FloatSerie CalculateRateOfChange(int period)
-        //{
-        //    FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-        //    FloatSerie serie = new FloatSerie(Values.Count());
-        //    for (int i = 0; i < period; i++)
-        //    {
-        //        serie[i] = (float)Math.Log(closeSerie[i] / closeSerie[0]);
-        //    }
-        //    for (int i = period; i < this.Count; i++)
-        //    {
-        //        serie[i] = (float)Math.Log(closeSerie[i] / closeSerie[i - period]);
-        //    }
-        //    serie.Name = "ROC_" + period.ToString();
-        //    return serie;
-        //}
 
         public FloatSerie CalculateRateOfRise(int period)
         {
