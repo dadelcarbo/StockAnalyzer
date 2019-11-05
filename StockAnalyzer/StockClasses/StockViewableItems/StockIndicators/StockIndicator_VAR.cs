@@ -7,35 +7,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_VAR : StockIndicatorBase
     {
-        public StockIndicator_VAR()
-        {
-        }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override string Definition => "Plots the variation over the period";
+        public override string Definition => base.Definition + Environment.NewLine + "Plots the variation over the period";
 
-        public override string Name
-        {
-            get { return "VAR(" + this.Parameters[0].ToString() + ")"; }
-        }
+        public override string Name => "VAR(" + this.Parameters[0].ToString() + ")";
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { 20 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Period" };
 
-        public override string[] SerieNames { get { return new string[] { "VAR(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames => new string[] { "VAR(" + this.Parameters[0].ToString() + ")" };
 
         public override System.Drawing.Pen[] SeriePens
         {

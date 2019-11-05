@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ROR : StockIndicatorBase
     {
-        public override string Definition => "Rate of rise" + Environment.NewLine + "Plots the current percent increase from the lowest low in the period";
+        public override string Definition => base.Definition + Environment.NewLine + "Rate of rise" + Environment.NewLine + "Plots the current percent increase from the lowest low in the period";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
         public override string[] ParameterNames => new string[] { "Period", "Smoothing", "SignalSmoothing" };
         public override Object[] ParameterDefaultValues => new Object[] { 200, 6, 12 };

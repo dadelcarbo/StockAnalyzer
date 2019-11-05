@@ -1417,7 +1417,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 if (index < 200) return;
                 HalfLine2D support, resistance;
 
-                StockPaintBar_CONVEXHULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
+                StockPaintBar_CONVEXCULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
                 {
@@ -1433,7 +1433,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 if (index < 200) return;
 
-                StockPaintBar_CONVEXHULL.GetSR(StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index);
+                StockPaintBar_CONVEXCULL.GetSR(StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index);
 
                 foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
                 {

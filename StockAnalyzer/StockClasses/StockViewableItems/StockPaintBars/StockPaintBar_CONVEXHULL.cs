@@ -7,31 +7,16 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-    public class StockPaintBar_CONVEXHULL : StockPaintBarBase
+    public class StockPaintBar_CONVEXCULL : StockPaintBarBase
     {
-        public StockPaintBar_CONVEXHULL()
-        {
-        }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override bool HasTrendLine { get { return true; } }
+        public override bool HasTrendLine => true;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LongPeriod", "ShortPeriod", "Convex" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 200, 10, true }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 1500), new ParamRangeInt(1, 500), new ParamRangeBool() }; }
-        }
+        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod", "Convex" };
+        public override Object[] ParameterDefaultValues => new Object[] { 200, 10, true };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 1500), new ParamRangeInt(1, 500), new ParamRangeBool() };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -46,10 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
         static readonly bool[] isEvent = new bool[] { true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -92,7 +74,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 PointF lastPoint = new PointF(stockSerie.LastCompleteIndex, closeSerie[stockSerie.LastCompleteIndex]);
                 this.eventSeries[0][stockSerie.LastCompleteIndex] = !resistance.IsAbovePoint(lastPoint);
                 this.eventSeries[1][stockSerie.LastCompleteIndex] = support.IsAbovePoint(lastPoint);
-
             }
             finally
             {
@@ -131,7 +112,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
+                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(d=>!d.IsPersistent);
             }
             else
             {

@@ -6,25 +6,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILSAR : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Step" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
+        public override string[] ParameterNames => new string[] { "Step" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 0.1f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.001f, 20f) }; }
-        }
-        public override string[] SerieNames { get { return new string[] { "TRAILSAR.LS", "TRAILSAR.SS" }; } }
+        public override Object[] ParameterDefaultValues => new Object[] { 0.1f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.001f, 20f) };
+        public override string[] SerieNames => new string[] { "TRAILSAR.LS", "TRAILSAR.SS" };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
