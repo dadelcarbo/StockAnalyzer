@@ -6,10 +6,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BarChart,
         InvestingIntraday,
         BNPIntraday,
-        Yahoo,
-        YahooIntraday,
-        Google,
-        GoogleIntraday,
+        //Yahoo,
+        //YahooIntraday,
+        //Google,
+        //GoogleIntraday,
         CommerzBankIntraday,
         Rydex,
         CBOE,
@@ -21,8 +21,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Replay,
         Breadth,
         Ratio,
-        COT,
-        NASDACQShortInterest,
+        //COT,
+        //NASDACQShortInterest,
         FINRA
     }
 
