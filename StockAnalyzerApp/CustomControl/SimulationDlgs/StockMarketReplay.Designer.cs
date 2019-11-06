@@ -209,7 +209,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             // 
             // elementHost1
             // 
-            this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.elementHost1.Location = new System.Drawing.Point(15, 210);
             this.elementHost1.Name = "elementHost1";
@@ -268,17 +268,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.ResumeLayout(false);
             this.PerformLayout();
 
-        }
-
-        private void createOrderButton_Click(object sender, EventArgs e)
-        {
-            if (this.Position.Number != 0)
-            {
-                if (this.Position.StopOrder == null)
-                {
-                    if (this.HalfPosition) { }
-                }
-            }
         }
 
         #endregion

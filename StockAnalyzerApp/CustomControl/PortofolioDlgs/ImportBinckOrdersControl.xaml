@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PortofolioDlgs" 
-             x:Class="StockAnalyzerApp.CustomControl.PortofolioDlgs.ImportBinckOrdersControl" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PortofolioDlgs"
+    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+    x:Class="StockAnalyzerApp.CustomControl.PortofolioDlgs.ImportBinckOrdersControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
@@ -24,12 +25,12 @@
         <TextBox Grid.Row="1" HorizontalAlignment="Stretch" AcceptsReturn="True" AcceptsTab="True"
                  Text="{Binding ViewModel.Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}" IsReadOnlyCaretVisible="True"/>
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch"/>
-        <DataGrid Grid.Row="3" HorizontalAlignment="Stretch" AutoGenerateColumns="False" 
+        <telerik:RadGridView Grid.Row="3" HorizontalAlignment="Stretch" AutoGenerateColumns="False" 
                   ItemsSource="{Binding ViewModel.Orders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortDirection="Descending"/>
-                <DataGridTemplateColumn Header="Name" Width="260" CanUserSort="True" SortMemberPath="StockName" ClipboardContentBinding="{Binding StockName}">
-                    <DataGridTemplateColumn.CellTemplate>
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="ID" DataMemberBinding="{Binding ID, Mode=OneWay}" IsReadOnly="True" SortingState="Descending"/>
+                <telerik:GridViewDataColumn Header="Name" Width="260" DataMemberBinding="{Binding StockName, Mode=TwoWay}">
+                    <telerik:GridViewDataColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding ViewModel.StockNames, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImportBinckOrdersControl}}}"
                       Text="{Binding StockName,UpdateSourceTrigger=PropertyChanged}"
@@ -45,38 +46,17 @@
                                 </ComboBox.Style>
                             </ComboBox>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Number" Binding="{Binding Number, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Value" Binding="{Binding Value, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Fee" Binding="{Binding Fee, Mode=OneWay}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Entry Comment" Binding="{Binding Comment, StringFormat=\{0:N2\}}" IsReadOnly="False" Width="250">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="TextWrapping" Value="Wrap" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                    <DataGridTextColumn.EditingElementStyle>
-                        <Style TargetType="TextBox">
-                            <Setter Property="TextWrapping" Value="Wrap" />
-                            <Setter Property="AcceptsReturn" Value="true" />
-                        </Style>
-                    </DataGridTextColumn.EditingElementStyle>
-                </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Execution Date">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ExecutionDate, StringFormat=\{0:d\}, ConverterCulture=en-GB}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding ExecutionDate}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn Header="Number" DataMemberBinding="{Binding Number, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value, Mode=OneWay, StringFormat=\{0:N2\}}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn  Header="Execution Date" 
+                                             DataMemberBinding="{Binding ExecutionDate, Mode=TwoWay, ConverterCulture=en-GB, StringFormat=\{0:d\}}" 
+                                             FilterMemberPath="ExecutionDate"/>
+                <telerik:GridViewDataColumn Header="Fee" DataMemberBinding="{Binding Fee, Mode=OneWay, StringFormat=\{0:N2\}}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn Header="Entry Comment" DataMemberBinding="{Binding Comment}" IsReadOnly="False" Width="250"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
     </Grid>
 </UserControl>

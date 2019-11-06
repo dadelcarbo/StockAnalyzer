@@ -9,9 +9,11 @@ using StockAnalyzer.StockPortfolio;
 namespace StockAnalyzer.Portofolio
 {
    public class StockPortofolio
-   {
-      #region PUBLIC PROPERTIES
-      public string Name { get; set; }
+    {
+        public const string SIMULATION = "SIMULATION";
+
+        #region PUBLIC PROPERTIES
+        public string Name { get; set; }
       public float TotalDeposit { get; set; }
       public float OffsetLiquidity { get; set; }
       public StockSerie.Groups Group { get; set; }
@@ -88,12 +90,12 @@ namespace StockAnalyzer.Portofolio
          this.IsSimulation = true;
          this.IsVirtual = true;
       }
-      public StockPortofolio(string name, float totalDeposit)
+      public StockPortofolio(string name, float totalDeposit, bool isSimulation)
       {
          Group = StockSerie.Groups.ALL;
          this.Name = name;
          this.OrderList = new StockOrderList();
-         this.IsSimulation = false;
+         this.IsSimulation = isSimulation;
          this.IsVirtual = false;
          this.TotalDeposit = totalDeposit;
       }
@@ -207,7 +209,7 @@ namespace StockAnalyzer.Portofolio
          }
          referenceSerie.Initialise();
 
-         foreach (DateTime date in referenceSerie.GetValues(StockSerie.StockBarDuration.Daily).Where(d => d.DATE.Year > 2014).Select(v => v.DATE.Date))
+         foreach (DateTime date in referenceSerie.GetValues(StockBarDuration.Daily).Where(d => d.DATE.Year > 2014).Select(v => v.DATE.Date))
          {
             // Calculate open value
 
@@ -236,7 +238,7 @@ namespace StockAnalyzer.Portofolio
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(numberOfShare, stockOrder.Value,
-                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockBarDuration.Daily)));
                      }
                      else
                      {
@@ -297,7 +299,7 @@ namespace StockAnalyzer.Portofolio
                      {
                         stockPositionDico.Add(stockOrder.StockName,
                            new PositionValues(-numberOfShare, stockOrder.Value,
-                              StockDictionary[stockOrder.StockName].GetValues(StockSerie.StockBarDuration.Daily)));
+                              StockDictionary[stockOrder.StockName].GetValues(StockBarDuration.Daily)));
                      }
                      else
                      {

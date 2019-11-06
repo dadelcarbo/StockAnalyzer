@@ -13,7 +13,7 @@ namespace StockAnalyzerApp.CustomControl
    public partial class StockStrategyScannerDlg : Form
    {
       private StockDictionary stockDictionary;
-      private StockSerie.StockBarDuration barDuration;
+      private StockBarDuration barDuration;
 
       public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
       public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
@@ -27,7 +27,7 @@ namespace StockAnalyzerApp.CustomControl
          }
       }
 
-      public StockStrategyScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockSerie.StockBarDuration barDuration, string strategyName)
+      public StockStrategyScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockBarDuration barDuration, string strategyName)
       {
          InitializeComponent();
 
@@ -61,7 +61,7 @@ namespace StockAnalyzerApp.CustomControl
             SelectedStrategyChanged(this.strategyComboBox.SelectedItem.ToString());
          }
       }
-      public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
+      public void OnBarDurationChanged(StockBarDuration barDuration)
       {
          this.barDuration = barDuration;
          selectedStockListBox.Items.Clear();

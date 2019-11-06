@@ -6,10 +6,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BarChart,
         InvestingIntraday,
         BNPIntraday,
-        Yahoo,
-        YahooIntraday,
-        Google,
-        GoogleIntraday,
+        //Yahoo,
+        //YahooIntraday,
+        //Google,
+        //GoogleIntraday,
         CommerzBankIntraday,
         Rydex,
         CBOE,
@@ -20,10 +20,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Test,
         Replay,
         Breadth,
-        Ratio,
-        COT,
-        NASDACQShortInterest,
-        FINRA
+        //COT,
+        //NASDACQShortInterest,
+        FINRA,
+        Investing,
+        Ratio
     }
 
    public delegate void DownloadingStockEventHandler(string text);
@@ -39,6 +40,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       bool DownloadIntradayData(string rootFolder, StockSerie stockSerie);
       void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
 
-      bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration);
+      bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration);
    }
 }

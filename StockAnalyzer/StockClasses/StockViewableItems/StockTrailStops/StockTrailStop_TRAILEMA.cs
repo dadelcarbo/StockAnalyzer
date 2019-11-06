@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
@@ -28,19 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
         public override string[] SerieNames { get { return new string[] { "TRAILEMA.LS", "TRAILEMA.SS" }; } }
-
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
-                }
-                return seriePens;
-            }
-        }
-
+        
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

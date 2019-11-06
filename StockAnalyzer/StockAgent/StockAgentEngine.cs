@@ -20,7 +20,6 @@ namespace StockAnalyzer.StockAgent
 
         public void GeneticSelection(int nbIteration, int nbAgents, IEnumerable<StockSerie> series, int minIndex)
         {
-            int iteration = 0;
             List<IStockAgent> agents = new List<IStockAgent>();
 
             // Create Agents
@@ -55,7 +54,6 @@ namespace StockAnalyzer.StockAgent
                 Console.WriteLine(fittest.First().Value.ToLog());
                 Console.WriteLine(fittest.First().Key.ToLog());
 
-                //Console.WriteLine(tradeSummary.ToLog());
                 agents.Clear();
                 agents.AddRange(fittest.Select(k=>k.Key));
                 for (int k = 0; k < nbSelected; k++)

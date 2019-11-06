@@ -4,18 +4,18 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_AUTOCORREL : StockIndicatorBase
+   public class StockIndicator_AUTOCORREL : StockIndicatorBase, IRange
    {
       public StockIndicator_AUTOCORREL()
       {
       }
       public override IndicatorDisplayTarget DisplayTarget
       {
-         get { return IndicatorDisplayTarget.NonRangedIndicator; }
+         get { return IndicatorDisplayTarget.RangedIndicator; }
       }
       public override string[] ParameterNames
       {
-         get { return new string[] { "Period", "Smoothing" }; }
+         get { return new string[] { "Period", "Shift" }; }
       }
 
       public override Object[] ParameterDefaultValues
@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override ParamRange[] ParameterRanges
       {
-         get { return new ParamRange[] { new ParamRangeInt(1, 1000), new ParamRangeInt(1, 500) }; }
+         get { return new ParamRange[] { new ParamRangeInt(1, 1000), new ParamRangeInt(0, 500) }; }
       }
       public override string[] SerieNames { get { return new string[] { "AUTOCORREL(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
 
@@ -54,8 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION).CalculateEMA((int)this.parameters[1]);
-         FloatSerie autoCorrelationSerie = varSerie.CalculateAutoCorrelation((int)this.parameters[0]);
+         FloatSerie varSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+         FloatSerie autoCorrelationSerie = varSerie.CalculateAutoCorrelation((int)this.parameters[0], (int)this.parameters[1]);
          this.series[0] = autoCorrelationSerie;
          this.Series[0].Name = this.Name;
 
@@ -81,5 +81,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return isEvent; }
       }
-   }
+
+        public float Max => 1f;
+
+        public float Min => -1f;
+    }
 }

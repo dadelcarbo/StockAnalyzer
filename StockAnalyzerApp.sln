@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerApp", "StockAnalyzerApp\StockAnalyzerApp.csproj", "{4160792F-0A7C-4ABE-AD3D-83603AD6DF29}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,6 +13,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerSettings", "StockAnalyzerSettings\StockAnalyzerSettings.csproj", "{D7BE95C8-BCE9-4E66-B305-C85D07936F73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerTest", "StockAnalyzerTest\StockAnalyzerTest.csproj", "{87F4F775-6F91-4702-B25C-84A50FC87026}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4BBC4A8-FBCB-4801-B2AE-F317367376A3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,5 +72,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE12CDF5-1AFD-4818-8921-5A3066494094}
 	EndGlobalSection
 EndGlobal

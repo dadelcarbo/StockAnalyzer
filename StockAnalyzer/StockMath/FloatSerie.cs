@@ -1,8 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockMath
 {
@@ -119,7 +118,7 @@ namespace StockAnalyzer.StockMath
                 count = 0;
                 sum = 0.0f;
                 avg = ema[i];
-                for (int j = i - period; j <= i; j++)
+                for (int j = i - period + 1; j <= i; j++)
                 {
                     count++;
                     spread = this.Values[j] - avg;
@@ -188,17 +187,55 @@ namespace StockAnalyzer.StockMath
             return correl;
         }
 
-        public FloatSerie CalculateAutoCorrelation(int period)
+        /// <summary>
+        /// Self pearson correlation applied with a shift
+        /// https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
+        /// <summary>   
+        /// <remarks><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/bd1ccc2979b0fd1c1aec96e386f686ae874f9ec0"/></remarks>
+        /// </summary>
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="shift"></param>
+        /// <returns></returns>
+        public FloatSerie CalculateAutoCorrelation(int period, int shift)
         {
+            var emaSerie = this.CalculateMA(period);
+
             FloatSerie correlSerie = new FloatSerie(this.Count, "AUTO_CORREL");
-            period = Math.Min(period, this.Count);
-            for (int i = period; i < this.Count; i++)
+
+            float diff1, diff2;
+
+            for (int i = period + shift; i < this.Count; i++)
             {
+                float ssum1 = 0, sum1 = 0, ssum2 = 0;
+
+                float avg1 = 0, avg2 = 0;
                 for (int j = 0; j < period; j++)
                 {
-                    correlSerie[i] += this[i - j] * this[i - j];
+                    int index1 = i - j;
+                    int index2 = index1 - shift;
+                    avg1 += this.Values[index1];
+                    avg2 += this.Values[index2];
                 }
+                avg1 /= (float)period;
+                avg2 /= (float)period;
+
+                for (int j = 0; j < period; j++)
+                {
+                    int index1 = i - j;
+                    int index2 = index1 - shift;
+
+                    diff1 = this.Values[index1] - avg1;
+                    diff2 = this.Values[index2] - avg2;
+
+                    sum1 += diff1 * diff2;
+
+                    ssum1 += diff1 * diff1;
+                    ssum2 += diff2 * diff2;
+                }
+                correlSerie[i] = sum1 / (float)(Math.Sqrt(ssum1) * Math.Sqrt(ssum2));
             }
+
             return correlSerie;
         }
         public FloatSerie CalculateMyAutoCovariance(int period, int lag)
@@ -408,9 +445,10 @@ namespace StockAnalyzer.StockMath
             }
         }
 
-        public FloatSerie CalculateDerivative() {
+        public FloatSerie CalculateDerivative()
+        {
             var derivative = new FloatSerie(this.Count);
-            for(int i = 1; i < this.Count; i++)
+            for (int i = 1; i < this.Count; i++)
             {
                 derivative[i] = (this[i] - this[i - 1]) / this[i - 1];
             }

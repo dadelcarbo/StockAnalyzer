@@ -46,8 +46,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
               else
               {
                   PortfolioDataProvider.StockPortofolioList = new StockPortofolioList();
-                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000));
-                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000));
+                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckPEA_P", 10000, false));
+                  PortfolioDataProvider.StockPortofolioList.Add(new StockPortofolio("BinckTitre_P", 10000, false));
               }
 
               // Generate Portfolio Series

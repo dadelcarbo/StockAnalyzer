@@ -7,10 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_TOPEMA : StockIndicatorBase
     {
-        public StockIndicator_TOPEMA()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -28,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 0.0f, 1, 1 }; }
+            get { return new Object[] { 0.0f, 12, 1 }; }
         }
 
         public override ParamRange[] ParameterRanges
@@ -157,16 +153,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[9][i] = isBearish;
             }
         }
-        private static string[] eventNames = new string[]
-      {
-         "SupportDetected", "ResistanceDetected",           // 0,1
-         "Pullback", "EndOfTrend",                          // 2,3
-         "HigherLow", "LowerHigh",                          // 4,5
-         "ResistanceBroken", "SupportBroken",               // 6,7
-         "Bullish", "Bearish",                              // 8,9
-         "FirstResistanceBroken", "FirstSupportBroken"      // 10,11
-      };
 
+        private static string[] eventNames = new string[]
+        {
+            "SupportDetected", "ResistanceDetected",           // 0,1
+             "Pullback", "EndOfTrend",                          // 2,3
+             "HigherLow", "LowerHigh",                          // 4,5
+             "ResistanceBroken", "SupportBroken",               // 6,7
+             "Bullish", "Bearish",                              // 8,9
+             "FirstResistanceBroken", "FirstSupportBroken"      // 10,11
+        };
         public override string[] EventNames => eventNames;
 
         private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false, true, true };

@@ -23,12 +23,12 @@ namespace StockAnalyzer.StockClasses.StockStatistic
         private List<StockPatternIndex> Patterns { get; set; }
 
 
-        public StockSerie FindPattern(IEnumerable<StockSerie> stockSeries, StockSerie.StockBarDuration duration, IStockMatchPattern patternMatch)
+        public StockSerie FindPattern(IEnumerable<StockSerie> stockSeries, StockBarDuration duration, IStockMatchPattern patternMatch)
         {
             foreach (var stockSerie in stockSeries)
             {
                 if (!stockSerie.Initialise()) continue;
-                StockSerie.StockBarDuration previousDuration = stockSerie.BarDuration;
+                StockBarDuration previousDuration = stockSerie.BarDuration;
 
                 stockSerie.BarDuration = duration;
 

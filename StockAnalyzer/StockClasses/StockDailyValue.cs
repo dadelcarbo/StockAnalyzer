@@ -21,73 +21,6 @@ namespace StockAnalyzer.StockClasses
       POSITION
    };
 
-   public enum StockIndicatorType
-   {
-      NONE = -1,
-      // #### NN_BUY_SELL_RATE,
-      //FORECAST_ERROR,
-      //FORECAST_VAR,
-      VARIATION_REL,
-      VARIATION_ABS,
-      VOLATILITY_STDEV,
-      VOLATILITY,
-      VOLATILITY_BBLOW,
-      VOLATILITY_BBUP,
-      VIX,
-      VIX_MA5,
-      VIX_BBUP,
-      VIX_BBLOW,
-      GVZ,
-      GVZ_MA5,
-      GVZ_BBUP,
-      GVZ_BBLOW,
-      EVZ,
-      EVZ_MA5,
-      EVZ_BBUP,
-      EVZ_BBLOW,
-      OVX,
-      OVX_MA5,
-      OVX_BBUP,
-      OVX_BBLOW,
-      CMF,
-      CMF_MA5,
-      CMF_BBUP,
-      CMF_BBLOW,
-      MA20_TREND,
-      MA30_TREND,
-      MA50_TREND,
-      AMPLITUDE,
-      AMPLITUDE_EMA6,
-      FAST_OSCILLATOR_14,
-      FAST_OSCILLATOR_14_EX,
-      SLOW_OSCILLATOR_14_EMA3,
-      SLOW_OSCILLATOR_14_MA5,
-      RSI,
-      RSI_EX,
-      RSI_EMA5,
-      RSI_TREND,
-      DI_UP,
-      DI_DOWN,
-      ADX,
-      DI_UP_EMA3,
-      DI_DOWN_EMA3,
-      DI_HIGH_UP,
-      DI_LOW_DOWN,
-      DI_HIGH_UP_EMA3,
-      DI_LOW_DOWN_EMA3,
-      HIGHEST_SINCE_DAYS,
-      LOWEST_SINCE_DAYS,
-      VARIATION_MA20,
-      VOLUME_VAR_RATIO,
-      COT_LARGE_SPECULATOR,
-      COT_SMALL_SPECULATOR,
-      COT_COMMERCIAL,
-      HILBERT_SINE,
-      HILBERT_SINE_LEAD,
-      HILBERT_SINE_V2,
-      HILBERT_SINE_LEAD_V2,
-      VOLUME_CHURN
-   };
    public enum OHLCType
    {
       UpTrend,
@@ -118,8 +51,6 @@ namespace StockAnalyzer.StockClasses
       public float Range { get { return this.HIGH - this.LOW; } }
       public long DOWNVOLUME { get { return this.VOLUME - this.UPVOLUME; } }
       public float SHORTINTEREST { get; set; }
-      public float POSITION { get; set; }
-
       public void CalculateUpVolume()
       {
          if (this.UPVOLUME == 0)
@@ -147,19 +78,6 @@ namespace StockAnalyzer.StockClasses
          if (propInfo == null)
          {
             return Serie.GetSerie(dataType).Values[Serie.IndexOf(this.DATE)];
-         }
-         else
-         {
-            return (float)propInfo.GetValue(this, null);
-         }
-      }
-      public float GetStockIndicator(StockIndicatorType indicatorType)
-      {
-         Type type = this.GetType();
-         System.Reflection.PropertyInfo propInfo = type.GetProperty(indicatorType.ToString());
-         if (propInfo == null)
-         {
-            return Serie.GetSerie(indicatorType).Values[Serie.IndexOf(this.DATE)];
          }
          else
          {

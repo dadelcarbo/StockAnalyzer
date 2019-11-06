@@ -36,6 +36,22 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.stockPositionUserControl1.DataContext = this;
         }
 
+
+        private void createOrderButton_Click(object sender, EventArgs e)
+        {
+            if (this.Position.Number != 0)
+            {
+                if (this.Position.StopOrder == null)
+                {
+                    int nb = this.Position.Number;
+                    if (this.HalfPosition)
+                    {
+                        nb /= 2;
+                    }
+
+                }
+            }
+        }
         private void Position_OnTargetTouched(OrderViewModel order)
         {
             StockOrder stockOrder = StockOrder.CreateExecutedOrder(replaySerie.StockName,
@@ -85,8 +101,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     }
                     else
                     {
-                        this.Stop = 0;
-                        this.Target = 0;
+                        this.Stop = this.Position.CurrentValue.CLOSE * 0.9f;
+                        this.Target = this.Position.CurrentValue.CLOSE * 1.1f;
                     }
                     OnPropertyChanged("HalfPosition");
                 }
@@ -162,16 +178,18 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (started)
             {
-                string msg = "Replay serie was:\t" + refSerie.StockName + Environment.NewLine +
-                             "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
-                             "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
-                             "NbTargets:\t\t" + nbTargets + Environment.NewLine +
-                             "NbStops:\t\t\t" + nbStops + Environment.NewLine +
-                             "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
-                             "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
-                             "AvgGain:\t\t\t" + tradeGains.Average().ToString("P2") + Environment.NewLine +
-                             "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
-
+                string msg = "Replay serie was:\t" + refSerie.StockName;
+                if (this.tradeGains.Count > 0)
+                {
+                    msg += Environment.NewLine + "Start date:\t\t" + startDate.ToShortDateString() + Environment.NewLine +
+                    "NbTrades:\t\t\t" + nbTrade + Environment.NewLine +
+                    "NbTargets:\t\t" + nbTargets + Environment.NewLine +
+                    "NbStops:\t\t\t" + nbStops + Environment.NewLine +
+                    "NbWinTrades:\t\t" + nbWinTrade + Environment.NewLine +
+                    "NbLostTrades:\t\t" + nbLostTrade + Environment.NewLine +
+                    "AvgGain:\t\t\t" + tradeGains.Average().ToString("P2") + Environment.NewLine +
+                    "MaxDrawdown:\t\t" + this.Position.MaxDrawdown.ToString("P2");
+                }
                 MessageBox.Show(msg);
 
                 replaySerie = null;
@@ -189,7 +207,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.sellButton.Enabled = false;
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = false;
-
             }
             else
             {
@@ -223,7 +240,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                         serie = StockDictionary.StockDictionarySingleton[stockName];
                         serie.Initialise();
-                        serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                        serie.BarDuration = StockBarDuration.Daily;
                     }
                     while (serie.Count < 400);
 
@@ -293,12 +310,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             index++;
             DateTime currentDate = DateTime.Today;
-            refSerie.BarDuration = StockSerie.StockBarDuration.Daily;
+            refSerie.BarDuration = StockBarDuration.Daily;
             if (index < refSerie.Count)
             {
                 replaySerie.IsInitialised = false;
                 replaySerie.ClearBarDurationCache();
-                replaySerie.BarDuration = StockSerie.StockBarDuration.Daily;
+                replaySerie.BarDuration = StockBarDuration.Daily;
                 StockDailyValue dailyVal = null;
                 for (int i = 0; i < index; i++)
                 {
@@ -342,7 +359,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = false;
 
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
                 this.Position.OpenValue = dailyValue.CLOSE;
                 this.Position.Number = 2;
 
@@ -370,7 +387,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.shortButton.Enabled = false;
                 this.coverButton.Enabled = true;
 
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
                 this.Position.OpenValue = dailyValue.CLOSE;
                 this.Position.Number = -2;
 
@@ -394,7 +411,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (started)
             {
-                StockDailyValue dailyValue = replaySerie.GetValues(StockSerie.StockBarDuration.Daily).Last();
+                StockDailyValue dailyValue = replaySerie.GetValues(StockBarDuration.Daily).Last();
 
                 PerformSell(dailyValue, this.Position.Number, dailyValue.CLOSE);
 

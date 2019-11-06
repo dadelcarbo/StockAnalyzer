@@ -6,16 +6,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public class StockIndicator_DONCHIAN : StockIndicatorBase
    {
-      public StockIndicator_DONCHIAN()
-      {
-      }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
-      }
-      public override string Definition
-      {
-         get { return "DONCHIAN(int Period"; }
       }
       public override string[] ParameterNames
       {

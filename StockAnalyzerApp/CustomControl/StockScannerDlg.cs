@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
-using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings.Properties;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl
 {
     public partial class StockScannerDlg : Form
     {
         private StockDictionary stockDictionary;
-        private StockSerie.StockBarDuration barDuration;
+        private StockBarDuration barDuration;
 
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
@@ -29,7 +29,7 @@ namespace StockAnalyzerApp.CustomControl
             }
         }
 
-        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockSerie.StockBarDuration barDuration, Dictionary<string, List<string>> theme)
+        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockBarDuration barDuration, Dictionary<string, List<string>> theme)
         {
             InitializeComponent();
 
@@ -178,7 +178,7 @@ namespace StockAnalyzerApp.CustomControl
 
             eventTreeView.ExpandAll();
         }
-        public void OnBarDurationChanged(StockSerie.StockBarDuration barDuration)
+        public void OnBarDurationChanged(StockBarDuration barDuration)
         {
             this.barDuration = barDuration;
         }
@@ -688,8 +688,8 @@ namespace StockAnalyzerApp.CustomControl
             Cursor = Cursors.WaitCursor;
 
             List<StockAlertDef> alertDefs = new List<StockAlertDef>();
-            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB_EMA3, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
-            alertDefs.Add(new StockAlertDef(StockSerie.StockBarDuration.TLB_3D_EMA3, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
+            alertDefs.Add(new StockAlertDef(StockBarDuration.TLB, "TRAILSTOP", "TRAILHL(1)", "BrokenUp"));
+            alertDefs.Add(new StockAlertDef(StockBarDuration.TLB_3D, "INDICATOR", Settings.Default.MomentumIndicator, "Bullish"));
 
             var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
             try

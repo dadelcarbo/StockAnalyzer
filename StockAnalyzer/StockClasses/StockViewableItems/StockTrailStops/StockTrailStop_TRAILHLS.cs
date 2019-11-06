@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILHLS : StockTrailStopBase
     {
-        public StockTrailStop_TRAILHLS()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -29,18 +26,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
 
         public override string[] SerieNames { get { return new string[] { "TRAILHLS.LS", "TRAILHLS.SS" }; } }
-
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
-                }
-                return seriePens;
-            }
-        }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

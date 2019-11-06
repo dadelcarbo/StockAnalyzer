@@ -24,11 +24,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     {
         public event MouseDateChangedHandler OnMouseDateChanged;
 
-        public FullGraphUserControl(StockSerie.StockBarDuration duration)
+        public FullGraphUserControl(StockBarDuration duration)
         {
             InitializeComponent();
 
-            this.durationComboBox.Items.AddRange(Enum.GetValues(typeof(StockSerie.StockBarDuration)).Cast<object>().ToArray());
+            this.durationComboBox.Items.AddRange(StockBarDuration.Values.ToArray());
             this.durationComboBox.SelectedItem = duration;
             this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
 
@@ -67,7 +67,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        public void SetDuration(StockSerie.StockBarDuration duration)
+        public void SetDuration(StockBarDuration duration)
         {
             this.durationComboBox.SelectedItem = duration;
         }
@@ -175,13 +175,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     if (!currentStockSerie.Initialise() || currentStockSerie.Count == 0)
                     {
-                        this.DeactivateGraphControls("Data for " + currentStockSerie.StockName +
-                                                     " cannot be initialised");
+                        this.DeactivateGraphControls("Data for " + currentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
 
                     // Set the bar duration
-                    currentStockSerie.BarDuration = (StockSerie.StockBarDuration)this.durationComboBox.SelectedItem;
+                    currentStockSerie.BarDuration = (StockBarDuration)this.durationComboBox.SelectedItem;
 
                     this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                     this.EndIndex = currentStockSerie.Count - 1;
@@ -196,9 +195,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (this.graphCloseControl.SecondaryFloatSerie != null)
                         {
-                            currentTheme["CloseGraph"].Add("SECONDARY|" +
-                                                                            this.graphCloseControl.SecondaryFloatSerie
-                                                                                .Name);
+                            currentTheme["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
                         }
                         else
                         {

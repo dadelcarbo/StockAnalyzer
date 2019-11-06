@@ -211,7 +211,7 @@
   </data>
   <data name="msg1.Text" xml:space="preserve">
     <value>Ultimate Chartist va redemarrer pour prendre en compte vos changements.
-Si elle ne redémarre pas, veuillez fermer l'application et la réouvrir.
+Voulez-vous redémarrer maintenant ?.
 </value>
   </data>
   <data name="barNumberUpDown.Location" type="System.Drawing.Point, System.Drawing">

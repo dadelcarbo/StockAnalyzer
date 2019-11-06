@@ -4,12 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -64,12 +59,13 @@ namespace StockAnalyzer.StockClasses
         public string ProgressName { get { return progressName; } set { if (value != progressName) { progressName = value; NotifyPropertyChanged("ProgressName"); } } }
 
         private readonly string fileName;
-        private StockAlertLog(string fileName)
+        private StockAlertLog(string fileName, DateTime startDate)
         {
             this.lastRefreshDate = DateTime.MinValue;
             this.alerts = new ObservableCollection<StockAlert>();
             this.progressVisibility = false;
             this.fileName = fileName;
+            this.StartDate = startDate;
 
             this.Load();
 
@@ -78,7 +74,8 @@ namespace StockAnalyzer.StockClasses
 
         private static SortedDictionary<string, StockAlertLog> alertLogs = new SortedDictionary<string, StockAlertLog>();
 
-        public static StockAlertLog Load(string fileName)
+        private DateTime StartDate { get; set; }
+        public static StockAlertLog Load(string fileName, DateTime startDate)
         {
             if (alertLogs.ContainsKey(fileName))
             {
@@ -86,7 +83,7 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                return new StockAlertLog(fileName);
+                return new StockAlertLog(fileName, startDate);
             }
         }
 
@@ -102,9 +99,10 @@ namespace StockAnalyzer.StockClasses
                 LastRefreshDate = DateTime.MinValue;
                 return;
             }
-            using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
+
+            try
             {
-                try
+                using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
                 {
                     System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
                     {
@@ -112,13 +110,14 @@ namespace StockAnalyzer.StockClasses
                     };
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName).ThenBy(a=>a.StockName));
+                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName).ThenBy(a => a.StockName));
                 }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading alert file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                    this.Alerts.Clear();
-                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading alert file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                this.Alerts.Clear();
+                File.Delete(filepath);
             }
         }
 
@@ -135,8 +134,7 @@ namespace StockAnalyzer.StockClasses
                 };
                 System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                 XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                DateTime limitDate = DateTime.Today.AddDays(-7);
-                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= limitDate).OrderByDescending(a => a.Date).ThenBy(a => a.Alert).ThenBy(a => a.StockName));
+                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.Alert).ThenBy(a => a.StockName));
                 serializer.Serialize(xmlWriter, this.alerts);
             }
         }
@@ -162,5 +160,7 @@ namespace StockAnalyzer.StockClasses
         {
             return LastRefreshDate >= date;
         }
+
+        public string FileName => fileName;
     }
 }

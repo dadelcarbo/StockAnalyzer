@@ -452,7 +452,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -569,7 +569,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -692,7 +692,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public bool GenerateERBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateERBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -814,7 +814,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateVarBreadthSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateVarBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -932,7 +932,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -1054,7 +1054,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateBullishOverboughtSerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateBullishOverboughtSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -1176,7 +1176,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateTOPEMASerie(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateTOPEMASerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))
@@ -1262,7 +1262,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (index != -1)
                     {
-                        serie.BarDuration = StockSerie.StockBarDuration.Daily_EMA20;
+                        serie.BarDuration = barDuration;
                         IStockIndicator trailStop = serie.GetIndicator("TOPEMA(0,30,1)");
                         if (trailStop != null && trailStop.Events[0].Count > 0)
                         {
@@ -1301,7 +1301,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockSerie.StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
             if (this.ContainsKey(indexName))
@@ -2259,125 +2259,6 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateCorrelationSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
-        {
-            StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
-            {
-                indiceSerie = this[indexName];
-                if (!indiceSerie.Initialise())
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-
-            StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
-
-            DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
-            DateTime lastBreadthDate = DateTime.MinValue;
-
-            // Check if serie has been already generated
-            if (breadthSerie.Count > 0)
-            {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                if (lastIndiceDate <= lastBreadthDate)
-                {
-                    // The breadth serie is up to date
-                    return true;
-                }
-                // Check if latest value is intraday data
-                if (lastIndiceDate.TimeOfDay > TimeSpan.Zero)
-                {
-                    // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
-                    if (lastIndiceDate.Date == lastBreadthDate.Date)
-                    {
-                        breadthSerie.Remove(lastBreadthDate);
-                        lastBreadthDate = breadthSerie.Keys.Last();
-                    }
-                }
-            }
-            #region Load component series
-            foreach (StockSerie serie in indexComponents)
-            {
-                if (this.ReportProgress != null)
-                {
-                    this.ReportProgress("Loading data for " + serie.StockName);
-                }
-                serie.Initialise();
-            }
-            #endregion
-            long vol, upVol;
-            int tick, upTick;
-            float val, count;
-            foreach (StockDailyValue indexDailyValue in indiceSerie.Values)
-            {
-                if (indexDailyValue.DATE <= lastBreadthDate)
-                {
-                    continue;
-                }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
-                if (this.ReportProgress != null)
-                {
-                    this.ReportProgress(indexDailyValue.DATE.ToShortDateString());
-                }
-
-                bool isIntraday = false;
-                if (indexDailyValue.DATE.TimeOfDay != TimeSpan.Zero)
-                {
-                    isIntraday = true;
-                }
-                int index = -1;
-                foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
-                {
-                    index = -1;
-                    if (isIntraday && serie.Keys.Last().Date == lastIndiceDate.Date)
-                    {
-                        index = serie.Keys.Count - 1;
-                    }
-                    else
-                    {
-                        index = serie.IndexOf(indexDailyValue.DATE);
-                    }
-                    if (index != -1)
-                    {
-                        if (serie.GetSerie(StockIndicatorType.VARIATION_REL)[index] * indexDailyValue.VARIATION >= 0)
-                        {
-                            val++;
-                        }
-                        else
-                        {
-                            val--;
-                        }
-                        count++;
-                    }
-                }
-                if (count != 0)
-                {
-                    val /= count;
-                    breadthSerie.Add(indexDailyValue.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, indexDailyValue.DATE));
-                }
-            }
-            if (breadthSerie.Count == 0)
-            {
-                this.Remove(breadthSerie.StockName);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(destinationFolder))
-                {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.StockName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup.ToString() + ".csv", ArchiveEndDate, false);
-                }
-                if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
-                {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.StockName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup.ToString() + ".csv", ArchiveEndDate, true);
-                }
-            }
-            return true;
-        }
         #endregion
         #region ANALYSIS SERIALISATION
         public void ReadAnalysisFromXml(System.Xml.XmlReader reader)
@@ -2423,7 +2304,6 @@ namespace StockAnalyzer.StockClasses
             writer.Flush();
         }
         #endregion
-
 
         public bool GenerateTrinSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
@@ -2542,107 +2422,6 @@ namespace StockAnalyzer.StockClasses
                 }
             }
             return true;
-        }
-        public void GenerateHighLowDistributionInMonth()
-        {
-            var stockSeries = this.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && !s.StockAnalysis.Excluded && s.Initialise());
-
-            int currentMonth = 1;
-            int lowIndex = 1;
-            int highIndex = 1;
-            float low = float.MaxValue;
-            float high = float.MinValue;
-            int[] highDistrib = new int[32];
-            int[] lowDistrib = new int[32];
-            foreach (var serie in stockSeries)
-            {
-                currentMonth = serie.Keys.First().Month;
-                foreach (var value in serie.Values)
-                {
-                    if (value.DATE.Month == currentMonth)
-                    {
-                        if (value.LOW < low)
-                        {
-                            low = value.LOW;
-                            lowIndex = value.DATE.Day;
-                        }
-                        if (value.HIGH > high)
-                        {
-                            high = value.HIGH;
-                            highIndex = value.DATE.Day;
-                        }
-                    }
-                    else
-                    {
-                        highDistrib[highIndex]++;
-                        lowDistrib[lowIndex]++;
-                        currentMonth = value.DATE.Month;
-                        lowIndex = value.DATE.Day;
-                        highIndex = value.DATE.Day;
-                        low = value.LOW;
-                        high = value.HIGH;
-                    }
-                }
-            }
-            Console.WriteLine("Month distrib start");
-            for (int i = 1; i < 32; i++)
-            {
-                Console.WriteLine(i.ToString() + ";" + highDistrib[i] + ";" + lowDistrib[i]);
-            }
-            Console.WriteLine("Month distrib end");
-        }
-
-        public void GenerateHighLowDistributionIntraday()
-        {
-            var stockSeries = this.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.INTRADAY) && !s.StockAnalysis.Excluded
-                && !s.StockName.StartsWith("INT_FX")
-                && !s.StockName.StartsWith("INT_FUT")
-                && !s.StockName.StartsWith("INT_IND")
-                && s.Initialise());
-
-            int currentDay = 1;
-            int lowIndex = 1;
-            int highIndex = 1;
-            float low = float.MaxValue;
-            float high = float.MinValue;
-            int[] highDistrib = new int[32];
-            int[] lowDistrib = new int[32];
-            foreach (var serie in stockSeries.Where(s => s.Count > 0))
-            {
-                currentDay = serie.Keys.First().Day;
-                foreach (var value in serie.Values)
-                {
-                    if (value.DATE.Day == currentDay)
-                    {
-                        if (value.LOW < low)
-                        {
-                            low = value.LOW;
-                            lowIndex = value.DATE.Hour;
-                        }
-                        if (value.HIGH > high)
-                        {
-                            high = value.HIGH;
-                            highIndex = value.DATE.Hour;
-                        }
-                    }
-                    else
-                    {
-                        highDistrib[highIndex]++;
-                        lowDistrib[lowIndex]++;
-                        currentDay = value.DATE.Day;
-                        highIndex = value.DATE.Hour;
-                        lowIndex = value.DATE.Hour;
-                        low = value.LOW;
-                        high = value.HIGH;
-                    }
-                }
-            }
-            Console.WriteLine("Intraday distrib start");
-            for (int i = 1; i < 32; i++)
-            {
-                Console.WriteLine(i.ToString() + ";" + highDistrib[i] + ";" + lowDistrib[i]);
-            }
-            Console.WriteLine("Intraday distrib end");
         }
     }
 }

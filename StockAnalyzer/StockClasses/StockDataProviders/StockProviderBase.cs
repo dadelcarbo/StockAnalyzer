@@ -1,13 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
-using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -15,21 +11,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        static public StockSerie.StockBarDuration[] cacheDurations = new StockSerie.StockBarDuration[]
+        static public StockBarDuration[] cacheDurations = new StockBarDuration[]
                   {
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_3D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_6D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.TLB_27D,
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_3, // 15 Min
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_6, // 30 Min
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_12,// 1h
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_24,// 2h
-                     StockAnalyzer.StockClasses.StockSerie.StockBarDuration.Bar_48 // 4h
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_3D,
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_6D,
+                     StockAnalyzer.StockClasses.StockBarDuration.TLB_9D,
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_3, // 15 Min
+                     StockAnalyzer.StockClasses.StockBarDuration.Bar_6, // 30 Min
                   };
 
         public const int ARCHIVE_START_YEAR = 1999;
-        public const int LOAD_START_YEAR = 2006;
+        public const int LOAD_START_YEAR = 1999;
+
+        private static string rootFolder = null;
+        public static string RootFolder
+        {
+            get
+            {
+                if (rootFolder == null) rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder;
+                return rootFolder;
+            }
+            set
+            {
+                rootFolder = value;
+            }
+        }
 
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\data\daily";
@@ -88,7 +94,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return dataProvider.LoadData(rootFolder, serie);
             }
         }
-        public static bool LoadIntradayDurationArchive(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+        public static bool LoadIntradayDurationArchive(string rootFolder, StockSerie serie, StockBarDuration duration)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
@@ -109,18 +115,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                case StockDataProvider.Yahoo:
-                    dataProvider = new YahooDataProvider();
-                    break;
-                case StockDataProvider.YahooIntraday:
-                    dataProvider = new YahooIntradayDataProvider();
-                    break;
-                case StockDataProvider.Google:
-                    dataProvider = new GoogleDataProvider();
-                    break;
-                case StockDataProvider.GoogleIntraday:
-                    dataProvider = new GoogleIntradayDataProvider();
-                    break;
+                //case StockDataProvider.Yahoo:
+                //    dataProvider = new YahooDataProvider();
+                //    break;
+                //case StockDataProvider.YahooIntraday:
+                //    dataProvider = new YahooIntradayDataProvider();
+                //    break;
+                //case StockDataProvider.Google:
+                //    dataProvider = new GoogleDataProvider();
+                //    break;
+                //case StockDataProvider.GoogleIntraday:
+                //    dataProvider = new GoogleIntradayDataProvider();
+                //    break;
                 case StockDataProvider.CommerzBankIntraday:
                     dataProvider = new CommerzBankIntradayDataProvider();
                     break;
@@ -133,9 +139,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Harpex:
                     dataProvider = new HarpexDataProvider();
                     break;
-                case StockDataProvider.COT:
-                    dataProvider = new COTDataProvider();
-                    break;
+                //case StockDataProvider.COT:
+                //    dataProvider = new COTDataProvider();
+                //    break;
                 case StockDataProvider.Portofolio:
                     dataProvider = new PortfolioDataProvider();
                     break;
@@ -154,11 +160,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Ratio:
                     dataProvider = new RatioDataProvider();
                     break;
-                case StockDataProvider.NASDACQShortInterest:
-                    //dataProvider = new NASDACQShortInterestDataProvider();
-                    break;
-                case StockDataProvider.BarChart:
-                    dataProvider = new BarChartDataProvider();
+                //case StockDataProvider.NASDACQShortInterest:
+                //    //dataProvider = new NASDACQShortInterestDataProvider();
+                //    break;
+                //case StockDataProvider.BarChart:
+                //    dataProvider = new BarChartDataProvider();
+                //    break;
+                case StockDataProvider.Investing:
+                    dataProvider = new InvestingDataProvider();
                     break;
                 case StockDataProvider.InvestingIntraday:
                     dataProvider = new InvestingIntradayDataProvider();
@@ -182,8 +191,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                StockSerie.StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = StockSerie.StockBarDuration.Daily;
+                StockBarDuration currentBarDuration = serie.BarDuration;
+                serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
                 bool res = dataProvider.DownloadDailyData(rootFolder, serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
@@ -220,11 +229,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (configDialogs == null)
             {
                 configDialogs = new List<IConfigDialog>();
-                configDialogs.Add((IConfigDialog)new YahooDataProvider());
-                configDialogs.Add((IConfigDialog)new YahooIntradayDataProvider());
-                configDialogs.Add((IConfigDialog)new GoogleDataProvider());
-                configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
+                //configDialogs.Add((IConfigDialog)new YahooDataProvider());
+                //configDialogs.Add((IConfigDialog)new YahooIntradayDataProvider());
+                //configDialogs.Add((IConfigDialog)new GoogleDataProvider());
+                //configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
                 configDialogs.Add((IConfigDialog)new ABCDataProvider());
+                configDialogs.Add((IConfigDialog)new InvestingIntradayDataProvider());
+                configDialogs.Add((IConfigDialog)new InvestingDataProvider());
             }
             return configDialogs;
         }
@@ -489,7 +500,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #endregion
 
 
-        public virtual bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockSerie.StockBarDuration duration)
+        public virtual bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration)
         {
             return false;
         }

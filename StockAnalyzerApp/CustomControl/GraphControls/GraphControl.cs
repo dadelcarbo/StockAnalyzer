@@ -169,6 +169,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Brush redBrush = new SolidBrush(Color.FromArgb(30, Color.Red));
         static protected Brush textBrush = Brushes.Black;
 
+        static protected Pen entryPen = new Pen(Color.Black, 1.0f);
+        static protected Pen stopPen = new Pen(Color.DarkRed, 1.0f);
+        static protected Pen target1Pen = new Pen(Color.Green, 1.0f);
+        static protected Pen target2Pen = new Pen(Color.DarkGreen, 1.0f);
+
         protected bool mouseDown = false;
 
         protected Brush backgroundBrush;
@@ -547,7 +552,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
 
                 #region Draw vertical lines
-                if (this.ShowGrid)
+                if (this.ShowGrid && this.matrixValueToScreen != null)
                 {
                     DrawVerticalGridLines(aGraphic, false, this.StartIndex, this.EndIndex);
                 }
@@ -629,7 +634,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         if (stockIndicator is IRange)
                                         {
                                             var range = stockIndicator as IRange;
-                                            center = GetScreenPointFromValuePoint(0, (range.Max - range.Min) / 2.0f);
+                                            center = GetScreenPointFromValuePoint(0, (range.Max + range.Min) / 2.0f);
                                         }
                                         int pointIndex = 0;
                                         float barWidth = Math.Max(1f, 0.80f * GraphRectangle.Width / (float)points.Count());
@@ -1005,7 +1010,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (mouseDown)
                         {
-                            DrawSelectionZone(e);
+                            DrawSelectionZone(e, key);
                         }
                         else
                         {
@@ -1129,7 +1134,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         static float[] fibonacciRetracements = new float[] { 0.236f, 0.382f, 0.5f, 0.618f, 0.764f };
-        protected void DrawSelectionZone(System.Windows.Forms.MouseEventArgs e)
+        static bool drawFibo = false;
+        protected void DrawSelectionZone(System.Windows.Forms.MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
@@ -1144,67 +1150,124 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 float variation = (newValue.Y - initialValue.Y) / initialValue.Y;
                 float points = newValue.Y - initialValue.Y;
 
-                // Draw selection zone and Finbonacci retracements
-                float fiboY = 0.0f;
-                if (e.Location.Y < mouseDownPos.Y)
+                if ((key & Keys.Shift) == 0)
                 {
-                    // Draw selection zone
-                    this.foregroundGraphic.FillRectangle(greenBrush, x, y, width, height);
-                    this.foregroundGraphic.DrawRectangle(greenPen, x, y, width, height);
-
-                    // Draw Fibonacci
-                    if (height >= 30)
+                    // Draw selection zone and Fibonacci retracements
+                    float fiboY = 0.0f;
+                    if (e.Location.Y < mouseDownPos.Y)
                     {
-                        foreach (float fibo in fibonacciRetracements)
+                        // Draw selection zone
+                        this.foregroundGraphic.FillRectangle(greenBrush, x, y, width, height);
+                        this.foregroundGraphic.DrawRectangle(greenPen, x, y, width, height);
+
+                        // Draw Fibonacci
+                        if (height >= 30)
                         {
-                            fiboY = y + height * fibo;
-                            string fiboString = fibo.ToString("P2");
-                            this.DrawString(foregroundGraphic, fiboString, axisFont, Brushes.Green, this.backgroundBrush, x - 36, fiboY - 5, false);
-                            if (fibo == 0.5f)
+                            foreach (float fibo in fibonacciRetracements)
                             {
-                                greenPen.Width = 2;
+                                fiboY = y + height * fibo;
+                                string fiboString = fibo.ToString("P2");
+                                this.DrawString(foregroundGraphic, fiboString, axisFont, Brushes.Green, this.backgroundBrush, x - 36, fiboY - 5, false);
+                                if (fibo == 0.5f)
+                                {
+                                    greenPen.Width = 2;
+                                }
+                                else
+                                {
+                                    greenPen.Width = 1;
+                                }
+                                this.foregroundGraphic.DrawLine(greenPen, x, fiboY, x + width, fiboY);
                             }
-                            else
-                            {
-                                greenPen.Width = 1;
-                            }
-                            this.foregroundGraphic.DrawLine(greenPen, x, fiboY, x + width, fiboY);
                         }
                     }
+                    else
+                    {
+                        this.foregroundGraphic.FillRectangle(redBrush, x, y, width, height);
+                        this.foregroundGraphic.DrawRectangle(redPen, x, y, width, height);
+
+                        // Draw Fibonacci
+                        if (height >= 30)
+                        {
+                            foreach (float fibo in fibonacciRetracements)
+                            {
+                                fiboY = y + height * (1.0f - fibo);
+                                this.foregroundGraphic.DrawString(fibo.ToString("P2"), axisFont, Brushes.Red, x - 36, fiboY - 5);
+                                if (fibo == 0.5f)
+                                {
+                                    redPen.Width = 2;
+                                }
+                                else
+                                {
+                                    redPen.Width = 1;
+                                }
+                                this.foregroundGraphic.DrawLine(redPen, x, fiboY, x + width, fiboY);
+                            }
+                        }
+                    }
+
+                    // Display tooltip
+                    PointF fiboPoint = this.GetValuePointFromScreenPoint(0, e.Location.Y);
+                    this.DrawString(foregroundGraphic,
+                        "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
+                        "Value:\t" + fiboPoint.Y.ToString("#.###") + "   " + Environment.NewLine +
+                        "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
+                        "Diff:\t" + points.ToString("0.##"),
+                        toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
                 }
                 else
                 {
-                    this.foregroundGraphic.FillRectangle(redBrush, x, y, width, height);
-                    this.foregroundGraphic.DrawRectangle(redPen, x, y, width, height);
-
-                    // Draw Fibonacci
-                    if (height >= 30)
+                    int stop, entry, target1, target2;
+                    if (e.Location.Y < mouseDownPos.Y)
                     {
-                        foreach (float fibo in fibonacciRetracements)
-                        {
-                            fiboY = y + height * (1.0f - fibo);
-                            this.foregroundGraphic.DrawString(fibo.ToString("P2"), axisFont, Brushes.Red, x - 36, fiboY - 5);
-                            if (fibo == 0.5f)
-                            {
-                                redPen.Width = 2;
-                            }
-                            else
-                            {
-                                redPen.Width = 1;
-                            }
-                            this.foregroundGraphic.DrawLine(redPen, x, fiboY, x + width, fiboY);
-                        }
+                        // Draw selection zone
+                        stop = y + 2 * height;
+                        entry = y + height;
+                        target1 = y;
+                        target2 = y - height;
+                        this.foregroundGraphic.DrawLine(stopPen, x - width, stop, x + width, stop); // Stop
+                        this.foregroundGraphic.DrawLine(entryPen, x - width, entry, x + width, entry); // Entry
+                        this.foregroundGraphic.DrawLine(target1Pen, x - width, target1, x + width, target1); // Target1
+                        this.foregroundGraphic.DrawLine(target2Pen, x - width, target2, x + width, target2); // Target2
+
+                        this.foregroundGraphic.FillRectangle(redBrush, x - width, entry, width * 2, height);
+                        this.foregroundGraphic.FillRectangle(greenBrush, x - width, target1, width * 2, height);
+                        this.foregroundGraphic.FillRectangle(greenBrush, x - width, target2, width * 2, height * 2);
+
+                        this.DrawString(foregroundGraphic,
+                            "T2:\t" + this.GetValuePointFromScreenPoint(0, target2).Y.ToString("#.###") + Environment.NewLine +
+                            "T1:\t" + this.GetValuePointFromScreenPoint(0, target1).Y.ToString("#.###") + Environment.NewLine +
+                            "Entry:\t" + this.GetValuePointFromScreenPoint(0, entry).Y.ToString("#.###") + Environment.NewLine +
+                            "Stop:\t" + this.GetValuePointFromScreenPoint(0, stop).Y.ToString("#.###") + Environment.NewLine +
+                            "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
+                            "Diff:\t" + points.ToString("0.##"),
+                            toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
+                    }
+                    else
+                    {
+                        // Draw selection zone
+                        stop = y - height;
+                        entry = y;
+                        target1 = y + height;
+                        target2 = y + 2 * height;
+                        this.foregroundGraphic.DrawLine(target2Pen, x - width, target2, x + width, target2); // Target2
+                        this.foregroundGraphic.DrawLine(target2Pen, x - width, y + height, x + width, y + height); // Target1
+                        this.foregroundGraphic.DrawLine(entryPen, x - width, y, x + width, y); // Entry
+                        this.foregroundGraphic.DrawLine(stopPen, x - width, y - height, x + width, y - height); // Stop
+
+                        this.foregroundGraphic.FillRectangle(redBrush, x - width, stop, width * 2, height);
+                        this.foregroundGraphic.FillRectangle(greenBrush, x - width, entry, width * 2, height * 2);
+                        this.foregroundGraphic.FillRectangle(greenBrush, x - width, entry, width * 2, height);
+
+                        this.DrawString(foregroundGraphic,
+                            "Stop:\t" + this.GetValuePointFromScreenPoint(0, stop).Y.ToString("#.###") + Environment.NewLine +
+                            "Entry:\t" + this.GetValuePointFromScreenPoint(0, entry).Y.ToString("#.###") + Environment.NewLine +
+                            "T1:\t" + this.GetValuePointFromScreenPoint(0, target1).Y.ToString("#.###") + Environment.NewLine +
+                            "T2:\t" + this.GetValuePointFromScreenPoint(0, target2).Y.ToString("#.###") + Environment.NewLine +
+                            "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
+                            "Diff:\t" + points.ToString("0.##"),
+                            toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
                     }
                 }
-                // Display tooltip
-                PointF fiboPoint = this.GetValuePointFromScreenPoint(0, e.Location.Y);
-                this.DrawString(foregroundGraphic,
-                    "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
-                    "Value:\t" + fiboPoint.Y.ToString("#.###") + "   " + Environment.NewLine +
-                    "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
-                    "Diff:\t" + points.ToString("0.##"),
-                    toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
-
                 // force the value box not to display.
                 forceNoValueBoxDisplay = true;
             }

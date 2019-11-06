@@ -1,53 +1,51 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
-   public partial class AlertDlg : Form
-   {
-      private StockAlertLog alertLog;
-      private AlertControl alertControl;
+    public partial class AlertDlg : Form
+    {
+        private AlertControl alertControl;
+        StockAlertConfig alertConfig;
 
-      public AlertDlg(StockAlertLog log)
-      {
-         InitializeComponent();
+        public AlertDlg(StockAlertConfig alertCfg)
+        {
+            InitializeComponent();
 
-         this.alertControl = this.elementHost1.Child as AlertControl;
+            this.alertControl = this.elementHost1.Child as AlertControl;
+            this.alertConfig = alertCfg;
+            this.alertControl.SelectedTimeFrame = alertCfg;
 
-         alertLog = log;
-         this.alertControl.DataContext = alertLog;
+            StockAnalyzerForm.MainFrame.AlertDetected += MainFrame_AlertDetected;
+            StockAnalyzerForm.MainFrame.AlertDetectionProgress += MainFrame_AlertDetectionProgress;
+            StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;            
+        }
 
-         StockAnalyzerForm.MainFrame.AlertDetected += MainFrame_AlertDetected;
-         StockAnalyzerForm.MainFrame.AlertDetectionProgress += MainFrame_AlertDetectionProgress;
-         StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;
-      }
+        public AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)
+        {
+            throw new NotImplementedException("AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)");
+        }
 
-      void MainFrame_AlertDetectionProgress(string stockName)
-      {
-         alertLog.ProgressName = stockName;
-         alertLog.ProgressValue ++;
-      }
+        void MainFrame_AlertDetectionProgress(string stockName)
+        {
+            alertConfig.AlertLog.ProgressName = stockName;
+            alertConfig.AlertLog.ProgressValue++;
+        }
 
-      void MainFrame_AlertDetectionStarted(int nbStock)
-      {
-         alertLog.ProgressValue = 0;
-         alertLog.ProgressMax = nbStock;
-         alertLog.ProgressVisibility = true;
-      }
-      
-      void MainFrame_AlertDetected()
-      {
-         this.Activate();
-         alertLog.ProgressValue = 0;
-         alertLog.ProgressVisibility = false;
-      }
-   }
+        void MainFrame_AlertDetectionStarted(int nbStock)
+        {
+            alertConfig.AlertLog.ProgressValue = 0;
+            alertConfig.AlertLog.ProgressMax = nbStock;
+            alertConfig.AlertLog.ProgressVisibility = true;
+        }
+
+        void MainFrame_AlertDetected()
+        {
+            this.Activate();
+            alertConfig.AlertLog.ProgressValue = 0;
+            alertConfig.AlertLog.ProgressVisibility = false;
+        }
+    }
 }

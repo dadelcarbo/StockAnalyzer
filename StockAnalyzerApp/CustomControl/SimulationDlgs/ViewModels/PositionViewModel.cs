@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
 {
@@ -82,25 +83,31 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
 
         public void AddStop(float value)
         {
-            this.StopOrder = new OrderViewModel()
+            var stopOrder = this.Orders.FirstOrDefault(o => o.Category == OrderCategory.Stop);
+            if (stopOrder == null)
             {
-                Number = this.number,
-                Category = OrderCategory.Stop,
-                Type = this.Number > 0 ? OrderType.Long : OrderType.Short,
-                Value = value
-            };
-            this.Orders.Add(this.StopOrder);
+                stopOrder = new OrderViewModel();
+                this.Orders.Add(stopOrder);
+            }
+            stopOrder.Number = this.number;
+            stopOrder.Category = OrderCategory.Stop;
+            stopOrder.Type = this.Number > 0 ? OrderType.Long : OrderType.Short;
+            stopOrder.Value = value;
         }
         public void AddTarget(float value, int qty)
         {
-            this.TargetOrder = new OrderViewModel()
+
+            var targetOrder = this.Orders.FirstOrDefault(o => o.Category == OrderCategory.Target);
+            if (targetOrder == null)
             {
-                Number = qty,
-                Category = OrderCategory.Target,
-                Type = this.Number > 0 ? OrderType.Long : OrderType.Short,
-                Value = value
-            };
-            this.Orders.Add(this.TargetOrder);
+                targetOrder = new OrderViewModel();
+                this.Orders.Add(targetOrder);
+            }
+            this.TargetOrder = targetOrder;
+            targetOrder.Number = qty;
+            targetOrder.Category = OrderCategory.Target;
+            targetOrder.Type = this.Number > 0 ? OrderType.Long : OrderType.Short;
+            targetOrder.Value = value;
         }
 
         private StockDailyValue currentValue;
@@ -201,6 +208,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
                     if (TargetOrder.Number == this.Number)
                     {
                         addedValue = (currentValue.CLOSE - this.openValue) * this.number;
+                        addedValue = (currentValue.CLOSE - this.openValue) * this.number;
                         this.Close();
                     }
                     else
@@ -216,5 +224,5 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             return 0.0f;
         }
     }
-        #endregion
+    #endregion
 }
