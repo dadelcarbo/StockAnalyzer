@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Linq.Mapping;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using Ionic.Zip;
 using StockAnalyzer.StockLogging;
-using System.Net.Http;
 
 namespace StockAnalyzer.StockWeb
 {

@@ -109,18 +109,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                //case StockDataProvider.Yahoo:
-                //    dataProvider = new YahooDataProvider();
-                //    break;
-                //case StockDataProvider.YahooIntraday:
-                //    dataProvider = new YahooIntradayDataProvider();
-                //    break;
-                //case StockDataProvider.Google:
-                //    dataProvider = new GoogleDataProvider();
-                //    break;
-                //case StockDataProvider.GoogleIntraday:
-                //    dataProvider = new GoogleIntradayDataProvider();
-                //    break;
+                case StockDataProvider.Yahoo:
+                    dataProvider = new YahooDataProvider();
+                    break;
+                case StockDataProvider.YahooIntraday:
+                    dataProvider = new YahooIntradayDataProvider();
+                    break;
+                case StockDataProvider.Google:
+                    dataProvider = new GoogleDataProvider();
+                    break;
+                case StockDataProvider.GoogleIntraday:
+                    dataProvider = new GoogleIntradayDataProvider();
+                    break;
                 case StockDataProvider.CommerzBankIntraday:
                     dataProvider = new CommerzBankIntradayDataProvider();
                     break;
@@ -133,9 +133,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Harpex:
                     dataProvider = new HarpexDataProvider();
                     break;
-                //case StockDataProvider.COT:
-                //    dataProvider = new COTDataProvider();
-                //    break;
+                case StockDataProvider.COT:
+                    dataProvider = new COTDataProvider();
+                    break;
                 case StockDataProvider.Portofolio:
                     dataProvider = new PortfolioDataProvider();
                     break;
@@ -154,9 +154,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Ratio:
                     dataProvider = new RatioDataProvider();
                     break;
-                //case StockDataProvider.NASDACQShortInterest:
-                //    //dataProvider = new NASDACQShortInterestDataProvider();
-                //    break;
+                case StockDataProvider.NASDACQShortInterest:
+                    //dataProvider = new NASDACQShortInterestDataProvider();
+                    break;
                 case StockDataProvider.BarChart:
                     dataProvider = new BarChartDataProvider();
                     break;
@@ -220,10 +220,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (configDialogs == null)
             {
                 configDialogs = new List<IConfigDialog>();
-                //configDialogs.Add((IConfigDialog)new YahooDataProvider());
-                //configDialogs.Add((IConfigDialog)new YahooIntradayDataProvider());
-                //configDialogs.Add((IConfigDialog)new GoogleDataProvider());
-                //configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
+                configDialogs.Add((IConfigDialog)new YahooDataProvider());
+                configDialogs.Add((IConfigDialog)new YahooIntradayDataProvider());
+                configDialogs.Add((IConfigDialog)new GoogleDataProvider());
+                configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
                 configDialogs.Add((IConfigDialog)new ABCDataProvider());
             }
             return configDialogs;

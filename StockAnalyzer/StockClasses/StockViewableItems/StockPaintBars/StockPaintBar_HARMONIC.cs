@@ -53,7 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
             DrawingItem.CreatePersistent = false;
             int hlPeriod = (int)this.parameters[0];
-            var points = stockSerie.generateZigzagPoints(1, stockSerie.Count - 1, hlPeriod);
+            var points = stockSerie.generateZigzagPoints(0, stockSerie.Count - 1, hlPeriod);
 
             IStockEvent events = stockSerie.GetTrailStop("TRAILEMA(" + hlPeriod + ")");
             BoolSerie supportDetected = events.Events[0];
