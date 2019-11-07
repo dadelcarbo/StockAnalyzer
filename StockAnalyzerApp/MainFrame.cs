@@ -676,7 +676,7 @@ namespace StockAnalyzerApp
             refreshTimer.Start();
 
             #region DailyAlerts
-            
+
             if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
                 GenerateAlert(dailyAlertConfig.AlertDefs, dailyAlertConfig.AlertLog);
@@ -4780,6 +4780,11 @@ border:1px solid black;
                             ZoomIn();
                         }
                         break;
+                    case Keys.Control | Keys.F2:
+                        {
+                            this.GenerateTrainingData();
+                        }
+                        break;
                     case Keys.F2:
                         {
                             this.portfolioRiskManager_Click(null, null);
@@ -4966,7 +4971,31 @@ border:1px solid black;
                 Console.WriteLine(i.ToString() + "," + histogram[i]);
             }
         }
+        private void GenerateTrainingData()
+        {
+            var fileName = Path.Combine(Settings.Default.RootFolder, this.selectedGroup.ToString() + "_Train.csv");
+            using (var fs = new StreamWriter(fileName, false))
+            {
+                fs.WriteLine("Name,Index,Close,Var,indic1,indic2,indic3,indic4,indic5,indic6");
+                foreach (var stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise()).Take(1))
+                {
+                    stockSerie.BarDuration = this.BarDuration;
+                    var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                    var varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
+                    var indic1 = (stockSerie.GetIndicator("STOKS(14,3,3)").Series[0] - 50.0f)/50f;
+                    var indic2 = (stockSerie.GetIndicator("STOKS(42,3,3)").Series[0] - 50.0f) / 50f;
+                    var indic3 = (stockSerie.GetIndicator("STOKS(126, 3, 3)").Series[0] - 50.0f) / 50f;
+                    var indic4 = stockSerie.GetIndicator("SPEED(EMA(20),1)").Series[0];
+                    var indic5 = stockSerie.GetIndicator("SPEED(EMA(60),1)").Series[0];
+                    var indic6 = stockSerie.GetIndicator("SPEED(EMA(120),1)").Series[0];
+                    for (int i = 120; i < stockSerie.Count; i++)
+                    {
+                        fs.WriteLine($"{stockSerie.StockName},{i},{closeSerie[i]},{varSerie[i]},{indic1[i]},{indic2[i]},{indic3[i]},{indic4[i]},{indic5[i]},{indic6[i]}");
+                    }
+                }
+            }
 
+        }
         private void GenerateHistogram()
         {
             SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
