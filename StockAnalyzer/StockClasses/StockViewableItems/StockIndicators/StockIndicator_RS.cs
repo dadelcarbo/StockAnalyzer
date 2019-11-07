@@ -6,33 +6,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_RS : StockIndicatorBase
     {
-        public override string Definition => "Show relative strength compare to another serie or indice";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "StockName", "FastSmoothing", "SlowSmoothing" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { "CAC40", 1, 9 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeStockName(), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] SerieNames
-        {
-            get
-            {
-                return new string[] {
+        public override string Definition => base.Definition + Environment.NewLine + "Show relative strength compare to another serie or indice";
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
+        public override string[] ParameterNames => new string[] { "StockName", "FastSmoothing", "SlowSmoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { "CAC40", 1, 9 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeStockName(), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override string[] SerieNames => new string[] {
             this.Parameters[0].ToString(),
             this.Parameters[0].ToString() + $"({(int)this.parameters[1]})",
             this.Parameters[0].ToString() + $"({(int)this.parameters[2]})" };
-            }
-        }
         public override System.Drawing.Pen[] SeriePens
         {
             get

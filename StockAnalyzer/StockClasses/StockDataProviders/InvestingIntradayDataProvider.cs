@@ -188,7 +188,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
             }
-            return stockSerie.Count>0;
+            return stockSerie.Count > 0;
         }
 
         public string FormatIntradayURL(long ticker, DateTime startDate)
@@ -215,7 +215,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 if (File.Exists(fileName))
                 {
-                    if (first && File.GetLastWriteTime(fileName) > DateTime.Now.AddHours(-4))
+                    var lastWriteTime = File.GetLastWriteTime(fileName);
+                    if (first && lastWriteTime > DateTime.Now.AddHours(-4)
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date > DateTime.Today.AddDays(-1))
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date > DateTime.Today))
                     {
                         first = false;
                         return false;

@@ -130,12 +130,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
              "BrokenUp", "BrokenDown",           // 0,1
              "Pullback", "EndOfTrend",           // 2,3
              "HigherLow", "LowerHigh",           // 4,5
-             "Bullish", "Bearish"                // 6,7
+             "Bullish", "Bearish",                // 6,7
+             "LH_HL", "HL_LH"                // 8,9
           };
 
         public string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true };
         public bool[] IsEvent => isEvent;
 
         protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
@@ -149,6 +150,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             bool waitingForEndOfTrend = false;
             bool isBullish = false;
             bool isBearish = false;
+            bool afterLH = false;
+            bool afterHL = false;
             for (int i = 5; i < stockSerie.Count; i++)
             {
                 if (!float.IsNaN(longStopSerie[i]) && float.IsNaN(longStopSerie[i - 1]))
@@ -164,12 +167,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (longStopSerie[i] > previousLow)
                     {
                         this.Events[4][i] = true; // HigherLow
+                        afterHL = true;
+                        if (afterLH)
+                            this.Events[8][i] = true; // LH_HL
 
                         if (longStopSerie[i] > previousHigh2)
                         {
                             this.Events[2][i] = true; // PB
                             waitingForEndOfTrend = true;
                         }
+                    }
+                    else
+                    {
+                        afterHL = false;
                     }
                     previousLow2 = previousLow;
                     previousLow = longStopSerie[i];
@@ -187,11 +197,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (shortStopSerie[i] < previousHigh)
                     {
                         this.Events[5][i] = true; // LowerHigh
+                        afterLH = true;
+                        if (afterHL)
+                            this.Events[9][i] = true; // HL_LH
                         if (shortStopSerie[i] < previousLow2)
                         {
                             this.Events[2][i] = true; // PB
                             waitingForEndOfTrend = true;
                         }
+                    }
+                    else
+                    {
+                        afterLH = false;
                     }
                     previousHigh2 = previousHigh;
                     previousHigh = shortStopSerie[i];
