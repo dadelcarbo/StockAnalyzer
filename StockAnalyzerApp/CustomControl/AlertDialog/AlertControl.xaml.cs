@@ -43,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             }
             set
             {
-                if (selectedTimeFrame != value)
+                //if (selectedTimeFrame != value)
                 {
                     selectedTimeFrame = value;
                     this.TimeFrameComboBox.SelectedItem = selectedTimeFrame;

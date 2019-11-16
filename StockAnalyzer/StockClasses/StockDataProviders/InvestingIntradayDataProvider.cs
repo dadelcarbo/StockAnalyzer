@@ -216,9 +216,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (File.Exists(fileName))
                 {
                     var lastWriteTime = File.GetLastWriteTime(fileName);
-                    if (first && lastWriteTime > DateTime.Now.AddHours(-4)
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date > DateTime.Today.AddDays(-1))
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date > DateTime.Today))
+                    if (first && lastWriteTime > DateTime.Now.AddHours(-2)
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
                     {
                         first = false;
                         return false;

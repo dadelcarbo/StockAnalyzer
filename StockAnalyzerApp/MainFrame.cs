@@ -4572,8 +4572,6 @@ border:1px solid black;
             #endregion Extract Events
             return eventTypeString;
         }
-
-        private static int imageID = 0;
         private static void CleanReportFolder(string folderName)
         {
             if (System.IO.Directory.Exists(folderName))
