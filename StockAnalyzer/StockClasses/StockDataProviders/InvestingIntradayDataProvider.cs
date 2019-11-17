@@ -70,16 +70,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
             }
-            else
-            {
-                foreach (var file in Directory.GetFiles(rootFolder + INTRADAY_FOLDER))
-                {
-                    if (File.GetLastWriteTime(file).Date != DateTime.Today)
-                    {
-                        File.Delete(file);
-                    }
-                }
-            }
+            // Delete old files, why ?
+            //else
+            //{
+            //    foreach (var file in Directory.GetFiles(rootFolder + INTRADAY_FOLDER))
+            //    {
+            //        if (File.GetLastWriteTime(file).Date != DateTime.Today)
+            //        {
+            //            File.Delete(file);
+            //        }
+            //    }
+            //}
 
             // Parse CommerzBankDownload.cfg file
             this.needDownload = download;
