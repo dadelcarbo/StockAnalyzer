@@ -564,14 +564,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
 
                                 CandleStick candleStick = new CandleStick();
-                                candleStick.Width = 0.35f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count();
+                                candleStick.Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count());
                                 for (int i = 0; i < tmpPoints.Count(); i++)
                                 {
-                                    candleStick.X = tmpPoints[i].X;
-                                    candleStick.Close = tmpPoints[i].Y;
-                                    candleStick.High = tmpHighPoints[i].Y;
-                                    candleStick.Open = tmpOpenPoints[i].Y;
-                                    candleStick.Low = tmpLowPoints[i].Y;
+                                    candleStick.X = (int)tmpPoints[i].X;
+                                    candleStick.Close = (int)tmpPoints[i].Y;
+                                    candleStick.High = (int)tmpHighPoints[i].Y;
+                                    candleStick.Open = (int)tmpOpenPoints[i].Y;
+                                    candleStick.Low = (int)tmpLowPoints[i].Y;
 
                                     Color? color = null;
                                     if (!this.HideIndicators && this.CurveList.PaintBar != null)

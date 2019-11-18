@@ -997,7 +997,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 if (i % 8 == 0)
                 {
                     bar = new CandleStick((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y);
-                    bar.Width = 3f;
+                    bar.Width = 3;
                     bar.Draw(g, pen, null);
                     open = points[i].Y; min = double.MaxValue;
                     max = double.MinValue;
