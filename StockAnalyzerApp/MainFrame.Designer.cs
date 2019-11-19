@@ -1507,7 +1507,7 @@ namespace StockAnalyzerApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(975, 607);
+            this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.graphCloseControl);
             this.Controls.Add(this.graphScrollerControl);
             this.Controls.Add(this.graphIndicator1Control);
