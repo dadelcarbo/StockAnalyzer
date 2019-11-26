@@ -6,24 +6,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ATR : StockIndicatorBase
     {
-        public StockIndicator_ATR()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
         }
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 1 }; }
+            get { return new Object[] { 20 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period", "InputSmoothing" }; }
+            get { return new string[] { "Period"}; }
         }
 
         public override string[] SerieNames { get { return new string[] { "ATR(" + this.Parameters[0].ToString() + ")" }; } }
@@ -46,9 +43,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA((int)this.Parameters[1]);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA((int)this.Parameters[1]);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA((int)this.Parameters[1]);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             FloatSerie atrSerie = new FloatSerie(stockSerie.Count);
 
