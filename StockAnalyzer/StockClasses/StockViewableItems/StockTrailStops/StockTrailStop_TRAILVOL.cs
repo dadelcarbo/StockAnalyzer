@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILVOL : StockTrailStopBase
     {
-        public StockTrailStop_TRAILVOL()
-        {
-        }
         public override string Name
         {
             get { return "TRAILVOL(" + this.Parameters[0].ToString() + ")"; }

@@ -31,8 +31,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             //"Pullback", "EndOfTrend",           // 2,3
             //"HigherLow", "LowerHigh",           // 4,5
             //"Bullish", "Bearish"                // 6,7
-            var brokenUp = trailEMA.Events[0];
-            var brokenDown = trailEMA.Events[1];
             var higherLow = trailEMA.Events[4];
             var lowerHigh = trailEMA.Events[5];
             var bullish = trailEMA.Events[6];

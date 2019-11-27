@@ -31,9 +31,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
 
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie HighSerie = stockSerie.GetSerie(StockDataType.HIGH);
-
             IStockIndicator bbIndicator = stockSerie.GetIndicator(this.Name.Replace("TRAIL", ""));
             stockSerie.CalculateBBTrailStop(bbIndicator.Series[1], bbIndicator.Series[0], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;
