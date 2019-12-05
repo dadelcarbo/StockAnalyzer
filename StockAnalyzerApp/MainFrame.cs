@@ -6307,8 +6307,8 @@ border:1px solid black;
         {
             if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
             {
-                string url = "https://markets.ft.com/data/equities/tearsheet/profile?s=%SYMBOL%:PAR";
-                url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
+                string url = "https://www.investing.com/search/?q=%SYMBOL%";
+                url = url.Replace("%SYMBOL%", this.currentStockSerie.StockName);
                 {
                     Process.Start(url);
                 }

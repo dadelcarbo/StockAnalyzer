@@ -91,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // openInFTMenu
             // 
             this.openInFTMenu.Index = 8;
-            this.openInFTMenu.Text = "Open in FT.com";
+            this.openInFTMenu.Text = "Open in investing.com";
             this.openInFTMenu.Click += new System.EventHandler(this.openInFTMenu_Click);
             // 
             // openInABCMenu
