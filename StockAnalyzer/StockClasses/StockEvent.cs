@@ -57,18 +57,9 @@ namespace StockAnalyzer.StockClasses
          VolChurn,
          VolClimaxChurn
       }
-      public enum EventFilterMode
-      {
-         EventAll,
-         EventOne
-      }
+
       #endregion
-      #region CONSTANTS
-      public const float VAR_TRESHOLD = 0.03f;  // 3%
-      public const float EVENT_TOLERANCE = 0.03f; // 5%
-      public const float DAYS = 5;
-      public const float DOJI_ACCURACY = 0.1f; // 10% of amlitude
-      #endregion
+
       #region Constructor
       protected StockEvent()
       {
@@ -91,10 +82,6 @@ namespace StockAnalyzer.StockClasses
             throw new System.OverflowException("Too many events => please reduce the amount of events");
          }
          return eventTypeNames;
-      }
-      static public StockEvent.EventFilterMode GetEventFilterMode()
-      {
-         return (StockEvent.EventFilterMode)Enum.Parse(typeof(StockEvent.EventFilterMode), StockAnalyzerSettings.Properties.Settings.Default.EventFilterMode);
       }
       #region event mask helper functions
       static public string EventTypesToString(StockEvent.EventType[] eventTypes)

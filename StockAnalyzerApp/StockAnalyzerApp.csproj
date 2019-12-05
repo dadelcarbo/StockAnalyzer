@@ -536,12 +536,6 @@
     <Compile Include="CustomControl\PreferenceDialog.Designer.cs">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\StockEventSelector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StockEventSelector.Designer.cs">
-      <DependentUpon>StockEventSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainFrame.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -759,10 +753,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockAlertDlg.resx">
       <DependentUpon>StockAlertDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockEventSelector.resx">
-      <DependentUpon>StockEventSelector.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.resx">
       <DependentUpon>StrategySimulatorDlg.cs</DependentUpon>

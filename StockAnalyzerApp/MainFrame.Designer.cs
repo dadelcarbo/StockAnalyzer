@@ -67,7 +67,6 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectEventForMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -369,7 +368,6 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
             this.showIndicatorTextMenuItem,
-            this.selectEventForMarqueeMenuItem,
             this.toolStripSeparator16,
             this.showHorseRaceViewMenuItem,
             this.showAlertDialogMenuItem,
@@ -477,13 +475,6 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorTextMenuItem.Text = "Show Indicator Text";
             this.showIndicatorTextMenuItem.Click += new System.EventHandler(this.showIndicatorTextMenuItem_Click);
-            // 
-            // selectEventForMarqueeMenuItem
-            // 
-            this.selectEventForMarqueeMenuItem.Name = "selectEventForMarqueeMenuItem";
-            this.selectEventForMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.selectEventForMarqueeMenuItem.Text = "Select Events";
-            this.selectEventForMarqueeMenuItem.Click += new System.EventHandler(this.selectEventForMarqueeMenuItem_Click);
             // 
             // toolStripSeparator16
             // 
@@ -1629,7 +1620,6 @@ namespace StockAnalyzerApp
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
         private ToolStripSeparator toolStripSeparator13;
         private ToolStripSeparator toolStripSeparator14;
-        private ToolStripMenuItem selectEventForMarqueeMenuItem;
         private ToolStripSeparator toolStripSeparator16;
         private ToolStripSeparator toolStripSeparator15;
         private ToolStripMenuItem watchlistsMenuItem;
