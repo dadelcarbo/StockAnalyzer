@@ -48,20 +48,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie vixFix = new FloatSerie(stockSerie.Count, this.SerieNames[0]);
             this.series[0] = vixFix;
 
-
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            for (int i = 0; i < period; i++)
+            for (int i = 1; i < period; i++)
             {
-                vixFix[i] = 1;
+                float highest = highSerie.GetMax(0, i);
+                float close = closeSerie[i];
+                vixFix[i] = 100f * (highest - close) / highest;
             } 
             for (int i = period; i < stockSerie.Count; i++)
             {
                 float highest = highSerie.GetMax(i - period, i);
-                float low = lowSerie[i];
-                vixFix[i] = 100f* (highest - low) / highest;
+                float close = closeSerie[i];
+                vixFix[i] = 100f* (highest - close) / highest;
             }
         }
 

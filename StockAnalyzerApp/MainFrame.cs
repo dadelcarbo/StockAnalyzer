@@ -4611,19 +4611,6 @@ border:1px solid black;
             GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
         }
         #endregion
-        private void selectEventForMarqueeMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockEventSelectorDlg stockEventSelectorDlg = new StockEventSelectorDlg(Settings.Default.EventMarquees, (StockEvent.EventFilterMode)Enum.Parse(typeof(StockEvent.EventFilterMode), Settings.Default.EventMarqueeMode));
-            if (stockEventSelectorDlg.ShowDialog() == DialogResult.OK)
-            {
-                Settings.Default.EventMarquees = stockEventSelectorDlg.SelectedEvents;
-                Settings.Default.EventMarqueeMode = stockEventSelectorDlg.EventFilterMode.ToString();
-
-                Settings.Default.Save();
-                OnNeedReinitialise(false);
-            }
-        }
         private void manageWatchlistsMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null || this.WatchLists == null) return;

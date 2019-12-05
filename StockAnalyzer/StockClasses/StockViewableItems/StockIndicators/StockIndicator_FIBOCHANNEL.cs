@@ -11,9 +11,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames => new string[] { "Period", "Ratio" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 20, 0.75f };
+        public override Object[] ParameterDefaultValues => new Object[] { 60, 1.0f };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
 
         public override string[] SerieNames => new string[] { "HIGH", "FIBHIGH", "FIBLOW", "LOW", "MID" };
 
@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 downLine[i] = down = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
                 midUpLine[i] = (up * upRatio + down * downRatio);
                 midDownLine[i] = (down * upRatio + up * downRatio);
-                midLine[i] = (up + down)/2.0f;
+                midLine[i] = (up + down) / 2.0f;
             }
 
             int count = 0;
@@ -115,14 +115,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         bearish = true;
                     }
                 }
-                
+
                 //bool bullish = close > midUpLine[i];
                 this.Events[0][i] = bullish;
                 this.Events[2][i] = bullish && !previousBullish;
                 this.Events[3][i] = !bullish && previousBullish;
                 previousBullish = bullish;
 
-               // bool bearish = close < midDownLine[i];
+                // bool bearish = close < midDownLine[i];
                 this.Events[1][i] = bearish;
                 this.Events[4][i] = bearish && !previousBearish;
                 this.Events[5][i] = !bearish && previousBearish;
