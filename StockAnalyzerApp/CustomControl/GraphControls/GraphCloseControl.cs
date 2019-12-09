@@ -258,7 +258,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         Pen longPen = this.CurveList.TrailStop.SeriePens[0];
                         Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
 
-                        using (Brush longBrush = new SolidBrush(longPen.Color)) {
+                        using (Brush longBrush = new SolidBrush(longPen.Color))
+                        {
                             using (Brush shortBrush = new SolidBrush(shortPen.Color))
                             {
                                 PointF srPoint1;
@@ -1079,7 +1080,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         RefreshMouseMarquee(index, e.Location, true);
                         ManageMouseMoveDrawing(e, mouseValuePoint);
                     }
-
                     #region Display Event text box
                     // Display events if required
                     if (mouseOverThis && this.ShowEventMarquee &&
@@ -1160,6 +1160,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
+                    #endregion
+                    #region Display Agenda Text
                     if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
                          (mousePoint.Y <= this.GraphRectangle.Bottom) &&
                          (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
@@ -1171,9 +1173,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             var agendaEntry = this.Agenda[agendaDate];
                             if (agendaEntry.IsOfType(this.ShowAgenda))
                             {
-                                Size size = TextRenderer.MeasureText(agendaEntry.Event, axisFont);
+                                string eventText = agendaEntry.Event.Replace("\n", " ");
 
-                                this.DrawString(this.foregroundGraphic, agendaEntry.Event, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                                if (agendaEntry.IsOfType(AgendaEntryType.Dividend))
+                                {
+                                    var coupon = eventText.Substring(eventText.IndexOf(':') + 2);
+                                    coupon = coupon.Substring(0, coupon.IndexOf('€'));
+                                    float yield = float.Parse(coupon) / closeCurveType.DataSerie[i];
+                                    eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
+                                }
+
+                                Size size = TextRenderer.MeasureText(eventText, axisFont);
+                                this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                             }
                         }
                     }
@@ -1357,7 +1368,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (XABCD.NbPoint == 1)
                         {
-                            if (!XABCD.X.Equals(mouseValuePoint)) {
+                            if (!XABCD.X.Equals(mouseValuePoint))
+                            {
                                 DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, XABCD.X, mouseValuePoint, true);
                             }
                         }
@@ -1617,14 +1629,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     break;
                 case GraphDrawMode.XABCD:
-                    if (XABCD==null)
+                    if (XABCD == null)
                     {
                         XABCD = new XABCD();
                         XABCD.AddPoint(mouseValuePoint);
                     }
                     else
                     {
-                        if (XABCD.NbPoint<4)
+                        if (XABCD.NbPoint < 4)
                         {
                             XABCD.AddPoint(mouseValuePoint);
                         }
