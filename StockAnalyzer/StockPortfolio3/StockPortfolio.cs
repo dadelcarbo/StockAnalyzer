@@ -9,7 +9,6 @@ namespace StockAnalyzer.StockPortfolio3
 {
     public class StockPortfolio
     {
-
         public static IStockPriceProvider PriceProvider { get; set; }
 
         public static List<StockPortfolio> Portofolios { get; private set; }
@@ -17,7 +16,7 @@ namespace StockAnalyzer.StockPortfolio3
         public static List<StockPortfolio> LoadPortofolios(string folder)
         {
             Portofolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*.ptf"))
+            foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s=>s))
             {
                 Portofolios.Add(new StockPortfolio(file));
             }

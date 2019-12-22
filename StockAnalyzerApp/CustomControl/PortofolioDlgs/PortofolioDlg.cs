@@ -24,7 +24,6 @@ namespace StockAnalyzerApp.CustomControl
 
             // Initialise list view
             InitializeListView();
-
         }
         public void SetPortofolio(StockPortofolio portofolio)
         {

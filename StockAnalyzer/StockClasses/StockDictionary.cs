@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.Portofolio;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
@@ -29,6 +30,8 @@ namespace StockAnalyzer.StockClasses
 
             this.CotDictionary = new SortedDictionary<string, CotSerie>();
             this.ShortInterestDictionary = new SortedDictionary<string, ShortInterestSerie>();
+
+            StockPortfolio3.StockPortfolio.PriceProvider = this;
         }
         public void CreatePortofolioSerie(StockPortofolio portofolio)
         {
@@ -2439,6 +2442,31 @@ namespace StockAnalyzer.StockClasses
                 }
             }
             return 0f;
+        }
+
+        public void GeneratePortfolioSerie(StockPortfolio3.StockPortfolio binckPortfolio)
+        {
+            var refStock = this["CAC40"];
+            if (!refStock.Initialise())
+                return;
+
+            var startDate = binckPortfolio.Operations.OrderBy(op => op.Id).First().Date;
+
+            StockSerie portfolioSerie = new StockSerie(binckPortfolio.Name, binckPortfolio.Name, refStock.StockGroup, StockDataProvider.BinckPortfolio);
+            portfolioSerie.IsPortofolioSerie = true;
+
+            float value;
+            foreach (var date in refStock.Keys.Where(d => d >= startDate))
+            {
+                value = binckPortfolio.EvaluateAt(date);
+                portfolioSerie.Add(date, new StockDailyValue(binckPortfolio.Name, value, value, value, value, 0, date));
+            }
+
+            // Preinitialise the serie
+            portfolioSerie.PreInitialise();
+            portfolioSerie.IsInitialised = true;
+
+            this.Add(binckPortfolio.Name, portfolioSerie);
         }
     }
 }

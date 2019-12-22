@@ -146,7 +146,9 @@ namespace StockAnalyzerApp
             get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
         }
 
-        public StockPortofolio currentPortofolio;
+        public StockAnalyzer.StockPortfolio3.StockPortfolio BinckPortfolio { get; set; }
+
+        private StockPortofolio currentPortofolio;
 
         public StockPortofolio CurrentPortofolio
         {
@@ -155,12 +157,8 @@ namespace StockAnalyzerApp
             {
                 if (this.currentPortofolio != value)
                 {
-                    // §§§§ Portfolio
-                    this.graphCloseControl.BinckPortofolio = BinckPortfolioDataProvider.Portofolios.First();
-
-
                     this.currentPortofolio = value;
-                    this.graphCloseControl.Portofolio = currentPortofolio;
+                    // §§§§ this.graphCloseControl.Portofolio = currentPortofolio;
                     if (currentPortofolio != null) OnNeedReinitialise(false);
                 }
             }
@@ -597,7 +595,9 @@ namespace StockAnalyzerApp
             }
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
-            ReadPortofolios();
+            RefreshPortofolioMenu();
+            BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First();
+            this.graphCloseControl.BinckPortofolio = BinckPortfolio;
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -1574,24 +1574,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void ReadPortofolios()
-        {
-            try
-            {
-                RefreshPortofolioMenu();
-                this.CurrentPortofolio = this.StockPortofolioList.First();
-            }
-            catch (System.Exception exception)
-            {
-                string message = exception.Message;
-                if (exception.InnerException != null)
-                {
-                    message += "\n\r" + exception.InnerException.Message;
-                }
-                MessageBox.Show(message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void RefreshPortofolioMenu()
         {
             if (this.Portfolios == null)
@@ -1606,7 +1588,7 @@ namespace StockAnalyzerApp
                     Balance = 10000
                 });
             }
-            
+
             // Clean existing menus
             this.portofolioDetailsMenuItem.DropDownItems.Clear();
             this.orderListMenuItem.DropDownItems.Clear();
@@ -3549,7 +3531,7 @@ namespace StockAnalyzerApp
             // Refresh the graphs
             OnNeedReinitialise(false);
         }
-        
+
         private void hideIndicatorsStockMenuItem_Click(object sender, EventArgs e)
         {
             this.graphCloseControl.HideIndicators = this.hideIndicatorsStockMenuItem.Checked;
@@ -3619,28 +3601,40 @@ namespace StockAnalyzerApp
 
         private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.CurrentPortofolio != null)
-            {
-                this.CurrentPortofolio.Initialize();
-                if (portofolioDlg == null)
-                {
-                    portofolioDlg = new PortofolioDlg(StockDictionary, this.CurrentPortofolio);
-                    portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                    portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                    portofolioDlg.Show();
-                }
+            if (BinckPortfolio == null)
+                return;
 
-                else
-                {
-                    portofolioDlg.SetPortofolio(this.CurrentPortofolio);
-                    portofolioDlg.Activate();
-                }
+            if (!StockDictionary.ContainsKey(BinckPortfolio.Name))
+            {
+                StockDictionary.GeneratePortfolioSerie(BinckPortfolio);
             }
+
+            // Set the new selected serie
+            CurrentStockSerie = StockDictionary[BinckPortfolio.Name];
+
+            // §§§§ Portfolio
+            //if (this.CurrentPortofolio != null)
+            //{
+            //    this.CurrentPortofolio.Initialize();
+            //    if (portofolioDlg == null)
+            //    {
+            //        portofolioDlg = new PortofolioDlg(StockDictionary, this.CurrentPortofolio);
+            //        portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+            //        portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
+            //        portofolioDlg.Show();
+            //    }
+
+            //    else
+            //    {
+            //        portofolioDlg.SetPortofolio(this.CurrentPortofolio);
+            //        portofolioDlg.Activate();
+            //    }
+            //}
         }
 
         private void viewPortogolioMenuItem_Click(object sender, EventArgs e)
         {
-            StockPortofolio portofolio = this.StockPortofolioList.Get(sender.ToString());
+            var portofolio = this.StockPortofolioList.Get(sender.ToString());
 
             if (portofolio != null)
             {
