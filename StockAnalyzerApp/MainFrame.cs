@@ -109,6 +109,8 @@ namespace StockAnalyzerApp
             }
         }
 
+        public List<StockAnalyzer.StockPortfolio3.StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
+
         public ToolStripProgressBar ProgressBar
         {
             get { return this.progressBar; }
@@ -153,6 +155,10 @@ namespace StockAnalyzerApp
             {
                 if (this.currentPortofolio != value)
                 {
+                    // §§§§ Portfolio
+                    this.graphCloseControl.BinckPortofolio = BinckPortfolioDataProvider.Portofolios.First();
+
+
                     this.currentPortofolio = value;
                     this.graphCloseControl.Portofolio = currentPortofolio;
                     if (currentPortofolio != null) OnNeedReinitialise(false);
@@ -1588,31 +1594,32 @@ namespace StockAnalyzerApp
 
         private void RefreshPortofolioMenu()
         {
-            // Create default portofolio if not exist
-            if (this.StockPortofolioList.Count == 0)
+            if (this.Portfolios == null)
+                return;
+
+            if (this.Portfolios.Count == 0)
             {
-                StockPortofolio portofolio = new StockPortofolio("Default_P");
-                portofolio.TotalDeposit = 10000;
-
-                this.StockPortofolioList.Add(portofolio);
+                this.Portfolios.Add(new StockAnalyzer.StockPortfolio3.StockPortfolio()
+                {
+                    Name = "Default_P",
+                    InitialBalance = 10000,
+                    Balance = 10000
+                });
             }
-
+            
             // Clean existing menus
             this.portofolioDetailsMenuItem.DropDownItems.Clear();
             this.orderListMenuItem.DropDownItems.Clear();
 
-            System.Windows.Forms.ToolStripItem[] portofolioMenuItems =
-               new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
-            System.Windows.Forms.ToolStripItem[] portofolioFilterMenuItems =
-               new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
-            System.Windows.Forms.ToolStripItem[] orderListMenuItems =
-               new System.Windows.Forms.ToolStripItem[this.StockPortofolioList.Count];
+            ToolStripItem[] portofolioMenuItems = new ToolStripItem[this.Portfolios.Count];
+            ToolStripItem[] portofolioFilterMenuItems = new ToolStripItem[this.Portfolios.Count];
+            ToolStripItem[] orderListMenuItems = new ToolStripItem[this.Portfolios.Count];
             ToolStripMenuItem portofolioDetailsSubMenuItem;
             ToolStripMenuItem portofolioFilterSubMenuItem;
             ToolStripMenuItem orderListSubMenuItem;
 
             int i = 0;
-            foreach (StockPortofolio portofolio in this.StockPortofolioList)
+            foreach (var portofolio in this.Portfolios)
             {
                 // Create portofolio menu items
                 portofolioDetailsSubMenuItem = new ToolStripMenuItem(portofolio.Name);
@@ -3542,21 +3549,7 @@ namespace StockAnalyzerApp
             // Refresh the graphs
             OnNeedReinitialise(false);
         }
-
-        private void showSummaryOrdersMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowSummaryOrders = this.showSummaryOrdersMenuItem.Checked;
-
-            if (this.showSummaryOrdersMenuItem.Checked)
-            {
-                Settings.Default.ShowOrders = true;
-                this.showOrdersMenuItem.Checked = true;
-            }
-            Settings.Default.Save();
-            // Refresh the graphs
-            OnNeedReinitialise(false);
-        }
-
+        
         private void hideIndicatorsStockMenuItem_Click(object sender, EventArgs e)
         {
             this.graphCloseControl.HideIndicators = this.hideIndicatorsStockMenuItem.Checked;
@@ -4967,7 +4960,7 @@ border:1px solid black;
                     stockSerie.BarDuration = this.BarDuration;
                     var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                     var varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
-                    var indic1 = (stockSerie.GetIndicator("STOKS(14,3,3)").Series[0] - 50.0f)/50f;
+                    var indic1 = (stockSerie.GetIndicator("STOKS(14,3,3)").Series[0] - 50.0f) / 50f;
                     var indic2 = (stockSerie.GetIndicator("STOKS(42,3,3)").Series[0] - 50.0f) / 50f;
                     var indic3 = (stockSerie.GetIndicator("STOKS(126, 3, 3)").Series[0] - 50.0f) / 50f;
                     var indic4 = stockSerie.GetIndicator("SPEED(EMA(20),1)").Series[0];
@@ -6304,13 +6297,12 @@ border:1px solid black;
 
         internal void OpenInABCMenu()
         {
-            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+                return;
+            string url = "https://www.abcbourse.com/graphes/display.aspx?s=%SYMBOL%p";
+            url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
             {
-                string url = "https://www.abcbourse.com/graphes/display.aspx?s=%SYMBOL%p";
-                url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
-                {
-                    Process.Start(url);
-                }
+                Process.Start(url);
             }
         }
     }

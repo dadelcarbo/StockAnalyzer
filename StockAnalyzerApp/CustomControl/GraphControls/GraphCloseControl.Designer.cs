@@ -21,7 +21,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.coverMenu = new System.Windows.Forms.MenuItem();
             this.financialMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
-            this.openInFTMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
             this.statMenu = new MenuItem();
             this.separator1 = new MenuItem();
@@ -38,7 +37,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.agendaMenu,
             this.financialMenu,
             this.separator2,
-            this.openInFTMenu,
             this.openInABCMenu,
             this.statMenu});
             // 
@@ -88,21 +86,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator2.Index = 7;
             this.separator2.Text = "-";
             // 
-            // openInFTMenu
-            // 
-            this.openInFTMenu.Index = 8;
-            this.openInFTMenu.Text = "Open in investing.com";
-            this.openInFTMenu.Click += new System.EventHandler(this.openInFTMenu_Click);
-            // 
             // openInABCMenu
             // 
-            this.openInABCMenu.Index = 9;
+            this.openInABCMenu.Index = 8;
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
             // statMenu
             // 
-            this.statMenu.Index = 10;
+            this.statMenu.Index = 9;
             this.statMenu.Text = "Make Stats";
             this.statMenu.Click += new System.EventHandler(this.statMenu_Click);
             // 
@@ -122,7 +114,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem separator2;
         private MenuItem financialMenu;
         private MenuItem agendaMenu;
-        private MenuItem openInFTMenu;
         private MenuItem openInABCMenu;
         private MenuItem statMenu;
 

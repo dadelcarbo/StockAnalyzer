@@ -1,0 +1,202 @@
+﻿486	17/12/2019	19/12/2019	Vente	81 Voltalia	989,75 €	991,84 €
+485	10/12/2019	12/12/2019	Achat	138 Plastivaloire	-1 008,26 €	2,09 €
+484	09/12/2019	11/12/2019	Achat	215 Passat SA	-1 000,10 €	1 010,35 €
+483	05/12/2019	09/12/2019	Achat	174 Innate Pharma SA	-1 000,39 €	2 010,45 €
+482	28/11/2019	28/11/2019	Virement interne	de 2001960, David CARBONEL	2 000,00 €	3 010,84 €
+481	28/11/2019	02/12/2019	Achat	47 Marseillaise du Tunnel Prado Carenage	-994,20 €	1 010,84 €
+480	27/11/2019	27/11/2019	Virement interne	de 0719479, David CARBONEL	2 000,00 €	2 005,04 €
+479	26/11/2019	28/11/2019	Achat	317 Catana Group	-923,39 €	5,04 €
+478	26/11/2019	26/11/2019	Virement	Prlv Taxe Fin. Eramet SA 26112019	-2,92 €	928,43 €
+477	22/11/2019	26/11/2019	Achat	23 Eramet SA	-976,09 €	931,35 €
+476	21/11/2019	25/11/2019	Achat	53 Carmat	-1 001,02 €	1 907,44 €
+475	07/11/2019	11/11/2019	Vente	986 Kerlink SACA	2 026,16 €	2 908,46 €
+474	06/11/2019	08/11/2019	Achat	22 727 Spineway SA	-202,50 €	882,30 €
+473	28/10/2019	30/10/2019	Vente	514 Kerlink SACA	994,66 €	1 084,80 €
+472	01/10/2019	01/10/2019	Paiement des dividendes	23 Dividendes Total SA	15,18 €	90,14 €
+471	27/09/2019	01/10/2019	Attribution dividende	23 Dividendes Total SA	Aucune opération	74,96 €
+470	29/08/2019	02/09/2019	Achat	711 Kerlink SACA	-777,49 €	74,96 €
+469	14/08/2019	14/08/2019	Virement	Prlv Taxe Fin. Eramet SA 14082019	-2,89 €	852,45 €
+468	12/08/2019	14/08/2019	Achat	24 Eramet SA	-967,30 €	855,34 €
+467	08/08/2019	08/08/2019	Virement	Prlv Taxe Fin. Valeo 08082019	-2,92 €	1 822,64 €
+466	06/08/2019	08/08/2019	Achat	52 Lyxor ETF Leverage CAC40	-993,62 €	1 825,56 €
+465	06/08/2019	08/08/2019	Achat	38 Valeo	-978,72 €	2 819,18 €
+464	05/08/2019	07/08/2019	Achat	51 Lyxor ETF Leverage CAC40	-988,23 €	3 797,90 €
+463	05/08/2019	07/08/2019	Achat	50 Lyxor ETF Leverage CAC40	-976,50 €	4 786,13 €
+462	02/08/2019	06/08/2019	Vente	172 Engie	2 341,08 €	5 762,63 €
+461	02/08/2019	06/08/2019	Vente	233 Electricite de France (EDF)	2 548,68 €	3 421,55 €
+460	02/08/2019	06/08/2019	Achat	49 Lyxor ETF Leverage CAC40	-992,79 €	872,87 €
+459	25/07/2019	29/07/2019	Vente	92 Voltalia	991,10 €	1 865,66 €
+458	12/07/2019	12/07/2019	Paiement des dividendes	993 Dividendes Lyxor MSCI Greece	19,86 €	874,56 €
+457	12/07/2019	12/07/2019	Paiement des dividendes	993 Dividendes Lyxor MSCI Greece	-19,86 €	854,70 €
+456	15/07/2019	15/07/2019	Transfert de titres	5 Droits Voltalia Rights	Aucune opération	874,56 €
+455	15/07/2019	15/07/2019	Dépôt	145 Voltalia	Aucune opération	874,56 €
+454	15/07/2019	15/07/2019	Virement	Rights issue Voltalia	-1 334,00 €	874,56 €
+453	15/07/2019	15/07/2019	Transfert de titres	174 Droits Voltalia Rights	Aucune opération	2 208,56 €
+452	12/07/2019	12/07/2019	Paiement des dividendes	993 Dividendes Lyxor MSCI Greece	19,86 €	2 208,56 €
+451	10/07/2019	12/07/2019	Attribution dividende	993 Dividendes Lyxor MSCI Greece	Aucune opération	2 188,70 €
+450	01/07/2019	03/07/2019	Vente	365 Vallourec	990,30 €	2 188,70 €
+449	24/06/2019	25/06/2019	Attribution droit	179 Droits Voltalia Rights	Aucune opération	1 198,40 €
+448	21/06/2019	25/06/2019	Vente	10 Iliad SA	982,30 €	1 198,40 €
+447	18/06/2019	18/06/2019	Achat	3 Electricite de France (EDF)	-33,30 €	216,10 €
+446	18/06/2019	18/06/2019	Paiement des dividendes	230 Dividendes Electricite de France (EDF)	36,80 €	249,40 €
+445	18/06/2019	18/06/2019	Dépôt	230 Dividendes Electricite de France (EDF)	Aucune opération	212,60 €
+444	18/06/2019	18/06/2019	Transfert de titres	230 Dividendes Electricite de France (EDF) (stock)	Aucune opération	212,60 €
+443	13/06/2019	13/06/2019	Paiement des dividendes	23 Dividendes Total SA	14,72 €	212,60 €
+442	11/06/2019	13/06/2019	Attribution dividende	23 Dividendes Total SA	Aucune opération	197,88 €
+441	23/05/2019	23/05/2019	Dépôt	230 Dividendes Electricite de France (EDF) (stock)	Aucune opération	197,88 €
+440	23/05/2019	23/05/2019	Transfert de titres	230 Dividendes Electricite de France (EDF) (cash)	Aucune opération	197,88 €
+439	23/05/2019	23/05/2019	Paiement des dividendes	172 Dividendes Engie	129,00 €	197,88 €
+438	21/05/2019	22/05/2019	Attribution dividende	230 Dividendes Electricite de France (EDF) (cash)	Aucune opération	68,88 €
+437	21/05/2019	23/05/2019	Attribution dividende	172 Dividendes Engie	Aucune opération	68,88 €
+436	07/05/2019	07/05/2019	Virement	Prlv Taxe Fin. Iliad SA 07052019	-2,84 €	68,88 €
+435	03/05/2019	07/05/2019	Achat	10 Iliad SA	-951,30 €	71,72 €
+434	24/04/2019	26/04/2019	Achat	447 Kerlink SACA	-999,31 €	1 023,02 €
+433	15/04/2019	17/04/2019	Achat	20 Kerlink SACA	-61,70 €	2 022,33 €
+432	12/04/2019	16/04/2019	Achat	322 Kerlink SACA	-1 000,70 €	2 084,03 €
+431	05/04/2019	05/04/2019	Dépôt	22 Dividendes Total SA	Aucune opération	3 084,73 €
+430	05/04/2019	05/04/2019	Transfert de titres	22 Dividendes Total SA (stock)	Aucune opération	3 084,73 €
+429	05/04/2019	05/04/2019	Achat	1 Total SA	-49,30 €	3 084,73 €
+428	05/04/2019	05/04/2019	Paiement des dividendes	22 Dividendes Total SA	14,08 €	3 134,03 €
+427	20/03/2019	20/03/2019	Dépôt	22 Dividendes Total SA (stock)	Aucune opération	3 119,95 €
+426	20/03/2019	20/03/2019	Transfert de titres	22 Dividendes Total SA (cash)	Aucune opération	3 119,95 €
+425	18/03/2019	19/03/2019	Attribution dividende	22 Dividendes Total SA (cash)	Aucune opération	3 119,95 €
+424	18/03/2019	20/03/2019	Vente	51 Lyxor ETF Leverage CAC40	980,07 €	3 119,95 €
+423	25/02/2019	27/02/2019	Vente	54 Lyxor ETF Leverage CAC40	970,04 €	2 139,88 €
+422	13/02/2019	15/02/2019	Vente	58 Lyxor ETF Leverage CAC40	986,40 €	1 169,84 €
+421	10/01/2019	10/01/2019	Paiement des dividendes	22 Dividendes Total SA	14,08 €	183,44 €
+420	10/01/2019	10/01/2019	Dépôt	22 Dividendes Total SA	Aucune opération	169,36 €
+419	10/01/2019	10/01/2019	Transfert de titres	22 Dividendes Total SA (stock)	Aucune opération	169,36 €
+418	18/12/2018	18/12/2018	Dépôt	22 Dividendes Total SA (stock)	Aucune opération	169,36 €
+417	18/12/2018	18/12/2018	Transfert de titres	22 Dividendes Total SA (cash)	Aucune opération	169,36 €
+416	17/12/2018	18/12/2018	Attribution dividende	22 Dividendes Total SA (cash)	Aucune opération	169,36 €
+415	10/12/2018	10/12/2018	Paiement des dividendes	230 Dividendes Electricite de France (EDF)	34,50 €	169,36 €
+414	06/12/2018	10/12/2018	Attribution dividende	230 Dividendes Electricite de France (EDF)	Aucune opération	134,86 €
+413	21/11/2018	21/11/2018	Virement	Prlv Taxe Fin. Vallourec 21112018	-5,98 €	134,86 €
+412	19/11/2018	21/11/2018	Achat	548 Vallourec	-1 000,13 €	140,84 €
+411	19/11/2018	21/11/2018	Achat	537 Vallourec	-1 001,32 €	1 140,97 €
+410	15/11/2018	19/11/2018	Vente	265 Derichebourg Act.	1 096,87 €	2 142,29 €
+409	06/11/2018	08/11/2018	Vente	58 Lyxor ETF Leverage CAC40	994,52 €	1 045,42 €
+408	29/10/2018	29/10/2018	Virement	Prlv Taxe Fin. Derichebourg Act 29102018	-2,98 €	50,90 €
+407	29/10/2018	29/10/2018	Virement	Prlv Taxe Fin. Vallourec 29102018	-2,99 €	53,88 €
+406	26/10/2018	30/10/2018	Achat	105 Lyxor ETF Leverage CAC40	-1 678,91 €	56,87 €
+405	25/10/2018	29/10/2018	Achat	265 Derichebourg Act.	-998,90 €	1 735,78 €
+404	25/10/2018	29/10/2018	Achat	249 Vallourec	-999,75 €	2 734,68 €
+403	25/10/2018	29/10/2018	Vente	202 Innate Pharma SA	1 374,66 €	3 734,43 €
+402	24/10/2018	24/10/2018	Virement	Prlv Taxe Fin. Vallourec 24102018	-2,99 €	2 359,77 €
+401	23/10/2018	25/10/2018	Achat	165 Lyxor ETF Leverage CAC40	-2 697,80 €	2 362,76 €
+400	22/10/2018	24/10/2018	Vente	4 739 Agrogeneration	1 174,19 €	5 060,56 €
+399	22/10/2018	24/10/2018	Achat	218 Vallourec	-1 000,07 €	3 886,37 €
+398	22/10/2018	24/10/2018	Achat	202 Innate Pharma SA	-999,98 €	4 886,44 €
+397	12/10/2018	12/10/2018	Paiement des dividendes	172 Dividendes Engie	63,64 €	5 886,42 €
+396	12/10/2018	12/10/2018	Achat	1 Total SA	-52,95 €	5 822,78 €
+395	12/10/2018	12/10/2018	Paiement des dividendes	21 Dividendes Total SA	13,44 €	5 875,73 €
+394	12/10/2018	12/10/2018	Dépôt	21 Dividendes Total SA	Aucune opération	5 862,29 €
+393	12/10/2018	12/10/2018	Transfert de titres	21 Dividendes Total SA (stock)	Aucune opération	5 862,29 €
+392	10/10/2018	12/10/2018	Vente	981 Solocal Group	905,91 €	5 862,29 €
+391	10/10/2018	12/10/2018	Vente	327 Latecoere	1 182,01 €	4 956,38 €
+390	10/10/2018	12/10/2018	Vente	845 Derichebourg Act.	3 535,55 €	3 774,37 €
+389	10/10/2018	12/10/2018	Attribution dividende	172 Dividendes Engie	Aucune opération	238,82 €
+388	25/09/2018	25/09/2018	Dépôt	21 Dividendes Total SA (stock)	Aucune opération	238,82 €
+387	25/09/2018	25/09/2018	Transfert de titres	21 Dividendes Total SA (cash)	Aucune opération	238,82 €
+386	24/09/2018	25/09/2018	Attribution dividende	21 Dividendes Total SA (cash)	Aucune opération	238,82 €
+385	20/09/2018	24/09/2018	Achat	37 Carmat	-994,10 €	238,82 €
+384	20/09/2018	24/09/2018	Vente	52 Lyxor ETF Leverage CAC40	1 017,74 €	1 232,92 €
+383	06/09/2018	10/09/2018	Achat	52 Lyxor ETF Leverage CAC40	-960,34 €	215,18 €
+382	28/08/2018	30/08/2018	Vente	7 Iliad SA	843,80 €	1 175,52 €
+381	24/08/2018	24/08/2018	Virement	Prlv Taxe Fin. Derichebourg Act 24082018	-2,99 €	331,72 €
+380	22/08/2018	24/08/2018	Achat	207 Derichebourg Act.	-1 001,07 €	334,71 €
+379	09/08/2018	13/08/2018	Vente	142 Air France - KLM	1 264,76 €	1 335,78 €
+378	13/07/2018	13/07/2018	Paiement des dividendes	993 Dividendes Lyxor MSCI Greece	19,86 €	71,02 €
+377	11/07/2018	13/07/2018	Attribution dividende	993 Dividendes Lyxor MSCI Greece	Aucune opération	51,16 €
+376	03/07/2018	03/07/2018	Virement	Prlv Taxe Fin. Iliad SA 03072018	-2,88 €	51,16 €
+375	29/06/2018	03/07/2018	Achat	7 Iliad SA	-963,60 €	54,04 €
+374	28/06/2018	28/06/2018	Achat	1 Total SA	-52,03 €	1 017,64 €
+373	28/06/2018	28/06/2018	Paiement des dividendes	20 Dividendes Total SA	12,40 €	1 069,67 €
+372	28/06/2018	28/06/2018	Dépôt	20 Dividendes Total SA	Aucune opération	1 057,27 €
+371	28/06/2018	28/06/2018	Transfert de titres	20 Dividendes Total SA (stock)	Aucune opération	1 057,27 €
+370	19/06/2018	19/06/2018	Paiement des dividendes	230 Dividendes Electricite de France (EDF)	71,30 €	1 057,27 €
+369	19/06/2018	19/06/2018	Dépôt	230 Dividendes Electricite de France (EDF)	Aucune opération	985,97 €
+368	19/06/2018	19/06/2018	Transfert de titres	230 Dividendes Electricite de France (EDF) (Cash)	Aucune opération	985,97 €
+367	15/06/2018	15/06/2018	Virement	Prlv Taxe Fin. Air France - KLM 15062018	-2,99 €	985,97 €
+366	14/06/2018	18/06/2018	Vente	484 Spineway SA	805,78 €	988,96 €
+365	13/06/2018	15/06/2018	Achat	142 Air France - KLM	-1 000,76 €	183,18 €
+364	12/06/2018	12/06/2018	Dépôt	20 Dividendes Total SA (stock)	Aucune opération	1 183,94 €
+363	12/06/2018	12/06/2018	Transfert de titres	20 Dividendes Total SA (cash)	Aucune opération	1 183,94 €
+362	11/06/2018	11/06/2018	Virement	Prlv Taxe Fin. Derichebourg Act 11062018	-2,98 €	1 183,94 €
+361	10/06/2018	11/06/2018	Attribution dividende	20 Dividendes Total SA (cash)	Aucune opération	1 186,92 €
+360	07/06/2018	11/06/2018	Vente	154 Air France - KLM	1 071,46 €	1 186,92 €
+359	07/06/2018	11/06/2018	Achat	185 Derichebourg Act.	-997,80 €	115,46 €
+358	05/06/2018	05/06/2018	Virement	Prlv Taxe Fin. Air France - KLM 05062018	-5,97 €	1 113,26 €
+357	05/06/2018	05/06/2018	Virement	Prlv Taxe Fin. Derichebourg Act 05062018	-2,99 €	1 119,23 €
+356	04/06/2018	06/06/2018	Vente	133 Air France - KLM	989,95 €	1 122,22 €
+355	01/06/2018	05/06/2018	Achat	185 Derichebourg Act.	-999,65 €	132,27 €
+354	01/06/2018	05/06/2018	Achat	144 Air France - KLM	-1 000,42 €	1 131,92 €
+353	01/06/2018	05/06/2018	Achat	143 Air France - KLM	-997,78 €	2 132,34 €
+352	30/05/2018	01/06/2018	Vente	668 Lyxor CAC 40 Daily Double Shrt UCITS ETF	2 930,19 €	3 130,12 €
+351	30/05/2018	30/05/2018	Dépôt	230 Dividendes Electricite de France (EDF) (Cash)	Aucune opération	199,93 €
+350	30/05/2018	30/05/2018	Transfert de titres	230 Dividendes Electricite de France (EDF) (Stock)	Aucune opération	199,93 €
+349	25/05/2018	25/05/2018	Virement	Prlv Taxe Fin. Derichebourg Act 25052018	-2,98 €	199,93 €
+348	25/05/2018	25/05/2018	Dépôt	230 Dividendes Electricite de France (EDF) (Stock)	Aucune opération	202,91 €
+347	25/05/2018	25/05/2018	Transfert de titres	230 Dividendes Electricite de France (EDF) (Cash)	Aucune opération	202,91 €
+346	24/05/2018	25/05/2018	Attribution dividende	230 Dividendes Electricite de France (EDF) (Cash)	Aucune opération	202,91 €
+345	24/05/2018	24/05/2018	Paiement des dividendes	172 Dividendes Engie	60,20 €	202,91 €
+344	23/05/2018	25/05/2018	Achat	167 Derichebourg Act.	-996,99 €	142,71 €
+343	22/05/2018	24/05/2018	Achat	668 Lyxor CAC 40 Daily Double Shrt UCITS ETF	-2 754,49 €	1 139,70 €
+342	22/05/2018	24/05/2018	Attribution dividende	172 Dividendes Engie	Aucune opération	3 894,19 €
+341	21/05/2018	23/05/2018	Achat	981 Solocal Group	-1 001,16 €	3 894,19 €
+340	18/05/2018	22/05/2018	Vente	630 Air France - KLM	4 425,16 €	4 895,35 €
+339	08/05/2018	08/05/2018	Virement	Prlv Taxe Fin. Air France - KLM 08052018	-8,97 €	470,19 €
+338	04/05/2018	08/05/2018	Achat	127 Air France - KLM	-1 000,47 €	479,16 €
+337	04/05/2018	08/05/2018	Vente	20 Societe Generale	836,30 €	1 479,63 €
+336	04/05/2018	08/05/2018	Achat	127 Air France - KLM	-999,45 €	643,33 €
+335	04/05/2018	08/05/2018	Achat	126 Air France - KLM	-997,90 €	1 642,78 €
+334	03/05/2018	07/05/2018	Vente	144 Bourbon Corp	760,70 €	2 640,68 €
+333	02/05/2018	02/05/2018	Virement	Prlv Taxe Fin. Derichebourg Act 02052018	-2,18 €	1 879,98 €
+332	02/05/2018	04/05/2018	Vente	118 Air France - KLM	991,06 €	1 882,16 €
+331	30/04/2018	03/05/2018	Achat	2 500 Agrogeneration	-957,50 €	891,10 €
+330	27/04/2018	02/05/2018	Vente	940 CGG Act	1 841,16 €	1 848,60 €
+329	27/04/2018	02/05/2018	Achat	101 Derichebourg Act.	-731,72 €	7,44 €
+328	25/04/2018	25/04/2018	Virement	Prlv Taxe Fin. Air France - KLM 25042018	-2,97 €	739,16 €
+327	24/04/2018	24/04/2018	Virement	Prlv Taxe Fin. Air France - KLM 24042018	-5,97 €	742,13 €
+326	23/04/2018	25/04/2018	Achat	123 Air France - KLM	-994,37 €	748,10 €
+325	23/04/2018	25/04/2018	Vente	517 CGG Act	996,34 €	1 742,47 €
+324	20/04/2018	24/04/2018	Achat	123 Air France - KLM	-996,34 €	746,13 €
+323	20/04/2018	24/04/2018	Vente	531 CGG Act	995,78 €	1 742,47 €
+322	20/04/2018	24/04/2018	Achat	122 Air France - KLM	-1 001,19 €	746,69 €
+321	19/04/2018	19/04/2018	Virement	Prlv Taxe Fin. Total SA 19042018	-2,93 €	1 747,88 €
+320	17/04/2018	19/04/2018	Achat	20 Total SA	-980,70 €	1 750,81 €
+319	16/04/2018	18/04/2018	Vente	2 584 Sequana SA -Liquidated-	1 610,00 €	2 731,51 €
+318	16/04/2018	16/04/2018	Virement	Prlv Taxe Fin. Societe Generale 16042018	-2,66 €	1 121,51 €
+317	13/04/2018	17/04/2018	Vente	21 Total SA	1 016,34 €	1 124,17 €
+316	12/04/2018	16/04/2018	Achat	20 Societe Generale	-889,40 €	107,83 €
+315	12/04/2018	16/04/2018	Vente	582 CGG Act	995,05 €	997,23 €
+314	09/04/2018	11/04/2018	Achat	144 Bourbon Corp	-702,34 €	2,18 €
+313	09/04/2018	11/04/2018	Achat	484 Spineway SA	-999,54 €	704,52 €
+312	04/04/2018	06/04/2018	Vente	12 Ingenico Group	748,46 €	1 704,06 €
+311	03/04/2018	05/04/2018	Vente	390 EuropaCorp	953,00 €	955,60 €
+310	03/04/2018	05/04/2018	Achat	390 EuropaCorp	-919,00 €	2,60 €
+309	29/03/2018	29/03/2018	Virement	Prlv Taxe Fin. Total SA 29032018	-2,91 €	921,60 €
+308	28/03/2018	03/04/2018	Vente	364 CGG Act	612,66 €	924,51 €
+307	27/03/2018	29/03/2018	Achat	21 Total SA	-973,75 €	311,85 €
+306	26/03/2018	28/03/2018	Vente	226 Ekinops SAS	882,29 €	1 285,60 €
+305	16/03/2018	20/03/2018	Achat	97 Voltalia	-894,90 €	403,31 €
+304	16/03/2018	20/03/2018	Vente	1 028 Solocal Group	1 174,12 €	1 298,21 €
+303	14/03/2018	16/03/2018	Achat	226 Ekinops SAS	-998,18 €	124,09 €
+302	08/03/2018	08/03/2018	Virement	Prlv Taxe Fin. Ingenico Group 08032018	-2,51 €	1 122,27 €
+301	08/03/2018	12/03/2018	Achat	2 239 Agrogeneration	-1 001,09 €	1 124,78 €
+300	07/03/2018	09/03/2018	Vente	410 Lyxor CAC 40 Daily Double Shrt UCITS ETF	2 063,86 €	2 125,87 €
+299	06/03/2018	08/03/2018	Achat	12 Ingenico Group	-840,58 €	62,01 €
+298	27/02/2018	01/03/2018	Achat	208 Lyxor CAC 40 Daily Double Shrt UCITS ETF	-998,82 €	902,59 €
+297	26/02/2018	28/02/2018	Achat	690 CGG Act	-1 015,85 €	1 901,41 €
+296	23/02/2018	27/02/2018	Achat	674 CGG Act	-1 000,70 €	2 917,26 €
+295	21/02/2018	23/02/2018	Achat	1 228 Sequana SA -Liquidated-	-1 000,86 €	3 917,96 €
+294	21/02/2018	23/02/2018	Achat	619 CGG Act	-1 001,57 €	4 918,82 €
+293	20/02/2018	22/02/2018	Vente	1 520 Miliboo SA	3 763,28 €	5 920,39 €
+292	20/02/2018	22/02/2018	Vente	380 Spineway SA	1 382,00 €	2 157,11 €
+291	19/02/2018	21/02/2018	Achat	202 Lyxor CAC 40 Daily Double Shrt UCITS ETF	-999,37 €	775,11 €
+290	19/02/2018	21/02/2018	Achat	907 Miliboo SA	-2 353,95 €	1 774,48 €
+289	16/02/2018	16/02/2018	Virement	Prlv Taxe Fin. Vallourec 16022018	-2,97 €	4 128,43 €
+7	27/02/2016	27/02/2016	Dépôt	1 856 Maurel et Prom	Aucune opération	0,00 €
+6	27/02/2016	27/02/2016	Dépôt	661 Vallourec	Aucune opération	0,00 €
+5	27/02/2016	27/02/2016	Dépôt	465 ArcelorMittal -Stock Split-	Aucune opération	0,00 €
+4	27/02/2016	27/02/2016	Dépôt	135 Electricite de France (EDF)	Aucune opération	0,00 €

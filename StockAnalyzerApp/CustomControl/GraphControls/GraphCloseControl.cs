@@ -7,6 +7,7 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzer.StockPortfolio3;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,6 +36,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
         public StockPortofolio Portofolio { get; set; }
+        public StockAnalyzer.StockPortfolio3.StockPortfolio BinckPortofolio { get; set; }
+
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
         {
@@ -51,7 +54,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private XABCD XABCD;
 
         protected bool ShowOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowOrders; } }
-        protected bool ShowSummaryOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowSummaryOrders; } }
         protected bool ShowEventMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowEventMarquee; } }
         protected bool ShowCommentMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowCommentMarquee; } }
         protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), StockAnalyzerSettings.Properties.Settings.Default.ShowAgenda); } }
@@ -226,16 +228,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #region Draw orders
 
-                if (ShowOrders && this.Portofolio != null)
+                if (ShowOrders && this.BinckPortofolio != null)
                 {
-                    if (ShowSummaryOrders)
-                    {
-                        PaintSummaryOrders(aGraphic);
-                    }
-                    else
-                    {
-                        PaintOrders(aGraphic);
-                    }
+                    PaintBinckOrders(aGraphic);
                 }
 
                 #endregion
@@ -846,6 +841,41 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
+        private void PaintBinckOrders(Graphics graphic)
+        {
+            if (this.BinckPortofolio == null)
+            {
+                return;
+            }
+            var name = this.serieName.ToUpper();
+            PointF valuePoint2D = PointF.Empty;
+            PointF screenPoint2D = PointF.Empty;
+            foreach (var operation in this.BinckPortofolio.Operations.Where(p => p.StockName.ToUpper() == name && p.IsOrder && p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex]))
+            {
+                DateTime orderDate = serieName.StartsWith("INT_") ? operation.Date : operation.Date.Date;
+                valuePoint2D.X = this.IndexOf(orderDate);
+                if (valuePoint2D.X < 0)
+                {
+                    StockLog.Write("Order date not found: " + operation.Date);
+                }
+                else
+                {
+                    if (operation.OperationType == StockOperation.BUY)
+                    {
+                        valuePoint2D.Y = -operation.Amount / operation.Qty;
+                        screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+                        this.DrawArrow(graphic, screenPoint2D, true, false);
+                    }
+                    else
+                    {
+                        valuePoint2D.Y = operation.Amount / operation.Qty;
+                        screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+                        this.DrawArrow(graphic, screenPoint2D, false, false);
+                    }
+                }
+            }
+        }
+
         private void PaintOrders(Graphics graphic)
         {
             if (this.Portofolio == null || this.Portofolio.OrderList.Count == 0)
@@ -873,8 +903,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void DrawArrow(Graphics g, PointF point, bool isBuy, bool isShort)
         {
-            int width = 3;
-            int arrowLengh = 20;
+            int width = 5;
+            int arrowLengh = 15;
             isBuy = isShort ? !isBuy : isBuy;
             if (isBuy)
             {
@@ -898,99 +928,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     p.EndCap = LineCap.ArrowAnchor;
                     g.DrawLine(p, point.X, point.Y - arrowLengh - 10, point.X, point.Y - 10);
-                }
-            }
-        }
-        private void PaintSummaryOrders(Graphics graphic)
-        {
-            if (this.Portofolio == null || this.Portofolio.OrderList.Count == 0)
-            {
-                return;
-            }
-
-            // The GetSummaryOrderList funtion guaranties to have a succession of Buy/Sell foreach period a stock has been bought.
-            // The only special case, it may finish by a Buy order without matching sell.
-            StockOrderList stockOrderList = this.Portofolio.OrderList.GetSummaryOrderList(this.serieName, false);
-            if (stockOrderList.Count == 0)
-            {
-                return;
-            }
-
-            PointF buyScreenPoint2D = PointF.Empty;
-            PointF sellScreenPoint2D = PointF.Empty;
-
-            StockOrder buyOrder = null;
-            StockOrder sellOrder = null;
-            for (int i = 0; i < stockOrderList.Count; i += 2)
-            {
-                // Is there a matching sell order
-                buyOrder = stockOrderList[i];
-                buyScreenPoint2D = GetScreenPointFromOrder(buyOrder);
-                if (i < (stockOrderList.Count - 1))
-                {
-                    sellOrder = stockOrderList[i + 1];
-                    sellScreenPoint2D = GetScreenPointFromOrder(sellOrder);
-
-                    if (sellScreenPoint2D.X < this.GraphRectangle.Left || buyScreenPoint2D.X > this.GraphRectangle.Right)
-                    {
-                        continue;
-                    }
-                    if (buyScreenPoint2D.X < this.GraphRectangle.Left)
-                    {
-                        buyScreenPoint2D.X = this.GraphRectangle.Left - 5;
-                    }
-                    // Draw order area
-                    Pen currentPen = greenPen;
-                    Brush currentBrush = greenBrush;
-                    float buyCost = buyOrder.IsShortOrder ? -buyOrder.TotalCost : buyOrder.TotalCost;
-                    float sellCost = sellOrder.IsShortOrder ? -sellOrder.TotalCost : sellOrder.TotalCost;
-
-                    if (buyCost > sellCost ^ buyOrder.IsShortOrder)
-                    {
-                        currentPen = redPen;
-                        currentBrush = redBrush;
-                    }
-
-                    if (buyCost < sellCost)
-                    {
-                        // Draw rectangle
-                        graphic.DrawRectangle(currentPen, buyScreenPoint2D.X, sellScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, buyScreenPoint2D.Y - sellScreenPoint2D.Y);
-                        graphic.FillRectangle(currentBrush, buyScreenPoint2D.X, sellScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, buyScreenPoint2D.Y - sellScreenPoint2D.Y);
-                    }
-                    else
-                    {
-                        // Draw rectangle
-                        graphic.DrawRectangle(currentPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, sellScreenPoint2D.Y - buyScreenPoint2D.Y);
-                        graphic.FillRectangle(currentBrush, buyScreenPoint2D.X, buyScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, sellScreenPoint2D.Y - buyScreenPoint2D.Y);
-                    }
-                    if (buyOrder.IsShortOrder)
-                    {
-                        float bottomPoint = Math.Min(buyScreenPoint2D.Y, sellScreenPoint2D.Y);
-                        PointF[] marquee = { new PointF(buyScreenPoint2D.X, bottomPoint), new PointF(buyScreenPoint2D.X + 4, bottomPoint), new PointF(buyScreenPoint2D.X, bottomPoint + 4) };
-                        graphic.FillPolygon(Brushes.Red, marquee);
-                    }
-                    else
-                    {
-                        float bottomPoint = Math.Max(buyScreenPoint2D.Y, sellScreenPoint2D.Y);
-                        PointF[] marquee = { new PointF(buyScreenPoint2D.X, bottomPoint), new PointF(buyScreenPoint2D.X + 4, bottomPoint), new PointF(buyScreenPoint2D.X, bottomPoint - 4) };
-                        graphic.FillPolygon(Brushes.Green, marquee);
-                    }
-                }
-                else
-                {
-                    // Calcule the order Pen color
-                    if (buyOrder.UnitCost >= this.closeCurveType.DataSerie.Last && !buyOrder.IsShortOrder)
-                    {
-                        // Draw isBuy order
-                        graphic.DrawLine(redPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, GraphRectangle.Right, buyScreenPoint2D.Y);
-                        graphic.DrawLine(redPen, buyScreenPoint2D.X - 10, buyScreenPoint2D.Y - 10, buyScreenPoint2D.X, buyScreenPoint2D.Y);
-                    }
-                    else
-                    {
-                        // Draw isBuy order
-                        graphic.DrawLine(greenPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, GraphRectangle.Right, buyScreenPoint2D.Y);
-                        graphic.DrawLine(greenPen, buyScreenPoint2D.X - 10, buyScreenPoint2D.Y - 10, buyScreenPoint2D.X, buyScreenPoint2D.Y);
-                    }
                 }
             }
         }
@@ -2034,10 +1971,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         void agendaMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
-        }
-        void openInFTMenu_Click(object sender, System.EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.OpenInFTMenu();
         }
         void openInABCMenu_Click(object sender, System.EventArgs e)
         {

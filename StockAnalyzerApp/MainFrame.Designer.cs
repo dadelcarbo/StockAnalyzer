@@ -59,7 +59,6 @@ namespace StockAnalyzerApp
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDrawingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showSummaryOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -360,7 +359,6 @@ namespace StockAnalyzerApp
             this.showShowStatusBarMenuItem,
             this.hideIndicatorsStockMenuItem,
             this.showDrawingsMenuItem,
-            this.showSummaryOrdersMenuItem,
             this.showOrdersMenuItem,
             this.toolStripSeparator14,
             this.showAgendaMenuItem,
@@ -406,14 +404,6 @@ namespace StockAnalyzerApp
             this.showDrawingsMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showDrawingsMenuItem.Text = "Show Drawings";
             this.showDrawingsMenuItem.Click += new System.EventHandler(this.showDrawingsMenuItem_Click);
-            // 
-            // showSummaryOrdersMenuItem
-            // 
-            this.showSummaryOrdersMenuItem.CheckOnClick = true;
-            this.showSummaryOrdersMenuItem.Name = "showSummaryOrdersMenuItem";
-            this.showSummaryOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showSummaryOrdersMenuItem.Text = "Show Summary Orders";
-            this.showSummaryOrdersMenuItem.Click += new System.EventHandler(this.showSummaryOrdersMenuItem_Click);
             // 
             // showOrdersMenuItem
             // 
@@ -1587,7 +1577,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showCommentMarqueeMenuItem;
         private ToolStripMenuItem showIndicatorDivMenuItem;
         private ToolStripMenuItem showIndicatorTextMenuItem;
-        private ToolStripMenuItem showSummaryOrdersMenuItem;
         private ToolStripMenuItem analysisMenuItem;
         private ToolStripMenuItem strategySimulationMenuItem;
         private ToolStripMenuItem filteredStrategySimulationMenuItem;

@@ -15,6 +15,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         CBOE,
         Harpex,
         Portofolio,
+        BinckPortfolio,
         Generated,
         AAII,
         Test,

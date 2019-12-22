@@ -8,7 +8,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses
 {
-    public class StockDictionary : SortedDictionary<string, StockSerie>
+    public class StockDictionary : SortedDictionary<string, StockSerie>, IStockPriceProvider
     {
         public System.DateTime ArchiveEndDate { get; private set; }
 
@@ -2422,6 +2422,23 @@ namespace StockAnalyzer.StockClasses
                 }
             }
             return true;
+        }
+
+        public float GetClosingPrice(string stockName, DateTime date)
+        {
+            if (this.ContainsKey(stockName))
+            {
+                var stockSerie = this[stockName];
+                if (stockSerie.Initialise())
+                {
+                    var index = stockSerie.IndexOf(date);
+                    if (index != -1)
+                    {
+                        return stockSerie.ValueArray[index].CLOSE;
+                    }
+                }
+            }
+            return 0f;
         }
     }
 }
