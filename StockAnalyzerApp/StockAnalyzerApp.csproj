@@ -179,6 +179,7 @@
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
     <Compile Include="CustomControl\CommentDlg\CommentDialog.cs">
       <SubType>Form</SubType>
     </Compile>

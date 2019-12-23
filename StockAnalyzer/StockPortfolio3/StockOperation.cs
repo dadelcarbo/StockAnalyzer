@@ -31,20 +31,17 @@ namespace StockAnalyzer.StockPortfolio3
         public string OperationType { get; set; }
         public string Description { get; set; }
 
-        public int Qty => int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", ""));
-        public string StockName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray());
+        public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
+        public string StockName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA","").ToUpper();
 
         public float Amount { get; set; }
         public float Balance { get; set; }
-        public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL;
-
-
+        public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT;
 
         public const string BUY = "achat";
         public const string SELL = "vente";
         public const string DEPOSIT = "dépôt";
-
-
+        
         internal void Dump()
         {
             Console.WriteLine($"{Id} {Date} {OperationType} {Description} {Amount} {Balance}");

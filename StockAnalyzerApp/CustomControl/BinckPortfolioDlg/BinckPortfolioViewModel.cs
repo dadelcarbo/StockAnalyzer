@@ -1,9 +1,11 @@
-﻿using StockAnalyzer.StockPortfolio3;
+﻿using StockAnalyzer;
+using StockAnalyzer.StockPortfolio3;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
-    public class BinckPortfolioViewModel
+    public class BinckPortfolioViewModel : NotifyPropertyChangedBase
     {
         public BinckPortfolioViewModel()
         {
@@ -19,8 +21,12 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 if (StockAnalyzerForm.MainFrame.BinckPortfolio != value)
                 {
                     StockAnalyzerForm.MainFrame.BinckPortfolio = value;
+
+                    OnPropertyChanged(nameof(OpenedPositions));
                 }
             }
         }
+
+        public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.Positions.Where(p => !p.IsClosed).OrderBy(p => p.StockName).Select(p=> new StockPositionViewModel(p));
     }
 }

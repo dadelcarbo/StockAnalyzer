@@ -56,6 +56,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private BinckPortfolioControl binckPortfolioControl1;
+        public BinckPortfolioControl binckPortfolioControl1;
     }
 }

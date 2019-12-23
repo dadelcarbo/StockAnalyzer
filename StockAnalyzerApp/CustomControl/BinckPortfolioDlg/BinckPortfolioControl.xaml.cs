@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,23 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
     /// </summary>
     public partial class BinckPortfolioControl : UserControl
     {
+        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
         public BinckPortfolioControl()
         {
             InitializeComponent();
+
+            this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationChanged;
+        }
+
+        private void positionGridView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = this.positionGridView.SelectedCells[0].Item as StockPositionViewModel;
+            if (viewModel == null || !viewModel.IsValidName) return;
+
+            if (SelectedStockChanged != null)
+                this.SelectedStockChanged(viewModel.StockName, StockBarDuration.Daily, true);
+
+            StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
     }
 }
