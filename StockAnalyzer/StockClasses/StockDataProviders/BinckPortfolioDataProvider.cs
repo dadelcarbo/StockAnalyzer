@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string folder = Path.Combine(rootFolder, PORTFOLIO_FOLDER);
             try
             {
-                Portofolios = StockPortfolio3.StockPortfolio.LoadPortofolios(folder);
+                Portofolios = StockPortfolio3.StockPortfolio.LoadPortfolios(folder);
             }
             catch (Exception)
             {

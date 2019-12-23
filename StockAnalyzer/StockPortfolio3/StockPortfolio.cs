@@ -11,16 +11,16 @@ namespace StockAnalyzer.StockPortfolio3
     {
         public static IStockPriceProvider PriceProvider { get; set; }
 
-        public static List<StockPortfolio> Portofolios { get; private set; }
+        public static List<StockPortfolio> Portfolios { get; private set; }
 
-        public static List<StockPortfolio> LoadPortofolios(string folder)
+        public static List<StockPortfolio> LoadPortfolios(string folder)
         {
-            Portofolios = new List<StockPortfolio>();
+            StockPortfolio.Portfolios = new List<StockPortfolio>();
             foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s=>s))
             {
-                Portofolios.Add(new StockPortfolio(file));
+                StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
-            return Portofolios;
+            return StockPortfolio.Portfolios;
         }
         public StockPortfolio()
         {

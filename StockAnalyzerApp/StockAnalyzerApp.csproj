@@ -169,6 +169,16 @@
     <Compile Include="CustomControl\AlertDialog\AlertDlg.Designer.cs">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml.cs">
+      <DependentUpon>BinckPortfolioControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.Designer.cs">
+      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
     <Compile Include="CustomControl\CommentDlg\CommentDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -574,6 +584,9 @@
     <EmbeddedResource Include="CustomControl\AlertDialog\AlertDlg.resx">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
+      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.fr-FR.resx">
       <DependentUpon>CommentDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -943,6 +956,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -980,9 +997,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomControl\BinckPortfolioDlg\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

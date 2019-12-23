@@ -21,6 +21,7 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
+using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
@@ -3599,18 +3600,24 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(false);
         }
 
+
         private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
         {
             if (BinckPortfolio == null)
                 return;
 
-            if (!StockDictionary.ContainsKey(BinckPortfolio.Name))
-            {
-                StockDictionary.GeneratePortfolioSerie(BinckPortfolio);
-            }
+            var dlg = new BinckPortfolioDlg();
+            dlg.Show();
 
-            // Set the new selected serie
-            CurrentStockSerie = StockDictionary[BinckPortfolio.Name];
+
+            // §§§§ Portfolio
+            //if (!StockDictionary.ContainsKey(BinckPortfolio.Name))
+            //{
+            //    StockDictionary.GeneratePortfolioSerie(BinckPortfolio);
+            //}
+
+            //// Set the new selected serie
+            //CurrentStockSerie = StockDictionary[BinckPortfolio.Name];
 
             // §§§§ Portfolio
             //if (this.CurrentPortofolio != null)
