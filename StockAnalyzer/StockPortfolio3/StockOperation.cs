@@ -18,11 +18,11 @@ namespace StockAnalyzer.StockPortfolio3
             this.Description = fields[4];
 
             float amount;
-            float.TryParse(fields[5].Replace(" ", "").Replace("�", ""), NumberStyles.Float, ci, out amount);
+            float.TryParse(fields[5].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out amount);
             this.Amount = amount;
 
             float balance;
-            float.TryParse(fields[6].Replace(" ", "").Replace("�", ""), NumberStyles.Float, ci, out balance);
+            float.TryParse(fields[6].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out balance);
             this.Balance = balance;
         }
         public int Id { get; set; }

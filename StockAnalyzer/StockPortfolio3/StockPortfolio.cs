@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace StockAnalyzer.StockPortfolio3
 {
@@ -16,7 +17,7 @@ namespace StockAnalyzer.StockPortfolio3
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
             StockPortfolio.Portfolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s=>s))
+            foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s => s))
             {
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
@@ -24,7 +25,6 @@ namespace StockAnalyzer.StockPortfolio3
         }
         public StockPortfolio()
         {
-
         }
         public StockPortfolio(string fileName)
         {
@@ -33,9 +33,9 @@ namespace StockAnalyzer.StockPortfolio3
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
 
-            foreach (var operation in System.IO.File.ReadAllLines(fileName).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")).Select(l => new StockOperation(l)).OrderBy(o => o.Id))
+            foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")).Select(l => new StockOperation(l)).OrderBy(o => o.Id))
             {
-                this.AddOperation(operation);
+                    this.AddOperation(operation);
             }
         }
 
@@ -51,12 +51,15 @@ namespace StockAnalyzer.StockPortfolio3
             {
                 case StockOperation.DEPOSIT:
                     {
-                        this.Positions.Add(new StockPosition
+                        if (!operation.StockName.StartsWith("DIVIDEND"))
                         {
-                            StartDate = operation.Date,
-                            Qty = operation.Qty,
-                            StockName = operation.StockName
-                        });
+                            this.Positions.Add(new StockPosition
+                            {
+                                StartDate = operation.Date,
+                                Qty = operation.Qty,
+                                StockName = operation.StockName
+                            });
+                        }
                     }
                     break;
                 case StockOperation.BUY:

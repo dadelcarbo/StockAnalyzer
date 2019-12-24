@@ -48,7 +48,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.elementHost1);
             this.Name = "BinckPortfolioDlg";
-            this.Size = new System.Drawing.Size(583, 391);
+            this.Size = new System.Drawing.Size(800, 400);
             this.ResumeLayout(false);
 
         }
