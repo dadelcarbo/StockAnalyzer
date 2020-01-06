@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -101,6 +93,11 @@ namespace StockAnalyzer.StockClasses
                    this.Alert == other.Alert &&
                    this.BarDuration == other.BarDuration &&
                    this.AlertClose == other.AlertClose;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

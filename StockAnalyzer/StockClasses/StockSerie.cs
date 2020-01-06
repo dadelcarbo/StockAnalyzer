@@ -652,32 +652,6 @@ namespace StockAnalyzer.StockClasses
             this.IsInitialised = false;
             ResetAllCache();
         }
-        public StockSerie(StockBarSerie barSerie, Groups stockGroup)
-        {
-            this.StockName = barSerie.Name;
-            this.ShortName = barSerie.ShortName;
-            this.StockGroup = stockGroup;
-            this.lastDate = DateTime.MinValue;
-            this.StockAnalysis = new StockAnalysis();
-            this.IsPortofolioSerie = false;
-            this.barDuration = StockBarDuration.Daily;
-
-            this.IsInitialised = false;
-
-            System.TimeSpan minSpan = System.TimeSpan.FromSeconds(1);
-            DateTime date;
-            foreach (StockBar bar in barSerie.StockBars)
-            {
-                StockDailyValue dailyValue = new StockDailyValue(barSerie.Name, (float)bar.OPEN, (float)bar.HIGH, (float)bar.LOW, (float)bar.CLOSE, bar.VOLUME, bar.DATE);
-                date = bar.DATE;
-                while (this.ContainsKey(date))
-                {
-                    date += minSpan;
-                }
-                this.Add(date, dailyValue);
-            }
-            ResetAllCache();
-        }
         private void ResetAllCache()
         {
             this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
@@ -6905,23 +6879,6 @@ namespace StockAnalyzer.StockClasses
                     }
                     break;
             }
-            return newBarList;
-        }
-
-        private List<StockDailyValue> GenerateRangeBar(List<StockDailyValue> stockDailyValueList, float variation)
-        {
-            // Generate tickList
-            StockTick[] ticks = new StockTick[stockDailyValueList.Count];
-            int i = 0;
-            foreach (StockDailyValue dailyValue in stockDailyValueList)
-            {
-                ticks[i++] = new StockTick(dailyValue.DATE, i, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.VARIATION > 0);
-            }
-
-            // Generate range serie
-            StockBarSerie barSerie = StockBarSerie.CreateRangeBarSerie(this.StockName, this.ShortName, stockDailyValueList.First().CLOSE * variation, ticks);
-
-            List<StockDailyValue> newBarList = new StockSerie(barSerie, this.StockGroup).Values.ToList();
             return newBarList;
         }
         private List<StockDailyValue> GenerateMinuteBarsFromIntraday(List<StockDailyValue> stockDailyValueList, int nbMinutes)

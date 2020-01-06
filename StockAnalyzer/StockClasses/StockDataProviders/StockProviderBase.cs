@@ -115,29 +115,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                //case StockDataProvider.Yahoo:
-                //    dataProvider = new YahooDataProvider();
-                //    break;
-                //case StockDataProvider.YahooIntraday:
-                //    dataProvider = new YahooIntradayDataProvider();
-                //    break;
-                //case StockDataProvider.Google:
-                //    dataProvider = new GoogleDataProvider();
-                //    break;
-                //case StockDataProvider.GoogleIntraday:
-                //    dataProvider = new GoogleIntradayDataProvider();
-                //    break;
                 case StockDataProvider.CommerzBankIntraday:
                     dataProvider = new CommerzBankIntradayDataProvider();
                     break;
                 case StockDataProvider.CBOE:
                     dataProvider = new CBOEDataProvider();
-                    break;
-                case StockDataProvider.FINRA:
-                    dataProvider = new FINRADataProvider();
-                    break;
-                case StockDataProvider.Harpex:
-                    dataProvider = new HarpexDataProvider();
                     break;
                 //case StockDataProvider.COT:
                 //    dataProvider = new COTDataProvider();
@@ -153,9 +135,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockDataProvider.Breadth:
                     dataProvider = new BreadthDataProvider();
-                    break;
-                case StockDataProvider.Rydex:
-                    dataProvider = new RydexDataProvider();
                     break;
                 case StockDataProvider.AAII:
                     dataProvider = new AAIIDataProvider();

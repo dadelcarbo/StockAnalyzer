@@ -165,8 +165,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private const int MARGIN_SIZE = 20;
-        private const int MOUSE_MARQUEE_SIZE = 4;
         private StockSerie.Groups selectedGroup;
 
         private PalmaresDlg palmaresDlg = null;
@@ -5752,7 +5750,7 @@ border:1px solid black;
                     {
                         this.CurrentPortofolio = null;
 
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) && this.currentStockSerie.DataProvider != StockDataProvider.FINRA)
+                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
                             this.graphCloseControl.SecondaryFloatSerie =

@@ -178,7 +178,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockSerie.IsInitialised = false;
                             return true;
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             nbTries--;
                         }

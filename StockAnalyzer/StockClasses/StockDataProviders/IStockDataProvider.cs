@@ -6,14 +6,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BarChart,
         InvestingIntraday,
         BNPIntraday,
-        //Yahoo,
-        //YahooIntraday,
-        //Google,
-        //GoogleIntraday,
         CommerzBankIntraday,
-        Rydex,
         CBOE,
-        Harpex,
         Portofolio,
         BinckPortfolio,
         Generated,
@@ -23,7 +17,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Breadth,
         //COT,
         //NASDACQShortInterest,
-        FINRA,
         Investing,
         Ratio
     }

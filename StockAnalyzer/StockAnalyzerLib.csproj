@@ -107,7 +107,6 @@
     <Compile Include="StockClasses\StockDataProviders\BNPJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\BNPIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
-    <Compile Include="StockClasses\StockDataProviders\FINRADataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
     <Compile Include="StockClasses\CotSerie.cs" />
     <Compile Include="StockClasses\CotValue.cs" />
@@ -130,7 +129,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataProviderString.resx</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockDataProviders\HarpexDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\RatioDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\CommandBase.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.cs">
@@ -153,7 +151,6 @@
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
     <Compile Include="StockClasses\StockAgenda.cs" />
-    <Compile Include="StockClasses\StockDataProviders\YahooIntradayJson.cs" />
     <Compile Include="StockClasses\StockFinancial.cs" />
     <Compile Include="StockClasses\StockFinancialAttibute.cs" />
     <Compile Include="StockClasses\StockGeneralAttibute.cs" />
@@ -170,12 +167,10 @@
     <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
-    <Compile Include="StockClasses\StockDataProviders\RydexDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\GeneratedDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\IStockDataProvider.cs" />
     <Compile Include="StockClasses\StockAnalysis.cs" />
     <Compile Include="StockClasses\StockBar.cs" />
-    <Compile Include="StockClasses\StockBarSerie.cs" />
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
@@ -430,10 +425,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BB.cs" />
-    <Compile Include="StockClasses\StockSession.cs" />
     <Compile Include="StockClasses\StockSerie.cs" />
     <Compile Include="StockClasses\StockStatistics.cs" />
-    <Compile Include="StockClasses\StockTick.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\IStockTrailStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
