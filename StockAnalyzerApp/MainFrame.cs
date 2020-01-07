@@ -4414,12 +4414,12 @@ border:1px solid black;
 
             string rowTemplate = @"
          <tr>
-             <td>%COL1%</td>
-             <td>%COL2%</td>
+             <td style=""font-size: x-small"">%COL1%</td>
+             <td style=""font-size: x-small"">%COL2%</td>
              %RANK_DIR_IMG%
-             <td>%COL3%</td>
+             <td style=""font-size: x-small"">%COL3%</td>
              %CLOSE_DIR_IMG%
-             <td>%COL4%</td>
+             <td style=""font-size: x-small"">%COL4%</td>
          </tr>";
 
             html += htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + reportGroup + " - " + rankLeaderIndicatorName);
