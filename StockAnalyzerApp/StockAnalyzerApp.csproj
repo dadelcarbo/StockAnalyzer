@@ -893,6 +893,9 @@
     <Content Include="Resources\CutLeft.PNG" />
     <None Include="Resources\Decorator.png" />
     <None Include="Resources\DeleteTheme.png" />
+    <Content Include="Resources\Flat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
