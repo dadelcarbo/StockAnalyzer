@@ -4422,22 +4422,22 @@ border:1px solid black;
                 if (stockSerie.Initialise() && stockSerie.Count > 100)
                 {
                     stockSerie.BarDuration = duration;
-                    IStockIndicator indicator = stockSerie.GetIndicator(rankLeaderIndicatorName);
+                    var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
                     leadersDico.Add(new RankedSerie()
                     {
-                        rankIndicatorValue = indicator.Series[0].Last,
-                        previousRankIndicatorValue = indicator.Series[0][indicator.Series[0].Count - 2],
+                        rankIndicatorValue = indicatorSerie.Last,
+                        previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
                         stockSerie = stockSerie
                     });
                 }
             }
             // Calculate ranks
-            int rank = 0;
+            int rank = 1;
             foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
             {
                 rankSerie.rank = rank++;
             }
-            rank = 0;
+            rank = 1;
             foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
             {
                 rankSerie.previousRank = rank++;
@@ -4458,13 +4458,13 @@ border:1px solid black;
 </thead>
 <tbody>";
 
-            var leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
+            var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
             foreach (RankedSerie pair in leaders)
             {
                 var lastValue = pair.stockSerie.ValueArray.Last();
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rankIndicatorValue / 100f).ToString("P2")).
+                    Replace("%COL2%", (pair.rankIndicatorValue / 100.0f).ToString("P2")).
                     Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                     Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
@@ -4501,14 +4501,34 @@ border:1px solid black;
             html += "</td><td width=100></td><td>";
 
             leadersDico.Clear();
-            foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)))
+
+            StockSplashScreen.ProgressVal = 0;
+            foreach (StockSerie stockSerie in stockList)
             {
+                StockSplashScreen.ProgressVal++;
+                StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
                 if (stockSerie.Initialise() && stockSerie.Count > 100)
                 {
-                    stockSerie.BarDuration = StockBarDuration.Daily;
-                    IStockIndicator indicator = stockSerie.GetIndicator(rankLoserIndicatorName);
-                    leadersDico.Add(new RankedSerie() { rankIndicatorValue = -indicator.Series[0].Last, previousRankIndicatorValue = -indicator.Series[0][indicator.Series[0].Count - 2], stockSerie = stockSerie });
+                    stockSerie.BarDuration = duration;
+                    var indicatorSerie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
+                    leadersDico.Add(new RankedSerie()
+                    {
+                        rankIndicatorValue = indicatorSerie.Last,
+                        previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
+                        stockSerie = stockSerie
+                    });
                 }
+            }
+            // Calculate ranks
+            rank = 1;
+            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
+            {
+                rankSerie.rank = rank++;
+            }
+            rank = 1;
+            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
+            {
+                rankSerie.previousRank = rank++;
             }
 
             html += htmlTitleTemplate.Replace(titleTemplate, "Losers for " + reportGroup);
@@ -4525,21 +4545,21 @@ border:1px solid black;
 </tr>
 </thead>
 <tbody>";
-            leaders = leadersDico.OrderBy(l => l.rankIndicatorValue).Take(nbLeaders);
+            leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
             foreach (RankedSerie pair in leaders)
             {
                 var lastValue = pair.stockSerie.ValueArray.Last();
                 html += rowTemplate.
                     Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rankIndicatorValue / 100f).ToString("P2")).
+                    Replace("%COL2%", (pair.rankIndicatorValue / -100.0f).ToString("P2")).
                     Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                     Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
-                if (pair.previousRank < pair.rank)
+                if (pair.previousRank > pair.rank)
                 {
                     html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
                 }
-                else if (pair.previousRank > pair.rank)
+                else if (pair.previousRank < pair.rank)
                 {
                     html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
                 }
