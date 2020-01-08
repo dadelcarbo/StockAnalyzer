@@ -932,6 +932,9 @@
     <None Include="Resources\SaveAnalysis.png" />
     <None Include="Resources\SaveAnalysisAs.png" />
     <None Include="Resources\SaveTheme.png" />
+    <Content Include="Resources\ReportTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\search.png" />
     <Content Include="Resources\Up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
