@@ -2,10 +2,8 @@
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using Telerik.Windows;
 using Telerik.Windows.Controls;
@@ -28,7 +26,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             foreach (var item in StockAlertConfig.GetConfigs())
             {
                 this.TimeFrameComboBox.Items.Add(item);
-                if (this.selectedTimeFrame==null)
+                if (this.selectedTimeFrame == null)
                 {
                     this.SelectedTimeFrame = item;
                 }
@@ -36,14 +34,15 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         }
         private StockAlertConfig selectedTimeFrame;
 
-        public StockAlertConfig SelectedTimeFrame {
+        public StockAlertConfig SelectedTimeFrame
+        {
             get
             {
                 return selectedTimeFrame;
             }
             set
             {
-                //if (selectedTimeFrame != value)
+                if (selectedTimeFrame != value)
                 {
                     selectedTimeFrame = value;
                     this.TimeFrameComboBox.SelectedItem = selectedTimeFrame;
@@ -53,11 +52,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
-        public List<StockAlertDef> AlertDefs { get; set; }
-
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            var alertLog = this.DataContext as StockAlertLog;
+            var alertLog = this.selectedTimeFrame.AlertLog;
             alertLog.Clear();
         }
 
@@ -65,18 +62,18 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                if (AlertDefs == null)
-                {
-                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
-                    alertThread.Name = "Intraday Alert";
-                    alertThread.Start();
-                }
-                else
-                {
+                //if (AlertDefs == null)
+                //{
+                //    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
+                //    alertThread.Name = "Intraday Alert";
+                //    alertThread.Start();
+                //}
+                //else
+                //{
+                //}
                     Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
                     alertThread.Name = "Alert";
-                    alertThread.Start(Tuple.Create(AlertDefs, (StockAlertLog)this.DataContext));
-                }
+                    alertThread.Start(Tuple.Create(this.selectedTimeFrame.AlertDefs, this.selectedTimeFrame.AlertLog));
             }
             catch (Exception ex)
             {

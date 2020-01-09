@@ -685,17 +685,17 @@ namespace StockAnalyzerApp
 
             if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                GenerateAlert(dailyAlertConfig.AlertDefs, dailyAlertConfig.AlertLog);
+                GenerateAlert(dailyAlertConfig);
             }
 
             if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                GenerateAlert(weeklyAlertConfig.AlertDefs, weeklyAlertConfig.AlertLog);
+                GenerateAlert(weeklyAlertConfig);
             }
 
             if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
-                GenerateAlert(monthlyAlertConfig.AlertDefs, monthlyAlertConfig.AlertLog);
+                GenerateAlert(monthlyAlertConfig);
             }
             #endregion
 
@@ -1010,15 +1010,11 @@ namespace StockAnalyzerApp
         }
         public void GenerateAlert_Thread(object param)
         {
-            var tuple = (Tuple<List<StockAlertDef>, StockAlertLog>)param;
-            if (tuple != null)
-            {
-                this.GenerateAlert(tuple.Item1, tuple.Item2);
-            }
+            this.GenerateAlert((StockAlertConfig)param);
         }
-        public void GenerateAlert(List<StockAlertDef> alertDefs, StockAlertLog alertLog)
+        public void GenerateAlert(StockAlertConfig alterConfig)
         {
-            if (busy || alertDefs == null) return;
+            if (busy || alterConfig == null) return;
             busy = true;
 
             try
@@ -1057,9 +1053,9 @@ namespace StockAnalyzerApp
 
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (alertDefs)
+                    lock (alterConfig)
                     {
-                        foreach (var alertDef in alertDefs)
+                        foreach (var alertDef in alterConfig.AlertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -1077,16 +1073,16 @@ namespace StockAnalyzerApp
                                         dailyValue.CLOSE,
                                         dailyValue.VOLUME);
 
-                                    if (alertLog.Alerts.All(a => a != stockAlert))
+                                    if (alterConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => alertLog.Alerts.Insert(0, stockAlert)));
+                                            this.Invoke(new Action(() => alterConfig.AlertLog.Alerts.Insert(0, stockAlert)));
                                         }
                                         else
                                         {
-                                            alertLog.Alerts.Insert(0, stockAlert);
+                                            alterConfig.AlertLog.Alerts.Insert(0, stockAlert);
                                         }
                                     }
                                 }
@@ -1095,11 +1091,11 @@ namespace StockAnalyzerApp
                     }
                     stockSerie.BarDuration = previouBarDuration;
                 }
-                alertLog.Save();
+                alterConfig.AlertLog.Save();
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
-                    StockMail.SendEmail("Ultimate Chartist - " + alertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
+                    StockMail.SendEmail("Ultimate Chartist - " + alterConfig.AlertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
                 }
 
                 if (this.AlertDetected != null)
