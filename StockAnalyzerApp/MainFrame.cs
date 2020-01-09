@@ -1012,17 +1012,26 @@ namespace StockAnalyzerApp
         {
             this.GenerateAlert((StockAlertConfig)param);
         }
-        public void GenerateAlert(StockAlertConfig alterConfig)
+        public void GenerateAlert(StockAlertConfig alertConfig)
         {
-            if (busy || alterConfig == null) return;
+            if (busy || alertConfig == null) return;
             busy = true;
 
             try
             {
                 string alertString = string.Empty;
 
-                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.CACALL)).ToList();
-
+                List<StockSerie> stockList;
+                if (alertConfig.TimeFrame == "Intraday")
+                {
+                    stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
+                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY) || s.BelongsToGroup(StockSerie.Groups.FUTURE))).ToList();
+                }
+                else
+                {
+                    stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
+                    s.BelongsToGroup(StockSerie.Groups.CACALL)).ToList();
+                }
                 if (AlertDetectionStarted != null)
                 {
                     if (this.InvokeRequired)
@@ -1053,9 +1062,9 @@ namespace StockAnalyzerApp
 
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
 
-                    lock (alterConfig)
+                    lock (alertConfig)
                     {
-                        foreach (var alertDef in alterConfig.AlertDefs)
+                        foreach (var alertDef in alertConfig.AlertDefs)
                         {
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -1073,16 +1082,16 @@ namespace StockAnalyzerApp
                                         dailyValue.CLOSE,
                                         dailyValue.VOLUME);
 
-                                    if (alterConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                                    if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
                                         alertString += stockAlert.ToString() + Environment.NewLine;
                                         if (this.InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => alterConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                            this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
                                         }
                                         else
                                         {
-                                            alterConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                            alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
                                         }
                                     }
                                 }
@@ -1091,11 +1100,11 @@ namespace StockAnalyzerApp
                     }
                     stockSerie.BarDuration = previouBarDuration;
                 }
-                alterConfig.AlertLog.Save();
+                alertConfig.AlertLog.Save();
 
                 if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
                 {
-                    StockMail.SendEmail("Ultimate Chartist - " + alterConfig.AlertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
+                    StockMail.SendEmail("Ultimate Chartist - " + alertConfig.AlertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
                 }
 
                 if (this.AlertDetected != null)

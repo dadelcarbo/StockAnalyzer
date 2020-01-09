@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockClasses
         }
         public static StockAlertConfig GetConfig(string timeFrame)
         {
-            return GetConfigs().First(c=>c.TimeFrame == timeFrame);
+            return GetConfigs().First(c => c.TimeFrame == timeFrame);
         }
 
         public string TimeFrame { get; set; }
@@ -45,7 +45,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (alertLog == null)
                 {
-                    alertLog =StockAlertLog.Load($"AlertLog{TimeFrame}.xml", DateTime.Today.AddDays(-5));
+                    alertLog = StockAlertLog.Load($"AlertLog{TimeFrame}.xml", DateTime.Today.AddDays(-5));
                 }
                 return alertLog;
             }
