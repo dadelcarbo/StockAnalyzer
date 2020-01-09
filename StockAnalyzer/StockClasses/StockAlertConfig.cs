@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (alertDefs == null)
                 {
-                    string alertFileName = Settings.Default.RootFolder + $@"\Alert{TimeFrame}.xml";
+                    string alertFileName = Settings.Default.RootFolder + $@"\AlertDef{TimeFrame}.xml";
                     // Parse alert lists
                     if (File.Exists(alertFileName))
                     {

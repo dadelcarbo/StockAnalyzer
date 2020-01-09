@@ -62,18 +62,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                //if (AlertDefs == null)
-                //{
-                //    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
-                //    alertThread.Name = "Intraday Alert";
-                //    alertThread.Start();
-                //}
-                //else
-                //{
-                //}
-                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-                    alertThread.Name = "Alert";
-                    alertThread.Start(Tuple.Create(this.selectedTimeFrame.AlertDefs, this.selectedTimeFrame.AlertLog));
+                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                alertThread.Name = "Alert";
+                alertThread.Start(this.selectedTimeFrame);
             }
             catch (Exception ex)
             {
