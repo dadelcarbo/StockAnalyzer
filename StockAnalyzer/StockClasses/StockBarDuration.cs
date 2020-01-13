@@ -27,7 +27,8 @@ namespace StockAnalyzer.StockClasses
         TLB_27D,
         ThreeLineBreak,
         SixLineBreak,
-        TLB_Weekly
+        TLB_Weekly,
+        RENKO_2
     }
 
     public class StockBarDuration : IComparable
@@ -66,6 +67,7 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
         public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
+        public static StockBarDuration RENKO_2 = new StockBarDuration(BarDuration.RENKO_2);
 
         public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
             StockBarDuration.Daily,
@@ -77,7 +79,8 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Bar_6,
             StockBarDuration.Bar_12,
             StockBarDuration.Weekly,
-            StockBarDuration.Monthly
+            StockBarDuration.Monthly,
+            StockBarDuration.RENKO_2
         };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)
