@@ -17,8 +17,7 @@ namespace StockAnalyzer.StockClasses
       VOLUME,
       UPVOLUME,
       DOWNVOLUME,
-      SHORTINTREST,
-      POSITION
+      SHORTINTREST
    };
 
    public enum OHLCType
