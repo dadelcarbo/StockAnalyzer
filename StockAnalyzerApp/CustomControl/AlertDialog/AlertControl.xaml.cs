@@ -2,6 +2,7 @@
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -23,38 +24,14 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             this.grid.AddHandler(GridViewCellBase.CellDoubleClickEvent, new EventHandler<RadRoutedEventArgs>(OnCellDoubleClick), true);
 
-            foreach (var item in StockAlertConfig.GetConfigs())
-            {
-                this.TimeFrameComboBox.Items.Add(item);
-                if (this.selectedTimeFrame == null)
-                {
-                    this.SelectedTimeFrame = item;
-                }
-            }
         }
-        private StockAlertConfig selectedTimeFrame;
-
-        public StockAlertConfig SelectedTimeFrame
-        {
-            get
-            {
-                return selectedTimeFrame;
-            }
-            set
-            {
-                if (selectedTimeFrame != value)
-                {
-                    selectedTimeFrame = value;
-                    this.TimeFrameComboBox.SelectedItem = selectedTimeFrame;
-                }
-            }
-        }
+        public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            var alertLog = this.selectedTimeFrame.AlertLog;
+            var alertLog = this.SelectedTimeFrame.AlertLog;
             alertLog.Clear();
         }
 
@@ -64,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             {
                 var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
                 alertThread.Name = "Alert";
-                alertThread.Start(this.selectedTimeFrame);
+                alertThread.Start(this.SelectedTimeFrame);
             }
             catch (Exception ex)
             {

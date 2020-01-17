@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerSettings.Properties;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +11,8 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlertLog : INotifyPropertyChanged
     {
+        public static string AlertLogFolder => Settings.Default.RootFolder + @"\Alert\AlertLog";
+
         private DateTime lastRefreshDate;
 
         public DateTime LastRefreshDate
@@ -74,7 +77,7 @@ namespace StockAnalyzer.StockClasses
 
         private static SortedDictionary<string, StockAlertLog> alertLogs = new SortedDictionary<string, StockAlertLog>();
 
-        private DateTime StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         public static StockAlertLog Load(string fileName, DateTime startDate)
         {
             if (alertLogs.ContainsKey(fileName))
@@ -89,7 +92,7 @@ namespace StockAnalyzer.StockClasses
 
         private void Load()
         {
-            string filepath = Path.GetTempPath() + this.fileName;
+            string filepath = Path.Combine(AlertLogFolder, this.fileName); ;
             if (File.Exists(filepath))
             {
                 LastRefreshDate = File.GetLastWriteTime(filepath);
@@ -123,7 +126,7 @@ namespace StockAnalyzer.StockClasses
 
         public void Save()
         {
-            string filepath = Path.GetTempPath() + this.fileName;
+            string filepath = Path.Combine(AlertLogFolder, this.fileName);
             this.LastRefreshDate = DateTime.Now;
             using (FileStream fs = new FileStream(filepath, FileMode.Create))
             {
@@ -141,7 +144,7 @@ namespace StockAnalyzer.StockClasses
 
         public void Clear()
         {
-            string filePath = Path.GetTempPath() + this.fileName;
+            string filePath = Path.Combine(AlertLogFolder, this.fileName);
             if (File.Exists(filePath))
                 File.Delete(filePath);
             this.Alerts?.Clear();

@@ -755,7 +755,7 @@ namespace StockAnalyzerApp
                 alertTimer.Interval = minutes * 60 * 1000;
                 alertTimer.Start();
 
-                string fileName = Path.GetTempPath() + "AlertLog.xml";
+                string fileName = Path.Combine(StockAlertLog.AlertLogFolder, "AlertLog.xml");
                 IEnumerable<string> alertLog = new List<string>();
                 bool needDirectAlertCheck = false;
                 if (File.Exists(fileName))
@@ -943,7 +943,8 @@ namespace StockAnalyzerApp
                             this.AlertDetectionProgress(stockName);
                         }
                     }
-                    if (!this.StockDictionary.ContainsKey(stockName)) continue;
+                    if (!this.StockDictionary.ContainsKey(stockName))
+                        continue;
 
                     StockSerie stockSerie = this.StockDictionary[stockName];
                     StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
@@ -1073,6 +1074,8 @@ namespace StockAnalyzerApp
                             for (int i = stockSerie.LastCompleteIndex; i > stopIndex; i--)
                             {
                                 var dailyValue = values.ElementAt(i);
+                                if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
+                                    break;
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
                                     StockAlert stockAlert = new StockAlert(alertDef,
