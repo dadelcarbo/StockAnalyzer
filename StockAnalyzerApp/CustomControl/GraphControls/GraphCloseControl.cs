@@ -7,7 +7,7 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzer.StockPortfolio3;
+using StockAnalyzer.StockBinckPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
         public StockPortofolio Portofolio { get; set; }
-        public StockAnalyzer.StockPortfolio3.StockPortfolio BinckPortofolio { get; set; }
+        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortofolio { get; set; }
 
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
@@ -850,27 +850,31 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var name = this.serieName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            foreach (var operation in this.BinckPortofolio.Operations.Where(p => p.StockName.ToUpper() == name && p.IsOrder && p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex]))
+            foreach (var operation in this.BinckPortofolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
             {
                 DateTime orderDate = serieName.StartsWith("INT_") ? operation.Date : operation.Date.Date;
-                valuePoint2D.X = this.IndexOf(orderDate);
+                int index = this.IndexOf(orderDate);
+                valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
                 {
                     StockLog.Write("Order date not found: " + operation.Date);
                 }
                 else
                 {
+                    bool isShort = false;
+                    if (operation.NameMapping != null && operation.NameMapping.Leverage < 0)
+                        isShort = true;
                     if (operation.OperationType == StockOperation.BUY)
                     {
-                        valuePoint2D.Y = -operation.Amount / operation.Qty;
+                        valuePoint2D.Y = isShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                        this.DrawArrow(graphic, screenPoint2D, true, false);
+                        this.DrawArrow(graphic, screenPoint2D, true, isShort);
                     }
                     else
                     {
-                        valuePoint2D.Y = operation.Amount / operation.Qty;
+                        valuePoint2D.Y = isShort ? this.lowCurveType.DataSerie[index] : this.highCurveType.DataSerie[index];
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                        this.DrawArrow(graphic, screenPoint2D, false, false);
+                        this.DrawArrow(graphic, screenPoint2D, false, isShort);
                     }
                 }
             }
@@ -901,34 +905,40 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
+        static Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static Pen buyShortPen = new Pen(Color.Red, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
+        static Pen sellLongPen = new Pen(Color.Red, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static Pen sellShortPen = new Pen(Color.Green, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
+
         private void DrawArrow(Graphics g, PointF point, bool isBuy, bool isShort)
         {
-            int width = 5;
             int arrowLengh = 15;
+            float offset = 10;
             isBuy = isShort ? !isBuy : isBuy;
+            Pen p = buyLongPen;
             if (isBuy)
             {
-                using (Pen p = new Pen(Color.Green, width))
+                if (isShort)
                 {
-                    if (isShort)
-                    {
-                        p.StartCap = LineCap.ArrowAnchor;
-                    }
-                    p.EndCap = LineCap.ArrowAnchor;
-                    g.DrawLine(p, point.X, point.Y + arrowLengh + 10, point.X, point.Y + 10);
+                    p = buyShortPen;
                 }
+                else
+                {
+                    p = buyLongPen;
+                }
+                g.DrawLine(p, point.X, point.Y + arrowLengh + offset, point.X, point.Y + offset);
             }
             else
             {
-                using (Pen p = new Pen(Color.Red, width))
+                if (isShort)
                 {
-                    if (isShort)
-                    {
-                        p.StartCap = LineCap.RoundAnchor;
-                    }
-                    p.EndCap = LineCap.ArrowAnchor;
-                    g.DrawLine(p, point.X, point.Y - arrowLengh - 10, point.X, point.Y - 10);
+                    p = sellShortPen;
                 }
+                else
+                {
+                    p = sellLongPen;
+                }
+                g.DrawLine(p, point.X, point.Y - arrowLengh - offset, point.X, point.Y - offset);
             }
         }
         #endregion

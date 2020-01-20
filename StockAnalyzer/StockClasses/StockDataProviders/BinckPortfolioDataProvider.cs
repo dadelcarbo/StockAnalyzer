@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string folder = Path.Combine(rootFolder, PORTFOLIO_FOLDER);
             try
             {
-                Portofolios = StockPortfolio3.StockPortfolio.LoadPortfolios(folder);
+                Portofolios = StockBinckPortfolio.StockPortfolio.LoadPortfolios(folder);
             }
             catch (Exception)
             {
@@ -36,6 +36,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public static List<StockPortfolio3.StockPortfolio> Portofolios { get; set; }
+        public static List<StockBinckPortfolio.StockPortfolio> Portofolios { get; set; }
     }
 }

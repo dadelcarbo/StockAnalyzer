@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
     <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
@@ -381,7 +382,9 @@
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMABB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFIBO.cs" />
@@ -462,9 +465,9 @@
     <Compile Include="StockMath\FloatSerie.cs" />
     <Compile Include="StockMath\Histogram.cs" />
     <Compile Include="StockMath\StockMathToolkit.cs" />
-    <Compile Include="StockPortfolio3\StockOperation.cs" />
-    <Compile Include="StockPortfolio3\StockPortfolio.cs" />
-    <Compile Include="StockPortfolio3\StockPosition.cs" />
+    <Compile Include="StockBinckPortfolio\StockOperation.cs" />
+    <Compile Include="StockBinckPortfolio\StockPortfolio.cs" />
+    <Compile Include="StockBinckPortfolio\StockPosition.cs" />
     <Compile Include="StockPortfolioStrategy\BalancePortfolioStrategy.cs" />
     <Compile Include="StockPortfolioStrategy\HighPerformerPortfolioStrategy.cs" />
     <Compile Include="StockPortfolioStrategy\LongTermSmoothed.cs" />

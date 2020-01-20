@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
-namespace StockAnalyzer.StockPortfolio3
+namespace StockAnalyzer.StockBinckPortfolio
 {
     public class StockPortfolio
     {
@@ -16,6 +17,7 @@ namespace StockAnalyzer.StockPortfolio3
 
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
+            LoadMappings();
             StockPortfolio.Portfolios = new List<StockPortfolio>();
             foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s => s))
             {
@@ -35,7 +37,7 @@ namespace StockAnalyzer.StockPortfolio3
 
             foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")).Select(l => new StockOperation(l)).OrderBy(o => o.Id))
             {
-                    this.AddOperation(operation);
+                this.AddOperation(operation);
             }
         }
 
@@ -51,13 +53,13 @@ namespace StockAnalyzer.StockPortfolio3
             {
                 case StockOperation.DEPOSIT:
                     {
-                        if (!operation.StockName.StartsWith("DIVIDEND"))
+                        if (!operation.BinckName.StartsWith("DIVIDEND"))
                         {
                             this.Positions.Add(new StockPosition
                             {
                                 StartDate = operation.Date,
                                 Qty = operation.Qty,
-                                StockName = operation.StockName
+                                StockName = operation.BinckName
                             });
                         }
                     }
@@ -65,7 +67,7 @@ namespace StockAnalyzer.StockPortfolio3
                 case StockOperation.BUY:
                     {
                         var qty = operation.Qty;
-                        var stockName = operation.StockName;
+                        var stockName = operation.BinckName;
                         var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
                         if (position != null) // Position on this stock already exists, add new values
                         {
@@ -77,7 +79,7 @@ namespace StockAnalyzer.StockPortfolio3
                             {
                                 StartDate = operation.Date,
                                 Qty = position.Qty + qty,
-                                StockName = operation.StockName,
+                                StockName = operation.BinckName,
                                 OpenValue = openValue
                             });
                         }
@@ -96,7 +98,7 @@ namespace StockAnalyzer.StockPortfolio3
                 case StockOperation.SELL:
                     {
                         var qty = operation.Qty;
-                        var stockName = operation.StockName;
+                        var stockName = operation.BinckName;
                         var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
                         if (position != null)
                         {
@@ -107,7 +109,7 @@ namespace StockAnalyzer.StockPortfolio3
                                 {
                                     StartDate = operation.Date,
                                     Qty = position.Qty - qty,
-                                    StockName = operation.StockName,
+                                    StockName = operation.BinckName,
                                     OpenValue = position.OpenValue
                                 });
                             }
@@ -185,5 +187,39 @@ namespace StockAnalyzer.StockPortfolio3
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
+
+        #region Binck Name Mapping
+        private static List<StockNameMapping> mappings;
+        public static List<StockNameMapping> Mappings => LoadMappings();
+
+        public static List<StockNameMapping> LoadMappings()
+        {
+            if (mappings != null)
+                return mappings;
+            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Portfolio");
+            fileName = Path.Combine(fileName, "NameMappings.xml");
+            if (File.Exists(fileName))
+            {
+                using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    settings.IgnoreWhitespace = true;
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<StockNameMapping>));
+                    mappings = (List<StockNameMapping>)serializer.Deserialize(xmlReader);
+                }
+            }
+            else
+            {
+                mappings = new List<StockNameMapping>();
+            }
+            return mappings;
+        }
+
+        public static StockNameMapping GetMapping(string binckName)
+        {
+            return Mappings.FirstOrDefault(m => binckName.Contains(m.BinckName.ToUpper()));
+        }
+        #endregion
     }
 }
