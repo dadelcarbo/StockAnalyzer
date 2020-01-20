@@ -111,7 +111,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        public List<StockAnalyzer.StockPortfolio3.StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
+        public List<StockAnalyzer.StockBinckPortfolio.StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
 
         public ToolStripProgressBar ProgressBar
         {
@@ -148,7 +148,7 @@ namespace StockAnalyzerApp
             get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
         }
 
-        public StockAnalyzer.StockPortfolio3.StockPortfolio BinckPortfolio { get; set; }
+        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortfolio { get; set; }
 
         private StockPortofolio currentPortofolio;
 
@@ -1589,7 +1589,7 @@ namespace StockAnalyzerApp
 
             if (this.Portfolios.Count == 0)
             {
-                this.Portfolios.Add(new StockAnalyzer.StockPortfolio3.StockPortfolio()
+                this.Portfolios.Add(new StockAnalyzer.StockBinckPortfolio.StockPortfolio()
                 {
                     Name = "Default_P",
                     InitialBalance = 10000,

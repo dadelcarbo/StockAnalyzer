@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses
             this.CotDictionary = new SortedDictionary<string, CotSerie>();
             this.ShortInterestDictionary = new SortedDictionary<string, ShortInterestSerie>();
 
-            StockPortfolio3.StockPortfolio.PriceProvider = this;
+            StockBinckPortfolio.StockPortfolio.PriceProvider = this;
         }
         public void CreatePortofolioSerie(StockPortofolio portofolio)
         {
@@ -2444,7 +2444,7 @@ namespace StockAnalyzer.StockClasses
             return 0f;
         }
 
-        public void GeneratePortfolioSerie(StockPortfolio3.StockPortfolio binckPortfolio)
+        public void GeneratePortfolioSerie(StockBinckPortfolio.StockPortfolio binckPortfolio)
         {
             var refStock = this["CAC40"];
             if (!refStock.Initialise())

@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockPortfolio3;
+using StockAnalyzer.StockBinckPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Linq;

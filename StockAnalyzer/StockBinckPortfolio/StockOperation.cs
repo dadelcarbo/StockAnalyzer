@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace StockAnalyzer.StockPortfolio3
+namespace StockAnalyzer.StockBinckPortfolio
 {
     public class StockOperation
     {
@@ -24,6 +24,16 @@ namespace StockAnalyzer.StockPortfolio3
             float balance;
             float.TryParse(fields[6].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out balance);
             this.Balance = balance;
+
+            this.NameMapping = StockPortfolio.GetMapping(BinckName);
+            if (this.NameMapping == null)
+            {
+                this.StockName = BinckName;
+            }
+            else
+            {
+                this.StockName = NameMapping.StockName;
+            }
         }
         public int Id { get; set; }
         public DateTime Date { get; set; }
@@ -32,7 +42,10 @@ namespace StockAnalyzer.StockPortfolio3
         public string Description { get; set; }
 
         public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
-        public string StockName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA","").ToUpper();
+        public string BinckName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
+        public StockNameMapping NameMapping { get; }
+
+        public string StockName { get; }
 
         public float Amount { get; set; }
         public float Balance { get; set; }
@@ -41,7 +54,7 @@ namespace StockAnalyzer.StockPortfolio3
         public const string BUY = "achat";
         public const string SELL = "vente";
         public const string DEPOSIT = "dépôt";
-        
+
         internal void Dump()
         {
             Console.WriteLine($"{Id} {Date} {OperationType} {Description} {Amount} {Balance}");
