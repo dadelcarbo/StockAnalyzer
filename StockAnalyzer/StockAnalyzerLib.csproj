@@ -585,9 +585,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HTMLPage1.htm" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>

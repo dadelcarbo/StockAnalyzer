@@ -1976,6 +1976,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInABCMenu();
         }
+        void openInZBMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInZBMenu();
+        }
         void statMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.statMenu_Click();

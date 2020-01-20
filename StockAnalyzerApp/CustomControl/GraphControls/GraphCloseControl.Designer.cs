@@ -22,6 +22,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.financialMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
+            this.openInZBMenu = new MenuItem();
             this.statMenu = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
@@ -38,6 +39,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.financialMenu,
             this.separator2,
             this.openInABCMenu,
+            this.openInZBMenu,
             this.statMenu});
             // 
             // buyMenu
@@ -92,6 +94,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
+            // openInZBMenu
+            // 
+            this.openInZBMenu.Index = 8;
+            this.openInZBMenu.Text = "Open in Zone Bourse";
+            this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
+            // 
             // statMenu
             // 
             this.statMenu.Index = 9;
@@ -115,6 +123,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem financialMenu;
         private MenuItem agendaMenu;
         private MenuItem openInABCMenu;
+        private MenuItem openInZBMenu;
         private MenuItem statMenu;
 
         #endregion

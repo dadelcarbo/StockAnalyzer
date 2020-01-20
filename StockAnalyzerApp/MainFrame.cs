@@ -6396,5 +6396,15 @@ border:1px solid black;
                 Process.Start(url);
             }
         }
+        internal void OpenInZBMenu()
+        {
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+                return;
+            string url = "https://www.zonebourse.com/recherche/?mots=%ISIN%";
+            url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
+            {
+                Process.Start(url);
+            }
+        }
     }
 }

@@ -126,6 +126,9 @@ namespace StockAnalyzer.StockClasses
 
         public void Save()
         {
+            // Root folder sanity check
+            if (!Directory.Exists(AlertLogFolder))
+                Directory.CreateDirectory(AlertLogFolder);
             string filepath = Path.Combine(AlertLogFolder, this.fileName);
             this.LastRefreshDate = DateTime.Now;
             using (FileStream fs = new FileStream(filepath, FileMode.Create))
