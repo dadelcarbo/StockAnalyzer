@@ -4214,32 +4214,10 @@ namespace StockAnalyzerApp
             public float previousRankIndicatorValue;
             public StockSerie stockSerie;
         }
-        string MULTITIMEFRAME_HEADER = @"<html>
-<head>
-    <title>Untitled Page</title>
-   <style>
-table
-{
-border-collapse:collapse;
-}
-table, td, th
-{
-border:1px solid black;
-}
-</style>
-</head>
-<body>
-<h1>%TITLE%</h1>";
-        string MULTITIMEFRAME_FOOTER = @"
-</body>
-</html>";
-        string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
 
         string CELL_DIR_IMG_TEMPLATE =
            @"<td><img alt=""%DIR%"" src=""../../img/%DIR%.png"" height=""16"" width=""16""/></td>" +
            Environment.NewLine;
-        string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
-        string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
 
         private void GenerateReport(string title, StockBarDuration[] durations, List<StockAlertDef> alertDefs)
         {
@@ -4255,7 +4233,7 @@ border:1px solid black;
 
             string fileName = folderName + @"\Report.html";
 
-            string htmlBody = $"<h1 style=\"text-align: center;\">{title}</h1>";
+            string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             string commentTitle = string.Empty;
             string commentBody = string.Empty;
@@ -4266,6 +4244,28 @@ border:1px solid black;
             #region report multi TimeFrame
 
             //// Generate header
+            //            string MULTITIMEFRAME_HEADER = @"<html>
+            //<head>
+            //    <title>Untitled Page</title>
+            //   <style>
+            //table
+            //{
+            //border-collapse:collapse;
+            //}
+            //table, td, th
+            //{
+            //border:1px solid black;
+            //}
+            //</style>
+            //</head>
+            //<body>
+            //<h1>%TITLE%</h1>";
+            //            string MULTITIMEFRAME_FOOTER = @"
+            //</body>
+            //</html>";
+            //            string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
+            //            string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
+            //            string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
             //string rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", "Stock Name");
             //string headerRow = string.Empty;
             //foreach (StockBarDuration d in durations)
