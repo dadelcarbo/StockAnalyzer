@@ -754,10 +754,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString("TIME", this.dateSerie[lastMouseIndex].ToShortTimeString(), 12) + "\r\n";
             }
+            float closeValue = float.NaN;
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
+                    if (closeCurveType.DataSerie.Name == "CLOSE")
+                        closeValue = curveType.DataSerie[this.lastMouseIndex];
                     if (curveType.DataSerie.Name.Length > 6)
                     {
                         value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
@@ -780,15 +783,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             // Add Trail Stops
+            var trailValue = float.NaN;
+            var trailName = string.Empty;
             if (CurveList.TrailStop != null)
             {
                 for (int i = 0; i < CurveList.TrailStop.SeriesCount; i++)
                 {
                     if (CurveList.TrailStop.Series[i] != null && CurveList.TrailStop.Series[i].Count > 0 && !float.IsNaN(CurveList.TrailStop.Series[i][this.lastMouseIndex]))
                     {
-                        value += BuildTabbedString(CurveList.TrailStop.Series[i].Name, CurveList.TrailStop.Series[i][this.lastMouseIndex], 12) + "\r\n";
+                        trailName = CurveList.TrailStop.Series[i].Name;
+                        trailValue = CurveList.TrailStop.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
                     }
                 }
+            }
+            if (!float.IsNaN(trailValue))
+            {
+                value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
             }
             // Add secondary serie
             if (this.secondaryFloatSerie != null)
