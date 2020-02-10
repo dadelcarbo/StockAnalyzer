@@ -1220,7 +1220,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-
         private void ResetZoom()
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1245,7 +1244,7 @@ namespace StockAnalyzerApp
 
         private void ZoomIn()
         {
-            NbBars = Math.Max(25, NbBars / 2);
+            NbBars = Math.Max(25, (int)(NbBars / 1.5f));
             int newIndex = Math.Max(0, endIndex - NbBars);
             if (newIndex != this.startIndex)
             {
@@ -1255,7 +1254,7 @@ namespace StockAnalyzerApp
 
         private void ZoomOut()
         {
-            NbBars = Math.Min(this.endIndex, NbBars * 2);
+            NbBars = Math.Min(this.endIndex, (int)(NbBars * 1.5f));
             int newIndex = endIndex - NbBars;
             if (newIndex != this.startIndex)
             {
@@ -4771,6 +4770,17 @@ namespace StockAnalyzerApp
             scriptEditor.Show();
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (e.Delta < 0)
+            {
+                ZoomOut();
+            }
+            else
+            {
+                ZoomIn();
+            }
+        }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
