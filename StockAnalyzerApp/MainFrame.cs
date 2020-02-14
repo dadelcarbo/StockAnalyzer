@@ -4151,20 +4151,6 @@ namespace StockAnalyzerApp
         private static string htmlTitleTemplate =
            "<P style=\"text-align: center; font-size: xx-medium\">" + titleTemplate + "</P>";
 
-        private static string htmlMailCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
-                                                        "</U></B></P>" +
-                                                        "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
-                                                        commentTemplate + "</P>" +
-                                                        "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"cid:" +
-                                                        imageFileCID + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
-
-        private static string htmlCommentTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
-                                                    "</U></B></P>" +
-                                                    "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
-                                                    commentTemplate + "</P>" +
-                                                    "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\"><IMG SRC=\"" +
-                                                    imageFileLink + "\" ALIGN=LEFT BORDER=1><BR CLEAR=LEFT><BR></P>";
-
         private static string htmlAlertTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
                                                     "</U></B></P>" +
                                                     "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
@@ -4222,8 +4208,11 @@ namespace StockAnalyzerApp
         {
             if (!File.Exists(ReportTemplatePath))
                 return;
-
             var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
+
+            StockSerie previousStockSerie = this.CurrentStockSerie;
+            string previousTheme = this.CurrentTheme;
+            StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
             var duration = durations.First();
             string timeFrame = durations.First().ToString();
@@ -4340,50 +4329,23 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
             string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.CAC40);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
 
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
             #endregion
 
-            #region From Report.cfg
-            StockSerie previousStockSerie = this.CurrentStockSerie;
-            string previousTheme = this.CurrentTheme;
-            StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
-            #endregion
-
-            #region Generate report from Events
-            foreach (StockAlertDef alert in alertDefs)
-            {
-                string alertMsg = string.Empty;
-                commentTitle = "\r\n" + alert.ToString() + "\r\n";
-
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL)))
-                {
-                    StockSplashScreen.ProgressVal++;
-                    StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
-
-                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) > 50000) continue;
-
-                    if (stockSerie.MatchEvent(alert))
-                    {
-                        var values = stockSerie.GetValues(alert.BarDuration);
-                        string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
-                                           ";" + alert.ToString();
-
-                        alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE + "</br>";
-                    }
-                }
-                htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle)
-                   .Replace(commentTemplate, alertMsg);
-            }
-            #endregion
 
             var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", title).Replace("%HTML_BODY%", htmlBody);
             using (StreamWriter sw = new StreamWriter(fileName))
@@ -4398,6 +4360,39 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedItem = previousBarDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = previousBarDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = previousBarDuration.HeikinAshi;
+        }
+
+        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup)
+        {
+            string htmlBody = string.Empty;
+
+            foreach (StockAlertDef alert in alertDefs)
+            {
+                string alertMsg = string.Empty;
+                var commentTitle = "\r\n" + alert.ToString() + "\r\n";
+
+                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
+                {
+                    StockSplashScreen.ProgressVal++;
+                    StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
+
+                    if (!stockSerie.Initialise() || stockSerie.Count < 200 /*|| (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000*/) continue;
+
+                    if (stockSerie.MatchEvent(alert))
+                    {
+                        var values = stockSerie.GetValues(alert.BarDuration);
+                        string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
+                                           ";" + alert.ToString();
+
+                        alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE + "</br>";
+                    }
+                }
+                if (!string.IsNullOrEmpty(alertMsg))
+                {
+                    htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);
+                }
+            }
+            return htmlBody;
         }
 
         private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
@@ -4590,6 +4585,7 @@ namespace StockAnalyzerApp
 
             html += " </table>";
             html += "</td></tr></table>";
+
 
             return html;
         }
