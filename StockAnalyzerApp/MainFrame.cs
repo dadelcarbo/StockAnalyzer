@@ -4340,7 +4340,10 @@ namespace StockAnalyzerApp
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
-
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -4406,7 +4409,9 @@ namespace StockAnalyzerApp
              %CLOSE_DIR_IMG%
              <td>%COL4%</td>
          </tr>";
-            string html = @"<table>
+            string htmlBody = $"<h2 style=\"text-align: center;\">{reportGroup}</h2>";
+
+            string html = htmlBody + @"<table>
     <tr>
         <td>";
 
