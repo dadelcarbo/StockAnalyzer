@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
 
-namespace StockAnalyzer.StockAgent
+namespace StockAnalyzer.StockAgent.Agents
 {
     public class StupidAgent : StockAgentBase
     {
@@ -14,6 +10,8 @@ namespace StockAnalyzer.StockAgent
         {
             this.LookBack = 20;
         }
+
+        public override string Description => "Buys and sell on a percent trigger";
 
         protected override IStockAgent CreateInstance(StockContext context)
         {

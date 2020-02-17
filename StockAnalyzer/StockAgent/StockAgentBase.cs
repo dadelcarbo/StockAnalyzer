@@ -69,6 +69,8 @@ namespace StockAnalyzer.StockAgent
 
         static Random rnd = new Random();
 
+        public abstract string Description { get; }
+
         public void Randomize()
         {
             var parameters = StockAgentBase.GetParams(this.GetType());

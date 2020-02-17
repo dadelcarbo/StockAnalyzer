@@ -99,8 +99,8 @@
     <Compile Include="StockAgent\StockContext.cs" />
     <Compile Include="StockAgent\StockTrade.cs" />
     <Compile Include="StockAgent\StockTradeSummary.cs" />
-    <Compile Include="StockAgent\HigherLowAgent.cs" />
-    <Compile Include="StockAgent\StupidAgent.cs" />
+    <Compile Include="StockAgent\Agents\HigherLowAgent.cs" />
+    <Compile Include="StockAgent\Agents\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\ShortInterestSerie.cs" />
     <Compile Include="StockClasses\StockAlertConfig.cs" />

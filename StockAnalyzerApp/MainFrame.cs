@@ -4973,9 +4973,6 @@ namespace StockAnalyzerApp
             var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
 
             engine.GeneticSelection(20, 100, stockSeries, 100);
-
-
-
         }
         private void RunAgentEngineOnGroup()
         {

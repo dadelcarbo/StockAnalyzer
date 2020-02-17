@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
-namespace StockAnalyzer.StockAgent
+namespace StockAnalyzer.StockAgent.Agents
 {
     public class HigherLowAgent : StockAgentBase
     {
@@ -30,20 +24,22 @@ namespace StockAnalyzer.StockAgent
         [StockAgentParam(10f, 100f)]
         public int Period { get; set; }
 
+        public override string Description => "Unknown";
+
         public float stopLoss;
         public float target;
 
         protected override TradeAction TryToOpenPosition()
         {
-            IStockIndicator indicator = context.Serie.GetIndicator("OVERBOUGHTSR(STOKS("+Period+"_3_3),75,25)");
+            IStockIndicator indicator = context.Serie.GetIndicator("OVERBOUGHTSR(STOKS(" + Period + "_3_3),75,25)");
 
             int i = context.CurrentIndex;
             if (indicator.Events[4][i]) // HigherLow occured
             {
                 var supportSerie = indicator.Series[0];
                 stopLoss = supportSerie[i - 1];
-                int index = i-2;
-                while (float.IsNaN(stopLoss) && index>0)
+                int index = i - 2;
+                while (float.IsNaN(stopLoss) && index > 0)
                 {
                     stopLoss = supportSerie[index];
                     index--;
@@ -51,9 +47,9 @@ namespace StockAnalyzer.StockAgent
                 if (index > 0)
                 {
                     float close = closeSerie[i];
-                    if ((close - stopLoss)/close < this.MaximumRisk)
+                    if ((close - stopLoss) / close < this.MaximumRisk)
                     {
-                        target = close + (close - stopLoss)*this.RiskRewardRatio;
+                        target = close + (close - stopLoss) * this.RiskRewardRatio;
                         return TradeAction.Buy;
                     }
                 }

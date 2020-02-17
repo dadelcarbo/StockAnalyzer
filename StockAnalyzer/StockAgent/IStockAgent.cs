@@ -14,6 +14,7 @@ namespace StockAnalyzer.StockAgent
 
     public interface IStockAgent
     {
+        string Description { get; }
         void Randomize();
 
         TradeAction Decide();

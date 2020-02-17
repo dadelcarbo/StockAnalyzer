@@ -1,8 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockMath;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using StockAnalyzer.StockAgent.Agents;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -14,8 +14,6 @@ namespace StockAnalyzer.StockAgent
         public StockAgentEngine()
         {
             this.Context = new StockContext();
-
-            this.Agent = new StupidAgent(this.Context);
         }
 
         public void GeneticSelection(int nbIteration, int nbAgents, IEnumerable<StockSerie> series, int minIndex)
