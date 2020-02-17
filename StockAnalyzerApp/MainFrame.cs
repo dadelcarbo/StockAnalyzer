@@ -4322,8 +4322,8 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
-            string rankLeaderIndicatorName = "ROR(100,1,6)";
-            string rankLoserIndicatorName = "ROD(100,1,6)";
+            string rankLeaderIndicatorName = "ROR(100,1)";
+            string rankLoserIndicatorName = "ROD(100,1)";
             int nbLeaders = 10;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
