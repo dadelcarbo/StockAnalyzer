@@ -1,95 +1,109 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="StockAnalyzer.StockAgent.StockAgentBase" Collapsed="true">
-    <Position X="4" Y="0.5" Width="1.5" />
+    <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABAGBAAAIAAAGAAAAAAAAAKAAAAAgAAAIAAAABCAAAA=</HashCode>
+      <HashCode>ABAGBAAAIAAgGAAAAAAAAAKAAAAAgAAAIAAAABCAAAA=</HashCode>
       <FileName>StockAgent\StockAgentBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="StockAnalyzer.StockAgent.StockAgentEngine" Collapsed="true">
-    <Position X="6.75" Y="0.5" Width="1.5" />
+  <Class Name="StockAnalyzer.StockAgent.StockAgentEngine">
+    <Position X="3.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAgAAAAEAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StockAgent\StockAgentEngine.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Agent" />
+      <Property Name="Context" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="StockAnalyzer.StockAgent.StockAgentParamAttribute" Collapsed="true">
-    <Position X="8.5" Y="0.5" Width="2.25" />
+  <Class Name="StockAnalyzer.StockAgent.StockAgentParamAttribute">
+    <Position X="8.75" Y="0.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAACAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StockAgent\StockAgentParamAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StockAnalyzer.StockAgent.StockContext">
-    <Position X="10.5" Y="2.25" Width="3" />
-    <AssociationLine Name="TradeLog" Type="StockAnalyzer.StockAgent.StockTrade" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="12" Y="2.25" />
-        <Point X="12" Y="1.625" />
-        <Point X="8.25" Y="1.625" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="Trade" Type="StockAnalyzer.StockAgent.StockTrade" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="11.219" Y="2.25" />
-        <Point X="11.219" Y="1.875" />
-        <Point X="8.25" Y="1.875" />
-      </Path>
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.05" Y="0.037" />
-      </MemberNameLabel>
-    </AssociationLine>
+    <Position X="5.5" Y="5" Width="3" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAQQAAAAAAAAgAAAAgAgABAAAAAIABAAAAABAAAE=</HashCode>
       <FileName>StockAgent\StockContext.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Trade" />
+      <Property Name="Serie" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="TradeLog" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="StockAnalyzer.StockAgent.StockTrade" Collapsed="true">
-    <Position X="6.75" Y="1.5" Width="1.5" />
+  <Class Name="StockAnalyzer.StockAgent.StockTrade">
+    <Position X="9.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAACAQAAAiABAAAAAABAIAAAABQEAAAAAAACCAAAE=</HashCode>
       <FileName>StockAgent\StockTrade.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Serie" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="StockAnalyzer.StockAgent.StockTradeSummary" Collapsed="true">
-    <Position X="8.5" Y="2.5" Width="1.75" />
+  <Class Name="StockAnalyzer.StockAgent.StockTradeSummary">
+    <Position X="13.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAEAIAAAAACAAAAAAAAAAAIAAAAAAAIgAAAAAAAACAA=</HashCode>
       <FileName>StockAgent\StockTradeSummary.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="StockAnalyzer.StockAgent.HigherLowAgent">
-    <Position X="4" Y="1.75" Width="2.5" />
+  <Class Name="StockAnalyzer.StockAgent.Agents.StupidAgent" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABQAAIAAAAAAAAAAABACAAQAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>StockAgent\HigherLowAgent.cs</FileName>
-      <NewMemberFileName>StockAgent\StupidAgent.cs</NewMemberFileName>
+      <HashCode>AAAABQAAIAAgAAAgAAAABAAAAQAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>StockAgent\Agents\StupidAgent.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="StockAnalyzer.StockAgent.IStockAgent" Collapsed="true">
-    <Position X="6.75" Y="2.75" Width="1.5" />
+  <Class Name="StockAnalyzer.StockAgent.Agents.HigherLowAgent" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAAAAAAAAKAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <HashCode>AAAABAAAIAAgAAAAIAAAAACAAwAAAAAAIAAAAAAAAAo=</HashCode>
+      <FileName>StockAgent\Agents\HigherLowAgent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StockAnalyzer.StockClasses.StockSerie" Collapsed="true">
+    <Position X="6.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QVo2Dy9AOWacD5UHr6SEVDNaQgv9lfeb9wXU034ysTA=</HashCode>
+      <FileName>StockClasses\StockSerie.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="StockAnalyzer.StockAgent.IStockAgent" Collapsed="true">
+    <Position X="3.25" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgEAAAAAAAAAKAAAAAAAAAAAAAABAAAAA=</HashCode>
       <FileName>StockAgent\IStockAgent.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="StockAnalyzer.StockAgent.TradeAction" Collapsed="true">
-    <Position X="6.75" Y="3.75" Width="1.5" />
+  <Enum Name="StockAnalyzer.StockAgent.TradeAction">
+    <Position X="11.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACIAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StockAgent\IStockAgent.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Delegate Name="StockAnalyzer.StockAgent.SerieChangedHandler" Collapsed="true">
-    <Position X="6.75" Y="4.75" Width="1.75" />
+    <Position X="11.75" Y="3.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StockAgent\StockContext.cs</FileName>
