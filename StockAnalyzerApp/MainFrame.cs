@@ -865,8 +865,7 @@ namespace StockAnalyzerApp
             {
                 if (this.currentStockSerie != null &&
                     (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY ||
-                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO ||
-                     this.currentStockSerie.StockGroup == StockSerie.Groups.FUTURE))
+                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
                 {
                     this.Cursor = Cursors.WaitCursor;
 
@@ -1026,7 +1025,7 @@ namespace StockAnalyzerApp
                 if (alertConfig.TimeFrame == "Intraday")
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
-                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY) || s.BelongsToGroup(StockSerie.Groups.FUTURE))).ToList();
+                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY) )).ToList();
                 }
                 else
                 {
@@ -3444,7 +3443,6 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                 case StockSerie.Groups.TURBO:
-                case StockSerie.Groups.FUTURE:
                 case StockSerie.Groups.INTRADAY:
                     this.ForceBarDuration(StockBarDuration.TLB_3D, true);
                     break;

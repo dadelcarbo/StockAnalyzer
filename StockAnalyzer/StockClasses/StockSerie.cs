@@ -69,7 +69,6 @@ namespace StockAnalyzer.StockClasses
             SECTORS_CAC,
             CURRENCY,
             COMMODITY,
-            FUTURE,
             FOREX,
             FUND,
             RATIO,
