@@ -35,11 +35,6 @@ namespace StockAnalyzerApp.CustomControl
 
             switch (this.selectedGroup)
             {
-                case StockSerie.Groups.FUTURE:
-                    fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
-                    fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
-                    fullGraphUserControl3.SetDuration(StockBarDuration.TLB);
-                    break;
                 case StockSerie.Groups.INTRADAY:
                     fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
                     fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
