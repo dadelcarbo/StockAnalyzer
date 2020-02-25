@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockClasses
             return this.StockName == other.StockName &&
                    this.StockGroup == other.StockGroup &&
                    this.Date == other.Date &&
-                   this.Alert == other.Alert &&
+                   this.Alert.ToString() == other.Alert.ToString() &&
                    this.BarDuration == other.BarDuration &&
                    this.AlertClose == other.AlertClose;
         }
