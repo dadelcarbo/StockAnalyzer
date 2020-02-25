@@ -92,7 +92,7 @@ namespace StockAnalyzer.StockClasses
 
         private void Load()
         {
-            string filepath = Path.Combine(AlertLogFolder, this.fileName); ;
+            string filepath = Path.Combine(AlertLogFolder, this.fileName);
             if (File.Exists(filepath))
             {
                 LastRefreshDate = File.GetLastWriteTime(filepath);
@@ -113,7 +113,7 @@ namespace StockAnalyzer.StockClasses
                     };
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName).ThenBy(a => a.StockName));
+                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName));
                 }
             }
             catch (Exception ex)

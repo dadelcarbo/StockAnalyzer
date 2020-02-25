@@ -928,7 +928,7 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                DateTime lookBackDate = DateTime.Today.AddDays(-7);
+                DateTime lookBackDate = DateTime.Today.AddDays(-5);
 
                 foreach (string stockName in stockList)
                 {
