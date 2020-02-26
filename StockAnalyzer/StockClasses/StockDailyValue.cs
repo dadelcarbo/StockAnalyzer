@@ -14,10 +14,7 @@ namespace StockAnalyzer.StockClasses
       AVG,
       ATR,
       VARIATION,
-      VOLUME,
-      UPVOLUME,
-      DOWNVOLUME,
-      SHORTINTREST
+      VOLUME
    };
 
    public enum OHLCType

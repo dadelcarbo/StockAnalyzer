@@ -255,8 +255,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VIXFIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMONEY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM2.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLUM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROCEX3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR3.cs" />
@@ -307,11 +305,9 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NSTDEV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OBVEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OBV.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BUYMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\IRange.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockVisibility.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BUYMOM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SCOR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />

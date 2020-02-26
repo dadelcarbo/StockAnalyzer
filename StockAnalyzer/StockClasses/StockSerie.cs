@@ -692,8 +692,6 @@ namespace StockAnalyzer.StockClasses
             float[] atrSerie = new float[Values.Count];
             float[] variationSerie = new float[Values.Count];
             float[] volumeSerie = new float[Values.Count];
-            float[] upVolumeSerie = new float[Values.Count];
-            float[] downVolumeSerie = new float[Values.Count];
             float[] positionSerie = new float[Values.Count];
 
             int i = 0;
@@ -722,8 +720,6 @@ namespace StockAnalyzer.StockClasses
                 avgSerie[i] = dailyValue.AVG;
                 volumeSerie[i] = dailyValue.VOLUME;
                 dailyValue.CalculateUpVolume();
-                upVolumeSerie[i] = dailyValue.UPVOLUME;
-                downVolumeSerie[i] = dailyValue.DOWNVOLUME;
                 i++;
                 previousValue = dailyValue;
             }
@@ -763,8 +759,6 @@ namespace StockAnalyzer.StockClasses
             this.AddSerie(StockDataType.ATR, new FloatSerie(atrSerie, "ATR"));
             this.AddSerie(StockDataType.VARIATION, new FloatSerie(variationSerie, "VARIATION"));
             this.AddSerie(StockDataType.VOLUME, new FloatSerie(volumeSerie, "VOLUME"));
-            this.AddSerie(StockDataType.UPVOLUME, new FloatSerie(upVolumeSerie, "UPVOLUME"));
-            this.AddSerie(StockDataType.DOWNVOLUME, new FloatSerie(downVolumeSerie, "DOWNVOLUME"));
         }
 
         public void Initialise(StockEvent.EventType eventType)
@@ -2264,124 +2258,6 @@ namespace StockAnalyzer.StockClasses
             }
             serie.Name = "ROC_" + period.ToString();
             return serie;
-        }
-
-        public FloatSerie CalculateBuySellMomemtum(int period, bool useHMA)
-        {
-            if (!this.HasVolume)
-            {
-                return new FloatSerie(0, "BUYMOM");
-            }
-
-            FloatSerie momentum = new FloatSerie(this.Count);
-            FloatSerie upVol = this.GetSerie(StockDataType.UPVOLUME);
-            FloatSerie downVol = this.GetSerie(StockDataType.DOWNVOLUME);
-            FloatSerie volume = this.GetSerie(StockDataType.VOLUME);
-
-            if (!useHMA)
-            {
-                for (int i = 0; i < this.Count; i++)
-                {
-                    momentum[i] = upVol[i] - downVol[i];
-                    if (momentum[i] >= 1)
-                    {
-                        momentum[i] = (float)Math.Log10(momentum[i]);
-                    }
-                    else if (momentum[i] <= -1)
-                    {
-                        momentum[i] = -(float)Math.Log10(-momentum[i]);
-                    }
-                    else
-                    {
-                        momentum[i] = 0;
-                    }
-                }
-                momentum.Values = momentum.CalculateHMA(period).CalculateEMA(period / 2).Values;
-            }
-            else
-            {
-                FloatSerie cumul = new FloatSerie(this.Count);
-                for (int i = 1; i < this.Count; i++)
-                {
-                    float vol = upVol[i] - downVol[i];
-                    float var = this.ValueArray[i].VARIATION;
-                    if (var >= 0f)
-                    {
-                        vol = (var + 1.0f) * volume[i];
-                    }
-                    else
-                    {
-                        vol = (var - 1.0f) * volume[i];
-                    }
-
-                    //if (vol >= 1)
-                    //{
-                    //    vol = (float)Math.Log10(vol);
-                    //}
-                    //else if (vol <= -1)
-                    //{
-                    //    vol = -(float)Math.Log10(-vol);
-                    //}
-                    //else
-                    //{
-                    //    vol = 0;
-                    //}
-                    cumul[i] = cumul[i - 1] + vol;
-                }
-                momentum.Values = (cumul.CalculateHMA(period) - cumul.CalculateEMA(period / 2)).CalculateEMA(period / 2).Values;
-            }
-            momentum.Name = "BUYMOM_" + period;
-            return momentum;
-        }
-
-        public FloatSerie CalculateBuySellMomemtum2(int period, bool newMethod)
-        {
-            if (!this.HasVolume)
-            {
-                return new FloatSerie(0, "BUYMOM");
-            }
-
-            FloatSerie momentum = null;
-            FloatSerie upVol = this.GetSerie(StockDataType.UPVOLUME);
-            FloatSerie downVol = this.GetSerie(StockDataType.DOWNVOLUME);
-
-            bool useLog = true;
-            if (!newMethod)
-            {
-                momentum = new FloatSerie(this.Count);
-                for (int i = 0; i < this.Count; i++)
-                {
-                    momentum[i] = upVol[i] - downVol[i];
-                    if (useLog)
-                    {
-                        if (momentum[i] >= 1)
-                        {
-                            momentum[i] = (float)Math.Log10(momentum[i]);
-                        }
-                        else if (momentum[i] <= -1)
-                        {
-                            momentum[i] = -(float)Math.Log10(-momentum[i]);
-                        }
-                        else
-                        {
-                            momentum[i] = 0;
-                        }
-                    }
-                }
-                momentum.Values = momentum.CalculateEMA(period).CalculateEMA(period / 2).Values;
-            }
-            else
-            {
-                FloatSerie volCumul = new FloatSerie(this.Count);
-                volCumul[0] = (float)(Math.Sqrt(upVol[0]) - Math.Sqrt(downVol[0]));
-                for (int i = 1; i < this.Count; i++)
-                {
-                    volCumul[i] = volCumul[i - 1] + (float)(Math.Sqrt(upVol[i]) - Math.Sqrt(downVol[i]));
-                }
-                momentum = ((volCumul.CalculateEMA(period / 2) - volCumul.CalculateEMA(period)).CalculateRSI(period, false) - 50f).CalculateHMA(period / 2);
-            }
-            momentum.Name = "BUYMOM_" + period;
-            return momentum;
         }
         public FloatSerie CalculateOnBalanceVolume()
         {
@@ -6465,6 +6341,44 @@ namespace StockAnalyzer.StockClasses
                 if (dateArray[index].Date <= date.Date) break;
             }
             return index;
+        }
+        public int IndexOfFirstLowerOrEquals(DateTime date)
+        {
+            if (dateArray == null)
+            {
+                if (this.Keys.Count > 0)
+                {
+                    dateArray = this.Keys.ToArray();
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            if (date < dateArray[0]) { return -1; }
+            int index;
+            for (index = dateArray.Length - 1; index > 0; index--)
+            {
+                if (dateArray[index].Date <= date.Date) break;
+            }
+            return index;
+        }
+        public IList<float[]> GetMTFVariation(List<StockBarDuration> durations, int period, DateTime endDate)
+        {
+            var barDuration = this.BarDuration;
+            var res = new List<float[]>();
+            foreach (var duration in durations)
+            {
+                this.BarDuration = duration;
+                var index = this.IndexOfFirstLowerOrEquals(endDate);
+                var array = new float[period];
+                res.Add(array);
+                for (int i = 0; i < period; i++)
+                {
+                    array[i] = this.ElementAt(index - i).Value.VARIATION;
+                }
+            }
+            return res;
         }
         public int IndexOf(DateTime date)
         {
