@@ -1058,6 +1058,11 @@ namespace StockAnalyzerApp
                         }
                     }
 
+                    if (alertConfig.TimeFrame == "Intraday")
+                    {
+                        StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                    }
+
                     if (!stockSerie.Initialise()) continue;
 
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
