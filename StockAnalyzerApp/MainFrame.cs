@@ -5155,6 +5155,12 @@ namespace StockAnalyzerApp
             }
         }
 
+
+        private void nameMappingMenuItem_Click(object sender, EventArgs e)
+        {
+            var dlg = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingDlg();
+            dlg.Show();
+        }
         private void PortfolioRiskManagerDlg_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.portfolioRiskManagerDlg.SelectedStockChanged -= OnSelectedStockChanged;

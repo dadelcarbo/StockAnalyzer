@@ -12,8 +12,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             this.Leverage = 1;
         }
-        public string StockName { get; set; }
         public string BinckName { get; set; }
+        public string StockName { get; set; }
         public float Leverage { get; set; }
     }
 }

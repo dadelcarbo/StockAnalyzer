@@ -15,7 +15,18 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         {
             this.position = p;
         }
-        public bool IsValidName => StockDictionary.StockDictionarySingleton.ContainsKey(position.StockName);
+        public bool IsValidName
+        {
+            get
+            {
+                var mapping = StockPortfolio.GetMapping(StockName);
+                if (mapping == null)
+                {
+                    return StockDictionary.StockDictionarySingleton.ContainsKey(position.StockName);
+                }
+                return StockDictionary.StockDictionarySingleton.ContainsKey(mapping.StockName);
+            }
+        }
         public string StockName => position.StockName;
         public int Qty => position.Qty;
         public float OpenValue => position.OpenValue;

@@ -82,6 +82,15 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.Designer.cs">
+      <DependentUpon>NameMappingDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
+      <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
     <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
@@ -530,6 +539,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.resx">
+      <DependentUpon>NameMappingDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DataProviderString.fr-FR.Designer.cs</LastGenOutput>
@@ -589,6 +601,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

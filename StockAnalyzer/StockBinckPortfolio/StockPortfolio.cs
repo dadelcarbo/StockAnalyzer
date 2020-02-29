@@ -192,6 +192,10 @@ namespace StockAnalyzer.StockBinckPortfolio
         private static List<StockNameMapping> mappings;
         public static List<StockNameMapping> Mappings => LoadMappings();
 
+        public static void ResetMappings()
+        {
+            mappings = null;
+        }
         public static List<StockNameMapping> LoadMappings()
         {
             if (mappings != null)
@@ -205,7 +209,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
                     settings.IgnoreWhitespace = true;
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<StockNameMapping>));
+                    var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
                     mappings = (List<StockNameMapping>)serializer.Deserialize(xmlReader);
                 }
             }
@@ -214,6 +218,23 @@ namespace StockAnalyzer.StockBinckPortfolio
                 mappings = new List<StockNameMapping>();
             }
             return mappings;
+        }
+        public static void SaveMappings(List<StockNameMapping> newMappings)
+        {
+            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Portfolio");
+            fileName = Path.Combine(fileName, "NameMappings.xml");
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                var settings = new System.Xml.XmlWriterSettings
+                {
+                    Indent = true,
+                    NewLineOnAttributes = true
+                };
+                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
+                serializer.Serialize(xmlWriter, newMappings);
+            }
+            ResetMappings();
         }
 
         public static StockNameMapping GetMapping(string binckName)

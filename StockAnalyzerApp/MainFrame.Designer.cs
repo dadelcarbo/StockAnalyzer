@@ -99,6 +99,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.importBinckOrders = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioRiskManager = new System.Windows.Forms.ToolStripMenuItem();
+            this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -666,6 +667,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator19,
             this.importBinckOrders,
             this.portfolioRiskManager,
+            this.nameMappingMenuItem,
             this.toolStripSeparator21,
             this.portofolioDetailsMenuItem,
             this.orderListMenuItem});
@@ -707,6 +709,14 @@ namespace StockAnalyzerApp
             this.portfolioRiskManager.Size = new System.Drawing.Size(202, 22);
             this.portfolioRiskManager.Text = "Risk Manager";
             this.portfolioRiskManager.Click += new System.EventHandler(this.portfolioRiskManager_Click);
+            // 
+            // nameMappingMenuItem
+            // 
+            this.nameMappingMenuItem.Name = "nameMappingMenuItem";
+            this.nameMappingMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
+            this.nameMappingMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.nameMappingMenuItem.Text = "Name Mappings";
+            this.nameMappingMenuItem.Click += new System.EventHandler(this.nameMappingMenuItem_Click);
             // 
             // toolStripSeparator21
             // 
@@ -1570,6 +1580,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem newOrderMenuItem;
         private ToolStripMenuItem importBinckOrders;
         private ToolStripMenuItem portfolioRiskManager;
+        private ToolStripMenuItem nameMappingMenuItem;
         private ToolStripMenuItem orderListMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;
