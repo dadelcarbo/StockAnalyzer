@@ -31,5 +31,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public int Qty => position.Qty;
         public float OpenValue => position.OpenValue;
         public DateTime StartDate => position.StartDate;
+        public float LastValue { get; set; }
     }
 }

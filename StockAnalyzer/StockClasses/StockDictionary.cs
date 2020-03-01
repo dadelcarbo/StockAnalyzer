@@ -2434,7 +2434,7 @@ namespace StockAnalyzer.StockClasses
                 var stockSerie = this[stockName];
                 if (stockSerie.Initialise())
                 {
-                    var index = stockSerie.IndexOf(date);
+                    var index = stockSerie.IndexOfFirstLowerOrEquals(date);
                     if (index != -1)
                     {
                         return stockSerie.ValueArray[index].CLOSE;

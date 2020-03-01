@@ -16,6 +16,10 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label>Portfolio </Label>
             <ComboBox Width="160" DisplayMemberPath="Name" ItemsSource="{Binding Portfolios}" SelectedItem="{Binding Portfolio, Mode=TwoWay}"></ComboBox>
+            <Label>Cash: </Label>
+            <TextBlock Text="{Binding Portfolio.Balance}" VerticalAlignment="Center"/>
+            <Label>Value: </Label>
+            <TextBlock Text="{Binding Value}" VerticalAlignment="Center"/>
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
