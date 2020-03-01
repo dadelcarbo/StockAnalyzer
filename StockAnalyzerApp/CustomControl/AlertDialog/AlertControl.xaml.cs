@@ -62,5 +62,20 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
         }
+
+        private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
+        {
+            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            if (column != null && column.DataType == typeof(string))
+            {
+                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
+                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
+            }
+            else if (column != null && column.DataType == typeof(DateTime))
+            {
+                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
+                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
+            }
+        }
     }
 }

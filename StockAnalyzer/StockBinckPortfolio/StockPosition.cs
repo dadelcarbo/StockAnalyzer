@@ -26,5 +26,11 @@ namespace StockAnalyzer.StockBinckPortfolio
                 Console.WriteLine($"Name: {StockName} Qty:{Qty} StartDate:{StartDate.ToShortDateString()} Opened");
             }
         }
+
+        public override string ToString()
+        {
+            return this.IsClosed ? $"Name: {StockName} Qty:{Qty} StartDate:{StartDate.ToShortDateString()} EndDate:{EndDate.ToShortDateString()}"
+                : $"Name: {StockName} Qty:{Qty} StartDate:{StartDate.ToShortDateString()} Opened";
+        }
     }
 }

@@ -23,6 +23,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                     StockAnalyzerForm.MainFrame.BinckPortfolio = value;
 
                     OnPropertyChanged(nameof(OpenedPositions));
+                    OnPropertyChanged(nameof(Portfolio));
                 }
             }
         }

@@ -3617,35 +3617,6 @@ namespace StockAnalyzerApp
 
             var dlg = new BinckPortfolioDlg();
             dlg.Show();
-
-
-            // §§§§ Portfolio
-            //if (!StockDictionary.ContainsKey(BinckPortfolio.Name))
-            //{
-            //    StockDictionary.GeneratePortfolioSerie(BinckPortfolio);
-            //}
-
-            //// Set the new selected serie
-            //CurrentStockSerie = StockDictionary[BinckPortfolio.Name];
-
-            // §§§§ Portfolio
-            //if (this.CurrentPortofolio != null)
-            //{
-            //    this.CurrentPortofolio.Initialize();
-            //    if (portofolioDlg == null)
-            //    {
-            //        portofolioDlg = new PortofolioDlg(StockDictionary, this.CurrentPortofolio);
-            //        portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            //        portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-            //        portofolioDlg.Show();
-            //    }
-
-            //    else
-            //    {
-            //        portofolioDlg.SetPortofolio(this.CurrentPortofolio);
-            //        portofolioDlg.Activate();
-            //    }
-            //}
         }
 
         private void viewPortogolioMenuItem_Click(object sender, EventArgs e)

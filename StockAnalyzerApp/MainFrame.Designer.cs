@@ -678,6 +678,7 @@ namespace StockAnalyzerApp
             // currentPortofolioMenuItem
             // 
             this.currentPortofolioMenuItem.Name = "currentPortofolioMenuItem";
+            this.currentPortofolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F2)));
             this.currentPortofolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
             this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);

@@ -25,35 +25,39 @@ namespace StockAnalyzer.StockBinckPortfolio
             float.TryParse(fields[6].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out balance);
             this.Balance = balance;
 
-            this.NameMapping = StockPortfolio.GetMapping(BinckName);
-            if (this.NameMapping == null)
+            var nameMapping = StockPortfolio.GetMapping(BinckName);
+            if (nameMapping == null)
             {
                 this.StockName = BinckName;
+                this.IsShort = false;
             }
             else
             {
-                this.StockName = NameMapping.StockName;
+                this.StockName = nameMapping.StockName;
+                this.IsShort = nameMapping.Leverage < 0;
             }
         }
         public int Id { get; set; }
         public DateTime Date { get; set; }
 
         public string OperationType { get; set; }
+        public bool IsShort { get; set; }
         public string Description { get; set; }
 
         public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
         public string BinckName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
-        public StockNameMapping NameMapping { get; }
+        //public StockNameMapping NameMapping { get; }
 
         public string StockName { get; }
 
         public float Amount { get; set; }
         public float Balance { get; set; }
-        public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT;
+        public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT || this.OperationType == TRANSFER;
 
         public const string BUY = "achat";
         public const string SELL = "vente";
         public const string DEPOSIT = "dépôt";
+        public const string TRANSFER = "transfert de titres";
 
         internal void Dump()
         {

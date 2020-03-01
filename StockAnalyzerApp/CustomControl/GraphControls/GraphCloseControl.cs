@@ -872,20 +872,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    bool isShort = false;
-                    if (operation.NameMapping != null && operation.NameMapping.Leverage < 0)
-                        isShort = true;
                     if (operation.OperationType == StockOperation.BUY)
                     {
-                        valuePoint2D.Y = isShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
+                        valuePoint2D.Y = operation.IsShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                        this.DrawArrow(graphic, screenPoint2D, true, isShort);
+                        this.DrawArrow(graphic, screenPoint2D, true, operation.IsShort);
                     }
                     else
                     {
-                        valuePoint2D.Y = isShort ? this.lowCurveType.DataSerie[index] : this.highCurveType.DataSerie[index];
+                        valuePoint2D.Y = operation.IsShort ? this.lowCurveType.DataSerie[index] : this.highCurveType.DataSerie[index];
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                        this.DrawArrow(graphic, screenPoint2D, false, isShort);
+                        this.DrawArrow(graphic, screenPoint2D, false, operation.IsShort);
                     }
                 }
             }

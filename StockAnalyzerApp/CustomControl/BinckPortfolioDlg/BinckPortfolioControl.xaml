@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.BinckPortfolioDlg"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"              
+             d:DataContext="{d:DesignInstance Type=local:BinckPortfolioViewModel, IsDesignTimeCreatable=False}" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -18,12 +19,9 @@
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
-                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="Cell" ClipboardCopyMode="Cells" MouseDoubleClick="positionGridView_MouseDoubleClick"></telerik:RadGridView></TabItem>
-            <TabItem Header="Orders">
-                <telerik:RadGridView Name="OrderGridView" ItemsSource="{Binding Portfolio.Orders}"></telerik:RadGridView>
-            </TabItem>
-            <TabItem Header="Operations">
-                <telerik:RadGridView Name="OperationGridView" ItemsSource="{Binding Portfolio.Operations}"></telerik:RadGridView>
+                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="Cell" ClipboardCopyMode="Cells" MouseDoubleClick="positionGridView_MouseDoubleClick" FilterOperatorsLoading="FilterOperatorsLoading"></telerik:RadGridView></TabItem>
+             <TabItem Header="Operations">
+                <telerik:RadGridView Name="OperationGridView" ItemsSource="{Binding Portfolio.Operations}" FilterOperatorsLoading="FilterOperatorsLoading"></telerik:RadGridView>
             </TabItem>
         </TabControl>
     </Grid>

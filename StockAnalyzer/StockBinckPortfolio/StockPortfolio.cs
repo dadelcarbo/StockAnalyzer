@@ -39,6 +39,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 this.AddOperation(operation);
             }
+            this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
         }
 
         public void AddOperation(StockOperation operation)
@@ -59,15 +60,43 @@ namespace StockAnalyzer.StockBinckPortfolio
                             {
                                 StartDate = operation.Date,
                                 Qty = operation.Qty,
-                                StockName = operation.BinckName
+                                StockName = operation.StockName
                             });
+                        }
+                    }
+                    break;
+                case StockOperation.TRANSFER:
+                    {
+                        if (!operation.BinckName.StartsWith("DIVIDEND") && !operation.BinckName.StartsWith("DROITS"))
+                        {
+                            var qty = operation.Qty;
+                            var stockName = operation.StockName;
+                            var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
+                            if (position != null)
+                            {
+                                position.EndDate = operation.Date;
+                                if (position.Qty != qty)
+                                {
+                                    this.Positions.Add(new StockPosition
+                                    {
+                                        StartDate = operation.Date,
+                                        Qty = position.Qty - qty,
+                                        StockName = operation.StockName,
+                                        OpenValue = position.OpenValue
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                            }
                         }
                     }
                     break;
                 case StockOperation.BUY:
                     {
                         var qty = operation.Qty;
-                        var stockName = operation.BinckName;
+                        var stockName = operation.StockName;
                         var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
                         if (position != null) // Position on this stock already exists, add new values
                         {
@@ -79,7 +108,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                             {
                                 StartDate = operation.Date,
                                 Qty = position.Qty + qty,
-                                StockName = operation.BinckName,
+                                StockName = stockName,
                                 OpenValue = openValue
                             });
                         }
@@ -98,7 +127,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                 case StockOperation.SELL:
                     {
                         var qty = operation.Qty;
-                        var stockName = operation.BinckName;
+                        var stockName = operation.StockName;
                         var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
                         if (position != null)
                         {
@@ -109,7 +138,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                 {
                                     StartDate = operation.Date,
                                     Qty = position.Qty - qty,
-                                    StockName = operation.BinckName,
+                                    StockName = operation.StockName,
                                     OpenValue = position.OpenValue
                                 });
                             }

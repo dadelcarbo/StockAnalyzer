@@ -15,7 +15,7 @@
         <telerik:RadGridView CanUserDeleteRows="True" CanUserInsertRows="True" NewRowPosition="Top"
                              ItemsSource="{Binding NameMappings}" VerticalAlignment="Stretch"></telerik:RadGridView>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Name="saveAndCloseBtn" Margin="2" Click="saveAndCloseBtn_Click">Save</Button>
+            <Button Name="saveAndCloseBtn" Margin="2" Click="saveAndCloseBtn_Click">Save and Close</Button>
             <Button Name="saveBtn" Margin="2" Click="saveBtn_Click">Save</Button>
             <Button Name="cancelBtn" Margin="2" Click="cancelBtn_Click">Cancel</Button>
         </StackPanel>

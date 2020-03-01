@@ -27,5 +27,15 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
             StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
+
+        private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
+        {
+            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            if (column != null && column.DataType == typeof(string))
+            {
+                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
+                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
+            }
+        }
     }
 }

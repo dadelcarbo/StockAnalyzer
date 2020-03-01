@@ -33,7 +33,7 @@
                      Maximum="{Binding AlertLog.ProgressMax}"
                      Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Label Content="{Binding AlertLog.ProgressName}" HorizontalAlignment="Right" Width="300" Margin="2" Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <telerik:RadGridView Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" AutoGenerateColumns="False">
+        <telerik:RadGridView Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date, ConverterCulture=en-GB}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
