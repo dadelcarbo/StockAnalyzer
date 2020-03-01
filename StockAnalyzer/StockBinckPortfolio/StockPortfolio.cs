@@ -50,6 +50,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.Operations.Add(operation);
 
             this.Balance = operation.Balance;
+            if (operation.StockName.StartsWith("SRD ")) 
+                return;
             switch (operation.OperationType.ToLower())
             {
                 case StockOperation.DEPOSIT:
