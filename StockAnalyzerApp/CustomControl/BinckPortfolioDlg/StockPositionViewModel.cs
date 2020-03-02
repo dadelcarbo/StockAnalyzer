@@ -10,10 +10,12 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
     public class StockPositionViewModel
     {
+        BinckPortfolioViewModel portfolio;
         StockPosition position;
-        public StockPositionViewModel(StockPosition p)
+        public StockPositionViewModel(StockPosition p, BinckPortfolioViewModel portfolio)
         {
             this.position = p;
+            this.portfolio = portfolio;
         }
         public bool IsValidName
         {
@@ -32,5 +34,8 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public float OpenValue => position.OpenValue;
         public DateTime StartDate => position.StartDate;
         public float LastValue { get; set; }
+
+        public float Variation => (LastValue - OpenValue) / (OpenValue);
+        public float PortfolioPercent => this.portfolio.Value > 0 ? ((LastValue * this.Qty) / this.portfolio.Value) : 0.0f;
     }
 }

@@ -25,7 +25,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
                     OnPropertyChanged(nameof(OpenedPositions));
                     OnPropertyChanged(nameof(Portfolio));
-                    OnPropertyChanged(nameof(Value));
                 }
             }
         }
@@ -34,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         {
             get
             {
-                var positions = Portfolio.Positions.Where(p => !p.IsClosed).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p)).ToList();
+                var positions = Portfolio.Positions.Where(p => !p.IsClosed).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this)).ToList();
                 float val = this.Portfolio.Balance;
                 foreach (var pos in positions)
                 {
@@ -42,15 +41,16 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                     if (value == 0.0f)
                     {
                         val += pos.Qty * pos.OpenValue;
-                        pos.LastValue = pos.Qty * pos.OpenValue;
+                        pos.LastValue = pos.OpenValue;
                     }
                     else
                     {
                         val += pos.Qty * value;
-                        pos.LastValue = pos.Qty * value;
+                        pos.LastValue = value;
                     }
                 }
                 this.Value = val;
+                OnPropertyChanged(nameof(Value));
                 return positions;
             }
         }

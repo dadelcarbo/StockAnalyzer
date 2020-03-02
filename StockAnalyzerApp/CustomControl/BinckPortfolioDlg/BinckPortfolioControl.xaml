@@ -14,17 +14,28 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label>Portfolio </Label>
+            <Label>Portfolio</Label>
             <ComboBox Width="160" DisplayMemberPath="Name" ItemsSource="{Binding Portfolios}" SelectedItem="{Binding Portfolio, Mode=TwoWay}"></ComboBox>
-            <Label>Cash: </Label>
+            <Label>Cash:</Label>
             <TextBlock Text="{Binding Portfolio.Balance}" VerticalAlignment="Center"/>
-            <Label>Value: </Label>
+            <Label>Value:</Label>
             <TextBlock Text="{Binding Value}" VerticalAlignment="Center"/>
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
-                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="Cell" ClipboardCopyMode="Cells" MouseDoubleClick="positionGridView_MouseDoubleClick" FilterOperatorsLoading="FilterOperatorsLoading"></telerik:RadGridView></TabItem>
-             <TabItem Header="Operations">
+                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="Cell" ClipboardCopyMode="Cells" MouseDoubleClick="positionGridView_MouseDoubleClick" FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
+                        <telerik:GridViewDataColumn Header="Nb" DataMemberBinding="{Binding Qty}" />
+                        <telerik:GridViewDataColumn Header="Open Value" DataMemberBinding="{Binding OpenValue}" />
+                        <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation}" DataFormatString="{}{0:P}"/>
+                        <telerik:GridViewDataColumn Header="Portfolio %" DataMemberBinding="{Binding PortfolioPercent}" DataFormatString="{}{0:P}"/>
+                        <telerik:GridViewDataColumn Header="Open Date" DataMemberBinding="{Binding StartDate}" DataFormatString="{} {0:dd/MM/yyyy}"/>
+                        <telerik:GridViewDataColumn Header="Valid Name" DataMemberBinding="{Binding IsValidName}" />
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Operations">
                 <telerik:RadGridView Name="OperationGridView" ItemsSource="{Binding Portfolio.Operations}" FilterOperatorsLoading="FilterOperatorsLoading"></telerik:RadGridView>
             </TabItem>
         </TabControl>
