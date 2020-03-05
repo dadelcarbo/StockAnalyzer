@@ -1480,6 +1480,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             else if (duration.Days >= 1 || endIndex - startIndex > 50)
             {
+                int barCount = 0;
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     if (this.dateSerie[i].DayOfYear != previousDay)
@@ -1492,10 +1493,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
+                        barCount = 0;
                     }
                     else
                     {
-                        if (this.dateSerie[i].Minute % 15 == 0)
+                        if (this.dateSerie[i].Minute == 0 && barCount >= 50)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
                             aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
@@ -1503,7 +1505,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
+                            barCount = 0;
                         }
+                        barCount++;
                     }
                 }
             }
