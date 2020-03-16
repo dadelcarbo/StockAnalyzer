@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using StockAnalyzer.Portofolio;
+﻿using StockAnalyzer.Portofolio;
 using StockAnalyzerSettings.Properties;
 using System.IO;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
