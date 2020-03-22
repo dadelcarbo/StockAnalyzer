@@ -66,6 +66,7 @@ namespace StockAnalyzerApp.CustomControl
                         switch (fields[0].ToUpper())
                         {
                             case "PAINTBAR":
+                            case "CLOUD":
                             case "TRAILSTOP":
                             case "INDICATOR":
                                 {
@@ -367,8 +368,7 @@ namespace StockAnalyzerApp.CustomControl
                     int firstIndex = lastIndex + 1 - (int)periodComboBox.SelectedItem;
 
                     // Check event matching
-                    bool selected =
-                       false;
+                    bool selected = false;
                     for (int i = lastIndex; i >= firstIndex && !selected; i--)
                     {
                         selected |= allCriteria

@@ -150,6 +150,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                 case ViewableItemType.Trail:
                     viewableSerie = stockSerie.GetTrail(aViewableSerie.Name, ((IStockTrail)aViewableSerie).TrailedItem);
                     break;
+                case ViewableItemType.Cloud:
+                    viewableSerie = stockSerie.GetCloud(aViewableSerie.Name);
+                    break;
                 default:
                     break;
             }

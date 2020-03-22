@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                Type st = t.GetInterface("IStockCloud");
                if (st != null)
                {
-                  if (!(t.Name.EndsWith("CloudBase") || t.Name.Contains("StockTrail")))
+                  if (!t.Name.EndsWith("CloudBase"))
                   {
                      cloudList.Add(t.Name.Replace("StockCloud_", ""));
                   }

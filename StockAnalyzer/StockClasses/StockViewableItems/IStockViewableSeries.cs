@@ -25,7 +25,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
       Decorator,
       PaintBar,
       TrailStop,
-      Trail
+      Trail, 
+      Cloud
    }
 
    public interface IStockViewableSeries : IStockVisibility

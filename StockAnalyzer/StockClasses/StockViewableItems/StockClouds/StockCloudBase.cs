@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         abstract public IndicatorDisplayTarget DisplayTarget { get; }
 
-        public ViewableItemType Type { get { return ViewableItemType.Indicator; } }
+        public ViewableItemType Type { get { return ViewableItemType.Cloud; } }
 
         public virtual IndicatorDisplayStyle DisplayStyle { get { return IndicatorDisplayStyle.SimpleCurve; } }
 
@@ -117,6 +117,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 {
                     this.Events[2][i] = true;
                 }
+
                 if (bullVal > bearVal)
                 {
                     this.Events[3][i] = true;
