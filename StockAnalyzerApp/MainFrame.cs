@@ -7,6 +7,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockStatistic;
 using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -1025,7 +1026,7 @@ namespace StockAnalyzerApp
                 if (alertConfig.TimeFrame == "Intraday")
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
-                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY) )).ToList();
+                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY))).ToList();
                 }
                 else
                 {
@@ -5732,12 +5733,18 @@ namespace StockAnalyzerApp
                                                 }
                                             }
                                             break;
+                                        case "CLOUD":
+                                            {
+                                                var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                if (stockCloud != null)
+                                                {
+                                                    curveList.Cloud = stockCloud;
+                                                }
+                                            }
+                                            break;
                                         case "PAINTBAR":
                                             {
-                                                IStockPaintBar paintBar =
-                                                    (IStockPaintBar)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            this.CurrentStockSerie);
+                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
                                                 curveList.PaintBar = paintBar;
                                             }
                                             break;

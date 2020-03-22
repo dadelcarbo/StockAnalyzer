@@ -1011,6 +1011,12 @@
   <data name="addIndicatorToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Indicator</value>
   </data>
+  <data name="addCloudToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 22</value>
+  </data>
+  <data name="addCloudToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add Cloud</value>
+  </data>
   <data name="addHorizontalLineToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 22</value>
   </data>

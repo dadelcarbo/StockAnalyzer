@@ -4,7 +4,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_ROD : StockIndicatorBase
+    public class StockIndicator_RODIFF : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 return new string[]
                     {
-                    "ROD(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"
+                    "RODIFF(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"
                     };
             }
         }
@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.DarkGreen) };
+                    seriePens = new Pen[] { new Pen(Color.Black) };
                 }
                 return seriePens;
             }
@@ -64,26 +64,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie rocSerie = (stockSerie.CalculateRateOfDecline((int)this.parameters[0])).CalculateEMA((int)this.parameters[1]) * -100f;
+            var rorSerie = (stockSerie.CalculateRateOfRise((int)this.parameters[0])).CalculateEMA((int)this.parameters[1]) * 100f;
+            var rodSerie = (stockSerie.CalculateRateOfDecline((int)this.parameters[0])).CalculateEMA((int)this.parameters[1]) * -100f;
 
-            this.series[0] = rocSerie;
-            this.Series[0].Name = this.Name;
+            var diff = rorSerie - rodSerie;
+
+            this.series[0] = diff;
+            this.Series[0].Name = this.SerieNames[0];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
             for (int i = 2; i < stockSerie.Count; i++)
             {
-                this.eventSeries[0][i] = (rocSerie[i - 2] < rocSerie[i - 1] && rocSerie[i - 1] > rocSerie[i]);
-                this.eventSeries[1][i] = (rocSerie[i - 2] > rocSerie[i - 1] && rocSerie[i - 1] < rocSerie[i]);
-                this.eventSeries[2][i] = (rocSerie[i] == 0);
-                this.eventSeries[3][i] = (rocSerie[i - 1] == 0 && rocSerie[i] > 0);
+                var bullish = diff[i] >= 0;
+                this.eventSeries[0][i] = bullish;
+                this.eventSeries[1][i] = !bullish;
+                this.eventSeries[2][i] = diff[i - 1] < 0 && bullish;
+                this.eventSeries[3][i] = diff[i-1] >= 0 && !bullish;
             }
         }
-        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
+        static string[] eventNames = new string[] { "Bullish", "Bearish", "BullSignal", "BearSignal" };
         public override string[] EventNames => eventNames;
 
-        static readonly bool[] isEvent = new bool[] { true, true, true, true };
+        static readonly bool[] isEvent = new bool[] { false, false, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }

@@ -242,6 +242,12 @@
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceViewModel.cs" />
+    <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.Designer.cs">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -614,6 +620,14 @@
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.fr-FR.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailDlg.fr-FR.resx">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -934,6 +948,7 @@
     <None Include="Resources\redo.png" />
     <None Include="Resources\Options.png" />
     <None Include="Resources\OpenAnalysis.png" />
+    <None Include="Resources\Cloud.png" />
     <Content Include="Resources\Reload.png" />
     <None Include="Resources\undo.ico" />
     <None Include="Resources\undo.png" />

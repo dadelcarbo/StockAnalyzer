@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -246,6 +247,8 @@ namespace StockAnalyzer.StockClasses
         [XmlIgnore]
         protected Dictionary<string, IStockIndicator> IndicatorCache { get; set; }
         [XmlIgnore]
+        protected Dictionary<string, IStockCloud> CloudCache { get; set; }
+        [XmlIgnore]
         protected IStockTrailStop TrailStopCache { get; set; }
         [XmlIgnore]
         public IStockPaintBar PaintBarCache { get; set; }
@@ -423,6 +426,25 @@ namespace StockAnalyzer.StockClasses
                 return null;
             }
         }
+
+        public IStockCloud GetCloud(String indicatorName)
+        {
+            if (this.CloudCache.ContainsKey(indicatorName))
+            {
+                return this.CloudCache[indicatorName];
+            }
+            else
+            {
+                IStockCloud indicator = StockCloudManager.CreateCloud(indicatorName);
+                if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
+                {
+                    indicator.ApplyTo(this);
+                    AddCloudSerie(indicator);
+                    return indicator;
+                }
+                return null;
+            }
+        }
         public IStockPaintBar GetPaintBar(String paintBarName)
         {
             if (this.PaintBarCache != null && this.PaintBarCache.Name == paintBarName)
@@ -570,6 +592,17 @@ namespace StockAnalyzer.StockClasses
                 this.IndicatorCache.Add(indicator.Name, indicator);
             }
         }
+        public void AddCloudSerie(IStockCloud indicator)
+        {
+            if (this.CloudCache.ContainsKey(indicator.Name))
+            {
+                this.CloudCache[indicator.Name] = indicator;
+            }
+            else
+            {
+                this.CloudCache.Add(indicator.Name, indicator);
+            }
+        }
         #endregion
         #region Private members
         private System.DateTime lastDate;
@@ -623,6 +656,7 @@ namespace StockAnalyzer.StockClasses
             this.FloatSerieCache = new Dictionary<string, FloatSerie>();
             this.IndicatorCache = new Dictionary<string, IStockIndicator>();
             this.DecoratorCache = new Dictionary<string, IStockDecorator>();
+            this.CloudCache = new Dictionary<string, IStockCloud>();
             this.PaintBarCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;

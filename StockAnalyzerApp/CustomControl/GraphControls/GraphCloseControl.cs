@@ -244,6 +244,53 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Draw indicator1Name first not to hide the value
                 if (!HideIndicators)
                 {
+                    #region DISPLAY CLOUD
+                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 0)
+                    {
+                        var bullColor = Color.FromArgb(127, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
+                        var bullBrush = new SolidBrush(bullColor);
+
+                        var bearColor = Color.FromArgb(127, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
+                        var bearBrush = new SolidBrush(bearColor);
+
+                        var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
+                        var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
+                        bool isBull = bullPoints[0].Y >= bearPoints[0].Y;
+                        var nbPoints = EndIndex - StartIndex;
+                        var points = new List<PointF>() { bearPoints[0], bullPoints[0] };
+                        for (int i = 1; i <= nbPoints; i++)
+                        {
+                            if (isBull && bullPoints[i].Y >= bearPoints[i].Y) // Bull cloud continuing
+                            {
+                                points.Insert(0, bearPoints[i]);
+                                points.Add(bullPoints[i]);
+                            }
+                            else if (!isBull && bullPoints[i].Y < bearPoints[i].Y) // Bear cloud continuing
+                            {
+                                points.Insert(0, bearPoints[i]);
+                                points.Add(bullPoints[i]);
+                            }
+                            else // Cloud reversing, need a draw
+                            {
+                                if (points.Count > 0)
+                                {
+                                    points.Insert(0, bearPoints[i]);
+                                    points.Add(bullPoints[i]);
+                                    aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, points.ToArray());
+                                }
+                                isBull = !isBull;
+                                points.Clear();
+                                points = new List<PointF>() { bearPoints[i], bullPoints[i] };
+                            }
+                        }
+                        if (points.Count > 0)
+                        {
+                            aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, points.ToArray());
+                        }
+                        aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[0], bullPoints);
+                        aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[1], bearPoints);
+                    }
+                    #endregion
                     #region DISPLAY TRAIL STOPS
 
                     if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.Series[0].Count > 0)
@@ -350,7 +397,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     #region DISPLAY INDICATORS
 
-                    foreach (IStockIndicator stockIndicator in CurveList.Indicators)
+                    foreach (var stockIndicator in CurveList.Indicators)
                     {
                         for (int i = 0; i < stockIndicator.SeriesCount; i++)
                         {
@@ -696,6 +743,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 j++;
                             }
                         }
+                        // Cloud
                         if (eventFound)
                         {
                             PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
@@ -781,7 +829,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         value += BuildTabbedString(stockIndicator.Series[i].Name, stockIndicator.Series[i][this.lastMouseIndex], 12) + "\r\n";
                     }
                 }
-            }
+            }                       
+            // Cloud
+
             // Add Trail Stops
             var trailValue = float.NaN;
             var trailName = string.Empty;
@@ -833,6 +883,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
             {
                 graphTitle += " " + (indicator.Name);
+            }
+            if (this.CurveList.Cloud != null)
+            {
+                graphTitle += " " + (this.CurveList.Cloud.Name);
             }
             if (this.CurveList.PaintBar != null)
             {
@@ -1058,6 +1112,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 }
                             }
                         }
+                        // Cloud
                         // Trail Stops
                         if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
                         {

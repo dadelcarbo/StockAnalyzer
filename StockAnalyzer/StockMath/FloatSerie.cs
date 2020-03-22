@@ -1148,6 +1148,16 @@ namespace StockAnalyzer.StockMath
             }
             return new FloatSerie(serie);
         }
+        public FloatSerie Log10()
+        {
+            float[] serie = new float[this.Values.Count()];
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                serie[i] = (float)(Math.Log10(Values[i]));
+            }
+            return new FloatSerie(serie);
+        }
         public FloatSerie Div(FloatSerie serie)
         {
             float[] divSerie = new float[this.Values.Count()];
