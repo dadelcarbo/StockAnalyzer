@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
@@ -64,8 +65,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             }
         }
 
-        abstract public string[] EventNames { get; }
-        abstract public bool[] IsEvent { get; }
+        private static string[] eventNames = new string[]
+          {
+             "AboveCloud", "BelowCloud", "InCloud",          // 0,1,2
+             "BullishCloud", "BearishCloud"                  // 3, 4
+          };
+
+        public string[] EventNames => eventNames;
+
+        private static readonly bool[] isEvent = new bool[] { false, false, false, false, false };
+        public bool[] IsEvent => isEvent;
 
         public BoolSerie[] Events
         {
@@ -81,6 +90,41 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             for (int i = 0; i < this.EventCount; i++)
             {
                 this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
+            }
+        }
+        protected void GenerateEvents(StockSerie stockSerie)
+        {
+            this.CreateEventSeries(stockSerie.Count);
+
+            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            for (int i = 5; i < stockSerie.Count; i++)
+            {
+                var close = closeSerie[i];
+                var bullVal = this.BullSerie[i];
+                var bearVal = this.BearSerie[i];
+                var upBand = Math.Max(bullVal, bearVal);
+                var lowBand = Math.Min(bullVal, bearVal);
+
+                if (close > upBand)
+                {
+                    this.Events[0][i] = true;
+                }
+                else if (close < lowBand)
+                {
+                    this.Events[1][i] = true;
+                }
+                else
+                {
+                    this.Events[2][i] = true;
+                }
+                if (bullVal > bearVal)
+                {
+                    this.Events[3][i] = true;
+                }
+                else
+                {
+                    this.Events[4][i] = true;
+                }
             }
         }
         virtual protected void SetSerieNames()

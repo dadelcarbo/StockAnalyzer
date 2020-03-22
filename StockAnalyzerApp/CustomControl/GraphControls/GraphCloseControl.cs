@@ -249,46 +249,60 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         var bullColor = Color.FromArgb(127, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
                         var bullBrush = new SolidBrush(bullColor);
+                        var bullPen = this.CurveList.Cloud.SeriePens[0];
 
                         var bearColor = Color.FromArgb(127, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
                         var bearBrush = new SolidBrush(bearColor);
+                        var bearPen = this.CurveList.Cloud.SeriePens[1];
 
                         var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
                         var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
+
                         bool isBull = bullPoints[0].Y >= bearPoints[0].Y;
-                        var nbPoints = EndIndex - StartIndex;
-                        var points = new List<PointF>() { bearPoints[0], bullPoints[0] };
-                        for (int i = 1; i <= nbPoints; i++)
+                        var nbPoints = bullPoints.Length;
+                        var upPoints = new List<PointF>() { bullPoints[0] };
+                        var downPoints = new List<PointF>() { bearPoints[0] };
+                        for (int i = 1; i < nbPoints; i++)
                         {
                             if (isBull && bullPoints[i].Y >= bearPoints[i].Y) // Bull cloud continuing
                             {
-                                points.Insert(0, bearPoints[i]);
-                                points.Add(bullPoints[i]);
+                                upPoints.Add(bullPoints[i]);
+                                downPoints.Insert(0, bearPoints[i]);
                             }
                             else if (!isBull && bullPoints[i].Y < bearPoints[i].Y) // Bear cloud continuing
                             {
-                                points.Insert(0, bearPoints[i]);
-                                points.Add(bullPoints[i]);
+                                upPoints.Add(bullPoints[i]);
+                                downPoints.Insert(0, bearPoints[i]);
                             }
                             else // Cloud reversing, need a draw
                             {
-                                if (points.Count > 0)
+                                if (upPoints.Count > 0)
                                 {
-                                    points.Insert(0, bearPoints[i]);
-                                    points.Add(bullPoints[i]);
-                                    aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, points.ToArray());
+                                    upPoints.Add(bullPoints[i]);
+                                    downPoints.Insert(0, bearPoints[i]);
+                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                                    upPoints.AddRange(downPoints);
+                                    aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
                                 }
                                 isBull = !isBull;
-                                points.Clear();
-                                points = new List<PointF>() { bearPoints[i], bullPoints[i] };
+                                upPoints.Clear();
+                                downPoints.Clear();
+                                upPoints = new List<PointF>() { bullPoints[i] };
+                                downPoints = new List<PointF>() { bearPoints[i] };
                             }
                         }
-                        if (points.Count > 0)
+                        if (upPoints.Count > 0)
                         {
-                            aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, points.ToArray());
+                            aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                            aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                            upPoints.AddRange(downPoints);
+                            aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                            upPoints.Clear();
+                            downPoints.Clear();
                         }
-                        aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[0], bullPoints);
-                        aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[1], bearPoints);
+                        bullBrush.Dispose();
+                        bearBrush.Dispose();
                     }
                     #endregion
                     #region DISPLAY TRAIL STOPS

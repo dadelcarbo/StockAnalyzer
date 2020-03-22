@@ -55,56 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             this.Series[1] = bearSerie;
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
-
-            for (int i = 2; i < stockSerie.Count; i++)
-            {
-                if (bullSerie[i] > bearSerie[i])
-                {
-                    if (closeSerie[i] > bullSerie[i])
-                    {
-                        this.Events[2][i] = true;
-                    }
-                    else
-                    {
-                        this.Events[4][i] = true;
-                    }
-                    if (bullSerie[i - 1] < bearSerie[i - 1])
-                    {
-                        this.Events[0][i] = true;
-                    }
-                }
-                else
-                {
-                    if (closeSerie[i] < bullSerie[i])
-                    {
-                        this.Events[3][i] = true;
-                    }
-                    else
-                    {
-                        this.Events[5][i] = true;
-                    }
-                    if (bullSerie[i - 1] > bearSerie[i - 1])
-                    {
-                        this.Events[1][i] = true;
-                    }
-                }
-            }
-        }
-
-        static readonly string[] eventNames = new string[] {
-          "BullishCrossing", "BearishCrossing",
-          "UpTrend", "DownTrend",
-          "UpTrendConso", "DownTrendConso" };
-
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
-        static readonly bool[] isEvent = new bool[] { true, true, false, false, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
+            this.GenerateEvents(stockSerie);
         }
     }
 }
