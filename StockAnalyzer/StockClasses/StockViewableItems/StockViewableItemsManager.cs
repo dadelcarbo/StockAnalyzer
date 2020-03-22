@@ -163,8 +163,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         {
             string theme = ThemeTemplate;
 
-            IStockViewableSeries indicator =
-               StockViewableItemsManager.GetViewableItem(fullString);
+            IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(fullString);
             theme = AppendThemeLine(indicator, theme);
 
             return theme;
