@@ -31,8 +31,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
-        public override string[] SerieNames { get { return new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")" }; } }
-
         public override Pen[] SeriePens
         {
             get
@@ -46,10 +44,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie bullSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0];
-            FloatSerie bearSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0];
-
-            FloatSerie closeSerie = (stockSerie.GetSerie(StockDataType.CLOSE) + stockSerie.GetSerie(StockDataType.HIGH) + stockSerie.GetSerie(StockDataType.LOW)) / 3.0f;
+            FloatSerie bullSerie = stockSerie.GetIndicator($"EMA({(int)this.parameters[0]})").Series[0];
+            FloatSerie bearSerie = stockSerie.GetIndicator($"EMA({(int)this.parameters[1]})").Series[0];
 
             this.Series[0] = bullSerie;
             this.Series[1] = bearSerie;

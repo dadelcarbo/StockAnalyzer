@@ -6,10 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ICHIMOKU : StockIndicatorBase
     {
-        public StockIndicator_ICHIMOKU()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }

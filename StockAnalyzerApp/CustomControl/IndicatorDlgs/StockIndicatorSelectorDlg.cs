@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Resources;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -18,6 +11,12 @@ using StockAnalyzerApp.CustomControl.CloudDlgs;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.Properties;
 using StockAnalyzerSettings.Properties;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Resources;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
@@ -1101,7 +1100,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         upPoints.Add(bullPoints[i]);
                         downPoints.Insert(0, bearPoints[i]);
-                        g.DrawLines(isBull ? bullPen: bearPen, upPoints.ToArray());
+                        g.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
                         g.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
                         upPoints.AddRange(downPoints);
                         g.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
@@ -1917,10 +1916,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             if (e.KeyCode == Keys.Delete)
             {
                 StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
-                if (stockNode.Type == NodeType.Indicator || stockNode.Type == NodeType.Line || stockNode.Type == NodeType.PaintBars || stockNode.Type == NodeType.Decorator || stockNode.Type == NodeType.TrailStops || stockNode.Type == NodeType.Trail)
+                if (stockNode.Type == NodeType.Graph
+                    || stockNode.Type == NodeType.Curve
+                    || stockNode.Type == NodeType.Event)
                 {
-                    this.treeView1.Nodes.Remove(stockNode);
+                    return;
                 }
+                this.treeView1.Nodes.Remove(stockNode);
             }
         }
 

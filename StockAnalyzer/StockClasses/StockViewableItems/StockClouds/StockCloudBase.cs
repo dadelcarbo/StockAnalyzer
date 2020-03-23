@@ -38,6 +38,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         protected FloatSerie[] series;
         public FloatSerie[] Series { get { return series; } }
 
+        public override string[] SerieNames { get { return new string[] { "Bull", "Bear" }; } }
+
         abstract public Pen[] SeriePens { get; }
         public bool[] SerieVisibility { get; }
 
