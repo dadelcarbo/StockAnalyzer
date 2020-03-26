@@ -597,8 +597,8 @@ namespace StockAnalyzerApp
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
             RefreshPortofolioMenu();
+            InitialisePortfolioCombo();
             BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First();
-            this.graphCloseControl.BinckPortofolio = BinckPortfolio;
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -1512,7 +1512,7 @@ namespace StockAnalyzerApp
             string watchListsFileName = Settings.Default.RootFolder + @"\WatchLists.xml";
 
             // Parse watch lists
-            if (System.IO.File.Exists(watchListsFileName))
+            if (File.Exists(watchListsFileName))
             {
                 using (FileStream fs = new FileStream(watchListsFileName, FileMode.Open))
                 {
@@ -1551,7 +1551,7 @@ namespace StockAnalyzerApp
             try
             {
                 // Parse existing drawing items
-                if (System.IO.File.Exists(analysisFileName))
+                if (File.Exists(analysisFileName))
                 {
                     using (FileStream fs = new FileStream(analysisFileName, FileMode.Open))
                     {
@@ -4633,15 +4633,15 @@ namespace StockAnalyzerApp
         }
         private static void CleanReportFolder(string folderName)
         {
-            if (System.IO.Directory.Exists(folderName))
+            if (Directory.Exists(folderName))
             {
-                foreach (string directory in (System.IO.Directory.EnumerateDirectories(folderName)))
+                foreach (string directory in (Directory.EnumerateDirectories(folderName)))
                 {
-                    System.IO.Directory.Delete(directory, true);
+                    Directory.Delete(directory, true);
                 }
-                foreach (string file in (System.IO.Directory.EnumerateFiles(folderName)))
+                foreach (string file in (Directory.EnumerateFiles(folderName)))
                 {
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
                 }
             }
             else
@@ -5905,6 +5905,11 @@ namespace StockAnalyzerApp
             this.CurrentStrategy = strategyComboBox.SelectedItem.ToString();
         }
 
+        void portfolioComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            this.BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First(p => p.Name == portfolioComboBox.SelectedItem.ToString());
+        }
+
         void themeComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             try
@@ -5934,6 +5939,7 @@ namespace StockAnalyzerApp
         {
             // Initialise Combo values
             strategyComboBox.Items.Clear();
+            strategyComboBox.Visible = false;
 
             strategyComboBox.Items.Add(string.Empty);
             foreach (string strategy in StrategyManager.GetStrategyList())
@@ -5941,20 +5947,26 @@ namespace StockAnalyzerApp
                 strategyComboBox.Items.Add(strategy);
             }
         }
+        private void InitialisePortfolioCombo()
+        {
+            // Initialise Combo values
+            portfolioComboBox.Items.Clear();
+            portfolioComboBox.Items.AddRange(BinckPortfolioDataProvider.Portofolios.Select(p => p.Name).ToArray());
+        }
         private void InitialiseThemeCombo()
         {
             // Initialise Combo values
             themeComboBox.Items.Clear();
 
             string folderName = Settings.Default.RootFolder + @"\themes";
-            if (!System.IO.Directory.Exists(folderName))
+            if (!Directory.Exists(folderName))
             {
-                System.IO.Directory.CreateDirectory(folderName);
+                Directory.CreateDirectory(folderName);
             }
 
             while (themeComboBox.Items.Count == 0)
             {
-                foreach (string themeName in System.IO.Directory.EnumerateFiles(folderName, "*.thm"))
+                foreach (string themeName in Directory.EnumerateFiles(folderName, "*.thm"))
                 {
                     themeComboBox.Items.Add(themeName.Split('\\').Last().Replace(".thm", ""));
                 }
@@ -6239,9 +6251,9 @@ namespace StockAnalyzerApp
         private void saveThemeMenuItem_Click(object sender, EventArgs e)
         {
             string folderName = Settings.Default.RootFolder + @"\themes";
-            if (!System.IO.Directory.Exists(folderName))
+            if (!Directory.Exists(folderName))
             {
-                System.IO.Directory.CreateDirectory(folderName);
+                Directory.CreateDirectory(folderName);
             }
 
             List<string> themeList = new List<string>();

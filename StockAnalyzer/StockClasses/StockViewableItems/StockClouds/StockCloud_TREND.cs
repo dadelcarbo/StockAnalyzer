@@ -12,17 +12,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "SlowPeriod" }; }
+            get { return new string[] { "FastPeriod" }; }
         }
         public override string Definition => "Paint cloud based on HL";
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 50 }; }
+            get { return new Object[] { 50 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
         public override Pen[] SeriePens
         {

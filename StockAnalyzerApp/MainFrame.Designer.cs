@@ -121,6 +121,7 @@ namespace StockAnalyzerApp
             this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.portfolioComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -852,7 +853,8 @@ namespace StockAnalyzerApp
             this.themeComboBox,
             this.deleteThemeStripButton,
             this.toolStripSeparator1,
-            this.strategyComboBox});
+            this.strategyComboBox,
+            this.portfolioComboBox});
             this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
             this.themeToolStrip.Name = "themeToolStrip";
             this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
@@ -917,6 +919,14 @@ namespace StockAnalyzerApp
             this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
             this.strategyComboBox.Sorted = true;
             this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
+            // 
+            // portfolioComboBox
+            // 
+            this.portfolioComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.portfolioComboBox.Name = "portfolioComboBox";
+            this.portfolioComboBox.Size = new System.Drawing.Size(220, 25);
+            this.portfolioComboBox.Sorted = true;
+            this.portfolioComboBox.SelectedIndexChanged += new System.EventHandler(this.portfolioComboBox_SelectedIndexChanged);
             // 
             // browseToolStrip
             // 
@@ -1639,6 +1649,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;
         private ToolStripComboBox strategyComboBox;
+        private ToolStripComboBox portfolioComboBox;
         private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;
         private ToolStripButton defaultThemeStripButton;

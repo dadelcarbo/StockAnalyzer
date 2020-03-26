@@ -886,11 +886,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.matrixValueToScreen.TransformPoints(points);
             return points[0];
         }
-        public int IndexOf(DateTime date)
+        public int IndexOf(DateTime date, int startIndex, int endIndex)
         {
-            if (date < dateSerie[0]) { return -1; }
-            if (date > dateSerie[dateSerie.Length - 1]) { return -1; }
-            return IndexOfRec(date, 0, dateSerie.Length - 1);
+            if (date < dateSerie[startIndex]) { return -1; }
+            if (date > dateSerie[endIndex]) { return -1; }
+            return IndexOfRec(date, startIndex, endIndex);
         }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
@@ -921,9 +921,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             else
             {
-                if (startIndex == endIndex && dateSerie[startIndex] == date)
+                if (startIndex >= endIndex )
                 {
-                    return startIndex;
+                    return endIndex;
                 }
                 return -1;
             }
@@ -938,7 +938,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if (this.IsInitialized)
                 {
-                    int index = IndexOf(date);
+                    int index = IndexOf(date, this.StartIndex, this.EndIndex);
                     if (index == -1) return;
                     PointF valuePoint = new PointF(index, value);
                     PointF mousePoint = GetScreenPointFromValuePoint(valuePoint);

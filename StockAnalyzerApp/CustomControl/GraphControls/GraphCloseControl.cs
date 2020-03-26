@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
         public StockPortofolio Portofolio { get; set; }
-        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortofolio { get; set; }
+        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortofolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
 
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
@@ -956,8 +956,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF screenPoint2D = PointF.Empty;
             foreach (var operation in this.BinckPortofolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
             {
-                DateTime orderDate = serieName.StartsWith("INT_") ? operation.Date : operation.Date.Date;
-                int index = this.IndexOf(orderDate);
+                DateTime orderDate = serieName.StartsWith("INT_") || serieName.StartsWith("FUT_") ? operation.Date : operation.Date.Date;
+                int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
                 {
@@ -977,31 +977,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
                         this.DrawArrow(graphic, screenPoint2D, false, operation.IsShort);
                     }
-                }
-            }
-        }
-
-        private void PaintOrders(Graphics graphic)
-        {
-            if (this.Portofolio == null || this.Portofolio.OrderList.Count == 0)
-            {
-                return;
-            }
-            PointF valuePoint2D = PointF.Empty;
-            PointF screenPoint2D = PointF.Empty;
-            foreach (StockOrder stockOrder in this.Portofolio.OrderList.FindAll(order => order.StockName == this.serieName && order.ExecutionDate >= this.dateSerie[this.StartIndex] && order.ExecutionDate.Date <= this.dateSerie[this.EndIndex]))
-            {
-                DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
-                valuePoint2D.X = this.IndexOf(orderDate);
-                if (valuePoint2D.X < 0)
-                {
-                    StockLog.Write("Order date not found: " + stockOrder.ExecutionDate);
-                }
-                else
-                {
-                    screenPoint2D = GetScreenPointFromOrder(stockOrder);
-
-                    this.DrawArrow(graphic, screenPoint2D, stockOrder.IsBuyOrder(), stockOrder.IsShortOrder);
                 }
             }
         }
@@ -1945,15 +1920,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
 
-        private PointF GetScreenPointFromOrder(StockOrder stockOrder)
-        {
-            PointF valuePoint2D = PointF.Empty;
-
-            DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
-            valuePoint2D.X = this.IndexOf(orderDate);
-            valuePoint2D.Y = stockOrder.UnitCost;
-            return this.GetScreenPointFromValuePoint(valuePoint2D);
-        }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
             if (startIndex < endIndex)
