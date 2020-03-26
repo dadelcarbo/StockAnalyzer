@@ -17,18 +17,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "HIGH", "FIBHIGH", "FIBLOW", "LOW", "MID" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??
-                                                          (seriePens =
-                                                              new Pen[]
-                                                              {
-                                                                 new Pen(Color.DarkGreen), new Pen(Color.Black), new Pen(Color.Black), new Pen(Color.DarkRed), new Pen(Color.Black) {DashStyle = DashStyle.Dash}
-                                                              });
+        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] {
+            new Pen(Color.DarkGreen,2), new Pen(Color.DarkGreen), new Pen(Color.DarkRed), new Pen(Color.DarkRed,2), new Pen(Color.Black) { DashStyle = DashStyle.Dash } });
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            float upRatio = (float)this.parameters[1];
-            float downRatio = 1f - upRatio;
 
             // Calculate FIBOCHANNEL Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
@@ -41,20 +35,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            float up, down;
+            float upRatio = 0.5f * (float)this.parameters[1];
+            float up, down, width, mid;
             upLine[0] = up = highSerie[0];
             downLine[0] = down = lowSerie[0];
-            midUpLine[0] = (up * upRatio + down * downRatio);
-            midDownLine[0] = (down * upRatio + up * downRatio);
-            midLine[0] = (up + down) / 2.0f;
+            width = (up - down) * upRatio;
+            midLine[0] = mid = (up + down) / 2.0f;
+            midUpLine[0] = mid + width;
+            midDownLine[0] = mid - width;
 
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 upLine[i] = up = highSerie.GetMax(Math.Max(0, i - period - 1), i - 1);
                 downLine[i] = down = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
-                midUpLine[i] = (up * upRatio + down * downRatio);
-                midDownLine[i] = (down * upRatio + up * downRatio);
-                midLine[i] = (up + down) / 2.0f;
+
+                width = (up - down) * upRatio;
+
+                midLine[i] = mid = (up + down) / 2.0f;
+                midUpLine[i] = mid + width;
+                midDownLine[i] = mid - width;
             }
 
             int count = 0;
@@ -76,8 +75,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            bool upTrend = true;
-
             bool previousBullish = false;
             bool previousBearish = false;
             bool bullish = false;
@@ -85,7 +82,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = 1; i < stockSerie.Count; i++)
             {
-                float close = closeSerie[i];
                 if (bullish)
                 {
                     if (highSerie[i] < midLine[i])
