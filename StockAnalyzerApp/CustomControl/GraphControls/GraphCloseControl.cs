@@ -264,12 +264,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         var downPoints = new List<PointF>() { bearPoints[0] };
                         for (int i = 1; i < nbPoints; i++)
                         {
-                            if (isBull && bullPoints[i].Y >= bearPoints[i].Y) // Bull cloud continuing
+                            if (isBull && bullPoints[i].Y < bearPoints[i].Y) // Bull cloud continuing
                             {
                                 upPoints.Add(bullPoints[i]);
                                 downPoints.Insert(0, bearPoints[i]);
                             }
-                            else if (!isBull && bullPoints[i].Y < bearPoints[i].Y) // Bear cloud continuing
+                            else if (!isBull && bullPoints[i].Y > bearPoints[i].Y) // Bear cloud continuing
                             {
                                 upPoints.Add(bullPoints[i]);
                                 downPoints.Insert(0, bearPoints[i]);
@@ -292,7 +292,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 downPoints = new List<PointF>() { bearPoints[i] };
                             }
                         }
-                        if (upPoints.Count > 0)
+                        if (upPoints.Count > 1)
                         {
                             aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
                             aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
@@ -745,8 +745,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (!eventFound && this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
                         {
                             int j = 0;
-                            foreach (
-                               BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
+                            foreach (var eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
                             {
                                 if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null &&
                                     this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
@@ -758,6 +757,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         // Cloud
+                        if (!eventFound && this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                        {
+                            int j = 0;
+                            foreach (var eventSerie in this.CurveList.Cloud.Events.Where(ev => ev != null && ev.Count > 0))
+                            {
+                                if (this.CurveList.Cloud.IsEvent != null && this.CurveList.Cloud.IsEvent[j] && eventSerie[i])
+                                {
+                                    eventFound = true;
+                                    break;
+                                }
+                                j++;
+                            }
+                        }
                         if (eventFound)
                         {
                             PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
@@ -843,9 +855,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         value += BuildTabbedString(stockIndicator.Series[i].Name, stockIndicator.Series[i][this.lastMouseIndex], 12) + "\r\n";
                     }
                 }
-            }                       
-            // Cloud
-
+            }
             // Add Trail Stops
             var trailValue = float.NaN;
             var trailName = string.Empty;
@@ -860,10 +870,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
                     }
                 }
+                if (!float.IsNaN(trailValue))
+                {
+                    value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                }
             }
-            if (!float.IsNaN(trailValue))
+            // Add Cloud
+            var cloudValue = float.NaN;
+            var cloudName = string.Empty;
+            if (CurveList.Cloud != null)
             {
-                value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                for (int i = 0; i < CurveList.Cloud.SeriesCount; i++)
+                {
+                    if (CurveList.Cloud.Series[i] != null && CurveList.Cloud.Series[i].Count > 0 && !float.IsNaN(CurveList.Cloud.Series[i][this.lastMouseIndex]))
+                    {
+                        cloudName = CurveList.Cloud.SerieNames[i];
+                        cloudValue = CurveList.Cloud.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(cloudName, cloudValue, 12) + "\r\n";
+                    }
+                }
             }
             // Add secondary serie
             if (this.secondaryFloatSerie != null)
@@ -1127,6 +1152,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         // Cloud
+                        if (this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                        {
+                            for (int j = 0; j < CurveList.Cloud.EventCount; j++)
+                            {
+                                BoolSerie eventSerie = CurveList.Cloud.Events[j];
+                                if (CurveList.Cloud.IsEvent[j] && eventSerie != null && CurveList.Cloud.Events.Count() > 0)
+                                {
+                                    if (eventSerie[i])
+                                    {
+                                        eventTypeString += CurveList.Cloud.Name + " - " + eventSerie.Name + System.Environment.NewLine;
+                                    }
+                                }
+                            }
+                        }
                         // Trail Stops
                         if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
                         {

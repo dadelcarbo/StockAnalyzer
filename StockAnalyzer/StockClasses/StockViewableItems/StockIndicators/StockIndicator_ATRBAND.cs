@@ -19,7 +19,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get { return new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" }; }
         }
-
         public override Object[] ParameterDefaultValues
         {
             get { return new Object[] { 20, 3.0f, -3.0f, "MA" }; }
@@ -38,9 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 };
             }
         }
-
         public override string[] SerieNames { get { return new string[] { "ATRBANDUp", "ATRBANDDown", this.parameters[3] + "(" + (int)this.parameters[0] + ")" }; } }
-
         public override System.Drawing.Pen[] SeriePens
         {
             get
@@ -52,7 +49,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             // Calculate ATR Bands
@@ -110,7 +106,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
             }
         }
-
         static string[] eventNames = new string[] { "UpBandOvershot", "DownBandOvershot", "BullishSignal", "BearishSignal" };
         public override string[] EventNames
         {

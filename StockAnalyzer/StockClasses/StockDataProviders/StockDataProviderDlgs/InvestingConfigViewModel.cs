@@ -104,13 +104,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
             {
-                Group = "FUTURE",
+                Group = StockSerie.Groups.INTRADAY.ToString(),
                 ShortName = this.SelectedItem.Symbol,
                 StockName = this.SelectedItem.FullName
             });
 
             this.PropertyChanged(this, new PropertyChangedEventArgs("AddEnabled"));
         }
-
     }
 }

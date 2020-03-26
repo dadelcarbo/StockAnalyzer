@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
 
@@ -12,7 +11,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-
 
         public override string[] ParameterNames
         {

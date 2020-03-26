@@ -43,9 +43,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var senkouSpanB = (int)this.parameters[2];
 
             var indicator = stockSerie.GetIndicator($"ICHIMOKU({tenkanSen},{kijunSen},{senkouSpanB})");
-            this.Series[0] = indicator.Series[3];
+            this.Series[0] = indicator.Series[2];
             this.Series[0].Name = this.SerieNames[0];
-            this.Series[1] = indicator.Series[2];
+            this.Series[1] = indicator.Series[3];
             this.Series[1].Name = this.SerieNames[1];
 
             // Detecting events

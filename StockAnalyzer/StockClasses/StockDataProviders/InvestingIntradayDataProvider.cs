@@ -33,8 +33,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write("LoadIntradayDurationArchiveData New serie size is: " + serie.GetValues(duration).Count);
                 if (serie.GetValues(duration).Count > 0)
                 {
-                    StockLog.Write("LoadIntradayDurationArchiveData First bar: " +
-                                   serie.GetValues(duration).First().ToString());
+                    StockLog.Write("LoadIntradayDurationArchiveData First bar: " + serie.GetValues(duration).First().ToString());
                     StockLog.Write("LoadIntradayDurationArchiveData Last bar: " + serie.GetValues(duration).Last().ToString());
                 }
                 else

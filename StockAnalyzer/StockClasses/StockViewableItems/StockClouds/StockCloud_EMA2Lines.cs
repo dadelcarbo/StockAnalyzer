@@ -10,14 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Name
-        {
-            get { return "EMA2Lines(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"; }
-        }
-        public override string Definition
-        {
-            get { return "EMA2Lines(int FastPeriod, int SlowPeriod)"; }
-        }
+        public override string Definition => "Paint a cloud base on two EMA lines";
         public override string[] ParameterNames
         {
             get { return new string[] { "FastPeriod", "SlowPeriod" }; }

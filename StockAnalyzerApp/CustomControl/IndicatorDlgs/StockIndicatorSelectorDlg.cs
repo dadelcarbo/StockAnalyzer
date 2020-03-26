@@ -184,6 +184,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 this.CurvePen = linePen;
                 this.LineValue = value;
+                this.LineValue = value;
                 this.ImageKey = "LINE";
                 this.SelectedImageKey = "LINE";
             }
@@ -1073,7 +1074,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 y = (Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
                 bullPoints[i].X = (float)x;
                 bullPoints[i].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
-                y = (Math.Sin((x + 25) * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                y = (Math.Sin((x*1.12 + 25) * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
                 bearPoints[i].X = (float)x;
                 bearPoints[i++].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
             }

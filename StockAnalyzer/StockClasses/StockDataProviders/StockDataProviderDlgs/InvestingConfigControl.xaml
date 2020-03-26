@@ -21,6 +21,6 @@
             <Button IsEnabled="{Binding AddEnabled}" Command="{Binding AddCommand}">Add</Button>
         </StackPanel>
         <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" AutoGenerateColumns="True" MaxHeight="160" MinHeight="100" Margin="4" IsReadOnly="True" ShowGroupPanel="False" VerticalAlignment="Top"/>
-        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False"/>
+        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" SelectionUnit="Cell" SelectionMode="Single" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False"/>
     </Grid>
 </UserControl>
