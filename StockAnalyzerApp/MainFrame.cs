@@ -792,7 +792,7 @@ namespace StockAnalyzerApp
             this.Focus();
         }
 
-        private void goBtn_Click(object sender, System.EventArgs e)
+        private void goBtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(searchText.Text)) return;
 
@@ -1864,7 +1864,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void downloadBtn_Click(object sender, System.EventArgs e)
+        private void downloadBtn_Click(object sender, EventArgs e)
         {
             if (busy) return;
             busy = true;
@@ -2062,7 +2062,7 @@ namespace StockAnalyzerApp
             cutLineStripBtn.Checked = false;
         }
 
-        private void fanLineBtn_Click(object sender, System.EventArgs e)
+        private void fanLineBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
@@ -2110,7 +2110,7 @@ namespace StockAnalyzerApp
             cutLineStripBtn.Checked = false;
         }
 
-        private void deleteLineStripBtn_Click(object sender, System.EventArgs e)
+        private void deleteLineStripBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
@@ -2134,7 +2134,7 @@ namespace StockAnalyzerApp
             cutLineStripBtn.Checked = false;
         }
 
-        private void drawingStyleStripBtn_Click(object sender, System.EventArgs e)
+        private void drawingStyleStripBtn_Click(object sender, EventArgs e)
         {
             Pen pen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
             DrawingStyleForm drawingStyleForm = new DrawingStyleForm(pen);
@@ -2149,7 +2149,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void addHalfLineStripBtn_Click(object sender, System.EventArgs e)
+        private void addHalfLineStripBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
@@ -2173,7 +2173,7 @@ namespace StockAnalyzerApp
             cutLineStripBtn.Checked = false;
         }
 
-        private void addSegmentStripBtn_Click(object sender, System.EventArgs e)
+        private void addSegmentStripBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
@@ -2435,14 +2435,14 @@ namespace StockAnalyzerApp
 
         #region REWIND/FAST FORWARD METHODS
 
-        private void rewindBtn_Click(object sender, System.EventArgs e)
+        private void rewindBtn_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
             int step = (this.endIndex - this.startIndex) / 4;
             Rewind(step);
         }
 
-        private void fastForwardBtn_Click(object sender, System.EventArgs e)
+        private void fastForwardBtn_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
             int step = (this.endIndex - this.startIndex) / 4;
@@ -2935,7 +2935,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void statisticsMenuItem_Click(object sender, System.EventArgs e)
+        private void statisticsMenuItem_Click(object sender, EventArgs e)
         {
             StatisticsDlg statisticsDlg = new StatisticsDlg();
             statisticsDlg.ShowDialog();
@@ -3035,7 +3035,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void patternRecognitionMenuItem_Click(object sender, System.EventArgs e)
+        private void patternRecognitionMenuItem_Click(object sender, EventArgs e)
         {
             int before = 10;
             int after = 200;
@@ -3067,7 +3067,7 @@ namespace StockAnalyzerApp
             AddNewSerie(serie);
         }
 
-        private void logSerieMenuItem_Click(object sender, System.EventArgs e)
+        private void logSerieMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
             StockSerie newSerie = this.CurrentStockSerie.GenerateLogStockSerie();
@@ -3723,7 +3723,7 @@ namespace StockAnalyzerApp
             filteredStrategySimulatorDlg.Show();
         }
 
-        private void exportFinancialsMenuItem_Click(object sender, System.EventArgs e)
+        private void exportFinancialsMenuItem_Click(object sender, EventArgs e)
         {
             bool first = true;
             foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL) && s.Initialise() && s.Financial != null))
@@ -3760,7 +3760,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void portofolioSimulationMenuItem_Click(object sender, System.EventArgs e)
+        private void portofolioSimulationMenuItem_Click(object sender, EventArgs e)
         {
             CreateSimulationPortofolio(5000.0f);
 
@@ -3993,7 +3993,7 @@ namespace StockAnalyzerApp
         #region STATISTICS
 
         // Statistics implementation
-        //private void generateStat1MenuItem_Click(object sender, System.EventArgs e)
+        //private void generateStat1MenuItem_Click(object sender, EventArgs e)
         //{
         //    List<StockDataType> dataList = new List<StockDataType>();
         //    dataList.AddRange(new StockDataType[] { StockDataType.EMA3, StockDataType.EMA6, StockDataType.EMA12, StockDataType.EMA20, StockDataType.EMA26, StockDataType.EMA50, StockDataType.EMA100 });
@@ -4040,7 +4040,7 @@ namespace StockAnalyzerApp
         //        }
         //    }
         //}
-        //private void generateStat2MenuItem_Click(object sender, System.EventArgs e)
+        //private void generateStat2MenuItem_Click(object sender, EventArgs e)
         //{
         //    List<StockDataType> dataList = new List<StockDataType>();
         //    dataList.AddRange(new StockDataType[] { StockDataType.CLOSE, StockDataType.EMA3, StockDataType.EMA6, StockDataType.EMA12, StockDataType.EMA20, StockDataType.EMA26, StockDataType.EMA50, StockDataType.EMA100 });
@@ -4651,7 +4651,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        void addToReportStripBtn_Click(object sender, System.EventArgs e)
+        void addToReportStripBtn_Click(object sender, EventArgs e)
         {
             using (StreamWriter sw = File.AppendText(Settings.Default.RootFolder + @"\Report.cfg"))
             {
@@ -5419,7 +5419,7 @@ namespace StockAnalyzerApp
 
         #region HORSE RACE DIALOG
         HorseRaceDlg horseRaceDlg = null;
-        void showHorseRaceViewMenuItem_Click(object sender, System.EventArgs e)
+        void showHorseRaceViewMenuItem_Click(object sender, EventArgs e)
         {
             if (horseRaceDlg == null)
             {
@@ -5436,7 +5436,7 @@ namespace StockAnalyzerApp
         #endregion
         #region ALERT DIALOG
         AlertDlg alertDlg = null;
-        void showAlertDialogMenuItem_Click(object sender, System.EventArgs e)
+        void showAlertDialogMenuItem_Click(object sender, EventArgs e)
         {
             if (alertDlg == null)
             {
@@ -5900,17 +5900,21 @@ namespace StockAnalyzerApp
             }
         }
 
-        void strategyComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        void strategyComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.CurrentStrategy = strategyComboBox.SelectedItem.ToString();
         }
 
-        void portfolioComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        void portfolioComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First(p => p.Name == portfolioComboBox.SelectedItem.ToString());
+            if (this.BinckPortfolio != portfolioComboBox.SelectedItem)
+            {
+                this.BinckPortfolio = portfolioComboBox.SelectedItem as StockAnalyzer.StockBinckPortfolio.StockPortfolio;
+                this.graphCloseControl.ForceRefresh();
+            }
         }
 
-        void themeComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        void themeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
@@ -5924,10 +5928,7 @@ namespace StockAnalyzerApp
                         Settings.Default.Save();
                     }
 
-                    if (this.NotifyThemeChanged != null)
-                    {
-                        this.NotifyThemeChanged(this.themeDictionary[this.currentTheme]);
-                    }
+                    this.NotifyThemeChanged?.Invoke(this.themeDictionary[this.currentTheme]);
                 }
             }
             catch (System.Exception exception)
@@ -5950,8 +5951,9 @@ namespace StockAnalyzerApp
         private void InitialisePortfolioCombo()
         {
             // Initialise Combo values
-            portfolioComboBox.Items.Clear();
-            portfolioComboBox.Items.AddRange(BinckPortfolioDataProvider.Portofolios.Select(p => p.Name).ToArray());
+            portfolioComboBox.ComboBox.DataSource = BinckPortfolioDataProvider.Portofolios;
+            portfolioComboBox.ComboBox.DisplayMember = "Name";
+            portfolioComboBox.ComboBox.ValueMember = "Name";
         }
         private void InitialiseThemeCombo()
         {
@@ -6081,7 +6083,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        void defaultThemeStripButton_Click(object sender, System.EventArgs e)
+        void defaultThemeStripButton_Click(object sender, EventArgs e)
         {
             if (this.CurrentTheme == WORK_THEME)
             {
@@ -6105,7 +6107,7 @@ namespace StockAnalyzerApp
             }
             SaveAnalysis(Settings.Default.AnalysisFile);
         }
-        void deleteThemeStripButton_Click(object sender, System.EventArgs e)
+        void deleteThemeStripButton_Click(object sender, EventArgs e)
         {
             if (this.CurrentTheme == WORK_THEME)
             {
@@ -6180,7 +6182,7 @@ namespace StockAnalyzerApp
 
         #endregion
 
-        void aboutMenuItem_Click(object sender, System.EventArgs e)
+        void aboutMenuItem_Click(object sender, EventArgs e)
         {
             AboutBox aboutBox = new AboutBox();
             aboutBox.ShowDialog(this);
@@ -6304,7 +6306,7 @@ namespace StockAnalyzerApp
             }
             this.configDataProviderMenuItem.DropDownItems.AddRange(dataProviderSubMenuItems.ToArray());
         }
-        private void configDataProviderMenuItem_Click(object sender, System.EventArgs e)
+        private void configDataProviderMenuItem_Click(object sender, EventArgs e)
         {
             var configDialog = ((IConfigDialog)((ToolStripMenuItem)sender).Tag);
             if (configDialog.ShowDialog(this.StockDictionary) == System.Windows.Forms.DialogResult.OK)

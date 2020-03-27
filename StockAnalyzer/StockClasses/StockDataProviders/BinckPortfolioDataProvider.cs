@@ -37,5 +37,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public static List<StockBinckPortfolio.StockPortfolio> Portofolios { get; set; }
+
     }
 }

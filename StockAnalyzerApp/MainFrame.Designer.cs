@@ -925,7 +925,6 @@ namespace StockAnalyzerApp
             this.portfolioComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.portfolioComboBox.Name = "portfolioComboBox";
             this.portfolioComboBox.Size = new System.Drawing.Size(220, 25);
-            this.portfolioComboBox.Sorted = true;
             this.portfolioComboBox.SelectedIndexChanged += new System.EventHandler(this.portfolioComboBox_SelectedIndexChanged);
             // 
             // browseToolStrip

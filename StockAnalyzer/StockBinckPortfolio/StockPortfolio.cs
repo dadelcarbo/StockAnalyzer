@@ -273,5 +273,10 @@ namespace StockAnalyzer.StockBinckPortfolio
             return Mappings.FirstOrDefault(m => binckName.Contains(m.BinckName.ToUpper()));
         }
         #endregion
+        
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }
