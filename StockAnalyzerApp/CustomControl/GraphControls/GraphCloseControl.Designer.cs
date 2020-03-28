@@ -19,6 +19,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.sellMenu = new System.Windows.Forms.MenuItem();
             this.shortMenu = new System.Windows.Forms.MenuItem();
             this.coverMenu = new System.Windows.Forms.MenuItem();
+            this.deleteOperationMenu = new System.Windows.Forms.MenuItem();
             this.financialMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
@@ -34,6 +35,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.sellMenu,
             this.shortMenu,
             this.coverMenu,
+            this.deleteOperationMenu,
             this.separator1,
             this.agendaMenu,
             this.financialMenu,
@@ -66,43 +68,49 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.coverMenu.Text = "Cover";
             this.coverMenu.Click += new System.EventHandler(this.coverMenu_Click);
             // 
+            // deleteOperationMenu
+            // 
+            this.deleteOperationMenu.Index = 4;
+            this.deleteOperationMenu.Text = "Delete";
+            this.deleteOperationMenu.Click += new System.EventHandler(this.deleteOperationMenu_Click);
+            // 
             // separator1
             // 
-            this.separator1.Index = 4;
+            this.separator1.Index = 5;
             this.separator1.Text = "-";
             // 
             // agendaMenu
             // 
-            this.agendaMenu.Index = 5;
+            this.agendaMenu.Index = 6;
             this.agendaMenu.Text = "Agenda";
             this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
             // 
             // financialMenu
             // 
-            this.financialMenu.Index = 6;
+            this.financialMenu.Index = 7;
             this.financialMenu.Text = "Financials";
             this.financialMenu.Click += new System.EventHandler(this.financialMenu_Click);
             // 
             // separator2
             // 
-            this.separator2.Index = 7;
+            this.separator2.Index = 8;
             this.separator2.Text = "-";
             // 
             // openInABCMenu
             // 
-            this.openInABCMenu.Index = 8;
+            this.openInABCMenu.Index = 9;
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
             // openInZBMenu
             // 
-            this.openInZBMenu.Index = 8;
+            this.openInZBMenu.Index = 10;
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
             // statMenu
             // 
-            this.statMenu.Index = 9;
+            this.statMenu.Index = 11;
             this.statMenu.Text = "Make Stats";
             this.statMenu.Click += new System.EventHandler(this.statMenu_Click);
             // 
@@ -118,6 +126,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem sellMenu;
         private MenuItem shortMenu;
         private MenuItem coverMenu;
+        private MenuItem deleteOperationMenu;
         private MenuItem separator1;
         private MenuItem separator2;
         private MenuItem financialMenu;

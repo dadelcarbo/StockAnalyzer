@@ -18,8 +18,9 @@ namespace StockAnalyzer.StockBinckPortfolio
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
             LoadMappings();
+            // Load Binck Portfolio from Operations(mouvements)
             StockPortfolio.Portfolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*.ptf").OrderBy(s => s))
+            foreach (var file in Directory.EnumerateFiles(folder, "*.*ptf").OrderBy(s => s))
             {
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
@@ -27,25 +28,43 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public StockPortfolio()
         {
+            this.Operations = new List<StockOperation>();
+            this.Positions = new List<StockPosition>();
         }
         public StockPortfolio(string fileName)
         {
             this.Name = Path.GetFileNameWithoutExtension(fileName);
-            this.Orders = new List<StockOrder>();
+            var ext = Path.GetExtension(fileName);
+            this.IsSimu = ext == ".tptf";
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
-
-            foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")).Select(l => new StockOperation(l)).OrderBy(o => o.Id))
+            foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#"))
+                .Select(l => IsSimu ? StockOperation.FromSimuLine(l) : StockOperation.FromBinckLine(l)).OrderBy(o => o.Id))
             {
                 this.AddOperation(operation);
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
         }
 
+        public void Save(string folder)
+        {
+            const string header = "#DATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT";
+            string content = header;
+            float balance = this.Balance;
+            int index = this.Operations.Count;
+            foreach (var operation in this.Operations.OrderByDescending(o => o.Date))
+            {
+                operation.Id = index--;
+                content += Environment.NewLine + operation.ToFileString();
+                balance -= operation.Amount;
+            }
+            File.WriteAllText(Path.Combine(folder, this.Name + ".tptf"), content);
+        }
+
         public void AddOperation(StockOperation operation)
         {
-            if (this.Operations.Any(op => op.Id == operation.Id))
-                throw new InvalidOperationException($"Operation {operation.Id} already in portfolio");
+            //if (this.Operations.Any(op => op.Id == operation.Id))
+            //    throw new InvalidOperationException($"Operation {operation.Id} already in portfolio");
 
             this.Operations.Add(operation);
 
@@ -175,7 +194,6 @@ namespace StockAnalyzer.StockBinckPortfolio
                 p.Dump();
             }
         }
-
         public float EvaluateAt(DateTime date)
         {
             // Calculate value for opened positions
@@ -212,12 +230,12 @@ namespace StockAnalyzer.StockBinckPortfolio
             return positionValue;
         }
 
-        public List<StockOrder> Orders { get; }
         public List<StockOperation> Operations { get; }
         public List<StockPosition> Positions { get; }
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
+        public bool IsSimu { get; set; }
 
         #region Binck Name Mapping
         private static List<StockNameMapping> mappings;
@@ -273,7 +291,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             return Mappings.FirstOrDefault(m => binckName.Contains(m.BinckName.ToUpper()));
         }
         #endregion
-        
+
         public override string ToString()
         {
             return this.Name;

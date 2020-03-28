@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class BinckPortfolioDataProvider : StockDataProviderBase
     {
-        private const string PORTFOLIO_FOLDER = "portfolio";
+        public const string PORTFOLIO_FOLDER = "portfolio";
 
         public override bool SupportsIntradayDownload
         {

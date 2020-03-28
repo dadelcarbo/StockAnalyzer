@@ -7,10 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ADX : StockIndicatorBase, IRange
     {
-        public StockIndicator_ADX()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.RangedIndicator; }
@@ -120,16 +116,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 this.eventSeries[0][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] > mDI[i];
                 this.eventSeries[1][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] < mDI[i];
+                this.eventSeries[2][i] = ADX[i] > trendThreshold && ADX[i-1] < trendThreshold;
             }
 
         }
 
-        static string[] eventNames = new string[] { "UpTrend", "DownTrend" };
+        static string[] eventNames = new string[] { "UpTrend", "DownTrend", "TrendStart" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { false, false };
+        static readonly bool[] isEvent = new bool[] { false, false, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }

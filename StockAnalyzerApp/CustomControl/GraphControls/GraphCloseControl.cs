@@ -6,7 +6,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockBinckPortfolio;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzerSettings.Properties;
+using System.IO;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -1961,98 +1963,95 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void buyMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-                newOrder.Value = this.closeCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 0;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, 10));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
-                }
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void sellMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.SellAtLimit;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, 10));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
-                }
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void shortMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.SellAtLimit;
-                newOrder.IsShortOrder = true;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, 10, true));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
-                }
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void coverMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-                newOrder.IsShortOrder = true;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, 10, true));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
+                this.BackgroundDirty = true;
+                PaintGraph();
+            }
+        }
+
+        void deleteOperationMenu_Click(object sender, System.EventArgs e)
+        {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
+            {
+                var date = this.dateSerie[lastMouseIndex];
+
+                var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
+                if (operation != null)
                 {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Remove(operation);
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                    this.ForegroundDirty = true;
+                    this.BackgroundDirty = true;
+                    PaintGraph();
                 }
             }
         }

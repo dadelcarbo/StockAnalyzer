@@ -6,50 +6,91 @@ namespace StockAnalyzer.StockBinckPortfolio
 {
     public class StockOperation
     {
-        public StockOperation(string line)
+        private StockOperation() { }
+        static public StockOperation FromBinckLine(string line)
         {
+            var operation = new StockOperation();
             CultureInfo ci = CultureInfo.GetCultureInfo("fr-FR");
             var fields = line.Split('\t');
 
-            this.Id = int.Parse(fields[0]);
-            this.Date = DateTime.Parse(fields[1], ci);
-            this.OperationType = fields[3].ToLower();
+            operation.Id = int.Parse(fields[0]);
+            operation.Date = DateTime.Parse(fields[1], ci);
+            operation.OperationType = fields[3].ToLower();
 
-            this.Description = fields[4];
+            operation.Description = fields[4];
+            operation.BinckName = new string(operation.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
+            var nameMapping = StockPortfolio.GetMapping(operation.BinckName);
+            operation.IsShort = nameMapping == null ? false : nameMapping.Leverage < 0;
+            operation.StockName = nameMapping == null ? operation.BinckName : nameMapping.StockName;
 
             float amount;
             float.TryParse(fields[5].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out amount);
-            this.Amount = amount;
+            operation.Amount = amount;
 
             float balance;
             float.TryParse(fields[6].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out balance);
-            this.Balance = balance;
+            operation.Balance = balance;
 
-            var nameMapping = StockPortfolio.GetMapping(BinckName);
-            if (nameMapping == null)
-            {
-                this.StockName = BinckName;
-                this.IsShort = false;
-            }
-            else
-            {
-                this.StockName = nameMapping.StockName;
-                this.IsShort = nameMapping.Leverage < 0;
-            }
+            return operation;
+        }
+
+        static public StockOperation FromSimuLine(string line)
+        {
+            // DATE TYPE NAME SHORT QTY AMOUNT
+            var operation = new StockOperation();
+            var fields = line.Split('\t');
+
+            operation.Id = 0;
+            operation.Date = DateTime.Parse(fields[0]);
+            operation.OperationType = fields[1].ToLower();
+
+            operation.Description = fields[4] + " " + fields[2];
+            operation.BinckName = fields[2];
+            operation.StockName = fields[2];
+            operation.IsShort = bool.Parse(fields[3]);
+
+            float amount;
+            float.TryParse(fields[5], out amount);
+            operation.Amount = amount;
+
+            float balance = 0;
+            operation.Balance = balance;
+
+            return operation;
+        }
+
+        static public StockOperation FromSimu(DateTime date, string name, string type, int qty, bool isShort = false)
+        {
+            var operation = new StockOperation();
+
+            operation.Id = 0;
+            operation.Date = date;
+            operation.OperationType = type;
+            operation.IsShort = isShort;
+
+            operation.Description = $"{qty} {name}";
+            operation.BinckName = name;
+            operation.StockName = name;
+            operation.IsShort = isShort;
+
+            operation.Amount = 0;
+            operation.Balance = 0;
+
+            return operation;
         }
         public int Id { get; set; }
         public DateTime Date { get; set; }
 
         public string OperationType { get; set; }
         public bool IsShort { get; set; }
+
         public string Description { get; set; }
 
         public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
-        public string BinckName => new string(this.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
+        public string BinckName { get; set; }
         //public StockNameMapping NameMapping { get; }
 
-        public string StockName { get; }
-
+        public string StockName { get; set; }
         public float Amount { get; set; }
         public float Balance { get; set; }
         public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT || this.OperationType == TRANSFER;
@@ -62,6 +103,12 @@ namespace StockAnalyzer.StockBinckPortfolio
         internal void Dump()
         {
             Console.WriteLine($"{Id} {Date} {OperationType} {Description} {Amount} {Balance}");
+        }
+
+        internal string ToFileString()
+        {
+            // DATE TYPE NAME SHORT QTY AMOUNT
+            return $"{Date}\t{OperationType}\t{StockName}\t{IsShort}\t{Qty}\t{Amount}";
         }
     }
 }

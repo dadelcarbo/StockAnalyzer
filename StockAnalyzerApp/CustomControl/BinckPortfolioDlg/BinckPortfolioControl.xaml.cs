@@ -9,12 +9,12 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
     /// </summary>
     public partial class BinckPortfolioControl : UserControl
     {
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public BinckPortfolioControl()
         {
             InitializeComponent();
 
-            this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationChanged;
+            this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
         }
 
         private void positionGridView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -23,7 +23,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             if (viewModel == null || !viewModel.IsValidName) return;
 
             if (SelectedStockChanged != null)
-                this.SelectedStockChanged(viewModel.StockName, StockBarDuration.Daily, true);
+                this.SelectedStockChanged(viewModel.StockName, true);
 
             StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
