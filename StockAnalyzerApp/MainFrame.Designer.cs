@@ -73,7 +73,6 @@ namespace StockAnalyzerApp
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inverseSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.overnightSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +83,6 @@ namespace StockAnalyzerApp
             this.filteredStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.batchStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateSeasonalitySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.weeklyVariationStatisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.portofolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
@@ -95,14 +93,7 @@ namespace StockAnalyzerApp
             this.patternRecognitionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newOrderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
-            this.importBinckOrders = new System.Windows.Forms.ToolStripMenuItem();
-            this.portfolioRiskManager = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
-            this.portofolioDetailsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,7 +147,6 @@ namespace StockAnalyzerApp
             this.drawingStyleStripBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.saveAnalysisToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.savePortofolioToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.snapshotToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.addToReportStripBtn = new System.Windows.Forms.ToolStripButton();
@@ -375,7 +365,6 @@ namespace StockAnalyzerApp
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
             this.inverseSerieMenuItem,
-            this.overnightSerieMenuItem,
             this.logSerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -513,13 +502,6 @@ namespace StockAnalyzerApp
             this.inverseSerieMenuItem.Text = "Inverse Serie";
             this.inverseSerieMenuItem.Click += new System.EventHandler(this.inverseSerieMenuItem_Click);
             // 
-            // overnightSerieMenuItem
-            // 
-            this.overnightSerieMenuItem.Name = "overnightSerieMenuItem";
-            this.overnightSerieMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.overnightSerieMenuItem.Text = "Overnight Serie";
-            this.overnightSerieMenuItem.Click += new System.EventHandler(this.overnightSerieMenuItem_Click);
-            // 
             // logSerieMenuItem
             // 
             this.logSerieMenuItem.Name = "logSerieMenuItem";
@@ -538,7 +520,6 @@ namespace StockAnalyzerApp
             this.filteredStrategySimulationMenuItem,
             this.batchStrategySimulationMenuItem,
             this.generateSeasonalitySerieMenuItem,
-            this.weeklyVariationStatisticsMenuItem,
             this.toolStripSeparator8,
             this.portofolioSimulationMenuItem,
             this.toolStripSeparator20,
@@ -605,13 +586,6 @@ namespace StockAnalyzerApp
             this.generateSeasonalitySerieMenuItem.Text = "Generate Seasonality Serie";
             this.generateSeasonalitySerieMenuItem.Click += new System.EventHandler(this.generateSeasonalitySerieMenuItem_Click);
             // 
-            // weeklyVariationStatisticsMenuItem
-            // 
-            this.weeklyVariationStatisticsMenuItem.Name = "weeklyVariationStatisticsMenuItem";
-            this.weeklyVariationStatisticsMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.weeklyVariationStatisticsMenuItem.Text = "Weekly Variation Statistics";
-            this.weeklyVariationStatisticsMenuItem.Click += new System.EventHandler(this.generateWeeklyVariationSerieMenuItem_Click);
-            // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -664,14 +638,7 @@ namespace StockAnalyzerApp
             // 
             this.portofolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.currentPortofolioMenuItem,
-            this.newOrderMenuItem,
-            this.toolStripSeparator19,
-            this.importBinckOrders,
-            this.portfolioRiskManager,
-            this.nameMappingMenuItem,
-            this.toolStripSeparator21,
-            this.portofolioDetailsMenuItem,
-            this.orderListMenuItem});
+            this.nameMappingMenuItem});
             this.portofolioMenuItem.Name = "portofolioMenuItem";
             this.portofolioMenuItem.Size = new System.Drawing.Size(77, 20);
             this.portofolioMenuItem.Text = "Portofolios";
@@ -684,34 +651,6 @@ namespace StockAnalyzerApp
             this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
             this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
             // 
-            // newOrderMenuItem
-            // 
-            this.newOrderMenuItem.Name = "newOrderMenuItem";
-            this.newOrderMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.newOrderMenuItem.Text = "New Order";
-            this.newOrderMenuItem.Click += new System.EventHandler(this.newOrderMenuItem_Click);
-            // 
-            // toolStripSeparator19
-            // 
-            this.toolStripSeparator19.Name = "toolStripSeparator19";
-            this.toolStripSeparator19.Size = new System.Drawing.Size(199, 6);
-            // 
-            // importBinckOrders
-            // 
-            this.importBinckOrders.Name = "importBinckOrders";
-            this.importBinckOrders.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
-            this.importBinckOrders.Size = new System.Drawing.Size(202, 22);
-            this.importBinckOrders.Text = "Import Orders";
-            this.importBinckOrders.Click += new System.EventHandler(this.importBinckOrders_Click);
-            // 
-            // portfolioRiskManager
-            // 
-            this.portfolioRiskManager.Name = "portfolioRiskManager";
-            this.portfolioRiskManager.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.portfolioRiskManager.Size = new System.Drawing.Size(202, 22);
-            this.portfolioRiskManager.Text = "Risk Manager";
-            this.portfolioRiskManager.Click += new System.EventHandler(this.portfolioRiskManager_Click);
-            // 
             // nameMappingMenuItem
             // 
             this.nameMappingMenuItem.Name = "nameMappingMenuItem";
@@ -719,23 +658,6 @@ namespace StockAnalyzerApp
             this.nameMappingMenuItem.Size = new System.Drawing.Size(202, 22);
             this.nameMappingMenuItem.Text = "Name Mappings";
             this.nameMappingMenuItem.Click += new System.EventHandler(this.nameMappingMenuItem_Click);
-            // 
-            // toolStripSeparator21
-            // 
-            this.toolStripSeparator21.Name = "toolStripSeparator21";
-            this.toolStripSeparator21.Size = new System.Drawing.Size(199, 6);
-            // 
-            // portofolioDetailsMenuItem
-            // 
-            this.portofolioDetailsMenuItem.Name = "portofolioDetailsMenuItem";
-            this.portofolioDetailsMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.portofolioDetailsMenuItem.Text = "Portofolios";
-            // 
-            // orderListMenuItem
-            // 
-            this.orderListMenuItem.Name = "orderListMenuItem";
-            this.orderListMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.orderListMenuItem.Text = "Order List";
             // 
             // watchlistsMenuItem
             // 
@@ -1126,7 +1048,6 @@ namespace StockAnalyzerApp
             this.drawingStyleStripBtn,
             this.toolStripSeparator13,
             this.saveAnalysisToolStripButton,
-            this.savePortofolioToolStripButton,
             this.snapshotToolStripButton,
             this.toolStripSeparator7,
             this.addToReportStripBtn,
@@ -1273,16 +1194,6 @@ namespace StockAnalyzerApp
             this.saveAnalysisToolStripButton.Text = "&Save analysis";
             this.saveAnalysisToolStripButton.Click += new System.EventHandler(this.saveAnalysisToolStripButton_Click);
             // 
-            // savePortofolioToolStripButton
-            // 
-            this.savePortofolioToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.savePortofolioToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("savePortofolioToolStripButton.Image")));
-            this.savePortofolioToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.savePortofolioToolStripButton.Name = "savePortofolioToolStripButton";
-            this.savePortofolioToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.savePortofolioToolStripButton.Text = "Save &Portofolios";
-            this.savePortofolioToolStripButton.Click += new System.EventHandler(this.savePortofolioToolStripButton_Click);
-            // 
             // snapshotToolStripButton
             // 
             this.snapshotToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1347,7 +1258,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Location = new System.Drawing.Point(0, 24);
             this.graphCloseControl.Magnetism = false;
             this.graphCloseControl.Name = "graphCloseControl";
-            this.graphCloseControl.Portofolio = null;
             this.graphCloseControl.ScaleInvisible = true;
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.graphCloseControl.SecondaryPen = null;
@@ -1581,17 +1491,12 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem viewMenuItem;
         private ToolStripButton commentBtn;
         private ToolStripMenuItem portofolioMenuItem;
-        private ToolStripMenuItem portofolioDetailsMenuItem;
         private ToolStripButton magnetStripBtn;
         private ToolStripMenuItem palmaresMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel;
         private ToolStripProgressBar progressBar;
-        private ToolStripMenuItem newOrderMenuItem;
-        private ToolStripMenuItem importBinckOrders;
-        private ToolStripMenuItem portfolioRiskManager;
         private ToolStripMenuItem nameMappingMenuItem;
-        private ToolStripMenuItem orderListMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
@@ -1614,7 +1519,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem exportFinancialsMenuItem;
         private ToolStripSeparator toolStripSeparator22;
         private ToolStripSeparator toolStripSeparator23;
-        private ToolStripButton savePortofolioToolStripButton;
         private ToolStripMenuItem currentPortofolioMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
@@ -1639,11 +1543,9 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem generateSeasonalitySerieMenuItem;
-        private ToolStripMenuItem weeklyVariationStatisticsMenuItem;
         private ToolStripMenuItem statisticsMenuItem;
         private ToolStripMenuItem patternRecognitionMenuItem;
         private ToolStripMenuItem inverseSerieMenuItem;
-        private ToolStripMenuItem overnightSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;
@@ -1677,8 +1579,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;
-        private ToolStripSeparator toolStripSeparator19;
-        private ToolStripSeparator toolStripSeparator21;
         private ToolStripTextBox searchText;
         private ToolStripLabel smoothingLabel;
         private ToolStripButton goBtn;

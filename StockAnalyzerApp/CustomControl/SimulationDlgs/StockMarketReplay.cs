@@ -221,9 +221,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     nbLostTrade = 0;
                     tradeGains.Clear();
 
-                    // Create Portfolio
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio = portfolio;
-
                     portfolio.Clear();
                     replaySerie = new StockSerie("Replay", "Replay", StockSerie.Groups.ALL, StockDataProvider.Replay);
 

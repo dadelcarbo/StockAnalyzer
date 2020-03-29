@@ -30,8 +30,6 @@ using StockAnalyzerApp.CustomControl.GroupViewDlg;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
-using StockAnalyzerApp.CustomControl.PortofolioDlgs;
-using StockAnalyzerApp.CustomControl.PortofolioDlgs.PortfolioRiskManager;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
@@ -151,33 +149,12 @@ namespace StockAnalyzerApp
 
         public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortfolio { get; set; }
 
-        private StockPortofolio currentPortofolio;
-
-        public StockPortofolio CurrentPortofolio
-        {
-            get { return currentPortofolio; }
-            set
-            {
-                if (this.currentPortofolio != value)
-                {
-                    this.currentPortofolio = value;
-                    // §§§§ this.graphCloseControl.Portofolio = currentPortofolio;
-                    if (currentPortofolio != null) OnNeedReinitialise(false);
-                }
-            }
-        }
-
         private StockSerie.Groups selectedGroup;
 
         private PalmaresDlg palmaresDlg = null;
-        private PortofolioDlg portofolioDlg = null;
-        private OrderListDlg orderListDlg = null;
         private StrategySimulatorDlg strategySimulatorDlg = null;
         private FilteredStrategySimulatorDlg filteredStrategySimulatorDlg = null;
-        private OrderGenerationDlg orderGenerationDlg = null;
         private BatchStrategySimulatorDlg batchStrategySimulatorDlg = null;
-
-        private PortfolioSimulatorDlg portfolioSimulatorDlg = null;
 
         private static int NbBars { get; set; }
 
@@ -596,7 +573,7 @@ namespace StockAnalyzerApp
             }
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
-            RefreshPortofolioMenu();
+
             InitialisePortfolioCombo();
             BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First();
 
@@ -1298,22 +1275,6 @@ namespace StockAnalyzerApp
 
         public void OnSelectedStockChanged(string stockName, bool activate)
         {
-            if (stockName.EndsWith("_P") || stockName == StockPortofolio.SIMULATION)
-            {
-                this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
-                if (this.StockDictionary.ContainsKey(stockName))
-                {
-                    this.StockDictionary.Remove(stockName);
-                }
-                this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio);
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    this.stockNameComboBox.Items.Insert(
-                       this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
-                }
-
-                this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
-            }
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
                 this.stockNameComboBox.Items.Add(stockName);
@@ -1331,21 +1292,6 @@ namespace StockAnalyzerApp
         }
         public void OnSelectedStockAndDurationChanged(string stockName, StockBarDuration barDuration, bool activate)
         {
-            if (stockName.EndsWith("_P") || stockName == StockPortofolio.SIMULATION)
-            {
-                this.CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == stockName);
-                if (this.StockDictionary.ContainsKey(stockName))
-                {
-                    this.StockDictionary.Remove(stockName);
-                }
-                this.StockDictionary.CreatePortofolioSerie(this.CurrentPortofolio);
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    this.stockNameComboBox.Items.Insert(
-                       this.stockNameComboBox.Items.IndexOf(stockName.Replace("_P", "")) + 1, stockName);
-                }
-            }
-
             this.barDurationComboBox.SelectedItem = barDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
@@ -1586,54 +1532,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void RefreshPortofolioMenu()
-        {
-            if (this.Portfolios == null)
-                return;
-
-            if (this.Portfolios.Count == 0)
-            {
-                this.Portfolios.Add(new StockAnalyzer.StockBinckPortfolio.StockPortfolio()
-                {
-                    Name = "Default_P",
-                    InitialBalance = 10000,
-                    Balance = 10000
-                });
-            }
-
-            // Clean existing menus
-            this.portofolioDetailsMenuItem.DropDownItems.Clear();
-            this.orderListMenuItem.DropDownItems.Clear();
-
-            ToolStripItem[] portofolioMenuItems = new ToolStripItem[this.Portfolios.Count];
-            ToolStripItem[] portofolioFilterMenuItems = new ToolStripItem[this.Portfolios.Count];
-            ToolStripItem[] orderListMenuItems = new ToolStripItem[this.Portfolios.Count];
-            ToolStripMenuItem portofolioDetailsSubMenuItem;
-            ToolStripMenuItem portofolioFilterSubMenuItem;
-            ToolStripMenuItem orderListSubMenuItem;
-
-            int i = 0;
-            foreach (var portofolio in this.Portfolios)
-            {
-                // Create portofolio menu items
-                portofolioDetailsSubMenuItem = new ToolStripMenuItem(portofolio.Name);
-                portofolioDetailsSubMenuItem.Click += new EventHandler(this.viewPortogolioMenuItem_Click);
-                portofolioMenuItems[i] = portofolioDetailsSubMenuItem;
-
-                // Create portofoglio menu items
-                portofolioFilterSubMenuItem = new ToolStripMenuItem(portofolio.Name);
-                portofolioFilterSubMenuItem.CheckOnClick = true;
-                portofolioFilterMenuItems[i] = portofolioFilterSubMenuItem;
-
-                // create order list menu items
-                orderListSubMenuItem = new ToolStripMenuItem(portofolio.Name);
-                orderListSubMenuItem.Click += new EventHandler(this.orderListMenuItem_Click);
-                orderListMenuItems[i++] = orderListSubMenuItem;
-            }
-            this.portofolioDetailsMenuItem.DropDownItems.AddRange(portofolioMenuItems);
-            this.orderListMenuItem.DropDownItems.AddRange(orderListMenuItems);
-        }
-
         private delegate bool DownloadDataMethod(string destination, ref bool upToDate);
 
         private void Notifiy_SplashProgressChanged(string text)
@@ -1826,8 +1724,6 @@ namespace StockAnalyzerApp
                     this.ResetZoom();
                 }
 
-                this.graphCloseControl.Portofolio = CurrentPortofolio;
-
                 // Refresh all components
                 RefreshGraph();
             }
@@ -1857,10 +1753,6 @@ namespace StockAnalyzerApp
             if (this.filteredStrategySimulatorDlg != null && (!this.filteredStrategySimulatorDlg.IsDisposed))
             {
                 this.filteredStrategySimulatorDlg.SelectedStockName = stockNameComboBox.SelectedItem.ToString();
-            }
-            if (this.riskCalculatorDlg != null && (!this.riskCalculatorDlg.IsDisposed))
-            {
-                this.riskCalculatorDlg.StockSerie = this.CurrentStockSerie;
             }
         }
 
@@ -2325,22 +2217,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void savePortofolioToolStripButton_Click(object sender, EventArgs e)
-        {
-            // Save stock analysis to XML
-            string portofolioFileName = Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile);
-            try
-            {
-                // Save Portofolios
-                SavePortofolios();
-            }
-            catch (System.Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Application Error saving Portfolio", MessageBoxButtons.OK,
-                   MessageBoxIcon.Error);
-            }
-        }
-
         private void snapshotToolStripButton_Click(object sender, EventArgs e)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
@@ -2723,71 +2599,6 @@ namespace StockAnalyzerApp
             }
             AddNewSerie(newSerie);
         }
-
-        private void generateWeeklyVariationSerieMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            if (!this.currentStockSerie.Initialise())
-            {
-                return;
-            }
-            this.currentStockSerie.BarDuration = StockBarDuration.Daily;
-            float[] weeklyData = new float[5];
-            int[] occurences = new int[5];
-            if (this.currentStockSerie.StockGroup != StockSerie.Groups.BREADTH)
-            {
-                foreach (StockDailyValue dailyValue in this.currentStockSerie.Values)
-                {
-                    occurences[(int)dailyValue.DATE.DayOfWeek - 1]++;
-                    weeklyData[(int)dailyValue.DATE.DayOfWeek - 1] += dailyValue.VARIATION;
-                }
-                string report = string.Empty;
-                for (int i = 0; i < 5; i++)
-                {
-                    weeklyData[i] /= (float)occurences[i];
-                    report += ((DayOfWeek)(i + 1)).ToString() + ": " + weeklyData[i].ToString("P2") +
-                              System.Environment.NewLine;
-                }
-
-                MessageBox.Show(report, "Weekly variation for " + this.currentStockSerie.StockName);
-            }
-        }
-
-        private void overnightSerieMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockSerie newSerie = this.CurrentStockSerie.GenerateOvernightStockSerie();
-            string currentStockName = this.currentStockSerie.StockName;
-            if (newSerie.Initialise())
-            {
-                AddNewSerie(newSerie);
-
-                // Set current serie as secondary serie
-                ToolStripMenuItem currentSerieMenuItem = null;
-                foreach (ToolStripMenuItem otherMenuItem in this.secondarySerieMenuItem.DropDownItems)
-                {
-                    foreach (ToolStripMenuItem subMenuItem in otherMenuItem.DropDownItems)
-                    {
-                        if (subMenuItem.Text == currentStockName)
-                        {
-                            currentSerieMenuItem = subMenuItem;
-                            break;
-                        }
-                    }
-                    if (currentSerieMenuItem != null)
-                    {
-                        break;
-                    }
-                }
-
-                // Display initial serie as secondary serie
-                if (currentSerieMenuItem != null)
-                {
-                    this.secondarySerieMenuItem_Click(currentSerieMenuItem, null);
-                }
-            }
-        }
-
         private void generateSeasonalitySerieMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
@@ -3393,7 +3204,6 @@ namespace StockAnalyzerApp
             {
                 palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar);
                 palmaresDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                palmaresDlg.SelectedPortofolioChanged += new SelectedPortofolioNameChangedEventHandler(OnCurrentPortofolioNameChanged);
                 palmaresDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
@@ -3455,35 +3265,6 @@ namespace StockAnalyzerApp
                 default:
                     this.ForceBarDuration(StockBarDuration.Daily, true);
                     break;
-            }
-        }
-
-        private void OnCurrentPortofolioChanged(StockPortofolio portofolio, bool activate)
-        {
-            if (portofolio != null)
-            {
-                CurrentPortofolio = portofolio;
-                this.StockPortofolioList.Remove(portofolio.Name);
-                this.StockPortofolioList.Add(portofolio);
-            }
-
-            this.OnNeedReinitialise(true);
-
-            if (activate)
-            {
-                this.Activate();
-            }
-        }
-
-        private void OnCurrentPortofolioNameChanged(string portofolioName, bool activate)
-        {
-            CurrentPortofolio = this.StockPortofolioList.First(p => p.Name == portofolioName);
-
-            this.OnNeedReinitialise(true);
-
-            if (activate)
-            {
-                this.Activate();
             }
         }
 
@@ -3552,64 +3333,6 @@ namespace StockAnalyzerApp
         #endregion VIEW MENU HANDLERS
 
         #region PORTOFOLIO MENU HANDERS
-        public void importBinckOrders_Click(object sender, EventArgs e)
-        {
-            ImportBinckOrderDlg importOrderDlg = new ImportBinckOrderDlg();
-            if (importOrderDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                this.SavePortofolios();
-            }
-        }
-
-        public void newOrderMenuItem_Click(object sender, EventArgs e)
-        {
-            OrderEditionDlg orderCreationDlg = new OrderEditionDlg(this.stockNameComboBox.SelectedItem.ToString(),
-               this.StockPortofolioList.GetPortofolioNames(), null);
-            if (orderCreationDlg.ShowDialog() == DialogResult.OK)
-            {
-                StockPortofolio portofolio = this.StockPortofolioList.Get(orderCreationDlg.PortofolioName);
-                // Retrieve new sotck order
-                portofolio.OrderList.Add(orderCreationDlg.Order);
-                portofolio.OrderList.SortByDate();
-
-                // Regenerate the stock serie for the current portoflio
-                StockDictionary.CreatePortofolioSerie(portofolio);
-
-                // Save Portofolios
-                SavePortofolios();
-
-                // Refresh the screen
-                OnNeedReinitialise(false);
-            }
-        }
-
-        private void OnStockOrderDeleted(StockOrder stockOrder)
-        {
-            // Save Portofolios
-            SavePortofolios();
-
-            //
-            OnNeedReinitialise(false);
-        }
-
-        public void SavePortofolios()
-        {
-            // Save portofolio list
-            foreach (StockPortofolio portofolio in this.StockPortofolioList)
-            {
-                portofolio.OrderList.SortByDate();
-            }
-            XmlSerializer serializer = new XmlSerializer(typeof(StockPortofolioList));
-            System.Xml.XmlTextWriter xmlWriter =
-               new System.Xml.XmlTextWriter(Path.Combine(Settings.Default.RootFolder, Settings.Default.PortofolioFile),
-                  System.Text.Encoding.Default);
-            xmlWriter.Formatting = System.Xml.Formatting.Indented;
-            serializer.Serialize(xmlWriter, this.StockPortofolioList);
-            xmlWriter.Close();
-            //
-            OnNeedReinitialise(false);
-        }
-
 
         private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
         {
@@ -3620,107 +3343,54 @@ namespace StockAnalyzerApp
             dlg.Show();
         }
 
-        private void viewPortogolioMenuItem_Click(object sender, EventArgs e)
-        {
-            var portofolio = this.StockPortofolioList.Get(sender.ToString());
-
-            if (portofolio != null)
-            {
-                this.CurrentPortofolio = portofolio;
-
-                portofolio.Initialize();
-                if (portofolioDlg == null)
-                {
-
-                    portofolioDlg = new PortofolioDlg(StockDictionary, portofolio);
-                    portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                    portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                    portofolioDlg.Show();
-                }
-
-                else
-                {
-                    portofolioDlg.SetPortofolio(portofolio);
-                    portofolioDlg.Activate();
-                }
-            }
-        }
-
-        private void portofolioDlg_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            portofolioDlg = null;
-            OnNeedReinitialise(false);
-        }
-
-        private void orderListMenuItem_Click(object sender, EventArgs e)
-        {
-            StockPortofolio portofolio = this.StockPortofolioList.Get(sender.ToString());
-            if (orderListDlg == null)
-            {
-                orderListDlg = new OrderListDlg(StockDictionary, portofolio.OrderList);
-                orderListDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                orderListDlg.StockOrderDeleted += new StockOrderDeletedEventHandler(OnStockOrderDeleted);
-                orderListDlg.FormClosing += new FormClosingEventHandler(orderListDlg_FormClosing);
-                orderListDlg.Show();
-            }
-            else
-            {
-                orderListDlg.Activate();
-            }
-        }
-
-        private void orderListDlg_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            orderListDlg = null;
-            OnNeedReinitialise(false);
-        }
-
         #endregion
 
         #region ANALYSIS MENU HANDLERS
         private void strategySimulationMenuItem_Click(object sender, EventArgs e)
         {
-            CreateSimulationPortofolio(5000.0f);
+            throw new NotImplementedException("strategySimulationMenuItem_Click");
+            //CreateSimulationPortofolio(5000.0f);
 
-            if (strategySimulatorDlg == null || strategySimulatorDlg.IsDisposed)
-            {
-                strategySimulatorDlg = new StrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-                   this.stockNameComboBox.SelectedItem.ToString());
-                strategySimulatorDlg.SimulationCompleted +=
-                   new StrategySimulatorDlg.SimulationCompletedEventHandler(strategySimulatorDlg_SimulationCompleted);
-                strategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                strategySimulatorDlg.SelectedPortofolioChanged +=
-                   new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            }
-            else
-            {
-                strategySimulatorDlg.Activate();
-            }
-            strategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
+            //if (strategySimulatorDlg == null || strategySimulatorDlg.IsDisposed)
+            //{
+            //    strategySimulatorDlg = new StrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
+            //       this.stockNameComboBox.SelectedItem.ToString());
+            //    strategySimulatorDlg.SimulationCompleted +=
+            //       new StrategySimulatorDlg.SimulationCompletedEventHandler(strategySimulatorDlg_SimulationCompleted);
+            //    strategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+            //    strategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            //}
+            //else
+            //{
+            //    strategySimulatorDlg.Activate();
+            //}
+            //strategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
 
-            strategySimulatorDlg.SelectedPortofolio = CurrentPortofolio;
-            strategySimulatorDlg.Show();
+            //strategySimulatorDlg.SelectedPortofolio = CurrentPortofolio;
+            //strategySimulatorDlg.Show();
         }
 
         private void filteredStrategySimulationMenuItem_Click(object sender, EventArgs e)
         {
-            CreateSimulationPortofolio(5000.0f);
+            throw new NotImplementedException("strategySimulationMenuItem_Click");
 
-            if (filteredStrategySimulatorDlg == null || filteredStrategySimulatorDlg.IsDisposed)
-            {
-                filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-                   this.stockNameComboBox.SelectedItem.ToString());
-                filteredStrategySimulatorDlg.SimulationCompleted += new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(filteredStrategySimulatorDlg_SimulationCompleted);
-                filteredStrategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                filteredStrategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            }
-            else
-            {
-                filteredStrategySimulatorDlg.Activate();
-            }
-            filteredStrategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
+            //CreateSimulationPortofolio(5000.0f);
 
-            filteredStrategySimulatorDlg.Show();
+            //if (filteredStrategySimulatorDlg == null || filteredStrategySimulatorDlg.IsDisposed)
+            //{
+            //    filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
+            //       this.stockNameComboBox.SelectedItem.ToString());
+            //    filteredStrategySimulatorDlg.SimulationCompleted += new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(filteredStrategySimulatorDlg_SimulationCompleted);
+            //    filteredStrategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+            //    filteredStrategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            //}
+            //else
+            //{
+            //    filteredStrategySimulatorDlg.Activate();
+            //}
+            //filteredStrategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
+
+            //filteredStrategySimulatorDlg.Show();
         }
 
         private void exportFinancialsMenuItem_Click(object sender, EventArgs e)
@@ -3762,153 +3432,58 @@ namespace StockAnalyzerApp
 
         private void portofolioSimulationMenuItem_Click(object sender, EventArgs e)
         {
-            CreateSimulationPortofolio(5000.0f);
+            throw new NotImplementedException("strategySimulationMenuItem_Click");
 
-            if (portfolioSimulatorDlg == null || portfolioSimulatorDlg.IsDisposed)
-            {
-                portfolioSimulatorDlg = new PortfolioSimulatorDlg(StockDictionary, this.StockPortofolioList,
-                   this.stockNameComboBox.SelectedItem.ToString(), this.WatchLists);
-                portfolioSimulatorDlg.SimulationCompleted +=
-                   new PortfolioSimulatorDlg.SimulationCompletedEventHandler(portfolioSimulatorDlg_SimulationCompleted);
-                portfolioSimulatorDlg.SelectedPortofolioChanged +=
-                   new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            }
-            else
-            {
-                portfolioSimulatorDlg.Activate();
-            }
+            //CreateSimulationPortofolio(5000.0f);
 
-            this.CurrentPortofolio = portfolioSimulatorDlg.SelectedPortofolio;
-            portfolioSimulatorDlg.Show();
+            //    if (portfolioSimulatorDlg == null || portfolioSimulatorDlg.IsDisposed)
+            //    {
+            //        portfolioSimulatorDlg = new PortfolioSimulatorDlg(StockDictionary, this.StockPortofolioList,
+            //           this.stockNameComboBox.SelectedItem.ToString(), this.WatchLists);
+            //        portfolioSimulatorDlg.SimulationCompleted +=
+            //           new PortfolioSimulatorDlg.SimulationCompletedEventHandler(portfolioSimulatorDlg_SimulationCompleted);
+            //        portfolioSimulatorDlg.SelectedPortofolioChanged +=
+            //           new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
+            //    }
+            //    else
+            //    {
+            //        portfolioSimulatorDlg.Activate();
+            //    }
+
+            //    this.CurrentPortofolio = portfolioSimulatorDlg.SelectedPortofolio;
+            //    portfolioSimulatorDlg.Show();
 
         }
 
         private void CreateSimulationPortofolio(float portofolioDeposit)
         {
-            // Create new simulation portofolio
-            if (CurrentPortofolio == null)
-            {
-                CurrentPortofolio = this.StockPortofolioList.Find(p => p.Name == this.CurrentStockSerie.StockName + "_P");
-                if (CurrentPortofolio == null)
-                {
-                    CurrentPortofolio = new StockPortofolio(this.CurrentStockSerie.StockName + "_P");
-                    CurrentPortofolio.IsSimulation = true;
-                    CurrentPortofolio.TotalDeposit = portofolioDeposit;
-                    this.StockPortofolioList.Add(CurrentPortofolio);
-                }
-            }
-        }
+            throw new NotImplementedException("strategySimulationMenuItem_Click");
 
-        private void strategySimulatorDlg_SimulationCompleted()
-        {
-            // Refresh portofolio generated stock
-            StockPortofolio portofolio = this.strategySimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize();
-            StockDictionary.CreatePortofolioSerie(portofolio);
-
-            // Refresh the screen
-            OnNeedReinitialise(true);
-
-            //Display portofolio window
-            if (portofolioDlg == null)
-            {
-                portofolioDlg = new PortofolioDlg(StockDictionary, portofolio);
-                portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                portofolioDlg.Show();
-            }
-            else
-            {
-                portofolioDlg.SetPortofolio(portofolio);
-                portofolioDlg.Activate();
-            }
-
-            RefreshPortofolioMenu();
-        }
-
-        private void filteredStrategySimulatorDlg_SimulationCompleted()
-        {
-            // Refresh portofolio generated stock
-            StockPortofolio portofolio = this.filteredStrategySimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize();
-            StockDictionary.CreatePortofolioSerie(portofolio);
-
-            // Refresh the screen
-            OnNeedReinitialise(true);
-
-            //Display portofolio window
-            if (portofolioDlg == null)
-            {
-                portofolioDlg = new PortofolioDlg(StockDictionary, portofolio);
-                portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                portofolioDlg.Show();
-            }
-            else
-            {
-                portofolioDlg.SetPortofolio(portofolio);
-                portofolioDlg.Activate();
-            }
-
-            RefreshPortofolioMenu();
-
-            this.CurrentPortofolio = portofolio;
+            //// Create new simulation portofolio
+            //if (CurrentPortofolio == null)
+            //{
+            //    CurrentPortofolio = this.StockPortofolioList.Find(p => p.Name == this.CurrentStockSerie.StockName + "_P");
+            //    if (CurrentPortofolio == null)
+            //    {
+            //        CurrentPortofolio = new StockPortofolio(this.CurrentStockSerie.StockName + "_P");
+            //        CurrentPortofolio.IsSimulation = true;
+            //        CurrentPortofolio.TotalDeposit = portofolioDeposit;
+            //        this.StockPortofolioList.Add(CurrentPortofolio);
+            //    }
+            //}
         }
 
         private void portfolioSimulatorDlg_SimulationCompleted()
         {
-            // Refresh portofolio generated stock
-            StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
-            portofolio.Initialize();
-            StockDictionary.CreatePortofolioSerie(portofolio);
+            throw new NotImplementedException("strategySimulationMenuItem_Click");
 
-            // Refresh the screen
-            OnNeedReinitialise(true);
+            //// Refresh portofolio generated stock
+            //StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
+            //portofolio.Initialize();
+            //StockDictionary.CreatePortofolioSerie(portofolio);
 
-            //Display portofolio window
-            if (portofolioDlg == null)
-            {
-                portofolioDlg = new PortofolioDlg(StockDictionary, portofolio);
-                portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                portofolioDlg.Show();
-            }
-            else
-            {
-                portofolioDlg.SetPortofolio(portofolio);
-                portofolioDlg.Activate();
-            }
-
-            RefreshPortofolioMenu();
-        }
-
-        private void orderGenerationDlg_SimulationCompleted()
-        {
-            // Refresh portofolio generated stock
-            StockPortofolio portofolio = this.orderGenerationDlg.SelectedPortofolio;
-            portofolio.Initialize();
-            StockDictionary.CreatePortofolioSerie(portofolio);
-
-            // Refresh the screen
-            OnNeedReinitialise(true);
-
-            //Display portofolio window
-            if (orderListDlg == null)
-            {
-                orderListDlg = new OrderListDlg(StockDictionary, portofolio.OrderList);
-                orderListDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                orderListDlg.FormClosing += new FormClosingEventHandler(orderListDlg_FormClosing);
-                orderListDlg.StockOrderDeleted += new StockOrderDeletedEventHandler(OnStockOrderDeleted);
-                orderListDlg.Show();
-            }
-            else
-            {
-                orderListDlg.SetOrderList(portofolio.OrderList);
-                orderListDlg.Activate();
-            }
-
-            RefreshPortofolioMenu();
-
+            //// Refresh the screen
+            //OnNeedReinitialise(true);
         }
 
         private void batchStrategySimulationMenuItem_Click(object sender, EventArgs e)
@@ -3931,61 +3506,11 @@ namespace StockAnalyzerApp
 
         private void batchStrategySimulatorDlg_SimulationCompleted(SimulationParameterControl simulationParameterControl)
         {
-            //
-            RefreshPortofolioMenu();
-
             // 
             OnNeedReinitialise(true);
 
             // Open Palmares window Initialised to display batch results
             palmaresMenuItem_Click(simulationParameterControl, null);
-        }
-
-        private void simulationTuningDlg_SimulationCompleted(StockPortofolio newPortofolio)
-        {
-            // Refresh portofolio generated stock
-            OnCurrentPortofolioChanged(newPortofolio, true);
-
-            StockDictionary.CreatePortofolioSerie(CurrentPortofolio);
-
-            // Refresh the screen
-            OnNeedReinitialise(true);
-
-            //Display portofolio window
-            if (portofolioDlg == null)
-            {
-                portofolioDlg = new PortofolioDlg(StockDictionary, CurrentPortofolio);
-                portofolioDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                portofolioDlg.FormClosing += new FormClosingEventHandler(portofolioDlg_FormClosing);
-                portofolioDlg.Show();
-            }
-            else
-            {
-                portofolioDlg.SetPortofolio(CurrentPortofolio);
-                portofolioDlg.Activate();
-                portofolioDlg.Refresh();
-            }
-
-            RefreshPortofolioMenu();
-        }
-
-        private void generateOrderMenuItem_Click(object sender, EventArgs e)
-        {
-            if (orderGenerationDlg == null || orderGenerationDlg.IsDisposed)
-            {
-                orderGenerationDlg = new OrderGenerationDlg(StockDictionary, this.StockPortofolioList);
-                orderGenerationDlg.SimulationCompleted +=
-                   new OrderGenerationDlg.SimulationCompletedEventHandler(orderGenerationDlg_SimulationCompleted);
-                orderGenerationDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                orderGenerationDlg.SelectedPortofolioChanged +=
-                   new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-                orderGenerationDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
-                orderGenerationDlg.Show();
-            }
-            else
-            {
-                orderGenerationDlg.Activate();
-            }
         }
 
         #endregion
@@ -4840,11 +4365,6 @@ namespace StockAnalyzerApp
                             this.GenerateTrainingData();
                         }
                         break;
-                    case Keys.F2:
-                        {
-                            this.portfolioRiskManager_Click(null, null);
-                        }
-                        break;
                     case Keys.F3:
                         {
                             this.ShowMultiTimeFrameDlg();
@@ -4887,25 +4407,6 @@ namespace StockAnalyzerApp
                         {
                             this.statisticsMenuItem_Click(null, null);
                         }
-                        break;
-                    case Keys.Control | Keys.F8: // Display Risk Calculator Windows
-
-                        if (riskCalculatorDlg == null)
-                        {
-                            riskCalculatorDlg = new StockRiskCalculatorDlg();
-                            riskCalculatorDlg.StockSerie = this.CurrentStockSerie;
-
-                            riskCalculatorDlg.FormClosing += new FormClosingEventHandler(delegate
-                            {
-                                this.riskCalculatorDlg = null;
-                            });
-                            riskCalculatorDlg.Show();
-                        }
-                        else
-                        {
-                            riskCalculatorDlg.Activate();
-                        }
-
                         break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                         {
@@ -5099,47 +4600,11 @@ namespace StockAnalyzerApp
             mtg.ShowDialog();
         }
 
-        private PortfolioRiskManagerDlg portfolioRiskManagerDlg = null;
-        private void portfolioRiskManager_Click(object sender, EventArgs e)
-        {
-            if (portfolioRiskManagerDlg != null)
-            {
-                portfolioRiskManagerDlg.Activate();
-                return;
-            }
-            try
-            {
-                this.Cursor = Cursors.WaitCursor;
-                portfolioRiskManagerDlg = new PortfolioRiskManagerDlg();
-                portfolioRiskManagerDlg.FormClosed += PortfolioRiskManagerDlg_FormClosed;
-                portfolioRiskManagerDlg.SelectedStockChanged += OnSelectedStockChanged;
-
-                this.Cursor = Cursors.Arrow;
-                portfolioRiskManagerDlg.Show(this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                this.Cursor = Cursors.Arrow;
-            }
-        }
-
-
         private void nameMappingMenuItem_Click(object sender, EventArgs e)
         {
             var dlg = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingDlg();
             dlg.Show();
         }
-        private void PortfolioRiskManagerDlg_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.portfolioRiskManagerDlg.SelectedStockChanged -= OnSelectedStockChanged;
-            this.portfolioRiskManagerDlg = null;
-        }
-
-        private StockRiskCalculatorDlg riskCalculatorDlg = null;
 
         private StockMarketReplay marketReplay = null;
 
@@ -5835,7 +5300,7 @@ namespace StockAnalyzerApp
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.INDICATOR) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
                     {
-                        this.CurrentPortofolio = null;
+                        //this.CurrentPortofolio = null;
 
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
@@ -5849,42 +5314,32 @@ namespace StockAnalyzerApp
                     {
                         if (!string.IsNullOrWhiteSpace(this.currentStrategy))
                         {
-                            CurrentPortofolio =
-                                this.StockPortofolioList.Find(p => p.Name == this.currentStockSerie.StockName + "_P");
-                            if (CurrentPortofolio == null)
-                            {
-                                CurrentPortofolio = new StockPortofolio(this.currentStockSerie.StockName + "_P");
-                                CurrentPortofolio.IsSimulation = true;
-                                CurrentPortofolio.TotalDeposit = 1000;
-                                this.StockPortofolioList.Add(CurrentPortofolio);
+                            throw new NotImplementedException("Strategy display");
 
-                                this.RefreshPortofolioMenu();
-                            }
+                            //var selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy,
+                            //    this.currentStockSerie,
+                            //    null, true);
+                            //if (selectedStrategy != null)
+                            //{
+                            //    float amount = this.currentStockSerie.GetMax(StockDataType.CLOSE) * 100f;
 
-                            var selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy,
-                                this.currentStockSerie,
-                                null, true);
-                            if (selectedStrategy != null)
-                            {
-                                float amount = this.currentStockSerie.GetMax(StockDataType.CLOSE) * 100f;
+                            //    CurrentPortofolio.TotalDeposit = amount;
+                            //    CurrentPortofolio.Clear();
 
-                                CurrentPortofolio.TotalDeposit = amount;
-                                CurrentPortofolio.Clear();
+                            //    this.currentStockSerie.GenerateSimulation(selectedStrategy,
+                            //        Settings.Default.StrategyStartDate, this.currentStockSerie.Keys.Last(),
+                            //        amount, false,
+                            //        false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, CurrentPortofolio);
+                            //}
 
-                                this.currentStockSerie.GenerateSimulation(selectedStrategy,
-                                    Settings.Default.StrategyStartDate, this.currentStockSerie.Keys.Last(),
-                                    amount, false,
-                                    false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, CurrentPortofolio);
-                            }
+                            //this.graphCloseControl.Portofolio = CurrentPortofolio;
 
-                            this.graphCloseControl.Portofolio = CurrentPortofolio;
-
-                            if (portofolioDlg != null)
-                            {
-                                this.CurrentPortofolio.Initialize();
-                                portofolioDlg.SetPortofolio(this.CurrentPortofolio);
-                                portofolioDlg.Activate();
-                            }
+                            //if (portofolioDlg != null)
+                            //{
+                            //    this.CurrentPortofolio.Initialize();
+                            //    portofolioDlg.SetPortofolio(this.CurrentPortofolio);
+                            //    portofolioDlg.Activate();
+                            //}
                         }
                     }
 

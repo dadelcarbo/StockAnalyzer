@@ -133,14 +133,6 @@ namespace StockAnalyzerApp.CustomControl
                }
             }
          }
-
-         if (this.simulationParameterControl.displayPendingOrders && lastOrder != null && lastOrder.State == StockOrder.OrderStatus.Pending)
-         {
-            OrderEditionDlg orderEditionDlg = new OrderEditionDlg(lastOrder);
-            orderEditionDlg.StartPosition = FormStartPosition.Manual;
-            orderEditionDlg.Location = new Point(0, 0);
-            orderEditionDlg.ShowDialog();
-         }
       }
       private void stockComboBox_SelectedIndexChanged(object sender, EventArgs e)
       {

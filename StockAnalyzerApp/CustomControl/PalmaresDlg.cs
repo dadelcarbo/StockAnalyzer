@@ -45,8 +45,6 @@ namespace StockAnalyzerApp.CustomControl
             this.groupComboBox.Items.AddRange(stockDico.GetValidGroupNames().ToArray());
             this.groupComboBox.SelectedItem = selectedGroup.ToString();
 
-            this.indicatorTextBox.Text = Settings.Default.MomentumIndicator;
-
             // Create an instance of a ListView column sorter and assign it to the ListView control.
             lvwColumnSorter = new ListViewColumnSorter();
             this.palmaresView.ListViewItemSorter = (IComparer)lvwColumnSorter;
@@ -111,7 +109,7 @@ namespace StockAnalyzerApp.CustomControl
             this.progressBar.Value = 0;
 
             bool validIndicator = false;
-            if (StockIndicatorManager.Supports(this.indicatorTextBox.Text))
+            if (!string.IsNullOrWhiteSpace(this.indicatorTextBox.Text) && StockIndicatorManager.Supports(this.indicatorTextBox.Text))
             {
                 validIndicator = true;
             }
@@ -189,23 +187,6 @@ namespace StockAnalyzerApp.CustomControl
                         subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();
                         subItems[k++] = stockSerie.GetMin(startIndex, endIndex, StockDataType.LOW).ToString();
                         subItems[k++] = lastStockValue.CLOSE.ToString();
-                        if (stockSerie.Financial != null)
-                        {
-                            stockSerie.Financial.Value = lastStockValue.CLOSE;
-                            subItems[k++] = stockSerie.Financial.PriceBookValueRatio.ToString();
-                        }
-                        else
-                        {
-                            subItems[k++] = "0";
-                        }
-                        if (stockSerie.Financial != null)
-                        {
-                            subItems[k++] = stockSerie.Financial.PriceTangibleBookValueRatio.ToString();
-                        }
-                        else
-                        {
-                            subItems[k++] = "0";
-                        }
                         if (validIndicator && stockSerie.Count > 100)
                         {
                             subItems[k++] = stockSerie.GetIndicator(indicatorTextBox.Text).Series[0][endIndex].ToString();

@@ -148,10 +148,6 @@ namespace StockAnalyzerApp.CustomControl
             {
                SelectedStockChanged(lastOrder.StockName, true);
             }
-            OrderEditionDlg orderEditionDlg = new OrderEditionDlg(lastOrder);
-            orderEditionDlg.StartPosition = FormStartPosition.Manual;
-            orderEditionDlg.Location = new Point(0, 0);
-            orderEditionDlg.ShowDialog();
          }
 
          // Create Portofoglio serie

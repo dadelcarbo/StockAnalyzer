@@ -37,7 +37,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
-        public StockPortofolio Portofolio { get; set; }
         public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortofolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
 
         private FloatSerie secondaryFloatSerie;

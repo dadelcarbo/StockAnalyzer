@@ -59,7 +59,6 @@
             this.graphCloseControl.Location = new System.Drawing.Point(0, 0);
             this.graphCloseControl.Magnetism = false;
             this.graphCloseControl.Name = "graphCloseControl";
-            this.graphCloseControl.Portofolio = null;
             this.graphCloseControl.ScaleInvisible = false;
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.graphCloseControl.SecondaryPen = null;

@@ -33,37 +33,6 @@ namespace StockAnalyzer.StockClasses
 
             StockBinckPortfolio.StockPortfolio.PriceProvider = this;
         }
-        public void CreatePortofolioSerie(StockPortofolio portofolio)
-        {
-            string referenceStockName = string.Empty;
-            if ((portofolio.OrderList != null) && (portofolio.OrderList.Count != 0))
-            {
-                referenceStockName = portofolio.OrderList.First().StockName;
-            }
-            else
-            {
-                referenceStockName = this["CAC40"].StockName;
-            }
-            // Refresh portofolio generated stock
-            if (this.Keys.Contains(portofolio.Name))
-            {
-                this.Remove(portofolio.Name);
-            }
-            if (this.Keys.Contains(referenceStockName))
-            {
-                portofolio.Initialize();
-                try
-                {
-                    StockSerie portfolioSerie = portofolio.GeneratePortfolioStockSerie(portofolio.Name, this[referenceStockName], portofolio.Group);
-                    this.Add(portofolio.Name, portfolioSerie);
-                    // this[portofolio.Name].Initialise();
-                }
-                catch (Exception e)
-                {
-                    StockAnalyzerException.MessageBox(e);
-                }
-            }
-        }
 
         private static List<string> validGroups = null;
         public List<string> GetValidGroupNames()

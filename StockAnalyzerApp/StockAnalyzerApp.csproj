@@ -266,17 +266,6 @@
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\GroupViewDlg\GroupViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.Designer.cs">
-      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml.cs">
-      <DependentUpon>PortofolioRiskManagerUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
@@ -309,24 +298,6 @@
     </Compile>
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.Designer.cs">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.Designer.cs">
-      <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrdersControl.xaml.cs">
-      <DependentUpon>ImportBinckOrdersControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\StockOrderViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\RiskCalculatorViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.Designer.cs">
-      <DependentUpon>StockRiskCalculatorDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.cs">
       <SubType>UserControl</SubType>
@@ -475,38 +446,14 @@
     <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.Designer.cs">
       <DependentUpon>SimulationParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\OrderGenerationDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\OrderGenerationDlg.Designer.cs">
-      <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderListDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderListDlg.Designer.cs">
-      <DependentUpon>OrderListDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\ListViewEx.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderEditionDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderEditionDlg.Designer.cs">
-      <DependentUpon>OrderEditionDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\PalmaresDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\PalmaresDlg.Designer.cs">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortofolioDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortofolioDlg.Designer.cs">
-      <DependentUpon>PortofolioDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\StockAlertDlg.cs">
       <SubType>Form</SubType>
@@ -642,15 +589,6 @@
     <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.resx">
-      <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.resx">
-      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.resx">
-      <DependentUpon>StockRiskCalculatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.resx">
       <DependentUpon>FilteredSimulationParameterControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -743,6 +681,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PalmaresDlg.fr-FR.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.fr-FR.resx">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
@@ -763,21 +702,8 @@
     <EmbeddedResource Include="CustomControl\SimulationDlgs\SimulationParameterControl.resx">
       <DependentUpon>SimulationParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\OrderGenerationDlg.resx">
-      <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\OrderListDlg.resx">
-      <DependentUpon>OrderListDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\OrderEditionDlg.resx">
-      <DependentUpon>OrderEditionDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PalmaresDlg.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\PortofolioDlg.resx">
-      <DependentUpon>PortofolioDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.resx">
@@ -1000,14 +926,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\MultiTimeFrameDlg\MTFUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\PortofolioDlgs\ImportBinckOrdersControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
