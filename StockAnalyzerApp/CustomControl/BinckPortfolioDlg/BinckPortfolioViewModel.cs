@@ -38,13 +38,19 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 foreach (var pos in positions)
                 {
                     float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now);
-                    if (value == 0.0f)
+                    if (value == 0.0f) // if price is not found use open price
                     {
                         val += pos.Qty * pos.OpenValue;
                         pos.LastValue = pos.OpenValue;
                     }
                     else
                     {
+                        if (pos.Leverage != 1) // if underlying price is found manage leverage
+                        {
+                            var underlyingOpenValue = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, pos.StartDate);
+                            var variation = pos.Leverage * (value - underlyingOpenValue) / underlyingOpenValue;
+                            value = pos.OpenValue * (1 + variation);
+                        }
                         val += pos.Qty * value;
                         pos.LastValue = value;
                     }

@@ -32,6 +32,7 @@ namespace StockAnalyzerTest
 
             var actualPortfolio = StockPortfolio.LoadPortfolios(Environment.CurrentDirectory)[0];
 
+            Assert.IsTrue(actualPortfolio.IsSimu);
             Assert.AreEqual(portfolio.Positions.Count, actualPortfolio.Positions.Count);
             Assert.AreEqual(portfolio.Operations.Count, actualPortfolio.Operations.Count);
         }

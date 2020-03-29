@@ -7,6 +7,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public StockPosition()
         {
             EndDate = DateTime.MaxValue;
+            this.Leverage = 1;
         }
         public string StockName { get; set; }
         public int Qty { get; set; }
@@ -14,6 +15,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsClosed => EndDate != DateTime.MaxValue;
+        public bool IsShort { get; set; }
+        public float Leverage { get; set; }
 
         internal void Dump()
         {

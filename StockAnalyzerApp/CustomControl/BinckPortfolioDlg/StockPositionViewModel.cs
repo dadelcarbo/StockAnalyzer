@@ -31,11 +31,12 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         }
         public string StockName => position.StockName;
         public int Qty => position.Qty;
-        public float OpenValue => position.OpenValue;
+        public float Leverage => position.Leverage;
+        public float OpenValue => Math.Abs(position.OpenValue);
         public DateTime StartDate => position.StartDate;
         public float LastValue { get; set; }
-
-        public float Variation => (LastValue - OpenValue) / (OpenValue);
+        public string Type => position.IsShort ? "Short" : "Long";
+        public float Variation => position.IsShort && Leverage == 1 ? (OpenValue - LastValue) / (OpenValue) : (LastValue - OpenValue) / (OpenValue);
         public float PortfolioPercent => this.portfolio.Value > 0 ? ((LastValue * this.Qty) / this.portfolio.Value) : 0.0f;
     }
 }

@@ -48,15 +48,15 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public void Save(string folder)
         {
-            const string header = "#DATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT";
+            const string header = "#DATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT\tBALANCE";
             string content = header;
             float balance = this.Balance;
-            int index = this.Operations.Count;
-            foreach (var operation in this.Operations.OrderByDescending(o => o.Date))
+            int index = 1;
+            foreach (var operation in this.Operations.OrderBy(o => o.Date))
             {
-                operation.Id = index--;
-                content += Environment.NewLine + operation.ToFileString();
-                balance -= operation.Amount;
+                operation.Id = index;
+                balance += operation.Amount;
+                content += Environment.NewLine + operation.ToFileString() + "\t" + balance;
             }
             File.WriteAllText(Path.Combine(folder, this.Name + ".tptf"), content);
         }
@@ -81,7 +81,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                             {
                                 StartDate = operation.Date,
                                 Qty = operation.Qty,
-                                StockName = operation.StockName
+                                StockName = operation.StockName,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
                             });
                         }
                     }
@@ -103,7 +104,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                                         StartDate = operation.Date,
                                         Qty = position.Qty - qty,
                                         StockName = operation.StockName,
-                                        OpenValue = position.OpenValue
+                                        OpenValue = position.OpenValue,
+                                        Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
                                     });
                                 }
                             }
@@ -130,7 +132,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                                 StartDate = operation.Date,
                                 Qty = position.Qty + qty,
                                 StockName = stockName,
-                                OpenValue = openValue
+                                OpenValue = openValue,
+                                IsShort = operation.IsShort,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
                             });
                         }
                         else // Position on this stock doen't exists, create a new one
@@ -140,7 +144,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                                 StartDate = operation.Date,
                                 Qty = qty,
                                 StockName = stockName,
-                                OpenValue = -operation.Amount / qty
+                                OpenValue = -operation.Amount / qty,
+                                IsShort = operation.IsShort,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
                             });
                         }
                     }
@@ -160,7 +166,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                                     StartDate = operation.Date,
                                     Qty = position.Qty - qty,
                                     StockName = operation.StockName,
-                                    OpenValue = position.OpenValue
+                                    OpenValue = position.OpenValue,
+                                    IsShort = operation.IsShort,
+                                    Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
                                 });
                             }
                         }

@@ -19,9 +19,9 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             operation.Description = fields[4];
             operation.BinckName = new string(operation.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
-            var nameMapping = StockPortfolio.GetMapping(operation.BinckName);
-            operation.IsShort = nameMapping == null ? false : nameMapping.Leverage < 0;
-            operation.StockName = nameMapping == null ? operation.BinckName : nameMapping.StockName;
+            operation.NameMapping = StockPortfolio.GetMapping(operation.BinckName);
+            operation.IsShort = operation.NameMapping == null ? false : operation.NameMapping.Leverage < 0;
+            operation.StockName = operation.NameMapping == null ? operation.BinckName : operation.NameMapping.StockName;
 
             float amount;
             float.TryParse(fields[5].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out amount);
@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             return operation;
         }
 
-        static public StockOperation FromSimu(DateTime date, string name, string type, int qty, bool isShort = false)
+        static public StockOperation FromSimu(DateTime date, string name, string type, int qty, float amount, bool isShort = false)
         {
             var operation = new StockOperation();
 
@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             operation.StockName = name;
             operation.IsShort = isShort;
 
-            operation.Amount = 0;
+            operation.Amount = amount;
             operation.Balance = 0;
 
             return operation;
@@ -83,6 +83,10 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public string OperationType { get; set; }
         public bool IsShort { get; set; }
+
+        public StockNameMapping NameMapping { get; set; }
+
+        public bool IsProduct => NameMapping != null && NameMapping.Leverage != 1;
 
         public string Description { get; set; }
 
