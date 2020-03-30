@@ -1964,7 +1964,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
             {
-                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
@@ -1984,7 +1984,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
             {
-                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
@@ -2004,7 +2004,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
             {
-                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
@@ -2024,7 +2024,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
             {
-                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
@@ -2044,7 +2044,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
             {
-                MessageBox.Show("Please select a valid sime portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)

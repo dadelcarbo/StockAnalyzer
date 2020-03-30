@@ -890,42 +890,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (date < dateSerie[startIndex]) { return -1; }
             if (date > dateSerie[endIndex]) { return -1; }
-            return IndexOfRec(date, startIndex, endIndex);
+            return IndexOfRec(date, startIndex + 1, endIndex);
         }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
-            if (startIndex < endIndex)
+            if (date <= dateSerie[startIndex]) { return startIndex; }
+            if (date >= dateSerie[endIndex]) { return endIndex; }
+
+            int midIndex = (startIndex + endIndex) / 2;
+            switch (date.CompareTo(dateSerie[midIndex]))
             {
-                if (dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                if (dateSerie[endIndex] == date)
-                {
-                    return endIndex;
-                }
-                int midIndex = (startIndex + endIndex) / 2;
-                int comp = date.CompareTo(dateSerie[midIndex]);
-                if (comp == 0)
-                {
+                case 0:
                     return midIndex;
-                }
-                else if (comp < 0)
-                {// 
-                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
-                }
-                else
-                {
-                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
-                }
-            }
-            else
-            {
-                if (startIndex >= endIndex )
-                {
-                    return endIndex;
-                }
-                return -1;
+                case -1:
+                    return IndexOfRec(date, startIndex + 1, midIndex);
+                case 1:
+                    return IndexOfRec(date, midIndex, endIndex -1);
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
