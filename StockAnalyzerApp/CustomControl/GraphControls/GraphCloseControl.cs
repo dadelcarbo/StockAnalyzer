@@ -1989,8 +1989,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
+                var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+                if (pos == null || pos.IsShort)
+                {
+                    MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                int qty = pos.Qty;
+                switch (MessageBox.Show("Do yo want to fully close the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        qty = pos.Qty / 2;
+                        break;
+                    case DialogResult.Cancel:
+                        return;
+                }
                 var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                int qty = 10;
                 var date = this.dateSerie[lastMouseIndex];
                 StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, value * qty));
                 StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
@@ -2029,8 +2043,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
+                var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+                if (pos == null || !pos.IsShort)
+                {
+                    MessageBox.Show("Cannot cover not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                int qty = pos.Qty;
+                switch (MessageBox.Show("Do yo want to fully cover the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        qty = pos.Qty / 2;
+                        break;
+                    case DialogResult.Cancel:
+                        return;
+                }
                 var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                int qty = 10;
                 var date = this.dateSerie[lastMouseIndex];
                 StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
                 StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));

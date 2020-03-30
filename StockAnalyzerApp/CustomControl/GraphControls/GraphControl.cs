@@ -905,7 +905,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case -1:
                     return IndexOfRec(date, startIndex + 1, midIndex);
                 case 1:
-                    return IndexOfRec(date, midIndex, endIndex -1);
+                    return IndexOfRec(date, midIndex, endIndex - 1);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
