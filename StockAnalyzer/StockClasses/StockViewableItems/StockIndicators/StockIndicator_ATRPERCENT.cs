@@ -47,14 +47,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            FloatSerie atrSerie = new FloatSerie(stockSerie.Count);
+            var period = (int)this.Parameters[0];
+
+            FloatSerie atrSerie = stockSerie.GetIndicator($"ATR({period})").Series[0];
 
             for (int i = 1; i < stockSerie.Count; i++)
             {
-                atrSerie[i] = 100f * Math.Max(highSerie[i], closeSerie[i - 1]) - Math.Min(lowSerie[i], closeSerie[i - 1]) / closeSerie[i - 1];
+                atrSerie[i] = 100f * atrSerie[i] / closeSerie[i - 1];
             }
 
-            this.series[0] = atrSerie.CalculateEMA((int)this.Parameters[0]);
+            this.series[0] = atrSerie;
             this.Series[0].Name = this.Name;
         }
 

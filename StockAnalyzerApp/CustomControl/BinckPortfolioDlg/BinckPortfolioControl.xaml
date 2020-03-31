@@ -38,7 +38,7 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Operations">
-                <telerik:RadGridView Name="OperationGridView" ItemsSource="{Binding Portfolio.Operations}" SelectionUnit="Cell" ClipboardCopyMode="Cells" FilterOperatorsLoading="FilterOperatorsLoading"></telerik:RadGridView>
+                <telerik:RadGridView Name="OperationGridView" ItemsSource="{Binding Portfolio.Operations}" SelectionUnit="Cell" ClipboardCopyMode="Cells" FilterOperatorsLoading="FilterOperatorsLoading" AutoGeneratingColumn="OperationGridView_AutoGeneratingColumn"></telerik:RadGridView>
             </TabItem>
         </TabControl>
     </Grid>

@@ -37,5 +37,13 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
             }
         }
+
+        private void OperationGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "NameMapping")
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }

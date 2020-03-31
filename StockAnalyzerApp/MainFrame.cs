@@ -1341,12 +1341,20 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + "No stock selected";
                 return;
             }
+            if (newSerie.BelongsToGroup(StockSerie.Groups.INTRADAY))
+            {
+                this.statusLabel.Text = ("Downloading data...");
+                this.Refresh();
+                this.Cursor = Cursors.WaitCursor;
+                StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, newSerie);
+            }
             if (!newSerie.IsInitialised)
             {
                 this.statusLabel.Text = ("Loading data...");
                 this.Refresh();
                 this.Cursor = Cursors.WaitCursor;
             }
+
             this.currentStockSerie = newSerie;
             if (!newSerie.Initialise() || newSerie.Count == 0)
             {
@@ -1792,8 +1800,8 @@ namespace StockAnalyzerApp
                     {
                         try
                         {
-                            ABCDataProvider.DownloadFinancial(this.currentStockSerie);
-                            ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                            //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
+                            //ABCDataProvider.DownloadAgenda(this.currentStockSerie);
                         }
                         catch (Exception ex)
                         {
