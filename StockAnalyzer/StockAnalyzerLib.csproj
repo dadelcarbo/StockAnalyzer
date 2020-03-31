@@ -191,6 +191,7 @@
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudManager.cs" />

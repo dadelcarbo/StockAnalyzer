@@ -3268,7 +3268,7 @@ namespace StockAnalyzerApp
             {
                 case StockSerie.Groups.TURBO:
                 case StockSerie.Groups.INTRADAY:
-                    this.ForceBarDuration(StockBarDuration.TLB_3D, true);
+                    this.ForceBarDuration(StockBarDuration.Bar_6, true);
                     break;
                 default:
                     this.ForceBarDuration(StockBarDuration.Daily, true);

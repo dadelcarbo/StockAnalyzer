@@ -95,10 +95,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[count++][i] = (!this.Events[0][i - 1]) && (this.Events[0][i]);
                 this.Events[count++][i] = (this.Events[0][i - 1]) && (!this.Events[0][i]);
 
-                this.Events[count++][i] = closeSerie[i] > upLine[i];
-                this.Events[count++][i] = closeSerie[i] > midLine[i];
-                this.Events[count++][i] = closeSerie[i] < midLine[i];
-                this.Events[count++][i] = closeSerie[i] < downLine[i];
+                this.Events[count++][i] = closeSerie[i] > upLine[i] && closeSerie[i - 1] <= upLine[i - 1];
+                this.Events[count++][i] = closeSerie[i] > midLine[i] && closeSerie[i - 1] <= midLine[i - 1];
+                this.Events[count++][i] = closeSerie[i] < midLine[i] && closeSerie[i - 1] >= midLine[i - 1];
+                this.Events[count++][i] = closeSerie[i] < downLine[i] && closeSerie[i - 1] >= downLine[i - 1];
             }
         }
 

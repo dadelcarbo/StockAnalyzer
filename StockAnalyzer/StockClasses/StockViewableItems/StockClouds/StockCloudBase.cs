@@ -70,12 +70,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         private static string[] eventNames = new string[]
           {
              "AboveCloud", "BelowCloud", "InCloud",          // 0,1,2
-             "BullishCloud", "BearishCloud"                  // 3, 4
+             "BullishCloud", "BearishCloud",                  // 3, 4
+             "CloudUp", "CloudDown"                  // 3, 4
           };
 
         public string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { false, false, false, false, false };
+        private static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true };
         public bool[] IsEvent => isEvent;
 
         public BoolSerie[] Events
@@ -123,10 +124,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 if (bullVal > bearVal)
                 {
                     this.Events[3][i] = true;
+                    if (!this.Events[3][i - 1])
+                        this.Events[5][i] = true;
                 }
                 else
                 {
                     this.Events[4][i] = true;
+                    if (!this.Events[4][i - 1])
+                        this.Events[6][i] = true;
                 }
             }
         }

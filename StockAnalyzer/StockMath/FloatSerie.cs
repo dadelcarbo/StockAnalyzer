@@ -596,6 +596,10 @@ namespace StockAnalyzer.StockMath
         {
             FloatSerie newSerie = new FloatSerie(this.Count);
 
+            for (int i = 0; i < length; i++)
+            {
+                newSerie[i] = this[0];
+            }
             for (int i = length; i < this.Count; i++)
             {
                 newSerie[i] = this[i - length];
