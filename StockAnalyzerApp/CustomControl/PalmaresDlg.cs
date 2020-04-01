@@ -69,6 +69,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             previousFromDate = fromDateTimePicker.Value;
             previousUntilDate = untilDateTimePicker.Value;
+            this.indicatorTextBox.Text = "ROR(100,1)";
 
             // 
             InitializeListView();

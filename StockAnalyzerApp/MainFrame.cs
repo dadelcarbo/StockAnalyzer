@@ -15,7 +15,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockWeb;
@@ -23,7 +22,6 @@ using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
-using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.GroupViewDlg;
@@ -57,7 +55,6 @@ namespace StockAnalyzerApp
     public partial class StockAnalyzerForm : Form
     {
         public delegate void SelectedStockSerieChangedEventHandler(object sender, SelectedStockSerieChangedEventArgs args);
-        public event SelectedStockSerieChangedEventHandler OnSelectStockSerieChange;
 
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockBarDuration barDuration, bool activateMainWindow);
@@ -2659,42 +2656,7 @@ namespace StockAnalyzerApp
         }
 
         private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
-
-        public bool EMAUp(int i, StockSerie stockSerie)
-        {
-            FloatSerie ema6 = stockSerie.GetIndicator("EMA(6)").Series[0];
-            FloatSerie ema12 = stockSerie.GetIndicator("EMA(12)").Series[0];
-            FloatSerie ema50 = stockSerie.GetIndicator("EMA(50)").Series[0];
-            FloatSerie longStop = stockSerie.GetTrailStop("TRAILHL(3)").Series[0];
-
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-
-            return (!float.IsNaN(longStop[i - 1]) && !float.IsNaN(longStop[i]) && closeSerie[i] < ema50[i]);
-        }
-
-        public bool NewUpBar(int i, StockSerie stockSerie)
-        {
-            StockDailyValue previous = stockSerie.ValueArray[i - 1];
-            StockDailyValue today = stockSerie.ValueArray[i];
-            return today.CLOSE > previous.HIGH;
-        }
-
-        public bool BuyMomex(int i, StockSerie stockSerie)
-        {
-            FloatSerie momexExhaution = stockSerie.GetIndicator("BUYMOMEX(20,True,1.5)").Series[0];
-
-            return momexExhaution[i - 2] < momexExhaution[i - 1] && momexExhaution[i - 1] > momexExhaution[i] &&
-                   momexExhaution[i - 1] > 35f;
-        }
-
-        public bool TrailBB(int i, StockSerie stockSerie, ref string eventName)
-        {
-            eventName = "UpBreak_TRAILBB(6,2,-2)";
-            BoolSerie upTrend = stockSerie.GetTrailStop("TRAILBB(6,2,-2)").Events[0];
-
-            return !upTrend[i - 1] && upTrend[i];
-        }
-
+        
         public bool TrailHL(int i, StockSerie stockSerie, ref string eventName)
         {
             eventName = "UpBreak_TRAILHL(4)";
@@ -2751,106 +2713,6 @@ namespace StockAnalyzerApp
 
                 string result = stats.Select(s => s.nbr + " " + s.var.ToString().Replace(".", ",")).Aggregate((i, j) => i + Environment.NewLine + j);
                 Clipboard.SetText(result);
-            }
-        }
-
-        private void statisticsMenuItem_Click(object sender, EventArgs e)
-        {
-            StatisticsDlg statisticsDlg = new StatisticsDlg();
-            statisticsDlg.ShowDialog();
-            return;
-
-            const int minBar = 50;
-            int nbStatBar = 50;
-
-            FloatSerie varSerie = new FloatSerie(nbStatBar);
-            FloatSerie percentUpSerie = new FloatSerie(nbStatBar);
-            FloatSerie varMaxSerie = new FloatSerie(nbStatBar);
-            FloatSerie varMinSerie = new FloatSerie(nbStatBar);
-
-            int eventOccurence = 0;
-
-            ConditionMatched cond = TrailHL;
-            string eventName = string.Empty;
-
-            int[] histogram = new int[nbStatBar];
-
-            foreach (
-               StockSerie stockSerie in
-                  this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.currentStockSerie.StockGroup)))
-            {
-                if (!stockSerie.Initialise()) continue;
-                stockSerie.BarDuration = (StockBarDuration)barDurationComboBox.SelectedItem;
-
-                FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-
-
-                BoolSerie upTrend = stockSerie.GetTrailStop("TRAILHL(1)").Events[0];
-
-                for (int i = minBar; i < (stockSerie.Count - nbStatBar); i++)
-                {
-                    if (cond(i, stockSerie, ref eventName))
-                    {
-                        eventOccurence++;
-                        // Event detected
-                        int j;
-                        for (j = 1; j < nbStatBar; j++)
-                        {
-                            if (!upTrend[i + j]) break;
-                            StockDailyValue dailyValue = stockSerie.ValueArray[i + j + 1];
-                            varSerie[j] += dailyValue.VARIATION;
-                            percentUpSerie[j] += dailyValue.VARIATION > 0 ? 1 : 0;
-                            varMaxSerie[j] = Math.Max(dailyValue.VARIATION, varMaxSerie[j]);
-                            varMinSerie[j] = Math.Min(dailyValue.VARIATION, varMinSerie[j]);
-                        }
-                        histogram[j - 1]++;
-                    }
-                }
-            }
-            varSerie /= (float)(eventOccurence);
-            percentUpSerie /= (float)(eventOccurence);
-
-            float val = 100f;
-            float maxVal = 100f;
-            float minVal = 100f;
-
-            // Generate report
-            if (!Directory.Exists(Settings.Default.RootFolder + "\\Report"))
-                Directory.CreateDirectory(Settings.Default.RootFolder + "\\Report");
-            using (
-               StreamWriter sr =
-                  new StreamWriter(
-                     Settings.Default.RootFolder + "\\Report\\" + this.CurrentStockSerie.StockGroup + "_" +
-                     barDurationComboBox.SelectedItem.ToString() + "_" +
-                     eventName.Replace("(", "_").Replace(")", "_").Replace(".", "_").Replace(";", "_") + "Stat.csv", false)
-               )
-            {
-                sr.WriteLine("Histogram");
-                sr.WriteLine("");
-                sr.WriteLine("Bar;Occurence");
-
-                for (int i = 0; i < nbStatBar; i++)
-                {
-                    sr.WriteLine(i + ";" + histogram[i]);
-                }
-
-                sr.WriteLine("");
-                sr.WriteLine("BarType;" + barDurationComboBox.SelectedItem.ToString());
-                sr.WriteLine("Group;" + this.CurrentStockSerie.StockGroup);
-                sr.WriteLine("Event;" + eventName);
-                sr.WriteLine("NbOccurences;" + eventOccurence);
-
-                sr.WriteLine("");
-                sr.WriteLine("Value;Up %;Avg Var;Max Var;Min Var");
-
-                for (int i = 0; i < nbStatBar; i++)
-                {
-                    val *= 1 + varSerie[i];
-                    minVal *= 1 + varMinSerie[i];
-                    maxVal *= 1 + varMaxSerie[i];
-                    sr.WriteLine(val + ";" + percentUpSerie[i] + ";" + varSerie[i] + ";" + varMaxSerie[i] + ";" +
-                                 varMinSerie[i]);
-                }
             }
         }
 
@@ -4409,11 +4271,6 @@ namespace StockAnalyzerApp
                     case Keys.F6:
                         {
                             this.GenerateHistogram();
-                        }
-                        break;
-                    case Keys.F7:
-                        {
-                            this.statisticsMenuItem_Click(null, null);
                         }
                         break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.

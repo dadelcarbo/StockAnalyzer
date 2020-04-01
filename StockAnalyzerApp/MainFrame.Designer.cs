@@ -88,8 +88,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
-            this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
             this.patternRecognitionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -525,8 +523,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator20,
             this.exportFinancialsMenuItem,
             this.toolStripSeparator22,
-            this.statisticsMenuItem,
-            this.toolStripSeparator23,
             this.patternRecognitionMenuItem});
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
@@ -614,18 +610,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator22.Name = "toolStripSeparator22";
             this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
-            // 
-            // statisticsMenuItem
-            // 
-            this.statisticsMenuItem.Name = "statisticsMenuItem";
-            this.statisticsMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.statisticsMenuItem.Text = "Event Statistics";
-            this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
-            // 
-            // toolStripSeparator23
-            // 
-            this.toolStripSeparator23.Name = "toolStripSeparator23";
-            this.toolStripSeparator23.Size = new System.Drawing.Size(237, 6);
             // 
             // patternRecognitionMenuItem
             // 
@@ -1518,7 +1502,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripMenuItem exportFinancialsMenuItem;
         private ToolStripSeparator toolStripSeparator22;
-        private ToolStripSeparator toolStripSeparator23;
         private ToolStripMenuItem currentPortofolioMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
@@ -1543,7 +1526,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem generateSeasonalitySerieMenuItem;
-        private ToolStripMenuItem statisticsMenuItem;
         private ToolStripMenuItem patternRecognitionMenuItem;
         private ToolStripMenuItem inverseSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;

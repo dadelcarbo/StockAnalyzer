@@ -114,19 +114,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = period; i < stockSerie.Count; i++)
             {
-                this.eventSeries[0][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] > mDI[i];
-                this.eventSeries[1][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && pDI[i] < mDI[i];
-                this.eventSeries[2][i] = ADX[i] > trendThreshold && ADX[i-1] < trendThreshold;
+                var bullish = pDI[i] > mDI[i];
+                this.eventSeries[0][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && bullish;
+                this.eventSeries[1][i] = ADX[i] > trendThreshold && ADX[i] > ADX[i - 1] && !bullish;
+                this.eventSeries[2][i] = ADX[i] > trendThreshold && ADX[i - 1] < trendThreshold && bullish;
+                this.eventSeries[3][i] = ADX[i] > trendThreshold && ADX[i - 1] < trendThreshold && !bullish;
             }
-
         }
 
-        static string[] eventNames = new string[] { "UpTrend", "DownTrend", "TrendStart" };
+        static string[] eventNames = new string[] { "Bullish", "Bearish", "UpTrend", "DownTrend" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { false, false, true };
+        static readonly bool[] isEvent = new bool[] { false, false, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
