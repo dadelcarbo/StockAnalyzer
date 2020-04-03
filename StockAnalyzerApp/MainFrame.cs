@@ -207,7 +207,7 @@ namespace StockAnalyzerApp
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
 
-            //this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+            //this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 
             this.ResumeLayout();
             this.PerformLayout();
@@ -254,8 +254,8 @@ namespace StockAnalyzerApp
             while (string.IsNullOrWhiteSpace(Settings.Default.UserId) || !CheckLicense())
             {
                 PreferenceDialog prefDlg = new PreferenceDialog();
-                System.Windows.Forms.DialogResult res = prefDlg.ShowDialog();
-                if (res == System.Windows.Forms.DialogResult.Cancel)
+                DialogResult res = prefDlg.ShowDialog();
+                if (res == DialogResult.Cancel)
                 {
                     Environment.Exit(0);
                 }
@@ -637,18 +637,12 @@ namespace StockAnalyzerApp
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
             // Initialise event call backs (because of a bug in the designer)
-            this.graphCloseControl.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
-            this.graphScrollerControl.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphScrollerControl.GraphControl_MouseClick);
-            this.graphIndicator2Control.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphIndicator2Control.GraphControl_MouseClick);
-            this.graphIndicator3Control.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphIndicator3Control.GraphControl_MouseClick);
-            this.graphIndicator1Control.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
-            this.graphVolumeControl.MouseClick +=
-                new System.Windows.Forms.MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
+            this.graphCloseControl.MouseClick += new MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
+            this.graphScrollerControl.MouseClick += new MouseEventHandler(graphScrollerControl.GraphControl_MouseClick);
+            this.graphIndicator2Control.MouseClick += new MouseEventHandler(graphIndicator2Control.GraphControl_MouseClick);
+            this.graphIndicator3Control.MouseClick += new MouseEventHandler(graphIndicator3Control.GraphControl_MouseClick);
+            this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
+            this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
             // Refreshes intraday every 2 minutes.
             refreshTimer = new System.Windows.Forms.Timer();
@@ -807,10 +801,8 @@ namespace StockAnalyzerApp
             if (this.WatchLists != null)
             {
                 // 
-                System.Windows.Forms.ToolStripItem[] watchListMenuItems =
-                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
-                System.Windows.Forms.ToolStripItem[] addToWatchListMenuItems =
-                   new System.Windows.Forms.ToolStripItem[this.WatchLists.Count()];
+                ToolStripItem[] watchListMenuItems = new ToolStripItem[this.WatchLists.Count()];
+                ToolStripItem[] addToWatchListMenuItems = new ToolStripItem[this.WatchLists.Count()];
                 ToolStripMenuItem addToWatchListSubMenuItem;
 
                 int i = 0;
@@ -1902,7 +1894,6 @@ namespace StockAnalyzerApp
             if (!watchList.StockList.Contains(this.stockNameComboBox.SelectedItem.ToString()))
             {
                 watchList.StockList.Add(this.stockNameComboBox.SelectedItem.ToString());
-                watchList.StockList.Sort();
                 this.SaveWatchList();
             }
         }
@@ -2298,6 +2289,19 @@ namespace StockAnalyzerApp
             if (stockNameComboBox.SelectedItem != null && stockNameComboBox.SelectedItem.ToString() != string.Empty)
             {
                 CurrentStockSerie.StockAnalysis.FollowUp = this.followUpCheckBox.CheckBox.Checked;
+                var watchlist = this.WatchLists.FirstOrDefault(wl => wl.Name == "FollowUp");
+                if (watchlist == null)
+                    return;
+                if (CurrentStockSerie.StockAnalysis.FollowUp && !watchlist.StockList.Contains(CurrentStockSerie.StockName))
+                {
+                    watchlist.StockList.Add(CurrentStockSerie.StockName);
+                    SaveWatchList();
+                }
+                else if (!CurrentStockSerie.StockAnalysis.FollowUp && watchlist.StockList.Contains(CurrentStockSerie.StockName))
+                {
+                    watchlist.StockList.Remove(CurrentStockSerie.StockName);
+                    SaveWatchList();
+                }
             }
         }
 
@@ -2431,8 +2435,7 @@ namespace StockAnalyzerApp
             this.indexRelativeStrengthMenuItem.DropDownItems.Clear();
 
             List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-            System.Windows.Forms.ToolStripMenuItem[] groupMenuItems =
-               new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
+            ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count];
 
             int i = 0;
             foreach (string group in validGroups)
@@ -2443,8 +2446,7 @@ namespace StockAnalyzerApp
                 var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
                 if (groupSeries.Count() != 0)
                 {
-                    System.Windows.Forms.ToolStripMenuItem[] indexRelativeStrengthMenuItems =
-                       new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
+                    ToolStripMenuItem[] indexRelativeStrengthMenuItems = new ToolStripMenuItem[groupSeries.Count()];
                     ToolStripMenuItem indexRelativeStrengthMenuSubItem;
 
                     int n = 0;
@@ -2469,8 +2471,7 @@ namespace StockAnalyzerApp
             // Clean existing menus
             this.secondarySerieMenuItem.DropDownItems.Clear();
             List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-            System.Windows.Forms.ToolStripMenuItem[] groupMenuItems =
-               new System.Windows.Forms.ToolStripMenuItem[validGroups.Count];
+            ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count];
 
             int i = 0;
             foreach (string group in validGroups)
@@ -2481,7 +2482,7 @@ namespace StockAnalyzerApp
                 var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
                 if (groupSeries.Count() != 0)
                 {
-                    System.Windows.Forms.ToolStripMenuItem[] secondarySerieMenuItems = new System.Windows.Forms.ToolStripMenuItem[groupSeries.Count()];
+                    ToolStripMenuItem[] secondarySerieMenuItems = new ToolStripMenuItem[groupSeries.Count()];
                     ToolStripMenuItem secondarySerieSubMenuItem;
 
                     int n = 0;
@@ -2656,7 +2657,7 @@ namespace StockAnalyzerApp
         }
 
         private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
-        
+
         public bool TrailHL(int i, StockSerie stockSerie, ref string eventName)
         {
             eventName = "UpBreak_TRAILHL(4)";
@@ -3546,11 +3547,11 @@ namespace StockAnalyzerApp
         //         try
         //         {
         //            smtp.Send(message);
-        //            System.Windows.Forms.MessageBox.Show("Email sent successfully");
+        //            MessageBox.Show("Email sent successfully");
         //         }
         //         catch (System.Exception e)
         //         {
-        //            System.Windows.Forms.MessageBox.Show(e.Message, "Email error !");
+        //            MessageBox.Show(e.Message, "Email error !");
         //         }
         //      }
         //   }
@@ -4474,7 +4475,7 @@ namespace StockAnalyzerApp
         private StockMarketReplay marketReplay = null;
 
         private Point lastMouseLocation = Point.Empty;
-        void MouseMoveOverGraphControl(object sender, System.Windows.Forms.MouseEventArgs e)
+        void MouseMoveOverGraphControl(object sender, MouseEventArgs e)
         {
             if (lastMouseLocation != e.Location)
             {
@@ -5629,7 +5630,7 @@ namespace StockAnalyzerApp
         private void configDataProviderMenuItem_Click(object sender, EventArgs e)
         {
             var configDialog = ((IConfigDialog)((ToolStripMenuItem)sender).Tag);
-            if (configDialog.ShowDialog(this.StockDictionary) == System.Windows.Forms.DialogResult.OK)
+            if (configDialog.ShowDialog(this.StockDictionary) == DialogResult.OK)
             {
                 var dataProvider = (IStockDataProvider)configDialog;
                 dataProvider.InitDictionary(Settings.Default.RootFolder, this.StockDictionary, true);

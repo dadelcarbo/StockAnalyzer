@@ -66,23 +66,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 }
             }
         }
+        public virtual string[] EventNames => eventNames;
 
-        private static string[] eventNames = new string[]
+        protected static string[] eventNames = new string[]
           {
-             "AboveCloud", "BelowCloud", "InCloud",          // 0,1,2
-             "BullishCloud", "BearishCloud",                  // 3, 4
-             "CloudUp", "CloudDown"                  // 3, 4
+             "AboveCloud", "BelowCloud", "InCloud",     // 0,1,2
+             "BullishCloud", "BearishCloud",            // 3, 4
+             "CloudUp", "CloudDown"                     // 5, 6
           };
 
-        public string[] EventNames => eventNames;
+        protected static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true };
+        public virtual bool[] IsEvent => isEvent;
 
-        private static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true };
-        public bool[] IsEvent => isEvent;
-
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events { get { return eventSeries; } }
 
         public FloatSerie BullSerie => this.Series[0];
 
@@ -95,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
             }
         }
-        protected void GenerateEvents(StockSerie stockSerie)
+        protected virtual void GenerateEvents(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
 

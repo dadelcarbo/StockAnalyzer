@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -259,7 +258,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
                         var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
 
-                        bool isBull = bullPoints[0].Y >= bearPoints[0].Y;
+                        bool isBull = bullPoints[0].Y < bearPoints[0].Y;
                         var nbPoints = bullPoints.Length;
                         var upPoints = new List<PointF>() { bullPoints[0] };
                         var downPoints = new List<PointF>() { bearPoints[0] };
@@ -494,7 +493,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
-
+                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 2)
+                    {
+                        for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
+                        {
+                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i].Count > 0)
+                            {
+                                tmpPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[i]);
+                                if (tmpPoints != null)
+                                {
+                                    aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[i], tmpPoints);
+                                }
+                            }
+                        }
+                    }
                     #endregion
 
                     #region DISPLAY DECORATORS
