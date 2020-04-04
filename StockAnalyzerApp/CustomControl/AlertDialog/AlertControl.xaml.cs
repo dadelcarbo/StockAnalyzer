@@ -22,8 +22,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             InitializeComponent();
 
-            this.grid.AddHandler(GridViewCellBase.CellDoubleClickEvent, new EventHandler<RadRoutedEventArgs>(OnCellDoubleClick), true);
-
         }
         public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
 
@@ -49,7 +47,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             }
         }
 
-        private void OnCellDoubleClick(object sender, RadRoutedEventArgs e)
+        private void grid_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
             StockAlert alert = ((RadGridView)sender).SelectedItem as StockAlert;
@@ -59,8 +57,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
 
             StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
-
-            StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
+            StockAnalyzerForm.MainFrame.Activate();
         }
 
         private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)

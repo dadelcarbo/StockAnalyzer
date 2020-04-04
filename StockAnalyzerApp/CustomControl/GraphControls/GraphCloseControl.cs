@@ -2102,9 +2102,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        void financialMenu_Click(object sender, System.EventArgs e)
+        void commentMenu_Click(object sender, System.EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.ShowFinancials();
+            StockAnalyzerForm.MainFrame.ShowCommentDlg();
         }
         void agendaMenu_Click(object sender, System.EventArgs e)
         {

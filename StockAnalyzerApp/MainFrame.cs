@@ -868,112 +868,9 @@ namespace StockAnalyzerApp
 
             if (this.intradayAlertConfig == null || this.intradayAlertConfig.AlertDefs.Count == 0) return;
 
-            Thread alertThread = new Thread(GenerateIntradayAlert) { Name = "alertTimer" };
-            alertThread.Start();
-        }
-        public void GenerateIntradayAlert()
-        {
-            if (busy) return;
-            busy = true;
-
-            try
-            {
-                bool newAlert = false;
-                string alertString = string.Empty;
-
-                var stockList = this.WatchLists.Find(wl => wl.Name == "Alert").StockList;
-                if (AlertDetectionStarted != null)
-                {
-                    if (this.InvokeRequired)
-                    {
-                        this.Invoke(this.AlertDetectionStarted, stockList.Count);
-                    }
-                    else
-                    {
-                        this.AlertDetectionStarted(stockList.Count);
-                    }
-                }
-
-                DateTime lookBackDate = DateTime.Today.AddDays(-5);
-
-                foreach (string stockName in stockList)
-                {
-                    if (AlertDetectionProgress != null)
-                    {
-                        if (this.InvokeRequired)
-                        {
-                            this.Invoke(this.AlertDetectionProgress, stockName);
-                        }
-                        else
-                        {
-                            this.AlertDetectionProgress(stockName);
-                        }
-                    }
-                    if (!this.StockDictionary.ContainsKey(stockName))
-                        continue;
-
-                    StockSerie stockSerie = this.StockDictionary[stockName];
-                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-
-                    if (!stockSerie.Initialise()) continue;
-
-                    StockBarDuration previouBarDuration = stockSerie.BarDuration;
-
-                    lock (intradayAlertConfig)
-                    {
-                        foreach (var alertDef in intradayAlertConfig.AlertDefs)
-                        {
-                            stockSerie.BarDuration = alertDef.BarDuration;
-                            var values = stockSerie.GetValues(alertDef.BarDuration);
-                            for (int i = values.Count - 2; i > 0 && values[i].DATE > lookBackDate; i--)
-                            {
-                                if (stockSerie.MatchEvent(alertDef, i))
-                                {
-                                    var dailyValue = values.ElementAt(i + 1);
-                                    var stockAlert = new StockAlert(alertDef,
-                                        dailyValue.DATE,
-                                        stockSerie.StockName,
-                                        stockSerie.StockGroup.ToString(),
-                                        dailyValue.OPEN,
-                                        dailyValue.VOLUME);
-
-                                    if (intradayAlertConfig.AlertLog.Alerts.All(a => a != stockAlert))
-                                    {
-                                        alertString += stockAlert.ToString() + Environment.NewLine;
-                                        if (this.InvokeRequired)
-                                        {
-                                            this.Invoke(new Action(() => intradayAlertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
-                                        }
-                                        else
-                                        {
-                                            intradayAlertConfig.AlertLog.Alerts.Insert(0, stockAlert);
-                                        }
-                                        newAlert = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    stockSerie.BarDuration = previouBarDuration;
-                }
-                intradayAlertConfig.AlertLog.Save();
-
-                if (newAlert && !string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
-                {
-                    StockMail.SendEmail("Ultimate Chartist - Intraday Alert", alertString);
-                }
-
-                if (this.AlertDetected != null)
-                {
-                    this.Invoke(this.AlertDetected);
-                }
-
-                StockSplashScreen.CloseForm(true);
-            }
-            finally
-            {
-                busy = false;
-            }
+            var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+            alertThread.Name = "Alert";
+            alertThread.Start(this.intradayAlertConfig);
         }
         public void GenerateAlert_Thread(object param)
         {
@@ -1215,7 +1112,7 @@ namespace StockAnalyzerApp
 
         private void ZoomIn()
         {
-            NbBars = Math.Max(25, (int)(NbBars / 1.5f));
+            NbBars = Math.Max(25, (int)(NbBars / 1.75f));
             int newIndex = Math.Max(0, endIndex - NbBars);
             if (newIndex != this.startIndex)
             {
@@ -1225,7 +1122,7 @@ namespace StockAnalyzerApp
 
         private void ZoomOut()
         {
-            NbBars = Math.Min(this.endIndex, (int)(NbBars * 1.5f));
+            NbBars = Math.Min(this.endIndex, (int)(NbBars * 1.75f));
             int newIndex = endIndex - NbBars;
             if (newIndex != this.startIndex)
             {
@@ -1257,7 +1154,7 @@ namespace StockAnalyzerApp
                 this.graphCloseControl.IsLogScale = true;
                 this.graphScrollerControl.IsLogScale = true;
             }
-            ResetZoom();
+            ChangeZoom(this.startIndex, this.endIndex);
         }
 
         #endregion
@@ -2307,6 +2204,10 @@ namespace StockAnalyzerApp
 
         private void commentBtn_Click(object sender, EventArgs e)
         {
+            ShowCommentDlg();
+        }
+        public void ShowCommentDlg()
+        {
             if (this.CurrentStockSerie != null && stockNameComboBox.SelectedItem != null &&
                 stockNameComboBox.SelectedItem.ToString() != string.Empty)
             {
@@ -2315,7 +2216,6 @@ namespace StockAnalyzerApp
             }
             OnNeedReinitialise(true);
         }
-
         #endregion
 
         #region REWIND/FAST FORWARD METHODS
