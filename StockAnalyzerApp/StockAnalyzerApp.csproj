@@ -185,6 +185,12 @@
     </Compile>
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
+    <Compile Include="CustomControl\CommentDlg\CommentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\CommentDlg\CommentControl.Designer.cs">
+      <DependentUpon>CommentControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\CommentDlg\CommentDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -488,12 +494,6 @@
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.Designer.cs">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="GroupAnalysisDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GroupAnalysisDlg.Designer.cs">
-      <DependentUpon>GroupAnalysisDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -545,6 +545,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\CommentDlg\CommentControl.resx">
+      <DependentUpon>CommentControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.fr-FR.resx">
       <DependentUpon>CommentDialog.cs</DependentUpon>
@@ -729,9 +732,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GroupAnalysisDlg.resx">
-      <DependentUpon>GroupAnalysisDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
