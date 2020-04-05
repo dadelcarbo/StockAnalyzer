@@ -79,17 +79,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator1.Index = 5;
             this.separator1.Text = "-";
             // 
-            // agendaMenu
-            // 
-            this.agendaMenu.Index = 6;
-            this.agendaMenu.Text = "Agenda";
-            this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
-            // 
             // commentMenu
             // 
-            this.commentMenu.Index = 7;
-            this.commentMenu.Text = "Comment";
+            this.commentMenu.Index = 6;
+            this.commentMenu.Text = "Add Comment";
             this.commentMenu.Click += new System.EventHandler(this.commentMenu_Click);
+            // 
+            // agendaMenu
+            // 
+            this.agendaMenu.Index = 7;
+            this.agendaMenu.Text = "Agenda";
+            this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
             // 
             // separator2
             // 

@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System.IO;
+using StockAnalyzerApp.CustomControl.CommentDlg;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -2104,7 +2105,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void commentMenu_Click(object sender, System.EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.ShowCommentDlg();
+            var date = this.dateSerie[lastMouseIndex];
+
+            var commentDlg = new AddCommentDialog(date);
+            var res = commentDlg.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.Comments.Add(date, commentDlg.Comment);
+                StockAnalyzerForm.MainFrame.SaveAnalysis(Settings.Default.AnalysisFile);
+
+                this.BackgroundDirty = true;
+                PaintGraph();
+            }
         }
         void agendaMenu_Click(object sender, System.EventArgs e)
         {

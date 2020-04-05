@@ -1,3 +1,0 @@
-﻿1>------ Build started: Project: StockAnalyzerLib, Configuration: Release Any CPU ------
-1>  StockAnalyzerLib -> C:\Perso\StockAnalyzer\StockAnalyzer\bin\Release\StockAnalyzer.dll
-2>------ Build started: Project: StockAnalyzerApp, Configuration: Release Any CPU ------

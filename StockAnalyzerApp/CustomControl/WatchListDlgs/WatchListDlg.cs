@@ -78,7 +78,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
 
          this.watchListComboBox.SelectedItem = newWatchList;
       }
-      void stockListBox_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+      void stockListBox_MouseClick(object sender, EventArgs e)
       {
          if (this.SelectedStockChanged != null && this.stockListBox.SelectedItem != null)
          {

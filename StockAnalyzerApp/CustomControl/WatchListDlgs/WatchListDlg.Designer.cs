@@ -99,7 +99,7 @@
          this.stockListBox.Size = new System.Drawing.Size(229, 316);
          this.stockListBox.TabIndex = 4;
          this.stockListBox.ValueMember = "Name";
-         this.stockListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.stockListBox_MouseDoubleClick);
+         this.stockListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.stockListBox_MouseClick);
          // 
          // stockWatchListBindingSource
          // 

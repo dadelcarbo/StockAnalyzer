@@ -2067,7 +2067,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void SaveAnalysis(string analysisFileName)
+        public void SaveAnalysis(string analysisFileName)
         {
             if (this.currentStockSerie == null) return;
             string tmpFileName = analysisFileName + ".tmp";
@@ -2204,17 +2204,21 @@ namespace StockAnalyzerApp
 
         private void commentBtn_Click(object sender, EventArgs e)
         {
-            ShowCommentDlg();
-        }
-        public void ShowCommentDlg()
-        {
             if (this.CurrentStockSerie != null && stockNameComboBox.SelectedItem != null &&
                 stockNameComboBox.SelectedItem.ToString() != string.Empty)
             {
                 CommentDialog commentDlg = new CommentDialog(this.CurrentStockSerie);
-                commentDlg.ShowDialog();
+                if (commentDlg.ShowDialog() == DialogResult.OK)
+                {
+                    CurrentStockSerie.StockAnalysis.Comments.Clear();
+                    foreach (var c in commentDlg.CommentList)
+                    {
+                        CurrentStockSerie.StockAnalysis.Comments.Add(c.Date, c.Comment);
+                    }
+                    SaveAnalysis(Settings.Default.AnalysisFile);
+                    OnNeedReinitialise(true);
+                }
             }
-            OnNeedReinitialise(true);
         }
         #endregion
 

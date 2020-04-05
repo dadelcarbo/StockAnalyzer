@@ -185,11 +185,14 @@
     </Compile>
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
-    <Compile Include="CustomControl\CommentDlg\CommentControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="CustomControl\CommentDlg\AddCommentDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\CommentDlg\CommentControl.Designer.cs">
-      <DependentUpon>CommentControl.cs</DependentUpon>
+    <Compile Include="CustomControl\CommentDlg\AddCommentDialog.Designer.cs">
+      <DependentUpon>AddCommentDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\CommentDlg\CommentControl.xaml.cs">
+      <DependentUpon>CommentControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\CommentDlg\CommentDialog.cs">
       <SubType>Form</SubType>
@@ -197,6 +200,7 @@
     <Compile Include="CustomControl\CommentDlg\CommentDialog.Designer.cs">
       <DependentUpon>CommentDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\CommentDlg\CommentEntry.cs" />
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -546,11 +550,8 @@
     <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\CommentDlg\CommentControl.resx">
-      <DependentUpon>CommentControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.fr-FR.resx">
-      <DependentUpon>CommentDialog.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\CommentDlg\AddCommentDialog.resx">
+      <DependentUpon>AddCommentDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.resx">
       <DependentUpon>CommentDialog.cs</DependentUpon>
@@ -910,6 +911,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\CommentDlg\CommentControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

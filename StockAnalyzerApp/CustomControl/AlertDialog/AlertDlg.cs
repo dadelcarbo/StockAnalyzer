@@ -19,7 +19,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             StockAnalyzerForm.MainFrame.AlertDetected += MainFrame_AlertDetected;
             StockAnalyzerForm.MainFrame.AlertDetectionProgress += MainFrame_AlertDetectionProgress;
-            StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;            
+            StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;
         }
 
         public AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)
