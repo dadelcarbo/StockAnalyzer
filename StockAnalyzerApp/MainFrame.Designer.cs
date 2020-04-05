@@ -889,6 +889,7 @@ namespace StockAnalyzerApp
             this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
             this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(86, 22);
             this.barHeikinAshiCheckBox.Text = "Heikin Ashi";
+            this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn
             // 
