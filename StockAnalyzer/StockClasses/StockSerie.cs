@@ -651,6 +651,16 @@ namespace StockAnalyzer.StockClasses
             }
             // Do not clear bar cache here, ust indicators are concerned.
         }
+        public void ResetIndicatorCache()
+        {
+            this.IndicatorCache.Clear();
+            this.DecoratorCache.Clear();
+            this.CloudCache.Clear();
+            this.PaintBarCache = null;
+            this.TrailStopCache = null;
+            this.TrailCache = null;
+        }
+
         #endregion
         #region Initialisation methods (indicator, data && events calculation)
 

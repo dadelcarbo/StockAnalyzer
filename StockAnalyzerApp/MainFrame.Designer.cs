@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
-using StockAnalyzerApp.CustomControl;
+﻿using System;
+using System.Windows.Forms;
+using global::StockAnalyzerApp.CustomControl;
+using StockAnalyzerApp.CustomControl.GraphControls;
 
 namespace StockAnalyzerApp
 {
@@ -114,7 +116,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.smoothingLabel = new System.Windows.Forms.ToolStripLabel();
             this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.barHeikinAshiCheckBox = new  CustomControl.ToolStripCheckedBox();
+            this.barHeikinAshiCheckBox = new ToolStripCheckedBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.searchText = new System.Windows.Forms.ToolStripTextBox();
             this.goBtn = new System.Windows.Forms.ToolStripButton();
@@ -125,7 +127,7 @@ namespace StockAnalyzerApp
             this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
             this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.followUpCheckBox = new  CustomControl.ToolStripCheckedBox();
+            this.followUpCheckBox = new CustomControl.ToolStripCheckedBox();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
             this.commentBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -148,12 +150,12 @@ namespace StockAnalyzerApp
             this.addToReportStripBtn = new System.Windows.Forms.ToolStripButton();
             this.generateDailyReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
             this.AddToWatchListToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.graphCloseControl = new  CustomControl.GraphControls.GraphCloseControl();
-            this.graphScrollerControl = new  CustomControl.GraphControls.GraphScrollerControl();
-            this.graphIndicator1Control = new  CustomControl.GraphControls.GraphRangedControl();
-            this.graphIndicator2Control = new  CustomControl.GraphControls.GraphRangedControl();
-            this.graphIndicator3Control = new  CustomControl.GraphControls.GraphRangedControl();
-            this.graphVolumeControl = new  CustomControl.GraphControls.GraphVolumeControl();
+            this.graphCloseControl = new CustomControl.GraphControls.GraphCloseControl();
+            this.graphScrollerControl = new CustomControl.GraphControls.GraphScrollerControl();
+            this.graphIndicator1Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphIndicator2Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphIndicator3Control = new CustomControl.GraphControls.GraphRangedControl();
+            this.graphVolumeControl = new CustomControl.GraphControls.GraphVolumeControl();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
@@ -180,7 +182,7 @@ namespace StockAnalyzerApp
             this.helpMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1120, 24);
+            this.mainMenu.Size = new System.Drawing.Size(975, 24);
             this.mainMenu.TabIndex = 0;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -239,7 +241,7 @@ namespace StockAnalyzerApp
             // 
             this.saveAnalysisFileAsMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.SaveAnalysisAs;
             this.saveAnalysisFileAsMenuItem.Name = "saveAnalysisFileAsMenuItem";
-            this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.saveAnalysisFileAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
             | System.Windows.Forms.Keys.S)));
             this.saveAnalysisFileAsMenuItem.Size = new System.Drawing.Size(262, 22);
             this.saveAnalysisFileAsMenuItem.Text = "Save Analysis File As...";
@@ -370,7 +372,7 @@ namespace StockAnalyzerApp
             // 
             this.showShowStatusBarMenuItem.CheckOnClick = true;
             this.showShowStatusBarMenuItem.Name = "showShowStatusBarMenuItem";
-            this.showShowStatusBarMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showShowStatusBarMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showShowStatusBarMenuItem.Text = "Show Status bar";
             this.showShowStatusBarMenuItem.Click += new System.EventHandler(this.showShowStatusBarMenuItem_Click);
             // 
@@ -378,7 +380,7 @@ namespace StockAnalyzerApp
             // 
             this.hideIndicatorsStockMenuItem.CheckOnClick = true;
             this.hideIndicatorsStockMenuItem.Name = "hideIndicatorsStockMenuItem";
-            this.hideIndicatorsStockMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.hideIndicatorsStockMenuItem.Size = new System.Drawing.Size(233, 22);
             this.hideIndicatorsStockMenuItem.Text = "Hide indicators";
             this.hideIndicatorsStockMenuItem.Click += new System.EventHandler(this.hideIndicatorsStockMenuItem_Click);
             // 
@@ -388,7 +390,7 @@ namespace StockAnalyzerApp
             this.showDrawingsMenuItem.CheckOnClick = true;
             this.showDrawingsMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showDrawingsMenuItem.Name = "showDrawingsMenuItem";
-            this.showDrawingsMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showDrawingsMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showDrawingsMenuItem.Text = "Show Drawings";
             this.showDrawingsMenuItem.Click += new System.EventHandler(this.showDrawingsMenuItem_Click);
             // 
@@ -398,19 +400,19 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem.CheckOnClick = true;
             this.showOrdersMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showOrdersMenuItem.Name = "showOrdersMenuItem";
-            this.showOrdersMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showOrdersMenuItem.Text = "Show Orders";
             this.showOrdersMenuItem.Click += new System.EventHandler(this.showOrdersMenuItem_Click);
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator14.Size = new System.Drawing.Size(230, 6);
             // 
             // showAgendaMenuItem
             // 
             this.showAgendaMenuItem.Name = "showAgendaMenuItem";
-            this.showAgendaMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showAgendaMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAgendaMenuItem.Text = "Show Agenda Entries";
             // 
             // showEventMarqueeMenuItem
@@ -419,7 +421,7 @@ namespace StockAnalyzerApp
             this.showEventMarqueeMenuItem.CheckOnClick = true;
             this.showEventMarqueeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showEventMarqueeMenuItem.Name = "showEventMarqueeMenuItem";
-            this.showEventMarqueeMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showEventMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showEventMarqueeMenuItem.Text = "Show Event Marquees";
             this.showEventMarqueeMenuItem.Click += new System.EventHandler(this.showEventMarqueeMenuItem_Click);
             // 
@@ -429,7 +431,7 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem.CheckOnClick = true;
             this.showCommentMarqueeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showCommentMarqueeMenuItem.Name = "showCommentMarqueeMenuItem";
-            this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showCommentMarqueeMenuItem.Text = "Show Comment Marquees";
             this.showCommentMarqueeMenuItem.Click += new System.EventHandler(this.showCommentMarqueeMenuItem_Click);
             // 
@@ -439,7 +441,7 @@ namespace StockAnalyzerApp
             this.showIndicatorDivMenuItem.CheckOnClick = true;
             this.showIndicatorDivMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showIndicatorDivMenuItem.Name = "showIndicatorDivMenuItem";
-            this.showIndicatorDivMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showIndicatorDivMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorDivMenuItem.Text = "Show Divergences";
             this.showIndicatorDivMenuItem.Click += new System.EventHandler(this.showIndicatorDivMenuItem_Click);
             // 
@@ -449,57 +451,59 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem.CheckOnClick = true;
             this.showIndicatorTextMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showIndicatorTextMenuItem.Name = "showIndicatorTextMenuItem";
-            this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorTextMenuItem.Text = "Show Indicator Text";
             this.showIndicatorTextMenuItem.Click += new System.EventHandler(this.showIndicatorTextMenuItem_Click);
             // 
             // toolStripSeparator16
             // 
             this.toolStripSeparator16.Name = "toolStripSeparator16";
-            this.toolStripSeparator16.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator16.Size = new System.Drawing.Size(230, 6);
             // 
             // showHorseRaceViewMenuItem
             // 
             this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
             this.showHorseRaceViewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showHorseRaceViewMenuItem.Text = "Horse Race View";
+            this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
             // 
-            // showAlertDialogMenuItem
+            // showIntradayAlertMenuItem
             // 
             this.showAlertDialogMenuItem.Name = "showAlertDialogMenuItem";
             this.showAlertDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.showAlertDialogMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showAlertDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAlertDialogMenuItem.Text = "Alert View";
+            this.showAlertDialogMenuItem.Click += showAlertDialogMenuItem_Click;
             // 
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator15.Size = new System.Drawing.Size(230, 6);
             // 
             // secondarySerieMenuItem
             // 
             this.secondarySerieMenuItem.Name = "secondarySerieMenuItem";
-            this.secondarySerieMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.secondarySerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.secondarySerieMenuItem.Text = "Secondary Serie";
             // 
             // indexRelativeStrengthMenuItem
             // 
             this.indexRelativeStrengthMenuItem.Name = "indexRelativeStrengthMenuItem";
-            this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(233, 22);
             this.indexRelativeStrengthMenuItem.Text = "Index Relative Strength";
             // 
             // inverseSerieMenuItem
             // 
             this.inverseSerieMenuItem.Name = "inverseSerieMenuItem";
-            this.inverseSerieMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.inverseSerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.inverseSerieMenuItem.Text = "Inverse Serie";
             this.inverseSerieMenuItem.Click += new System.EventHandler(this.inverseSerieMenuItem_Click);
             // 
             // logSerieMenuItem
             // 
             this.logSerieMenuItem.Name = "logSerieMenuItem";
-            this.logSerieMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.logSerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.logSerieMenuItem.Text = "Log Serie";
             this.logSerieMenuItem.Click += new System.EventHandler(this.logSerieMenuItem_Click);
             // 
@@ -527,90 +531,90 @@ namespace StockAnalyzerApp
             // stockScannerMenuItem
             // 
             this.stockScannerMenuItem.Name = "stockScannerMenuItem";
-            this.stockScannerMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.stockScannerMenuItem.Size = new System.Drawing.Size(240, 22);
             this.stockScannerMenuItem.Text = "Stock Scanner";
             this.stockScannerMenuItem.Click += new System.EventHandler(this.stockScannerMenuItem_Click);
             // 
             // stockStrategyScannerMenuItem
             // 
             this.stockStrategyScannerMenuItem.Name = "stockStrategyScannerMenuItem";
-            this.stockStrategyScannerMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.stockStrategyScannerMenuItem.Size = new System.Drawing.Size(240, 22);
             this.stockStrategyScannerMenuItem.Text = "Strategy Scanner";
             this.stockStrategyScannerMenuItem.Click += new System.EventHandler(this.stockStrategyScannerMenuItem_Click);
             // 
             // palmaresMenuItem
             // 
             this.palmaresMenuItem.Name = "palmaresMenuItem";
-            this.palmaresMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.palmaresMenuItem.Size = new System.Drawing.Size(240, 22);
             this.palmaresMenuItem.Text = "Palmares";
             this.palmaresMenuItem.Click += new System.EventHandler(this.palmaresMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(237, 6);
             // 
             // strategySimulationMenuItem
             // 
             this.strategySimulationMenuItem.Name = "strategySimulationMenuItem";
-            this.strategySimulationMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.strategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
             this.strategySimulationMenuItem.Text = "Strategy Simulation";
             this.strategySimulationMenuItem.Click += new System.EventHandler(this.strategySimulationMenuItem_Click);
             // 
             // filteredStrategySimulationMenuItem
             // 
             this.filteredStrategySimulationMenuItem.Name = "filteredStrategySimulationMenuItem";
-            this.filteredStrategySimulationMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.filteredStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
             this.filteredStrategySimulationMenuItem.Text = "Filtered Strategy Simulation";
             this.filteredStrategySimulationMenuItem.Click += new System.EventHandler(this.filteredStrategySimulationMenuItem_Click);
             // 
             // batchStrategySimulationMenuItem
             // 
             this.batchStrategySimulationMenuItem.Name = "batchStrategySimulationMenuItem";
-            this.batchStrategySimulationMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.batchStrategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
             this.batchStrategySimulationMenuItem.Text = "Batch Strategy Simulation";
             this.batchStrategySimulationMenuItem.Click += new System.EventHandler(this.batchStrategySimulationMenuItem_Click);
             // 
             // generateSeasonalitySerieMenuItem
             // 
             this.generateSeasonalitySerieMenuItem.Name = "generateSeasonalitySerieMenuItem";
-            this.generateSeasonalitySerieMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.generateSeasonalitySerieMenuItem.Size = new System.Drawing.Size(240, 22);
             this.generateSeasonalitySerieMenuItem.Text = "Generate Seasonality Serie";
             this.generateSeasonalitySerieMenuItem.Click += new System.EventHandler(this.generateSeasonalitySerieMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(237, 6);
             // 
             // portofolioSimulationMenuItem
             // 
             this.portofolioSimulationMenuItem.Name = "portofolioSimulationMenuItem";
-            this.portofolioSimulationMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.portofolioSimulationMenuItem.Size = new System.Drawing.Size(240, 22);
             this.portofolioSimulationMenuItem.Text = "Portofolio Simulation";
             this.portofolioSimulationMenuItem.Click += new System.EventHandler(this.portofolioSimulationMenuItem_Click);
             // 
             // toolStripSeparator20
             // 
             this.toolStripSeparator20.Name = "toolStripSeparator20";
-            this.toolStripSeparator20.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator20.Size = new System.Drawing.Size(237, 6);
             // 
             // exportFinancialsMenuItem
             // 
             this.exportFinancialsMenuItem.Name = "exportFinancialsMenuItem";
-            this.exportFinancialsMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.exportFinancialsMenuItem.Size = new System.Drawing.Size(240, 22);
             this.exportFinancialsMenuItem.Text = "Export Financials";
             this.exportFinancialsMenuItem.Click += new System.EventHandler(this.exportFinancialsMenuItem_Click);
             // 
             // toolStripSeparator22
             // 
             this.toolStripSeparator22.Name = "toolStripSeparator22";
-            this.toolStripSeparator22.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
             // 
             // patternRecognitionMenuItem
             // 
             this.patternRecognitionMenuItem.Name = "patternRecognitionMenuItem";
-            this.patternRecognitionMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.patternRecognitionMenuItem.Size = new System.Drawing.Size(240, 22);
             this.patternRecognitionMenuItem.Text = "Pattern Recognition";
             this.patternRecognitionMenuItem.Click += new System.EventHandler(this.patternRecognitionMenuItem_Click);
             // 
@@ -626,8 +630,8 @@ namespace StockAnalyzerApp
             // currentPortofolioMenuItem
             // 
             this.currentPortofolioMenuItem.Name = "currentPortofolioMenuItem";
-            this.currentPortofolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F2)));
-            this.currentPortofolioMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.currentPortofolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.F2));
+            this.currentPortofolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
             this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
             // 
@@ -635,7 +639,7 @@ namespace StockAnalyzerApp
             // 
             this.nameMappingMenuItem.Name = "nameMappingMenuItem";
             this.nameMappingMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
-            this.nameMappingMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.nameMappingMenuItem.Size = new System.Drawing.Size(202, 22);
             this.nameMappingMenuItem.Text = "Name Mappings";
             this.nameMappingMenuItem.Click += new System.EventHandler(this.nameMappingMenuItem_Click);
             // 
@@ -687,18 +691,18 @@ namespace StockAnalyzerApp
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.indicatorLayoutPanel);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1120, 554);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(975, 509);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1120, 626);
+            this.toolStripContainer1.Size = new System.Drawing.Size(975, 583);
             this.toolStripContainer1.TabIndex = 1;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
             // toolStripContainer1.TopToolStripPanel
             // 
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
             // 
             // statusStrip1
@@ -709,14 +713,14 @@ namespace StockAnalyzerApp
             this.progressBar});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1120, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(975, 22);
             this.statusStrip1.TabIndex = 0;
             // 
             // statusLabel
             // 
             this.statusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(1003, 17);
+            this.statusLabel.Size = new System.Drawing.Size(858, 17);
             this.statusLabel.Spring = true;
             this.statusLabel.Text = "statusLabel";
             // 
@@ -742,7 +746,7 @@ namespace StockAnalyzerApp
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
-            this.indicatorLayoutPanel.Size = new System.Drawing.Size(1120, 554);
+            this.indicatorLayoutPanel.Size = new System.Drawing.Size(975, 509);
             this.indicatorLayoutPanel.TabIndex = 0;
             // 
             // themeToolStrip
@@ -757,9 +761,9 @@ namespace StockAnalyzerApp
             this.toolStripSeparator1,
             this.strategyComboBox,
             this.portfolioComboBox});
-            this.themeToolStrip.Location = new System.Drawing.Point(3, 25);
+            this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
             this.themeToolStrip.Name = "themeToolStrip";
-            this.themeToolStrip.Size = new System.Drawing.Size(677, 25);
+            this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
             this.themeToolStrip.TabIndex = 2;
             // 
             // indicatorConfigStripButton
@@ -852,43 +856,43 @@ namespace StockAnalyzerApp
             this.excludeButton,
             this.commentBtn,
             this.toolStripSeparator5});
-            this.browseToolStrip.Location = new System.Drawing.Point(401, 0);
+            this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
             this.browseToolStrip.Name = "browseToolStrip";
             this.browseToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.browseToolStrip.Size = new System.Drawing.Size(719, 25);
+            this.browseToolStrip.Size = new System.Drawing.Size(517, 27);
             this.browseToolStrip.TabIndex = 0;
             // 
             // stockNameComboBox
             // 
             this.stockNameComboBox.Name = "stockNameComboBox";
-            this.stockNameComboBox.Size = new System.Drawing.Size(250, 25);
+            this.stockNameComboBox.Size = new System.Drawing.Size(250, 27);
             this.stockNameComboBox.SelectedIndexChanged += new System.EventHandler(this.StockNameComboBox_SelectedIndexChanged);
             // 
             // barDurationComboBox
             // 
             this.barDurationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barDurationComboBox.Name = "barDurationComboBox";
-            this.barDurationComboBox.Size = new System.Drawing.Size(125, 25);
+            this.barDurationComboBox.Size = new System.Drawing.Size(125, 27);
             this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // smoothingLabel
             // 
             this.smoothingLabel.Name = "smoothingLabel";
-            this.smoothingLabel.Size = new System.Drawing.Size(52, 22);
+            this.smoothingLabel.Size = new System.Drawing.Size(52, 24);
             this.smoothingLabel.Text = "Smooth:";
             // 
             // barSmoothingComboBox
             // 
             this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
-            this.barSmoothingComboBox.Size = new System.Drawing.Size(75, 25);
+            this.barSmoothingComboBox.Size = new System.Drawing.Size(25, 23);
             this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // barHeikinAshiCheckBox
             // 
-            this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
-            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(86, 22);
             this.barHeikinAshiCheckBox.Text = "Heikin Ashi";
+            this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
+            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(75, 23);
             this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn
@@ -897,13 +901,12 @@ namespace StockAnalyzerApp
             this.downloadBtn.Image = global::StockAnalyzerApp.Properties.Resources.Reload;
             this.downloadBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.downloadBtn.Name = "downloadBtn";
-            this.downloadBtn.Size = new System.Drawing.Size(23, 22);
+            this.downloadBtn.Size = new System.Drawing.Size(23, 20);
             this.downloadBtn.Text = "Download";
             this.downloadBtn.Click += new System.EventHandler(this.downloadBtn_Click);
             // 
             // searchText
             // 
-            this.searchText.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.searchText.Name = "searchText";
             this.searchText.Size = new System.Drawing.Size(200, 23);
             this.searchText.TextChanged += new System.EventHandler(this.goBtn_Click);
@@ -922,7 +925,7 @@ namespace StockAnalyzerApp
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 27);
             // 
             // rewindBtn
             // 
@@ -977,7 +980,7 @@ namespace StockAnalyzerApp
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // followUpCheckBox
             // 
@@ -1010,7 +1013,7 @@ namespace StockAnalyzerApp
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 27);
             // 
             // drawToolStrip
             // 
@@ -1034,9 +1037,9 @@ namespace StockAnalyzerApp
             this.addToReportStripBtn,
             this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
-            this.drawToolStrip.Location = new System.Drawing.Point(3, 0);
+            this.drawToolStrip.Location = new System.Drawing.Point(3, 27);
             this.drawToolStrip.Name = "drawToolStrip";
-            this.drawToolStrip.Size = new System.Drawing.Size(398, 25);
+            this.drawToolStrip.Size = new System.Drawing.Size(421, 25);
             this.drawToolStrip.TabIndex = 1;
             // 
             // magnetStripBtn
@@ -1223,14 +1226,14 @@ namespace StockAnalyzerApp
             // 
             this.graphCloseControl.Agenda = null;
             this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphCloseControl.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphCloseControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphCloseControl.Comments = null;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphCloseControl.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphCloseControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphCloseControl.DrawingPen = null;
-            this.graphCloseControl.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphCloseControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphCloseControl.EndIndex = 0;
             this.graphCloseControl.GridColor = System.Drawing.Color.Empty;
             this.graphCloseControl.HideIndicators = false;
@@ -1244,7 +1247,7 @@ namespace StockAnalyzerApp
             this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
             this.graphCloseControl.ShowVariation = false;
-            this.graphCloseControl.Size = new System.Drawing.Size(1120, 626);
+            this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
             this.graphCloseControl.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1254,13 +1257,13 @@ namespace StockAnalyzerApp
             // 
             this.graphScrollerControl.AutoSize = true;
             this.graphScrollerControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphScrollerControl.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphScrollerControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphScrollerControl.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.graphScrollerControl.CurveList = null;
             this.graphScrollerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphScrollerControl.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphScrollerControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphScrollerControl.DrawingPen = null;
-            this.graphScrollerControl.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphScrollerControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphScrollerControl.EndIndex = 0;
             this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
             this.graphScrollerControl.horizontalLines = null;
@@ -1270,7 +1273,7 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ScaleInvisible = false;
             this.graphScrollerControl.ShowGrid = false;
             this.graphScrollerControl.ShowVariation = false;
-            this.graphScrollerControl.Size = new System.Drawing.Size(1120, 626);
+            this.graphScrollerControl.Size = new System.Drawing.Size(975, 583);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 2;
             this.graphScrollerControl.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1280,13 +1283,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator1Control.AutoSize = true;
             this.graphIndicator1Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator1Control.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphIndicator1Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator1Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator1Control.CurveList = null;
             this.graphIndicator1Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator1Control.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphIndicator1Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator1Control.DrawingPen = null;
-            this.graphIndicator1Control.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphIndicator1Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator1Control.EndIndex = 0;
             this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator1Control.horizontalLines = null;
@@ -1298,7 +1301,7 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.ScaleInvisible = false;
             this.graphIndicator1Control.ShowGrid = false;
             this.graphIndicator1Control.ShowVariation = false;
-            this.graphIndicator1Control.Size = new System.Drawing.Size(1120, 626);
+            this.graphIndicator1Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 2;
             this.graphIndicator1Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1308,13 +1311,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator2Control.AutoSize = true;
             this.graphIndicator2Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator2Control.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphIndicator2Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator2Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator2Control.CurveList = null;
             this.graphIndicator2Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator2Control.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphIndicator2Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator2Control.DrawingPen = null;
-            this.graphIndicator2Control.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphIndicator2Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator2Control.EndIndex = 0;
             this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator2Control.horizontalLines = null;
@@ -1326,7 +1329,7 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.ScaleInvisible = false;
             this.graphIndicator2Control.ShowGrid = false;
             this.graphIndicator2Control.ShowVariation = false;
-            this.graphIndicator2Control.Size = new System.Drawing.Size(1120, 626);
+            this.graphIndicator2Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 1;
             this.graphIndicator2Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1336,13 +1339,13 @@ namespace StockAnalyzerApp
             // 
             this.graphIndicator3Control.AutoSize = true;
             this.graphIndicator3Control.BackgroundColor = System.Drawing.Color.White;
-            this.graphIndicator3Control.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphIndicator3Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator3Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator3Control.CurveList = null;
             this.graphIndicator3Control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphIndicator3Control.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphIndicator3Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator3Control.DrawingPen = null;
-            this.graphIndicator3Control.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphIndicator3Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator3Control.EndIndex = 0;
             this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator3Control.horizontalLines = null;
@@ -1354,7 +1357,7 @@ namespace StockAnalyzerApp
             this.graphIndicator3Control.ScaleInvisible = false;
             this.graphIndicator3Control.ShowGrid = false;
             this.graphIndicator3Control.ShowVariation = false;
-            this.graphIndicator3Control.Size = new System.Drawing.Size(1120, 626);
+            this.graphIndicator3Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 1;
             this.graphIndicator3Control.TextBackgroundColor = System.Drawing.Color.Empty;
@@ -1364,13 +1367,13 @@ namespace StockAnalyzerApp
             // 
             this.graphVolumeControl.AutoSize = true;
             this.graphVolumeControl.BackgroundColor = System.Drawing.Color.White;
-            this.graphVolumeControl.ChartMode =  CustomControl.GraphControls.GraphChartMode.Line;
+            this.graphVolumeControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphVolumeControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphVolumeControl.CurveList = null;
             this.graphVolumeControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphVolumeControl.DrawingMode =  CustomControl.GraphControls.GraphDrawMode.Normal;
+            this.graphVolumeControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphVolumeControl.DrawingPen = null;
-            this.graphVolumeControl.DrawingStep =  CustomControl.GraphControls.GraphDrawingStep.SelectItem;
+            this.graphVolumeControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphVolumeControl.EndIndex = 0;
             this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
             this.graphVolumeControl.horizontalLines = null;
@@ -1380,7 +1383,7 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.ScaleInvisible = false;
             this.graphVolumeControl.ShowGrid = false;
             this.graphVolumeControl.ShowVariation = false;
-            this.graphVolumeControl.Size = new System.Drawing.Size(1120, 626);
+            this.graphVolumeControl.Size = new System.Drawing.Size(975, 583);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 2;
             this.graphVolumeControl.TextBackgroundColor = System.Drawing.Color.Empty;

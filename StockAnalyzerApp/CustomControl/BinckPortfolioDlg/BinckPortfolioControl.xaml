@@ -23,7 +23,7 @@
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
-                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="Cell" ClipboardCopyMode="Cells" MouseDoubleClick="positionGridView_MouseDoubleClick" FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false">
+                <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="positionGridView_SelectionChanged"  FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
                         <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}" />

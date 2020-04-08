@@ -55,6 +55,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AgentTesting\StockAgentEngineTest.cs" />
     <Compile Include="StockPositionTest.cs" />
     <Compile Include="StockHarmonicTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,9 +84,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AgentTesting\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

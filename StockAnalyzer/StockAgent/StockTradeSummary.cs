@@ -12,6 +12,8 @@ namespace StockAnalyzer.StockAgent
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
 
         public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
+        public float CumulGain { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f; } }
+        public float CompoundGain { get { return this.Trades.Count > 0 ? this.Trades.Select(t => t.Gain + 1).Aggregate(1f, (i, j) => i * j) - 1f : 0f; } }
 
         public int NbWinTrade { get { return Trades.Count(t => t.Gain >= 0); } }
         public int NbLostTrade { get { return Trades.Count(t => t.Gain < 0); } }
@@ -26,6 +28,8 @@ namespace StockAnalyzer.StockAgent
         {
             string res = "Max Drawdown=" + MaxDrawdown + Environment.NewLine;
             res += "Average Gain=" + AvgGain + Environment.NewLine;
+            res += "Cumul Gain=" + CumulGain + Environment.NewLine;
+            res += "Compound Gain=" + CompoundGain + Environment.NewLine;
             res += "Nb Trade=" + Trades.Count() + Environment.NewLine;
             res += "Nb Win Trade=" + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade=" + NbLostTrade + Environment.NewLine;

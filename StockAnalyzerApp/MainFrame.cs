@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -1163,7 +1164,28 @@ namespace StockAnalyzerApp
         {
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
-                this.stockNameComboBox.Items.Add(stockName);
+                if (this.StockDictionary.ContainsKey(stockName))
+                {
+                    var stockSerie = this.StockDictionary[stockName];
+
+                    StockSerie.Groups newGroup = stockSerie.StockGroup;
+                    if (this.selectedGroup != newGroup)
+                    {
+                        this.selectedGroup = newGroup;
+
+                        foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                        {
+                            groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
+                        }
+
+                        InitialiseStockCombo(true); 
+                        SetDurationForStockGroup(newGroup);
+                    }
+                }
+                else
+                {
+                    this.stockNameComboBox.Items.Add(stockName);
+                }
             }
             this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
             this.stockNameComboBox.Text = stockName;
@@ -4218,14 +4240,29 @@ namespace StockAnalyzerApp
             StockAgentEngine engine = new StockAgentEngine();
             var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
 
-            engine.GeneticSelection(20, 100, stockSeries, 100);
+            engine.GreedySelection(stockSeries, 100);
+
+            this.BinckPortfolio = new StockPortfolio();
+            foreach (var trade in engine.BestTradeSummary.Trades)
+            {
+                // Create operations
+                this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
+                this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
+            }
+            //engine.GeneticSelection(20, 100, stockSeries, 100);
+            this.graphCloseControl.ForceRefresh();
         }
         private void RunAgentEngineOnGroup()
         {
             var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise());
-
+            foreach (var serie in stockSeries)
+            {
+                serie.BarDuration = this.CurrentStockSerie.BarDuration;
+            }
             StockAgentEngine engine = new StockAgentEngine();
-            engine.GeneticSelection(20, 100, stockSeries, 100);
+            engine.GreedySelection(stockSeries, 100);
+
+            //engine.GeneticSelection(20, 100, stockSeries, 100);
         }
 
         private void GenerateEMAHistogram()

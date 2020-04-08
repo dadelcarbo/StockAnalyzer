@@ -13,22 +13,12 @@ namespace StockAnalyzer.StockAgent
     {
         protected StockContext context;
 
-        protected FloatSerie closeSerie;
-
         protected StockAgentBase(StockContext context)
         {
             this.context = context;
-            this.context.OnSerieChanged += context_OnSerieChanged;
-            context_OnSerieChanged();
         }
 
-        void context_OnSerieChanged()
-        {
-            if (this.context.Serie != null)
-            {
-                this.closeSerie = context.Serie.GetSerie(StockDataType.CLOSE);
-            }
-        }
+        public abstract void Initialize(StockSerie stockSerie);
 
         public TradeAction Decide()
         {
@@ -47,7 +37,7 @@ namespace StockAnalyzer.StockAgent
         protected abstract TradeAction TryToOpenPosition();
 
         static private Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>> parameters = new Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>>();
-        static private Dictionary<PropertyInfo, StockAgentParamAttribute> GetParams(Type type)
+        static public Dictionary<PropertyInfo, StockAgentParamAttribute> GetParams(Type type)
         {
             if (!parameters.ContainsKey(type))
             {
@@ -66,6 +56,58 @@ namespace StockAnalyzer.StockAgent
             }
             return parameters[type];
         }
+        static public Dictionary<PropertyInfo, List<object>> GetParamRanges(Type type, int nbVal)
+        {
+            var res = new Dictionary<PropertyInfo, List<object>>();
+            var parameters = GetParams(type);
+            foreach (var param in parameters)
+            {
+                if (param.Key.PropertyType == typeof(int))
+                {
+                    var values = new List<object>();
+                    for (int i = (int)param.Value.Min; i <= (int)param.Value.Max; i++)
+                    {
+                        values.Add(i);
+                    }
+                    res.Add(param.Key, values);
+                }
+                else
+                if (param.Key.PropertyType == typeof(float))
+                {
+                    float val = (float)param.Value.Min;
+                    float step = ((float)param.Value.Max - val) / (float)nbVal;
+                    var values = new List<object>();
+                    for (int i = 0; i <= nbVal; i++)
+                    {
+                        values.Add(val);
+                        val += step;
+                    }
+                    res.Add(param.Key, values);
+                }
+                else
+                {
+                    throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
+                }
+            }
+            return res;
+        }
+
+        public bool AreSameParams(IStockAgent other)
+        {
+            if (other.GetType() != this.GetType())
+            {
+                throw new InvalidOperationException("Can only compare params of same type");
+            }
+
+            foreach (var param in StockAgentBase.GetParams(this.GetType()))
+            {
+                var val1 = param.Key.GetValue(this, null);
+                var val2 = param.Key.GetValue(other, null);
+                if (val1.ToString() != val2.ToString()) return false;
+            }
+
+            return true;
+        }
 
         static Random rnd = new Random();
 
@@ -76,12 +118,12 @@ namespace StockAnalyzer.StockAgent
             var parameters = StockAgentBase.GetParams(this.GetType());
             foreach (var param in parameters)
             {
-                float newValue = (float) rnd.NextDouble()*(param.Value.Max - param.Value.Min) + param.Value.Min;
-                if (param.Key.PropertyType == typeof (int))
+                float newValue = (float)rnd.NextDouble() * (param.Value.Max - param.Value.Min) + param.Value.Min;
+                if (param.Key.PropertyType == typeof(int))
                 {
-                    param.Key.SetValue(this,(int) Math.Round(newValue), null);
+                    param.Key.SetValue(this, (int)Math.Round(newValue), null);
                 }
-                else if (param.Key.PropertyType == typeof (float))
+                else if (param.Key.PropertyType == typeof(float))
                 {
                     param.Key.SetValue(this, newValue, null);
                 }
@@ -104,7 +146,7 @@ namespace StockAnalyzer.StockAgent
                 {
                     var property = param.Key;
 
-                    if (param.Key.PropertyType == typeof (int))
+                    if (param.Key.PropertyType == typeof(int))
                     {
                         int val1 = (int)property.GetValue(this, null);
                         int val2 = (int)property.GetValue(partner, null);
@@ -117,13 +159,13 @@ namespace StockAnalyzer.StockAgent
                         newValue = Math.Max(newValue, param.Value.Min);
                         param.Key.SetValue(agent, (int)Math.Round(newValue), null);
                     }
-                    else if (param.Key.PropertyType == typeof (float))
+                    else if (param.Key.PropertyType == typeof(float))
                     {
-                        float val1 = (float) property.GetValue(this, null);
-                        float val2 = (float) property.GetValue(partner, null);
+                        float val1 = (float)property.GetValue(this, null);
+                        float val2 = (float)property.GetValue(partner, null);
 
-                        float mean = (val1 + val2)/2.0f;
-                        float stdev = Math.Abs(val1 - val2)/4.0f;
+                        float mean = (val1 + val2) / 2.0f;
+                        float stdev = Math.Abs(val1 - val2) / 4.0f;
 
                         float newValue = FloatRandom.NextGaussian(mean, stdev);
                         newValue = Math.Min(newValue, param.Value.Max);
@@ -134,15 +176,28 @@ namespace StockAnalyzer.StockAgent
                     {
                         throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
                     }
-
                 }
-                children.Add(agent);
+                if (!this.AreSameParams(agent))
+                {
+                    children.Add(agent);
+                }
             }
             return children;
         }
 
         protected abstract IStockAgent CreateInstance(StockContext context);
 
+        public string ToString()
+        {
+            string res = string.Empty;
+
+            var parameters = StockAgentBase.GetParams(this.GetType());
+            foreach (var param in parameters)
+            {
+                res += param.Key.Name + ": " + param.Key.GetValue(this, null) + ' ';
+            }
+            return res;
+        }
         public string ToLog()
         {
             string res = string.Empty;

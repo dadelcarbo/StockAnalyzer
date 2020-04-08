@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,9 @@ namespace StockAnalyzer.StockAgent
 
         IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren);
 
+        bool AreSameParams(IStockAgent other);
+
         string ToLog();
+        void Initialize(StockSerie stockSerie);
     }
 }

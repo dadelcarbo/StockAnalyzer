@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
+using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
@@ -27,6 +28,11 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(0.01f, 0.3f)]
         public float ExitPercentUp { get; set; }
 
+        FloatSerie closeSerie;
+        public override void Initialize(StockSerie stockSerie)
+        {
+            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+        }
         protected override TradeAction TryToOpenPosition()
         {
             int i = context.CurrentIndex;

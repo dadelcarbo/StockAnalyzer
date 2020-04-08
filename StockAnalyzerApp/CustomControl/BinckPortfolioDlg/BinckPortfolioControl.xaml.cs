@@ -17,17 +17,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
         }
 
-        private void positionGridView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var viewModel = this.positionGridView.SelectedCells[0].Item as StockPositionViewModel;
-            if (viewModel == null || !viewModel.IsValidName) return;
-
-            if (SelectedStockChanged != null)
-                this.SelectedStockChanged(viewModel.StockName, true);
-
-            StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
-        }
-
         private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
         {
             var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
@@ -44,6 +33,17 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             {
                 e.Cancel = true;
             }
+        }
+
+        private void positionGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        {
+            var viewModel = this.positionGridView.SelectedItem as StockPositionViewModel;
+            if (viewModel == null || !viewModel.IsValidName) return;
+
+            if (SelectedStockChanged != null)
+                this.SelectedStockChanged(viewModel.StockName, true);
+
+            StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
     }
 }

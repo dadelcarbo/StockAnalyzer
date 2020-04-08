@@ -1,4 +1,6 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
@@ -29,9 +31,15 @@ namespace StockAnalyzer.StockAgent.Agents
         public float stopLoss;
         public float target;
 
+        IStockIndicator indicator;
+        FloatSerie closeSerie;
+        public override void Initialize(StockSerie stockSerie)
+        {
+            indicator = stockSerie.GetIndicator("OVERBOUGHTSR(STOKS(" + Period + "_3_3),75,25)"); 
+            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+        }
         protected override TradeAction TryToOpenPosition()
         {
-            IStockIndicator indicator = context.Serie.GetIndicator("OVERBOUGHTSR(STOKS(" + Period + "_3_3),75,25)");
 
             int i = context.CurrentIndex;
             if (indicator.Events[4][i]) // HigherLow occured

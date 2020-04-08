@@ -6,8 +6,6 @@ using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzer.StockAgent
 {
-    public delegate void SerieChangedHandler();
-
     public class StockContext
     {
         public int CurrentIndex { get; set; }
@@ -20,14 +18,11 @@ namespace StockAnalyzer.StockAgent
                 if (serie != value)
                 {
                     this.serie = value;
-                    if (this.OnSerieChanged != null) this.OnSerieChanged();
                 }
             }
         }
 
         public StockTrade Trade { get; set; }
-
-        public event SerieChangedHandler OnSerieChanged;
 
         public StockContext()
         {
