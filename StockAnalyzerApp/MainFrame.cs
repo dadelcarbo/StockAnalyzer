@@ -1178,7 +1178,7 @@ namespace StockAnalyzerApp
                             groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
                         }
 
-                        InitialiseStockCombo(true); 
+                        InitialiseStockCombo(true);
                         SetDurationForStockGroup(newGroup);
                     }
                 }
@@ -3131,13 +3131,22 @@ namespace StockAnalyzerApp
 
         #region PORTOFOLIO MENU HANDERS
 
+        BinckPortfolioDlg portfolioDlg = null;
         private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
         {
             if (BinckPortfolio == null)
                 return;
 
-            var dlg = new BinckPortfolioDlg();
-            dlg.Show();
+            if (portfolioDlg == null)
+            {
+                portfolioDlg = new BinckPortfolioDlg();
+                portfolioDlg.FormClosing += (a, b) => { this.portfolioDlg = null; };
+                portfolioDlg.Show();
+            }
+            else
+            {
+                portfolioDlg.Activate();
+            }
         }
 
         #endregion
@@ -3992,18 +4001,33 @@ namespace StockAnalyzerApp
             GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
         }
         #endregion
+        WatchListDlg watchlistDlg = null;
         private void manageWatchlistsMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null || this.WatchLists == null) return;
 
-            WatchListDlg watchlistDlg = new WatchListDlg(this.WatchLists);
-            watchlistDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            if (watchlistDlg.ShowDialog() == DialogResult.OK)
+            if (watchlistDlg == null)
             {
-                this.SaveWatchList();
+                watchlistDlg = new WatchListDlg(this.WatchLists);
+                watchlistDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+                watchlistDlg.FormClosed += (a, b) =>
+                {
+                    if (watchlistDlg.DialogResult == DialogResult.OK)
+                    {
+                        this.SaveWatchList();
+                    }
+                    else
+                    {
+                        this.LoadWatchList();
+                    }
+                    watchlistDlg = null;
+                };
+                watchlistDlg.Show();
             }
             else
-            { this.LoadWatchList(); }
+            {
+                watchlistDlg.Activate();
+            }
         }
 
         #region Stock Scanner Dlg
