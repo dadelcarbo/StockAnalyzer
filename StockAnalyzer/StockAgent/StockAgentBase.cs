@@ -18,9 +18,13 @@ namespace StockAnalyzer.StockAgent
             this.context = context;
         }
 
-        public abstract void Initialize(StockSerie stockSerie);
+        protected FloatSerie closeSerie;
+        public virtual void Initialize(StockSerie stockSerie)
+        {
+            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+        }
 
-        public TradeAction Decide()
+        public virtual TradeAction Decide()
         {
             if (context.Trade == null)
             {

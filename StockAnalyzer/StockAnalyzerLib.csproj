@@ -82,8 +82,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAAgent.cs" />
+    <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
     <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>
     </Compile>

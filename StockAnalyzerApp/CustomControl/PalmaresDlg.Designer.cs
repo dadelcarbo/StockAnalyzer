@@ -195,11 +195,9 @@
             this.Controls.Add(this.palmaresView);
             this.Controls.Add(this.fromDateTimePicker);
             this.Name = "PalmaresDlg";
-            this.TopMost = true;
             this.palmaresContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
       }
       #endregion
 

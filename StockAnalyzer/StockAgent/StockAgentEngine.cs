@@ -48,14 +48,14 @@ namespace StockAnalyzer.StockAgent
             stopWatch.Start();
 
             // Calcutate Parameters Ranges
-            IStockAgent agent = new EMACloudAgent(this.Context);
+            IStockAgent agent = new EMAMMAgent(this.Context);
             agent.Randomize();
 
             this.Agent = agent;
             var bestAgent = agent;
             StockTradeSummary bestTradeSummary = null;
 
-            var parameters = StockAgentBase.GetParamRanges(typeof(EMACloudAgent), 50);
+            var parameters = StockAgentBase.GetParamRanges(typeof(EMAMMAgent), 50);
 
             int dim = parameters.Count;
             var sizes = parameters.Select(p => p.Value.Count).ToArray();
@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockAgent
                     bestTradeSummary = tradeSummary;
                     bestAgent = agent;
 
-                    agent = new EMACloudAgent(this.Context);
+                    agent = new EMAMMAgent(this.Context);
                 }
             }
             stopWatch.Stop();

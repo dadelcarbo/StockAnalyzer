@@ -32,11 +32,11 @@ namespace StockAnalyzer.StockAgent.Agents
         public float target;
 
         IStockIndicator indicator;
-        FloatSerie closeSerie;
         public override void Initialize(StockSerie stockSerie)
         {
-            indicator = stockSerie.GetIndicator("OVERBOUGHTSR(STOKS(" + Period + "_3_3),75,25)"); 
-            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            base.Initialize(stockSerie);
+
+            indicator = stockSerie.GetIndicator("OVERBOUGHTSR(STOKS(" + Period + "_3_3),75,25)");
         }
         protected override TradeAction TryToOpenPosition()
         {

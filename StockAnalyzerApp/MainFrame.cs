@@ -4261,31 +4261,44 @@ namespace StockAnalyzerApp
 
         private void RunAgentEngine()
         {
-            StockAgentEngine engine = new StockAgentEngine();
-            var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
-
-            engine.GreedySelection(stockSeries, 100);
-
-            this.BinckPortfolio = new StockPortfolio();
-            foreach (var trade in engine.BestTradeSummary.Trades)
+            try
             {
-                // Create operations
-                this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
-                this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
+                StockAgentEngine engine = new StockAgentEngine();
+                var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
+
+                engine.GreedySelection(stockSeries, 100);
+
+                this.BinckPortfolio = new StockPortfolio();
+                foreach (var trade in engine.BestTradeSummary.Trades)
+                {
+                    // Create operations
+                    this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
+                    this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
+                }
+                //engine.GeneticSelection(20, 100, stockSeries, 100);
+                this.graphCloseControl.ForceRefresh();
             }
-            //engine.GeneticSelection(20, 100, stockSeries, 100);
-            this.graphCloseControl.ForceRefresh();
+            catch (Exception ex)
+            {
+                StockAnalyzerException.MessageBox(ex);
+            }
         }
         private void RunAgentEngineOnGroup()
         {
-            var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise());
-            foreach (var serie in stockSeries)
+            try
             {
-                serie.BarDuration = this.CurrentStockSerie.BarDuration;
+                var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise());
+                foreach (var serie in stockSeries)
+                {
+                    serie.BarDuration = this.CurrentStockSerie.BarDuration;
+                }
+                StockAgentEngine engine = new StockAgentEngine();
+                engine.GreedySelection(stockSeries, 100);
             }
-            StockAgentEngine engine = new StockAgentEngine();
-            engine.GreedySelection(stockSeries, 100);
-
+            catch (Exception ex)
+            {
+                StockAnalyzerException.MessageBox(ex);
+            }
             //engine.GeneticSelection(20, 100, stockSeries, 100);
         }
 

@@ -28,10 +28,9 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(0.01f, 0.3f)]
         public float ExitPercentUp { get; set; }
 
-        FloatSerie closeSerie;
         public override void Initialize(StockSerie stockSerie)
         {
-            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            base.Initialize(stockSerie);
         }
         protected override TradeAction TryToOpenPosition()
         {
