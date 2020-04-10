@@ -279,8 +279,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 if (upPoints.Count > 0)
                                 {
-                                    upPoints.Add(bullPoints[i]);
-                                    downPoints.Insert(0, bearPoints[i]);
+                                    upPoints.Add(bearPoints[i]);
+                                    downPoints.Insert(0, bullPoints[i]);
                                     aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
                                     aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
                                     upPoints.AddRange(downPoints);

@@ -194,6 +194,8 @@
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2Lines.cs" />
