@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockClasses;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -41,9 +42,27 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             if (viewModel == null || !viewModel.IsValidName) return;
 
             if (SelectedStockChanged != null)
+            {
                 this.SelectedStockChanged(viewModel.StockName, true);
+                StockAnalyzerForm.MainFrame.Activate();
+            }
+        }
 
-            StockAnalyzerForm.MainFrame.WindowState = System.Windows.Forms.FormWindowState.Normal;
+        private void operationGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        {
+            var viewModel = this.operationGridView.SelectedItem as StockOperation;
+
+            var stockName = viewModel.StockName;
+            var mapping = StockPortfolio.GetMapping(viewModel.StockName);
+            if (mapping != null)
+            {
+                stockName = mapping.StockName;
+            }
+            if (StockDictionary.StockDictionarySingleton.ContainsKey(stockName) && SelectedStockChanged != null)
+            {
+                this.SelectedStockChanged(viewModel.StockName, true);
+                StockAnalyzerForm.MainFrame.Activate();
+            }
         }
     }
 }
