@@ -109,7 +109,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        public List<StockAnalyzer.StockBinckPortfolio.StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
+        public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
 
         public ToolStripProgressBar ProgressBar
         {
@@ -146,9 +146,10 @@ namespace StockAnalyzerApp
             get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
         }
 
-        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortfolio { get; set; }
+        public StockPortfolio BinckPortfolio { get; set; }
 
         private StockSerie.Groups selectedGroup;
+        public StockSerie.Groups Group => selectedGroup;
 
         private PalmaresDlg palmaresDlg = null;
         private StrategySimulatorDlg strategySimulatorDlg = null;
@@ -3155,31 +3156,13 @@ namespace StockAnalyzerApp
         #region ANALYSIS MENU HANDLERS
         private void strategySimulationMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException("strategySimulationMenuItem_Click");
-            //CreateSimulationPortofolio(5000.0f);
-
-            //if (strategySimulatorDlg == null || strategySimulatorDlg.IsDisposed)
-            //{
-            //    strategySimulatorDlg = new StrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-            //       this.stockNameComboBox.SelectedItem.ToString());
-            //    strategySimulatorDlg.SimulationCompleted +=
-            //       new StrategySimulatorDlg.SimulationCompletedEventHandler(strategySimulatorDlg_SimulationCompleted);
-            //    strategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            //    strategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            //}
-            //else
-            //{
-            //    strategySimulatorDlg.Activate();
-            //}
-            //strategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
-
-            //strategySimulatorDlg.SelectedPortofolio = CurrentPortofolio;
-            //strategySimulatorDlg.Show();
+            var dialog = new AgentSimulationDlg();
+            dialog.Show();
         }
 
         private void filteredStrategySimulationMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException("strategySimulationMenuItem_Click");
+            //throw new NotImplementedException("strategySimulationMenuItem_Click");
 
             //CreateSimulationPortofolio(5000.0f);
 
@@ -3239,7 +3222,7 @@ namespace StockAnalyzerApp
 
         private void portofolioSimulationMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException("strategySimulationMenuItem_Click");
+            throw new NotImplementedException("portofolioSimulationMenuItem_Click");
 
             //CreateSimulationPortofolio(5000.0f);
 
@@ -3264,7 +3247,7 @@ namespace StockAnalyzerApp
 
         private void CreateSimulationPortofolio(float portofolioDeposit)
         {
-            throw new NotImplementedException("strategySimulationMenuItem_Click");
+            throw new NotImplementedException("CreateSimulationPortofolio");
 
             //// Create new simulation portofolio
             //if (CurrentPortofolio == null)
@@ -3282,7 +3265,7 @@ namespace StockAnalyzerApp
 
         private void portfolioSimulatorDlg_SimulationCompleted()
         {
-            throw new NotImplementedException("strategySimulationMenuItem_Click");
+            throw new NotImplementedException("portfolioSimulatorDlg_SimulationCompleted");
 
             //// Refresh portofolio generated stock
             //StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
@@ -4275,7 +4258,7 @@ namespace StockAnalyzerApp
         {
             try
             {
-                foreach(var serie in stockSeries)
+                foreach (var serie in stockSeries)
                 {
                     serie.BarDuration = duration;
                 }
@@ -5203,7 +5186,7 @@ namespace StockAnalyzerApp
         {
             if (this.BinckPortfolio != portfolioComboBox.SelectedItem)
             {
-                this.BinckPortfolio = portfolioComboBox.SelectedItem as StockAnalyzer.StockBinckPortfolio.StockPortfolio;
+                this.BinckPortfolio = portfolioComboBox.SelectedItem as StockPortfolio;
                 this.graphCloseControl.ForceRefresh();
             }
         }

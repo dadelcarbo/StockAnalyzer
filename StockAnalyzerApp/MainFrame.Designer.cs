@@ -559,6 +559,7 @@ namespace StockAnalyzerApp
             this.strategySimulationMenuItem.Name = "strategySimulationMenuItem";
             this.strategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
             this.strategySimulationMenuItem.Text = "Strategy Simulation";
+            this.strategySimulationMenuItem.ShortcutKeys = this.currentPortofolioMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.strategySimulationMenuItem.Click += new System.EventHandler(this.strategySimulationMenuItem_Click);
             // 
             // filteredStrategySimulationMenuItem

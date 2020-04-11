@@ -19,6 +19,25 @@ namespace StockAnalyzer.StockAgent
         }
 
         protected FloatSerie closeSerie;
+
+        public static List<string> GetAgentNames()
+        {
+            var agentList = new List<string>();
+            foreach (Type t in typeof(IStockAgent).Assembly.GetTypes())
+            {
+                Type st = t.GetInterface("IStockAgent");
+                if (st != null)
+                {
+                    if (!t.Name.EndsWith("Base"))
+                    {
+                        agentList.Add(t.Name.Replace("Agent", ""));
+                    }
+                }
+            }
+            agentList.Sort();
+            return agentList;
+        }
+
         public virtual void Initialize(StockSerie stockSerie)
         {
             closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);

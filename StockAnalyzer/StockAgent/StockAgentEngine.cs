@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -16,6 +17,8 @@ namespace StockAnalyzer.StockAgent
         public IStockAgent BestAgent { get; private set; }
 
         public Type AgentType { get; private set; }
+
+        public event ProgressChangedEventHandler ProgressChanged;
 
         public StockAgentEngine(Type agentType)
         {
@@ -64,6 +67,11 @@ namespace StockAnalyzer.StockAgent
             int nbSteps = sizes.Aggregate(1, (i, j) => i * j);
             for (int i = 0; i < nbSteps; i++)
             {
+                if (ProgressChanged != null && i % 100 == 0)
+                {
+                    int percent = (i * 100) / nbSteps;
+                    this.ProgressChanged(this, new ProgressChangedEventArgs(percent, null));
+                }
                 // Calculate indexes
                 CalculateIndexes(dim, sizes, indexes, i);
 
@@ -96,8 +104,7 @@ namespace StockAnalyzer.StockAgent
 
             // Format and display the TimeSpan value.
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            string msg = "Fittest:" + Environment.NewLine;
-            msg += bestTradeSummary.ToLog() + Environment.NewLine;
+            string msg = bestTradeSummary.ToLog() + Environment.NewLine;
             msg += bestAgent.ToLog();
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
@@ -105,8 +112,10 @@ namespace StockAnalyzer.StockAgent
             this.BestTradeSummary = bestTradeSummary;
             this.BestAgent = bestAgent;
 
-            MessageBox.Show(msg, "Greedy calculation over", MessageBoxButton.OK, MessageBoxImage.Information);
+            this.Report = msg;
         }
+
+        public string Report { get; set; }
 
         public static void CalculateIndexes(int dim, int[] sizes, int[] indexes, int i)
         {
@@ -192,7 +201,8 @@ namespace StockAnalyzer.StockAgent
                 this.Context.Serie = serie;
                 this.Agent.Initialize(serie);
 
-                for (int i = minIndex; i < this.Context.Serie.Count; i++)
+                var size = this.Context.Serie.Count - 1;
+                for (int i = minIndex; i < size; i++)
                 {
                     this.Context.CurrentIndex = i;
 

@@ -6,7 +6,6 @@ namespace StockAnalyzer.StockAgent
     {
         public float Min { get; private set; }
         public float Max { get; private set; }
-        public float Range { get { return Max / Min; } }
 
         public StockAgentParamAttribute(float min, float max)
         {

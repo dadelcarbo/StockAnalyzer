@@ -276,7 +276,18 @@
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\GroupViewDlg\GroupViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml.cs">
+      <DependentUpon>AgentSimulationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationDlg.Designer.cs">
+      <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
       <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
@@ -598,6 +609,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ExpectedValueDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\AgentSimulationDlg.resx">
+      <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StatisticsDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
@@ -922,6 +936,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\MultiTimeFrameDlg\MTFUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
