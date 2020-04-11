@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockAgent.Agents;
 using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -4258,15 +4259,29 @@ namespace StockAnalyzerApp
             }
             return true;
         }
-
         private void RunAgentEngine()
+        {
+            StockAgentEngine engine = new StockAgentEngine(typeof(BBStopAgent));
+
+            this.RunAgentEngine(this.CurrentStockSerie.BarDuration, new List<StockSerie> { this.CurrentStockSerie }, engine);
+        }
+        private void RunAgentEngineOnGroup()
+        {
+            StockAgentEngine engine = new StockAgentEngine(typeof(BBStopAgent));
+
+            this.RunAgentEngine(this.CurrentStockSerie.BarDuration, this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise()), engine);
+        }
+        private void RunAgentEngine(StockBarDuration duration, IEnumerable<StockSerie> stockSeries, StockAgentEngine engine)
         {
             try
             {
-                StockAgentEngine engine = new StockAgentEngine();
-                var stockSeries = new List<StockSerie> { this.CurrentStockSerie };
+                foreach(var serie in stockSeries)
+                {
+                    serie.BarDuration = duration;
+                }
 
                 engine.GreedySelection(stockSeries, 100);
+                //engine.GeneticSelection(20, 100, stockSeries, 100);
 
                 this.BinckPortfolio = new StockPortfolio();
                 foreach (var trade in engine.BestTradeSummary.Trades)
@@ -4275,7 +4290,6 @@ namespace StockAnalyzerApp
                     this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
                     this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
                 }
-                //engine.GeneticSelection(20, 100, stockSeries, 100);
                 this.graphCloseControl.ForceRefresh();
             }
             catch (Exception ex)
@@ -4283,25 +4297,6 @@ namespace StockAnalyzerApp
                 StockAnalyzerException.MessageBox(ex);
             }
         }
-        private void RunAgentEngineOnGroup()
-        {
-            try
-            {
-                var stockSeries = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise());
-                foreach (var serie in stockSeries)
-                {
-                    serie.BarDuration = this.CurrentStockSerie.BarDuration;
-                }
-                StockAgentEngine engine = new StockAgentEngine();
-                engine.GreedySelection(stockSeries, 100);
-            }
-            catch (Exception ex)
-            {
-                StockAnalyzerException.MessageBox(ex);
-            }
-            //engine.GeneticSelection(20, 100, stockSeries, 100);
-        }
-
         private void GenerateEMAHistogram()
         {
             SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();

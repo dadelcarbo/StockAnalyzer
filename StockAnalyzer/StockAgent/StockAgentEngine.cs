@@ -15,8 +15,11 @@ namespace StockAnalyzer.StockAgent
         public StockTradeSummary BestTradeSummary { get; private set; }
         public IStockAgent BestAgent { get; private set; }
 
-        public StockAgentEngine()
+        public Type AgentType { get; private set; }
+
+        public StockAgentEngine(Type agentType)
         {
+            this.AgentType = agentType;
             this.Context = new StockContext();
         }
 
@@ -48,14 +51,12 @@ namespace StockAnalyzer.StockAgent
             stopWatch.Start();
 
             // Calcutate Parameters Ranges
-            IStockAgent agent = new EMAMMAgent(this.Context);
-            agent.Randomize();
-
+            IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
             this.Agent = agent;
             var bestAgent = agent;
             StockTradeSummary bestTradeSummary = null;
 
-            var parameters = StockAgentBase.GetParamRanges(typeof(EMAMMAgent), 50);
+            var parameters = StockAgentBase.GetParamRanges(this.AgentType, 50);
 
             int dim = parameters.Count;
             var sizes = parameters.Select(p => p.Value.Count).ToArray();
@@ -85,7 +86,7 @@ namespace StockAnalyzer.StockAgent
                     bestTradeSummary = tradeSummary;
                     bestAgent = agent;
 
-                    agent = new EMAMMAgent(this.Context);
+                    agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
                 }
             }
             stopWatch.Stop();
@@ -96,8 +97,9 @@ namespace StockAnalyzer.StockAgent
             // Format and display the TimeSpan value.
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             string msg = "Fittest:" + Environment.NewLine;
-            msg += bestTradeSummary.ToLog();
+            msg += bestTradeSummary.ToLog() + Environment.NewLine;
             msg += bestAgent.ToLog();
+            msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
             this.BestTradeSummary = bestTradeSummary;
@@ -124,14 +126,12 @@ namespace StockAnalyzer.StockAgent
             // Create Agents
             for (int i = 0; i < nbAgents; i++)
             {
-                //IStockAgent agent = new StupidAgent(this.Context);
-                //IStockAgent agent = new HigherLowAgent(this.Context);
-                IStockAgent agent = new EMAAgent(this.Context);
+                IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
                 agent.Randomize();
                 agents.Add(agent);
             }
 
-            StockAgentBase.GetParamRanges(typeof(EMAAgent), 20);
+            StockAgentBase.GetParamRanges(this.AgentType, 20);
 
             Dictionary<IStockAgent, float> bestResults = new Dictionary<IStockAgent, float>();
             int nbSelected = 10;
@@ -171,12 +171,11 @@ namespace StockAnalyzer.StockAgent
                         agents.AddRange(newAgents);
                     }
                 }
+
                 // Create Agents
                 for (int j = 0; j < nbSelected; j++)
                 {
-                    //IStockAgent agent = new StupidAgent(this.Context);
-                    //IStockAgent agent = new HigherLowAgent(this.Context);
-                    IStockAgent agent = new EMAAgent(this.Context);
+                    IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
                     agent.Randomize();
                     agents.Add(agent);
                 }
@@ -205,21 +204,13 @@ namespace StockAnalyzer.StockAgent
                             this.Context.OpenTrade(i + 1);
                             break;
                         case TradeAction.Sell:
-                            this.Context.CloseTrade(i);
+                            this.Context.CloseTrade(i + 1);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
             }
-
-            //var tradeSummary = this.Context.GettradeSummary();
-            //Console.WriteLine(tradeSummary.ToLog());
-
-            //foreach (var trade in this.Context.TradeLog)
-            //{
-            //    Console.WriteLine(trade.ToLog());
-            //}
         }
     }
 }

@@ -12,11 +12,6 @@ namespace StockAnalyzer.StockAgent.Agents
             SlowPeriod = 50;
         }
 
-        protected override IStockAgent CreateInstance(StockContext context)
-        {
-            return new EMAAgent(context);
-        }
-
         public int FastPeriod { get; set; }
 
         public int SlowPeriod { get; set; }

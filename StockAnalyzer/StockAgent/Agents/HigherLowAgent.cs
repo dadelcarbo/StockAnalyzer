@@ -12,11 +12,6 @@ namespace StockAnalyzer.StockAgent.Agents
             this.LookBack = 20;
         }
 
-        protected override IStockAgent CreateInstance(StockContext context)
-        {
-            return new HigherLowAgent(context);
-        }
-
         public int LookBack { get; set; }
 
         [StockAgentParam(0.05f, 0.30f)]

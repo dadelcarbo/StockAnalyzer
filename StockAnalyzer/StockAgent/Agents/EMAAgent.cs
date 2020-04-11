@@ -11,11 +11,6 @@ namespace StockAnalyzer.StockAgent.Agents
             FastPeriod = 13;
         }
 
-        protected override IStockAgent CreateInstance(StockContext context)
-        {
-            return new EMAAgent(context);
-        }
-
         [StockAgentParam(10, 40)]
         public int FastPeriod { get; set; }
 

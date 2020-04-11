@@ -145,7 +145,7 @@ namespace StockAnalyzer.StockAgent
             var parameters = StockAgentBase.GetParams(this.GetType());
             for (int i = 0; i < nbChildren; i++)
             {
-                IStockAgent agent = this.CreateInstance(context);
+                IStockAgent agent = StockAgentBase.CreateInstance(this.GetType(), this.context);
                 foreach (var param in parameters)
                 {
                     var property = param.Key;
@@ -189,9 +189,12 @@ namespace StockAnalyzer.StockAgent
             return children;
         }
 
-        protected abstract IStockAgent CreateInstance(StockContext context);
+        static public IStockAgent CreateInstance(Type agentType, StockContext context)
+        {
+            return (IStockAgent)Activator.CreateInstance(agentType, new object[] { context });
+        }
 
-        public string ToString()
+        public override string ToString()
         {
             string res = string.Empty;
 

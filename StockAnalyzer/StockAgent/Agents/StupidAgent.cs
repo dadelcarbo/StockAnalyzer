@@ -14,11 +14,6 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string Description => "Buys and sell on a percent trigger";
 
-        protected override IStockAgent CreateInstance(StockContext context)
-        {
-            return new StupidAgent(context);
-        }
-
         public int LookBack { get; set; }
 
         [StockAgentParam(0.01f, 0.3f)]
