@@ -1,9 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -29,7 +26,6 @@ namespace StockAnalyzer.StockAgent
 
         public float Gain { get; private set; }
         public float DrawDown { get; private set; }
-        public float MaxGain { get; private set; }
 
         FloatSerie openSerie;
         FloatSerie highSerie;
@@ -49,7 +45,6 @@ namespace StockAnalyzer.StockAgent
             this.EntryValue = openSerie[entryIndex];
 
             this.Gain = float.NaN;
-            this.MaxGain = float.NaN;
             this.DrawDown = float.NaN;
 
             this.IsClosed = false;
@@ -60,19 +55,17 @@ namespace StockAnalyzer.StockAgent
             this.ExitIndex = exitIndex;
 
             this.ExitValue = openSerie[exitIndex];
-            float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
-            float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
 
             if (this.IsLong)
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
-                this.MaxGain = (maxValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
                 this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
-                this.MaxGain = (this.EntryValue - minValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
                 this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
             }
 
@@ -100,11 +93,11 @@ namespace StockAnalyzer.StockAgent
 
         public static string ToHeaderLog()
         {
-            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;MaxGain;DrawDown";
+            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;DrawDown";
         }
         public string ToLog()
         {
-            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.MaxGain.ToString("P2") + ";" + this.DrawDown.ToString("P2") + ";";
+            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.DrawDown.ToString("P2") + ";";
         }
     }
 }

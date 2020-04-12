@@ -10,7 +10,8 @@ namespace StockAnalyzer.StockAgent
         public IList<StockTrade> Trades { get; private set; }
 
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
-
+        public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
+        public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
         public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
         public float CumulGain { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f; } }
         public float CompoundGain { get { return this.Trades.Count > 0 ? this.Trades.Select(t => t.Gain + 1).Aggregate(1f, (i, j) => i * j) - 1f : 0f; } }
@@ -27,7 +28,8 @@ namespace StockAnalyzer.StockAgent
         public string ToLog()
         {
             string res = "Max Drawdown=" + MaxDrawdown + Environment.NewLine;
-            res += "Average Gain=" + AvgGain + Environment.NewLine;
+            res += "Max Gain=" + MaxGain + Environment.NewLine;
+            res += "Max Loss=" + MaxLoss + Environment.NewLine;
             res += "Cumul Gain=" + CumulGain + Environment.NewLine;
             res += "Compound Gain=" + CompoundGain + Environment.NewLine;
             res += "Nb Trade=" + Trades.Count() + Environment.NewLine;
@@ -40,6 +42,8 @@ namespace StockAnalyzer.StockAgent
         public string ToStats()
         {
             string res = MaxDrawdown + "\t";
+            res += MaxGain + "\t";
+            res += MaxLoss + "\t";
             res += AvgGain + "\t";
             res += CumulGain + "\t";
             res += CompoundGain + "\t";

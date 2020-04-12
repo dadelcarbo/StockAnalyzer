@@ -79,7 +79,7 @@ namespace StockAnalyzerApp
             this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.strategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filteredStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.batchStrategySimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateSeasonalitySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -514,7 +514,7 @@ namespace StockAnalyzerApp
             this.stockStrategyScannerMenuItem,
             this.palmaresMenuItem,
             this.toolStripSeparator10,
-            this.strategySimulationMenuItem,
+            this.agentTunningMenuItem,
             this.filteredStrategySimulationMenuItem,
             this.batchStrategySimulationMenuItem,
             this.generateSeasonalitySerieMenuItem,
@@ -554,13 +554,13 @@ namespace StockAnalyzerApp
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(237, 6);
             // 
-            // strategySimulationMenuItem
+            // agentTunningMenuItem
             // 
-            this.strategySimulationMenuItem.Name = "strategySimulationMenuItem";
-            this.strategySimulationMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.strategySimulationMenuItem.Text = "Strategy Simulation";
-            this.strategySimulationMenuItem.ShortcutKeys = this.currentPortofolioMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.strategySimulationMenuItem.Click += new System.EventHandler(this.strategySimulationMenuItem_Click);
+            this.agentTunningMenuItem.Name = "agentTunningMenuItem";
+            this.agentTunningMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.agentTunningMenuItem.Text = "Agent Greedy Tunning";
+            this.agentTunningMenuItem.ShortcutKeys = this.currentPortofolioMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
+            this.agentTunningMenuItem.Click += new System.EventHandler(this.agentTunningMenuItem_Click);
             // 
             // filteredStrategySimulationMenuItem
             // 
@@ -1489,7 +1489,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showIndicatorDivMenuItem;
         private ToolStripMenuItem showIndicatorTextMenuItem;
         private ToolStripMenuItem analysisMenuItem;
-        private ToolStripMenuItem strategySimulationMenuItem;
+        private ToolStripMenuItem agentTunningMenuItem;
         private ToolStripMenuItem filteredStrategySimulationMenuItem;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem batchStrategySimulationMenuItem;

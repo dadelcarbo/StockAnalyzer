@@ -3154,10 +3154,22 @@ namespace StockAnalyzerApp
         #endregion
 
         #region ANALYSIS MENU HANDLERS
-        private void strategySimulationMenuItem_Click(object sender, EventArgs e)
+
+        AgentSimulationDlg agentTunningDialog = null;
+        private void agentTunningMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new AgentSimulationDlg();
-            dialog.Show();
+            if (agentTunningDialog == null)
+            {
+                agentTunningDialog = new AgentSimulationDlg();
+                agentTunningDialog.FormClosed += (a, b) => {
+                    agentTunningDialog = null;
+                };
+                agentTunningDialog.Show();
+            }
+            else
+            {
+                agentTunningDialog.Activate();
+            }
         }
 
         private void filteredStrategySimulationMenuItem_Click(object sender, EventArgs e)
@@ -4215,16 +4227,6 @@ namespace StockAnalyzerApp
                             mtfDlg.Show();
                         }
                         break;
-                    case Keys.F9:
-                        {
-                            this.RunAgentEngine();
-                        }
-                        break;
-                    case Keys.Control | Keys.F9: // Display Risk Calculator Windows
-                        {
-                            this.RunAgentEngineOnGroup();
-                        }
-                        break;
                     case Keys.Control | Keys.G: // Historical group view
                         {
                             var mtfDlg = new GroupViewDlg();
@@ -4241,44 +4243,6 @@ namespace StockAnalyzerApp
                 }
             }
             return true;
-        }
-        private void RunAgentEngine()
-        {
-            StockAgentEngine engine = new StockAgentEngine(typeof(BBStopAgent));
-
-            this.RunAgentEngine(this.CurrentStockSerie.BarDuration, new List<StockSerie> { this.CurrentStockSerie }, engine);
-        }
-        private void RunAgentEngineOnGroup()
-        {
-            StockAgentEngine engine = new StockAgentEngine(typeof(BBStopAgent));
-
-            this.RunAgentEngine(this.CurrentStockSerie.BarDuration, this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise()), engine);
-        }
-        private void RunAgentEngine(StockBarDuration duration, IEnumerable<StockSerie> stockSeries, StockAgentEngine engine)
-        {
-            try
-            {
-                foreach (var serie in stockSeries)
-                {
-                    serie.BarDuration = duration;
-                }
-
-                engine.GreedySelection(stockSeries, 100);
-                //engine.GeneticSelection(20, 100, stockSeries, 100);
-
-                this.BinckPortfolio = new StockPortfolio();
-                foreach (var trade in engine.BestTradeSummary.Trades)
-                {
-                    // Create operations
-                    this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
-                    this.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
-                }
-                this.graphCloseControl.ForceRefresh();
-            }
-            catch (Exception ex)
-            {
-                StockAnalyzerException.MessageBox(ex);
-            }
         }
         private void GenerateEMAHistogram()
         {

@@ -22,11 +22,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
+            this.Accuracy = 20;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
         public IList<StockBarDuration> Durations => StockBarDuration.Values;
         public StockBarDuration Duration { get; set; }
+
+        public int Accuracy { get; set; }
 
         public void Cancel()
         {
@@ -167,7 +170,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     serie.BarDuration = this.Duration;
                 }
 
-                engine.GreedySelection(stockSeries, 20);
+                engine.GreedySelection(stockSeries, 20, this.Accuracy);
                 if (engine.BestTradeSummary == null)
                     return false;
 

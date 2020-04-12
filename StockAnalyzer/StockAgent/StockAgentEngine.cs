@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockAgent
             return newList;
         }
 
-        public void GreedySelection(IEnumerable<StockSerie> series, int minIndex)
+        public void GreedySelection(IEnumerable<StockSerie> series, int minIndex, int accuracy)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -59,13 +59,13 @@ namespace StockAnalyzer.StockAgent
             var bestAgent = agent;
             StockTradeSummary bestTradeSummary = null;
 
-            var parameters = StockAgentBase.GetParamRanges(this.AgentType, 50);
+            var parameters = StockAgentBase.GetParamRanges(this.AgentType, accuracy);
 
             int dim = parameters.Count;
             var sizes = parameters.Select(p => p.Value.Count).ToArray();
             var indexes = parameters.Select(p => 0).ToArray();
             int nbSteps = sizes.Aggregate(1, (i, j) => i * j);
-            int modulo = nbSteps / 100;
+            int modulo = Math.Max(1, nbSteps / 100);
             for (int i = 0; i < nbSteps; i++)
             {
                 if (Worker != null && Worker.CancellationPending)
@@ -92,7 +92,7 @@ namespace StockAnalyzer.StockAgent
 
                 // Select Best
                 var tradeSummary = this.Context.GetTradeSummary();
-                if (bestTradeSummary == null || tradeSummary.CompoundGain > bestTradeSummary.CompoundGain)
+                if (bestTradeSummary == null || tradeSummary.WinRatio> bestTradeSummary.WinRatio)
                 {
                     bestTradeSummary = tradeSummary;
                     bestAgent = agent;
@@ -198,9 +198,9 @@ namespace StockAnalyzer.StockAgent
         public void Perform(IEnumerable<StockSerie> series, int minIndex)
         {
             this.Context.Clear();
-
             foreach (var serie in series)
             {
+                this.Context.Trade = null;
                 serie.ResetIndicatorCache();
                 this.Agent.Initialize(serie);
 
