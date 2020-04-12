@@ -65,9 +65,12 @@ namespace StockAnalyzer.StockAgent
             var sizes = parameters.Select(p => p.Value.Count).ToArray();
             var indexes = parameters.Select(p => 0).ToArray();
             int nbSteps = sizes.Aggregate(1, (i, j) => i * j);
+            int modulo = nbSteps / 100;
             for (int i = 0; i < nbSteps; i++)
             {
-                if (ProgressChanged != null && i % 100 == 0)
+                if (Worker != null && Worker.CancellationPending)
+                    return;
+                if (ProgressChanged != null && i % modulo == 0)
                 {
                     int percent = (i * 100) / nbSteps;
                     this.ProgressChanged(this, new ProgressChangedEventArgs(percent, null));
@@ -105,7 +108,7 @@ namespace StockAnalyzer.StockAgent
             // Format and display the TimeSpan value.
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             string msg = bestTradeSummary.ToLog() + Environment.NewLine;
-            msg += bestAgent.ToLog();
+            msg += bestAgent.ToLog() + Environment.NewLine;
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
@@ -115,6 +118,7 @@ namespace StockAnalyzer.StockAgent
             this.Report = msg;
         }
 
+        public BackgroundWorker Worker { get; set; }
         public string Report { get; set; }
 
         public static void CalculateIndexes(int dim, int[] sizes, int[] indexes, int i)
@@ -198,10 +202,9 @@ namespace StockAnalyzer.StockAgent
             foreach (var serie in series)
             {
                 serie.ResetIndicatorCache();
-                this.Context.Serie = serie;
                 this.Agent.Initialize(serie);
 
-                var size = this.Context.Serie.Count - 1;
+                var size = serie.Count - 1;
                 for (int i = minIndex; i < size; i++)
                 {
                     this.Context.CurrentIndex = i;
@@ -211,7 +214,7 @@ namespace StockAnalyzer.StockAgent
                         case TradeAction.Nothing:
                             break;
                         case TradeAction.Buy:
-                            this.Context.OpenTrade(i + 1);
+                            this.Context.OpenTrade(serie, i + 1);
                             break;
                         case TradeAction.Sell:
                             this.Context.CloseTrade(i + 1);

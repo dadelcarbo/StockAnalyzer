@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />

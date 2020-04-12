@@ -56,7 +56,19 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
         public IEnumerable Parameters => ParameterViewModel.GetParameters(this.agentType);
 
-        public string Report => engine?.Report;
+        string report;
+        public string Report
+        {
+            get => report;
+            set
+            {
+                if (report != value)
+                {
+                    report = value;
+                    OnPropertyChanged("Report");
+                }
+            }
+        }
 
         int progressValue;
         public int ProgressValue
@@ -93,17 +105,30 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             if (worker == null)
             {
+                this.Report = "Performing";
                 engine = new StockAgentEngine(agentType);
                 worker = new BackgroundWorker();
+                engine.Worker = worker;
                 worker.WorkerSupportsCancellation = true;
                 worker.WorkerReportsProgress = true;
                 worker.DoWork += RunAgentEngineOnGroup;
-                worker.RunWorkerCompleted += (a, b) =>
+                worker.RunWorkerCompleted += (a, e) =>
                 {
-                    Clipboard.SetText(this.Report);
-                    this.worker = null;
+                    this.PerformText = "Perform";
                     this.ProgressValue = 0;
-                    this.PerformText = "Perform"; 
+                    if (e.Cancelled)
+                    {
+                        this.Report = "Cancelled...";
+                    }
+                    else
+                    {
+                        this.Report = engine.Report;
+                        string rpt = this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t";
+                        rpt += engine.BestTradeSummary.ToStats();
+                        rpt += engine.BestAgent.GetParameterValues();
+                        Clipboard.SetText(rpt);
+                    }
+                    this.worker = null;
                 };
 
                 this.PerformText = "Cancel";
@@ -112,9 +137,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             else
             {
                 worker.CancelAsync();
-                worker = null;
-                this.PerformText = "Perform";
-                this.ProgressValue = 0;
             }
         }
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
@@ -126,10 +148,17 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.ProgressValue = evt.ProgressPercentage;
             };
 
-            this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise()));
+            if (this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise())))
+            {
+                e.Cancel = false;
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
-        private void RunAgentEngine(IEnumerable<StockSerie> stockSeries)
+        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
         {
             try
             {
@@ -139,6 +168,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 }
 
                 engine.GreedySelection(stockSeries, 20);
+                if (engine.BestTradeSummary == null)
+                    return false;
 
                 StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
                 foreach (var trade in engine.BestTradeSummary.Trades)
@@ -147,14 +178,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
                     StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
                 }
-
-                OnPropertyChanged("Report");
                 // this.graphCloseControl.ForceRefresh();
             }
             catch (Exception ex)
             {
                 StockAnalyzerException.MessageBox(ex);
             }
+            return true;
         }
     }
 }

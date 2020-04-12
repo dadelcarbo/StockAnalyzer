@@ -22,8 +22,8 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie ema, emaFilter;
         public override void Initialize(StockSerie stockSerie)
         {
-            ema = context.Serie.GetIndicator($"EMA({FastPeriod})").Series[0];
-            emaFilter = context.Serie.GetIndicator($"EMA({SlowPeriod})").Series[0];
+            ema = stockSerie.GetIndicator($"EMA({FastPeriod})").Series[0];
+            emaFilter = stockSerie.GetIndicator($"EMA({SlowPeriod})").Series[0];
         }
 
         protected override TradeAction TryToOpenPosition()

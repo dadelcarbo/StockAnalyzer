@@ -26,5 +26,6 @@ namespace StockAnalyzer.StockAgent
 
         string ToLog();
         void Initialize(StockSerie stockSerie);
+        string GetParameterValues();
     }
 }

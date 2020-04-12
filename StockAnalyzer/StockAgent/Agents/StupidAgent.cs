@@ -42,8 +42,6 @@ namespace StockAnalyzer.StockAgent.Agents
  
         protected override TradeAction TryToClosePosition()
         {
-            FloatSerie closeSerie = context.Serie.GetSerie(StockDataType.CLOSE);
-
             int i = context.CurrentIndex;
             float close = closeSerie[i];
             float gain = (close - context.Trade.EntryValue) / context.Trade.EntryValue;

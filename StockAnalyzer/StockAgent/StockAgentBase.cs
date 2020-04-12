@@ -226,7 +226,7 @@ namespace StockAnalyzer.StockAgent
         }
         public string ToLog()
         {
-            string res = string.Empty;
+            string res = this.GetType().Name + Environment.NewLine;
 
             var parameters = StockAgentBase.GetParams(this.GetType());
             foreach (var param in parameters)
@@ -235,5 +235,17 @@ namespace StockAnalyzer.StockAgent
             }
             return res;
         }
+        public string GetParameterValues()
+        {
+            string res = string.Empty;
+
+            var parameters = StockAgentBase.GetParams(this.GetType());
+            foreach (var param in parameters)
+            {
+                res += param.Key.Name + ": " + param.Key.GetValue(this, null) + "\t";
+            }
+            return res;
+        }
+
     }
 }

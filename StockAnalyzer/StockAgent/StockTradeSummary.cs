@@ -37,5 +37,17 @@ namespace StockAnalyzer.StockAgent
             return res;
         }
 
+        public string ToStats()
+        {
+            string res = MaxDrawdown + "\t";
+            res += AvgGain + "\t";
+            res += CumulGain + "\t";
+            res += CompoundGain + "\t";
+            res += Trades.Count() + "\t";
+            res += NbWinTrade + "\t";
+            res += NbLostTrade + "\t";
+            res += WinRatio + "\t";
+            return res;
+        }
     }
 }

@@ -9,19 +9,7 @@ namespace StockAnalyzer.StockAgent
     public class StockContext
     {
         public int CurrentIndex { get; set; }
-        private StockSerie serie;
-        public StockSerie Serie
-        {
-            get { return serie; }
-            set
-            {
-                if (serie != value)
-                {
-                    this.serie = value;
-                }
-            }
-        }
-
+     
         public StockTrade Trade { get; set; }
 
         public StockContext()
@@ -30,11 +18,11 @@ namespace StockAnalyzer.StockAgent
         }
         public List<StockTrade> TradeLog { get; set; }
 
-        public void OpenTrade(int entryIndex, bool isLong = true)
+        public void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true)
         {
-            if (entryIndex >= this.Serie.Count) return;
+            if (entryIndex >= serie.Count) return;
 
-            this.Trade = new StockTrade(this.Serie, entryIndex, isLong);
+            this.Trade = new StockTrade(serie, entryIndex, isLong);
             this.TradeLog.Add(this.Trade);
         }
 
@@ -55,7 +43,6 @@ namespace StockAnalyzer.StockAgent
         {
             this.Trade = null;
             this.TradeLog = new List<StockTrade>();
-            this.Serie = null;
         }
     }
 }

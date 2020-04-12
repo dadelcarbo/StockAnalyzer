@@ -31,6 +31,10 @@ namespace StockAnalyzer.StockAgent
         public float DrawDown { get; private set; }
         public float MaxGain { get; private set; }
 
+        FloatSerie openSerie;
+        FloatSerie highSerie;
+        FloatSerie lowSerie;
+
         public StockTrade(StockSerie serie, int entryIndex, bool isLong = true)
         {
             this.Serie = serie;
@@ -38,7 +42,10 @@ namespace StockAnalyzer.StockAgent
             this.ExitIndex = -1;
             this.IsLong = isLong;
 
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
+            openSerie = this.Serie.GetSerie(StockDataType.OPEN);
+            highSerie = this.Serie.GetSerie(StockDataType.HIGH);
+            lowSerie = this.Serie.GetSerie(StockDataType.LOW);
+
             this.EntryValue = openSerie[entryIndex];
 
             this.Gain = float.NaN;
@@ -48,49 +55,34 @@ namespace StockAnalyzer.StockAgent
             this.IsClosed = false;
         }
 
-        public StockTrade(StockSerie serie, int entryIndex, int exitIndex, bool isLong = true)
-        {
-            this.Serie = serie;
-            this.EntryIndex = entryIndex;
-            this.IsLong = isLong;
-
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
-            this.EntryValue = openSerie[entryIndex];
-
-            this.Close(exitIndex);
-        }
-
         public void Close(int exitIndex)
         {
             this.ExitIndex = exitIndex;
 
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
-            FloatSerie closeSerie = this.Serie.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = this.Serie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = this.Serie.GetSerie(StockDataType.LOW);
-
-            this.ExitValue = closeSerie[exitIndex];
+            this.ExitValue = openSerie[exitIndex];
             float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
             float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
 
-            this.Gain = this.IsLong ?
-                (this.ExitValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - this.ExitValue) / this.EntryValue;
-
-            this.MaxGain = this.IsLong ?
-                (maxValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - minValue) / this.EntryValue;
-
-            this.DrawDown = this.IsLong ?
-                (minValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - maxValue) / this.EntryValue;
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                this.MaxGain = (maxValue - this.EntryValue) / this.EntryValue;
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                this.MaxGain = (this.EntryValue - minValue) / this.EntryValue;
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
 
             this.IsClosed = true;
         }
 
         public float GainAt(int index)
         {
-            if (index < this.EntryIndex) {
+            if (index < this.EntryIndex)
+            {
                 throw new ArgumentOutOfRangeException("Cannot get gain before trade is opened");
             }
             if (this.IsClosed && index > this.EntryIndex)
