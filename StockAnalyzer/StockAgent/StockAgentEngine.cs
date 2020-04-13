@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockAgent
             return newList;
         }
 
-        public void GreedySelection(IEnumerable<StockSerie> series, int minIndex, int accuracy)
+        public void GreedySelection(IEnumerable<StockSerie> series, int minIndex, int accuracy, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -92,7 +92,7 @@ namespace StockAnalyzer.StockAgent
 
                 // Select Best
                 var tradeSummary = this.Context.GetTradeSummary();
-                if (bestTradeSummary == null || tradeSummary.WinRatio> bestTradeSummary.WinRatio)
+                if (bestTradeSummary == null || selector(tradeSummary) > selector(bestTradeSummary))
                 {
                     bestTradeSummary = tradeSummary;
                     bestAgent = agent;

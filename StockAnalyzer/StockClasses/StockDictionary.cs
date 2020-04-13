@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
@@ -628,10 +629,10 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (index != -1)
                     {
-                        IStockIndicator emaIndicator = serie.GetIndicator("EMA(" + period + ")");
-                        if (emaIndicator != null && emaIndicator.Series[0].Count > 0)
+                        IStockEvent emaIndicator = serie.GetTrailStop("TRAILEMA(" + period + ",1)");
+                        if (emaIndicator != null && emaIndicator.Events[0].Count > 0)
                         {
-                            if (emaIndicator.Events[8][index])
+                            if (emaIndicator.Events[6][index])
                             {
                                 val++;
                             }

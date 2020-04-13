@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs" 
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             >
+             d:DesignHeight="450" d:DesignWidth="900"
+             Height="450" Width="900">
     <UserControl.Resources>
         <local:AgentSimulationViewModel x:Key="ViewModel"></local:AgentSimulationViewModel>
     </UserControl.Resources>
@@ -18,15 +18,17 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Margin="2">Group</Label>
-            <ComboBox Margin="2" Width="120" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
+            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
             <Label Margin="2">Duration</Label>
-            <ComboBox Margin="2" Width="120" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
+            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
             <Label Margin="2">Agent</Label>
-            <ComboBox Margin="2" Width="140" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
+            <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
             <Label Margin="2">Accuracy</Label>
-            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" />
+            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
+            <Label Margin="2">Selector</Label>
+            <telerik:RadComboBox Margin="2" Width="90" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
             <Button Margin="2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">

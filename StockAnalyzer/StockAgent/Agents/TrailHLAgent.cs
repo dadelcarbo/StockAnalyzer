@@ -1,34 +1,29 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class ATRStopAgent : StockAgentBase
+    public class TrailHLAgent : StockAgentBase
     {
-        public ATRStopAgent(StockContext context)
+        public TrailHLAgent(StockContext context)
             : base(context)
         {
             Period = 13;
-            Width = 2.0f;
         }
 
-        [StockAgentParam(5, 80)]
+        [StockAgentParam(2, 80)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.5f, 4.0f)]
-        public float Width { get; set; }
-
-        public override string Description => "Buy when Open and close are above EMA";
+        public override string Description => "Buy with TRAILHL Stop";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         public override void Initialize(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{Width},{-Width},MA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILHL({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }

@@ -15,7 +15,16 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public AgentSimulationDlg()
         {
             InitializeComponent();
-            this.Closing += (s, e) => { (this.elementHost1.Child as AgentSimulationControl).ViewModel.Cancel(); };
+            var viewModel = (this.elementHost1.Child as AgentSimulationControl).ViewModel;
+            this.Closing += (s, e) => { viewModel.Cancel(); };
+
+            viewModel.Completed += Completed;
+        }
+
+        private void Completed()
+        {
+            this.TopMost = true;
+            this.TopMost = false;
         }
     }
 }

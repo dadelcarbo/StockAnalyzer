@@ -25,9 +25,6 @@ namespace StockAnalyzer.StockClasses
         TLB_6D,
         TLB_9D,
         TLB_27D,
-        ThreeLineBreak,
-        SixLineBreak,
-        TLB_Weekly,
         RENKO_2
     }
 

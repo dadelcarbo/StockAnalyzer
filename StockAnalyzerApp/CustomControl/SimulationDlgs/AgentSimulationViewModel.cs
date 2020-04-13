@@ -23,6 +23,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
             this.Accuracy = 20;
+            this.Selector = "Coumpound";
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
@@ -30,6 +31,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration Duration { get; set; }
 
         public int Accuracy { get; set; }
+
+        public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio" };
+        public string Selector { get; set; }
 
         public void Cancel()
         {
@@ -101,6 +105,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
+        public Action Completed { get; internal set; }
+
         BackgroundWorker worker = null;
 
         StockAgentEngine engine;
@@ -130,6 +136,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
                         Clipboard.SetText(rpt);
+
+                        this?.Completed();
                     }
                     this.worker = null;
                 };
@@ -165,12 +173,31 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             try
             {
+                Func<StockTradeSummary, float> selector;
+                switch (this.Selector)
+                {
+                    case "Coumpound":
+                        selector = t => t.CompoundGain;
+                        break;
+                    case "Average":
+                        selector = t => t.AvgGain;
+                        break;
+                    case "CumulGain":
+                        selector = t => t.CumulGain;
+                        break;
+                    case "WinRatio":
+                        selector = t => t.WinRatio;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
+                }
+
                 foreach (var serie in stockSeries)
                 {
                     serie.BarDuration = this.Duration;
                 }
 
-                engine.GreedySelection(stockSeries, 20, this.Accuracy);
+                engine.GreedySelection(stockSeries, 20, this.Accuracy, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
 

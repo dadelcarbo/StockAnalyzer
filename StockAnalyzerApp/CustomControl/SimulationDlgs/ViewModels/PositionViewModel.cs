@@ -65,12 +65,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
             }
         }
 
-        private float maxDrawdown;
-        public float MaxDrawdown
-        {
-            get { return maxDrawdown; }
-            set { maxDrawdown = value; }
-        }
+        public float MaxDrawdown { get; set; }
 
         public ObservableCollection<OrderViewModel> Orders { get; set; }
         public OrderViewModel StopOrder { get; set; }
