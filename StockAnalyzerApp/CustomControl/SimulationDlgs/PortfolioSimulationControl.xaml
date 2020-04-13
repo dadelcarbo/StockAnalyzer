@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.SimulationDlgs.AgentSimulationControl"
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.SimulationDlgs.PortfolioSimulationControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="900"
              Height="450" Width="900">
     <UserControl.Resources>
-        <local:AgentSimulationViewModel x:Key="ViewModel"></local:AgentSimulationViewModel>
+        <local:PortfolioSimulationViewModel x:Key="ViewModel"></local:PortfolioSimulationViewModel>
     </UserControl.Resources>
     <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -25,11 +25,7 @@
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
             <Label Margin="2">Agent</Label>
             <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
-            <Label Margin="2">Accuracy</Label>
-            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
-            <Label Margin="2">Selector</Label>
-            <telerik:RadComboBox Margin="2" Width="90" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
-            <Button Margin="2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
+            <Button Margin="20,2,2,2" x:Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">
             <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>

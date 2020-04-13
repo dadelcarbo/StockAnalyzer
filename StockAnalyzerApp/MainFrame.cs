@@ -3172,6 +3172,23 @@ namespace StockAnalyzerApp
             }
         }
 
+        PortfolioSimulationDlg portfolioSimulationDialog = null;
+        private void portfolioSimulationMenuItem_Click(object sender, EventArgs e)
+        {
+            if (portfolioSimulationDialog == null)
+            {
+                portfolioSimulationDialog = new PortfolioSimulationDlg();
+                portfolioSimulationDialog.FormClosed += (a, b) => {
+                    portfolioSimulationDialog = null;
+                };
+                portfolioSimulationDialog.Show();
+            }
+            else
+            {
+                portfolioSimulationDialog.Activate();
+            }
+        }
+
         private void filteredStrategySimulationMenuItem_Click(object sender, EventArgs e)
         {
             //throw new NotImplementedException("strategySimulationMenuItem_Click");

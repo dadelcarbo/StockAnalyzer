@@ -156,6 +156,21 @@ namespace StockAnalyzer.StockAgent
                 }
             }
         }
+        public void SetParam(PropertyInfo property, StockAgentParamAttribute attribute, float newValue)
+        {
+            if (property.PropertyType == typeof(int))
+            {
+                property.SetValue(this, (int)Math.Round(newValue), null);
+            }
+            else if (property.PropertyType == typeof(float))
+            {
+                property.SetValue(this, newValue, null);
+            }
+            else
+            {
+                throw new NotSupportedException("Type " + property.PropertyType + " is not supported as a parameter in Agent");
+            }
+        }
 
         public IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren)
         {

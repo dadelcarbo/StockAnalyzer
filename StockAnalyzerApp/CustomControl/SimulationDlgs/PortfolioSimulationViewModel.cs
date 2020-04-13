@@ -15,14 +15,11 @@ using System.Windows;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
-    public class AgentSimulationViewModel : NotifyPropertyChangedBase
+    public class PortfolioSimulationViewModel : NotifyPropertyChangedBase
     {
-        public AgentSimulationViewModel()
+        public PortfolioSimulationViewModel()
         {
             this.performText = "Perform";
-            this.Accuracy = 20;
-            this.Selector = "Coumpound";
-
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
@@ -32,11 +29,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockSerie.Groups Group { get; set; }
         public IList<StockBarDuration> Durations => StockBarDuration.Values;
         public StockBarDuration Duration { get; set; }
-
-        public int Accuracy { get; set; }
-
-        public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio" };
-        public string Selector { get; set; }
 
         public void Cancel()
         {
@@ -64,7 +56,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
-        public IEnumerable Parameters => ParameterRangeViewModel.GetParameters(this.agentType);
+        public IEnumerable<ParameterViewModel> Parameters => ParameterViewModel.GetParameters(this.agentType);
 
         string report;
         public string Report
@@ -119,6 +111,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
                 engine = new StockAgentEngine(agentType);
+                engine.Agent = StockAgentBase.CreateInstance(this.agentType, engine.Context);
+
+                // Set agent properties
+                foreach (var parameter in this.Parameters)
+                {
+                    engine.Agent.SetParam(parameter.GetProperty(), parameter.GetAttribute(), parameter.Value);
+                }
+
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
                 worker.WorkerSupportsCancellation = true;
@@ -131,21 +131,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     if (e.Cancelled)
                     {
                         this.Report = "Cancelled...";
-                    }
-                    else
-                    {
-                        this.Report = engine.Report;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector +"\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t";
-                        rpt += engine.BestTradeSummary.ToStats();
-                        rpt += engine.BestAgent.GetParameterValues();
-                        Clipboard.SetText(rpt);
-
-                        using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
-                        {
-                            sr.WriteLine(rpt);
-                        }
-
-                        this?.Completed();
                     }
                     this.worker = null;
                 };
@@ -176,51 +161,39 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 e.Cancel = true;
             }
         }
-
         private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
         {
             try
             {
-                Func<StockTradeSummary, float> selector;
-                switch (this.Selector)
-                {
-                    case "Coumpound":
-                        selector = t => t.CompoundGain;
-                        break;
-                    case "Average":
-                        selector = t => t.AvgGain;
-                        break;
-                    case "CumulGain":
-                        selector = t => t.CumulGain;
-                        break;
-                    case "WinRatio":
-                        selector = t => t.WinRatio;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
-                }
-
                 foreach (var serie in stockSeries)
                 {
                     serie.BarDuration = this.Duration;
                 }
 
-                engine.GreedySelection(stockSeries, 20, this.Accuracy, selector);
-                if (engine.BestTradeSummary == null)
-                    return false;
+                engine.Perform(stockSeries, 20);
+
+                var tradeSummary = engine.Context.GetTradeSummary();
 
                 StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
-                foreach (var trade in engine.BestTradeSummary.Trades)
+                foreach (var trade in tradeSummary.Trades)
                 {
                     // Create operations
                     StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
                     StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
                 }
+
+                string msg = tradeSummary.ToLog() + Environment.NewLine;
+                msg += engine.Agent.ToLog() + Environment.NewLine;
+                msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
+
+                this.Report = msg;
+
                 // this.graphCloseControl.ForceRefresh();
             }
             catch (Exception ex)
             {
                 StockAnalyzerException.MessageBox(ex);
+                this.Report = ex.Message;
             }
             return true;
         }

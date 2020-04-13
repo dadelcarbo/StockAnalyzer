@@ -276,6 +276,10 @@
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\GroupViewDlg\GroupViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml.cs">
+      <DependentUpon>PortfolioSimulationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml.cs">
       <DependentUpon>AgentSimulationControl.xaml</DependentUpon>
     </Compile>
@@ -286,8 +290,15 @@
     <Compile Include="CustomControl\SimulationDlgs\AgentSimulationDlg.Designer.cs">
       <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.Designer.cs">
+      <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterRangeViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
       <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
@@ -455,12 +466,6 @@
     <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.Designer.cs">
       <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.Designer.cs">
-      <DependentUpon>PortfolioSimulatorDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -604,6 +609,9 @@
     <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.resx">
       <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
+      <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\StockMarketReplay.resx">
       <DependentUpon>StockMarketReplay.cs</DependentUpon>
     </EmbeddedResource>
@@ -706,10 +714,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.resx">
       <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.resx">
-      <DependentUpon>PortfolioSimulatorDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\SimulationParameterControl.resx">
       <DependentUpon>SimulationParameterControl.cs</DependentUpon>
@@ -938,6 +942,10 @@
     <Page Include="CustomControl\MultiTimeFrameDlg\MTFUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml">
       <SubType>Designer</SubType>
