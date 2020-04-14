@@ -814,17 +814,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
                 {
-                    for (int i = StartIndex; i <= EndIndex; i++)
+                    var startDate = this.dateSerie[StartIndex];
+                    var endDate = this.dateSerie[EndIndex];
+                    foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
                     {
-                        DateTime agendaDate = this.dateSerie[i];
-                        if (this.Agenda.ContainsKey(agendaDate))
+                        if (agendaEntry.IsOfType(this.ShowAgenda))
                         {
-                            var agendaEntry = this.Agenda[agendaDate];
-                            if (agendaEntry.IsOfType(this.ShowAgenda))
-                            {
-                                PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(i);
-                                aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
-                            }
+                            int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
+
+                            PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                            aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
                         }
                     }
                 }
@@ -1219,10 +1218,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                          (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
                     {
                         int i = this.RoundToIndex(mousePoint);
-                        DateTime agendaDate = this.dateSerie[i];
-                        if (this.Agenda.ContainsKey(agendaDate))
+                        DateTime agendaDate1 = this.dateSerie[i-1];
+                        DateTime agendaDate2 = this.dateSerie[i];
+                        var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date < agendaDate2);
+                        if (agendaEntry != null)
                         {
-                            var agendaEntry = this.Agenda[agendaDate];
                             if (agendaEntry.IsOfType(this.ShowAgenda))
                             {
                                 string eventText = agendaEntry.Event.Replace("\n", " ");
