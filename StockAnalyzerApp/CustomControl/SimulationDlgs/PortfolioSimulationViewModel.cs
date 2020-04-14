@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             this.performText = "Perform";
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
-            agent = Agents.FirstOrDefault();
+            this.Agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
@@ -50,13 +50,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (agent != value)
                 {
                     agent = value;
+                    this.Parameters = ParameterViewModel.GetParameters(this.agentType).ToList();
                     OnPropertyChanged("Parameters");
                 }
             }
         }
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
-        public IEnumerable<ParameterViewModel> Parameters => ParameterViewModel.GetParameters(this.agentType);
+        public IEnumerable<ParameterViewModel> Parameters { get; private set; }
 
         string report;
         public string Report
@@ -165,26 +166,39 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             try
             {
-                foreach (var serie in stockSeries)
-                {
-                    serie.BarDuration = this.Duration;
-                }
-
-                engine.Perform(stockSeries, 20);
+                engine.Perform(stockSeries, 20, this.Duration);
 
                 var tradeSummary = engine.Context.GetTradeSummary();
 
-                StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
-                foreach (var trade in tradeSummary.Trades)
+                StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
+                StockPortfolio.SimulationPortfolio.Clear();
+                float portfolioPercent = 1 / (float)stockSeries.Count();
+
+                string openedPositions = string.Empty;
+                foreach (var trade in tradeSummary.Trades.OrderBy(t => t.EntryDate))
                 {
-                    // Create operations
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
+                    if (worker.CancellationPending)
+                        return false;
+
+                    // Add trade
+                    StockPortfolio.SimulationPortfolio.AddTrade(trade, portfolioPercent);
+
+                    if (!trade.IsClosed)
+                    {
+                        openedPositions += trade.Serie.StockName + Environment.NewLine;
+                    }
                 }
 
-                string msg = tradeSummary.ToLog() + Environment.NewLine;
+                string msg = "Portfolio: " + Environment.NewLine;
+                msg += "Initial balance: " + StockPortfolio.SimulationPortfolio.InitialBalance + Environment.NewLine;
+                msg += "Balance: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;
+                msg += "Return: " + ((StockPortfolio.SimulationPortfolio.Balance - StockPortfolio.SimulationPortfolio.InitialBalance) / StockPortfolio.SimulationPortfolio.InitialBalance).ToString("P2") + Environment.NewLine;
+
+                msg += Environment.NewLine + tradeSummary.ToLog() + Environment.NewLine;
                 msg += engine.Agent.ToLog() + Environment.NewLine;
                 msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
+                msg += "Opened position: " + Environment.NewLine;
+                msg += Environment.NewLine + openedPositions + Environment.NewLine;
 
                 this.Report = msg;
 

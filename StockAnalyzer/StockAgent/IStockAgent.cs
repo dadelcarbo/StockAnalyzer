@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockAgent
         bool AreSameParams(IStockAgent other);
 
         string ToLog();
-        void Initialize(StockSerie stockSerie);
+        void Initialize(StockSerie stockSerie, StockBarDuration duration);
         string GetParameterValues();
         void SetParam(PropertyInfo property, StockAgentParamAttribute attribute, float newValue);
     }

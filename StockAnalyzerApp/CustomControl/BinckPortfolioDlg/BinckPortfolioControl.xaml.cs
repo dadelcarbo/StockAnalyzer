@@ -50,6 +50,8 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
         private void operationGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
         {
+            if (this.operationGridView.SelectedItem == null)
+                return;
             var viewModel = this.operationGridView.SelectedItem as StockOperation;
 
             var stockName = viewModel.StockName;

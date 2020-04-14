@@ -59,11 +59,12 @@ namespace StockAnalyzer.StockBinckPortfolio
             return operation;
         }
 
+        public static int OperationId = 0;
         static public StockOperation FromSimu(DateTime date, string name, string type, int qty, float amount, bool isShort = false)
         {
             var operation = new StockOperation();
 
-            operation.Id = 0;
+            operation.Id = OperationId++;
             operation.Date = date;
             operation.OperationType = type;
             operation.IsShort = isShort;

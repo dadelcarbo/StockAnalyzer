@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when Open and close are above EMA";
 
         FloatSerie ema, emaFilter;
-        public override void Initialize(StockSerie stockSerie)
+        protected override void Init(StockSerie stockSerie)
         {
             ema = stockSerie.GetIndicator($"EMA({FastPeriod})").Series[0];
             emaFilter = stockSerie.GetIndicator($"EMA({SlowPeriod})").Series[0];

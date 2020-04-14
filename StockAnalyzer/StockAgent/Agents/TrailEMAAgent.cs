@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        public override void Initialize(StockSerie stockSerie)
+        protected override void Init(StockSerie stockSerie)
         {
             trailStop = stockSerie.GetTrailStop($"TRAILEMA({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];

@@ -38,10 +38,14 @@ namespace StockAnalyzer.StockAgent
             return agentList;
         }
 
-        public virtual void Initialize(StockSerie stockSerie)
+        public void Initialize(StockSerie stockSerie, StockBarDuration duration)
         {
+            stockSerie.BarDuration = duration;
             closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+
+            Init(stockSerie);
         }
+        protected abstract void Init(StockSerie stockSerie);
 
         public virtual TradeAction Decide()
         {

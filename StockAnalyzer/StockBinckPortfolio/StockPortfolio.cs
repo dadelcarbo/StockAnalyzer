@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,10 @@ namespace StockAnalyzer.StockBinckPortfolio
 {
     public class StockPortfolio
     {
+        public const string SIMU_P = "Simu_P";
+
+        public static StockPortfolio SimulationPortfolio = null;
+
         public static IStockPriceProvider PriceProvider { get; set; }
 
         public static List<StockPortfolio> Portfolios { get; private set; }
@@ -24,6 +29,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
+            // Add simulation portfolio
+            StockPortfolio.Portfolios.Add(SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 100000, IsSimu = true });
             return StockPortfolio.Portfolios;
         }
         public StockPortfolio()
@@ -179,6 +186,35 @@ namespace StockAnalyzer.StockBinckPortfolio
                     }
                     break;
             }
+        }
+
+        public void AddTrade(StockTrade trade, float portfolioPercent)
+        {
+            var amountToInvest = this.Balance * portfolioPercent;
+            var qty = (int)(amountToInvest / trade.EntryValue);
+            var entryValue = qty * trade.EntryValue;
+            this.Balance -= entryValue;
+
+            var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, entryValue, !trade.IsLong);
+            entry.Balance = this.Balance;
+            this.AddOperation(entry);
+
+            if (!trade.IsClosed)
+                return;
+
+            var exitValue = qty * trade.ExitValue;
+            this.Balance += exitValue;
+            var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, qty, exitValue, !trade.IsLong);
+            exit.Balance = this.Balance;
+            this.AddOperation(exit);
+        }
+        private int operationId = 0;
+        public void Clear()
+        {
+            this.Operations.Clear();
+            this.Positions.Clear();
+            this.Balance = this.InitialBalance;
+            StockOperation.OperationId = 0;
         }
 
         public void Dump()

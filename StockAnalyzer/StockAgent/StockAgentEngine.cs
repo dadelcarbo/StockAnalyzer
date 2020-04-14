@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockAgent
             return newList;
         }
 
-        public void GreedySelection(IEnumerable<StockSerie> series, int minIndex, int accuracy, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockAgent
 
                 // Perform calculation
                 this.Agent = agent;
-                this.Perform(series, minIndex);
+                this.Perform(series, minIndex, duration);
 
                 // Select Best
                 var tradeSummary = this.Context.GetTradeSummary();
@@ -130,7 +130,7 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void GeneticSelection(int nbIteration, int nbAgents, IEnumerable<StockSerie> series, int minIndex)
+        public void GeneticSelection(int nbIteration, int nbAgents, IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex)
         {
             List<IStockAgent> agents = new List<IStockAgent>();
 
@@ -155,7 +155,7 @@ namespace StockAnalyzer.StockAgent
                 foreach (var agent in agents)
                 {
                     this.Agent = agent;
-                    this.Perform(series, minIndex);
+                    this.Perform(series, minIndex, duration);
 
                     var tradeSummary = this.Context.GetTradeSummary();
 
@@ -193,14 +193,14 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
             this.Context.Clear();
             foreach (var serie in series)
             {
                 this.Context.Trade = null;
                 serie.ResetIndicatorCache();
-                this.Agent.Initialize(serie);
+                this.Agent.Initialize(serie, duration);
 
                 var size = serie.Count - 1;
                 for (int i = minIndex; i < size; i++)

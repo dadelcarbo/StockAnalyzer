@@ -82,7 +82,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
+    <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
@@ -100,8 +102,6 @@
       <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
-    <Compile Include="StockBinckPortfolio\StockTrade.cs" />
-    <Compile Include="StockBinckPortfolio\StockTradeLog.cs" />
     <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />

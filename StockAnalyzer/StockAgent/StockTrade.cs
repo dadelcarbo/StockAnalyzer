@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
 using System;
+using System.Linq;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -8,8 +9,10 @@ namespace StockAnalyzer.StockAgent
     {
         public StockSerie Serie { get; private set; }
         public int EntryIndex { get; private set; }
+        public DateTime EntryDate { get; private set; }
         public float EntryValue { get; private set; }
         public int ExitIndex { get; private set; }
+        public DateTime ExitDate { get; private set; }
         public float ExitValue { get; private set; }
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
@@ -35,6 +38,7 @@ namespace StockAnalyzer.StockAgent
         {
             this.Serie = serie;
             this.EntryIndex = entryIndex;
+            this.EntryDate = serie.Keys.ElementAt(entryIndex);
             this.ExitIndex = -1;
             this.IsLong = isLong;
 
@@ -55,6 +59,7 @@ namespace StockAnalyzer.StockAgent
             this.ExitIndex = exitIndex;
 
             this.ExitValue = openSerie[exitIndex];
+            this.ExitDate = Serie.Keys.ElementAt(exitIndex);
 
             if (this.IsLong)
             {

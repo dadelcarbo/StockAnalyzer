@@ -1,34 +1,34 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class BBStopAgent : StockAgentBase
+    public class FilteredTrailHLAgent : StockAgentBase
     {
-        public BBStopAgent(StockContext context)
+        public FilteredTrailHLAgent(StockContext context)
             : base(context)
         {
-            MAPeriod = 13;
-            BBWidth = 2.0f;
+            Period = 13;
         }
 
-        [StockAgentParam(5, 60)]
-        public int MAPeriod { get; set; }
+        [StockAgentParam(2, 20)]
+        public int Period { get; set; }
 
-        [StockAgentParam(0.75f, 3.0f)]
-        public float BBWidth { get; set; }
+        [StockAgentParam(20, 80)]
+        public int FilterPeriod { get; set; }
 
-        public override string Description => "Buy when Open and close are above EMA";
+        public override string Description => "Buy with TRAILHL Stop";
 
         IStockTrailStop trailStop;
+        FloatSerie emaFilterSerie;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILBB({MAPeriod},{BBWidth},{-BBWidth})");
+            emaFilterSerie = stockSerie.GetIndicator($"EMA({FilterPeriod})").Series[0];
+            trailStop = stockSerie.GetTrailStop($"TRAILHL({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             int i = context.CurrentIndex;
 
-            if (bullEvents[i])
+            if (bullEvents[i] && closeSerie[i] >= emaFilterSerie[i])
             {
                 return TradeAction.Buy;
             }

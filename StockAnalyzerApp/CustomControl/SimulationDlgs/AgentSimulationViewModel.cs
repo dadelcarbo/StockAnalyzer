@@ -200,12 +200,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                foreach (var serie in stockSeries)
-                {
-                    serie.BarDuration = this.Duration;
-                }
-
-                engine.GreedySelection(stockSeries, 20, this.Accuracy, selector);
+                engine.GreedySelection(stockSeries, this.Duration, 20, this.Accuracy, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
 

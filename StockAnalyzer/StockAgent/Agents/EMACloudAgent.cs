@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockCloud cloud;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        public override void Initialize(StockSerie stockSerie)
+        protected override void Init(StockSerie stockSerie)
         {
             cloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
             bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenUp")];

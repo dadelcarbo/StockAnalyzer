@@ -5,34 +5,36 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class TrailHLAgent : StockAgentBase
+    public class RORRODAgent : StockAgentBase
     {
-        public TrailHLAgent(StockContext context)
+        public RORRODAgent(StockContext context)
             : base(context)
         {
-            Period = 13;
+            RORPeriod = 50;
+            RORPeriod = 50;
         }
 
-        [StockAgentParam(2, 80)]
-        public int Period { get; set; }
+        [StockAgentParam(5, 200)]
+        public int RORPeriod { get; set; }
 
-        public override string Description => "Buy with TRAILHL Stop";
+        [StockAgentParam(5, 200)]
+        public int RODPeriod { get; set; }
 
-        IStockTrailStop trailStop;
-        BoolSerie bullEvents;
-        BoolSerie bearEvents;
+        public override string Description => "Buy when ROR > ROD";
+
+        FloatSerie rorFilterSerie;
+        FloatSerie rodFilterSerie;
         protected override void Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILHL({Period})");
-            bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
-            bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            rorFilterSerie = stockSerie.GetIndicator($"ROR({RORPeriod},1)").Series[0];
+            rodFilterSerie = stockSerie.GetIndicator($"ROD({RORPeriod},1)").Series[0];
         }
 
         protected override TradeAction TryToOpenPosition()
         {
             int i = context.CurrentIndex;
 
-            if (bullEvents[i])
+            if (rorFilterSerie[i] >= rodFilterSerie[i])
             {
                 return TradeAction.Buy;
             }
@@ -43,7 +45,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             int i = context.CurrentIndex;
 
-            if (bearEvents[i]) // bar fast below slow EMA
+            if (rorFilterSerie[i] < rodFilterSerie[i])
             {
                 return TradeAction.Sell;
             }
