@@ -1215,29 +1215,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     #region Display Agenda Text
                     if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
                          (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                         (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
+                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
                     {
                         int i = this.RoundToIndex(mousePoint);
-                        DateTime agendaDate1 = this.dateSerie[i-1];
-                        DateTime agendaDate2 = this.dateSerie[i];
-                        var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date < agendaDate2);
+                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                        var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
                         if (agendaEntry != null)
                         {
-                            if (agendaEntry.IsOfType(this.ShowAgenda))
+                            string eventText = agendaEntry.Event.Replace("\n", " ");
+
+                            if (agendaEntry.IsOfType(AgendaEntryType.Dividend))
                             {
-                                string eventText = agendaEntry.Event.Replace("\n", " ");
-
-                                if (agendaEntry.IsOfType(AgendaEntryType.Dividend))
-                                {
-                                    var coupon = eventText.Substring(eventText.IndexOf(':') + 2);
-                                    coupon = coupon.Substring(0, coupon.IndexOf('€'));
-                                    float yield = float.Parse(coupon) / closeCurveType.DataSerie[i];
-                                    eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
-                                }
-
-                                Size size = TextRenderer.MeasureText(eventText, axisFont);
-                                this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                                var coupon = eventText.Substring(eventText.IndexOf(':') + 2);
+                                coupon = coupon.Substring(0, coupon.IndexOf('€')).Replace(",", ".");
+                                float yield = float.Parse(coupon) / closeCurveType.DataSerie[i];
+                                eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
                             }
+
+                            Size size = TextRenderer.MeasureText(eventText, axisFont);
+                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                         }
                     }
                     #endregion
