@@ -231,7 +231,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static string loadingGroup = null;
-        static List<string> loadedGroups = new List<string>();
         public override bool LoadData(string rootFolder, StockSerie stockSerie)
         {
             StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName + " - " + stockSerie.Count);
@@ -276,68 +275,59 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string[] files;
             if (abcGroup != null)
             {
-                if (loadedGroups.Contains(abcGroup))
+                try
                 {
-                    return false;
-                }
-                else
-                {
-                    try
+                    if (loadingGroup == null)
                     {
-                        if (loadingGroup == null)
+                        loadingGroup = abcGroup;
+                    }
+                    else
+                    {
+                        StockLog.Write("Already busy loading group: " + stockSerie.StockGroup);
+                        if (loadingGroup == abcGroup)
                         {
-                            loadingGroup = abcGroup;
+                            do
+                            {
+                                Thread.Sleep(100);
+                            } while (loadingGroup == abcGroup);
+                            return stockSerie.Count != 0;
                         }
                         else
                         {
-                            StockLog.Write("Already busy loading group: " + stockSerie.StockGroup);
-                            if (loadingGroup == abcGroup)
+                            do
                             {
-                                do
-                                {
-                                    Thread.Sleep(100);
-                                } while (loadingGroup == abcGroup);
-                                return stockSerie.Count != 0;
-                            }
-                            else
-                            {
-                                do
-                                {
-                                    Thread.Sleep(100);
-                                } while (loadingGroup == abcGroup);
-                            }
+                                Thread.Sleep(100);
+                            } while (loadingGroup == abcGroup);
                         }
+                    }
 
-                        //
-                        StockLog.Write("Sync OK Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
-                        fileName = abcGroup + "_*.csv";
-                        var groupFiles =
-                           System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
-                        foreach (string archiveFileName in groupFiles)
+                    //
+                    StockLog.Write("Sync OK Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+                    fileName = abcGroup + "_*.csv";
+                    var groupFiles =
+                       System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
+                    foreach (string archiveFileName in groupFiles)
+                    {
+                        NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
+                        if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
+                        else
                         {
-                            NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
-                            if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
-                            else
-                            {
-                                res = true;
-                            }
-                        }
-                        groupFiles =
-                           System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
-                        foreach (string currentFileName in groupFiles)
-                        {
-                            res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
+                            res = true;
                         }
                     }
-                    catch (System.Exception ex)
+                    groupFiles = Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
+                    foreach (string currentFileName in groupFiles)
                     {
-                        StockLog.Write(ex);
+                        res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
                     }
-                    finally
-                    {
-                        loadingGroup = null;
-                        loadedGroups.Add(abcGroup);
-                    }
+                }
+                catch (System.Exception ex)
+                {
+                    StockLog.Write(ex);
+                }
+                finally
+                {
+                    loadingGroup = null;
                 }
             }
 
@@ -646,7 +636,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         serie.IsInitialised = false;
                     }
-                    loadedGroups.Clear();
                     //foreach (StockSerie serie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth && s.StockName.Contains("SBF120") || s.StockName.Contains("CAC40")))
                     //{
                     //   serie.IsInitialised = false;
@@ -1033,7 +1022,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (destFolder.Contains("archive") && File.Exists(fileName))
                     return true;
 
-                if (month.Month>1 && DateTime.Today.Month== month.Month)
+                if (month.Month > 1 && DateTime.Today.Month == month.Month)
                 {
                     // Force loading previous month in order to avoid missing some days
                     DownloadMonthlyFileFromABC(destFolder, new DateTime(month.Year, month.Month - 1, 1), abcGroup);

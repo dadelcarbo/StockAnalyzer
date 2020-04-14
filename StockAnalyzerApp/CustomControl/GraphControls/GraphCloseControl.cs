@@ -1223,7 +1223,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
                         if (agendaEntry != null)
                         {
-                            string eventText = agendaEntry.Event.Replace("\n", " ");
+                            string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
+                            eventText += "Date : " + agendaEntry.Date.ToShortDateString();
 
                             if (agendaEntry.IsOfType(AgendaEntryType.Dividend))
                             {

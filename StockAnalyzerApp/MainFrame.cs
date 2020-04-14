@@ -1711,7 +1711,7 @@ namespace StockAnalyzerApp
                         try
                         {
                             //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
-                            //ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                            ABCDataProvider.DownloadAgenda(this.currentStockSerie);
                         }
                         catch (Exception ex)
                         {
