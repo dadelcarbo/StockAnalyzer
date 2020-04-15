@@ -30,8 +30,12 @@ namespace StockAnalyzer.StockBinckPortfolio
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
             // Add simulation portfolio
-            StockPortfolio.Portfolios.Add(SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 100000, IsSimu = true });
+            StockPortfolio.Portfolios.Add(SimulationPortfolio = CreateSimuPortfolio());
             return StockPortfolio.Portfolios;
+        }
+        public static StockPortfolio CreateSimuPortfolio()
+        {
+            return new StockPortfolio() { Name = SIMU_P, InitialBalance = 100000, IsSimu = true };
         }
         public StockPortfolio()
         {
@@ -52,6 +56,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
         }
+
+        public static int MaxPositions { get; set; } = 20;
 
         public void Save(string folder)
         {
@@ -188,32 +194,62 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
         }
 
-        public void AddTrade(StockTrade trade, float portfolioPercent)
+        public void InitFromSummary(StockTradeSummary tradeSummary)
         {
-            var amountToInvest = this.Balance * portfolioPercent;
-            var qty = (int)(amountToInvest / trade.EntryValue);
-            var entryValue = qty * trade.EntryValue;
-            this.Balance -= entryValue;
+            this.Clear();
+            var dates = tradeSummary.Trades.Select(t => t.EntryDate).Union(tradeSummary.Trades.Select(t => t.ExitDate)).Distinct().OrderBy(d => d).ToList();
 
-            var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, entryValue, !trade.IsLong);
-            entry.Balance = this.Balance;
-            this.AddOperation(entry);
+            int openedPosition = 0;
+            foreach (var date in dates)
+            {
+                // Sell completed trades
+                foreach (var trade in tradeSummary.Trades.Where(t => t.ExitDate == date))
+                {
+                    var pos = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                    if (pos == null)
+                        continue;
+                    var exitValue = pos.Qty * trade.ExitValue;
+                    this.Balance += exitValue;
+                    var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.Qty, exitValue, !trade.IsLong);
+                    exit.Balance = this.Balance;
+                    this.AddOperation(exit);
+                    openedPosition--;
+                }
 
-            if (!trade.IsClosed)
-                return;
+                // Buy begining trades
+                foreach (var trade in tradeSummary.Trades.Where(t => t.EntryDate == date))
+                {
+                    if (openedPosition >= MaxPositions)
+                        break;
 
-            var exitValue = qty * trade.ExitValue;
-            this.Balance += exitValue;
-            var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, qty, exitValue, !trade.IsLong);
-            exit.Balance = this.Balance;
-            this.AddOperation(exit);
+                    var amountToInvest = this.Balance / (float)(MaxPositions - openedPosition);
+                    var qty = (int)(amountToInvest / trade.EntryValue);
+                    var entryValue = qty * trade.EntryValue;
+                    this.Balance -= entryValue;
+
+                    var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, entryValue, !trade.IsLong);
+                    entry.Balance = this.Balance;
+                    this.AddOperation(entry);
+                    openedPosition++;
+                }
+            }
+
+            // Evaluate opened position
+            this.PositionValue = 0;
+            foreach (var trade in tradeSummary.Trades.Where(t => !t.IsClosed))
+            {
+                var pos = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                if (pos == null)
+                    continue;
+                this.PositionValue += pos.Qty * trade.ExitValue;
+            }
         }
-        private int operationId = 0;
         public void Clear()
         {
             this.Operations.Clear();
             this.Positions.Clear();
             this.Balance = this.InitialBalance;
+            this.PositionValue = 0;
             StockOperation.OperationId = 0;
         }
 
@@ -279,6 +315,9 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
+        public float PositionValue { get; set; }
+        public float TotalValue => this.Balance + this.PositionValue;
+        public float Return => (TotalValue - InitialBalance) / InitialBalance;
         public bool IsSimu { get; set; }
 
         #region Binck Name Mapping

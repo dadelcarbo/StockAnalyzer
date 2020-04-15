@@ -7,8 +7,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class RORRODAgent : StockAgentBase
     {
-        public RORRODAgent(StockContext context)
-            : base(context)
+        public RORRODAgent()
         {
             RORPeriod = 50;
             RORPeriod = 50;
@@ -30,22 +29,18 @@ namespace StockAnalyzer.StockAgent.Agents
             rodFilterSerie = stockSerie.GetIndicator($"ROD({RORPeriod},1)").Series[0];
         }
 
-        protected override TradeAction TryToOpenPosition()
+        protected override TradeAction TryToOpenPosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (rorFilterSerie[i] >= rodFilterSerie[i])
+            if (rorFilterSerie[index] >= rodFilterSerie[index])
             {
                 return TradeAction.Buy;
             }
             return TradeAction.Nothing;
         }
 
-        protected override TradeAction TryToClosePosition()
+        protected override TradeAction TryToClosePosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (rorFilterSerie[i] < rodFilterSerie[i])
+            if (rorFilterSerie[index] < rodFilterSerie[index])
             {
                 return TradeAction.Sell;
             }

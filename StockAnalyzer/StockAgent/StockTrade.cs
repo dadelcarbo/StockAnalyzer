@@ -48,8 +48,8 @@ namespace StockAnalyzer.StockAgent
 
             this.EntryValue = openSerie[entryIndex];
 
-            this.Gain = float.NaN;
-            this.DrawDown = float.NaN;
+            this.Gain = 0;
+            this.DrawDown = 0;
 
             this.IsClosed = false;
         }
@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockAgent
             if (this.IsLong)
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
-                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
                 this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
@@ -75,6 +75,22 @@ namespace StockAnalyzer.StockAgent
             }
 
             this.IsClosed = true;
+        }
+        public void Evaluate()
+        {
+            this.ExitValue = Serie.GetSerie(StockDataType.CLOSE).Last;
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex - 1);
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex - 1);
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
         }
 
         public float GainAt(int index)

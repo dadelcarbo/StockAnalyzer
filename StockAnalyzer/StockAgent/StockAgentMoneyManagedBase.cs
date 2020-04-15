@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockAgent
 {
     public abstract class StockAgentMoneyManagedBase : StockAgentBase
     {
-        protected StockAgentMoneyManagedBase(StockContext context) : base(context)
+        protected StockAgentMoneyManagedBase()
         {
         }
         /// <summary>
@@ -25,24 +25,24 @@ namespace StockAnalyzer.StockAgent
         [StockAgentParam(0.03f, 0.15f)]
         public float Target { get; set; }
 
-        public override TradeAction Decide()
+        public override TradeAction Decide(int index)
         {
-            if (context.Trade == null)
+            if (this.Trade == null)
             {
-                return this.TryToOpenPosition();
+                return this.TryToOpenPosition(index);
             }
             else
             {
-                var action = MoneyManagement();
-                return action != TradeAction.Nothing ? action : this.TryToClosePosition();
+                var action = MoneyManagement(index);
+                return action != TradeAction.Nothing ? action : this.TryToClosePosition(index);
             }
         }
 
-        public TradeAction MoneyManagement()
+        public TradeAction MoneyManagement(int index)
         {
-            int i = context.CurrentIndex;
+            int i = index;
             float close = closeSerie[i];
-            float gain = (close - context.Trade.EntryValue) / context.Trade.EntryValue;
+            float gain = (close - this.Trade.EntryValue) / this.Trade.EntryValue;
             if (gain > this.Target)
             {
                 return TradeAction.Sell;

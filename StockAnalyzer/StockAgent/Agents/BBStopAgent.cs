@@ -8,8 +8,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class BBStopAgent : StockAgentBase
     {
-        public BBStopAgent(StockContext context)
-            : base(context)
+        public BBStopAgent()
         {
             MAPeriod = 13;
             BBWidth = 2.0f;
@@ -33,22 +32,18 @@ namespace StockAnalyzer.StockAgent.Agents
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }
 
-        protected override TradeAction TryToOpenPosition()
+        protected override TradeAction TryToOpenPosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (bullEvents[i])
+            if (bullEvents[index])
             {
                 return TradeAction.Buy;
             }
             return TradeAction.Nothing;
         }
 
-        protected override TradeAction TryToClosePosition()
+        protected override TradeAction TryToClosePosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (bearEvents[i]) // bar fast below slow EMA
+            if (bearEvents[index]) // bar fast below slow EMA
             {
                 return TradeAction.Sell;
             }

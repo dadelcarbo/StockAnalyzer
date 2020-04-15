@@ -17,17 +17,25 @@ namespace StockAnalyzer.StockAgent
     public interface IStockAgent
     {
         string Description { get; }
+        StockTradeSummary TradeSummary { get; }
+
+        void Initialize(StockSerie stockSerie, StockBarDuration duration);
+        TradeAction Decide(int index);
+
+        void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true);
+
+        void CloseTrade(int exitIndex);
+
+        void EvaluateOpenedPositions();
+
+
         void Randomize();
-
-        TradeAction Decide();
-
         IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren);
 
-        bool AreSameParams(IStockAgent other);
-
         string ToLog();
-        void Initialize(StockSerie stockSerie, StockBarDuration duration);
+
         string GetParameterValues();
         void SetParam(PropertyInfo property, StockAgentParamAttribute attribute, float newValue);
+        bool AreSameParams(IStockAgent other);
     }
 }

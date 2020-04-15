@@ -11,7 +11,6 @@ namespace StockAnalyzer.StockAgent
 {
     public class StockAgentEngine
     {
-        public StockContext Context { get; set; }
         public IStockAgent Agent { get; set; }
         public StockTradeSummary BestTradeSummary { get; private set; }
         public IStockAgent BestAgent { get; private set; }
@@ -23,7 +22,6 @@ namespace StockAnalyzer.StockAgent
         public StockAgentEngine(Type agentType)
         {
             this.AgentType = agentType;
-            this.Context = new StockContext();
         }
 
         private List<IStockAgent> RemoveDuplicates(IList<IStockAgent> agents)
@@ -54,11 +52,7 @@ namespace StockAnalyzer.StockAgent
             stopWatch.Start();
 
             // Calcutate Parameters Ranges
-            IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
-            this.Agent = agent;
-            var bestAgent = agent;
-            StockTradeSummary bestTradeSummary = null;
-
+            IStockAgent bestAgent = null;
             var parameters = StockAgentBase.GetParamRanges(this.AgentType, accuracy);
 
             int dim = parameters.Count;
@@ -79,25 +73,22 @@ namespace StockAnalyzer.StockAgent
                 CalculateIndexes(dim, sizes, indexes, i);
 
                 // Set parameter values
+                this.Agent = StockAgentBase.CreateInstance(this.AgentType);
                 int p = 0;
                 foreach (var param in parameters)
                 {
-                    param.Key.SetValue(agent, param.Value[indexes[p]], null);
+                    param.Key.SetValue(this.Agent, param.Value[indexes[p]], null);
                     p++;
                 }
 
                 // Perform calculation
-                this.Agent = agent;
                 this.Perform(series, minIndex, duration);
 
                 // Select Best
-                var tradeSummary = this.Context.GetTradeSummary();
-                if (bestTradeSummary == null || selector(tradeSummary) > selector(bestTradeSummary))
+                var tradeSummary = this.Agent.TradeSummary;
+                if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
                 {
-                    bestTradeSummary = tradeSummary;
-                    bestAgent = agent;
-
-                    agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
+                    bestAgent = this.Agent;
                 }
             }
             stopWatch.Stop();
@@ -105,12 +96,12 @@ namespace StockAnalyzer.StockAgent
             // Get the elapsed time as a TimeSpan value.
             TimeSpan ts = stopWatch.Elapsed;
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            string msg = bestTradeSummary.ToLog() + Environment.NewLine;
+            string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
             msg += bestAgent.ToLog() + Environment.NewLine;
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
-            this.BestTradeSummary = bestTradeSummary;
+            this.BestTradeSummary = bestAgent.TradeSummary;
             this.BestAgent = bestAgent;
 
             this.Report = msg;
@@ -137,18 +128,18 @@ namespace StockAnalyzer.StockAgent
             // Create Agents
             for (int i = 0; i < nbAgents; i++)
             {
-                IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
+                IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType);
                 agent.Randomize();
                 agents.Add(agent);
             }
 
             StockAgentBase.GetParamRanges(this.AgentType, 20);
 
-            Dictionary<IStockAgent, float> bestResults = new Dictionary<IStockAgent, float>();
+            List<IStockAgent> bestResults = new List<IStockAgent>();
             int nbSelected = 10;
             for (int i = 0; i < nbIteration; i++)
             {
-                Dictionary<IStockAgent, StockTradeSummary> results = new Dictionary<IStockAgent, StockTradeSummary>();
+                List<IStockAgent> results = new List<IStockAgent>();
                 agents = RemoveDuplicates(agents);
 
                 // Perform action
@@ -156,27 +147,24 @@ namespace StockAnalyzer.StockAgent
                 {
                     this.Agent = agent;
                     this.Perform(series, minIndex, duration);
-
-                    var tradeSummary = this.Context.GetTradeSummary();
-
-                    results.Add(agent, tradeSummary);
+                    results.Add(agent);
                 }
 
                 // Select fittest
-                var fittest = results.OrderByDescending(a => a.Value.AvgGain).Take(nbSelected).ToList();
+                var fittest = results.OrderByDescending(a => a.TradeSummary.AvgGain).Take(nbSelected).ToList();
                 Console.WriteLine("Fittest:");
-                Console.WriteLine(fittest.First().Value.ToLog());
-                Console.WriteLine(fittest.First().Key.ToLog());
+                Console.WriteLine(fittest.First().ToLog());
+                Console.WriteLine(fittest.First().TradeSummary.ToLog());
 
                 agents.Clear();
-                agents.AddRange(fittest.Select(k => k.Key));
+                agents.AddRange(fittest);
                 int nb = agents.Count;
                 for (int k = 0; k < nb; k++)
                 {
-                    var agent1 = fittest.ElementAt(k).Key;
+                    var agent1 = fittest.ElementAt(k);
                     for (int j = k + 1; j < nb; j++)
                     {
-                        var agent2 = fittest.ElementAt(j).Key;
+                        var agent2 = fittest.ElementAt(j);
 
                         var newAgents = RemoveDuplicates(agent1.Reproduce(agent2, nbSelected / 2));
                         agents.AddRange(newAgents);
@@ -186,7 +174,7 @@ namespace StockAnalyzer.StockAgent
                 // Create Agents
                 for (int j = 0; j < nbSelected; j++)
                 {
-                    IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType, this.Context);
+                    IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType);
                     agent.Randomize();
                     agents.Add(agent);
                 }
@@ -195,32 +183,29 @@ namespace StockAnalyzer.StockAgent
 
         public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
-            this.Context.Clear();
             foreach (var serie in series)
             {
-                this.Context.Trade = null;
-                serie.ResetIndicatorCache();
                 this.Agent.Initialize(serie, duration);
 
                 var size = serie.Count - 1;
                 for (int i = minIndex; i < size; i++)
                 {
-                    this.Context.CurrentIndex = i;
-
-                    switch (this.Agent.Decide())
+                    switch (this.Agent.Decide(i))
                     {
                         case TradeAction.Nothing:
                             break;
                         case TradeAction.Buy:
-                            this.Context.OpenTrade(serie, i + 1);
+                            this.Agent.OpenTrade(serie, i + 1);
                             break;
                         case TradeAction.Sell:
-                            this.Context.CloseTrade(i + 1);
+                            this.Agent.CloseTrade(i + 1);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+
+                this.Agent.EvaluateOpenedPositions();
             }
         }
     }

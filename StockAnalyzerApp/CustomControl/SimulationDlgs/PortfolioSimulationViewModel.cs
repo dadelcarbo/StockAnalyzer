@@ -24,11 +24,17 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.Agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
+            this.MaxPosition = 10;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
         public IList<StockBarDuration> Durations => StockBarDuration.Values;
         public StockBarDuration Duration { get; set; }
+        public int MaxPosition
+        {
+            get { return StockPortfolio.MaxPositions; }
+            set { StockPortfolio.MaxPositions = value; }
+        }
 
         public void Cancel()
         {
@@ -112,7 +118,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
                 engine = new StockAgentEngine(agentType);
-                engine.Agent = StockAgentBase.CreateInstance(this.agentType, engine.Context);
+                engine.Agent = StockAgentBase.CreateInstance(this.agentType);
 
                 // Set agent properties
                 foreach (var parameter in this.Parameters)
@@ -168,31 +174,34 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 engine.Perform(stockSeries, 20, this.Duration);
 
-                var tradeSummary = engine.Context.GetTradeSummary();
+                if (worker.CancellationPending)
+                    return false;
 
-                StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
-                StockPortfolio.SimulationPortfolio.Clear();
-                float portfolioPercent = 1 / (float)stockSeries.Count();
+                var tradeSummary = engine.Agent.TradeSummary;
+                StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio = tradeSummary.Portfolio;
 
                 string openedPositions = string.Empty;
-                foreach (var trade in tradeSummary.Trades.OrderBy(t => t.EntryDate))
+                foreach (var trade in tradeSummary.Trades.Where(t => !t.IsClosed).OrderBy(t => t.EntryDate))
                 {
                     if (worker.CancellationPending)
                         return false;
 
-                    // Add trade
-                    StockPortfolio.SimulationPortfolio.AddTrade(trade, portfolioPercent);
-
-                    if (!trade.IsClosed)
+                    var pos = tradeSummary.Portfolio.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                    if (pos == null)
+                    {
+                        openedPositions += trade.Serie.StockName + " *" + Environment.NewLine;
+                    }
+                    else
                     {
                         openedPositions += trade.Serie.StockName + Environment.NewLine;
                     }
                 }
-
+                openedPositions += Environment.NewLine + "(*) not in portfolio" + Environment.NewLine;
                 string msg = "Portfolio: " + Environment.NewLine;
                 msg += "Initial balance: " + StockPortfolio.SimulationPortfolio.InitialBalance + Environment.NewLine;
-                msg += "Balance: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;
-                msg += "Return: " + ((StockPortfolio.SimulationPortfolio.Balance - StockPortfolio.SimulationPortfolio.InitialBalance) / StockPortfolio.SimulationPortfolio.InitialBalance).ToString("P2") + Environment.NewLine;
+                msg += "Cash: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;
+                msg += "Total Value: " + StockPortfolio.SimulationPortfolio.TotalValue + Environment.NewLine;
+                msg += "Return: " + StockPortfolio.SimulationPortfolio.Return.ToString("P2") + Environment.NewLine;
 
                 msg += Environment.NewLine + tradeSummary.ToLog() + Environment.NewLine;
                 msg += engine.Agent.ToLog() + Environment.NewLine;

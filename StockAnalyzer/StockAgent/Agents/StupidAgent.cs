@@ -6,8 +6,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class StupidAgent : StockAgentBase
     {
-        public StupidAgent(StockContext context)
-            : base(context)
+        public StupidAgent()
         {
             this.LookBack = 20;
         }
@@ -25,11 +24,10 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override void Init(StockSerie stockSerie)
         { }
-        protected override TradeAction TryToOpenPosition()
+        protected override TradeAction TryToOpenPosition(int index)
         {
-            int i = context.CurrentIndex;
-            float close = closeSerie[i];
-            float high = closeSerie.GetMax(i - this.LookBack, i);
+            float close = closeSerie[index];
+            float high = closeSerie.GetMax(index - this.LookBack, index);
             float loss = (high - close) / high;
             if (loss > this.EntryPercentDown)
             {
@@ -38,11 +36,10 @@ namespace StockAnalyzer.StockAgent.Agents
             return TradeAction.Nothing;
         }
  
-        protected override TradeAction TryToClosePosition()
+        protected override TradeAction TryToClosePosition(int index)
         {
-            int i = context.CurrentIndex;
-            float close = closeSerie[i];
-            float gain = (close - context.Trade.EntryValue) / context.Trade.EntryValue;
+            float close = closeSerie[index];
+            float gain = (close - this.Trade.EntryValue) / this.Trade.EntryValue;
             if (gain > this.ExitPercentUp)
             {
                 return TradeAction.Sell;

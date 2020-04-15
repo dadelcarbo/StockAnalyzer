@@ -35,7 +35,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         public int Accuracy { get; set; }
 
-        public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio" };
+        public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio", "Portfolio" };
         public string Selector { get; set; }
 
         public void Cancel()
@@ -196,6 +196,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     case "WinRatio":
                         selector = t => t.WinRatio;
                         break;
+                    case "Portfolio":
+                        selector = t => t.Portfolio.TotalValue;
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
@@ -204,13 +207,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (engine.BestTradeSummary == null)
                     return false;
 
-                StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
-                foreach (var trade in engine.BestTradeSummary.Trades)
-                {
-                    // Create operations
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
-                }
+                //StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
+                //foreach (var trade in engine.BestTradeSummary.Trades)
+                //{
+                //    // Create operations
+                //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
+                //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
+                //}
                 // this.graphCloseControl.ForceRefresh();
             }
             catch (Exception ex)

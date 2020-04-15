@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
@@ -115,7 +116,6 @@
     <Compile Include="StockAgent\StockAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentParamAttribute.cs" />
-    <Compile Include="StockAgent\StockContext.cs" />
     <Compile Include="StockAgent\StockTrade.cs" />
     <Compile Include="StockAgent\StockTradeSummary.cs" />
     <Compile Include="StockAgent\Agents\StupidAgent.cs" />

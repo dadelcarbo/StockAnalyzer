@@ -165,21 +165,9 @@ namespace StockAnalyzerApp
 
         #region CONSTANTS
 
-        private static string WORK_THEME = "NewTheme*";
-        //static private string COT_SUBFOLDER = @"\data\weekly\cot";
-        //static private string COT_ARCHIVE_SUBFOLDER = @"\data\archive\weekly\cot";
-        private static string INTRADAY_SUBFOLDER = @"\data\intraday";
+        private static string WORK_THEME = "__NewTheme*";
         private static string DAILY_SUBFOLDER = @"\data\daily";
-        private static string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
-        private static string YAHOO_SUBFOLDER = DAILY_SUBFOLDER + @"\Yahoo";
-        private static string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
-        private static string GENERATED_SUBFOLDER = DAILY_SUBFOLDER + @"\Generated";
-        private static string BREADTH_SUBFOLDER = DAILY_SUBFOLDER + @"\Breadth";
-        private static string POSITION_SUBFOLDER = DAILY_SUBFOLDER + @"\Variation";
         private static string ARCHIVE_DAILY_SUBFOLDER = @"\data\archive\daily";
-        private static string ARCHIVE_GENERATED_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Generated";
-        private static string ARCHIVE_BREADTH_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Breadth";
-        private static string ARCHIVE_POSITION_SUBFOLDER = ARCHIVE_DAILY_SUBFOLDER + @"\Variation";
 
         #endregion
 

@@ -7,8 +7,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class EMACloudAgent : StockAgentBase
     {
-        public EMACloudAgent(StockContext context)
-            : base(context)
+        public EMACloudAgent()
         {
             FastPeriod = 13;
         }
@@ -34,22 +33,18 @@ namespace StockAnalyzer.StockAgent.Agents
             bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenDown")];
         }
 
-        protected override TradeAction TryToOpenPosition()
+        protected override TradeAction TryToOpenPosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (bullEvents[i])
+            if (bullEvents[index])
             {
                 return TradeAction.Buy;
             }
             return TradeAction.Nothing;
         }
 
-        protected override TradeAction TryToClosePosition()
+        protected override TradeAction TryToClosePosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (bearEvents[i]) // bar fast below slow EMA
+            if (bearEvents[index]) // bar fast below slow EMA
             {
                 return TradeAction.Sell;
             }

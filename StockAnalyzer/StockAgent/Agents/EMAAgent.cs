@@ -5,8 +5,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class EMAAgent : StockAgentBase
     {
-        public EMAAgent(StockContext context)
-            : base(context)
+        public EMAAgent()
         {
             FastPeriod = 13;
         }
@@ -26,22 +25,18 @@ namespace StockAnalyzer.StockAgent.Agents
             emaFilter = stockSerie.GetIndicator($"EMA({SlowPeriod})").Series[0];
         }
 
-        protected override TradeAction TryToOpenPosition()
+        protected override TradeAction TryToOpenPosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (ema[i] >= emaFilter[i]) // bar fast above slow EMA
+            if (ema[index] >= emaFilter[index]) // bar fast above slow EMA
             {
                 return TradeAction.Buy;
             }
             return TradeAction.Nothing;
         }
 
-        protected override TradeAction TryToClosePosition()
+        protected override TradeAction TryToClosePosition(int index)
         {
-            int i = context.CurrentIndex;
-
-            if (ema[i] < emaFilter[i]) // bar fast below slow EMA
+            if (ema[index] < emaFilter[index]) // bar fast below slow EMA
             {
                 return TradeAction.Sell;
             }
