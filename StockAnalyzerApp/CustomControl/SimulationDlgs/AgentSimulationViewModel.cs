@@ -34,7 +34,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration Duration { get; set; }
 
         public int Accuracy { get; set; }
-
+        public int MaxPosition
+        {
+            get { return StockPortfolio.MaxPositions; }
+            set { StockPortfolio.MaxPositions = value; }
+        }
         public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio", "Portfolio" };
         public string Selector { get; set; }
 

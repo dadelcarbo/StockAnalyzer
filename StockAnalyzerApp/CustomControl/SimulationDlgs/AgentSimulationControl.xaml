@@ -7,7 +7,7 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="900"
-             Height="450" Width="900">
+             Height="450" Width="1000">
     <UserControl.Resources>
         <local:AgentSimulationViewModel x:Key="ViewModel"></local:AgentSimulationViewModel>
     </UserControl.Resources>
@@ -29,6 +29,8 @@
             <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
             <Label Margin="2">Selector</Label>
             <telerik:RadComboBox Margin="2" Width="90" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
+            <Label Margin="2">Max Positions</Label>
+            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding MaxPosition}" NumberDecimalDigits="0" Width="40"/>
             <Button Margin="2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">

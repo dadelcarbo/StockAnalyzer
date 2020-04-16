@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using StockAnalyzer.StockBinckPortfolio;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -65,6 +65,7 @@ namespace StockAnalyzer.StockAgent
             res += NbLostTrade + "\t";
             res += WinRatio + "\t";
             res += Portfolio.Return;
+            res += StockBinckPortfolio.StockPortfolio.MaxPositions + "\t";
             return res;
         }
     }

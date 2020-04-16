@@ -24,7 +24,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.Agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
-            this.MaxPosition = 10;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
