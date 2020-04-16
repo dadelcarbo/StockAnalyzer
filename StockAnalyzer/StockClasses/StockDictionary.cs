@@ -2277,13 +2277,14 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public float GetClosingPrice(string stockName, DateTime date)
+        public float GetClosingPrice(string stockName, DateTime date, StockClasses.BarDuration duration)
         {
             if (this.ContainsKey(stockName))
             {
                 var stockSerie = this[stockName];
                 if (stockSerie.Initialise())
                 {
+                    stockSerie.BarDuration = duration;
                     var index = stockSerie.IndexOfFirstLowerOrEquals(date);
                     if (index != -1)
                     {
@@ -2294,12 +2295,13 @@ namespace StockAnalyzer.StockClasses
             return 0f;
         }
 
-        public void GeneratePortfolioSerie(StockBinckPortfolio.StockPortfolio binckPortfolio)
+        public StockSerie GeneratePortfolioSerie(StockBinckPortfolio.StockPortfolio binckPortfolio)
         {
             var refStock = this["CAC40"];
             if (!refStock.Initialise())
-                return;
+                return null;
 
+            refStock.BarDuration = BarDuration.Daily;
             var startDate = binckPortfolio.Operations.OrderBy(op => op.Id).First().Date;
 
             StockSerie portfolioSerie = new StockSerie(binckPortfolio.Name, binckPortfolio.Name, refStock.StockGroup, StockDataProvider.BinckPortfolio);
@@ -2308,15 +2310,15 @@ namespace StockAnalyzer.StockClasses
             float value;
             foreach (var date in refStock.Keys.Where(d => d >= startDate))
             {
-                value = binckPortfolio.EvaluateAt(date);
-                portfolioSerie.Add(date, new StockDailyValue(binckPortfolio.Name, value, value, value, value, 0, date));
+                long volume;
+                value = binckPortfolio.EvaluateAt(date, BarDuration.Daily, out volume);
+                portfolioSerie.Add(date, new StockDailyValue(binckPortfolio.Name, value, value, value, value, volume, date));
             }
 
             // Preinitialise the serie
             portfolioSerie.PreInitialise();
             portfolioSerie.IsInitialised = true;
-
-            this.Add(binckPortfolio.Name, portfolioSerie);
+            return portfolioSerie;
         }
     }
 }

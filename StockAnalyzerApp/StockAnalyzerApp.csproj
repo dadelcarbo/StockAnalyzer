@@ -349,12 +349,6 @@
     <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.Designer.cs">
       <DependentUpon>StockMarketReplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\StockStrategyScannerDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StockStrategyScannerDlg.Designer.cs">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\DrawingStyleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -623,12 +617,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StatisticsDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockStrategyScannerDlg.fr-FR.resx">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockStrategyScannerDlg.resx">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawingStyleForm.fr-FR.resx">
       <DependentUpon>DrawingStyleForm.cs</DependentUpon>

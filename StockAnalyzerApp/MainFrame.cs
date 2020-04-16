@@ -349,215 +349,6 @@ namespace StockAnalyzerApp
 
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
-
-                //GeneratePosition(new List<StockSerie.Groups> { StockSerie.Groups.CAC40 });
-
-                #region Test Automatic Indices
-
-                //GenerateCACEqualWeight();
-
-                //GenerateIndexNoDay("CAC40", DayOfWeek.Monday);
-                //GenerateIndexNoDay("CAC40", DayOfWeek.Tuesday);
-                //GenerateIndexNoDay("CAC40", DayOfWeek.Wednesday);
-                //GenerateIndexNoDay("CAC40", DayOfWeek.Thursday);
-                //GenerateIndexNoDay("CAC40", DayOfWeek.Friday);
-                //GenerateIndexNoDay("EUR-USD", DayOfWeek.Monday);
-                //GenerateIndexNoDay("EUR-USD", DayOfWeek.Tuesday);
-                //GenerateIndexNoDay("EUR-USD", DayOfWeek.Wednesday);
-                //GenerateIndexNoDay("EUR-USD", DayOfWeek.Thursday);
-                //GenerateIndexNoDay("EUR-USD", DayOfWeek.Friday);
-
-                //GenerateIndexOnlyDay("CAC40", DayOfWeek.Monday);
-                //GenerateIndexOnlyDay("CAC40", DayOfWeek.Tuesday);
-                //GenerateIndexOnlyDay("CAC40", DayOfWeek.Wednesday);
-                //GenerateIndexOnlyDay("CAC40", DayOfWeek.Thursday);
-                //GenerateIndexOnlyDay("CAC40", DayOfWeek.Friday);
-
-                //GenerateCACEqualWeightNoUpDay(DayOfWeek.Monday);
-                //GenerateCACEqualWeightNoUpDay(DayOfWeek.Tuesday);
-                //GenerateCACEqualWeightNoUpDay(DayOfWeek.Wednesday);
-                //GenerateCACEqualWeightNoUpDay(DayOfWeek.Thursday);
-                //GenerateCACEqualWeightNoUpDay(DayOfWeek.Friday);
-
-                //GenerateCACEqualWeightNoUpDay();
-
-                //GenerateCACEqualWeightNoDownDay(DayOfWeek.Monday);
-                //GenerateCACEqualWeightNoDownDay(DayOfWeek.Tuesday);
-                //GenerateCACEqualWeightNoDownDay(DayOfWeek.Wednesday);
-                //GenerateCACEqualWeightNoDownDay(DayOfWeek.Thursday);
-                //GenerateCACEqualWeightNoDownDay(DayOfWeek.Friday);
-
-                //GenerateCACEqualWeightNoDownDay();
-
-                //GenerateCACEqualWeightOnlyDay(DayOfWeek.Monday);
-                //GenerateCACEqualWeightOnlyDay(DayOfWeek.Tuesday);
-                //GenerateCACEqualWeightOnlyDay(DayOfWeek.Wednesday);
-                //GenerateCACEqualWeightOnlyDay(DayOfWeek.Thursday);
-                //GenerateCACEqualWeightOnlyDay(DayOfWeek.Friday);
-
-                for (int i = 2; i < 40; i += 1)
-                {
-                    //GenerateIndex_Event("CAC40", "EMA_", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("CAC40", "EMA_INV", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("CAC40", "HLAVG_", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("CAC40", "HLAVG_INV", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("CAC40", "EMA_", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("CAC40", "EMA_INV", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("CAC40", "HLAVG_", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("CAC40", "HLAVG_INV", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
-
-                    //GenerateIndex_Event("SP500", "EMA_", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("SP500", "EMA_INV", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("SP500", "HLAVG_", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("SP500", "HLAVG_INV", StockBarDuration.Daily, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("SP500", "EMA_", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("SP500", "EMA_INV", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILEMA(%PERIOD1%)", "DownTrend");
-                    //GenerateIndex_Event("SP500", "HLAVG_", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "UpTrend");
-                    //GenerateIndex_Event("SP500", "HLAVG_INV", StockBarDuration.TLB_EMA3, i, 0, "TRAILSTOP|TRAILHLAVG(%PERIOD1%)", "DownTrend");
-                }
-                StockSplashScreen.ProgressText = "Generating CAC SAR...";
-                for (float i = 0.001f; i <= 0.1f; i += 0.002f)
-                {
-                    StockSplashScreen.ProgressText = "Generating CAC TOPSAR_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC40", StockBarDuration.Daily, i/15f, "INDICATOR|HLSAR(0,%PERIOD%,5,6)", "Bullish", false);
-                }
-
-                StockSplashScreen.ProgressText = "Generating CAC Random...";
-                //GenerateCAC_Random();
-
-                StockSplashScreen.ProgressText = "Generating CAC RANK_" + 3 + " Daily...";
-                //GenerateCAC_Event("CAC_RANK_", StockBarDuration.Daily, 3, "INDICATOR|RANK(%PERIOD%,10,20,0)", "Overbought");
-
-                for (int i = 10; i <= 500; i += 5)
-                {
-                    StockSplashScreen.ProgressText = "Generating CAC CCIEX_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC40", StockBarDuration.Daily, i, "INDICATOR|STOKF(%PERIOD%,1,61.8,38.2)", "Overbought",false);
-                }
-                for (int i = 15; i <= 40; i += 1)
-                {
-                    for (int j = 40; j <= 60; j++)
-                    {
-                        StockSplashScreen.ProgressText = "Generating SRD STOCK" + i + " Daily...";
-                        //  GenerateIndex_Event("CAC40", "STOCK", StockBarDuration.Daily, i, j, "INDICATOR|STOKF(%PERIOD1%,1,%PERIOD2%,38.2)", "Overbought");
-                    }
-                }
-                for (int i = 2; i <= 50; i += 1)
-                {
-                    //StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_TRAILHMA_UP_", StockBarDuration.Daily, i, "TRAILSTOP|TRAILHMA(%PERIOD%,1)", "UpTrend", false);
-                    //StockSplashScreen.ProgressText = "Generating CAC EMA_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_TRAILHMA_DOWN_", StockBarDuration.Daily, i, "TRAILSTOP|TRAILHMA(%PERIOD%,1)", "DownTrend", false);
-                }
-                int period = 11;
-                int smoothing = 7;
-                for (int i = 1; i <= period; i++)
-                {
-                    for (int j = 1; j <= smoothing; j++, j++)
-                    {
-                        //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily...";
-                        //GenerateCAC_Event("CAC_TRAILHLS_UP_", StockBarDuration.Daily, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
-                        //GenerateCAC_Event("CAC_TRAILHLS_DOWN_", StockBarDuration.Daily, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "DownTrend", false);
-                        //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_3...";
-                        //GenerateCAC_Event("CAC_TRAILHLS_", StockBarDuration.Daily_EMA3, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
-                        //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_6...";
-                        //GenerateCAC_Event("CAC_TRAILHLS_", StockBarDuration.Daily_EMA6, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
-                        //StockSplashScreen.ProgressText = "Generating CAC TRAILHLS_" + i + "," + j + " Daily_9...";
-                        //GenerateCAC_Event("CAC_TRAILHLS_", StockBarDuration.Daily_EMA9, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
-                        //StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + "," + j + " TLB...";
-                        //GenerateCAC_Event("CAC_TRAILHLS_", StockBarDuration.TLB, i, j,
-                        //   "TRAILSTOP|TRAILHLS(%PERIOD1%,%PERIOD2%)", "UpTrend", false);
-                    }
-                }
-                //for (int i = 90; i <= 100; i += 10)
-                //{
-                //   StockSplashScreen.ProgressText = "Generating CAC TRAILEMA_" + i + " Daily...";
-                //   GenerateCAC2_Event("CAC_TRAILEMA_TLB_", StockBarDuration.Daily, i, "TRAILSTOP|TRAILEMA(%PERIOD%,%PERIOD%)", "UpTrend", true);
-                //} 
-                //for (int i = 10; i <= 500; i += 5)
-                //{
-                //   StockSplashScreen.ProgressText = "Generating CAC HMA_" + i + " Daily...";
-                //   GenerateCAC_Event("CAC_HMA_", StockBarDuration.Daily, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
-                //   GenerateCAC_Event("CAC_HMA_", StockBarDuration.Bar_1_EMA3, i, "INDICATOR|HMA(%PERIOD%)", "PriceAbove");
-                //}
-                for (int i = 1; i <= 400; i++)
-                {
-                    //StockSplashScreen.ProgressText = "Generating CAC PUKE_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                }
-                for (int i = 30; i <= 230; i += 5)
-                {
-                    for (int j = 1; j < 20; j += 2)
-                    {
-                        //StockSplashScreen.ProgressText = "Generating CAC RSI_" + i + "_" + j + " Daily...";
-                        //GenerateCAC_Event("CAC_RSI", StockBarDuration.Daily, i, j, "INDICATOR|RSI(%PERIOD1%,50,50,%PERIOD2%)", "Overbought", true);
-                    }
-                }
-                for (int i = 10; i <= 60; i += 10)
-                {
-                    for (int j = 2; j < 6; j += 1)
-                    {
-                        //StockSplashScreen.ProgressText = "Generating CAC ER_" + i + "_" + j + " Daily...";
-                        //GenerateCAC_Event("CAC_ER", StockBarDuration.Daily, i, j, "TRAIL|SAR(0,0.0005)|ER(%PERIOD1%,%PERIOD2%,1)", "UpTrend", false);
-                        //GenerateCAC_Event("CAC_ER_BREADTH", StockBarDuration.Daily, i, j, "TRAIL|SAR(0,0.0005)|ER(%PERIOD1%,%PERIOD2%,1)", "UpTrend", true);
-                    }
-                }
-                for (int i = 5; i <= 200; i += 5)
-                {
-                    //StockSplashScreen.ProgressText = "Generating CAC MACD_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_MACD_", StockBarDuration.Daily, i+1, i, "INDICATOR|MACD(%PERIOD1%,%PERIOD2%,2)", "MACDAboveSignal");
-                    //GenerateCAC_Event("CAC_MACD_", StockBarDuration.Daily, i, i/2, "INDICATOR|MACD(%PERIOD1%,%PERIOD2%,2)", "MACDAboveSignal");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB, i, "INDICATOR|PUKE(%PERIOD%,3,20,3)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                }
-                for (int i = 1; i <= 20; i++)
-                {
-                    //StockSplashScreen.ProgressText = "Generating CAC TL_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Daily, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.Bar_1_EMA9, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_TL_", StockBarDuration.Daily, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
-                    //GenerateCAC_Event("CAC_TL_", StockBarDuration.Bar_1_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
-                    //GenerateCAC_Event("CAC_TL_", StockBarDuration.TLB_EMA3, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
-                    //GenerateCAC_Event("CAC_TL_", StockBarDuration.TLB, i, "PAINTBAR|TRENDLINEHL(%PERIOD%,10)", "UpTrend");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA3, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                    //GenerateCAC_Event("CAC_PUKE_", StockBarDuration.TLB_EMA6, i, "INDICATOR|PUKE(%PERIOD%,3,0,10)", "Bullish");
-                }
-                for (int i = 1; i <= 51; i += 10)
-                {
-                    //StockSplashScreen.ProgressText = "Generating CAC TRAILHL_" + i + " Daily...";
-                    //GenerateCAC_Event("CAC_HL_", StockBarDuration.Daily, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
-                    //GenerateCAC_Event("CAC_HL_", StockBarDuration.Bar_1_EMA6, i, "TRAILSTOP|TRAILHL(%PERIOD%)", "UpTrend", false);
-                }
-
-                string best = string.Empty;
-                float max = float.MinValue;
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INDICES_CALC)))
-                {
-                    if (stockSerie.Initialise() && stockSerie.Values.Last().CLOSE > max)
-                    {
-                        max = stockSerie.Values.Last().CLOSE;
-                        best = stockSerie.StockName;
-                    }
-                }
-                StockLog.Write("Best index " + best);
-                #endregion
-
             }
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
@@ -3122,7 +2913,7 @@ namespace StockAnalyzerApp
         #region PORTOFOLIO MENU HANDERS
 
         BinckPortfolioDlg portfolioDlg = null;
-        private void currentPortofolioMenuItem_Click(object sender, EventArgs e)
+        private void currentPortfolioMenuItem_Click(object sender, EventArgs e)
         {
             if (BinckPortfolio == null)
                 return;
@@ -3139,6 +2930,20 @@ namespace StockAnalyzerApp
             }
         }
 
+
+        private void showPortfolioSerieMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.BinckPortfolio == null || this.BinckPortfolio.Operations.Count == 0)
+                return;
+
+            this.AddNewSerie(this.StockDictionary.GeneratePortfolioSerie(this.BinckPortfolio));
+        }
+
+        private void nameMappingMenuItem_Click(object sender, EventArgs e)
+        {
+            var dlg = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingDlg();
+            dlg.Show();
+        }
         #endregion
 
         #region ANALYSIS MENU HANDLERS
@@ -3280,19 +3085,6 @@ namespace StockAnalyzerApp
             //}
         }
 
-        private void portfolioSimulatorDlg_SimulationCompleted()
-        {
-            throw new NotImplementedException("portfolioSimulatorDlg_SimulationCompleted");
-
-            //// Refresh portofolio generated stock
-            //StockPortofolio portofolio = this.portfolioSimulatorDlg.SelectedPortofolio;
-            //portofolio.Initialize();
-            //StockDictionary.CreatePortofolioSerie(portofolio);
-
-            //// Refresh the screen
-            //OnNeedReinitialise(true);
-        }
-
         private void batchStrategySimulationMenuItem_Click(object sender, EventArgs e)
         {
             if (batchStrategySimulatorDlg == null || batchStrategySimulatorDlg.IsDisposed)
@@ -3322,127 +3114,6 @@ namespace StockAnalyzerApp
 
         #endregion
 
-        #region STATISTICS
-
-        // Statistics implementation
-        //private void generateStat1MenuItem_Click(object sender, EventArgs e)
-        //{
-        //    List<StockDataType> dataList = new List<StockDataType>();
-        //    dataList.AddRange(new StockDataType[] { StockDataType.EMA3, StockDataType.EMA6, StockDataType.EMA12, StockDataType.EMA20, StockDataType.EMA26, StockDataType.EMA50, StockDataType.EMA100 });
-
-        //    SortedDictionary<int, int> upTrendHistogram = new SortedDictionary<int, int>();
-        //    SortedDictionary<int, int> downTrendHistogram = new SortedDictionary<int, int>();
-
-        //    using (StreamWriter sr = new StreamWriter(Settings.Default.StockAnalyzerRootFolder + "\\Report\\" + this.CurrentStockSerie.StockName + "_TrendStat.csv", false))
-        //    {
-        //        foreach(StockDataType datatype in dataList)
-        //        {
-        //            downTrendHistogram.Clear();
-        //            upTrendHistogram.Clear();
-
-        //            StatToolkit.TrendCountHistogram(this.CurrentStockSerie, datatype, ref downTrendHistogram, ref upTrendHistogram);
-        //            int total = 0;
-        //            sr.WriteLine("Data\tNb Days\tDT Occurences\tUP Occurences\tTotal Days");
-        //            int maxDays = Math.Max(downTrendHistogram.Keys.Last(), upTrendHistogram.Keys.Last());
-        //            for (int i = 1; i <= maxDays; i++)
-        //            {
-        //                sr.Write(datatype.ToString() + "\t" + i + "\t");
-        //                if (downTrendHistogram.ContainsKey(i))
-        //                {
-        //                    sr.Write(downTrendHistogram[i] + "\t");
-        //                    total = downTrendHistogram[i];
-        //                }
-        //                else
-        //                {
-        //                    sr.Write(0 + "\t");
-        //                    total = 0;
-        //                }
-        //                if (upTrendHistogram.ContainsKey(i))
-        //                {
-        //                    sr.Write(upTrendHistogram[i] + "\t");
-        //                    total += upTrendHistogram[i];
-        //                }
-        //                else
-        //                {
-        //                    sr.Write(0 + "\t");
-        //                }
-        //                sr.Write(total * i + "\t");
-        //                sr.WriteLine();
-        //            }
-        //        }
-        //    }
-        //}
-        //private void generateStat2MenuItem_Click(object sender, EventArgs e)
-        //{
-        //    List<StockDataType> dataList = new List<StockDataType>();
-        //    dataList.AddRange(new StockDataType[] { StockDataType.CLOSE, StockDataType.EMA3, StockDataType.EMA6, StockDataType.EMA12, StockDataType.EMA20, StockDataType.EMA26, StockDataType.EMA50, StockDataType.EMA100 });
-
-        //    SortedDictionary<int, int> upTrendHistogram = new SortedDictionary<int, int>();
-        //    SortedDictionary<int, int> downTrendHistogram = new SortedDictionary<int, int>();
-
-        //    using (StreamWriter sr = new StreamWriter(Settings.Default.StockAnalyzerRootFolder + "\\Report\\" + this.selectedGroup.ToString() + "_TrendStat.csv", false))
-        //    {
-        //        using (StreamWriter sr2 = new StreamWriter(Settings.Default.StockAnalyzerRootFolder + "\\Report\\" + this.selectedGroup.ToString() + "_TrendStat2.csv", false))
-        //        {
-        //            foreach(StockDataType datatype in dataList)
-        //            {
-        //                downTrendHistogram.Clear();
-        //                upTrendHistogram.Clear();
-
-        //                foreach(StockSerie stockSerie in this.StockDictionary.Values)
-        //                {
-        //                    if (stockSerie.StockGroup != this.selectedGroup)
-        //                    {
-        //                        continue;
-        //                    }
-        //                    StatToolkit.TrendCountHistogram(stockSerie, datatype, ref downTrendHistogram, ref upTrendHistogram);
-        //                }
-
-        //                int total = 0;
-        //                sr.WriteLine("Data\tNb Days\tDT Occurences\tUP Occurences\tOccurences\tTotal Days");
-        //                sr2.Write(datatype.ToString() + "\t");
-        //                int maxDays = Math.Max(downTrendHistogram.Keys.Last(), upTrendHistogram.Keys.Last());
-        //                for (int i = 1; i <= maxDays; i++)
-        //                {
-        //                    sr.Write(datatype.ToString() + "\t" + i + "\t");
-        //                    if (downTrendHistogram.ContainsKey(i))
-        //                    {
-        //                        sr.Write(downTrendHistogram[i] + "\t");
-        //                        total = downTrendHistogram[i];
-        //                    }
-        //                    else
-        //                    {
-        //                        sr.Write(0 + "\t");
-        //                        total = 0;
-        //                    }
-        //                    if (upTrendHistogram.ContainsKey(i))
-        //                    {
-        //                        sr.Write(upTrendHistogram[i] + "\t");
-        //                        total += upTrendHistogram[i];
-        //                    }
-        //                    else
-        //                    {
-        //                        sr.Write(0 + "\t");
-        //                    }
-        //                    sr.Write(total + "\t");
-        //                    sr.Write(total * i + "\t");
-        //                    sr.WriteLine();
-
-        //                    sr2.Write(total + "\t");
-        //                }
-        //                sr2.WriteLine();
-        //            }
-        //        }
-        //    }
-        //}
-        //private void stockStatisticsMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    StatisticsDialog statisticsDlg = new StatisticsDialog(this.graphCloseControl, this.CurrentStockSerie);
-        //    statisticsDlg.Show(this);
-        //}
-
-        #endregion
-
         #region
 
         private static string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
@@ -3462,36 +3133,6 @@ namespace StockAnalyzerApp
                                                     "</U></B></P>" +
                                                     "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
                                                     commentTemplate + "</P>";
-
-        //private void GenerateDailyReport()
-        //{
-        //   CleanImageFolder();
-
-        //   GenerateDailyReport(true);
-
-        //   if (NetworkInterface.GetIsNetworkAvailable())
-        //   {
-        //      using (MailMessage message = new MailMessage())
-        //      {
-
-        //         message.To.Add(Settings.Default.UserEMail);
-        //         message.To.Add("david.carbonel@volvo.com");
-        //         message.Subject = "Ultimate Chartist Analysis Report - " + DateTime.Now.ToString();
-        //         message.From = new MailAddress("noreply@free.fr");
-        //         message.IsBodyHtml = true;
-        //         SmtpClient smtp = new SmtpClient(Settings.Default.UserSMTP, 25);
-        //         try
-        //         {
-        //            smtp.Send(message);
-        //            MessageBox.Show("Email sent successfully");
-        //         }
-        //         catch (System.Exception e)
-        //         {
-        //            MessageBox.Show(e.Message, "Email error !");
-        //         }
-        //      }
-        //   }
-        //}
 
         private string GenerateEventReport()
         {
@@ -3535,95 +3176,6 @@ namespace StockAnalyzerApp
             ImageFormat imageFormat = ImageFormat.Png;
             List<string> cidList = new List<string>();
             List<string> fileNameList = new List<string>();
-
-            #region report multi TimeFrame
-
-            //// Generate header
-            //            string MULTITIMEFRAME_HEADER = @"<html>
-            //<head>
-            //    <title>Untitled Page</title>
-            //   <style>
-            //table
-            //{
-            //border-collapse:collapse;
-            //}
-            //table, td, th
-            //{
-            //border:1px solid black;
-            //}
-            //</style>
-            //</head>
-            //<body>
-            //<h1>%TITLE%</h1>";
-            //            string MULTITIMEFRAME_FOOTER = @"
-            //</body>
-            //</html>";
-            //            string MULTITIMEFRAME_TABLE = @"<table>%TABLE%</table>" + Environment.NewLine;
-            //            string CELL_TEXT_TEMPLATE = "<td>%TEXT%</td>" + Environment.NewLine;
-            //            string ROW_TEMPLATE = "<tr>%ROW%<tr/>" + Environment.NewLine;
-            //string rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", "Stock Name");
-            //string headerRow = string.Empty;
-            //foreach (StockBarDuration d in durations)
-            //{
-            //    rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", d.ToString());
-            //}
-            //headerRow = ROW_TEMPLATE.Replace("%ROW%", rowContent);
-
-            //string tableContent = headerRow;
-
-            //var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40));
-
-            //StockSplashScreen.FadeInOutSpeed = 0.25;
-            //StockSplashScreen.ProgressVal = 0;
-            //StockSplashScreen.ProgressMax = stockList.Count();
-            //StockSplashScreen.ProgressMin = 0;
-            //StockSplashScreen.ShowSplashScreen();
-
-            //foreach (StockSerie serie in stockList)
-            //{
-            //    try
-            //    {
-            //        rowContent = CELL_TEXT_TEMPLATE.Replace("%TEXT%", serie.StockName);
-
-            //        StockSplashScreen.ProgressVal++;
-            //        StockSplashScreen.ProgressText = "Initializing " + serie.StockGroup + " - " + serie.StockName;
-
-            //        foreach (StockBarDuration d in durations)
-            //        {
-            //            serie.BarDuration = d;
-            //            if (serie.Initialise() && serie.Count > 50)
-            //            {
-            //                IStockTrailStop trailStop = serie.GetTrailStop("TRAILHL(1)");
-            //                if (float.IsNaN(trailStop.Series[0].Last))
-            //                {
-            //                    rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down");
-            //                }
-            //                else
-            //                {
-            //                    rowContent += CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up");
-            //                }
-            //            }
-            //            else
-            //            {
-            //                rowContent += CELL_TEXT_TEMPLATE.Replace("%TEXT%", "-");
-            //            }
-            //        }
-            //    }
-            //    finally
-            //    {
-            //        // Add Row
-            //        tableContent += ROW_TEMPLATE.Replace("%ROW%", rowContent);
-            //    }
-            //}
-
-            //StockSplashScreen.CloseForm(true);
-            //string table = MULTITIMEFRAME_HEADER.Replace("%TITLE%", title) + MULTITIMEFRAME_TABLE.Replace("%TABLE%", tableContent) + MULTITIMEFRAME_FOOTER;
-
-            //using (StreamWriter sw = new StreamWriter(folderName + @"\report_table.html"))
-            //{
-            //    sw.Write(table);
-            //}
-            #endregion
 
             #region Report leaders
 
@@ -4060,31 +3612,6 @@ namespace StockAnalyzerApp
 
         }
         #endregion
-        #region Stock Strategy Scanner Dlg
-        private StockStrategyScannerDlg stockStrategyScannerDlg = null;
-        private void stockStrategyScannerMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            if (stockStrategyScannerDlg == null)
-            {
-                stockStrategyScannerDlg = new StockStrategyScannerDlg(StockDictionary, this.selectedGroup, (StockBarDuration)this.barDurationComboBox.SelectedItem, this.currentStrategy);
-                stockStrategyScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                stockStrategyScannerDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
-                stockStrategyScannerDlg.SelectedStrategyChanged += new SelectedStrategyChangedEventHandler(this.StockAnalyzerForm_StrategyChanged);
-                stockStrategyScannerDlg.FormClosing += new FormClosingEventHandler(delegate
-                {
-                    this.NotifyBarDurationChanged -= stockStrategyScannerDlg.OnBarDurationChanged;
-                    this.StrategyChanged -= stockStrategyScannerDlg.OnStrategyChanged;
-                    this.stockStrategyScannerDlg = null;
-                });
-            }
-            this.NotifyBarDurationChanged += stockStrategyScannerDlg.OnBarDurationChanged;
-            this.StrategyChanged += stockStrategyScannerDlg.OnStrategyChanged;
-
-            stockStrategyScannerDlg.Show();
-        }
-
-        #endregion
 
         private void scriptEditorMenuItem_Click(object sender, EventArgs e)
         {
@@ -4147,7 +3674,7 @@ namespace StockAnalyzerApp
                         magnetStripBtn_Click(null, null);
                         break;
                     case Keys.P:
-                        this.currentPortofolioMenuItem_Click(null, null);
+                        this.currentPortfolioMenuItem_Click(null, null);
                         break;
                     case Keys.Control | Keys.C:
                         ClearSecondarySerie();
@@ -4180,11 +3707,6 @@ namespace StockAnalyzerApp
                     case Keys.Up:
                         {
                             ZoomIn();
-                        }
-                        break;
-                    case Keys.Control | Keys.F2:
-                        {
-                            this.GenerateTrainingData();
                         }
                         break;
                     case Keys.F3:
@@ -4389,12 +3911,6 @@ namespace StockAnalyzerApp
             mtg.Initialize(this.selectedGroup, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
-        }
-
-        private void nameMappingMenuItem_Click(object sender, EventArgs e)
-        {
-            var dlg = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingDlg();
-            dlg.Show();
         }
 
         private StockMarketReplay marketReplay = null;

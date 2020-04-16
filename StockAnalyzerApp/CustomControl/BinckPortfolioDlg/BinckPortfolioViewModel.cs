@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 float val = this.Portfolio.Balance;
                 foreach (var pos in positions)
                 {
-                    float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now);
+                    float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);
                     if (value == 0.0f) // if price is not found use open price
                     {
                         val += pos.Qty * pos.OpenValue;
@@ -47,7 +47,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                     {
                         if (pos.Leverage != 1) // if underlying price is found manage leverage
                         {
-                            var underlyingOpenValue = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, pos.StartDate);
+                            var underlyingOpenValue = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, pos.StartDate, StockAnalyzer.StockClasses.BarDuration.Daily);
                             var variation = pos.Leverage * (value - underlyingOpenValue) / underlyingOpenValue;
                             value = pos.OpenValue * (1 + variation);
                         }

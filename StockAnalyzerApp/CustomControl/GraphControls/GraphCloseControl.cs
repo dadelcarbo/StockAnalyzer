@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
-        public StockAnalyzer.StockBinckPortfolio.StockPortfolio BinckPortofolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
+        public StockPortfolio BinckPortfolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
 
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
@@ -229,7 +229,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #region Draw orders
 
-                if (ShowOrders && this.BinckPortofolio != null)
+                if (ShowOrders && this.BinckPortfolio != null)
                 {
                     PaintBinckOrders(aGraphic);
                 }
@@ -960,14 +960,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         private void PaintBinckOrders(Graphics graphic)
         {
-            if (this.BinckPortofolio == null)
+            if (this.BinckPortfolio == null)
             {
                 return;
             }
             var name = this.serieName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            foreach (var operation in this.BinckPortofolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
+            foreach (var operation in this.BinckPortfolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
             {
                 DateTime orderDate = serieName.StartsWith("INT_") || serieName.StartsWith("FUT_") ? operation.Date : operation.Date.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);

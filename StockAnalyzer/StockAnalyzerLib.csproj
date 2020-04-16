@@ -82,10 +82,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLMMAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />

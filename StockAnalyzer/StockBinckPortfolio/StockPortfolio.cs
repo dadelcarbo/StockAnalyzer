@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public static StockPortfolio CreateSimuPortfolio()
         {
-            return new StockPortfolio() { Name = SIMU_P, InitialBalance = 100000, IsSimu = true };
+            return new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
         }
         public StockPortfolio()
         {
@@ -274,14 +274,16 @@ namespace StockAnalyzer.StockBinckPortfolio
                 p.Dump();
             }
         }
-        public float EvaluateAt(DateTime date)
+        public float EvaluateAt(DateTime date, StockClasses.BarDuration duration, out long volume)
         {
             // Calculate value for opened positions
             var positions = this.Positions.Where(p => p.EndDate > date && p.StartDate <= date);
             float positionValue = 0f;
+            volume = 0;
             foreach (var pos in positions)
             {
-                float value = PriceProvider.GetClosingPrice(pos.StockName, date);
+                volume++;
+                float value = PriceProvider.GetClosingPrice(pos.StockName, date, duration);
                 if (value == 0.0f)
                 {
                     positionValue += pos.Qty * pos.OpenValue;

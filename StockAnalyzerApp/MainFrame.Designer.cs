@@ -76,7 +76,6 @@ namespace StockAnalyzerApp
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockStrategyScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,7 +89,8 @@ namespace StockAnalyzerApp
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.patternRecognitionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.currentPortofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -511,7 +511,6 @@ namespace StockAnalyzerApp
             // 
             this.analysisMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stockScannerMenuItem,
-            this.stockStrategyScannerMenuItem,
             this.palmaresMenuItem,
             this.toolStripSeparator10,
             this.agentTunningMenuItem,
@@ -534,13 +533,6 @@ namespace StockAnalyzerApp
             this.stockScannerMenuItem.Size = new System.Drawing.Size(240, 22);
             this.stockScannerMenuItem.Text = "Stock Scanner";
             this.stockScannerMenuItem.Click += new System.EventHandler(this.stockScannerMenuItem_Click);
-            // 
-            // stockStrategyScannerMenuItem
-            // 
-            this.stockStrategyScannerMenuItem.Name = "stockStrategyScannerMenuItem";
-            this.stockStrategyScannerMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.stockStrategyScannerMenuItem.Text = "Strategy Scanner";
-            this.stockStrategyScannerMenuItem.Click += new System.EventHandler(this.stockStrategyScannerMenuItem_Click);
             // 
             // palmaresMenuItem
             // 
@@ -623,19 +615,28 @@ namespace StockAnalyzerApp
             // portofolioMenuItem
             // 
             this.portofolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.currentPortofolioMenuItem,
+            this.currentPortfolioMenuItem,
+            this.showPortfolioSerieMenuItem,
             this.nameMappingMenuItem});
             this.portofolioMenuItem.Name = "portofolioMenuItem";
             this.portofolioMenuItem.Size = new System.Drawing.Size(77, 20);
             this.portofolioMenuItem.Text = "Portofolios";
             // 
-            // currentPortofolioMenuItem
+            // currentPortfolioMenuItem
             // 
-            this.currentPortofolioMenuItem.Name = "currentPortofolioMenuItem";
-            this.currentPortofolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.F2));
-            this.currentPortofolioMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.currentPortofolioMenuItem.Text = "Show Current Portofolio";
-            this.currentPortofolioMenuItem.Click += new System.EventHandler(this.currentPortofolioMenuItem_Click);
+            this.currentPortfolioMenuItem.Name = "currentPortfolioMenuItem";
+            this.currentPortfolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.F2));
+            this.currentPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.currentPortfolioMenuItem.Text = "Show Current Portfolio";
+            this.currentPortfolioMenuItem.Click += new System.EventHandler(this.currentPortfolioMenuItem_Click);
+            // 
+            // showPortfolioSerieMenuItem
+            // 
+            this.showPortfolioSerieMenuItem.Name = "showPortfolioSerieMenuItem";
+            this.showPortfolioSerieMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2;
+            this.showPortfolioSerieMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.showPortfolioSerieMenuItem.Text = "Show Portfolio Serie";
+            this.showPortfolioSerieMenuItem.Click += new System.EventHandler(this.showPortfolioSerieMenuItem_Click);
             // 
             // nameMappingMenuItem
             // 
@@ -1504,7 +1505,8 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripMenuItem exportFinancialsMenuItem;
         private ToolStripSeparator toolStripSeparator22;
-        private ToolStripMenuItem currentPortofolioMenuItem;
+        private ToolStripMenuItem currentPortfolioMenuItem;
+        private ToolStripMenuItem showPortfolioSerieMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem showAlertDialogMenuItem;
@@ -1559,7 +1561,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator17;
         private ToolStripMenuItem eraseAllDrawingsToolStripMenuItem;
         private ToolStripMenuItem stockScannerMenuItem;
-        private ToolStripMenuItem stockStrategyScannerMenuItem;
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;

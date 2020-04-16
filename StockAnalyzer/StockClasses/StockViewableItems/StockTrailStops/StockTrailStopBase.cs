@@ -143,6 +143,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             this.CreateEventSeries(stockSerie.Count);
 
+            if (stockSerie.Count <= 4)
+                return;
+
             float previousHigh = stockSerie.GetSerie(StockDataType.HIGH).GetMax(0, 4);
             float previousLow = stockSerie.GetSerie(StockDataType.LOW).GetMin(0, 4);
             float previousHigh2 = previousHigh;

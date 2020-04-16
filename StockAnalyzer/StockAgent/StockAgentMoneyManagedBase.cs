@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockAgent
     {
         protected StockAgentMoneyManagedBase()
         {
+            Target = 1000;
         }
         /// <summary>
         /// Stop value in percent 0.1 = 10%
@@ -22,7 +23,7 @@ namespace StockAnalyzer.StockAgent
         /// <summary>
         /// Target value in percent 0.1 = 10%
         /// </summary>
-        [StockAgentParam(0.03f, 0.15f)]
+        //[StockAgentParam(0.03f, 0.15f)]
         public float Target { get; set; }
 
         public override TradeAction Decide(int index)

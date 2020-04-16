@@ -183,7 +183,7 @@ namespace StockAnalyzer.StockAgent
 
         public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
-            foreach (var serie in series)
+            foreach (var serie in series.Where(s=>s.Count > minIndex))
             {
                 this.Agent.Initialize(serie, duration);
 

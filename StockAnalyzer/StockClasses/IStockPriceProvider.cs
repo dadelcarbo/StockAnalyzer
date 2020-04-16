@@ -4,6 +4,6 @@ namespace StockAnalyzer.StockClasses
 {
     public interface IStockPriceProvider
     {
-        float GetClosingPrice(string stockName, DateTime date);
+        float GetClosingPrice(string stockName, DateTime date, StockClasses.BarDuration duration);
     }
 }

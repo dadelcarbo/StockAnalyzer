@@ -139,7 +139,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     else
                     {
                         this.Report = engine.Report;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector +"\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t";
+                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector +"\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
                         Clipboard.SetText(rpt);
@@ -211,14 +211,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (engine.BestTradeSummary == null)
                     return false;
 
-                //StockAnalyzerForm.MainFrame.BinckPortfolio = new StockPortfolio();
-                //foreach (var trade in engine.BestTradeSummary.Trades)
-                //{
-                //    // Create operations
-                //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.EntryIndex), trade.Serie.StockName, StockOperation.BUY, 1, 1, !trade.IsLong));
-                //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(trade.Serie.Keys.ElementAt(trade.ExitIndex), trade.Serie.StockName, StockOperation.SELL, 1, 1, !trade.IsLong));
-                //}
-                // this.graphCloseControl.ForceRefresh();
+                StockAnalyzerForm.MainFrame.BinckPortfolio = engine.BestTradeSummary.Portfolio;
             }
             catch (Exception ex)
             {

@@ -717,8 +717,11 @@ namespace StockAnalyzer.StockClasses
             float[] atrSerie = new float[Values.Count];
             float[] variationSerie = new float[Values.Count];
             float[] volumeSerie = new float[Values.Count];
-            float[] positionSerie = new float[Values.Count];
 
+            if (!this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+            {
+                this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+            }
             int i = 0;
             StockDailyValue previousValue = null;
             foreach (StockDailyValue dailyValue in this.Values)
@@ -5315,87 +5318,6 @@ namespace StockAnalyzer.StockClasses
             return stockOrder;
         }
 
-        public StockOrder GenerateOrder(IStockStrategy strategy, System.DateTime startDate, System.DateTime endDate, float amount, bool reinvest,
-    bool amendOrders, bool supportShortSelling,
-           bool takeProfit, float profitTarget,
-           bool stopLoss, float stopLossTarget,
-              float fixedFee, float taxRate, StockPortofolio portfolio)
-        {
-            // Get the exiting order list
-            StockOrderList orderList = portfolio.OrderList.GetOrderListSortedByDate(this.StockName);
-            StockOrder stockOrder = null;
-            StockOrder lastBuyOrder = null;
-            bool lookingForBuying = true;
-            float remainingCash = 0.0f;
-            float benchmark = float.NaN;
-
-            #region Initialise from last order
-            if (orderList.Count != 0)
-            {
-                stockOrder = orderList.Last();
-                startDate = stockOrder.CreationDate;
-                switch (stockOrder.State)
-                {
-                    case StockOrder.OrderStatus.Executed:
-                        if (stockOrder.IsBuyOrder())
-                        {
-                            startDate = stockOrder.ExecutionDate;
-                            lastBuyOrder = stockOrder;
-                            lookingForBuying = false;
-                            stockOrder = null;
-                            remainingCash = amount - lastBuyOrder.TotalCost;
-                        }
-                        else
-                        {
-                            startDate = stockOrder.ExecutionDate;
-                            lookingForBuying = true;
-                            lastBuyOrder = null;
-                            stockOrder = null;
-                        }
-                        break;
-                    case StockOrder.OrderStatus.Pending:
-                        if (stockOrder.IsBuyOrder())
-                        {
-                            benchmark = this[stockOrder.CreationDate].LOW;
-                            lastBuyOrder = stockOrder;
-                            lookingForBuying = true;
-                        }
-                        else
-                        {
-                            benchmark = this[stockOrder.CreationDate].HIGH;
-                            lastBuyOrder = orderList.ElementAt(orderList.Count - 2); // Assume that if there is a pending sell order, it was a previous buy order.
-                            lookingForBuying = false;
-                        }
-                        break;
-                    case StockOrder.OrderStatus.Expired:
-                        if (stockOrder.IsBuyOrder())
-                        {
-                            lastBuyOrder = null;
-                            lookingForBuying = true;
-                        }
-                        else
-                        {
-                            lastBuyOrder = orderList.ElementAt(orderList.Count - 2); // Assume that if there is a pending sell order, it was a previous buy order.
-                            lookingForBuying = false;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            #endregion
-
-            strategy.Initialise(this, lastBuyOrder, supportShortSelling);
-
-            // Run the order processing loop
-            RunOrderProcessingLoop(strategy, startDate, endDate, amount, reinvest, amendOrders, supportShortSelling,
-               takeProfit, profitTarget,
-               stopLoss, stopLossTarget,
-                fixedFee, taxRate, portfolio, ref stockOrder, lastBuyOrder, lookingForBuying, remainingCash, benchmark);
-
-            return stockOrder;
-        }
-
         private bool printOrderLog = false;
 
         private void RunOrderProcessingLoop(IStockStrategy strategy, System.DateTime startDate, System.DateTime endDate,
@@ -6202,6 +6124,12 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                     break;
+                case StockClasses.BarDuration.BiWeekly:
+                    {
+                        var weeklyValueList = GetSmoothedValues(StockClasses.BarDuration.Weekly);
+                        newBarList = GenerateMultipleBar(weeklyValueList, 2);
+                    }
+                    break;
                 case StockClasses.BarDuration.Monthly:
                     {
                         StockDailyValue newValue = null;
@@ -6541,7 +6469,7 @@ namespace StockAnalyzer.StockClasses
 
         public List<StockDailyValue> GenerateDailyFromIntraday()
         {
-            if (!this.BelongsToGroup(Groups.INTRADAY)) 
+            if (!this.BelongsToGroup(Groups.INTRADAY))
                 throw new InvalidOperationException("Cannot generate daily value from non intraday data");
 
             DateTime currentDay = this.Values.First().DATE.Date;
