@@ -1,7 +1,5 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockAgent.Agents;
 using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -146,7 +144,25 @@ namespace StockAnalyzerApp
             get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
         }
 
-        public StockPortfolio BinckPortfolio { get; set; }
+        private StockPortfolio binckPortfolio;
+        public StockPortfolio BinckPortfolio
+        {
+            get => binckPortfolio;
+            set
+            {
+                if (binckPortfolio != value)
+                {
+                    if (portfolioComboBox.SelectedItem != value)
+                    {
+                        portfolioComboBox.SelectedIndex = portfolioComboBox.Items.IndexOf(value);
+                    }
+                    else
+                    {
+                        binckPortfolio = value;
+                    }
+                }
+            }
+        }
 
         private StockSerie.Groups selectedGroup;
         public StockSerie.Groups Group => selectedGroup;
@@ -607,6 +623,8 @@ namespace StockAnalyzerApp
 
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
+            if (TimerSuspended)
+                return;
             if (busy) return;
             busy = true;
 
@@ -645,6 +663,8 @@ namespace StockAnalyzerApp
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
+            if (TimerSuspended)
+                return;
             if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
                 DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
 
@@ -692,6 +712,8 @@ namespace StockAnalyzerApp
 
                 foreach (var stockSerie in stockList)
                 {
+                    if (TimerSuspended)
+                        return;
                     if (AlertDetectionProgress != null)
                     {
                         if (this.InvokeRequired)
@@ -773,6 +795,8 @@ namespace StockAnalyzerApp
             }
         }
         #endregion
+
+        public static bool TimerSuspended { get; set; } = false;
 
         private System.Windows.Forms.Timer refreshTimer;
         private System.Windows.Forms.Timer alertTimer;
@@ -2297,14 +2321,13 @@ namespace StockAnalyzerApp
             }
             stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(newSerie.StockName);
 
-            OnNeedReinitialise(true);
+            this.StockAnalyzerForm_StockSerieChanged(newSerie, false);
         }
 
         private void indexRelativeStrengthDetailsSubMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
-            StockSerie newSerie =
-               this.CurrentStockSerie.GenerateRelativeStrenthStockSerie(StockDictionary[sender.ToString()]);
+            StockSerie newSerie = this.CurrentStockSerie.GenerateRelativeStrenthStockSerie(StockDictionary[sender.ToString()]);
             if (newSerie == null)
             {
                 MessageBox.Show("This operation is not allowed");
@@ -2954,7 +2977,8 @@ namespace StockAnalyzerApp
             if (agentTunningDialog == null)
             {
                 agentTunningDialog = new AgentSimulationDlg();
-                agentTunningDialog.FormClosed += (a, b) => {
+                agentTunningDialog.FormClosed += (a, b) =>
+                {
                     agentTunningDialog = null;
                 };
                 agentTunningDialog.Show();
@@ -2971,7 +2995,8 @@ namespace StockAnalyzerApp
             if (portfolioSimulationDialog == null)
             {
                 portfolioSimulationDialog = new PortfolioSimulationDlg();
-                portfolioSimulationDialog.FormClosed += (a, b) => {
+                portfolioSimulationDialog.FormClosed += (a, b) =>
+                {
                     portfolioSimulationDialog = null;
                 };
                 portfolioSimulationDialog.Show();
@@ -3659,7 +3684,7 @@ namespace StockAnalyzerApp
                         this.hideIndicatorsStockMenuItem_Click(null, null);
                         break;
                     case Keys.Control | Keys.I:
-                        inverseSerieMenuItem_Click(this, null);
+                        selectDisplayedIndicatorMenuItem_Click(null, null);
                         break;
                     case Keys.Control | Keys.D:
                         this.showDrawingsMenuItem.Checked = !this.showDrawingsMenuItem.Checked;
@@ -4612,9 +4637,7 @@ namespace StockAnalyzerApp
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
-                            this.graphCloseControl.SecondaryFloatSerie =
-                                this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(
-                                    this.StockDictionary[fields[1]], StockDataType.CLOSE);
+                            this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]], StockDataType.CLOSE);
                         }
                     }
                     else
@@ -4669,9 +4692,9 @@ namespace StockAnalyzerApp
 
         void portfolioComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.BinckPortfolio != portfolioComboBox.SelectedItem)
+            if (this.binckPortfolio != portfolioComboBox.SelectedItem)
             {
-                this.BinckPortfolio = portfolioComboBox.SelectedItem as StockPortfolio;
+                this.binckPortfolio = portfolioComboBox.SelectedItem as StockPortfolio;
                 this.graphCloseControl.ForceRefresh();
             }
         }

@@ -31,13 +31,13 @@
             <telerik:RadComboBox Margin="2" Width="90" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
             <Label Margin="2">Max Positions</Label>
             <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding MaxPosition}" NumberDecimalDigits="0" Width="40"/>
-            <Button Margin="2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
+            <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">
             <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
         </GroupBox>
         <GroupBox Header="Report" Grid.Row="2">
-            <TextBox Margin="2" Text="{Binding Report}" Background="White"/>
+            <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto"/>
         </GroupBox>
         <ProgressBar Grid.Row="3" Value="{Binding ProgressValue, Mode=OneWay}" Minimum="0" Maximum="100" Margin="2" Height="16" HorizontalAlignment="Stretch" />
     </Grid>

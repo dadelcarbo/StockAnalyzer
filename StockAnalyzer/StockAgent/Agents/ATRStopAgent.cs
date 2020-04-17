@@ -11,23 +11,25 @@ namespace StockAnalyzer.StockAgent.Agents
         public ATRStopAgent()
         {
             Period = 13;
-            Width = 2.0f;
+            UpWidth = 2.0f;
         }
 
         [StockAgentParam(5, 80)]
         public int Period { get; set; }
 
         [StockAgentParam(0.5f, 4.0f)]
-        public float Width { get; set; }
+        public float UpWidth { get; set; }
+        [StockAgentParam(0.5f, 4.0f)]
+        public float DownWidth { get; set; }
 
-        public override string Description => "Buy when Open and close are above EMA";
+        public override string Description => "Buy according to TrailATRBand";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{Width},{-Width},MA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{UpWidth},{-DownWidth},MA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }

@@ -123,6 +123,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
                 engine = new StockAgentEngine(agentType);
+                engine.BestAgentDetected += (bestAgent) =>
+                {
+                    string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
+                    msg += bestAgent.ToLog() + Environment.NewLine;
+                    this.Report = msg;
+                };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
                 worker.WorkerSupportsCancellation = true;
@@ -130,6 +136,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.DoWork += RunAgentEngineOnGroup;
                 worker.RunWorkerCompleted += (a, e) =>
                 {
+                    StockAnalyzerForm.TimerSuspended = false;
                     this.PerformText = "Perform";
                     this.ProgressValue = 0;
                     if (e.Cancelled)
@@ -138,8 +145,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     }
                     else
                     {
-                        this.Report = engine.Report;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector +"\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
+                        StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
+                        var report = engine.Report;
+                        report += Environment.NewLine + engine.BestTradeSummary.GetOpenPositionLog() + Environment.NewLine;
+                        this.Report = report;
+                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
                         Clipboard.SetText(rpt);
@@ -155,6 +165,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
 
                 this.PerformText = "Cancel";
+                StockAnalyzerForm.TimerSuspended = true;
                 worker.RunWorkerAsync();
             }
             else
@@ -210,12 +221,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 engine.GreedySelection(stockSeries, this.Duration, 20, this.Accuracy, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
-
-                StockAnalyzerForm.MainFrame.BinckPortfolio = engine.BestTradeSummary.Portfolio;
             }
             catch (Exception ex)
             {
                 StockAnalyzerException.MessageBox(ex);
+                return false;
             }
             return true;
         }

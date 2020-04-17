@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockBinckPortfolio
     {
         public const string SIMU_P = "Simu_P";
 
-        public static StockPortfolio SimulationPortfolio = null;
+        public static StockPortfolio SimulationPortfolio { get; private set; }
 
         public static IStockPriceProvider PriceProvider { get; set; }
 
@@ -30,12 +30,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
             // Add simulation portfolio
-            StockPortfolio.Portfolios.Add(SimulationPortfolio = CreateSimuPortfolio());
+            SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
+            StockPortfolio.Portfolios.Add(SimulationPortfolio);
             return StockPortfolio.Portfolios;
-        }
-        public static StockPortfolio CreateSimuPortfolio()
-        {
-            return new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
         }
         public StockPortfolio()
         {

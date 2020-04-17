@@ -9,6 +9,7 @@ using System.Windows;
 
 namespace StockAnalyzer.StockAgent
 {
+    public delegate void BestAgentDetectedHandler(IStockAgent agent);
     public class StockAgentEngine
     {
         public IStockAgent Agent { get; set; }
@@ -18,6 +19,8 @@ namespace StockAnalyzer.StockAgent
         public Type AgentType { get; private set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
+
+        public event BestAgentDetectedHandler BestAgentDetected;
 
         public StockAgentEngine(Type agentType)
         {
@@ -89,6 +92,8 @@ namespace StockAnalyzer.StockAgent
                 if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
                 {
                     bestAgent = this.Agent;
+
+                    this.BestAgentDetected?.Invoke(bestAgent);
                 }
             }
             stopWatch.Stop();

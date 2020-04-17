@@ -132,16 +132,22 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.DoWork += RunAgentEngineOnGroup;
                 worker.RunWorkerCompleted += (a, e) =>
                 {
+                    StockAnalyzerForm.TimerSuspended = false;
                     this.PerformText = "Perform";
                     this.ProgressValue = 0;
                     if (e.Cancelled)
                     {
                         this.Report = "Cancelled...";
                     }
+                    else
+                    {
+                        StockAnalyzerForm.MainFrame.BinckPortfolio = engine.Agent.TradeSummary.Portfolio;
+                    }
                     this.worker = null;
                 };
 
                 this.PerformText = "Cancel";
+                StockAnalyzerForm.TimerSuspended = true;
                 worker.RunWorkerAsync();
             }
             else
@@ -177,25 +183,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     return false;
 
                 var tradeSummary = engine.Agent.TradeSummary;
-                StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio = tradeSummary.Portfolio;
 
-                string openedPositions = string.Empty;
-                foreach (var trade in tradeSummary.Trades.Where(t => !t.IsClosed).OrderBy(t => t.EntryDate))
-                {
-                    if (worker.CancellationPending)
-                        return false;
-
-                    var pos = tradeSummary.Portfolio.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
-                    if (pos == null)
-                    {
-                        openedPositions += trade.Serie.StockName + " *" + Environment.NewLine;
-                    }
-                    else
-                    {
-                        openedPositions += trade.Serie.StockName + Environment.NewLine;
-                    }
-                }
-                openedPositions += Environment.NewLine + "(*) not in portfolio" + Environment.NewLine;
+                string openedPositions = tradeSummary.GetOpenPositionLog();
+                
                 string msg = "Portfolio: " + Environment.NewLine;
                 msg += "Initial balance: " + StockPortfolio.SimulationPortfolio.InitialBalance + Environment.NewLine;
                 msg += "Cash: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;
@@ -205,8 +195,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 msg += Environment.NewLine + tradeSummary.ToLog() + Environment.NewLine;
                 msg += engine.Agent.ToLog() + Environment.NewLine;
                 msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
-                msg += "Opened position: " + Environment.NewLine;
-                msg += Environment.NewLine + openedPositions + Environment.NewLine;
+                msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
+                msg += openedPositions + Environment.NewLine;
 
                 this.Report = msg;
 

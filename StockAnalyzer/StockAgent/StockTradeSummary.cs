@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockAgent
             {
                 if (portfolio == null)
                 {
-                    portfolio = StockBinckPortfolio.StockPortfolio.CreateSimuPortfolio();
+                    portfolio = StockBinckPortfolio.StockPortfolio.SimulationPortfolio;
                     portfolio.InitFromSummary(this);
                 }
                 return portfolio;
@@ -67,6 +67,25 @@ namespace StockAnalyzer.StockAgent
             res += Portfolio.Return;
             res += StockBinckPortfolio.StockPortfolio.MaxPositions + "\t";
             return res;
+        }
+
+        public string GetOpenPositionLog()
+        {
+            string openedPositions = Environment.NewLine + "Opened position: " + Environment.NewLine;
+            foreach (var trade in this.Trades.Where(t => !t.IsClosed).OrderBy(t => t.EntryDate))
+            {
+                var pos = this.Portfolio.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                if (pos == null)
+                {
+                    openedPositions += "* " + trade.Serie.StockName + Environment.NewLine;
+                }
+                else
+                {
+                    openedPositions += trade.Serie.StockName + Environment.NewLine;
+                }
+            }
+            openedPositions += Environment.NewLine + "(*) not in portfolio" + Environment.NewLine;
+            return openedPositions;
         }
     }
 }
