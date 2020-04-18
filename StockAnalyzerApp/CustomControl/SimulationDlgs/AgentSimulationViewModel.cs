@@ -146,6 +146,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     else
                     {
                         StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
+                        engine.BestAgent.TradeSummary.Portfolio = StockPortfolio.SimulationPortfolio;
                         var report = engine.Report;
                         report += Environment.NewLine + engine.BestTradeSummary.GetOpenPositionLog() + Environment.NewLine;
                         this.Report = report;

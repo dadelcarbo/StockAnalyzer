@@ -186,9 +186,10 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, StockBinckPortfolio.StockPortfolio portfolio = null)
         {
-            foreach (var serie in series.Where(s=>s.Count > minIndex))
+            this.Agent.TradeSummary.Portfolio = portfolio;
+            foreach (var serie in series.Where(s => s.Count > minIndex))
             {
                 this.Agent.Initialize(serie, duration);
 

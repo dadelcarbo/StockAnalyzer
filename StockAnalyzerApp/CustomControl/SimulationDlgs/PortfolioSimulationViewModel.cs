@@ -177,7 +177,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             try
             {
-                engine.Perform(stockSeries, 20, this.Duration);
+                engine.Perform(stockSeries, 20, this.Duration, StockPortfolio.SimulationPortfolio);
 
                 if (worker.CancellationPending)
                     return false;
@@ -199,8 +199,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 msg += openedPositions + Environment.NewLine;
 
                 this.Report = msg;
-
-                // this.graphCloseControl.ForceRefresh();
             }
             catch (Exception ex)
             {

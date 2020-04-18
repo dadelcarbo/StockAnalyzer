@@ -39,6 +39,13 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
         }
+
+        static int instanceCount = 0;
+        static public StockPortfolio CreateSimulationPortfolio()
+        {
+            return new StockPortfolio() { Name = SIMU_P + "_" + instanceCount++, InitialBalance = 10000, IsSimu = true };
+        }
+
         public StockPortfolio(string fileName)
         {
             this.Name = Path.GetFileNameWithoutExtension(fileName);

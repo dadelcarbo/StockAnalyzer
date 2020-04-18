@@ -85,6 +85,7 @@
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLMMAgent.cs" />

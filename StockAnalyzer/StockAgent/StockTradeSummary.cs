@@ -26,10 +26,15 @@ namespace StockAnalyzer.StockAgent
             {
                 if (portfolio == null)
                 {
-                    portfolio = StockBinckPortfolio.StockPortfolio.SimulationPortfolio;
+                    portfolio = StockBinckPortfolio.StockPortfolio.CreateSimulationPortfolio();
                     portfolio.InitFromSummary(this);
                 }
                 return portfolio;
+            }
+            set
+            {
+                this.portfolio = value; 
+                portfolio?.InitFromSummary(this);
             }
         }
         public int NbWinTrade { get { return Trades.Count(t => t.Gain >= 0); } }
