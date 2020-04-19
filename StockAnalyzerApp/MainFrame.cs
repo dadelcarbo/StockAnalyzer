@@ -4008,27 +4008,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        private string currentStrategy;
-        public string CurrentStrategy
-        {
-            get { return currentStrategy; }
-            set
-            {
-                if (strategyComboBox.SelectedItem == null || strategyComboBox.SelectedItem.ToString() != value)
-                {
-                    strategyComboBox.SelectedItem = value;
-                }
-                if (currentStrategy != value)
-                {
-                    currentStrategy = value;
-                    if (this.StrategyChanged != null)
-                    {
-                        this.StrategyChanged(value);
-                    }
-                    this.ApplyTheme();
-                }
-            }
-        }
 
         public void SetThemeFromIndicator(string fullName)
         {
@@ -4142,11 +4121,6 @@ namespace StockAnalyzerApp
         public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
         public event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;
         public event NotifyStrategyChangedEventHandler StrategyChanged;
-
-        void StockAnalyzerForm_StrategyChanged(string newStrategy)
-        {
-            this.CurrentStrategy = newStrategy;
-        }
 
         event OnThemeChangedHandler ThemeChanged;
 
@@ -4478,38 +4452,6 @@ namespace StockAnalyzerApp
                             this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]], StockDataType.CLOSE);
                         }
                     }
-                    else
-                    {
-                        if (!string.IsNullOrWhiteSpace(this.currentStrategy))
-                        {
-                            throw new NotImplementedException("Strategy display");
-
-                            //var selectedStrategy = StrategyManager.CreateStrategy(this.currentStrategy,
-                            //    this.currentStockSerie,
-                            //    null, true);
-                            //if (selectedStrategy != null)
-                            //{
-                            //    float amount = this.currentStockSerie.GetMax(StockDataType.CLOSE) * 100f;
-
-                            //    CurrentPortofolio.TotalDeposit = amount;
-                            //    CurrentPortofolio.Clear();
-
-                            //    this.currentStockSerie.GenerateSimulation(selectedStrategy,
-                            //        Settings.Default.StrategyStartDate, this.currentStockSerie.Keys.Last(),
-                            //        amount, false,
-                            //        false, Settings.Default.SupportShortSelling, false, 0.0f, false, 0.0f, 0.0f, 0.0f, CurrentPortofolio);
-                            //}
-
-                            //this.graphCloseControl.Portofolio = CurrentPortofolio;
-
-                            //if (portofolioDlg != null)
-                            //{
-                            //    this.CurrentPortofolio.Initialize();
-                            //    portofolioDlg.SetPortofolio(this.CurrentPortofolio);
-                            //    portofolioDlg.Activate();
-                            //}
-                        }
-                    }
 
                     // Reinitialise drawing
                     ResetZoom();
@@ -4521,11 +4463,6 @@ namespace StockAnalyzerApp
                     StockAnalyzerException.MessageBox(ex);
                 }
             }
-        }
-
-        void strategyComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.CurrentStrategy = strategyComboBox.SelectedItem.ToString();
         }
 
         void portfolioComboBox_SelectedIndexChanged(object sender, EventArgs e)

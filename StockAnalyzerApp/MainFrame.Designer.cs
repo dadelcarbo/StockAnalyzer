@@ -107,7 +107,6 @@ namespace StockAnalyzerApp
             this.themeComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.strategyComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.portfolioComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -744,7 +743,6 @@ namespace StockAnalyzerApp
             this.themeComboBox,
             this.deleteThemeStripButton,
             this.toolStripSeparator1,
-            this.strategyComboBox,
             this.portfolioComboBox});
             this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
             this.themeToolStrip.Name = "themeToolStrip";
@@ -802,14 +800,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // strategyComboBox
-            // 
-            this.strategyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.strategyComboBox.Name = "strategyComboBox";
-            this.strategyComboBox.Size = new System.Drawing.Size(220, 25);
-            this.strategyComboBox.Sorted = true;
-            this.strategyComboBox.SelectedIndexChanged += new System.EventHandler(this.strategyComboBox_SelectedIndexChanged);
             // 
             // portfolioComboBox
             // 
@@ -1515,7 +1505,6 @@ namespace StockAnalyzerApp
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;
-        private ToolStripComboBox strategyComboBox;
         private ToolStripComboBox portfolioComboBox;
         private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;

@@ -640,12 +640,12 @@ namespace StockAnalyzer.StockClasses
             this.dateArray = null;
             this.valueArray = null;
 
-            // This initialisation is here a this method is called in all constructors.
+            // This initialisation is here as this method is called in all constructors.
             if (this.BarSmoothedDictionary == null)
             {
                 this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
             }
-            // Do not clear bar cache here, ust indicators are concerned.
+            // Do not clear bar cache here, just indicators are concerned.
         }
         public void ResetIndicatorCache()
         {
