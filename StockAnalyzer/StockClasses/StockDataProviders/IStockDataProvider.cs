@@ -8,7 +8,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BNPIntraday,
         CommerzBankIntraday,
         CBOE,
-        Portofolio,
         BinckPortfolio,
         Generated,
         AAII,

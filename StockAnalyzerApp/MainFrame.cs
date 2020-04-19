@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.Portofolio;
 using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -16,7 +15,6 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockSecurity;
-using StockAnalyzer.StockStrategyClasses;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
@@ -69,10 +67,6 @@ namespace StockAnalyzerApp
 
         public delegate void NotifyStrategyChangedEventHandler(string newStrategy);
 
-        public delegate void SelectedPortofolioChangedEventHandler(StockPortofolio portofolio, bool activateMainWindow);
-
-        public delegate void SelectedPortofolioNameChangedEventHandler(string portofolioName, bool activateMainWindow);
-
         public delegate void StockWatchListsChangedEventHandler();
 
         public delegate void AlertDetectedHandler();
@@ -96,14 +90,6 @@ namespace StockAnalyzerApp
 
         public StockDictionary StockDictionary { get; private set; }
         public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
-
-        public StockPortofolioList StockPortofolioList
-        {
-            get
-            {
-                return PortfolioDataProvider.StockPortofolioList;
-            }
-        }
 
         public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
 
@@ -388,9 +374,6 @@ namespace StockAnalyzerApp
 
             // 
             InitialiseStockCombo(true);
-
-            //
-            InitialiseStrategyCombo();
 
             InitialiseWatchListComboBox();
 
@@ -2923,7 +2906,6 @@ namespace StockAnalyzerApp
             }
         }
 
-
         private void showPortfolioSerieMenuItem_Click(object sender, EventArgs e)
         {
             if (this.BinckPortfolio == null || this.BinckPortfolio.Operations.Count == 0)
@@ -2975,29 +2957,6 @@ namespace StockAnalyzerApp
             {
                 portfolioSimulationDialog.Activate();
             }
-        }
-
-        private void filteredStrategySimulationMenuItem_Click(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException("strategySimulationMenuItem_Click");
-
-            //CreateSimulationPortofolio(5000.0f);
-
-            //if (filteredStrategySimulatorDlg == null || filteredStrategySimulatorDlg.IsDisposed)
-            //{
-            //    filteredStrategySimulatorDlg = new FilteredStrategySimulatorDlg(StockDictionary, this.StockPortofolioList,
-            //       this.stockNameComboBox.SelectedItem.ToString());
-            //    filteredStrategySimulatorDlg.SimulationCompleted += new FilteredStrategySimulatorDlg.SimulationCompletedEventHandler(filteredStrategySimulatorDlg_SimulationCompleted);
-            //    filteredStrategySimulatorDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-            //    filteredStrategySimulatorDlg.SelectedPortofolioChanged += new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            //}
-            //else
-            //{
-            //    filteredStrategySimulatorDlg.Activate();
-            //}
-            //filteredStrategySimulatorDlg.SelectedStockName = this.stockNameComboBox.SelectedItem.ToString();
-
-            //filteredStrategySimulatorDlg.Show();
         }
 
         private void exportFinancialsMenuItem_Click(object sender, EventArgs e)
@@ -3639,24 +3598,26 @@ namespace StockAnalyzerApp
                             this.ShowMultiTimeFrameDlg();
                         }
                         break;
-                    case Keys.F4:
-                        {
-                            if (marketReplay == null)
-                            {
-                                marketReplay = new StockMarketReplay();
+                    //case Keys.F4:
+                    //    {
+                    //                private StockMarketReplay marketReplay = null;
 
-                                marketReplay.FormClosing += new FormClosingEventHandler(delegate
-                                {
-                                    this.marketReplay = null;
-                                });
-                                marketReplay.Show();
-                            }
-                            else
-                            {
-                                marketReplay.Activate();
-                            }
-                        }
-                        break;
+                    //        if (marketReplay == null)
+                    //        {
+                    //            marketReplay = new StockMarketReplay();
+
+                    //            marketReplay.FormClosing += new FormClosingEventHandler(delegate
+                    //            {
+                    //                this.marketReplay = null;
+                    //            });
+                    //            marketReplay.Show();
+                    //        }
+                    //        else
+                    //        {
+                    //            marketReplay.Activate();
+                    //        }
+                    //    }
+                    //    break;
                     case Keys.F5:
                         {
                             this.DownloadStock(false);
@@ -3837,8 +3798,6 @@ namespace StockAnalyzerApp
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
         }
-
-        private StockMarketReplay marketReplay = null;
 
         private Point lastMouseLocation = Point.Empty;
         void MouseMoveOverGraphControl(object sender, MouseEventArgs e)
@@ -4079,25 +4038,6 @@ namespace StockAnalyzerApp
             }
 
             using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(StockViewableItemsManager.GetTheme(fullName))))
-            {
-                using (StreamReader sr = new StreamReader(ms))
-                {
-                    this.LoadThemeStream(WORK_THEME, sr);
-                }
-            }
-            if (this.themeComboBox.SelectedItem.ToString() == WORK_THEME)
-            {
-                this.ApplyTheme();
-            }
-            else
-            {
-                this.themeComboBox.SelectedItem = WORK_THEME;
-            }
-        }
-
-        public void SetThemeFromStrategy(StockFilteredStrategyBase strategy)
-        {
-            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(strategy.ToTheme())))
             {
                 using (StreamReader sr = new StreamReader(ms))
                 {
@@ -4532,8 +4472,6 @@ namespace StockAnalyzerApp
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.INDICATOR) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
                     {
-                        //this.CurrentPortofolio = null;
-
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
@@ -4619,18 +4557,6 @@ namespace StockAnalyzerApp
             catch (System.Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error loading theme");
-            }
-        }
-        private void InitialiseStrategyCombo()
-        {
-            // Initialise Combo values
-            strategyComboBox.Items.Clear();
-            strategyComboBox.Visible = false;
-
-            strategyComboBox.Items.Add(string.Empty);
-            foreach (string strategy in StrategyManager.GetStrategyList())
-            {
-                strategyComboBox.Items.Add(strategy);
             }
         }
         private void InitialisePortfolioCombo()

@@ -124,9 +124,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 //case StockDataProvider.COT:
                 //    dataProvider = new COTDataProvider();
                 //    break;
-                case StockDataProvider.Portofolio:
-                    dataProvider = new PortfolioDataProvider();
-                    break;
                 case StockDataProvider.BinckPortfolio:
                     dataProvider = new BinckPortfolioDataProvider();
                     break;

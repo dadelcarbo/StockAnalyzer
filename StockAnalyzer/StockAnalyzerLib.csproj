@@ -145,7 +145,6 @@
     <Compile Include="StockClasses\StockDataProviders\CommerzBankIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\NASDACQShortInterestDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.Designer.cs">
       <DependentUpon>DataProviderString.fr-FR.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -492,20 +491,6 @@
     <Compile Include="StockBinckPortfolio\StockOperation.cs" />
     <Compile Include="StockBinckPortfolio\StockPortfolio.cs" />
     <Compile Include="StockBinckPortfolio\StockPosition.cs" />
-    <Compile Include="StockPortfolioStrategy\BalancePortfolioStrategy.cs" />
-    <Compile Include="StockPortfolioStrategy\HighPerformerPortfolioStrategy.cs" />
-    <Compile Include="StockPortfolioStrategy\LongTermSmoothed.cs" />
-    <Compile Include="StockPortfolioStrategy\IStockPortfolioStrategy.cs" />
-    <Compile Include="StockPortfolioStrategy\PortfolioStrategyManager.cs" />
-    <Compile Include="StockPortfolioStrategy\StockPortfolioStrategyBase.cs" />
-    <Compile Include="StockPortfolio\StockPortfolio.cs" />
-    <Compile Include="StockPortfolio\StockPosition.cs" />
-    <Compile Include="StockPortofolio\StockOrder.cs" />
-    <Compile Include="StockPortofolio\StockOrderList.cs" />
-    <Compile Include="StockPortofolio\StockPortofolio.cs" />
-    <Compile Include="StockPortofolio\StockPortofolioList.cs" />
-    <Compile Include="StockPortofolio\StockPosition.cs" />
-    <Compile Include="StockPortofolio\StockPositionBase.cs" />
     <Compile Include="StockScripting\ScriptDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -516,33 +501,6 @@
     <Compile Include="StockSecurity\StockLicense.cs" />
     <Compile Include="StockSecurity\StockToolKit.cs" />
     <Compile Include="StockSecurity\StockUser.cs" />
-    <Compile Include="StockStrategyClasses\ADXStrategy.cs" />
-    <Compile Include="StockStrategyClasses\BBStrategy.cs" />
-    <Compile Include="StockStrategyClasses\DONCHIANStrategy.cs" />
-    <Compile Include="StockStrategyClasses\SARFilteredStrategy.cs" />
-    <Compile Include="StockStrategyClasses\SimBuyWithCloseDirection.cs" />
-    <Compile Include="StockStrategyClasses\StockFilteredStrategyBase.cs" />
-    <Compile Include="StockStrategyClasses\StockMoneyManagement\IStockMoneyManagement.cs" />
-    <Compile Include="StockStrategyClasses\StockMoneyManagement\StockMoneyManagementBase.cs" />
-    <Compile Include="StockStrategyClasses\StockMoneyManagement\StockPreviousLowRiskFree.cs" />
-    <Compile Include="StockStrategyClasses\StockMoneyManagement\MoneyManagementManager.cs" />
-    <Compile Include="StockStrategyClasses\TrailHLHigherLow2Strategy.cs" />
-    <Compile Include="StockStrategyClasses\TrailHLHigherLowStrategy.cs" />
-    <Compile Include="StockStrategyClasses\TrailHLStrategy.cs" />
-    <Compile Include="StockStrategyClasses\MyOSCSimpleStrategy.cs" />
-    <Compile Include="StockStrategyClasses\HilbertAdvStrategy.cs" />
-    <Compile Include="StockStrategyClasses\HilbertStopStrategy.cs" />
-    <Compile Include="StockStrategyClasses\HilbertSimpleStrategy.cs" />
-    <Compile Include="StockStrategyClasses\MOMEXSimpleStrategy.cs" />
-    <Compile Include="StockStrategyClasses\FirstDayOfTheMonthStrategy.cs" />
-    <Compile Include="StockStrategyClasses\TrailBBStrategy.cs" />
-    <Compile Include="StockStrategyClasses\PCRatioStrategy.cs" />
-    <Compile Include="StockStrategyClasses\SimBuyTrailingOrder.cs" />
-    <Compile Include="StockStrategyClasses\SARSimpleStrategy.cs" />
-    <Compile Include="StockStrategyClasses\SimBuyWithTrend.cs" />
-    <Compile Include="StockStrategyClasses\IStockStrategy.cs" />
-    <Compile Include="StockStrategyClasses\StockStrategyBase.cs" />
-    <Compile Include="StockStrategyClasses\StrategyManager.cs" />
     <Compile Include="StockWeb\StockDetails.cs" />
     <Compile Include="StockWeb\StockMail.cs" />
     <Compile Include="StockWeb\StockFTP.cs" />
@@ -603,7 +561,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="StockAgent\StockAgentEngine.cd" />
-    <None Include="StockPortofolio\Portfolio.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">

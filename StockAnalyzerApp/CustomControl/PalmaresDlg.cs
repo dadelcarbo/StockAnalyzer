@@ -21,7 +21,6 @@ namespace StockAnalyzerApp.CustomControl
 
         public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedPortofolioNameChangedEventHandler SelectedPortofolioChanged;
         public event StockAnalyzerForm.StockWatchListsChangedEventHandler StockWatchListsChanged;
 
         public DateTime StartDate { get { return this.fromDateTimePicker.Value; } set { this.fromDateTimePicker.Value = value; } }
@@ -243,10 +242,6 @@ namespace StockAnalyzerApp.CustomControl
                 if (this.portofolioCheckBox.Checked)
                 {
                     string stockPortofolioName = this.palmaresView.SelectedItems[0].Text;
-                    if (SelectedPortofolioChanged != null)
-                    {
-                        SelectedPortofolioChanged(stockPortofolioName, false);
-                    }
                     SelectedStockChanged(stockPortofolioName.Substring(0, stockPortofolioName.Length - 2), true);
                 }
                 else

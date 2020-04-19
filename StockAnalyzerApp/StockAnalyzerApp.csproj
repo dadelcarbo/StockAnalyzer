@@ -296,13 +296,8 @@
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.Designer.cs">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterRangeViewModel.cs" />
-    <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
-    <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
-      <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
@@ -330,12 +325,6 @@
     </Compile>
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.Designer.cs">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.Designer.cs">
-      <DependentUpon>StockMarketReplay.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\DrawingStyleForm.cs">
       <SubType>Form</SubType>
@@ -569,9 +558,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\StockMarketReplay.resx">
-      <DependentUpon>StockMarketReplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ExpectedValueDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
@@ -891,10 +877,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
