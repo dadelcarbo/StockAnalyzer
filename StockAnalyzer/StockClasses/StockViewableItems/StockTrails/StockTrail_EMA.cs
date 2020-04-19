@@ -7,9 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
 {
    public class StockTrail_EMA : StockTrailBase, IStockTrail
    {
-      public StockTrail_EMA()
-      {
-      }
       public override string Name
       {
          get { return "EMA(" + this.Parameters[0].ToString() + ")"; }

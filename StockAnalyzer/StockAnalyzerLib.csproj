@@ -85,6 +85,7 @@
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />

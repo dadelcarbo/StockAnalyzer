@@ -83,7 +83,6 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateSeasonalitySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.portofolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
@@ -518,7 +517,6 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem,
             this.generateSeasonalitySerieMenuItem,
             this.toolStripSeparator8,
-            this.portofolioSimulationMenuItem,
             this.toolStripSeparator20,
             this.exportFinancialsMenuItem,
             this.toolStripSeparator22,
@@ -580,13 +578,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(237, 6);
-            // 
-            // portofolioSimulationMenuItem
-            // 
-            this.portofolioSimulationMenuItem.Name = "portofolioSimulationMenuItem";
-            this.portofolioSimulationMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.portofolioSimulationMenuItem.Text = "Portofolio Simulation";
-            this.portofolioSimulationMenuItem.Click += new System.EventHandler(this.portofolioSimulationMenuItem_Click);
             // 
             // toolStripSeparator20
             // 
@@ -1501,7 +1492,6 @@ namespace StockAnalyzerApp
         private ToolStripButton logScaleBtn;
         private ToolStripButton fastForwardBtn;
         private ToolStripSeparator toolStripSeparator8;
-        private ToolStripMenuItem portofolioSimulationMenuItem;
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripMenuItem exportFinancialsMenuItem;
         private ToolStripSeparator toolStripSeparator22;

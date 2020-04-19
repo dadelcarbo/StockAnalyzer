@@ -73,8 +73,6 @@ namespace StockAnalyzerApp
 
         public delegate void SelectedPortofolioNameChangedEventHandler(string portofolioName, bool activateMainWindow);
 
-        public delegate void SimulationCompletedEventHandler(SimulationParameterControl simulationParameterControl);
-
         public delegate void StockWatchListsChangedEventHandler();
 
         public delegate void AlertDetectedHandler();
@@ -168,9 +166,6 @@ namespace StockAnalyzerApp
         public StockSerie.Groups Group => selectedGroup;
 
         private PalmaresDlg palmaresDlg = null;
-        private StrategySimulatorDlg strategySimulatorDlg = null;
-        private FilteredStrategySimulatorDlg filteredStrategySimulatorDlg = null;
-        private BatchStrategySimulatorDlg batchStrategySimulatorDlg = null;
 
         private static int NbBars { get; set; }
 
@@ -1465,16 +1460,6 @@ namespace StockAnalyzerApp
             }
             // Set the new selected serie
             CurrentStockSerie = selectedSerie;
-
-            // Update simulation dialog
-            if (this.strategySimulatorDlg != null && (!this.strategySimulatorDlg.IsDisposed))
-            {
-                this.strategySimulatorDlg.SelectedStockName = stockNameComboBox.SelectedItem.ToString();
-            }
-            if (this.filteredStrategySimulatorDlg != null && (!this.filteredStrategySimulatorDlg.IsDisposed))
-            {
-                this.filteredStrategySimulatorDlg.SelectedStockName = stockNameComboBox.SelectedItem.ToString();
-            }
         }
 
         private void downloadBtn_Click(object sender, EventArgs e)
@@ -2809,25 +2794,10 @@ namespace StockAnalyzerApp
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
 
-                if (sender is SimulationParameterControl)
-                {
-                    SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
-                    this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
-                    this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
-                    this.palmaresDlg.DisplayPortofolio = true;
-                    this.palmaresDlg.InitializeListView();
-                }
                 palmaresDlg.Show();
             }
             else
             {
-                if (sender is SimulationParameterControl)
-                {
-                    SimulationParameterControl simulationParameterControl = (SimulationParameterControl)sender;
-                    this.palmaresDlg.StartDate = simulationParameterControl.StartDate;
-                    this.palmaresDlg.EndDate = simulationParameterControl.EndDate;
-                    this.palmaresDlg.DisplayPortofolio = true;
-                }
                 this.palmaresDlg.InitializeListView();
                 palmaresDlg.Activate();
             }
@@ -3065,76 +3035,6 @@ namespace StockAnalyzerApp
                     Console.WriteLine();
                 }
             }
-        }
-
-        private void portofolioSimulationMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException("portofolioSimulationMenuItem_Click");
-
-            //CreateSimulationPortofolio(5000.0f);
-
-            //    if (portfolioSimulatorDlg == null || portfolioSimulatorDlg.IsDisposed)
-            //    {
-            //        portfolioSimulatorDlg = new PortfolioSimulatorDlg(StockDictionary, this.StockPortofolioList,
-            //           this.stockNameComboBox.SelectedItem.ToString(), this.WatchLists);
-            //        portfolioSimulatorDlg.SimulationCompleted +=
-            //           new PortfolioSimulatorDlg.SimulationCompletedEventHandler(portfolioSimulatorDlg_SimulationCompleted);
-            //        portfolioSimulatorDlg.SelectedPortofolioChanged +=
-            //           new SelectedPortofolioChangedEventHandler(OnCurrentPortofolioChanged);
-            //    }
-            //    else
-            //    {
-            //        portfolioSimulatorDlg.Activate();
-            //    }
-
-            //    this.CurrentPortofolio = portfolioSimulatorDlg.SelectedPortofolio;
-            //    portfolioSimulatorDlg.Show();
-
-        }
-
-        private void CreateSimulationPortofolio(float portofolioDeposit)
-        {
-            throw new NotImplementedException("CreateSimulationPortofolio");
-
-            //// Create new simulation portofolio
-            //if (CurrentPortofolio == null)
-            //{
-            //    CurrentPortofolio = this.StockPortofolioList.Find(p => p.Name == this.CurrentStockSerie.StockName + "_P");
-            //    if (CurrentPortofolio == null)
-            //    {
-            //        CurrentPortofolio = new StockPortofolio(this.CurrentStockSerie.StockName + "_P");
-            //        CurrentPortofolio.IsSimulation = true;
-            //        CurrentPortofolio.TotalDeposit = portofolioDeposit;
-            //        this.StockPortofolioList.Add(CurrentPortofolio);
-            //    }
-            //}
-        }
-
-        private void batchStrategySimulationMenuItem_Click(object sender, EventArgs e)
-        {
-            if (batchStrategySimulatorDlg == null || batchStrategySimulatorDlg.IsDisposed)
-            {
-                var barDuration = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
-
-                batchStrategySimulatorDlg = new BatchStrategySimulatorDlg(StockDictionary, this.StockPortofolioList, this.selectedGroup, barDuration, this.progressBar);
-                batchStrategySimulatorDlg.SimulationCompleted += new SimulationCompletedEventHandler(batchStrategySimulatorDlg_SimulationCompleted);
-
-                this.NotifyBarDurationChanged += batchStrategySimulatorDlg.OnBarDurationChanged;
-            }
-            else
-            {
-                batchStrategySimulatorDlg.Activate();
-            }
-            batchStrategySimulatorDlg.Show();
-        }
-
-        private void batchStrategySimulatorDlg_SimulationCompleted(SimulationParameterControl simulationParameterControl)
-        {
-            // 
-            OnNeedReinitialise(true);
-
-            // Open Palmares window Initialised to display batch results
-            palmaresMenuItem_Click(simulationParameterControl, null);
         }
 
         #endregion

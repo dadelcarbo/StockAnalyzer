@@ -3,15 +3,11 @@ using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
-using StockAnalyzerSettings.Properties;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -177,7 +173,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             try
             {
-                engine.Perform(stockSeries, 20, this.Duration, StockPortfolio.SimulationPortfolio);
+                engine.Perform(stockSeries, 20, this.Duration);
+
+                engine.Agent.TradeSummary.Portfolio = StockPortfolio.SimulationPortfolio;
 
                 if (worker.CancellationPending)
                     return false;
@@ -185,7 +183,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 var tradeSummary = engine.Agent.TradeSummary;
 
                 string openedPositions = tradeSummary.GetOpenPositionLog();
-                
+
                 string msg = "Portfolio: " + Environment.NewLine;
                 msg += "Initial balance: " + StockPortfolio.SimulationPortfolio.InitialBalance + Environment.NewLine;
                 msg += "Cash: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;

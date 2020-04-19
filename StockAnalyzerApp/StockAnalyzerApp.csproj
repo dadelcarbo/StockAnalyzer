@@ -331,18 +331,6 @@
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.Designer.cs">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.Designer.cs">
-      <DependentUpon>FilteredSimulationParameterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.Designer.cs">
-      <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -454,18 +442,6 @@
     <Compile Include="CustomControl\SaveThemeForm.Designer.cs">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.Designer.cs">
-      <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.Designer.cs">
-      <DependentUpon>SimulationParameterControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -489,12 +465,6 @@
     </Compile>
     <Compile Include="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.Designer.cs">
-      <DependentUpon>StrategySimulatorDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
       <SubType>Form</SubType>
@@ -597,12 +567,6 @@
     <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.resx">
-      <DependentUpon>FilteredSimulationParameterControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.resx">
-      <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -700,12 +664,6 @@
     <EmbeddedResource Include="CustomControl\SaveThemeForm.resx">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.resx">
-      <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\SimulationParameterControl.resx">
-      <DependentUpon>SimulationParameterControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PalmaresDlg.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -716,9 +674,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockAlertDlg.resx">
       <DependentUpon>StockAlertDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.resx">
-      <DependentUpon>StrategySimulatorDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockScannerDlg.fr-FR.resx">
       <DependentUpon>StockScannerDlg.cs</DependentUpon>

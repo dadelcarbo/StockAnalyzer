@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             this.performText = "Perform";
             this.Accuracy = 20;
-            this.Selector = "Coumpound";
+            this.Selector = "Portfolio";
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
@@ -167,6 +167,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                 this.PerformText = "Cancel";
                 StockAnalyzerForm.TimerSuspended = true;
+                this.Report = "Initializing series...";
                 worker.RunWorkerAsync();
             }
             else

@@ -3267,7 +3267,7 @@ namespace StockAnalyzer.StockClasses
                         { // Trailing stop has been broken => reverse trend
                             upTrend = false;
                             longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = highSerie.GetMax(i - period, i);
+                            shortStopSerie[i] = highSerie.GetMax(i - period - 1, i);
                         }
                         else
                         {
@@ -3281,7 +3281,7 @@ namespace StockAnalyzer.StockClasses
                         if (currentValue.CLOSE > shortStopSerie[i - 1])
                         {  // Trailing stop has been broken => reverse trend
                             upTrend = true;
-                            longStopSerie[i] = lowSerie.GetMin(i - period, i);
+                            longStopSerie[i] = lowSerie.GetMin(i - period - 1, i);
                             shortStopSerie[i] = float.NaN;
                         }
                         else
