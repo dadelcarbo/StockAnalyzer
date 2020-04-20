@@ -350,10 +350,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             StockSerie stockSerie = null;
             using (StreamReader sr = new StreamReader(fileName, true))
             {
-                string line = sr.ReadLine();
                 string previousISIN = string.Empty;
+                DateTime date = File.GetLastWriteTime(fileName); ;
                 while (!sr.EndOfStream)
-                {
+                {  
+                    string line = sr.ReadLine();
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
                     {
@@ -362,10 +363,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     if (stockSerie != null)
                     {
-                        DateTime date;
                         if (intraday)
                         {
-                            date = File.GetLastWriteTime(fileName);
+                            if (DateTime.Parse(row[1]) != DateTime.Today)
+                            {
+                                continue;
+                            }
                         }
                         else
                         {
@@ -391,7 +394,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                         }
                     }
-                    line = sr.ReadLine();
                 }
             }
             return true;
