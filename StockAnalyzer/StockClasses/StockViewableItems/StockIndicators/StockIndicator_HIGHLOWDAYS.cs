@@ -6,10 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_HIGHLOWDAYS : StockIndicatorBase
     {
-        public StockIndicator_HIGHLOWDAYS()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -30,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames { get { return new string[] { }; } }
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -56,7 +52,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = period; i < closeSerie.Count; i++)
             {
-                closeSerie.GetMinMax(i - period, i - 1, ref lowest, ref highest);
+                highest = highSerie.GetMax(i - period, i - 1);
+                lowest = lowSerie.GetMin(i - period, i - 1);
+
                 bool isHighest = closeSerie[i] > highest;
                 bool isLowest = closeSerie[i] < lowest;
                 this.eventSeries[0][i] = isHighest && !this.eventSeries[2][i - 1];
