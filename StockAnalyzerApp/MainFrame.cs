@@ -1054,16 +1054,9 @@ namespace StockAnalyzerApp
                 return;
             }
 
-            // TODO Manage COT Series
-            if (this.currentStockSerie.StockName.EndsWith("_COT"))
-            {
-                this.ForceBarDuration(StockBarDuration.Weekly, false);
-            }
-            else
-            {
-                var bd = new StockBarDuration((StockAnalyzer.StockClasses.BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
-                this.currentStockSerie.BarDuration = bd;
-            }
+            var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
+            this.currentStockSerie.BarDuration = bd;
+
             if (!ignoreLinkedTheme
                 && newSerie.StockAnalysis != null
                 && !string.IsNullOrEmpty(newSerie.StockAnalysis.Theme)
@@ -1237,145 +1230,6 @@ namespace StockAnalyzerApp
         {
             StockSplashScreen.ProgressText = text;
         }
-
-        #region COMMITMENT OF TRADERS
-
-        private static SortedDictionary<string, string> ParseCOTInclude()
-        {
-            SortedDictionary<string, string> cotIncludeList = new SortedDictionary<string, string>();
-            string[] fields;
-
-            string fileName = Settings.Default.RootFolder + @"\COT.cfg";
-            if (File.Exists(fileName))
-            {
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        fields = sr.ReadLine().Split(';');
-                        cotIncludeList.Add(fields[0], fields[1]);
-                    }
-                }
-            }
-            return cotIncludeList;
-        }
-
-        //private void ParseFullCotSeries2()
-        //{
-        //   StockLog.Write("ParseFullCotSeries2");
-
-        //   this.CotDictionary = new SortedDictionary<string, CotSerie>();
-        //   string line = string.Empty;
-        //   try
-        //   {
-        //      // Parse COT include list
-        //      SortedDictionary<string, string> cotIncludeList = ParseCOTInclude();
-
-        //      // Shall be downloaded from http://www.cftc.gov/MarketReports/files/dea/history/fut_disagg_txt_2010.zip    
-        //      // Read new downloaded values
-        //      string cotFolder = Settings.Default.RootFolder + COT_SUBFOLDER;
-        //      string[] files = System.IO.Directory.GetFiles(cotFolder, "annual_*.txt");
-
-        //      int cotLargeSpeculatorPositionLongIndex = 7;
-        //      int cotLargeSpeculatorPositionShortIndex = 8;
-        //      int cotCommercialHedgerPositionLongIndex = 10;
-        //      int cotCommercialHedgerPositionShortIndex = 11;
-        //      int cotSmallSpeculatorPositionLongIndex = 14;
-        //      int cotSmallSpeculatorPositionShortIndex = 15;
-        //      int cotOpenInterestIndex = 6;
-
-        //      DateTime cotDate;
-        //      float cotLargeSpeculatorPositionLong;
-        //      float cotLargeSpeculatorPositionShort;
-        //      float cotCommercialHedgerPositionLong;
-        //      float cotCommercialHedgerPositionShort;
-        //      float cotSmallSpeculatorPositionLong;
-        //      float cotSmallSpeculatorPositionShort;
-        //      float cotOpenInterest;
-
-        //      foreach (string fileName in files)
-        //      {
-        //         StreamReader sr = new StreamReader(fileName);
-        //         CotValue readCotValue = null;
-        //         CotSerie cotSerie = null;
-        //         int endOfNameIndex = 0;
-
-        //         string cotSerieName = string.Empty;
-
-        //         string[] row;
-        //         sr.ReadLine();   // Skip header line
-        //         while (!sr.EndOfStream)
-        //         {
-        //            line = sr.ReadLine().Replace("\"", "");
-        //            if (line == string.Empty)
-        //            {
-        //               continue;
-        //            }
-
-        //            endOfNameIndex = line.IndexOf(" ,");
-        //            cotSerieName = line.Substring(0, endOfNameIndex - 1);
-        //            cotSerieName = cotSerieName.Substring(0, cotSerieName.IndexOf(" - "));
-
-        //            if (!cotIncludeList.Keys.Contains(cotSerieName))
-        //            {
-        //               continue;
-        //            }
-
-        //            row = line.Substring(endOfNameIndex + 2).Split(',');
-
-        //            cotLargeSpeculatorPositionLong = float.Parse(row[cotLargeSpeculatorPositionLongIndex]);
-        //            cotLargeSpeculatorPositionShort = float.Parse(row[cotLargeSpeculatorPositionShortIndex]);
-        //            cotCommercialHedgerPositionLong = float.Parse(row[cotCommercialHedgerPositionLongIndex]);
-        //            cotCommercialHedgerPositionShort = float.Parse(row[cotCommercialHedgerPositionShortIndex]);
-        //            cotSmallSpeculatorPositionLong = float.Parse(row[cotSmallSpeculatorPositionLongIndex]);
-        //            cotSmallSpeculatorPositionShort = float.Parse(row[cotSmallSpeculatorPositionShortIndex]);
-        //            cotOpenInterest = float.Parse(row[cotOpenInterestIndex]);
-
-        //            cotDate = DateTime.Parse(row[1], usCulture);
-
-        //            readCotValue = new CotValue(cotDate, cotLargeSpeculatorPositionLong, cotLargeSpeculatorPositionShort,
-        //                cotSmallSpeculatorPositionLong, cotSmallSpeculatorPositionShort,
-        //                cotCommercialHedgerPositionLong, cotCommercialHedgerPositionShort, cotOpenInterest);
-        //            if (this.CotDictionary.ContainsKey(cotSerieName))
-        //            {
-        //               cotSerie = this.CotDictionary[cotSerieName];
-        //               if (!cotSerie.ContainsKey(readCotValue.Date))
-        //               {
-        //                  cotSerie.Add(readCotValue.Date, readCotValue);
-
-        //                  // flag as not initialised as values have to be calculated
-        //                  cotSerie.IsInitialised = false;
-        //               }
-        //            }
-        //            else
-        //            {
-        //               cotSerie = new CotSerie(cotSerieName);
-        //               this.CotDictionary.Add(cotSerieName, cotSerie);
-        //               cotSerie.Add(readCotValue.Date, readCotValue);
-        //            }
-        //         }
-        //         sr.Close();
-        //      }
-        //      // Match cotserie to stock serie
-        //      foreach (KeyValuePair<string, string> pair in cotIncludeList)
-        //      {
-        //         if (!string.IsNullOrWhiteSpace(pair.Value) && this.StockDictionary.ContainsKey(pair.Value))
-        //         {
-        //            this.StockDictionary[pair.Key].CotSerie = this.CotDictionary[pair.Value];
-        //         }
-        //         else
-        //         {
-        //            StockLog.Write("StockSerie " + pair.Key + " doesn't exist, cannot map a COT");
-        //         }
-        //      }
-        //   }
-        //   catch (System.Exception e)
-        //   {
-        //      MessageBox.Show(e.Message + "\r\r" + line, "Failed to parse COT file");
-        //   }
-        //}
-
-        #endregion // COT
 
         private void InitialiseStockCombo(bool setCurrentStock)
         {
@@ -4442,7 +4296,6 @@ namespace StockAnalyzerApp
 
                     // Create new simulation portofolio
                     if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) ||
-                        this.currentStockSerie.BelongsToGroup(StockSerie.Groups.COT) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.INDICATOR) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
                     {

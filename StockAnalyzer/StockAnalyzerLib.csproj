@@ -125,27 +125,18 @@
     <Compile Include="StockAgent\StockTradeSummary.cs" />
     <Compile Include="StockAgent\Agents\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
-    <Compile Include="StockClasses\ShortInterestSerie.cs" />
     <Compile Include="StockClasses\StockAlertConfig.cs" />
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
-    <Compile Include="StockClasses\StockAnalysis2.cs" />
     <Compile Include="StockClasses\StockBarDuration.cs" />
-    <Compile Include="StockClasses\StockDataProviders\BNPJSon.cs" />
-    <Compile Include="StockClasses\StockDataProviders\BNPIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
-    <Compile Include="StockClasses\CotSerie.cs" />
-    <Compile Include="StockClasses\CotValue.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CBOEDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\AAIIDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CommerzBankIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\NASDACQShortInterestDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.Designer.cs">
       <DependentUpon>DataProviderString.fr-FR.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -273,9 +264,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTSMALLSPEC.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTLARGESPEC.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTOPENINT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
@@ -318,7 +306,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBUPBARS.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COTCOMMERCIAL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
@@ -373,7 +360,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA2Lines.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_COTCOMMERCIAL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DRAWING.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINEHL2.cs" />

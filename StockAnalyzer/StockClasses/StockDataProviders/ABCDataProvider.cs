@@ -1529,68 +1529,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private static void ParseFinancialDetails(StockSerie stockSerie, StockFinancial financial, HtmlElement table)
-        {
-            HtmlElementCollection tables = table.GetElementsByTagName(("table"));
-            foreach (HtmlElement tbl in tables)
-            {
-
-            }
-        }
-
-        //private static void ParseFinancialGeneral(StockSerie stockSerie, StockFinancial financial, HtmlElement tbl)
-        //{
-        //    List<List<string>> data = getTableData(tbl);
-        //    foreach (var row in data)
-        //    {
-        //        if (row.Count == 2)
-        //        {
-        //            switch (row[0].Trim())
-        //            {
-        //                case "Marché":
-        //                    financial.Market = row[1];
-        //                    break;
-        //                case "Nombre de titres":
-        //                    financial.ShareNumber = long.Parse(row[1].Replace(" ", ""));
-        //                    break;
-        //                case "Place de cotation":
-        //                    financial.MarketPlace = row[1];
-        //                    break;
-        //                case "Secteur d'activité":
-        //                    financial.Sector = row[1];
-        //                    break;
-        //                case "Eligible au SRD":
-        //                    financial.SRD = row[1];
-        //                    break;
-        //                case "Eligible au PEA":
-        //                    financial.PEA = row[1];
-        //                    break;
-        //                case "Indices":
-        //                    financial.Indices = row[1];
-        //                    break;
-        //                case "Capitalisation (milliers d'euros)":
-        //                    //financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
-        //                    break;
-        //                case "Rendement":
-        //                    float yield = 0f;
-        //                    if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
-        //                    {
-        //                        financial.Yield = yield / 100f;
-        //                    }
-        //                    break;
-        //                case "Dividende (Date de versement)":
-        //                    financial.Dividend = row[1];
-        //                    break;
-        //                case "Date Assemblée Générale":
-        //                    financial.MeetingDate = row[1];
-        //                    break;
-        //            }
-        //        }
-        //        financial.DownloadDate = DateTime.Now;
-        //        stockSerie.StockAnalysis.Financial = financial;
-        //    }
-        //}
-
         public static void DownloadAgenda(StockSerie stockSerie)
         {
             if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;

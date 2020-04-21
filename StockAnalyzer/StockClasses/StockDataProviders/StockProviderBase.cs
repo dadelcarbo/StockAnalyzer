@@ -115,15 +115,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                case StockDataProvider.CommerzBankIntraday:
-                    dataProvider = new CommerzBankIntradayDataProvider();
-                    break;
-                case StockDataProvider.CBOE:
-                    dataProvider = new CBOEDataProvider();
-                    break;
-                //case StockDataProvider.COT:
-                //    dataProvider = new COTDataProvider();
-                //    break;
                 case StockDataProvider.BinckPortfolio:
                     dataProvider = new BinckPortfolioDataProvider();
                     break;
@@ -139,20 +130,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Ratio:
                     dataProvider = new RatioDataProvider();
                     break;
-                //case StockDataProvider.NASDACQShortInterest:
-                //    //dataProvider = new NASDACQShortInterestDataProvider();
-                //    break;
-                //case StockDataProvider.BarChart:
-                //    dataProvider = new BarChartDataProvider();
-                //    break;
                 case StockDataProvider.Investing:
                     dataProvider = new InvestingDataProvider();
                     break;
                 case StockDataProvider.InvestingIntraday:
                     dataProvider = new InvestingIntradayDataProvider();
-                    break;
-                case StockDataProvider.BNPIntraday:
-                    dataProvider = new BNPIntradayDataProvider();
                     break;
                 case StockDataProvider.Test:
                     break;
@@ -421,57 +403,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             catch (System.Exception ex)
             {
                 StockLog.Write(ex.Message);
-                // Assume input is right, Ignore invalid lines
-            }
-            return stockValue;
-        }
-        public static StockDailyValue ReadPCRFromCSVStream(StreamReader sr, string name)
-        {
-            StockDailyValue stockValue = null;
-            try
-            {
-                string[] row = sr.ReadLine().Split(',');
-                if (row.GetLength(0) == 5)
-                {
-                    stockValue = new StockDailyValue(
-                        name,
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        long.Parse(row[3], usCulture),
-                        DateTime.Parse(row[0], usCulture));
-                }
-            }
-            catch (System.Exception)
-            {
-                // Assume input is right, Ignore invalid lines
-            }
-            return stockValue;
-        }
-        public static StockDailyValue ReadCBOEIndexDataFromCSVStream(StreamReader sr, string name)
-        {
-            StockDailyValue stockValue = null;
-            try
-            {
-                // File format
-                // Date,Close
-                // 10-May-07,27.09
-                string[] row = sr.ReadLine().Split(',');
-                if (row.GetLength(0) == 2 && row[1] != "")
-                {
-                    stockValue = new StockDailyValue(
-                        name,
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        100,
-                        DateTime.Parse(row[0], usCulture));
-                }
-            }
-            catch (System.Exception)
-            {
                 // Assume input is right, Ignore invalid lines
             }
             return stockValue;

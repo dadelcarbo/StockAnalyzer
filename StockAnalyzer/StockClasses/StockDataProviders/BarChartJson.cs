@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 
 using Newtonsoft.Json;
+using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {

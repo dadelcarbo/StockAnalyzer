@@ -71,7 +71,6 @@ namespace StockAnalyzer.StockClasses
             RATIO,
             BREADTH,
             BOND,
-            COT,
             TICK,
             RANGE,
             INTRADAY,
@@ -222,7 +221,6 @@ namespace StockAnalyzer.StockClasses
         public bool IsPortofolioSerie { get; set; }
         public int LastIndex { get { return this.Values.Count - 1; } }
         public int LastCompleteIndex { get { return this.Values.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }
-        public CotSerie CotSerie { get; set; }
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
         #endregion
@@ -5245,8 +5243,6 @@ namespace StockAnalyzer.StockClasses
             {
                 case Groups.ALL:
                     return true;
-                case Groups.COT:
-                    return this.CotSerie != null;
                 case Groups.CAC40:
                     return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SRD:
@@ -6276,35 +6272,6 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = currentBarDuration;
 
             return newSerie;
-        }
-        public FloatSerie GetCotSerie(CotValue.CotValueType cotType)
-        {
-            if (this.CotSerie == null)
-            {
-                return null;
-            }
-
-            // Look for the first date of the serie in the COT serie.
-            DateTime firstSerieDate = this.Keys.First();
-            int cotIndex = 0;
-            FloatSerie cotSerie = this.CotSerie.GetSerie(cotType);
-            float previousCotValue = 0;
-            while (this.CotSerie.Keys.ElementAt(cotIndex) <= firstSerieDate)
-            {
-                previousCotValue = cotSerie[cotIndex++];
-            }
-            // Fill the new cotSerie2 with value from CotSerie
-            FloatSerie cotSerie2 = new FloatSerie(this.Count);
-            int serieIndex = 0;
-            foreach (DateTime serieDate in this.Keys)
-            {
-                if (cotIndex < (this.CotSerie.Count - 1) && this.CotSerie.Keys.ElementAt(cotIndex) <= serieDate)
-                {
-                    previousCotValue = cotSerie[++cotIndex];
-                }
-                cotSerie2[serieIndex++] = previousCotValue;
-            }
-            return cotSerie2;
         }
         #region CSV file IO
         public bool LoadData(StockBar.StockBarType barType, string rootFolder)

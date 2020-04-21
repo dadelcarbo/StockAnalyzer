@@ -5,34 +5,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         ABC,
         BarChart,
         InvestingIntraday,
-        BNPIntraday,
-        CommerzBankIntraday,
-        CBOE,
         BinckPortfolio,
         Generated,
         AAII,
         Test,
         Replay,
         Breadth,
-        //COT,
-        //NASDACQShortInterest,
         Investing,
         Ratio
     }
 
-   public delegate void DownloadingStockEventHandler(string text);
+    public delegate void DownloadingStockEventHandler(string text);
 
-   public interface IStockDataProvider
-   {
-      event DownloadingStockEventHandler DownloadStarted;
+    public interface IStockDataProvider
+    {
+        event DownloadingStockEventHandler DownloadStarted;
 
-      bool SupportsIntradayDownload { get; }
+        bool SupportsIntradayDownload { get; }
 
-      bool LoadData(string rootFolder, StockSerie stockSerie);
-      bool DownloadDailyData(string rootFolder, StockSerie stockSerie);
-      bool DownloadIntradayData(string rootFolder, StockSerie stockSerie);
-      void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
+        bool LoadData(string rootFolder, StockSerie stockSerie);
+        bool DownloadDailyData(string rootFolder, StockSerie stockSerie);
+        bool DownloadIntradayData(string rootFolder, StockSerie stockSerie);
+        void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
 
-      bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration);
-   }
+        bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration);
+    }
 }
