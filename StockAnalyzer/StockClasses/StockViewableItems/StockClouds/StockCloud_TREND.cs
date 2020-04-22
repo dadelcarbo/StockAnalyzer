@@ -30,11 +30,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
+                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1), new Pen(Color.DarkBlue, 2) };
                 }
                 return seriePens;
             }
         }
+        public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Mid" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
             var fastPeriod = (int)this.parameters[0];
@@ -114,6 +115,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
             this.Series[0] = bullSerie;
             this.Series[1] = bearSerie;
+            this.Series[2] = (bullSerie + bearSerie) / 2.0f;
 
             // Detecting events
             this.GenerateEvents(stockSerie);
