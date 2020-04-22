@@ -419,7 +419,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
                             {
                                 bool isHilbertSR = stockIndicator.Name.StartsWith("HILBERT");
-                                bool isTrailSR = stockIndicator.Name.StartsWith("TRAILHLSR");
+                                int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
+                                int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
+
                                 bool isSupport = stockIndicator.SerieNames[i].EndsWith(".S");
                                 bool isResistance = stockIndicator.SerieNames[i].EndsWith(".R");
                                 if (isSupport || isResistance)
@@ -440,8 +442,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             aGraphic.FillEllipse(srBrush, srPoint.X - pointSize, srPoint.Y - pointSize,
                                                2 * pointSize, 2 * pointSize);
 
-
-                                            if (this.ShowIndicatorText)
+                                            if (this.ShowIndicatorText && indexOfPB != -1 && indexOfEoT != -1)
                                             {
                                                 const int textOffset = 4;
 
@@ -450,13 +451,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                    : srPoint.Y - 2 * pointSize - 12;
 
                                                 // Draw PB and EndOfTrend text
-                                                if (stockIndicator.Events[2][index])
+                                                if (stockIndicator.Events[indexOfPB][index])
                                                 {
                                                     // Pullback in trend detected
                                                     this.DrawString(aGraphic, "PB", axisFont, srBrush,
                                                        this.backgroundBrush, srPoint.X - textOffset, yPos, false);
                                                 }
-                                                else if (stockIndicator.Events[3][index])
+                                                else if (stockIndicator.Events[indexOfEoT][index])
                                                 {
                                                     // End of trend detected
                                                     this.DrawString(aGraphic, "End", axisFont, srBrush,

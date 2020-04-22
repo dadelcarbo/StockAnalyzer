@@ -86,6 +86,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected float minValue = float.MaxValue;
         protected float maxValue = float.MinValue;
         public bool IsLogScale { get; set; }
+        public bool IsInverse { get; set; }
         public bool ScaleInvisible { get; set; }
         protected bool ShowDrawings { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowDrawings; } }
         public bool ShowGrid { get; set; }
@@ -387,6 +388,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
                     matrixValueToScreen.Translate(this.GraphRectangle.X - (StartIndex - 0.5f) * coefX, tmpMaxValue * coefY + this.GraphRectangle.Y);
+                    if (IsInverse)
+                    {
+                        coefY = -coefY;
+                    }
                     matrixValueToScreen.Scale(coefX, -coefY);
 
                     matrixScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();

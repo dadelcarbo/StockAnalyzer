@@ -124,7 +124,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                StockLog.Write("Invalid input parameter number: " + parameters.Length + " expected: " + this.ParameterCount);
                StockLog.Write("Using default parameters");
             }
-            for (int i = 0; i < parameters.Length; i++)
+            for (int i = 0; i < Math.Min(parameters.Length, this.ParameterTypes.Length); i++)
             {
                switch (this.ParameterTypes[i].Name)
                {

@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
@@ -243,7 +245,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BREADTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CHOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
@@ -466,7 +467,6 @@
     <Compile Include="StockLogging\StockLog.cs" />
     <Compile Include="StockMath\BoolSerie.cs" />
     <Compile Include="StockMath\Complex.cs" />
-    <Compile Include="StockMath\FloatPropertyRange.cs" />
     <Compile Include="StockMath\FloatRandom.cs" />
     <Compile Include="StockMath\FloatRange.cs" />
     <Compile Include="StockMath\FloatSerie.cs" />
@@ -545,6 +545,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="StockAgent\StockAgentEngine.cd" />
+    <None Include="StockBinckPortfolio\PortfolioDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">

@@ -1167,6 +1167,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 case NodeType.PaintBars:
                 case NodeType.Indicator:
                 case NodeType.Trail:
+                case NodeType.Cloud:
                     {
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
                         IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
@@ -1246,6 +1247,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     case NodeType.PaintBars:
                     case NodeType.Indicator:
+                    case NodeType.Cloud:
                     case NodeType.Decorator:
                     case NodeType.Trail:
                     case NodeType.TrailStops:
@@ -1269,6 +1271,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     case NodeType.PaintBars:
                     case NodeType.Indicator:
+                    case NodeType.Cloud:
                     case NodeType.Trail:
                     case NodeType.TrailStops:
                         {
@@ -1312,6 +1315,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         case NodeType.PaintBars:
                         case NodeType.Indicator:
+                        case NodeType.Cloud:
                         case NodeType.Trail:
                         case NodeType.TrailStops:
                             {
