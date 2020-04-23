@@ -5057,10 +5057,8 @@ namespace StockAnalyzer.StockClasses
                 FloatSerie supportSerie = hlTrailSR.Series[0];
                 FloatSerie resistanceSerie = hlTrailSR.Series[1];
 
-                Segment2D latestResistanceLine = new Segment2D(startIndex - 1, highSerie[startIndex], startIndex,
-                    highSerie[startIndex]);
-                Segment2D latestSupportLine = new Segment2D(startIndex - 1, lowSerie[startIndex], startIndex,
-                    lowSerie[startIndex]);
+                Segment2D latestResistanceLine = new Segment2D(startIndex - 1, highSerie[startIndex], startIndex, highSerie[startIndex]);
+                Segment2D latestSupportLine = new Segment2D(startIndex - 1, lowSerie[startIndex], startIndex, lowSerie[startIndex]);
 
                 Segment2D newLine;
                 Bullet2D bullet;
@@ -5089,9 +5087,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         // Find previous Low value
                         for (j = i; j > latestSupportLine.Point2.X && lowSerie[j] != supportSerie[i]; j--) ;
-                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(
-                            newLine = new Segment2D(latestSupportLine.Point2.X, latestSupportLine.Point2.Y,
-                                j, lowSerie[j]));
+                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestSupportLine.Point2.X, latestSupportLine.Point2.Y, j, lowSerie[j]));
                         this.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
 
                         latestSupportLine = newLine;
@@ -5127,15 +5123,9 @@ namespace StockAnalyzer.StockClasses
                         if (resistanceDetected[i])
                         {
                             // Find previous Low value
-                            for (j = i;
-                                j > latestResistanceLine.Point2.X && highSerie[j] != resistanceSerie[i];
-                                j--) ;
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(
-                                newLine =
-                                    new Segment2D(latestResistanceLine.Point2.X, latestResistanceLine.Point2.Y,
-                                        j, highSerie[j]));
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(
-                                bullet = new Bullet2D(newLine.Point2, 3));
+                            for (j = i; j > latestResistanceLine.Point2.X && highSerie[j] != resistanceSerie[i]; j--) ;
+                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestResistanceLine.Point2.X, latestResistanceLine.Point2.Y, j, highSerie[j]));
+                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
 
                             latestResistanceLine = newLine;
                             // Set trend Status
@@ -5180,11 +5170,6 @@ namespace StockAnalyzer.StockClasses
                     downTrendSerie[i] = trendStatus == DowEvent.DownTrend;
                     rangingSerie[i] = trendStatus == DowEvent.Ranging;
                 }
-
-                // Add end lines
-                //this.StockAnalysis.DrawingItems[this.BarDuration].Add(new HalfLine2D(latestResistanceLine.Point2, 1, 0));
-                //this.StockAnalysis.DrawingItems[this.BarDuration].Add(new HalfLine2D(latestSupportLine.Point2, 1, 0));
-
             }
             catch (System.Exception e)
             {

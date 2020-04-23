@@ -287,7 +287,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIAN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2Lines.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTLines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SARHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />

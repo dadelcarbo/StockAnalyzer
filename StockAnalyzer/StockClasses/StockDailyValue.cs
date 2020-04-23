@@ -17,16 +17,6 @@ namespace StockAnalyzer.StockClasses
         VOLUME
     };
 
-    public enum OHLCType
-    {
-        UpTrend,
-        TopUpTrend,
-        TopDownTrend,
-        BottomUpTrend,
-        BottomDownTrend,
-        DownTrend
-    }
-
     public class StockDailyValue
     {
         public string NAME { get; set; }
@@ -45,8 +35,6 @@ namespace StockAnalyzer.StockClasses
         public float VARIATION { get; set; }
         public float AMPLITUDE { get; set; }
         public float Range { get { return this.HIGH - this.LOW; } }
-        public long DOWNVOLUME { get { return this.VOLUME - this.UPVOLUME; } }
-        public float SHORTINTEREST { get; set; }
         public void CalculateUpVolume()
         {
             if (this.UPVOLUME == 0)
@@ -210,60 +198,6 @@ namespace StockAnalyzer.StockClasses
             this.AVG = (open + high + low + 2.0f * close) / 5.0f;
         }
 
-        public void CalculatePivot(out float pivot, out float s1, out float r1,
-            out float r2, out float s2, out float r3, out float s3)
-        {
-            pivot = (this.LOW + this.HIGH + this.CLOSE) / 3;
-            s1 = (2 * pivot) - this.LOW;
-            r1 = (2 * pivot) - this.HIGH;
-            r2 = (pivot - s1) + r1;
-            s2 = pivot - (r1 - s1);
-            r3 = (pivot - s2) + r2;
-            s3 = pivot - (r2 - s2);
-        }
-
-        public OHLCType getOHLCType()
-        {
-            OHLCType type = OHLCType.BottomDownTrend;
-            float avg = this.AVG;
-            if (this.OPEN > avg)
-            {
-                if (this.CLOSE > avg)
-                {
-                    if (this.OPEN > this.CLOSE)
-                    {
-                        type = OHLCType.BottomDownTrend;
-                    }
-                    else
-                    {
-                        type = OHLCType.BottomUpTrend;
-                    }
-                }
-                else
-                {
-                    type = OHLCType.DownTrend;
-                }
-            }
-            else
-            {
-                if (this.CLOSE > avg)
-                {
-                    type = OHLCType.UpTrend;
-                }
-                else
-                {
-                    if (this.OPEN > this.CLOSE)
-                    {
-                        type = OHLCType.TopDownTrend;
-                    }
-                    else
-                    {
-                        type = OHLCType.TopUpTrend;
-                    }
-                }
-            }
-            return type;
-        }
         #region CSV file IO
         public static StockDailyValue ReadMarketDataFromCSVStream(StreamReader sr, string stockName, bool useAdjusted)
         {
@@ -348,6 +282,5 @@ namespace StockAnalyzer.StockClasses
 
         private bool isComplete = true;
         public bool IsComplete { get { return isComplete; } set { isComplete = value; } }
-
     }
 }

@@ -5,9 +5,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
    public class StockPaintBar_DOWLINE : StockPaintBarBase
    {
-      public StockPaintBar_DOWLINE()
-      {
-      }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -72,9 +69,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);
 
-         stockSerie.generateDowTrendLines(0, stockSerie.Count - 1,
-             (int)this.parameters[0],
-             ref this.eventSeries);
+         stockSerie.generateDowTrendLines(0, stockSerie.Count - 1, (int)this.parameters[0], ref this.eventSeries);
       }
    }
 }
