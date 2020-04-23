@@ -30,8 +30,6 @@ namespace StockAnalyzer.StockClasses
         public float ATR { get; set; }
         public long VOLUME { get; set; }
         public long UPVOLUME { get; set; }
-        public int TICK { get; set; }
-        public int UPTICK { get; set; }
         public float VARIATION { get; set; }
         public float AMPLITUDE { get; set; }
         public float Range { get { return this.HIGH - this.LOW; } }
@@ -140,10 +138,6 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-        public StockDailyValue()
-        {
-        }
-
         public StockDailyValue(string name, float open, float high, float low, float close, long volume, DateTime date)
         {
             this.NAME = name;
@@ -169,7 +163,7 @@ namespace StockAnalyzer.StockClasses
             this.VOLUME = volume;
             this.AVG = (open + high + low + 2.0f * close) / 5.0f;
         }
-        public StockDailyValue(string name, float open, float high, float low, float close, long volume, long upVolume, int ticks, int upTicks, DateTime date)
+        public StockDailyValue(string name, float open, float high, float low, float close, long volume, long upVolume, DateTime date)
         {
             this.NAME = name;
             this.DATE = date;
@@ -193,8 +187,6 @@ namespace StockAnalyzer.StockClasses
             this.CLOSE = close;
             this.VOLUME = volume;
             this.UPVOLUME = upVolume;
-            this.TICK = ticks;
-            this.UPTICK = upTicks;
             this.AVG = (open + high + low + 2.0f * close) / 5.0f;
         }
 
@@ -257,8 +249,6 @@ namespace StockAnalyzer.StockClasses
                                 float.Parse(row[4], usCulture),
                                 long.Parse(row[5], usCulture),
                                 long.Parse(row[7], usCulture),
-                                int.Parse(row[8], usCulture),
-                                int.Parse(row[9], usCulture),
                                 DateTime.Parse(row[0], usCulture));
                 }
             }
@@ -271,12 +261,12 @@ namespace StockAnalyzer.StockClasses
 
         static public string StringFormat()
         {
-            return "Date,Open,High,Low,Close,Volume,Adj Close,UpVolume,Tick,UpTick";
+            return "Date,Open,High,Low,Close,Volume,Adj Close,UpVolume";
         }
         public override string ToString()
         {
             return DATE.ToString("s") + "," + OPEN.ToString(usCulture) + "," + HIGH.ToString(usCulture) + "," + LOW.ToString(usCulture) + "," + CLOSE.ToString(usCulture)
-                + "," + VOLUME.ToString(usCulture) + "," + CLOSE.ToString(usCulture) + "," + UPVOLUME.ToString(usCulture) + "," + TICK.ToString(usCulture) + "," + UPTICK.ToString(usCulture);
+                + "," + VOLUME.ToString(usCulture) + "," + CLOSE.ToString(usCulture) + "," + UPVOLUME.ToString(usCulture);
         }
         #endregion
 

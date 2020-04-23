@@ -672,7 +672,7 @@ namespace StockAnalyzer.StockClasses
 
                     if (this.Count == 0)
                     {
-                        if (!LoadData(StockBar.StockBarType.Daily, StockDataProviderBase.RootFolder))
+                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this))
                         {
                             return false;
                         }
@@ -5853,7 +5853,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     // New bar
                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
-                       dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                       dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                 }
                 else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(nbMinutes))
@@ -5863,7 +5863,7 @@ namespace StockAnalyzer.StockClasses
                     newBarList.Add(newValue);
 
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                 }
                 else
                 {
@@ -5894,7 +5894,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     // New bar
                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
-                       dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                       dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     count = 1;
                 }
@@ -5905,7 +5905,7 @@ namespace StockAnalyzer.StockClasses
                     newBarList.Add(newValue);
 
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                     count = 1;
                 }
                 else
@@ -5996,7 +5996,7 @@ namespace StockAnalyzer.StockClasses
                 if (lastNewValue == null) // A new bar was completed in previous iteration
                 {
                     // New bar
-                    lastNewValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                    lastNewValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                     lastNewValue.IsComplete = false;
 
                     newBarList.Add(lastNewValue);
@@ -6057,7 +6057,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         previousBar = newValue;
                         newValue.IsComplete = true;
-                        newValue = new StockDailyValue(this.StockName, previousHigh, newHigh, previousHigh, newHigh, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE + uniqueTimeSpan);
+                        newValue = new StockDailyValue(this.StockName, previousHigh, newHigh, previousHigh, newHigh, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE + uniqueTimeSpan);
                         newValue.IsComplete = false;
 
                         newBarList.Add(newValue);
@@ -6081,7 +6081,7 @@ namespace StockAnalyzer.StockClasses
                         previousBar = newValue;
                         newValue.IsComplete = true;
                         newValue = new StockDailyValue(this.StockName, previousLow, previousLow, newLow, newLow,
-                           dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE + uniqueTimeSpan);
+                           dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE + uniqueTimeSpan);
                         newValue.IsComplete = false;
 
                         newBarList.Add(newValue);
@@ -6160,7 +6160,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
                 {
                     // Need to create a new bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, 0, 0, dailyValue.DATE);
+                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.UPVOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     newBarList.Add(newValue);
                 }
@@ -6259,24 +6259,6 @@ namespace StockAnalyzer.StockClasses
             return newSerie;
         }
         #region CSV file IO
-        public bool LoadData(StockBar.StockBarType barType, string rootFolder)
-        {
-            bool result = false;
-            switch (barType)
-            {
-                case StockBar.StockBarType.Daily:
-                    return StockDataProviderBase.LoadSerieData(rootFolder, this);
-                case StockBar.StockBarType.Intraday:
-                    break;
-                case StockBar.StockBarType.Range:
-                    break;
-                case StockBar.StockBarType.Tick:
-                    break;
-                default:
-                    break;
-            }
-            return result;
-        }
         public bool ReadFromCSVFile(string fileName)
         {
             bool result = false;

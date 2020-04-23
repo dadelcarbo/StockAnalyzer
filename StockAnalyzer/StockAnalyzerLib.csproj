@@ -189,7 +189,6 @@
     <Compile Include="StockClasses\StockDataProviders\GeneratedDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\IStockDataProvider.cs" />
     <Compile Include="StockClasses\StockAnalysis.cs" />
-    <Compile Include="StockClasses\StockBar.cs" />
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />

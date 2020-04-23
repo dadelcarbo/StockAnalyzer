@@ -103,7 +103,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float dailyVal, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -111,7 +110,8 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; dailyVal = 0; count = 0;
+                vol = 0; upVol = 0; dailyVal = 0; count = 0;
+                vol = 0; upVol = 0; dailyVal = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -138,8 +138,6 @@ namespace StockAnalyzer.StockClasses
                     {
                         vol += value.VOLUME;
                         upVol += value.UPVOLUME;
-                        tick += value.TICK;
-                        upTick += value.UPTICK;
                         if (serie.ValueArray[index].VARIATION >= 0)
                         {
                             dailyVal++;
@@ -155,7 +153,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     dailyVal /= count;
                     val += dailyVal;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -228,7 +226,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -236,7 +233,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -263,8 +260,6 @@ namespace StockAnalyzer.StockClasses
                     {
                         vol += value.VOLUME;
                         upVol += value.UPVOLUME;
-                        tick += value.TICK;
-                        upTick += value.UPTICK;
                         if (serie.ValueArray[index].VARIATION >= 0)
                         {
                             val++;
@@ -279,7 +274,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -351,7 +346,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -359,7 +353,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -398,7 +392,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -472,7 +466,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -480,7 +473,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -514,7 +507,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     val /= count;
                     val = (val - 50f) * 0.02f;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -589,7 +582,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -597,7 +589,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -637,7 +629,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     val /= count;
                     val = (val - 0.5f) * 2.0f;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -712,7 +704,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -720,7 +711,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -760,7 +751,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     val /= count;
                     val = (val - 0.5f) * 2.0f;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -834,7 +825,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -842,7 +832,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -878,7 +868,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -952,7 +942,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -960,7 +949,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1000,7 +989,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     val /= count;
                     val = (val - 0.5f) * 2.0f;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1074,7 +1063,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1082,7 +1070,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1122,7 +1110,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     val /= count;
                     val = (val - 0.5f) * 2.0f;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1195,7 +1183,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1203,7 +1190,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1247,7 +1234,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1325,7 +1312,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
 
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1333,7 +1319,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; var = 0;
+                vol = 0; upVol = 0; var = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1370,7 +1356,7 @@ namespace StockAnalyzer.StockClasses
                 if (vol != 0)
                 {
                     val *= (1 + var / vol);
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1443,7 +1429,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1451,7 +1436,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1487,7 +1472,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1559,7 +1544,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             float alpha19 = 2.0f / 20.0f;
             float alpha39 = 2.0f / 40.0f;
@@ -1571,7 +1555,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1609,7 +1593,7 @@ namespace StockAnalyzer.StockClasses
                     ema19 = ema19 + alpha19 * (val - ema19);
                     ema39 = ema39 + alpha39 * (val - ema39);
                     val = ema19 - ema39;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1682,7 +1666,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1690,7 +1673,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1726,7 +1709,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1800,7 +1783,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1808,7 +1790,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1844,7 +1826,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -1918,7 +1900,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -1926,7 +1907,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -1962,7 +1943,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -2036,7 +2017,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float hdVal, ldVal, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -2044,7 +2024,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; hdVal = 0; ldVal = 0; count = 0;
+                vol = 0; upVol = 0; hdVal = 0; ldVal = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -2085,7 +2065,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     hdVal /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, hdVal, hdVal, hdVal, hdVal, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, hdVal, hdVal, hdVal, hdVal, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)
@@ -2205,7 +2185,6 @@ namespace StockAnalyzer.StockClasses
             }
             #endregion
             long vol, upVol;
-            int tick, upTick;
             float val, count;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
@@ -2213,7 +2192,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     continue;
                 }
-                vol = 0; upVol = 0; tick = 0; upTick = 0; val = 0; count = 0;
+                vol = 0; upVol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
@@ -2249,7 +2228,7 @@ namespace StockAnalyzer.StockClasses
                 if (count != 0)
                 {
                     val /= count;
-                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, tick, upTick, value.DATE));
+                    breadthSerie.Add(value.DATE, new StockDailyValue(breadthSerie.StockName, val, val, val, val, vol, upVol, value.DATE));
                 }
             }
             if (breadthSerie.Count == 0)

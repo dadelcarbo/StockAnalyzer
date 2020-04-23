@@ -393,8 +393,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                         float.Parse(row[4], usCulture),
                                         long.Parse(row[5], usCulture),
                                         long.Parse(row[7], usCulture),
-                                        int.Parse(row[8], usCulture),
-                                        int.Parse(row[9], usCulture),
                                         DateTime.Parse(row[0], usCulture));
                         }
                         break;
