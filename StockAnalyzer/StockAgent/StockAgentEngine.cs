@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockAgent.Agents;
+using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
@@ -186,7 +187,7 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, StockBinckPortfolio.StockPortfolio portfolio = null)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, StockPortfolio portfolio = null)
         {
             this.Agent.TradeSummary.Portfolio = portfolio;
             foreach (var serie in series.Where(s => s.Count > minIndex))

@@ -29,20 +29,9 @@ namespace StockAnalyzer.StockClasses
         public float AVG { get; set; }
         public float ATR { get; set; }
         public long VOLUME { get; set; }
-        public long UPVOLUME { get; set; }
         public float VARIATION { get; set; }
         public float AMPLITUDE { get; set; }
         public float Range { get { return this.HIGH - this.LOW; } }
-        public void CalculateUpVolume()
-        {
-            if (this.UPVOLUME == 0)
-            {
-                float range = this.Range;
-                if (this.CLOSE > this.OPEN && range != 0.0f) this.UPVOLUME = (long)(range / (2 * range + this.OPEN - this.CLOSE) * this.VOLUME);
-                if (this.CLOSE < this.OPEN && range != 0.0f) this.UPVOLUME = (long)((range + this.CLOSE - this.OPEN) / (2 * range + this.CLOSE - this.OPEN) * this.VOLUME);
-                if (this.CLOSE == this.OPEN) this.UPVOLUME = (long)(0.5f * this.VOLUME);
-            }
-        }
 
         private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
@@ -163,32 +152,6 @@ namespace StockAnalyzer.StockClasses
             this.VOLUME = volume;
             this.AVG = (open + high + low + 2.0f * close) / 5.0f;
         }
-        public StockDailyValue(string name, float open, float high, float low, float close, long volume, long upVolume, DateTime date)
-        {
-            this.NAME = name;
-            this.DATE = date;
-            if (open == 0.0f)
-            {
-                this.OPEN = close;
-            }
-            else
-            {
-                this.OPEN = open;
-            }
-            this.HIGH = Math.Max(Math.Max(high, this.OPEN), close);
-            if (low == 0.0f)
-            {
-                this.LOW = Math.Min(this.OPEN, close);
-            }
-            else
-            {
-                this.LOW = Math.Min(Math.Min(low, this.OPEN), close);
-            }
-            this.CLOSE = close;
-            this.VOLUME = volume;
-            this.UPVOLUME = upVolume;
-            this.AVG = (open + high + low + 2.0f * close) / 5.0f;
-        }
 
         #region CSV file IO
         public static StockDailyValue ReadMarketDataFromCSVStream(StreamReader sr, string stockName, bool useAdjusted)
@@ -248,7 +211,6 @@ namespace StockAnalyzer.StockClasses
                                 float.Parse(row[3], usCulture),
                                 float.Parse(row[4], usCulture),
                                 long.Parse(row[5], usCulture),
-                                long.Parse(row[7], usCulture),
                                 DateTime.Parse(row[0], usCulture));
                 }
             }
@@ -261,12 +223,12 @@ namespace StockAnalyzer.StockClasses
 
         static public string StringFormat()
         {
-            return "Date,Open,High,Low,Close,Volume,Adj Close,UpVolume";
+            return "Date,Open,High,Low,Close,Volume,Adj Close";
         }
         public override string ToString()
         {
             return DATE.ToString("s") + "," + OPEN.ToString(usCulture) + "," + HIGH.ToString(usCulture) + "," + LOW.ToString(usCulture) + "," + CLOSE.ToString(usCulture)
-                + "," + VOLUME.ToString(usCulture) + "," + CLOSE.ToString(usCulture) + "," + UPVOLUME.ToString(usCulture);
+                + "," + VOLUME.ToString(usCulture) + "," + CLOSE.ToString(usCulture);
         }
         #endregion
 

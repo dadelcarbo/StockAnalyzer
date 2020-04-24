@@ -33,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         {
             get
             {
-                var positions = Portfolio.Positions.Where(p => !p.IsClosed).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this)).ToList();
+                var positions = Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this)).ToList();
                 float val = this.Portfolio.Balance;
                 foreach (var pos in positions)
                 {

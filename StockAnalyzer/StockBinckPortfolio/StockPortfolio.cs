@@ -52,6 +52,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.IsSimu = ext == ".tptf";
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
+            StockOperation.OperationId = 0;
             foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#"))
                 .Select(l => IsSimu ? StockOperation.FromSimuLine(l) : StockOperation.FromBinckLine(l)).OrderBy(o => o.Id))
             {
@@ -109,7 +110,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                         {
                             var qty = operation.Qty;
                             var stockName = operation.StockName;
-                            var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
+                            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
                             if (position != null)
                             {
                                 position.EndDate = operation.Date;
@@ -136,7 +137,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     {
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
-                        var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
                         if (position != null) // Position on this stock already exists, add new values
                         {
                             position.EndDate = operation.Date;
@@ -171,7 +172,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     {
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
-                        var position = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == stockName);
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
                         if (position != null)
                         {
                             position.EndDate = operation.Date;
@@ -196,19 +197,22 @@ namespace StockAnalyzer.StockBinckPortfolio
                     break;
             }
         }
-
-        public void InitFromSummary(StockTradeSummary tradeSummary)
+        /// <summary>
+        /// Converts from Trade list to portfolio operations. This function is limited to the MaxPosition variable
+        /// </summary>
+        /// <param name="tradeSummary"></param>
+        public void InitFromTradeSummary(List<StockTrade> trades)
         {
             this.Clear();
-            var dates = tradeSummary.Trades.Select(t => t.EntryDate).Union(tradeSummary.Trades.Select(t => t.ExitDate)).Distinct().OrderBy(d => d).ToList();
+            var dates = trades.Select(t => t.EntryDate).Union(trades.Where(t => t.ExitIndex >= 0).Select(t => t.ExitDate)).Distinct().OrderBy(d => d).ToList();
 
             int openedPosition = 0;
             foreach (var date in dates)
             {
                 // Sell completed trades
-                foreach (var trade in tradeSummary.Trades.Where(t => t.ExitDate == date))
+                foreach (var trade in trades.Where(t => t.ExitDate == date))
                 {
-                    var pos = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                    var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                     if (pos == null)
                         continue;
                     var exitValue = pos.Qty * trade.ExitValue;
@@ -220,7 +224,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                 }
 
                 // Buy begining trades
-                foreach (var trade in tradeSummary.Trades.Where(t => t.EntryDate == date))
+                foreach (var trade in trades.Where(t => t.EntryDate == date))
                 {
                     if (openedPosition >= MaxPositions)
                         break;
@@ -239,12 +243,12 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             // Evaluate opened position
             this.PositionValue = 0;
-            foreach (var trade in tradeSummary.Trades.Where(t => !t.IsClosed))
+            foreach (var trade in trades.Where(t => !t.IsClosed))
             {
-                var pos = this.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                 if (pos == null)
                     continue;
-                this.PositionValue += pos.Qty * trade.ExitValue;
+                this.PositionValue += pos.Qty * trade.Serie.Values.Last().CLOSE;
             }
         }
         public void Clear()
@@ -259,9 +263,9 @@ namespace StockAnalyzer.StockBinckPortfolio
         public void Dump()
         {
             Console.WriteLine($"All Positions: {this.Positions.Count}");
-            Console.WriteLine($"Opened Positions: {this.Positions.Count(p => !p.IsClosed)}");
+            Console.WriteLine($"Opened Positions: {this.OpenedPositions.Count()}");
 
-            foreach (var p in this.Positions.Where(p => !p.IsClosed).OrderBy(p => p.StockName))
+            foreach (var p in this.OpenedPositions.OrderBy(p => p.StockName))
             {
                 p.Dump();
             }
@@ -270,7 +274,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             Console.WriteLine($"Dump for date:{date.ToShortDateString()}");
             Console.WriteLine($"All Positions: {this.Positions.Count}");
-            Console.WriteLine($"Opened Positions: {this.Positions.Count(p => !p.IsClosed)}");
+            Console.WriteLine($"Opened Positions: {this.OpenedPositions.Count()}");
 
             foreach (var p in this.Positions.Where(p => p.StartDate < date && p.EndDate > date).OrderBy(p => p.StockName))
             {
@@ -317,10 +321,11 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public List<StockOperation> Operations { get; }
         public List<StockPosition> Positions { get; }
+        public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
-        public float PositionValue { get; set; }
+        public float PositionValue { get; private set; }
         public float TotalValue => this.Balance + this.PositionValue;
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
         public bool IsSimu { get; set; }

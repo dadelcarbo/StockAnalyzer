@@ -12,29 +12,28 @@ namespace StockAnalyzer.StockAgent
             this.Trades = new List<StockTrade>();
         }
         public List<StockTrade> Trades { get; private set; }
-
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
         public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
         public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
         public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
         public float CumulGain { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f; } }
         public float CompoundGain { get { return this.Trades.Count > 0 ? this.Trades.Select(t => t.Gain + 1).Aggregate(1f, (i, j) => i * j) - 1f : 0f; } }
-        private StockBinckPortfolio.StockPortfolio portfolio;
-        public StockBinckPortfolio.StockPortfolio Portfolio
+        private StockPortfolio portfolio;
+        public StockPortfolio Portfolio
         {
             get
             {
                 if (portfolio == null)
                 {
-                    portfolio = StockBinckPortfolio.StockPortfolio.CreateSimulationPortfolio();
-                    portfolio.InitFromSummary(this);
+                    portfolio = StockPortfolio.CreateSimulationPortfolio();
+                    portfolio.InitFromTradeSummary(this.Trades);
                 }
                 return portfolio;
             }
             set
             {
                 this.portfolio = value; 
-                portfolio?.InitFromSummary(this);
+                portfolio?.InitFromTradeSummary(this.Trades);
             }
         }
         public int NbWinTrade { get { return Trades.Count(t => t.Gain >= 0); } }
@@ -70,7 +69,7 @@ namespace StockAnalyzer.StockAgent
             res += NbLostTrade + "\t";
             res += WinRatio + "\t";
             res += Portfolio.Return;
-            res += StockBinckPortfolio.StockPortfolio.MaxPositions + "\t";
+            res += StockPortfolio.MaxPositions + "\t";
             return res;
         }
 
@@ -79,7 +78,7 @@ namespace StockAnalyzer.StockAgent
             string openedPositions = Environment.NewLine + "Opened position: " + Environment.NewLine;
             foreach (var trade in this.Trades.Where(t => !t.IsClosed).OrderBy(t => t.EntryDate))
             {
-                var pos = this.Portfolio.Positions.FirstOrDefault(p => !p.IsClosed && p.StockName == trade.Serie.StockName);
+                var pos = this.Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                 if (pos == null)
                 {
                     openedPositions += "* " + trade.Serie.StockName + Environment.NewLine;

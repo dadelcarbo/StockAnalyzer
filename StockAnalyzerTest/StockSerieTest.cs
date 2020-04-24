@@ -5,12 +5,31 @@ using StockAnalyzerTest.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzerTest
 {
     [TestClass]
     public class StockSerieTest
     {
+        public static StockSerie GenerateTestStockSerie(int size)
+        {
+            const string stockName = "TEST";
+            StockSerie stockSerie = new StockSerie(stockName, stockName, Groups.NONE, StockDataProvider.Generated);
+            stockSerie.IsPortofolioSerie = false;
+
+            float value = 10.0f;
+            for (DateTime date = DateTime.Today.AddDays(-size); date <= DateTime.Today; date = date.AddDays(1))
+            {
+                stockSerie.Add(date, new StockDailyValue(stockName, value, value, value, value, 0, date));
+                value += 0.01f;
+            }
+
+            // Initialise the serie
+            stockSerie.Initialise();
+            return stockSerie;
+        }
+
         [TestMethod]
         public void StockSerieLoad()
         {

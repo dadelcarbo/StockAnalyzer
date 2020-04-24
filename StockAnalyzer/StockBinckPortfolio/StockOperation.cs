@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             var operation = new StockOperation();
             var fields = line.Split('\t');
 
-            operation.Id = 0;
+            operation.Id = OperationId++;
             operation.Date = DateTime.Parse(fields[0]);
             operation.OperationType = fields[1].ToLower();
 

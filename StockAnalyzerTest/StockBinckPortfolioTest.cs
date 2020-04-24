@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerTest
 {
@@ -36,5 +40,30 @@ namespace StockAnalyzerTest
             Assert.AreEqual(portfolio.Positions.Count, actualPortfolio.Positions.Count);
             Assert.AreEqual(portfolio.Operations.Count, actualPortfolio.Operations.Count);
         }
+
+        [TestMethod]
+        public void TradeListToPortfolioTest()
+        {
+            var serie = StockSerieTest.GenerateTestStockSerie(100);
+            var portfolio = StockPortfolio.CreateSimulationPortfolio();
+            var trades = new List<StockTrade>();
+
+            // Test 1 Open but not closed
+            var trade1 = new StockTrade(serie, 0);
+            trades.Add(trade1);
+
+            portfolio.InitFromTradeSummary(trades);
+            Assert.AreEqual(1, portfolio.Operations.Count);
+            Assert.AreEqual(1, portfolio.Positions.Count);
+            Assert.IsTrue(portfolio.PositionValue > 0f);
+
+            // Test 2 Open and close
+            trade1.Close(10);
+            portfolio.InitFromTradeSummary(trades);
+            Assert.AreEqual(2, portfolio.Operations.Count);
+            Assert.AreEqual(2, portfolio.Positions.Count);
+            Assert.IsTrue(portfolio.PositionValue == 0f);
+        }
+
     }
 }

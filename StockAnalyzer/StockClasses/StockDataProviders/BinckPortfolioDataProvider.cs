@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockBinckPortfolio;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -18,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string folder = Path.Combine(rootFolder, PORTFOLIO_FOLDER);
             try
             {
-                Portofolios = StockBinckPortfolio.StockPortfolio.LoadPortfolios(folder);
+                Portofolios = StockPortfolio.LoadPortfolios(folder);
             }
             catch (Exception)
             {
@@ -36,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public static List<StockBinckPortfolio.StockPortfolio> Portofolios { get; set; }
+        public static List<StockPortfolio> Portofolios { get; set; }
 
     }
 }
