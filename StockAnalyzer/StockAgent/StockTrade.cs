@@ -13,9 +13,13 @@ namespace StockAnalyzer.StockAgent
         public float EntryValue { get; private set; }
         public int ExitIndex { get; private set; }
         public DateTime ExitDate { get; private set; }
+        public float PartialExitValue { get; private set; }
+        public int PartialExitIndex { get; private set; }
+        public DateTime PartialExitDate { get; private set; }
         public float ExitValue { get; private set; }
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
+        public bool IsPartlyClosed { get; private set; }
 
         public int Duration
         {
@@ -40,6 +44,7 @@ namespace StockAnalyzer.StockAgent
             this.EntryIndex = entryIndex;
             this.EntryDate = serie.Keys.ElementAt(entryIndex);
             this.ExitIndex = -1;
+            this.PartialExitIndex = -1;
             this.IsLong = isLong;
 
             openSerie = this.Serie.GetSerie(StockDataType.OPEN);
@@ -52,6 +57,18 @@ namespace StockAnalyzer.StockAgent
             this.DrawDown = 0;
 
             this.IsClosed = false;
+        }
+        public void PartialClose(int exitIndex)
+        {
+            if (this.IsPartlyClosed || this.IsClosed)
+                throw new InvalidOperationException("Cannot partly close a closed or partly closed trade");
+
+            this.PartialExitIndex = exitIndex;
+
+            this.PartialExitValue = openSerie[exitIndex];
+            this.PartialExitDate = Serie.Keys.ElementAt(exitIndex);
+
+            this.IsPartlyClosed = true;
         }
 
         public void Close(int exitIndex)
@@ -75,9 +92,13 @@ namespace StockAnalyzer.StockAgent
             }
 
             this.IsClosed = true;
+            this.IsPartlyClosed = false;
         }
         public void Evaluate()
         {
+            if (this.IsClosed)
+                throw new InvalidOperationException("Cannot evaluate a closed trade");
+
             this.ExitValue = Serie.GetSerie(StockDataType.CLOSE).Last;
             if (this.IsLong)
             {

@@ -24,8 +24,8 @@
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
                 <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" 
-                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="positionGridView_SelectionChanged"  
-                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false">
+                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="positionGridView_SelectionChanged"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false" RowIndicatorVisibility="Collapsed">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
                         <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}" />
@@ -42,7 +42,7 @@
             <TabItem Header="Operations">
                 <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding Portfolio.Operations}" 
                                      SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="operationGridView_SelectionChanged" 
-                                     FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
                                      AutoGeneratingColumn="OperationGridView_AutoGeneratingColumn"></telerik:RadGridView>
             </TabItem>
         </TabControl>

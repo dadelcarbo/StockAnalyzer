@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockBinckPortfolio;
-using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerTest
 {
@@ -42,9 +41,56 @@ namespace StockAnalyzerTest
         }
 
         [TestMethod]
-        public void TradeListToPortfolioTest()
+        public void TradeTest()
         {
-            var serie = StockSerieTest.GenerateTestStockSerie(100);
+            var serie = StockSerieTest.GenerateTestStockSerie(100, 0.1f);
+
+            // Test 1 Open but not closed
+            var trade = new StockTrade(serie, 0);
+
+            Assert.AreEqual(0, trade.Gain);
+            Assert.AreEqual(0, trade.DrawDown);
+            Assert.AreEqual(false, trade.IsClosed);
+            Assert.AreEqual(false, trade.IsPartlyClosed);
+            trade.Evaluate();
+            Assert.AreEqual(serie.Values.Last().CLOSE, trade.ExitValue);
+
+            // Test 2 Open and closed
+            int closeIndex = 10;
+            trade.Close(closeIndex);
+
+            Assert.AreEqual(true, trade.IsClosed);
+            Assert.AreEqual(false, trade.IsPartlyClosed);
+            Assert.AreNotEqual(0, trade.Gain);
+            Assert.AreEqual(0, trade.DrawDown);
+            Assert.AreEqual(serie.Values.ElementAt(closeIndex).OPEN, trade.ExitValue);
+
+            // Test 3 Open and Partly closed
+            int partialCloseIndex = 5;
+            trade = new StockTrade(serie, 0);
+            trade.PartialClose(partialCloseIndex);
+
+            Assert.AreEqual(false, trade.IsClosed);
+            Assert.AreEqual(true, trade.IsPartlyClosed);
+            Assert.AreEqual(0, trade.Gain);
+            Assert.AreEqual(0, trade.DrawDown);
+            trade.Evaluate();
+            Assert.AreEqual(serie.Values.Last().CLOSE, trade.ExitValue);
+
+            // Test 4 Open, partly closed and closed
+            trade.Close(10);
+
+            Assert.AreEqual(true, trade.IsClosed);
+            Assert.AreEqual(false, trade.IsPartlyClosed);
+            Assert.AreNotEqual(0, trade.Gain);
+            Assert.AreEqual(0, trade.DrawDown);
+            Assert.AreEqual(serie.Values.ElementAt(closeIndex).OPEN, trade.ExitValue);
+        }
+
+        [TestMethod]
+        public void TradeListToPortfolio_ClosedTrade_Test()
+        {
+            var serie = StockSerieTest.GenerateTestStockSerie(100, 0.1f);
             var portfolio = StockPortfolio.CreateSimulationPortfolio();
             var trades = new List<StockTrade>();
 
@@ -63,6 +109,76 @@ namespace StockAnalyzerTest
             Assert.AreEqual(2, portfolio.Operations.Count);
             Assert.AreEqual(2, portfolio.Positions.Count);
             Assert.IsTrue(portfolio.PositionValue == 0f);
+        }
+        [TestMethod]
+        public void TradeListToPortfolio_PartlyClosedTrade_Test()
+        {
+            #region Test with rising stock
+            {
+                var serie = StockSerieTest.GenerateTestStockSerie(100, 0.1f);
+                var portfolio = StockPortfolio.CreateSimulationPortfolio();
+                var trades = new List<StockTrade>();
+
+                // Test 1 Open but not closed
+                var trade1 = new StockTrade(serie, 0);
+                trades.Add(trade1);
+
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(1, portfolio.Operations.Count);
+                Assert.AreEqual(1, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue > 0f);
+                Assert.IsTrue(portfolio.Return > 0f);
+
+                // Test 2 Opened and partial close
+                trade1.PartialClose(5);
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(2, portfolio.Operations.Count);
+                Assert.AreEqual(2, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue > 0f);
+                Assert.IsTrue(portfolio.Return > 0f);
+
+                // Test 3 Opened, partially closed and closed
+                trade1.Close(10);
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(3, portfolio.Operations.Count);
+                Assert.AreEqual(2, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue == 0f);
+                Assert.IsTrue(portfolio.Return > 0f);
+            }
+            #endregion
+            #region Test with declining stock
+            {
+                var serie = StockSerieTest.GenerateTestStockSerie(100, -0.01f);
+                var portfolio = StockPortfolio.CreateSimulationPortfolio();
+                var trades = new List<StockTrade>();
+
+                // Test 1 Open but not closed
+                var trade1 = new StockTrade(serie, 0);
+                trades.Add(trade1);
+
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(1, portfolio.Operations.Count);
+                Assert.AreEqual(1, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue > 0f);
+                Assert.IsTrue(portfolio.Return < 0f);
+
+                // Test 2 Opened and partial close
+                trade1.PartialClose(5);
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(2, portfolio.Operations.Count);
+                Assert.AreEqual(2, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue > 0f);
+                Assert.IsTrue(portfolio.Return < 0f);
+
+                // Test 3 Opened, partially closed and closed
+                trade1.Close(10);
+                portfolio.InitFromTradeSummary(trades);
+                Assert.AreEqual(3, portfolio.Operations.Count);
+                Assert.AreEqual(2, portfolio.Positions.Count);
+                Assert.IsTrue(portfolio.PositionValue == 0f);
+                Assert.IsTrue(portfolio.Return < 0f);
+            }
+            #endregion
         }
 
     }

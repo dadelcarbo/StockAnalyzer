@@ -12,7 +12,7 @@ namespace StockAnalyzerTest
     [TestClass]
     public class StockSerieTest
     {
-        public static StockSerie GenerateTestStockSerie(int size)
+        public static StockSerie GenerateTestStockSerie(int size, float variation)
         {
             const string stockName = "TEST";
             StockSerie stockSerie = new StockSerie(stockName, stockName, Groups.NONE, StockDataProvider.Generated);
@@ -22,7 +22,7 @@ namespace StockAnalyzerTest
             for (DateTime date = DateTime.Today.AddDays(-size); date <= DateTime.Today; date = date.AddDays(1))
             {
                 stockSerie.Add(date, new StockDailyValue(stockName, value, value, value, value, 0, date));
-                value += 0.01f;
+                value += variation;
             }
 
             // Initialise the serie

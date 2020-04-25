@@ -105,15 +105,17 @@ namespace StockAnalyzer.StockBinckPortfolio
         public const string DEPOSIT = "dépôt";
         public const string TRANSFER = "transfert de titres";
 
-        internal void Dump()
-        {
-            Console.WriteLine($"{Id} {Date} {OperationType} {Description} {Amount} {Balance}");
-        }
-
-        internal string ToFileString()
+        public string ToFileString()
         {
             // DATE TYPE NAME SHORT QTY AMOUNT
             return $"{Date}\t{OperationType}\t{StockName}\t{IsShort}\t{Qty}\t{Amount}";
+        }
+
+        const string SHORT = "Short";
+        const string LONG = "Long";
+        public override string ToString()
+        {
+            return $"{Date} {OperationType} {Qty} {StockName} {Amount} {Balance} {(IsShort ? SHORT : LONG)}";
         }
     }
 }

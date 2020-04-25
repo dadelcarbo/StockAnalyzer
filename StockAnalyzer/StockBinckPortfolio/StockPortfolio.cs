@@ -204,20 +204,37 @@ namespace StockAnalyzer.StockBinckPortfolio
         public void InitFromTradeSummary(List<StockTrade> trades)
         {
             this.Clear();
-            var dates = trades.Select(t => t.EntryDate).Union(trades.Where(t => t.ExitIndex >= 0).Select(t => t.ExitDate)).Distinct().OrderBy(d => d).ToList();
+            var dates = trades.Select(t => t.EntryDate).
+                Union(trades.Where(t => t.ExitIndex >= 0).Select(t => t.ExitDate)).
+                Union(trades.Where(t => t.PartialExitIndex >= 0).Select(t => t.PartialExitDate)).
+                Distinct().OrderBy(d => d).ToList();
 
             int openedPosition = 0;
             foreach (var date in dates)
             {
+                // Sell Partially closed trades
+                foreach (var trade in trades.Where(t => t.PartialExitDate == date))
+                {
+                    var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
+                    if (pos == null)
+                        continue;
+                    var partialQty = (pos.Qty / 2);
+                    var amount = partialQty * trade.PartialExitValue;
+                    this.Balance += amount;
+                    var exit = StockOperation.FromSimu(trade.PartialExitDate, trade.Serie.StockName, StockOperation.SELL, partialQty, amount, !trade.IsLong);
+                    exit.Balance = this.Balance;
+                    this.AddOperation(exit);
+                }
+
                 // Sell completed trades
                 foreach (var trade in trades.Where(t => t.ExitDate == date))
                 {
                     var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                     if (pos == null)
                         continue;
-                    var exitValue = pos.Qty * trade.ExitValue;
-                    this.Balance += exitValue;
-                    var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.Qty, exitValue, !trade.IsLong);
+                    var amount = pos.Qty * trade.ExitValue;
+                    this.Balance += amount;
+                    var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.Qty, amount, !trade.IsLong);
                     exit.Balance = this.Balance;
                     this.AddOperation(exit);
                     openedPosition--;
@@ -231,10 +248,10 @@ namespace StockAnalyzer.StockBinckPortfolio
 
                     var amountToInvest = this.Balance / (float)(MaxPositions - openedPosition);
                     var qty = (int)(amountToInvest / trade.EntryValue);
-                    var entryValue = qty * trade.EntryValue;
-                    this.Balance -= entryValue;
+                    var amount = qty * trade.EntryValue;
+                    this.Balance -= amount;
 
-                    var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, entryValue, !trade.IsLong);
+                    var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
                     entry.Balance = this.Balance;
                     this.AddOperation(entry);
                     openedPosition++;
