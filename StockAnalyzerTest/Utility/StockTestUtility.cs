@@ -13,7 +13,8 @@ namespace StockAnalyzerTest.Utility
     {
         public static StockSerie StockSerieLoad(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider)
         {
-            StockDataProviderBase.RootFolder = @"C:\Users\r395930\AppData\Roaming\UltimateChartistRoot";
+            //StockDataProviderBase.RootFolder = @"C:\Users\r395930\AppData\Roaming\UltimateChartistRoot";
+            StockDataProviderBase.RootFolder = @"C:\Users\David\AppData\Roaming\UltimateChartistRoot";
             var serie = new StockSerie(stockName, shortName, stockGroup, dataProvider);
 
             if (serie.Initialise())

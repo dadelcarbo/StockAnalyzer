@@ -74,7 +74,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
                 previousClose = close;
                 previousOpen = open;
-
             }
 
             int count = 0;
@@ -92,68 +91,35 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
+            if (stockSerie.Count < 20) return;
 
-            bool upTrend = true;
-
-            //for (int i = period; i < stockSerie.Count; i++)
-            //{
-            //    count = 0;
-
-            //    if (upTrend)
-            //    {
-            //        upTrend = midLine[i] >= midLine[i - 1];
-            //    }
-            //    else
-            //    {
-            //        upTrend = midLine[i] > midLine[i - 1];
-            //    }
-
-            //    this.Events[count++][i] = upTrend;
-            //    this.Events[count++][i] = !upTrend;
-            //    this.Events[count++][i] = (!this.Events[0][i - 1]) && (this.Events[0][i]);
-            //    this.Events[count++][i] = (this.Events[0][i - 1]) && (!this.Events[0][i]);
-
-            //    this.Events[count++][i] = closeSerie[i] > upLine[i];
-            //    this.Events[count++][i] = closeSerie[i] > midUpLine[i];
-            //    this.Events[count++][i] = closeSerie[i] > midLine[i];
-            //    this.Events[count++][i] = closeSerie[i] < midLine[i];
-            //    this.Events[count++][i] = closeSerie[i] < midDownLine[i];
-            //    this.Events[count++][i] = closeSerie[i] < downLine[i];
-
-            //    this.Events[count++][i] = highSerie[i] > upLine[i];
-            //    this.Events[count++][i] = highSerie[i] > midUpLine[i];
-            //    this.Events[count++][i] = highSerie[i] > midLine[i];
-            //    this.Events[count++][i] = highSerie[i] < midLine[i];
-            //    this.Events[count++][i] = highSerie[i] < midDownLine[i];
-            //    this.Events[count++][i] = highSerie[i] < downLine[i];
-
-            //    this.Events[count++][i] = lowSerie[i] > upLine[i];
-            //    this.Events[count++][i] = lowSerie[i] > midUpLine[i];
-            //    this.Events[count++][i] = lowSerie[i] > midLine[i];
-            //    this.Events[count++][i] = lowSerie[i] < midLine[i];
-            //    this.Events[count++][i] = lowSerie[i] < midDownLine[i];
-            //    this.Events[count++][i] = lowSerie[i] < downLine[i];
-
-            //    this.Events[count++][i] = lowSerie[i - 1] <= midUpLine[i - 1] && lowSerie[i] > midUpLine[i];
-            //    this.Events[count++][i] = lowSerie[i - 1] <= midLine[i - 1] && lowSerie[i] > midLine[i];
-            //    this.Events[count++][i] = lowSerie[i - 1] <= midDownLine[i - 1] && lowSerie[i] > midDownLine[i];
-            //    this.Events[count++][i] = lowSerie[i - 1] <= downLine[i - 1] && lowSerie[i] > downLine[i];
-
-            //    this.Events[count++][i] = highSerie[i - 1] >= upLine[i - 1] && highSerie[i] < upLine[i];
-            //    this.Events[count++][i] = highSerie[i - 1] >= midUpLine[i - 1] && highSerie[i] < midUpLine[i];
-            //    this.Events[count++][i] = highSerie[i - 1] >= midLine[i - 1] && highSerie[i] < midLine[i];
-            //    this.Events[count++][i] = highSerie[i - 1] >= midDownLine[i - 1] && highSerie[i] < midDownLine[i];
-            //}
+            bool isBull = haOpen[19] < haClose[19];
+            for (int i = 20; i < stockSerie.Count; i++)
+            {
+                if (haOpen[i] < haClose[i])
+                {
+                    this.Events[0][i] = true;
+                    if (!isBull)
+                    {
+                        this.Events[2][i] = true;
+                        isBull = true;
+                    }
+                }
+                else
+                {
+                    this.Events[1][i] = true;
+                    if (isBull)
+                    {
+                        this.Events[3][i] = true;
+                        isBull = false;
+                    }
+                }
+            }
         }
 
         static string[] eventNames = new string[]
           {
-            "Uptrend", "DownTrend", "BrokenUp","BrokenDown",
-            "CloseAboveUpLine", "CloseAboveMidUpLine", "CloseAboveMidLine", "CloseBelowMidLine", "CloseBelowMidLowLine", "CloseBelowLowLine",
-            "HighAboveUpLine", "HighAboveMidUpLine", "HighAboveMidLine", "HighBelowMidLine", "HighBelowMidLowLine", "HighBelowLowLine",
-            "LowAboveUpLine", "LowAboveMidUpLine", "LowAboveMidLine", "LowBelowMidLine", "LowBelowMidLowLine", "LowBelowLowLine",
-            "TouchedDownMidUpLine", "TouchedDownMidLine", "TouchedDownMidLowLine", "TouchedDownLowLine",
-            "TouchedUpUpLine",   "TouchedUpMidUpLine", "TouchedUpMidLine", "TouchedUpMidLowLine"
+              "Bullish", "Bearish", "BrokenUp", "BrokenDown"
           };
         public override string[] EventNames
         {
@@ -161,12 +127,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         static readonly bool[] isEvent = new bool[]
           {
-            false, false, true, true,
-            false, false, false, false, false, false,
-            false, false, false, false, false, false,
-            false, false, false, false, false, false,
-            true, true, true, true,
-            true, true, true, true
+            false, false, true, true
           };
         public override bool[] IsEvent
         {

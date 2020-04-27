@@ -180,6 +180,5 @@ namespace StockAnalyzerTest
             }
             #endregion
         }
-
     }
 }

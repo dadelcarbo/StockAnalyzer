@@ -1876,14 +1876,14 @@ namespace StockAnalyzerApp
         private void rewindBtn_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
-            int step = (this.endIndex - this.startIndex) / 4;
+            int step = 20;
             Rewind(step);
         }
 
         private void fastForwardBtn_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
-            int step = (this.endIndex - this.startIndex) / 4;
+            int step = 20;
             Forward(step);
         }
 

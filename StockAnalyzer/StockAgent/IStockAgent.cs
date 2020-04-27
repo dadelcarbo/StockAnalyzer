@@ -11,7 +11,8 @@ namespace StockAnalyzer.StockAgent
     {
         Nothing,
         Buy,
-        Sell
+        Sell,
+        PartSell
     }
 
     public interface IStockAgent
@@ -25,6 +26,8 @@ namespace StockAnalyzer.StockAgent
         void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true);
 
         void CloseTrade(int exitIndex);
+
+        void PartlyCloseTrade(int exitIndex);
 
         void EvaluateOpenedPositions();
 
