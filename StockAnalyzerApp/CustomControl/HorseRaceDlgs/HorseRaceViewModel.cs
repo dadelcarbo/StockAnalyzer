@@ -12,7 +12,6 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
     public class HorseRaceViewModel : NotifyPropertyChangedBase
     {
         private int maxIndex = 0;
-
         public int MaxIndex
         {
             get { return maxIndex; }
@@ -27,7 +26,6 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
         }
 
         private int minIndex = 0;
-
         public int MinIndex
         {
             get { return minIndex; }
@@ -70,6 +68,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
                 }
             }
         }
+
         private StockBarDuration barDuration = StockBarDuration.Daily;
         public StockBarDuration BarDuration
         {

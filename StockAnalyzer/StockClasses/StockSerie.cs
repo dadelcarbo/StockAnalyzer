@@ -5839,7 +5839,7 @@ namespace StockAnalyzer.StockClasses
 
         private List<StockDailyValue> GenerateMultipleBar(List<StockDailyValue> stockDailyValueList, int nbDay)
         {
-            bool isIntraday = this.StockName.StartsWith("INT_");
+            bool isIntraday = this.StockGroup == Groups.INTRADAY;
             int count = 0;
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             StockDailyValue newValue = null;

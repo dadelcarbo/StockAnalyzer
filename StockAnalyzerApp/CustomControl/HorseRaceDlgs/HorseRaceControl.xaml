@@ -104,11 +104,11 @@
             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
                       Text="{Binding ViewModel.Indicator2Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
         </StackPanel>
-        <telerik:RadGridView Grid.Row="1" x:Name="Cell" AutoGenerateColumns="False" CanUserInsertRows="False" 
+        <telerik:RadGridView Name="positionGridView" Grid.Row="1" AutoGenerateColumns="False" CanUserInsertRows="False" 
                              IsReadOnly="True" RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"
                              FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" 
-                             MouseDoubleClick="Cell_MouseDoubleClick" SelectionMode="Single">
+                             SelectionMode="Single" SelectionChanged="positionGridView_SelectionChanged">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Name, Mode=OneWay}" />
                 <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding Close, Mode=OneWay, StringFormat=\{0:F3\}}"/>
@@ -180,7 +180,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
             <StackPanel></StackPanel>
-            <telerik:RadSlider Grid.Column="1" AutoToolTipPlacement="TopLeft" Margin="2" HandlesVisibility="Visible" 
+            <telerik:RadSlider Grid.Column="1" AutoToolTipPlacement="TopLeft" Margin="2" HandlesVisibility="Visible" SmallChange="1" LargeChange="10"
                                Value="{Binding ViewModel.Index, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
                                Minimum="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
                                Maximum="{Binding ViewModel.MaxIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"

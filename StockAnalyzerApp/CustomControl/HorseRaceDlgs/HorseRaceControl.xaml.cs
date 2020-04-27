@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 
 namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
@@ -31,12 +32,15 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             this.ViewModel = new HorseRaceViewModel();
         }
 
-        private void Cell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void positionGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
         {
-            if (this.SelectedStockChanged != null && (sender as DataGrid).SelectedItem is StockPosition)
+            var viewModel = this.positionGridView?.SelectedItem as StockPosition;
+            if (viewModel == null) return;
+
+            if (SelectedStockChanged != null)
             {
-                StockPosition position = (sender as DataGrid).SelectedItem as StockPosition;
-                this.SelectedStockChanged(position.Name, true);
+                this.SelectedStockChanged(viewModel.Name, true);
+                StockAnalyzerForm.MainFrame.Activate();
             }
         }
 
