@@ -5809,7 +5809,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null)
                 {
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME,dailyValue.DATE);
+                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                 }
                 else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(nbMinutes))
@@ -5860,6 +5860,7 @@ namespace StockAnalyzer.StockClasses
 
                     // New bar
                     newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue.IsComplete = false;
                     count = 1;
                 }
                 else
@@ -6093,6 +6094,7 @@ namespace StockAnalyzer.StockClasses
 
             return newBarList;
         }
+
         private List<StockDailyValue> GenerateNbLineBreakBarFromDaily(List<StockDailyValue> stockDailyValueList, int nbBar)
         {
             bool isIntraday = this.StockName.StartsWith("INT_");

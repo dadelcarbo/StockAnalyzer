@@ -54,15 +54,15 @@ namespace StockAnalyzer.StockAgent
             res += "Win Ratio: " + WinRatio + Environment.NewLine;
             res += "Portfolio Return: " + Portfolio.Return.ToString("P2") + Environment.NewLine;
 
-            res += Environment.NewLine;
-            res += "Best trades" + Environment.NewLine;
-            foreach (var tg in this.Trades.GroupBy(t => t.Serie))
-            {
-                foreach (var t in tg.OrderByDescending(t => t.Gain).Take(5))
-                {
-                    res += t.Serie.StockName + ";" + t.EntryDate + ";" + t.ExitDate + ";" + ";" + t.Gain.ToString("P2") + Environment.NewLine;
-                }
-            }
+            //res += Environment.NewLine;
+            //res += "Best trades" + Environment.NewLine;
+            //foreach (var tg in this.Trades.GroupBy(t => t.Serie))
+            //{
+            //    foreach (var t in tg.OrderByDescending(t => t.Gain).Take(5))
+            //    {
+            //        res += t.Serie.StockName + ";" + t.EntryDate + ";" + t.ExitDate + ";" + ";" + t.Gain.ToString("P2") + Environment.NewLine;
+            //    }
+            //}
             return res;
         }
 

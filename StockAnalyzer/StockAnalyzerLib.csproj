@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\STOKSAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="StockAgent\Agents\TrailEMA2Agent.cs" />
     <Compile Include="StockAgent\Agents\HeikinAshiAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
+    <Compile Include="StockAgent\Agents\HorseRaceAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />

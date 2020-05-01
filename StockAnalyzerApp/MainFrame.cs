@@ -643,8 +643,13 @@ namespace StockAnalyzerApp
         {
             if (TimerSuspended)
                 return;
-            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday ||
-                DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
+
+            if (this.intradayAlertConfig.AlertLog.LastRefreshDate > DateTime.Now.AddMinutes(-30))
+            {
+                if (DateTime.Now.Minute % 30 > Settings.Default.AlertsFrequency)
+                    return;
+            }
 
             if (this.intradayAlertConfig == null || this.intradayAlertConfig.AlertDefs.Count == 0) return;
 

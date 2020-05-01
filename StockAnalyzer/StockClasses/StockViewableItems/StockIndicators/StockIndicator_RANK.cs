@@ -59,6 +59,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var rankSerie = new FloatSerie(stockSerie.Count);
             var groupsSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup) && s.Initialise());
 
+            foreach (var serie in groupsSeries)
+            {
+                serie.BarDuration = stockSerie.BarDuration;
+            }
+
             var indicatorName = this.parameters[0].ToString().Replace("_", ",");
             int count = 0;
             foreach (var dailyValue in stockSerie.Values)
