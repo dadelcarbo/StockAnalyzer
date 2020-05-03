@@ -443,7 +443,7 @@ namespace StockAnalyzerApp
             this.showDividendMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showDividendMenuItem.Name = "showDividendMenuItem";
             this.showDividendMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showDividendMenuItem.Text = "Show Dividens";
+            this.showDividendMenuItem.Text = "Show Dividends";
             this.showDividendMenuItem.Click += new System.EventHandler(this.showDividendMenuItem_Click);
             // 
             // showIndicatorDivMenuItem

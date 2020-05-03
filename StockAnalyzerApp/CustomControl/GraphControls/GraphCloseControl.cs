@@ -831,7 +831,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
-                if (this.Dividends != null && this.Dividends.Entries.Count > 0)
+                if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
                 {
                     var startDate = this.dateSerie[StartIndex];
                     var endDate = this.dateSerie[EndIndex];
@@ -1247,7 +1247,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     #endregion
                     #region Display Dividend Text
-                    if (mouseOverThis &&
+                    if (mouseOverThis && this.ShowDividend &&
                         this.Dividends != null && this.Dividends.Entries.Count > 0 &&
                          (mousePoint.Y <= this.GraphRectangle.Bottom) &&
                          (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
@@ -1262,6 +1262,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             float yield = coupon / closeCurveType.DataSerie[i];
                             var eventText = "Dividende";
                             eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
+                            eventText += Environment.NewLine + "Coupon: " + dividendEntry.Dividend.ToString();
                             eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
 
                             Size size = TextRenderer.MeasureText(eventText, axisFont);
