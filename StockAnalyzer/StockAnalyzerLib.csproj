@@ -113,6 +113,7 @@
       <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
+    <Compile Include="StockClasses\StockDividend.cs" />
     <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RORRUSH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
@@ -333,6 +335,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RORRUSH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SCREENER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBEX.cs" />

@@ -160,6 +160,10 @@ namespace StockAnalyzer.StockClasses
             set { agenda = value; }
         }
 
+        private StockDividend dividend;
+
+        public StockDividend Dividend => dividend ?? (dividend = new StockDividend(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this));
+
         private static string AGENDA_SUBFOLDER = @"\data\agenda";
         private StockAgenda LoadAgenda()
         {

@@ -58,13 +58,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             int i = 1;
             foreach (var value in stockSerie.Values.Skip(1))
             {
-                var entry = stockSerie?.Agenda?.Entries.FirstOrDefault(e => e.EntryType == AgendaEntryType.Dividend && e.Date.Date == value.DATE.Date);
+                var entry = stockSerie?.Dividend?.Entries.FirstOrDefault(e => e.Date == value.DATE.Date);
                 if (entry != null)
                 {
-                    var couponText = entry.Event.Substring(entry.Event.IndexOf(':') + 2);
-                    couponText = couponText.Substring(0, couponText.IndexOf('€')).Replace(",", ".");
-                    float coupon = float.Parse(couponText);
-                    dividend += coupon;
+                    dividend += entry.Dividend;
                 }
                 grSerie[i++] = value.CLOSE + dividend;
             }

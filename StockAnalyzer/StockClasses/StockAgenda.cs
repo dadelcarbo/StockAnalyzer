@@ -10,11 +10,10 @@ namespace StockAnalyzer.StockClasses
     public enum AgendaEntryType
     {
         No = 0,
-        Dividend = 1,
-        CA = 2,
-        Result = 4,
-        Meeting = 8,
-        Other = 16,
+        CA = 1,
+        Result = 2,
+        Meeting = 4,
+        Other = 8,
         All = 31
     }
     public class StockAgendaEntry
@@ -30,9 +29,6 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (Event.ToLower().Contains("dividende"))
-                    return AgendaEntryType.Dividend;
-
                 if (Event.ToLower().Contains("résultat"))
                     return AgendaEntryType.Result;
 

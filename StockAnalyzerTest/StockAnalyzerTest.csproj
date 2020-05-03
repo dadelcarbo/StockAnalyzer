@@ -64,6 +64,7 @@
     <Compile Include="StockAlertTest.cs" />
     <Compile Include="StockBinckPortfolioTest.cs" />
     <Compile Include="StockAgentTest.cs" />
+    <Compile Include="StockWebTest.cs" />
     <Compile Include="Utility\StockTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>

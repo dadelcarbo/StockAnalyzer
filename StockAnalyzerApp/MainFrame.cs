@@ -284,6 +284,10 @@ namespace StockAnalyzerApp
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 Environment.Exit(0);
             }
+            if (!Directory.Exists(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER))
+            {
+                Directory.CreateDirectory(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER);
+            }
 
             // Validate preferences and local repository
             if (string.IsNullOrWhiteSpace(Settings.Default.UserId) || !CheckLicense())
@@ -1164,7 +1168,9 @@ namespace StockAnalyzerApp
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
                     this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
+                    this.WatchLists = this.WatchLists.OrderBy(wl => wl.Name).ToList();
 
+                    // Cleanup missing stocks
                     foreach (var watchList in this.WatchLists)
                     {
                         watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
@@ -1336,7 +1342,8 @@ namespace StockAnalyzerApp
 
                 if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
                 {
-                    if (this.currentStockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL))
+                    this.CurrentStockSerie.Dividend.DownloadFromYahoo(Settings.Default.RootFolder, this.CurrentStockSerie);
+                    if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                     {
                         try
                         {
@@ -1391,7 +1398,7 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
                                                      stockSerie.StockName;
 
-                    if (stockSerie.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL))
+                    if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                     {
                         try
                         {
@@ -2070,7 +2077,7 @@ namespace StockAnalyzerApp
             {
                 this.barDurationComboBox.Items.Add(barDuration);
             }
-            this.barDurationComboBox.SelectedItem = StockAnalyzer.StockClasses.BarDuration.Daily;
+            this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
             foreach (int barSmoothing in new List<int> { 1, 3, 6, 9, 12, 20, 50, 100 })
             {
@@ -2542,6 +2549,13 @@ namespace StockAnalyzerApp
             // Refresh the graphs
             OnNeedReinitialise(false);
         }
+        private void showDividendMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.ShowDividend = this.showDividendMenuItem.Checked;
+            Settings.Default.Save();
+            // Refresh the graphs
+            OnNeedReinitialise(false);
+        }
 
         private void showIndicatorDivMenuItem_Click(object sender, EventArgs e)
         {
@@ -2650,7 +2664,7 @@ namespace StockAnalyzerApp
         private void exportFinancialsMenuItem_Click(object sender, EventArgs e)
         {
             bool first = true;
-            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockAnalyzer.StockClasses.StockSerie.Groups.CACALL) && s.Initialise() && s.Financial != null))
+            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL) && s.Initialise() && s.Financial != null))
             {
                 float yield = stockSerie.Financial.Dividend / stockSerie.Last().Value.CLOSE;
                 Console.WriteLine(stockSerie.StockGroup + "," + stockSerie.StockName + "," + stockSerie.Financial.Dividend + "," + stockSerie.Last().Value.CLOSE + "," + yield.ToString("P2") + "," + stockSerie.Financial.BookValuePerShare + "," + stockSerie.Financial.TangibleBookValuePerShare);
@@ -3893,6 +3907,7 @@ namespace StockAnalyzerApp
                                     this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
                                     this.graphCloseControl.Comments = this.CurrentStockSerie.StockAnalysis.Comments;
                                     this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
+                                    this.graphCloseControl.Dividends = this.CurrentStockSerie.Dividend;
                                     break;
                                 case "SCROLLGRAPH":
                                     graphControl = this.graphScrollerControl;

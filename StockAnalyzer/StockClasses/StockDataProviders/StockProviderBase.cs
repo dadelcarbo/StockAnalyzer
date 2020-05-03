@@ -44,9 +44,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static protected string DAILY_ARCHIVE_SUBFOLDER = @"\data\archive\daily";
         static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"\data\archive\intraday";
 
-        static private string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
-        static private string YAHOO_SUBFOLDER = DAILY_SUBFOLDER + @"\Yahoo";
-        static private string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
         #endregion

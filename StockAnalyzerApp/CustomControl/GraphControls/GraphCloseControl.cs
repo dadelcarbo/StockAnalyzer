@@ -54,12 +54,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private AndrewPitchFork andrewPitchFork;
         private XABCD XABCD;
 
-        protected bool ShowOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowOrders; } }
-        protected bool ShowEventMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowEventMarquee; } }
-        protected bool ShowCommentMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowCommentMarquee; } }
-        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), StockAnalyzerSettings.Properties.Settings.Default.ShowAgenda); } }
-        protected bool ShowIndicatorDiv { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorDiv; } }
-        protected bool ShowIndicatorText { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorText; } }
+        protected bool ShowOrders { get { return Settings.Default.ShowOrders; } }
+        protected bool ShowEventMarquee { get { return Settings.Default.ShowEventMarquee; } }
+        protected bool ShowCommentMarquee { get { return Settings.Default.ShowCommentMarquee; } }
+        protected bool ShowDividend { get { return Settings.Default.ShowDividend; } }
+
+        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda); } }
+        protected bool ShowIndicatorDiv { get { return Settings.Default.ShowIndicatorDiv; } }
+        protected bool ShowIndicatorText { get { return Settings.Default.ShowIndicatorText; } }
 
 
         GraphCurveType closeCurveType = null;
@@ -87,6 +89,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public Dictionary<DateTime, String> Comments { get; set; }
         public StockAgenda Agenda { get; set; }
+        public StockDividend Dividends { get; set; }
 
         // Secondary serie management
         protected System.Drawing.Drawing2D.Matrix matrixSecondaryScreenToValue;
@@ -828,6 +831,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
+                if (this.Dividends != null && this.Dividends.Entries.Count > 0)
+                {
+                    var startDate = this.dateSerie[StartIndex];
+                    var endDate = this.dateSerie[EndIndex];
+                    foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
+                    {
+                        int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
+
+                        PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                        aGraphic.FillPolygon(Brushes.DarkGreen, marqueePoints);
+                    }
+                }
                 #endregion
             }
         }
@@ -1226,20 +1241,35 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         {
                             string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
                             eventText += "Date : " + agendaEntry.Date.ToShortDateString();
-
-                            if (agendaEntry.IsOfType(AgendaEntryType.Dividend))
-                            {
-                                var coupon = eventText.Substring(eventText.IndexOf(':') + 2);
-                                coupon = coupon.Substring(0, coupon.IndexOf('€')).Replace(",", ".");
-                                float yield = float.Parse(coupon) / closeCurveType.DataSerie[i];
-                                eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
-                            }
+                            Size size = TextRenderer.MeasureText(eventText, axisFont);
+                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                        }
+                    }
+                    #endregion
+                    #region Display Dividend Text
+                    if (mouseOverThis &&
+                        this.Dividends != null && this.Dividends.Entries.Count > 0 &&
+                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
+                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
+                    {
+                        int i = this.RoundToIndex(mousePoint);
+                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                        var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
+                        if (dividendEntry != null)
+                        {
+                            var coupon = dividendEntry.Dividend;
+                            float yield = coupon / closeCurveType.DataSerie[i];
+                            var eventText = "Dividende";
+                            eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
+                            eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
 
                             Size size = TextRenderer.MeasureText(eventText, axisFont);
                             this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                         }
                     }
                     #endregion
+
                 }
                 this.PaintForeground();
             }

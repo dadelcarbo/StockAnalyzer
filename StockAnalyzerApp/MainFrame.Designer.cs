@@ -64,6 +64,7 @@ namespace StockAnalyzerApp
             this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showDividendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
@@ -349,6 +350,7 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem,
             this.toolStripSeparator14,
             this.showAgendaMenuItem,
+            this.showDividendMenuItem,
             this.showEventMarqueeMenuItem,
             this.showCommentMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
@@ -433,6 +435,16 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showCommentMarqueeMenuItem.Text = "Show Comment Marquees";
             this.showCommentMarqueeMenuItem.Click += new System.EventHandler(this.showCommentMarqueeMenuItem_Click);
+            // 
+            // showDividendMenuItem
+            // 
+            this.showDividendMenuItem.Checked = true;
+            this.showDividendMenuItem.CheckOnClick = true;
+            this.showDividendMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showDividendMenuItem.Name = "showDividendMenuItem";
+            this.showDividendMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.showDividendMenuItem.Text = "Show Dividens";
+            this.showDividendMenuItem.Click += new System.EventHandler(this.showDividendMenuItem_Click);
             // 
             // showIndicatorDivMenuItem
             // 
@@ -1460,6 +1472,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
         private ToolStripMenuItem showCommentMarqueeMenuItem;
+        private ToolStripMenuItem showDividendMenuItem;
         private ToolStripMenuItem showIndicatorDivMenuItem;
         private ToolStripMenuItem showIndicatorTextMenuItem;
         private ToolStripMenuItem analysisMenuItem;

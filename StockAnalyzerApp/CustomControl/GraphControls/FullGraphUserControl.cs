@@ -219,6 +219,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
                                     this.graphCloseControl.Comments = currentStockSerie.StockAnalysis.Comments;
                                     this.graphCloseControl.Agenda = currentStockSerie.Agenda;
+                                    this.graphCloseControl.Dividends = currentStockSerie.Dividend;
                                     break;
                                 case "SCROLLGRAPH":
                                     graphControl = this.graphScrollerControl;

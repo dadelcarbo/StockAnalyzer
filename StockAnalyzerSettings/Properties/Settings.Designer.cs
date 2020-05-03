@@ -362,6 +362,20 @@ namespace StockAnalyzerSettings.Properties {
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowDividend
+        {
+            get
+            {
+                return ((bool)(this["ShowDividend"]));
+            }
+            set
+            {
+                this["ShowDividend"] = value;
+            }
+        }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("No")]
         public string ShowAgenda
         {

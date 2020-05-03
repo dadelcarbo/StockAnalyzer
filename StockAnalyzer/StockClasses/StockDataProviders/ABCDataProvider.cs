@@ -20,8 +20,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
-        private static string FINANCIAL_SUBFOLDER = @"\data\financial";
-        private static string AGENDA_SUBFOLDER = @"\data\agenda";
+        static private string FINANCIAL_SUBFOLDER = @"\data\financial";
+        static private string AGENDA_SUBFOLDER = @"\data\agenda";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         static private string CONFIG_FILE = @"\EuronextDownload.cfg";
         static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
@@ -353,7 +353,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string previousISIN = string.Empty;
                 DateTime date = File.GetLastWriteTime(fileName); ;
                 while (!sr.EndOfStream)
-                {  
+                {
                     string line = sr.ReadLine();
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
@@ -1541,8 +1541,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) return;
             }
 
-            string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName",
-               stockSerie.ShortName);
+            string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
 
             StockWebHelper swh = new StockWebHelper();
             string html = swh.DownloadHtml(url, Encoding.UTF8);
