@@ -49,7 +49,7 @@
          this.ClientSize = new System.Drawing.Size(950, 400);
          this.Controls.Add(this.elementHost1);
          this.Name = "AlertDlg";
-         this.Text = "AlertDlg";
+         this.Text = "Alert View";
          this.ResumeLayout(false);
 
       }

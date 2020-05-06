@@ -3295,11 +3295,6 @@ namespace StockAnalyzerApp
                             ZoomIn();
                         }
                         break;
-                    case Keys.F3:
-                        {
-                            this.ShowMultiTimeFrameDlg();
-                        }
-                        break;
                     //case Keys.F4:
                     //    {
                     //                private StockMarketReplay marketReplay = null;
@@ -3493,13 +3488,15 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void ShowMultiTimeFrameDlg()
+        #region MULTI TIME FRAME VIEW
+        void multipleTimeFrameViewMenuItem_Click(object sender, EventArgs e)
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
             mtg.Initialize(this.selectedGroup, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
         }
+        #endregion
 
         private Point lastMouseLocation = Point.Empty;
         void MouseMoveOverGraphControl(object sender, MouseEventArgs e)
@@ -3734,7 +3731,6 @@ namespace StockAnalyzerApp
                 this.themeComboBox.SelectedItem = WORK_THEME;
             }
         }
-
         #region HORSE RACE DIALOG
         HorseRaceDlg horseRaceDlg = null;
         void showHorseRaceViewMenuItem_Click(object sender, EventArgs e)

@@ -69,6 +69,7 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.multipleTimeFrameViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -357,6 +358,7 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem,
             this.toolStripSeparator16,
             this.showHorseRaceViewMenuItem,
+            this.multipleTimeFrameViewMenuItem,
             this.showAlertDialogMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
@@ -474,10 +476,18 @@ namespace StockAnalyzerApp
             // showHorseRaceViewMenuItem
             // 
             this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
-            this.showHorseRaceViewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.showHorseRaceViewMenuItem.ShortcutKeys = Keys.Control | Keys.R;
             this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showHorseRaceViewMenuItem.Text = "Horse Race View";
             this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
+            // 
+            // multipleTimeFrameViewMenuItem
+            // 
+            this.multipleTimeFrameViewMenuItem.Name = "multipleTimeFrameViewMenuItem";
+            this.multipleTimeFrameViewMenuItem.ShortcutKeys = Keys.F3;
+            this.multipleTimeFrameViewMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.multipleTimeFrameViewMenuItem.Text = "Multiple Time Frame View";
+            this.multipleTimeFrameViewMenuItem.Click += multipleTimeFrameViewMenuItem_Click;
             // 
             // showIntradayAlertMenuItem
             // 
@@ -1492,6 +1502,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showPortfolioSerieMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
+        private ToolStripMenuItem multipleTimeFrameViewMenuItem;
         private ToolStripMenuItem showAlertDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;

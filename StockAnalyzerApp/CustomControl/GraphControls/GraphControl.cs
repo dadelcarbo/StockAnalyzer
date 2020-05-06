@@ -42,6 +42,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         CutLine,
         AndrewPitchFork,
         XABCD,
+        CupHandle,
         DeleteItem
     }
     public enum GraphDrawingStep
