@@ -556,7 +556,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     foreach (DrawingItem item in this.drawingItems)
                     {
                         item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
-                        // display support résistance value
+                        // Display support résistance value
                         if (item.GetType() == typeof(Line2D))
                         {
                             Line2D line = (Line2D)item;
@@ -566,6 +566,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
                                    new PointF(1, textLocation.Y - 8), true);
                             }
+                        }
+                        else if (item.GetType() == typeof(CupHandle2D))
+                        {
+                            var cupHandle = (CupHandle2D)item;
+                            DrawTmpCupHandle(aGraphic, DrawingPen, cupHandle, true);
                         }
                     }
                 }
@@ -1394,6 +1399,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                     break;
+                case GraphDrawMode.AddCupHandle:
+                    // Detect Cap and Handle
+                    var cupHandle = DetectCupHandle(mouseValuePoint);
+                    if (cupHandle != null)
+                    {
+                        DrawTmpCupHandle(foregroundGraphic, DrawingPen, cupHandle, true);
+                    }
+                    break;
                 case GraphDrawMode.AddHalfLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
@@ -1502,23 +1515,103 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
             }
         }
-        private void DrawTmpConvexHull(Graphics graphics, PointF mouseValuePoint)
+
+        private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
-            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
+            if (mouseValuePoint.Y > highCurveType.DataSerie[(int)mouseValuePoint.X])
             {
-                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-
-                if (index < 200) return;
-                HalfLine2D support, resistance;
-
-                StockPaintBar_CONVEXCULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
-
-                foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
+                PointF pivot = PointF.Empty;
+                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
                 {
-                    DrawTmpItem(graphics, item.Pen, item, true);
+                    var startBody = Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
+                    if (pivot == PointF.Empty) // Search for pivot
+                    {
+                        var prevBody = Math.Max(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
+                        if (startBody > prevBody && (startBody > mouseValuePoint.Y))
+                        {
+                            pivot.X = i;
+                            pivot.Y = startBody;
+                        }
+                    }
+                    else if (startBody > pivot.Y) // Cup Handle start
+                    {
+                        var startPoint = new PointF(i, pivot.Y);
+                        int j;
+                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
+                        {
+                            var endBody = Math.Max(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
+                            if (endBody > pivot.Y) // Look for Cup Handle end
+                            {
+                                break;
+                            }
+                        }
+                        // Draw open cup and handle (not completed yet)
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), DrawingPen);
+                    }
                 }
             }
+            return null;
         }
+        private CupHandle2D DetectCupHandle2(PointF mouseValuePoint)
+        {
+            if (mouseValuePoint.Y > highCurveType.DataSerie[(int)mouseValuePoint.X])
+            {
+                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
+                {
+                    var startBody = Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
+                    if (startBody > mouseValuePoint.Y) // Cup Handle start
+                    {
+                        var startPoint = new PointF(i, startBody);
+                        int j;
+                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
+                        {
+                            var endBody = Math.Max(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
+                            if (endBody > startBody) // Look for Cup Handle end
+                            {
+                                break;
+                            }
+                        }
+                        // Draw open cup and handle (not completed yet)
+                        return new CupHandle2D(startPoint, new PointF(j, startBody), DrawingPen);
+                    }
+                }
+            }
+            return null;
+        }
+
+        protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
+        {
+            // Fill the area in green if bullish
+            var start = (int)Math.Min(cupHandle.Point1.X, cupHandle.Point2.X);
+            var end = (int)Math.Max(cupHandle.Point1.X, cupHandle.Point2.X);
+            if (end < StartIndex || start > EndIndex)
+                return;
+            start = Math.Max(StartIndex, start);
+            end = Math.Min(EndIndex, end);
+
+            // Calculate upper body high
+            PointF[] polygonPoints = new PointF[end - start + 2];
+            for (int i = start; i <= end; i++)
+            {
+                polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+            }
+            polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
+            polygonPoints[end - start + 1] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
+
+            graph.FillPolygon(CupHandleBrush, polygonPoints);
+
+            // Calculate intersection with bounding rectangle
+            Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
+            if (useTransform)
+            {
+                cupHandle.Draw(graph, pen, this.matrixValueToScreen, rect2D, this.IsLogScale);
+            }
+            else
+            {
+                cupHandle.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
+            }
+        }
+
         private void DrawTmpSR(Graphics graphics, PointF mouseValuePoint)
         {
             if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
@@ -1536,32 +1629,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        private void DrawTmpSAR(Graphics graphics, PointF mouseValuePoint)
-        {
-            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
-            {
-                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-                FloatSerie sarSerie = null;
-                int sarStartIndex;
-                bool isSupport = this.closeCurveType.DataSerie[index] > mouseValuePoint.Y;
-                StockAnalyzerForm.MainFrame.CurrentStockSerie.CalculateSARStop(index, out sarStartIndex, out sarSerie, isSupport, 0.01f, 0.01f, 0.1f, 3);
-
-                Color color = Color.Red;
-                if (!isSupport)
-                {
-                    color = Color.Green;
-                }
-                using (Brush srBrush = new SolidBrush(color))
-                {
-                    PointF srPoint;
-                    for (int i = 0; i < sarSerie.Count; i++)
-                    {
-                        srPoint = GetScreenPointFromValuePoint(sarStartIndex + i, sarSerie[i]);
-                        graphics.FillEllipse(srBrush, srPoint.X - 2, srPoint.Y - 2, 2 * 2, 2 * 2);
-                    }
-                }
-            }
-        }
         private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {
             switch (this.DrawingMode)
@@ -1614,6 +1681,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                             catch (System.ArithmeticException)
                             {
+                            }
+                            break;
+                        default:   // Shouldn't come there
+                            break;
+                    }
+                    break;
+                case GraphDrawMode.AddCupHandle:
+                    switch (this.DrawingStep)
+                    {
+                        case GraphDrawingStep.SelectItem:
+                            // Detect Cap and Handle
+                            var cupHandle = DetectCupHandle(mouseValuePoint);
+                            if (cupHandle != null)
+                            {
+                                drawingItems.Add(cupHandle);
+                                AddToUndoBuffer(GraphActionType.AddItem, cupHandle);
+                                this.DrawingStep = GraphDrawingStep.SelectItem;
+                                this.BackgroundDirty = true; // The new line becomes a part of the background
+                                selectedLineIndex = -1;
                             }
                             break;
                         default:   // Shouldn't come there

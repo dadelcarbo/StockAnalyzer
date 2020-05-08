@@ -1477,7 +1477,7 @@ namespace StockAnalyzerApp
             }
             drawLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1501,20 +1501,20 @@ namespace StockAnalyzerApp
             }
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
         }
 
-        private void fanLineBtn_Click(object sender, EventArgs e)
+        private void cupHandleBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
-                if (fanLineBtn.Checked)
+                if (cupHandleBtn.Checked)
                 {
-                    graphControl.DrawingMode = GraphDrawMode.XABCD;
+                    graphControl.DrawingMode = GraphDrawMode.AddCupHandle;
                     graphControl.DrawingStep = GraphDrawingStep.SelectItem;
                 }
                 else
@@ -1549,7 +1549,7 @@ namespace StockAnalyzerApp
             }
             sarLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1574,7 +1574,7 @@ namespace StockAnalyzerApp
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -1613,7 +1613,7 @@ namespace StockAnalyzerApp
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -1637,7 +1637,7 @@ namespace StockAnalyzerApp
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -1661,7 +1661,7 @@ namespace StockAnalyzerApp
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1679,7 +1679,7 @@ namespace StockAnalyzerApp
             sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            fanLineBtn.Checked = false;
+            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -3739,8 +3739,12 @@ namespace StockAnalyzerApp
             {
                 horseRaceDlg = new HorseRaceDlg(this.selectedGroup.ToString(), this.BarDuration);
                 horseRaceDlg.Disposed += horseRaceDlg_Disposed;
+                horseRaceDlg.Show();
             }
-            horseRaceDlg.Show();
+            else
+            {
+                horseRaceDlg.Activate();
+            }
         }
 
         void horseRaceDlg_Disposed(object sender, EventArgs e)

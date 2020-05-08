@@ -193,6 +193,16 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap CupHandle {
+            get {
+                object obj = ResourceManager.GetObject("CupHandle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Curve {
             get {
                 object obj = ResourceManager.GetObject("Curve", resourceCulture);
@@ -266,16 +276,6 @@ namespace StockAnalyzerApp.Properties {
         public static System.Drawing.Bitmap EMail {
             get {
                 object obj = ResourceManager.GetObject("EMail", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap FanLines {
-            get {
-                object obj = ResourceManager.GetObject("FanLines", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -14,6 +14,7 @@ namespace StockAnalyzer.StockDrawing
         [XmlArrayItem("Line2D", typeof(Line2D))]
         [XmlArrayItem("HalfLine2D", typeof(HalfLine2D))]
         [XmlArrayItem("Segment2D", typeof(Segment2D))]
+        [XmlArrayItem("CupHandle2D", typeof(CupHandle2D))]
         public List<DrawingItem> DrawingItems { get; set; }
 
         public StockDrawingItems2()

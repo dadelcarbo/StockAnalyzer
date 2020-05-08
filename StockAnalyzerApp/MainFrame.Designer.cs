@@ -136,7 +136,7 @@ namespace StockAnalyzerApp
             this.drawLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addHalfLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addSegmentStripBtn = new System.Windows.Forms.ToolStripButton();
-            this.fanLineBtn = new System.Windows.Forms.ToolStripButton();
+            this.cupHandleBtn = new System.Windows.Forms.ToolStripButton();
             this.copyLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.cutLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.generateChannelStripButton = new System.Windows.Forms.ToolStripButton();
@@ -1017,11 +1017,11 @@ namespace StockAnalyzerApp
             this.drawToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.drawToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.magnetStripBtn,
+            this.cupHandleBtn,
             this.sarLineStripBtn,
             this.drawLineStripBtn,
             this.addHalfLineStripBtn,
             this.addSegmentStripBtn,
-            this.fanLineBtn,
             this.copyLineStripBtn,
             this.cutLineStripBtn,
             this.generateChannelStripButton,
@@ -1094,17 +1094,17 @@ namespace StockAnalyzerApp
             this.addSegmentStripBtn.Text = "Add a segment";
             this.addSegmentStripBtn.Click += new System.EventHandler(this.addSegmentStripBtn_Click);
             // 
-            // fanLineBtn
+            // cupHandleBtn
             // 
-            this.fanLineBtn.CheckOnClick = true;
-            this.fanLineBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.fanLineBtn.Image = global::StockAnalyzerApp.Properties.Resources.FanLines;
-            this.fanLineBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.fanLineBtn.Name = "fanLineBtn";
-            this.fanLineBtn.Size = new System.Drawing.Size(23, 22);
-            this.fanLineBtn.Text = "fanLineBtn";
-            this.fanLineBtn.ToolTipText = "Draw multiple lines from the same point";
-            this.fanLineBtn.Click += new System.EventHandler(this.fanLineBtn_Click);
+            this.cupHandleBtn.CheckOnClick = true;
+            this.cupHandleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.cupHandleBtn.Image = global::StockAnalyzerApp.Properties.Resources.CupHandle;
+            this.cupHandleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cupHandleBtn.Name = "cupHandleBtn";
+            this.cupHandleBtn.Size = new System.Drawing.Size(23, 22);
+            this.cupHandleBtn.Text = "cupHandleBtn";
+            this.cupHandleBtn.ToolTipText = "Draw cup and handle";
+            this.cupHandleBtn.Click += new System.EventHandler(this.cupHandleBtn_Click);
             // 
             // copyLineStripBtn
             // 
@@ -1458,7 +1458,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem configDataProviderMenuItem;
         private ToolStripButton sarLineStripBtn;
         private ToolStripButton drawLineStripBtn;
-        private ToolStripButton fanLineBtn;
+        private ToolStripButton cupHandleBtn;
         private ToolStripButton copyLineStripBtn;
         private ToolStripButton deleteLineStripBtn;
         private ToolStripButton drawingStyleStripBtn;

@@ -127,8 +127,8 @@
   <data name="Comment" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\comment-icon.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FanLines" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FanLines.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CupHandle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CupHandle.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CopyLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CopyLine.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

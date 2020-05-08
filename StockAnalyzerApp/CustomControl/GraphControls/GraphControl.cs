@@ -35,6 +35,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         Normal,
         AddLine,
         AddSegment,
+        AddCupHandle,
         AddHalfLine,
         AddSAR,
         FanLine,
@@ -42,7 +43,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         CutLine,
         AndrewPitchFork,
         XABCD,
-        CupHandle,
         DeleteItem
     }
     public enum GraphDrawingStep
@@ -227,10 +227,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public Pen DrawingPen { get; set; }
 
+        public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(128, Color.LightGreen));
+
         // Transformation Matrix
-        protected System.Drawing.Drawing2D.Matrix matrixScreenToValue;
-        protected System.Drawing.Drawing2D.Matrix matrixValueToScreen;
-        static protected System.Drawing.Drawing2D.Matrix matrixIdentity = new Matrix();
+        protected Matrix matrixScreenToValue;
+        protected Matrix matrixValueToScreen;
+        static protected Matrix matrixIdentity = new Matrix();
 
         protected string alternateString = string.Empty;
 
@@ -282,6 +284,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 this.IsInitialized = true;
                 this.alternateString = string.Empty;
+
+                this.DrawingStep = GraphDrawingStep.SelectItem;
             }
         }
         public void Deactivate(string msg, bool setInitialisedTo)
@@ -387,7 +391,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
                     float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
 
-                    matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
+                    matrixValueToScreen = new Matrix();
                     matrixValueToScreen.Translate(this.GraphRectangle.X - (StartIndex - 0.5f) * coefX, tmpMaxValue * coefY + this.GraphRectangle.Y);
                     if (IsInverse)
                     {
@@ -395,7 +399,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     matrixValueToScreen.Scale(coefX, -coefY);
 
-                    matrixScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();
+                    matrixScreenToValue = (Matrix)matrixValueToScreen.Clone();
                     matrixScreenToValue.Invert();
                 }
                 else

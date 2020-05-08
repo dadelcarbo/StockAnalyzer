@@ -454,6 +454,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\CupHandle2D.cs" />
     <Compile Include="StockDrawing\StockDrawingItems2.cs" />
     <Compile Include="StockDrawing\StockHarmonicPatternRatio.cs" />
     <Compile Include="StockDrawing\Triangle2D.cs" />
