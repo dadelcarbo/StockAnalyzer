@@ -1546,33 +1546,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         // Draw open cup and handle (not completed yet)
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), DrawingPen);
-                    }
-                }
-            }
-            return null;
-        }
-        private CupHandle2D DetectCupHandle2(PointF mouseValuePoint)
-        {
-            if (mouseValuePoint.Y > highCurveType.DataSerie[(int)mouseValuePoint.X])
-            {
-                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
-                {
-                    var startBody = Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
-                    if (startBody > mouseValuePoint.Y) // Cup Handle start
-                    {
-                        var startPoint = new PointF(i, startBody);
-                        int j;
-                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
-                        {
-                            var endBody = Math.Max(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
-                            if (endBody > startBody) // Look for Cup Handle end
-                            {
-                                break;
-                            }
-                        }
-                        // Draw open cup and handle (not completed yet)
-                        return new CupHandle2D(startPoint, new PointF(j, startBody), DrawingPen);
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, DrawingPen);
                     }
                 }
             }
@@ -1590,13 +1564,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             end = Math.Min(EndIndex, end);
 
             // Calculate upper body high
-            PointF[] polygonPoints = new PointF[end - start + 2];
-            for (int i = start; i <= end; i++)
+            PointF[] polygonPoints = new PointF[end - start + 1];
+            for (int i = start; i < end; i++)
             {
                 polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
             }
             polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
-            polygonPoints[end - start + 1] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
+            polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
 
             graph.FillPolygon(CupHandleBrush, polygonPoints);
 
@@ -1610,6 +1584,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 cupHandle.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
             }
+
+            // Draw Handle metrics
+            var textPos = GetScreenPointFromValuePoint(cupHandle.Pivot.X, cupHandle.Pivot.Y);
+            textPos.X -= 15;
+            textPos.Y -= 16;
+            var text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
         }
 
         private void DrawTmpSR(Graphics graphics, PointF mouseValuePoint)

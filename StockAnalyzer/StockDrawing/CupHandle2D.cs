@@ -13,10 +13,14 @@ namespace StockAnalyzer.StockDrawing
         {
 
         }
-        public CupHandle2D(PointF point1, PointF point2, Pen pen)
+        public CupHandle2D(PointF point1, PointF point2, PointF pivot, Pen pen)
            : base(point1, point2, pen)
         {
+            this.Pivot = pivot;
         }
+
+        public PointF Pivot { get; set; }
+        const int PIVOT_SIZE = 6;
         public override void Draw(Graphics g, Pen pen, Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
             // Calculate intersection with bounding rectangle
@@ -26,6 +30,17 @@ namespace StockAnalyzer.StockDrawing
             if (trimmedSegment.Point1 != PointF.Empty && trimmedSegment.Point2 != PointF.Empty)
             {
                 g.DrawLine(this.Pen, trimmedSegment.Point1, trimmedSegment.Point2);
+            }
+
+            if (this.Pivot != PointF.Empty)
+            {
+                PointF[] points = new PointF[] { this.Pivot };
+                this.Transform(matrixValueToScreen, isLog, points);
+                var transformedPivot = points[0];
+                if (graphRectangle.Contains(transformedPivot))
+                {
+                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE/2), transformedPivot.Y - PIVOT_SIZE, PIVOT_SIZE, PIVOT_SIZE);
+                }
             }
         }
         public override void Draw(Graphics g, Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
