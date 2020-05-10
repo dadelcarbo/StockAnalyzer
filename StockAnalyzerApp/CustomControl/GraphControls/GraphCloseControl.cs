@@ -1518,7 +1518,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
-            if (mouseValuePoint.Y > highCurveType.DataSerie[(int)mouseValuePoint.X])
+            if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X]))
             {
                 PointF pivot = PointF.Empty;
                 for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
@@ -1545,8 +1545,31 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 break;
                             }
                         }
+                        // Calculate indices of right and left lows
+                        var leftLow = new PointF();
+                        var rightLow = new PointF();
+                        var low = float.MaxValue;
+                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
+                        {
+                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (low >= bodyLow)
+                            {
+                                leftLow.X = k;
+                                leftLow.Y = low = bodyLow;
+                            }
+                        }
+                        low = float.MaxValue;
+                        for (int k = (int)pivot.X + 1; k < j - 1; k++)
+                        {
+                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (low > bodyLow)
+                            {
+                                rightLow.X = k;
+                                rightLow.Y = low = bodyLow;
+                            }
+                        }
                         // Draw open cup and handle (not completed yet)
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, DrawingPen);
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftLow, rightLow, DrawingPen);
                     }
                 }
             }
@@ -1590,6 +1613,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             textPos.X -= 15;
             textPos.Y -= 16;
             var text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+
+            // Draw HL and LL
+            textPos = GetScreenPointFromValuePoint(cupHandle.LeftLow.X, cupHandle.LeftLow.Y);
+            textPos.X -= 5;
+            textPos.Y += 5;
+            text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LL" : "HL";
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+
+            textPos = GetScreenPointFromValuePoint(cupHandle.RightLow.X, cupHandle.RightLow.Y);
+            textPos.X -= 5;
+            textPos.Y += 5;
+            text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LL" : "HL";
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
         }
 
