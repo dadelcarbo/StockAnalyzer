@@ -227,7 +227,7 @@ namespace StockAnalyzer.StockClasses
         [XmlIgnore]
         protected Dictionary<string, IStockCloud> CloudCache { get; set; }
         [XmlIgnore]
-        protected IStockTrailStop TrailStopCache { get; set; }
+        public IStockTrailStop TrailStopCache { get; set; }
         [XmlIgnore]
         public IStockPaintBar PaintBarCache { get; set; }
         [XmlIgnore]

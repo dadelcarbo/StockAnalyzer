@@ -9,8 +9,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILCUPHANDLE : StockTrailStopBase
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false; 
-        
+        public override bool RequiresVolumeData => false;
+
         public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop";
 
         public override string[] ParameterNames => new string[] { "Period" };
@@ -88,6 +88,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
+                        if (stockSerie.StockName == "ATOS" && i < 121) continue;
                         if (highestInSerie[i] == i) // Alltime high
                             continue;
                         if (highestInSerie[i] <= (period * 2)) // Smaller than period
@@ -95,13 +96,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
                         // Find Pivot
                         int startIndex = i - (int)highestInSerie[i];
-                        var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
+                        var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 2, i - 1);
 
                         if (pivotIndex - startIndex < period || i - pivotIndex < period) // Pivot distance smaller than period
                             continue;
 
                         var pivot = new PointF { X = pivotIndex, Y = bodyHighSerie[pivotIndex] };
-                        var startPoint = new PointF { X = startIndex, Y = pivot.Y };
+                        var startPoint = new PointF { X = startIndex - 1, Y = pivot.Y };
                         var endPoint = new PointF { X = i, Y = pivot.Y };
 
                         // Calculate  right and left lows
@@ -134,8 +135,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
                         isBull = true;
                         brokenUpEvents[i] = bullEvents[i] = true;
-                        
-                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(cupHandle);
+
+                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
                     }
                 }
             }

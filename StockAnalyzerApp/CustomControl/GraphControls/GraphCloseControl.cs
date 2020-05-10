@@ -1886,10 +1886,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (selectedLineIndex != -1)
                             {
                                 DrawingItem removeLine = this.drawingItems.ElementAt(selectedLineIndex);
-                                this.drawingItems.RemoveAt(selectedLineIndex);
-                                AddToUndoBuffer(GraphActionType.DeleteItem, removeLine);
-                                this.BackgroundDirty = true; // New to redraw the background
-                                HighlightClosestLine(e);
+                                if (removeLine.IsPersistent)
+                                {
+                                    this.drawingItems.RemoveAt(selectedLineIndex);
+                                    AddToUndoBuffer(GraphActionType.DeleteItem, removeLine);
+                                    this.BackgroundDirty = true; // New to redraw the background
+                                    HighlightClosestLine(e);
+                                }
                             }
                             break;
                         default:   // Shouldn't come there

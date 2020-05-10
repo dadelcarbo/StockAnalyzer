@@ -10,6 +10,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
+using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
@@ -3860,13 +3861,13 @@ namespace StockAnalyzerApp
                     }
                     if (!this.CurrentStockSerie.Initialise() || this.CurrentStockSerie.Count == 0)
                     {
-                        this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName +
-                                                     " cannot be initialised");
+                        this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
                     if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
                         this.CurrentStockSerie.PaintBarCache = null;
+                        this.CurrentStockSerie.TrailStopCache = null;
                     }
 
                     // Build curve list from definition
