@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_HIGHEST : StockIndicatorBase
     {
-        public override string Definition => "Calculate the number of days the current bar is the highest.\r\n Event is raised when gap with previous value exceeds the trigger parameter.";
+        public override string Definition => "Calculate the number of days the current bar is the highest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }

@@ -4116,12 +4116,9 @@ namespace StockAnalyzerApp
                                                 false));
                                     }
                                 }
-                                if (
-                                    !this.CurrentStockSerie.StockAnalysis.DrawingItems.ContainsKey(
-                                        this.CurrentStockSerie.BarDuration))
+                                if (!this.CurrentStockSerie.StockAnalysis.DrawingItems.ContainsKey(this.CurrentStockSerie.BarDuration))
                                 {
-                                    this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(
-                                        this.CurrentStockSerie.BarDuration, new StockDrawingItems());
+                                    this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
                                 }
                                 graphControl.Initialize(curveList, horizontalLines, dateSerie,
                                     CurrentStockSerie.StockName,

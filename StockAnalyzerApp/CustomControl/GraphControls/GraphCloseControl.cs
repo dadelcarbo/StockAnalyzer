@@ -338,12 +338,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     if (isSupport) // upTrend
                                     {
                                         srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
-                                        aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                        }
                                     }
                                     else
                                     {
                                         srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
-                                        aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                        }
                                     }
                                     srPoint1 = srPoint2;
 
@@ -1559,7 +1565,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         low = float.MaxValue;
-                        for (int k = (int)pivot.X + 1; k < j - 1; k++)
+                        for (int k = (int)pivot.X + 1; k < j; k++)
                         {
                             var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
                             if (low > bodyLow)
