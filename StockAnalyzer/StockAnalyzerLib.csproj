@@ -222,6 +222,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RORRUSH.cs" />
@@ -379,7 +380,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MOMENTUM.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HARMONIC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ZIGZAGLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DOWLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs" />
@@ -457,12 +457,8 @@
     <Compile Include="StockClasses\StockWatchList.cs" />
     <Compile Include="StockDrawing\CupHandle2D.cs" />
     <Compile Include="StockDrawing\StockDrawingItems2.cs" />
-    <Compile Include="StockDrawing\StockHarmonicPatternRatio.cs" />
-    <Compile Include="StockDrawing\Triangle2D.cs" />
-    <Compile Include="StockDrawing\Text2D.cs" />
     <Compile Include="StockDrawing\Bullet2D.cs" />
     <Compile Include="StockDrawing\CandleStick.cs" />
-    <Compile Include="StockDrawing\AndrewPitchFork.cs" />
     <Compile Include="StockDrawing\HalfLine2D.cs" />
     <Compile Include="StockDrawing\Line2DBase.cs" />
     <Compile Include="StockDrawing\DrawingItem.cs" />
@@ -473,7 +469,6 @@
     <Compile Include="StockDrawing\Rectangle2D.cs" />
     <Compile Include="StockDrawing\Segment2D.cs" />
     <Compile Include="StockDrawing\StockDrawingItems.cs" />
-    <Compile Include="StockDrawing\XABCD.cs" />
     <Compile Include="StockLogging\StockLog.cs" />
     <Compile Include="StockMath\BoolSerie.cs" />
     <Compile Include="StockMath\Complex.cs" />

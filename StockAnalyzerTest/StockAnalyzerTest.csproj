@@ -56,7 +56,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AgentTesting\StockAgentEngineTest.cs" />
-    <Compile Include="StockHarmonicTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockYahooJasonTest.cs" />
     <Compile Include="StockBarChartTest.cs" />

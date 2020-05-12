@@ -5599,6 +5599,9 @@ namespace StockAnalyzer.StockClasses
 
             float scale = (float)Math.Pow(10, Math.Log10(this.GetSerie(StockDataType.HIGH).Max) + 1);
 
+            var duration = this.BarDuration;
+            this.BarDuration = StockBarDuration.Daily;
+
             StockDailyValue destValue;
             foreach (StockDailyValue invStockValue in this.Values)
             {
@@ -5606,6 +5609,7 @@ namespace StockAnalyzer.StockClasses
                 destValue.Serie = stockSerie;
                 stockSerie.Add(destValue.DATE, destValue);
             }
+            this.BarDuration = duration;
 
             // Initialise the serie
             stockSerie.Initialise();

@@ -50,6 +50,7 @@ namespace StockAnalyzer.StockDrawing
         public abstract System.Xml.Schema.XmlSchema GetSchema();
         public abstract void ReadXml(System.Xml.XmlReader reader);
         public abstract void WriteXml(System.Xml.XmlWriter writer);
+        public abstract void ApplyOffset(int offset);
         #endregion
     }
 }

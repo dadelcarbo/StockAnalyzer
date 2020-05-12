@@ -30,8 +30,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             set
             {
                 this.drawingMode = value;
-                this.andrewPitchFork = null;
-                this.XABCD = null;
             }
         }
 
@@ -50,9 +48,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
 
         private PointF selectedValuePoint;
-
-        private AndrewPitchFork andrewPitchFork;
-        private XABCD XABCD;
 
         protected bool ShowOrders { get { return Settings.Default.ShowOrders; } }
         protected bool ShowEventMarquee { get { return Settings.Default.ShowEventMarquee; } }
@@ -1433,61 +1428,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                     break;
-                case GraphDrawMode.AndrewPitchFork:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the second point
-                            if (andrewPitchFork != null && !andrewPitchFork.Point1.Equals(mouseValuePoint))
-                            {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, andrewPitchFork.Point1, mouseValuePoint, true);
-                            }
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting third point
-
-                            if (mouseValuePoint.Equals(andrewPitchFork.Point1) || mouseValuePoint.Equals(andrewPitchFork.Point2))
-                            {
-                                break;
-                            }
-                            andrewPitchFork.Point3 = mouseValuePoint;
-                            try
-                            {
-                                foreach (Line2DBase newLine in andrewPitchFork.GetLines(this.DrawingPen))
-                                {
-                                    DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
-                                }
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.XABCD:
-                    if (XABCD != null)
-                    {
-                        if (XABCD.NbPoint == 1)
-                        {
-                            if (!XABCD.X.Equals(mouseValuePoint))
-                            {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, XABCD.X, mouseValuePoint, true);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var newLine in XABCD.GetLines(this.DrawingPen))
-                            {
-                                DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
-                            }
-                            var lastPoint = XABCD.GetLastPoint();
-                            if (!lastPoint.Equals(mouseValuePoint))
-                            {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, lastPoint, mouseValuePoint, true);
-                            }
-                        }
-                    }
-                    break;
                 case GraphDrawMode.CopyLine:
                     switch (this.DrawingStep)
                     {
@@ -1719,6 +1659,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (cupHandle != null)
                             {
                                 drawingItems.Add(cupHandle);
+                                drawingItems.RefDate = dateSerie[(int)cupHandle.Point1.X];
+                                drawingItems.RefDateIndex = (int)cupHandle.Point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, cupHandle);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
@@ -1780,75 +1722,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             break;
                         default:   // Shouldn't come there
                             break;
-                    }
-                    break;
-                case GraphDrawMode.AndrewPitchFork:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the first point
-                            if (andrewPitchFork == null)
-                            {
-                                andrewPitchFork = new AndrewPitchFork(mouseValuePoint, PointF.Empty, PointF.Empty);
-                            }
-                            else
-                            {
-                                // Selecting second point
-                                andrewPitchFork.Point2 = mouseValuePoint;
-                                this.DrawingStep = GraphDrawingStep.ItemSelected;
-                            }
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting third point
-                            andrewPitchFork.Point3 = mouseValuePoint;
-                            try
-                            {
-                                foreach (Line2DBase newLine in andrewPitchFork.GetLines(this.DrawingPen))
-                                {
-                                    drawingItems.Add(newLine);
-                                    AddToUndoBuffer(GraphActionType.AddItem, newLine);
-                                }
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                                this.DrawingStep = GraphDrawingStep.SelectItem;
-                                andrewPitchFork = null;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.XABCD:
-                    if (XABCD == null)
-                    {
-                        XABCD = new XABCD();
-                        XABCD.AddPoint(mouseValuePoint);
-                    }
-                    else
-                    {
-                        if (XABCD.NbPoint < 4)
-                        {
-                            XABCD.AddPoint(mouseValuePoint);
-                        }
-                        else
-                        {
-                            try
-                            {
-                                XABCD.AddPoint(mouseValuePoint);
-                                foreach (var newLine in XABCD.GetLines(this.DrawingPen))
-                                {
-                                    drawingItems.Add(newLine);
-                                    AddToUndoBuffer(GraphActionType.AddItem, newLine);
-                                }
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                                XABCD = null;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                        }
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -2076,42 +1949,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
 
-        private int IndexOfRec(DateTime date, int startIndex, int endIndex)
-        {
-            if (startIndex < endIndex)
-            {
-                if (dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                if (dateSerie[endIndex] == date)
-                {
-                    return endIndex;
-                }
-                int midIndex = (startIndex + endIndex) / 2;
-                int comp = date.CompareTo(dateSerie[midIndex]);
-                if (comp == 0)
-                {
-                    return midIndex;
-                }
-                else if (comp < 0)
-                {// 
-                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
-                }
-                else
-                {
-                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
-                }
-            }
-            else
-            {
-                if (startIndex == endIndex && dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                return -1;
-            }
-        }
         #region Order Management
 
 

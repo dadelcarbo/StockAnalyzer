@@ -50,6 +50,7 @@
             this.Name = "BinckPortfolioDlg";
             this.Text = "Portfolio View";
             this.Size = new System.Drawing.Size(800, 400);
+            this.TopMost = true;
             this.ResumeLayout(false);
 
         }

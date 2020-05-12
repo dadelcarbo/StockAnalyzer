@@ -41,8 +41,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         FanLine,
         CopyLine,
         CutLine,
-        AndrewPitchFork,
-        XABCD,
         DeleteItem
     }
     public enum GraphDrawingStep
@@ -286,6 +284,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.alternateString = string.Empty;
 
                 this.DrawingStep = GraphDrawingStep.SelectItem;
+
+                drawingItems.ApplyDateOffset(dateSerie);
             }
         }
         public void Deactivate(string msg, bool setInitialisedTo)
@@ -1295,7 +1295,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
-            HalfLine2D newLine = new HalfLine2D(point1, point2);
+            HalfLine2D newLine = new HalfLine2D(point1, point2, null);
             if (useTransform)
             {
                 newLine.Draw(graph, pen, this.matrixValueToScreen, rect2D, this.IsLogScale);

@@ -84,7 +84,6 @@ namespace StockAnalyzer.StockClasses
                 reader.ReadStartElement(); // Comments
                 while (reader.Name == "Comment")
                 {
-
                     DateTime date = DateTime.Parse(reader.GetAttribute("Date"));
                     string comment = reader.GetAttribute("Value");
                     this.Comments.Add(date, comment);

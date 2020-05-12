@@ -5,9 +5,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_HIGHEST : StockIndicatorBase
+    public class StockIndicator_LOWEST : StockIndicatorBase
     {
-        public override string Definition => "Calculate the number of bars the current bar is the highest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
+        public override string Definition => "Calculate the number of bars the current bar is the lowest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "Trigger" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "LOWEST(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -55,14 +55,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             for (int i = trigger; i < stockSerie.Count; i++)
             {
                 int count = 0;
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    if (closeSerie[i] > bodyHighSerie[j])
+                    if (closeSerie[i] > bodyLowSerie[j])
                     {
                         count++;
                     }
@@ -79,7 +79,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
             }
         }
-        static string[] eventNames = new string[] { "NewHigh" };
+        static string[] eventNames = new string[] { "NewLow" };
         public override string[] EventNames
         {
             get { return eventNames; }

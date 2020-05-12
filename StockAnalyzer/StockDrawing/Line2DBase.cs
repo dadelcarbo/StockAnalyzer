@@ -13,7 +13,6 @@ namespace StockAnalyzer.StockDrawing
     }
     public abstract class Line2DBase : DrawingItem
     {
-
         public bool IsHorizontal { get { return VY == 0.0f; } }
         public bool IsVertical { get { return VX == 0.0f; } }
         public PointF Point1 { get; set; }
@@ -137,6 +136,12 @@ namespace StockAnalyzer.StockDrawing
         public abstract Segment2D Trim(Rectangle2D rect);
 
         public abstract Line2DBase Cut(float x, bool cutRight);
+
+        public override void ApplyOffset(int offset)
+        {
+            this.Point1 = new PointF(this.Point1.X + offset, this.Point1.Y);
+            this.Point2 = new PointF(this.Point2.X + offset, this.Point2.Y);
+        }
 
         #region XML SERIALISATION
         public override System.Xml.Schema.XmlSchema GetSchema()

@@ -56,6 +56,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 float entry = float.NaN;
                 float trailStop = float.NaN;
                 float target = float.NaN;
+                float highestInBars = float.MaxValue; // Reference for trailing stop
 
                 for (int i = period * 2; i < stockSerie.Count; i++)
                 {
@@ -79,9 +80,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             brokenDownEvents[i] = true;
                             continue;
                         }
-                        else if (float.IsNaN(target))// Trail Stop after target has been touched
+                        else if (float.IsNaN(target) && highestInSerie[i] > highestInBars)// Trail Stop after target has been touched
                         {
-                            trailStop = bodyLowSerie.GetMin(i - period, i);
+                            // Find previous body bottom
+                            for (int k = i - 1; k > 1; k--)
+                            {
+                                if (bodyLowSerie[k] < bodyLowSerie[k - 1])
+                                {
+                                    trailStop = bodyLowSerie[k];
+                                    break;
+                                }
+                            }
+                            //trailStop = bodyLowSerie.GetMin(i - period, i);
                         }
                         this.series[0][i] = trailStop;
                         bullEvents[i] = true;
@@ -95,8 +105,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             continue;
 
                         // Find Pivot
-                        int startIndex = i - (int)highestInSerie[i];
-                        var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 2, i - 1);
+                        int startIndex = i - (int)highestInSerie[i] + 1;
+                        var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
 
                         if (pivotIndex - startIndex < period || i - pivotIndex < period) // Pivot distance smaller than period
                             continue;
@@ -109,7 +119,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         var leftLow = new PointF();
                         var rightLow = new PointF();
                         var low = float.MaxValue;
-                        for (int k = startIndex + 1; k < pivotIndex; k++)
+                        for (int k = startIndex; k < pivotIndex; k++)
                         {
                             var bodyLow = bodyLowSerie[k];
                             if (low >= bodyLow)
@@ -130,12 +140,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             }
                         }
                         this.series[0][i] = trailStop = Math.Max(trailStop, low);
-
-                        // Draw open cup and handle
-                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
+                        highestInBars = highestInSerie[i];
                         isBull = true;
                         brokenUpEvents[i] = bullEvents[i] = true;
 
+                        // Draw open cup and handle
+                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
                         stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
                     }
                 }
