@@ -556,22 +556,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     foreach (DrawingItem item in this.drawingItems)
                     {
-                        item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
-                        // Display support résistance value
-                        if (item.GetType() == typeof(Line2D))
-                        {
-                            Line2D line = (Line2D)item;
-                            if (line.IsHorizontal)
-                            {
-                                PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
-                                this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
-                                   new PointF(1, textLocation.Y - 8), true);
-                            }
-                        }
-                        else if (item.GetType() == typeof(CupHandle2D))
+                        if (item.GetType() == typeof(CupHandle2D))
                         {
                             var cupHandle = (CupHandle2D)item;
                             DrawTmpCupHandle(aGraphic, DrawingPen, cupHandle, true);
+                        }
+                        else
+                        {
+                            item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
+                            // Display support résistance value
+                            if (item.GetType() == typeof(Line2D))
+                            {
+                                Line2D line = (Line2D)item;
+                                if (line.IsHorizontal)
+                                {
+                                    PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
+                                    this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
+                                       new PointF(1, textLocation.Y - 8), true);
+                                }
+                            }
                         }
                     }
                 }
@@ -1604,6 +1607,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
+                            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
+                                break;
                             PointF point1 = selectedValuePoint;
                             PointF point2 = mouseValuePoint;
                             try
@@ -1934,14 +1939,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems.Where(d => (d is Line2DBase) && d.IsPersistent)) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (Line2DBase line2D in this.drawingItems) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
-                line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
-                currentDistance = line.DistanceTo(point2D);
-                if (currentDistance < minDistance)
+                if ((line2D is Line2DBase) && line2D.IsPersistent)
                 {
-                    index = counter;
-                    minDistance = currentDistance;
+                    line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
+                    currentDistance = line.DistanceTo(point2D);
+                    if (currentDistance < minDistance)
+                    {
+                        index = counter;
+                        minDistance = currentDistance;
+                    }
                 }
                 counter++;
             }
