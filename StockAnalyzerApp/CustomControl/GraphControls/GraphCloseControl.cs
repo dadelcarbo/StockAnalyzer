@@ -1332,6 +1332,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                                 Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
+                                drawingItems.RefDate = dateSerie[(int)mouseValuePoint.X];
+                                drawingItems.RefDateIndex = (int)mouseValuePoint.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
@@ -1370,6 +1372,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected void ManageMouseMoveDrawing(System.Windows.Forms.MouseEventArgs e, PointF mouseValuePoint)
         {
+            PointF point1 = selectedValuePoint;
+            PointF point2 = mouseValuePoint;
+
+            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
+                return;
+            if ((Control.ModifierKeys & Keys.Shift) != 0)
+            {
+                point2 = new PointF(mouseValuePoint.X, point1.Y);
+            }
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddSAR:
@@ -1386,21 +1397,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
-                        }
+                        DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(point1, point2), true);
                     }
                     break;
                 case GraphDrawMode.AddSegment:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
-                        }
+                        DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.AddCupHandle:
@@ -1414,21 +1417,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddHalfLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
-                        }
-                    }
-                    break;
-                case GraphDrawMode.FanLine:
-                    if (this.DrawingStep == GraphDrawingStep.ItemSelected)
-                    {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
-                        }
+                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1597,6 +1586,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {
+            PointF point1 = selectedValuePoint;
+            PointF point2 = mouseValuePoint;
+
+            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
+                return;
+            if ((Control.ModifierKeys & Keys.Shift) != 0)
+            {
+                point2 = new PointF(mouseValuePoint.X, point1.Y);
+            }
+
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:
@@ -1607,14 +1606,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
-                                break;
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 Line2D newLine = new Line2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newLine);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
@@ -1636,12 +1633,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 Segment2D newSegment = new Segment2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newSegment);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newSegment);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
@@ -1684,40 +1681,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 HalfLine2D newhalfLine = new HalfLine2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newhalfLine);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newhalfLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.FanLine:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the first point
-                            selectedValuePoint = mouseValuePoint;
-                            this.DrawingStep = GraphDrawingStep.ItemSelected;
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
-                            try
-                            {
-                                Line2D newLine = (Line2D)new Line2D(point1, point2, this.DrawingPen);
-                                drawingItems.Add(newLine);
-                                AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
                             }
