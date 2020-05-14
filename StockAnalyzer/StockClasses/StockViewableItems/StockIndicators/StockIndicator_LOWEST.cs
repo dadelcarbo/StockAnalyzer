@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 int count = 0;
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    if (closeSerie[i] > bodyLowSerie[j])
+                    if (closeSerie[i] < bodyLowSerie[j])
                     {
                         count++;
                     }
