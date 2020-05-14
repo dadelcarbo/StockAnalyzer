@@ -1125,7 +1125,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         static float[] fibonacciRetracements = new float[] { 0.236f, 0.382f, 0.5f, 0.618f, 0.764f };
-        static bool drawFibo = false;
         protected void DrawSelectionZone(System.Windows.Forms.MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))

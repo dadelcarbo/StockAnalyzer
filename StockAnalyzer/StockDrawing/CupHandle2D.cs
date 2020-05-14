@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockDrawing
 
             if (trimmedSegment.Point1 != PointF.Empty && trimmedSegment.Point2 != PointF.Empty)
             {
-                g.DrawLine(this.Pen, trimmedSegment.Point1, trimmedSegment.Point2);
+                g.DrawLine(pen, trimmedSegment.Point1, trimmedSegment.Point2);
             }
 
             PointF[] points = new PointF[] { this.Pivot };

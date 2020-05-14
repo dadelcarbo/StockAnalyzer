@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie supportSerie, resistanceSerie, secondarySupport, secondaryResistance;
+            FloatSerie supportSerie, resistanceSerie;
             IStockIndicator stokIndicator = stockSerie.GetIndicator(this.Parameters[0].ToString().Replace("_", ","));
 
             stockSerie.CalculateOverboughtSR(stokIndicator.Series[0], (float)this.Parameters[1], (float)this.Parameters[2], out supportSerie, out resistanceSerie);

@@ -10,7 +10,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
@@ -164,8 +163,6 @@ namespace StockAnalyzerApp
         #region CONSTANTS
 
         private static string WORK_THEME = "__NewTheme*";
-        private static string DAILY_SUBFOLDER = @"\data\daily";
-        private static string ARCHIVE_DAILY_SUBFOLDER = @"\data\archive\daily";
 
         #endregion
 
@@ -2249,7 +2246,6 @@ namespace StockAnalyzerApp
                 int nb = 0;
                 float close = 0f;
                 List<stat> stats = new List<stat>();
-                int eventIndex = 1;
                 // var closeSerie = this.currentStockSerie.GetSerie(StockDataType.CLOSE);
                 var closeSerie = this.currentStockSerie.GetExactValues().Select(dv => dv.CLOSE).ToArray();
                 for (int i = 1; i < this.currentStockSerie.Count; i++)
@@ -2707,8 +2703,6 @@ namespace StockAnalyzerApp
         private static string commentTemplate = "COMMENT_TEMPLATE";
         private static string titleTemplate = "TITLE_TEMPLATE";
         private static string eventTemplate = "EVENT_TEMPLATE";
-        private static string imageFileCID = "IMAGE_FILE_CID";
-        private static string imageFileLink = "IMAGE_FILE_LINK";
 
         // static private string htmlEventTemplate = "<P style=\"font-size: x-small\">" + eventTemplate + "</P>";
         private static string htmlEventTemplate = "<br />" + eventTemplate;
@@ -3823,7 +3817,6 @@ namespace StockAnalyzerApp
 
         public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
         public event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;
-        public event NotifyStrategyChangedEventHandler StrategyChanged;
 
         event OnThemeChangedHandler ThemeChanged;
 

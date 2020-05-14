@@ -938,6 +938,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
             }
+#if DEBUG
+            value += BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12) + "\r\n";
+#endif
             // Remove last new line.
             if (value.Length != 0)
             {
@@ -1417,7 +1420,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddHalfLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
+                        DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.CopyLine:

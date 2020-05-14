@@ -170,10 +170,6 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             {
                 for (int i = 0; i < nbBars; i++)
                 {
-                    float avg = 0;
-                    float max = float.MinValue;
-                    float min = float.MaxValue;
-
                     var indexResults = this.Results.Where(r => r.Index == i).ToList();
 
                     this.SummaryResults.Add(new StatisticsResult()

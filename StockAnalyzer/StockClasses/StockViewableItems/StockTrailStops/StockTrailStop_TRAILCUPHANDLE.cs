@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override Object[] ParameterDefaultValues => new Object[] { 3 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500) };
 
         public override string[] SerieNames => new string[] { "TRAILCUPHANDLE.LS", "TRAILCUPHANDLE.SS" };
 
@@ -85,14 +85,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-                        if (stockSerie.StockName == "ATOS" && i < 121) continue;
                         if (highestInSerie[i] == i) // Alltime high
                             continue;
                         if (highestInSerie[i] <= (period * 2)) // Smaller than period
                             continue;
 
                         // Find Pivot
-                        int startIndex = i - (int)highestInSerie[i] + 1;
+                        int startIndex = i - (int)highestInSerie[i];
                         var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
 
                         if (pivotIndex - startIndex < period || i - pivotIndex < period) // Pivot distance smaller than period

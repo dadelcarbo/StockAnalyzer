@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Linq.Mapping;
 using System.IO;
 using System.Net;
 using System.Text;
-using Ionic.Zip;
 using StockAnalyzer.StockLogging;
 using System.Net.Http;
 
@@ -20,7 +18,6 @@ namespace StockAnalyzer.StockWeb
     public class StockWebHelper
     {
         public delegate void DownloadingStockEventHandler(string text);
-        public event DownloadingStockEventHandler DownloadStarted;
 
 
         static protected string DAILY_SUBFOLDER = @"\data\daily";
