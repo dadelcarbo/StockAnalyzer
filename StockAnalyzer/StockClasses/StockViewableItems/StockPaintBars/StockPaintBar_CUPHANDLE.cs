@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -38,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             get { return isEvent; }
         }
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -55,8 +54,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             var period = (int)this.parameters[0];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
 

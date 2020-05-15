@@ -14,17 +14,19 @@ namespace StockAnalyzer.StockDrawing
         {
 
         }
-        public CupHandle2D(PointF point1, PointF point2, PointF pivot, PointF leftLow, PointF rightLow, Pen pen)
+        public CupHandle2D(PointF point1, PointF point2, PointF pivot, PointF leftLow, PointF rightLow, Pen pen, bool inverse = false)
            : base(point1, point2, pen)
         {
             this.Pivot = pivot;
             this.LeftLow = leftLow;
             this.RightLow = rightLow;
+            this.Inverse = inverse;
         }
 
         public PointF Pivot { get; set; }
         public PointF RightLow { get; set; }
         public PointF LeftLow { get; set; }
+        public bool Inverse { get; set; }
 
         const int PIVOT_SIZE = 6;
         public override void Draw(Graphics g, Pen pen, Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
@@ -44,7 +46,8 @@ namespace StockAnalyzer.StockDrawing
             {
                 if (graphRectangle.Contains(transformedPivot))
                 {
-                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - PIVOT_SIZE, PIVOT_SIZE, PIVOT_SIZE);
+                    var offset = Inverse ? 0 : PIVOT_SIZE;
+                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
                 }
             }
 
@@ -54,7 +57,8 @@ namespace StockAnalyzer.StockDrawing
             {
                 if (graphRectangle.Contains(transformedPivot))
                 {
-                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y, PIVOT_SIZE, PIVOT_SIZE);
+                    var offset = Inverse ? PIVOT_SIZE : 0;
+                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
                 }
             }
         }

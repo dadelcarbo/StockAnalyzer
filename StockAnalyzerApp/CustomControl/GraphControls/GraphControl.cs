@@ -225,6 +225,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public Pen DrawingPen { get; set; }
 
         public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(128, Color.LightGreen));
+        public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(128, Color.LightCoral));
 
         // Transformation Matrix
         protected Matrix matrixScreenToValue;

@@ -1526,17 +1526,33 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             start = Math.Max(StartIndex, start);
             end = Math.Min(EndIndex, end);
-
-            // Calculate upper body high
             PointF[] polygonPoints = new PointF[end - start + 1];
-            for (int i = start; i < end; i++)
+            if (cupHandle.Inverse)
             {
-                polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                // Calculate lower body low
+                for (int i = start; i < end; i++)
+                {
+                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                }
+            }
+            else
+            {
+                // Calculate upper body high
+                for (int i = start; i < end; i++)
+                {
+                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                }
             }
             polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
             polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
-
-            graph.FillPolygon(CupHandleBrush, polygonPoints);
+            if (cupHandle.Inverse)
+            {
+                graph.FillPolygon(CupHandleInvBrush, polygonPoints);
+            }
+            else
+            {
+                graph.FillPolygon(CupHandleBrush, polygonPoints);
+            }
 
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
@@ -1549,24 +1565,52 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 cupHandle.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
             }
 
+            string text = string.Empty;
             // Draw Handle metrics
             var textPos = GetScreenPointFromValuePoint(cupHandle.Pivot.X, cupHandle.Pivot.Y);
-            textPos.X -= 15;
-            textPos.Y -= 16;
-            var text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 15;
+                textPos.Y += 9;
+                text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            }
+            else
+            {
+                textPos.X -= 15;
+                textPos.Y -= 16;
+                text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            }
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
 
             // Draw HL and LL
             textPos = GetScreenPointFromValuePoint(cupHandle.LeftLow.X, cupHandle.LeftLow.Y);
-            textPos.X -= 5;
-            textPos.Y += 5;
-            text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LL" : "HL";
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 5;
+                textPos.Y -= 16;
+                text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LH" : "HH";
+            }
+            else
+            {
+                textPos.X -= 5;
+                textPos.Y += 5;
+                text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LL" : "HL";
+            }
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
 
             textPos = GetScreenPointFromValuePoint(cupHandle.RightLow.X, cupHandle.RightLow.Y);
-            textPos.X -= 5;
-            textPos.Y += 5;
-            text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LL" : "HL";
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 5;
+                textPos.Y -= 16;
+                text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LH" : "HH";
+            }
+            else
+            {
+                textPos.X -= 5;
+                textPos.Y += 5;
+                text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LL" : "HL";
+            }
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
         }
 
