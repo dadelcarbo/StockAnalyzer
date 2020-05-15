@@ -1619,8 +1619,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 cupHandle.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
             }
-
-            string text = string.Empty;
+            if (!ShowIndicatorText)
+                return;
+            string text;
             // Draw Handle metrics
             var textPos = GetScreenPointFromValuePoint(cupHandle.Pivot.X, cupHandle.Pivot.Y);
             if (cupHandle.Inverse)
