@@ -56,9 +56,12 @@ namespace StockAnalyzer.StockClasses
 
         public override string ToString()
         {
-            return StockName + "\t" + Date + "\t" + BarDuration + "\t" + Alert;
+            if (Date.Date == Date)
+            {
+                return StockName.PadRight(30) + "\t" + Date.ToShortDateString() + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
+            }
+            return StockName.PadRight(30) + "\t" + Date + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
         }
-
         public static bool operator ==(StockAlert a, StockAlert b)
         {
             if (object.ReferenceEquals(a, null))

@@ -41,6 +41,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
 
             // Fill the control list
+            this.graphCloseControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
             this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphScrollerControl);
             this.graphList.Add(this.graphIndicator1Control);

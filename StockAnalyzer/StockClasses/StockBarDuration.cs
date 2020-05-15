@@ -63,10 +63,10 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
         public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
+        public static StockBarDuration Bar_24 = new StockBarDuration(BarDuration.Bar_24);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
         public static StockBarDuration BiWeekly = new StockBarDuration(BarDuration.BiWeekly);
         public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
-        public static StockBarDuration RENKO_2 = new StockBarDuration(BarDuration.RENKO_2);
 
         public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
             StockBarDuration.Daily,
@@ -77,10 +77,10 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Bar_3,
             StockBarDuration.Bar_6,
             StockBarDuration.Bar_12,
+            StockBarDuration.Bar_24,
             StockBarDuration.Weekly,
             StockBarDuration.BiWeekly,
-            StockBarDuration.Monthly,
-            StockBarDuration.RENKO_2
+            StockBarDuration.Monthly
         };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)

@@ -735,7 +735,7 @@ namespace StockAnalyzerApp
                                     break;
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
-                                    StockAlert stockAlert = new StockAlert(alertDef,
+                                    var stockAlert = new StockAlert(alertDef,
                                         dailyValue.DATE,
                                         stockSerie.StockName,
                                         stockSerie.StockGroup.ToString(),
