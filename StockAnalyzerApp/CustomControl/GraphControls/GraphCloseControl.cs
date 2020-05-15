@@ -1514,6 +1514,61 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
             }
+            else
+            {
+                PointF pivot = PointF.Empty;
+                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
+                {
+                    var startBody = Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
+                    if (pivot == PointF.Empty) // Search for pivot
+                    {
+                        var prevBody = Math.Min(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
+                        if (startBody < prevBody && (startBody < mouseValuePoint.Y))
+                        {
+                            pivot.X = i;
+                            pivot.Y = startBody;
+                        }
+                    }
+                    else if (startBody < pivot.Y) // Cup Handle start
+                    {
+                        var startPoint = new PointF(i, pivot.Y);
+                        int j;
+                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
+                        {
+                            var endBody = Math.Min(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
+                            if (endBody < pivot.Y) // Look for Cup Handle end
+                            {
+                                break;
+                            }
+                        }
+                        // Calculate indices of right and left lows
+                        var leftHigh = new PointF();
+                        var rightHigh = new PointF();
+                        var high = float.MinValue;
+                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
+                        {
+                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (high <= bodyHigh)
+                            {
+                                leftHigh.X = k;
+                                leftHigh.Y = high = bodyHigh;
+                            }
+                        }
+                        high = float.MinValue;
+                        for (int k = (int)pivot.X + 1; k < j; k++)
+                        {
+                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (high < bodyHigh)
+                            {
+                                rightHigh.X = k;
+                                rightHigh.Y = high = bodyHigh;
+                            }
+                        }
+                        // Draw open cup and handle (not completed yet)
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true);
+                    }
+                }
+            }
             return null;
         }
 
