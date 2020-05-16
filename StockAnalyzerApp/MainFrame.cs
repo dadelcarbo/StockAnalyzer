@@ -2710,10 +2710,7 @@ namespace StockAnalyzerApp
         private static string htmlTitleTemplate =
            "<P style=\"text-align: center; font-size: xx-medium\">" + titleTemplate + "</P>";
 
-        private static string htmlAlertTemplate = "<P STYLE=\"margin-bottom: 0cm\"><B><U>" + commentTitleTemplate +
-                                                    "</U></B></P>" +
-                                                    "<P STYLE=\"margin-bottom: 0cm; text-decoration: none\">" +
-                                                    commentTemplate + "</P>";
+        private static string htmlAlertTemplate = "\r\n<B><U>" + commentTitleTemplate + "</U></B>" + commentTemplate;
 
         private string GenerateEventReport()
         {
@@ -2752,19 +2749,13 @@ namespace StockAnalyzerApp
 
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
-            string commentTitle = string.Empty;
-            string commentBody = string.Empty;
-            ImageFormat imageFormat = ImageFormat.Png;
-            List<string> cidList = new List<string>();
-            List<string> fileNameList = new List<string>();
-
             #region Report leaders
 
             this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
             string rankLeaderIndicatorName = "ROR(100,1)";
             string rankLoserIndicatorName = "ROD(100,1)";
-            int nbLeaders = 10;
+            int nbLeaders = 12;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
@@ -2772,18 +2763,18 @@ namespace StockAnalyzerApp
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.CAC40);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -2809,29 +2800,28 @@ namespace StockAnalyzerApp
         {
             string htmlBody = string.Empty;
 
-            foreach (StockAlertDef alert in alertDefs)
+            foreach (StockAlertDef alertDef in alertDefs)
             {
-                string alertMsg = string.Empty;
-                var commentTitle = "\r\n" + alert.ToString() + "\r\n";
+                var commentTitle = alertDef.IndicatorName + " => " + alertDef.EventName;
 
+                var alertMsgs = new List<string>();
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
                 {
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-                    if (!stockSerie.Initialise() || stockSerie.Count < 200 /*|| (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000*/) continue;
+                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000) continue;
 
-                    if (stockSerie.MatchEvent(alert))
+                    if (stockSerie.MatchEvent(alertDef))
                     {
-                        var values = stockSerie.GetValues(alert.BarDuration);
-                        string alertLine = stockSerie.StockName + ";" + values.ElementAt(values.Count - 2).DATE +
-                                           ";" + alert.ToString();
-
-                        alertMsg += "<br>" + alertLine + ";" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE + "</br>";
+                        var values = stockSerie.GetValues(alertDef.BarDuration);
+                        string alertLine = stockSerie.StockName.PadRight(30) + "\t" + values.ElementAt(values.Count - 1).DATE.ToShortDateString();
+                        alertMsgs.Add(alertLine + "\t" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE);
                     }
                 }
-                if (!string.IsNullOrEmpty(alertMsg))
+                if (alertMsgs.Count > 0)
                 {
+                    var alertMsg = "\r\n<pre>\r\n" + alertMsgs.Aggregate((i, j) => i + "\r\n" + j) + "\r\n</pre>";
                     htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);
                 }
             }
