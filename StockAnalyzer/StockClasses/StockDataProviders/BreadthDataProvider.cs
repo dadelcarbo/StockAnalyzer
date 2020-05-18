@@ -94,6 +94,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateBullishROCEXSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "McClellan":
                     return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                case "McClellanSum":
+                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "MM":
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "MYOSC":

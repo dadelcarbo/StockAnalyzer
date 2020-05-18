@@ -114,7 +114,7 @@ namespace StockAnalyzer.StockClasses
             // Serialize drawing items
             if (hasDrawings)
             {
-                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count > 0))
+                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count(item => item.IsPersistent) > 0))
                 {
                     writer.WriteStartElement("DrawingItems");
                     writer.WriteAttributeString("BarDuration", drawingItems.Key.ToString());
