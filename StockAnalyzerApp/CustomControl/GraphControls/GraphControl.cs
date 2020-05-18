@@ -1667,11 +1667,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (this.drawingItems != null)
             {
-                foreach (DrawingItem drawingItem in this.drawingItems)
+                foreach (DrawingItem drawingItem in this.drawingItems.Where(di => di.IsPersistent))
                 {
                     AddToUndoBuffer(GraphActionType.DeleteItem, drawingItem);
+
                 }
-                this.drawingItems.Clear();
+                this.drawingItems.RemoveAll(di => di.IsPersistent);
             }
         }
         protected string BuildTabbedString(string type, float value, int tabLocation)

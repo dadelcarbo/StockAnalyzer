@@ -2707,9 +2707,6 @@ namespace StockAnalyzerApp
         // static private string htmlEventTemplate = "<P style=\"font-size: x-small\">" + eventTemplate + "</P>";
         private static string htmlEventTemplate = "<br />" + eventTemplate;
 
-        private static string htmlTitleTemplate =
-           "<P style=\"text-align: center; font-size: xx-medium\">" + titleTemplate + "</P>";
-
         private static string htmlAlertTemplate = "\r\n<B><U>" + commentTitleTemplate + "</U></B>" + commentTemplate;
 
         private string GenerateEventReport()
@@ -2839,11 +2836,11 @@ namespace StockAnalyzerApp
              %CLOSE_DIR_IMG%
              <td>%COL4%</td>
          </tr>";
-            string htmlBody = $"<h2 style=\"text-align: center;\">{reportGroup}</h2>";
 
-            string html = htmlBody + @"<table>
-    <tr>
-        <td>";
+            string html = @"
+        <table>
+            <tr>
+            <td>";
 
             List<RankedSerie> leadersDico = new List<RankedSerie>();
             var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)).ToList();
@@ -2880,20 +2877,24 @@ namespace StockAnalyzerApp
                 rankSerie.previousRank = rank++;
             }
 
-            html += htmlTitleTemplate.Replace(titleTemplate, "Leaders for " + reportGroup);
-            html += @"
-        <table  class=""reportTable"">
-<thead>
-<tr>
-<th>Stock Name</th>
-<th>" + rankLeaderIndicatorName + @"</th>
-<th>Rank Trend</th>
-<th>Daily %</th>
-<th>Daily Trend</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>";
+            var tableHeader = "Leaders for " + reportGroup;
+            html += $@"
+            <table  class=""reportTable"">
+                <thead>
+                <tr>
+                    <td rowspan=""1"">&nbsp;</td>
+                    <th colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                </tr>
+                <tr>
+                    <th>Stock Name</th>
+                    <th>{rankLeaderIndicatorName}</th>
+                    <th>Rank Trend</th>
+                    <th>Daily %</th>
+                    <th>Daily Trend</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>";
 
             var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
             foreach (RankedSerie pair in leaders)
@@ -2968,20 +2969,25 @@ namespace StockAnalyzerApp
                 rankSerie.previousRank = rank++;
             }
 
-            html += htmlTitleTemplate.Replace(titleTemplate, "Losers for " + reportGroup);
-            html += @"
-        <table  class=""reportTable"">
-<thead>
-<tr>
-<th>Stock Name</th>
-<th>" + rankLoserIndicatorName + @"</th>
-<th>Rank Trend</th>
-<th>Daily %</th>
-<th>Daily Trend</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>";
+            tableHeader = "Losers for " + reportGroup;
+            html += $@"
+            <table  class=""reportTable"">
+                <thead>
+                <tr>
+                    <td rowspan=""1"">&nbsp;</td>
+                    <th colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                </tr>
+                <tr>
+                    <th>Stock Name</th>
+                    <th>{rankLeaderIndicatorName}</th>
+                    <th>Rank Trend</th>
+                    <th>Daily %</th>
+                    <th>Daily Trend</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>";
+
             leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
             foreach (RankedSerie pair in leaders)
             {
