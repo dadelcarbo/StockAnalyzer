@@ -61,6 +61,7 @@ namespace StockAnalyzer.StockClasses
             USER3,
             ShortInterest,
             Portfolio,
+            Replay,
             ALL,
             TURBO,
 

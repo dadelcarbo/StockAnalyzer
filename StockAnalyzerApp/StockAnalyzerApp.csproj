@@ -268,6 +268,7 @@
       <DependentUpon>MarketReplayDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\MarketReplay\MarketReplayViewModel.cs" />
+    <Compile Include="CustomControl\MarketReplay\MarketReplayPositionViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -781,6 +782,18 @@
     <Content Include="Resources\AddSegment.bmp" />
     <Content Include="Resources\AddToReport.png" />
     <Content Include="Resources\Backward-icon.png" />
+    <Content Include="Resources\ButtonFastForward.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonFirst.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonPlay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonStop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Camera-32.png" />
     <None Include="Resources\chart_curve.png" />
     <Content Include="Resources\comment-icon.bmp" />

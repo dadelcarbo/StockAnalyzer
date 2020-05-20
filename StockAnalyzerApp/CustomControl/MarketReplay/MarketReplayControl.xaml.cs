@@ -20,6 +20,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
     /// </summary>
     public partial class MarketReplayControl : UserControl
     {
+        public MarketReplayViewModel ViewModel { get; set; }
         public MarketReplayControl()
         {
             InitializeComponent();

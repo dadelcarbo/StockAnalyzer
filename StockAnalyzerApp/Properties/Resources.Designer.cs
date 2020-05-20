@@ -143,6 +143,36 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap ButtonFastForward {
+            get {
+                object obj = ResourceManager.GetObject("ButtonFastForward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ButtonPlay {
+            get {
+                object obj = ResourceManager.GetObject("ButtonPlay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ButtonStop {
+            get {
+                object obj = ResourceManager.GetObject("ButtonStop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Camera {
             get {
                 object obj = ResourceManager.GetObject("Camera", resourceCulture);

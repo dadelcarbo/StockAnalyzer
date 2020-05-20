@@ -13,19 +13,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public partial class MarketReplayDlg : Form
     {
-        private StockSerie.Groups selectedGroup;
-        private StockBarDuration barDuration;
-
-        public MarketReplayDlg()
-        {
-            InitializeComponent();
-        }
-
         public MarketReplayDlg(StockSerie.Groups selectedGroup, StockBarDuration barDuration)
         {
             InitializeComponent();
-            this.selectedGroup = selectedGroup;
-            this.barDuration = barDuration;
+
+            marketReplayControl1.DataContext = marketReplayControl1.ViewModel = new MarketReplayViewModel(selectedGroup, barDuration);
         }
     }
 }
