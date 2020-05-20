@@ -93,6 +93,7 @@
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\HorseRaceAgent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
@@ -397,6 +398,7 @@
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLEINV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />

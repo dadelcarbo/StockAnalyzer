@@ -14,7 +14,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockSecurity;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
@@ -25,6 +24,7 @@ using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.GroupViewDlg;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
+using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
@@ -789,56 +789,56 @@ namespace StockAnalyzerApp
         private bool CheckLicense()
         {
             return true;
-            StockLicense stockLicense = null;
+            //StockLicense stockLicense = null;
 
-            // Check on local disk in license is found
-            string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
-            if (File.Exists(licenseFileName))
-            {
-                string fileName = licenseFileName;
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    try
-                    {
-                        stockLicense = new StockLicense(Settings.Default.UserId, sr.ReadLine());
-                    }
-                    catch
-                    {
-                        this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseCorrupted);
-                        return false;
-                    }
-                    if (stockLicense.UserID != Settings.Default.UserId)
-                    {
-                        this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidUserId);
-                        return false;
-                    }
-                    if (Settings.Default.MachineID == string.Empty)
-                    {
-                        Settings.Default.MachineID = StockToolKit.GetMachineUID();
-                        Settings.Default.Save();
-                    }
-                    if (stockLicense.MachineID != Settings.Default.MachineID)
-                    {
-                        this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidMachineId);
-                        return false;
-                    }
-                    if (stockLicense.ExpiryDate < DateTime.Today)
-                    {
-                        this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseExpired);
-                        return false;
-                    }
-                    if (Assembly.GetExecutingAssembly().GetName().Version.Major > stockLicense.MajorVerion)
-                    {
-                        this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseWrongVersion);
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseNoFile);
-            }
-            return true;
+            //// Check on local disk in license is found
+            //string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
+            //if (File.Exists(licenseFileName))
+            //{
+            //    string fileName = licenseFileName;
+            //    using (StreamReader sr = new StreamReader(fileName))
+            //    {
+            //        try
+            //        {
+            //            stockLicense = new StockLicense(Settings.Default.UserId, sr.ReadLine());
+            //        }
+            //        catch
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseCorrupted);
+            //            return false;
+            //        }
+            //        if (stockLicense.UserID != Settings.Default.UserId)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidUserId);
+            //            return false;
+            //        }
+            //        if (Settings.Default.MachineID == string.Empty)
+            //        {
+            //            Settings.Default.MachineID = StockToolKit.GetMachineUID();
+            //            Settings.Default.Save();
+            //        }
+            //        if (stockLicense.MachineID != Settings.Default.MachineID)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidMachineId);
+            //            return false;
+            //        }
+            //        if (stockLicense.ExpiryDate < DateTime.Today)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseExpired);
+            //            return false;
+            //        }
+            //        if (Assembly.GetExecutingAssembly().GetName().Version.Major > stockLicense.MajorVerion)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseWrongVersion);
+            //            return false;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseNoFile);
+            //}
+            //return true;
         }
 
         private void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
@@ -2220,17 +2220,6 @@ namespace StockAnalyzerApp
 
         private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
 
-        public bool TrailHL(int i, StockSerie stockSerie, ref string eventName)
-        {
-            eventName = "UpBreak_TRAILHL(4)";
-            BoolSerie upTrend = stockSerie.GetTrailStop("TRAILHL(1)").Events[0];
-            BoolSerie upBar = stockSerie.GetPaintBar("HIGHLOWDAYS(6)").Events[0];
-
-            FloatSerie roc = stockSerie.GetIndicator("ROCEX3(200,100,50,10,20)").Series[0];
-
-            return upTrend[i] && roc[i] > 0 && (upBar[i] && !upBar[i - 1]);
-        }
-
         struct stat
         {
             public int nbr;
@@ -2701,7 +2690,6 @@ namespace StockAnalyzerApp
 
         private static string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
         private static string commentTemplate = "COMMENT_TEMPLATE";
-        private static string titleTemplate = "TITLE_TEMPLATE";
         private static string eventTemplate = "EVENT_TEMPLATE";
 
         // static private string htmlEventTemplate = "<P style=\"font-size: x-small\">" + eventTemplate + "</P>";
@@ -3316,11 +3304,6 @@ namespace StockAnalyzerApp
                             this.DownloadStockGroup();
                         }
                         break;
-                    case Keys.F6:
-                        {
-                            this.GenerateHistogram();
-                        }
-                        break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                         {
                             MTFDlg mtfDlg = new MTFDlg();
@@ -3435,48 +3418,6 @@ namespace StockAnalyzerApp
                 }
             }
 
-        }
-        private void GenerateHistogram()
-        {
-            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
-            histogram.Add(0, 0);
-            for (int i = 1; i < 100; i++)
-            {
-                histogram.Add(-i, 0);
-                histogram.Add(i, 0);
-            }
-            int period = 6;
-            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
-            bool up = true;
-            int cumul = 0;
-            for (int i = 1; i < this.currentStockSerie.Count; i++)
-            {
-                var value = this.currentStockSerie.ValueArray[i];
-                if (up)
-                {
-                    if (value.VARIATION > 0) cumul++;
-                    else
-                    {
-                        histogram[cumul]++;
-                        cumul = 0;
-                        up = false;
-                    }
-                }
-                else
-                {
-                    if (value.VARIATION < 0) cumul++;
-                    else
-                    {
-                        histogram[-cumul]++;
-                        cumul = 0;
-                        up = true;
-                    }
-                }
-            }
-            for (int i = -99; i < 100; i++)
-            {
-                Console.WriteLine(i.ToString() + "," + histogram[i]);
-            }
         }
 
         #region MULTI TIME FRAME VIEW
@@ -3741,6 +3682,27 @@ namespace StockAnalyzerApp
         void horseRaceDlg_Disposed(object sender, EventArgs e)
         {
             this.horseRaceDlg = null;
+        }
+        #endregion
+        #region HORSE RACE DIALOG
+        MarketReplayDlg marketReplayDlg = null;
+        void marketReplayViewMenuItem_Click(object sender, EventArgs e)
+        {
+            if (marketReplayDlg == null)
+            {
+                marketReplayDlg = new MarketReplayDlg(this.selectedGroup, this.BarDuration);
+                marketReplayDlg.Disposed += marketReplayDlg_Disposed;
+                marketReplayDlg.Show();
+            }
+            else
+            {
+                marketReplayDlg.Activate();
+            }
+        }
+
+        void marketReplayDlg_Disposed(object sender, EventArgs e)
+        {
+            this.marketReplayDlg = null;
         }
         #endregion
         #region ALERT DIALOG

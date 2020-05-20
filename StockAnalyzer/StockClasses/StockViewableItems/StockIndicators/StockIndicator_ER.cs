@@ -6,10 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ER : StockIndicatorBase, IRange
     {
-        public StockIndicator_ER()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.RangedIndicator; }

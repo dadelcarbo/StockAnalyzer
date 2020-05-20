@@ -258,6 +258,16 @@
     <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.Designer.cs">
       <DependentUpon>AddCloudDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayControl.xaml.cs">
+      <DependentUpon>MarketReplayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayDlg.Designer.cs">
+      <DependentUpon>MarketReplayDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -550,6 +560,9 @@
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\MarketReplay\MarketReplayDlg.resx">
+      <DependentUpon>MarketReplayDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\MultiTimeFrameDlg\MTFDlg.resx">
       <DependentUpon>MTFDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -804,6 +817,9 @@
     <None Include="Resources\SR.png" />
     <None Include="Resources\PaintBar.png" />
     <None Include="Resources\trail.png" />
+    <None Include="Resources\UltimateChartist_URLProtocol.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\VolumeHistogram.PNG" />
     <None Include="Resources\Curve.png" />
     <None Include="Resources\ScrollLeft.png" />
@@ -864,6 +880,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\MarketReplay\MarketReplayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

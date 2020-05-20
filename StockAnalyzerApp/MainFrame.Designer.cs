@@ -69,6 +69,7 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.marketReplayViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.multipleTimeFrameViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
@@ -357,6 +358,7 @@ namespace StockAnalyzerApp
             this.showIndicatorDivMenuItem,
             this.showIndicatorTextMenuItem,
             this.toolStripSeparator16,
+            this.marketReplayViewMenuItem,
             this.showHorseRaceViewMenuItem,
             this.multipleTimeFrameViewMenuItem,
             this.showAlertDialogMenuItem,
@@ -480,6 +482,14 @@ namespace StockAnalyzerApp
             this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showHorseRaceViewMenuItem.Text = "Horse Race View";
             this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
+            // 
+            // marketReplayViewMenuItem
+            // 
+            this.marketReplayViewMenuItem.Name = "marketReplayViewMenuItem";
+            this.marketReplayViewMenuItem.ShortcutKeys = Keys.F4;
+            this.marketReplayViewMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.marketReplayViewMenuItem.Text = "Market Replay";
+            this.marketReplayViewMenuItem.Click += marketReplayViewMenuItem_Click;
             // 
             // multipleTimeFrameViewMenuItem
             // 
@@ -1502,6 +1512,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showPortfolioSerieMenuItem;
         private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
+        private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;
         private ToolStripMenuItem showAlertDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
