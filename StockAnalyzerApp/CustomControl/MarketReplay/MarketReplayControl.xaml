@@ -6,9 +6,14 @@
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.MarketReplay" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:MarketReplayViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="450" d:DesignWidth="800" Background="AntiqueWhite">
-    <StackPanel>
-        <StackPanel Orientation="Horizontal" Height="38" Margin="5">
+             d:DesignHeight="450" d:DesignWidth="800" Background="#FFFFFFE0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Height="38" Margin="5">
             <Button Name="stopButton" Margin="2" ToolTip="Stop" IsEnabled="{Binding StopEnabled}" Command="{Binding StopCommand}">
                 <Image Source="../../Resources/ButtonStop.png"/>
             </Button>
@@ -18,7 +23,7 @@
             <Button Name="fastForwardButton" Margin="2" IsEnabled="{Binding FastForwardEnabled}" Command="{Binding FastForwardCommand}">
                 <Image Source="../../Resources/ButtonFastForward.png"/>
             </Button>
-            <Button Name="buyButton" Margin="2" Background="LightGreen" Content="  Buy  " IsEnabled="{Binding BuyEnabled}" Command="{Binding BuyCommand}">
+            <Button Name="buyButton" Margin="2" Background="LightGreen" Content="  Buy  " Command="{Binding BuyCommand}">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="5"/>
@@ -26,10 +31,10 @@
                 </Button.Resources>
             </Button>
             <Label Margin="2" VerticalAlignment="Center">Stop</Label>
-            <TextBlock Margin="2" Text="{Binding Stop}" VerticalAlignment="Center" Width="40"></TextBlock>
+            <TextBox Margin="2" Text="{Binding Stop}" VerticalAlignment="Center" Width="40"></TextBox>
             <Label Margin="2" VerticalAlignment="Center">Target1</Label>
-            <TextBlock Margin="2" Text="{Binding Target1}" VerticalAlignment="Center" Width="40"></TextBlock>
-            <Button Name="sellButton" Margin="2" Background="Red" Content="  Sell  " IsEnabled="{Binding SellEnabled}" Command="{Binding SellCommand}">
+            <TextBox Margin="2" Text="{Binding Target1}" VerticalAlignment="Center" Width="40"></TextBox>
+            <Button Name="sellButton" Margin="2" Background="Red" Content="  Sell  " Command="{Binding SellCommand}">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="5"/>
@@ -37,13 +42,13 @@
                 </Button.Resources>
             </Button>
             <Label Margin="2" VerticalAlignment="Center">Close</Label>
-            <TextBlock Margin="2" Text="{Binding Value}" VerticalAlignment="Center" Width="40"></TextBlock>
+            <TextBox Margin="2" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Width="40"></TextBox>
         </StackPanel>
-        <GroupBox Header="Current Position">
-            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding Positions}" IsFilteringAllowed="False" Height="54"></telerik:RadGridView>
+        <GroupBox  Grid.Row="1" Header="Current Position">
+            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding Positions}" IsFilteringAllowed="False" Height="54" IsReadOnly="True"></telerik:RadGridView>
         </GroupBox>
-        <GroupBox Header="Position History">
-            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding PositionHistory}" IsFilteringAllowed="False"></telerik:RadGridView>
+        <GroupBox Grid.Row="2" Header="Position History" VerticalAlignment="Stretch">
+            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding PositionHistory}" IsFilteringAllowed="False" IsReadOnly="True"></telerik:RadGridView>
         </GroupBox>
-    </StackPanel>
+    </Grid>
 </UserControl>

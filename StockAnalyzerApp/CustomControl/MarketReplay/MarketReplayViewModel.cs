@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer;
+using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -15,23 +16,41 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private StockBarDuration barDuration;
 
         public ObservableCollection<MarketReplayPositionViewModel> Positions { get; set; }
-        public ObservableCollection<MarketReplayPositionViewModel> PositionHistory { get; set; }
-
+        ObservableCollection<StockPosition> positionHistory;
+        public ObservableCollection<StockPosition> PositionHistory
+        {
+            get => positionHistory;
+            set
+            {
+                if (positionHistory != value)
+                {
+                    positionHistory = value;
+                    this.OnPropertyChanged("PositionHistory");
+                }
+            }
+        }
 
         private float _value;
-        public float Value { 
+        public float Value
+        {
             get => _value;
-            set
+            private set
             {
                 if (_value != value)
                 {
                     _value = value;
                     this.OnPropertyChanged("Value");
+
+                    if (this.openPosition != null)
+                    {
+                        this.openPosition.SetValue(value);
+                    }
                 }
             }
         }
         private float stop;
-        public float Stop {
+        public float Stop
+        {
             get => stop;
             set
             {
@@ -126,7 +145,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.selectedGroup = selectedGroup;
             this.barDuration = barDuration;
             this.Positions = new ObservableCollection<MarketReplayPositionViewModel>();
-            this.PositionHistory = new ObservableCollection<MarketReplayPositionViewModel>();
+            this.PositionHistory = new ObservableCollection<StockPosition>();
 
             this.stopEnabled = true;
             this.forwardEnabled = true;
@@ -135,6 +154,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.sellEnabled = false;
 
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
+            StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.ReplayPortfolio;
 
             Start();
         }
@@ -146,6 +166,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             get
             {
                 return stopCommand ?? (stopCommand = new CommandBase(StopReplay));
+
+
             }
         }
         private ICommand forwardCommand;
@@ -169,7 +191,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             get
             {
-                return buyCommand ?? (buyCommand = new CommandBase(Buy));
+                return buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm=>vm.BuyEnabled, "BuyEnabled"));
             }
         }
         private ICommand sellCommand;
@@ -177,7 +199,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             get
             {
-                return sellCommand ?? (sellCommand = new CommandBase(Sell));
+                return sellCommand ?? (sellCommand = new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled"));
             }
         }
 
@@ -225,11 +247,22 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             this.BuyEnabled = false;
             this.SellEnabled = true;
-            this.Positions.Add(new MarketReplayPositionViewModel() {Entry = this.Value, Value = this.Value, Stop = this.Stop, Target1 = this.Target1 });
+
+            var date = replaySerie.Keys.Last();
+            int qty = 2;
+            StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
+
+            this.Positions.Add(openPosition = new MarketReplayPositionViewModel() { Entry = this.Value, Stop = this.Stop, Target1 = this.Target1 });
             this.Forward();
         }
         private void Sell()
         {
+            var date = replaySerie.Keys.Last();
+            int qty = 2;
+
+            StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(date, replaySerie.StockName, StockOperation.SELL, qty, this.Value * qty));
+            PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
+            openPosition = null;
             this.BuyEnabled = true;
             this.SellEnabled = false;
             this.Positions.Clear();
@@ -241,6 +274,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
         StockSerie replaySerie;
         StockSerie referenceSerie;
+        private MarketReplayPositionViewModel openPosition = null;
 
         private void Start()
         {

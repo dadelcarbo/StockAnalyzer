@@ -12,8 +12,10 @@ namespace StockAnalyzer.StockBinckPortfolio
     public class StockPortfolio
     {
         public const string SIMU_P = "Simu_P";
+        public const string REPLAY_P = "Reply_P";
 
         public static StockPortfolio SimulationPortfolio { get; private set; }
+        public static StockPortfolio ReplayPortfolio { get; private set; }
 
         public static IStockPriceProvider PriceProvider { get; set; }
 
@@ -31,6 +33,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
+            ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
+            StockPortfolio.Portfolios.Add(ReplayPortfolio);
             return StockPortfolio.Portfolios;
         }
         public StockPortfolio()
