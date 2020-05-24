@@ -63,6 +63,23 @@ namespace StockAnalyzer.StockWeb
             // Read the content.
             return reader.ReadToEnd();
         }
+        public static string DownloadData(string url)
+        {
+            // allows for validation of SSL conversations
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Ssl3;
+
+            // You must change the URL to point to your Web server.
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "GET";
+            req.Headers.Add("Accept-Encoding", "gzip, deflate");
+            req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            StreamReader reader = new StreamReader(req.GetResponse().GetResponseStream());
+            return reader.ReadToEnd();
+        }
         private bool DownloadFile(string destFile, string url)
         {
             if (File.GetLastWriteTime(destFile) > DateTime.Now.AddHours(-6))

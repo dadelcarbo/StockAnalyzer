@@ -133,6 +133,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.InvestingIntraday:
                     dataProvider = new InvestingIntradayDataProvider();
                     break;
+                case StockDataProvider.SocGenIntraday:
+                    dataProvider = new SocGenIntradayDataProvider();
+                    break;
                 case StockDataProvider.Test:
                     break;
                 default:
@@ -152,10 +155,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockBarDuration currentBarDuration = serie.BarDuration;
                 serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
                 bool res = dataProvider.DownloadDailyData(rootFolder, serie);
-                if (dataProvider.SupportsIntradayDownload)
-                {
-                    res |= dataProvider.DownloadIntradayData(rootFolder, serie);
-                }
+                
                 serie.BarDuration = currentBarDuration;
                 return res;
             }

@@ -116,6 +116,8 @@
       <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SocGenData.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDividend.cs" />
     <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />

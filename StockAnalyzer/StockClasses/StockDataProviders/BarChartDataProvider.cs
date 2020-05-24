@@ -159,8 +159,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     using (StreamReader sr = new StreamReader(fileName))
                     {
-                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-                        Response jsonResponse = jsonSerializer.ReadObject(sr.BaseStream) as Response;
+                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(BarChartResponse));
+                        BarChartResponse jsonResponse = jsonSerializer.ReadObject(sr.BaseStream) as BarChartResponse;
                         if (jsonResponse != null && jsonResponse.error != null)
                         {
                             foreach (var data in jsonResponse.data.series[0].data)
@@ -197,7 +197,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             public List<Series> series { get; set; }
         }
 
-        public class Response
+        public class BarChartResponse
         {
             public string error { get; set; }
             public string data_time_type { get; set; }

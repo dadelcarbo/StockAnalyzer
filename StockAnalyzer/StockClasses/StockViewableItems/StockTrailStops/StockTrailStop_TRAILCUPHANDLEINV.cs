@@ -91,7 +91,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         int startIndex = i - (int)lowestInSerie[i];
                         var pivotIndex = bodyLowSerie.FindMinIndex(startIndex + 1, i - 1);
 
-                        if (pivotIndex - startIndex < period || i - pivotIndex < period) // Pivot distance smaller than period
+                        while (pivotIndex - startIndex + 1 < period && i - pivotIndex > (period * 2))
+                        {
+                            startIndex = pivotIndex;
+                            pivotIndex = bodyHighSerie.FindMinIndex(startIndex + 1, i - 1);
+                        }
+                        if (pivotIndex - startIndex + 1 < period || i - pivotIndex < period) // Pivot distance smaller than period
                             continue;
 
                         var pivot = new PointF { X = pivotIndex, Y = bodyLowSerie[pivotIndex] };

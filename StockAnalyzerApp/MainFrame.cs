@@ -610,9 +610,7 @@ namespace StockAnalyzerApp
 
             try
             {
-                if (this.currentStockSerie != null &&
-                    (this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY ||
-                     this.currentStockSerie.StockGroup == StockSerie.Groups.TURBO))
+                if (this.currentStockSerie != null && this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY)
                 {
                     this.Cursor = Cursors.WaitCursor;
 
@@ -2493,7 +2491,6 @@ namespace StockAnalyzerApp
             // In order to speed the intraday display.
             switch (newGroup)
             {
-                case StockSerie.Groups.TURBO:
                 case StockSerie.Groups.INTRADAY:
                     this.ForceBarDuration(StockBarDuration.Bar_6, true);
                     break;

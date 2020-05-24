@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockWeb;
@@ -27,6 +28,33 @@ namespace StockAnalyzerTest
             Assert.IsTrue(webHelper.DownloadFile(".", fileName, url));
 
             Assert.IsTrue(File.Exists(fileName));
+        }
+        [TestMethod]
+        public void SocGenDownload()
+        {
+            string ticker = "802022";
+            var url = $"https://sgbourse.fr/EmcWebApi/api/Prices/Intraday?productId={ticker}";
+
+            // allows for validation of SSL conversations
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Ssl3;
+
+            // You must change the URL to point to your Web server.
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "GET";
+            //req.Headers.Add("Upgrade-Insecure-Requests", "1");
+
+            WebResponse respon = req.GetResponse();
+            Stream res = respon.GetResponseStream();
+
+            StreamReader reader = new StreamReader(res);
+
+            // Read the content.
+            var data = reader.ReadToEnd();
+
+            Assert.IsNotNull(data);
         }
     }
 }

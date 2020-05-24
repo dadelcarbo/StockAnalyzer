@@ -62,9 +62,7 @@ namespace StockAnalyzer.StockClasses
             ShortInterest,
             Portfolio,
             Replay,
-            ALL,
-            TURBO,
-
+            ALL
         }
         public enum Trend
         {

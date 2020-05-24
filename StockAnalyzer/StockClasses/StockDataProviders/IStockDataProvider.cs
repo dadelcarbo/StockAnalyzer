@@ -5,6 +5,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         ABC,
         BarChart,
         InvestingIntraday,
+        SocGenIntraday,
         BinckPortfolio,
         Generated,
         AAII,
