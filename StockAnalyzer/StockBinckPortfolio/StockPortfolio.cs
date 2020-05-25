@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockBinckPortfolio
     public class StockPortfolio
     {
         public const string SIMU_P = "Simu_P";
-        public const string REPLAY_P = "Reply_P";
+        public const string REPLAY_P = "Replay_P";
 
         public static StockPortfolio SimulationPortfolio { get; private set; }
         public static StockPortfolio ReplayPortfolio { get; private set; }

@@ -74,20 +74,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
                 for (int i = period * 2; i < stockSerie.Count; i++)
                 {
-                    if (highestInSerie[i] == i) // Alltime high
-                        continue;
                     if (highestInSerie[i] <= (period * 2)) // Smaller than period
                         continue;
 
-                    if (stockSerie.StockName == "VIVENDI" && i == 208)
-                        Console.WriteLine("Here");
-
-
                     // Find Pivot
                     int startIndex = i - (int)highestInSerie[i];
-                    var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
-
-                    if (pivotIndex - startIndex < period || i - pivotIndex < period) // Pivot distance smaller than period
+                    var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 2, i - 1);
+                    while (pivotIndex - startIndex + 1 < period && i - pivotIndex > (period * 2))
+                    {
+                        startIndex = pivotIndex;
+                        pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
+                    }
+                    if (pivotIndex - startIndex + 1 < period || i - pivotIndex < period) // Pivot distance smaller than period
                         continue;
 
                     var pivot = new PointF { X = pivotIndex, Y = bodyHighSerie[pivotIndex] };
