@@ -90,41 +90,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
             }
-
-            var fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-            if (File.Exists(fileName))
-            {
-                if (ParseIntradayData(stockSerie, fileName))
-                {
-                    stockSerie.Values.Last().IsComplete = false;
-                    var lastDate = stockSerie.Keys.Last();
-
-                    var firstArchiveDate = lastDate.AddMonths(-4).AddDays(-lastDate.Day + 1).Date;
-
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastDate.AddDays(-5).Date);
-
-                    //// Archive other time frames
-                    //string durationFileName;
-                    //var previousDuration = stockSerie.BarDuration;
-                    //foreach (var duration in cacheDurations)
-                    //{
-                    //    durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                    //    if (File.Exists(durationFileName) &&
-                    //        File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date) break; // Only cache once a day.
-                    //    stockSerie.BarDuration = duration;
-                    //    stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(), lastDate.AddDays(-1).Date);
-                    //}
-
-                    //// Set back to previous duration.
-                    //stockSerie.BarDuration = previousDuration;
-                }
-                else
-                {
-                    return false;
-                }
-            }
             return stockSerie.Count > 0;
         }
 
@@ -135,33 +100,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
         {
-            return DownloadIntradayData(rootFolder, stockSerie);
+            return true;
         }
-        static bool first = true;
+        static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
         public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
         {
+            if (stockSerie.Count > 0 && DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
+            {
+                return false;  // Do not download more than every 2 minutes.
+            }
+
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                var fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                if (File.Exists(fileName))
-                {
-                    var lastWriteTime = File.GetLastWriteTime(fileName);
-                    if (first && lastWriteTime > DateTime.Now.AddHours(-2)
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
-                    {
-                        first = false;
-                        return false;
-                    }
-                    else
-                    {
-                        if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
-                            return false;
-                    }
-                }
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
@@ -169,13 +121,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
                         var entries = StockWebHelper.DownloadData(url).Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
+                        if (DownloadHistory.ContainsKey(stockSerie.Ticker))
+                        {
+                            DownloadHistory[stockSerie.Ticker] = DateTime.Now;
+                        }
+                        else
+                        {
+                            DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
+                        }
+                        stockSerie.IsInitialised = false;
+                        this.LoadData(rootFolder, stockSerie);
+                        DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
                         foreach (var entry in entries)
                         {
                             var fields = entry.Replace("\"", "").Split(',');
                             var dateText = fields.First(e => e.StartsWith("Date")).Replace("Date:", "");
                             DateTime date = DateTime.Parse(dateText, Global.FrenchCulture);
+                            date = date.AddMilliseconds(-date.Millisecond);
                             if (date > lastDate)
                             {
                                 float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1]);
@@ -229,8 +192,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         else
                         {
-                            Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
-                            //MessageBox.Show("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
+                            Console.WriteLine("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
                         }
                     }
                 }

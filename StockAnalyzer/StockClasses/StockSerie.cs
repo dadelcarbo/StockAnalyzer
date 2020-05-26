@@ -327,14 +327,14 @@ namespace StockAnalyzer.StockClasses
                 this.barDuration = newBarDuration;
                 return;
             }
-
-            this.IsInitialised = false;
+            this.Clear();
+            this.ResetIndicatorCache();
             foreach (StockDailyValue dailyValue in this.GetSmoothedValues(newBarDuration))
             {
                 this.Add(dailyValue.DATE, dailyValue);
             }
-            this.Initialise();
             this.barDuration = newBarDuration;
+            this.PreInitialise();
             valueArray = StockDailyValuesAsArray();
             return;
         }
@@ -619,13 +619,7 @@ namespace StockAnalyzer.StockClasses
             this.TrailCache = null;
             this.dateArray = null;
             this.valueArray = null;
-
-            // This initialisation is here as this method is called in all constructors.
-            if (this.BarSmoothedDictionary == null)
-            {
-                this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
-            }
-            // Do not clear bar cache here, just indicators are concerned.
+            this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
         }
         public void ResetIndicatorCache()
         {
@@ -683,8 +677,6 @@ namespace StockAnalyzer.StockClasses
 
         public void PreInitialise()
         {
-            ResetAllCache();
-
             float[] openSerie = new float[Values.Count];
             float[] lowSerie = new float[Values.Count];
             float[] highSerie = new float[Values.Count];

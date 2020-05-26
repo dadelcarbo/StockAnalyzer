@@ -398,19 +398,6 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
 
             StockSplashScreen.ProgressText = "Loading " + this.CurrentStockSerie.StockName + " data...";
-            //if (this.CurrentStockSerie.StockName.StartsWith("INT_"))
-            //{
-            //    this.barDurationComboBox.SelectedItem = StockBarDuration.TLB_6D;
-            //}
-            //if (this.CurrentStockSerie.StockName.StartsWith("FUT_"))
-            //{
-            //    this.barDurationComboBox.SelectedItem = StockBarDuration.TLB_3D_EMA3;
-            //}
-            //else
-            //{
-            //    this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
-            //}
-
             SetDurationForStockGroup(this.CurrentStockSerie.StockGroup);
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
@@ -528,7 +515,7 @@ namespace StockAnalyzerApp
             }
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
-            allowedTypes.AddRange(this.StockDictionary.Select(p => p.Key.ToUpper()).ToArray());
+            allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
             searchText.AutoCompleteCustomSource = allowedTypes;
             searchText.AutoCompleteMode = AutoCompleteMode.Suggest;
             searchText.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -1352,7 +1339,6 @@ namespace StockAnalyzerApp
                         }
                     }
 
-                    this.currentStockSerie.PaintBarCache = null;
                     if (this.currentStockSerie.Initialise())
                     {
                         this.ApplyTheme();
@@ -2084,7 +2070,7 @@ namespace StockAnalyzerApp
 
         private void BarDurationChanged(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
+            if (this.currentStockSerie == null || !this.currentStockSerie.Initialise()) return;
 
             StockBarDuration barDuration = (BarDuration)barDurationComboBox.SelectedItem;
             barDuration.Smoothing = (int)barSmoothingComboBox.SelectedItem;
