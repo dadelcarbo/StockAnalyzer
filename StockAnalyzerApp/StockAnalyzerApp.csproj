@@ -782,6 +782,7 @@
     <Content Include="Resources\AddSegment.bmp" />
     <Content Include="Resources\AddToReport.png" />
     <Content Include="Resources\Backward-icon.png" />
+    <Content Include="Resources\BarChart.bmp" />
     <Content Include="Resources\ButtonFastForward.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -796,6 +797,7 @@
     </Content>
     <Content Include="Resources\Camera-32.png" />
     <None Include="Resources\chart_curve.png" />
+    <Content Include="Resources\Candle.bmp" />
     <Content Include="Resources\comment-icon.bmp" />
     <None Include="Resources\cut.png" />
     <Content Include="Resources\AddSemiLine.bmp" />
@@ -820,6 +822,7 @@
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
     <None Include="Resources\NewAnalysis.png" />
+    <Content Include="Resources\LineChart.bmp" />
     <Content Include="Resources\Log.png" />
     <Content Include="Resources\Notepad.ico" />
     <None Include="Resources\page-edit-icon.png" />

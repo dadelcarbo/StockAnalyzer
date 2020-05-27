@@ -143,6 +143,16 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap BarChart {
+            get {
+                object obj = ResourceManager.GetObject("BarChart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap ButtonFastForward {
             get {
                 object obj = ResourceManager.GetObject("ButtonFastForward", resourceCulture);
@@ -176,6 +186,16 @@ namespace StockAnalyzerApp.Properties {
         public static System.Drawing.Bitmap Camera {
             get {
                 object obj = ResourceManager.GetObject("Camera", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Candle {
+            get {
+                object obj = ResourceManager.GetObject("Candle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -336,6 +356,16 @@ namespace StockAnalyzerApp.Properties {
         public static System.Drawing.Bitmap Line {
             get {
                 object obj = ResourceManager.GetObject("Line", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap LineChart {
+            get {
+                object obj = ResourceManager.GetObject("LineChart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

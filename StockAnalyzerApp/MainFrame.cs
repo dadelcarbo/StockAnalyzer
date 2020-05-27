@@ -1377,15 +1377,13 @@ namespace StockAnalyzerApp
                 foreach (var stockSerie in stockSeries)
                 {
                     StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                     stockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
 
                     if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                     {
                         try
                         {
-                            StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " +
-                                                             stockSerie.StockName;
+                            StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " + stockSerie.StockName;
                             ABCDataProvider.DownloadAgenda(stockSerie);
                             ABCDataProvider.DownloadFinancial(stockSerie);
                         }
@@ -3710,6 +3708,27 @@ namespace StockAnalyzerApp
         }
         #endregion
 
+        private void CandleStripButton_Click(object sender, EventArgs e)
+        {
+            this.barchartStripButton.Checked = !this.candleStripButton.Checked;
+            this.linechartStripButton.Checked = !this.candleStripButton.Checked;
+            this.GraphCloseControl.ChartMode = GraphChartMode.CandleStick;
+            this.graphCloseControl.ForceRefresh();
+        }
+        private void BarchartStripButton_Click(object sender, EventArgs e)
+        {
+            this.candleStripButton.Checked = !this.barchartStripButton.Checked;
+            this.linechartStripButton.Checked = !this.barchartStripButton.Checked;
+            this.GraphCloseControl.ChartMode = GraphChartMode.BarChart;
+            this.graphCloseControl.ForceRefresh();
+        }
+        private void LinechartStripButton_Click(object sender, EventArgs e)
+        {
+            this.candleStripButton.Checked = !this.linechartStripButton.Checked;
+            this.barchartStripButton.Checked = !this.linechartStripButton.Checked;
+            this.GraphCloseControl.ChartMode = GraphChartMode.Line;
+            this.graphCloseControl.ForceRefresh();
+        }
         private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
         {
             StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.CurrentTheme]);
@@ -3816,9 +3835,7 @@ namespace StockAnalyzerApp
                     {
                         if (this.graphCloseControl.SecondaryFloatSerie != null)
                         {
-                            themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|" +
-                                                                            this.graphCloseControl.SecondaryFloatSerie
-                                                                                .Name);
+                            themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
                         }
                         else
                         {
@@ -3890,27 +3907,44 @@ namespace StockAnalyzerApp
                                     {
                                         case "GRAPH":
                                             string[] colorItem = fields[1].Split(':');
-                                            graphControl.BackgroundColor = Color.FromArgb(int.Parse(colorItem[0]),
-                                                int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                            graphControl.BackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                             colorItem = fields[2].Split(':');
-                                            graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]),
-                                                int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                            graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                             graphControl.ShowGrid = bool.Parse(fields[3]);
                                             colorItem = fields[4].Split(':');
-                                            graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]),
-                                                int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                            graphControl.ChartMode =
-                                                (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
+                                            graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                            
                                             if (entry.ToUpper() == "CLOSEGRAPH")
                                             {
                                                 if (fields.Length >= 7)
                                                 {
-                                                    this.graphCloseControl.SecondaryPen =
-                                                        GraphCurveType.PenFromString(fields[6]);
+                                                    this.graphCloseControl.SecondaryPen = GraphCurveType.PenFromString(fields[6]);
                                                 }
                                                 else
                                                 {
                                                     this.graphCloseControl.SecondaryPen = new Pen(Color.DarkGoldenrod, 1);
+                                                }
+                                                graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
+                                                // Set buttons
+                                                switch (graphControl.ChartMode)
+                                                {
+                                                    case GraphChartMode.Line:
+                                                        this.barchartStripButton.Checked = false;
+                                                        this.candleStripButton.Checked = false;
+                                                        this.linechartStripButton.Checked = true;
+                                                        break;
+                                                    case GraphChartMode.BarChart:
+                                                        this.barchartStripButton.Checked = true;
+                                                        this.candleStripButton.Checked = false;
+                                                        this.linechartStripButton.Checked = false;
+                                                        break;
+                                                    case GraphChartMode.CandleStick:
+                                                        this.barchartStripButton.Checked = false;
+                                                        this.candleStripButton.Checked = true;
+                                                        this.linechartStripButton.Checked = false;
+                                                        break;
+                                                    default:
+                                                        break;
                                                 }
                                             }
                                             break;

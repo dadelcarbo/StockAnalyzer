@@ -105,6 +105,9 @@ namespace StockAnalyzerApp
             this.indicatorLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.themeToolStrip = new System.Windows.Forms.ToolStrip();
             this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
+            this.candleStripButton = new System.Windows.Forms.ToolStripButton();
+            this.barchartStripButton = new System.Windows.Forms.ToolStripButton();
+            this.linechartStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveThemeStripButton = new System.Windows.Forms.ToolStripButton();
             this.defaultThemeStripButton = new System.Windows.Forms.ToolStripButton();
             this.themeComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -770,6 +773,9 @@ namespace StockAnalyzerApp
             this.themeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.themeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.indicatorConfigStripButton,
+            this.candleStripButton,
+            this.barchartStripButton,
+            this.linechartStripButton,
             this.saveThemeStripButton,
             this.defaultThemeStripButton,
             this.themeComboBox,
@@ -788,8 +794,41 @@ namespace StockAnalyzerApp
             this.indicatorConfigStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.indicatorConfigStripButton.Name = "indicatorConfigStripButton";
             this.indicatorConfigStripButton.Size = new System.Drawing.Size(23, 22);
-            this.indicatorConfigStripButton.Text = "Configure displayed indicator1Name";
+            this.indicatorConfigStripButton.Text = "Configure displayed indicator";
             this.indicatorConfigStripButton.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
+            // 
+            // candleStripButton
+            // 
+            this.candleStripButton.CheckOnClick = true;
+            this.candleStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.candleStripButton.Image = global::StockAnalyzerApp.Properties.Resources.Candle;
+            this.candleStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.candleStripButton.Name = "candleStripButton";
+            this.candleStripButton.Size = new System.Drawing.Size(23, 22);
+            this.candleStripButton.Text = "Set candle chart";
+            this.candleStripButton.Click += CandleStripButton_Click;
+            // 
+            // barchartStripButton
+            // 
+            this.barchartStripButton.CheckOnClick = true;
+            this.barchartStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.barchartStripButton.Image = global::StockAnalyzerApp.Properties.Resources.BarChart;
+            this.barchartStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.barchartStripButton.Name = "barchartStripButton";
+            this.barchartStripButton.Size = new System.Drawing.Size(23, 22);
+            this.barchartStripButton.Text = "Set bar chart";
+            this.barchartStripButton.Click += BarchartStripButton_Click;
+            // 
+            // linechartStripButton
+            // 
+            this.linechartStripButton.CheckOnClick = true;
+            this.linechartStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.linechartStripButton.Image = global::StockAnalyzerApp.Properties.Resources.LineChart;
+            this.linechartStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.linechartStripButton.Name = "linechartStripButton";
+            this.linechartStripButton.Size = new System.Drawing.Size(23, 22);
+            this.linechartStripButton.Text = "Set line chart";
+            this.linechartStripButton.Click += LinechartStripButton_Click;
             // 
             // saveThemeStripButton
             // 
@@ -1446,6 +1485,7 @@ namespace StockAnalyzerApp
             this.PerformLayout();
 
         }
+
         #endregion
 
         private System.Windows.Forms.MenuStrip mainMenu;
@@ -1547,6 +1587,9 @@ namespace StockAnalyzerApp
         private ToolStripButton deleteThemeStripButton;
         private ToolStripButton saveThemeStripButton;
         private ToolStripButton indicatorConfigStripButton;
+        private ToolStripButton candleStripButton;
+        private ToolStripButton barchartStripButton;
+        private ToolStripButton linechartStripButton;
         private ToolStripButton zoomOutBtn;
         private ToolStripMenuItem showShowStatusBarMenuItem;
         private ToolStripButton cutLineStripBtn;

@@ -75,7 +75,10 @@ namespace StockAnalyzer.StockClasses
             var shortName = stockSerie.ShortName;
             if (stockSerie.DataProvider == StockDataProviders.StockDataProvider.ABC)
             {
-                shortName += ".PA";
+                if (!shortName.EndsWith(".PA"))
+                {
+                    shortName += ".PA";
+                }
             }
             else
             {
