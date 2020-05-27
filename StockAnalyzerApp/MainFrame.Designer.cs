@@ -776,10 +776,10 @@ namespace StockAnalyzerApp
             this.candleStripButton,
             this.barchartStripButton,
             this.linechartStripButton,
-            this.saveThemeStripButton,
             this.defaultThemeStripButton,
             this.themeComboBox,
             this.deleteThemeStripButton,
+            this.saveThemeStripButton,
             this.toolStripSeparator1,
             this.portfolioComboBox});
             this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
