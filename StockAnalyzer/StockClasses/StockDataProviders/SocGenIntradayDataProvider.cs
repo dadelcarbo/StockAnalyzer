@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -132,29 +133,61 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         stockSerie.IsInitialised = false;
                         this.LoadData(rootFolder, stockSerie);
-                        DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
+                        DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last().Date.AddDays(1) : DateTime.MinValue;
+                        var values = new Dictionary<DateTime, float>();
+                        DateTime date;
+                        float value;
                         foreach (var entry in entries)
                         {
                             var fields = entry.Replace("\"", "").Split(',');
                             var dateText = fields.First(e => e.StartsWith("Date")).Replace("Date:", "");
-                            DateTime date = DateTime.Parse(dateText, Global.FrenchCulture);
-                            date = date.AddMilliseconds(-date.Millisecond);
+                            date = DateTime.Parse(dateText, Global.FrenchCulture);
                             if (date > lastDate)
                             {
                                 float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1]);
                                 float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1]);
-                                float value = ask == 0 ? bid : ask;
+                                value = ask == 0 ? bid : ask;
 
-                                if (!stockSerie.ContainsKey(date))
-                                {
-                                    stockSerie.Add(date, new StockDailyValue(stockSerie.StockName, value, value, value, value, 0, date));
-                                }
+                                values.Add(date, value);
                             }
                         }
+                        if (values.Count == 0)
+                            return true;
+                        // Make 5 minutes bar
+                        date = values.First().Key;
+                        value = values.First().Value;
+                        var minute = (date.Minute / 5) * 5;
+                        StockDailyValue newBar = new StockDailyValue(stockSerie.StockName, value, value, value, value, 0, new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0));
+
+                        foreach (var data in values.Skip(1))
+                        {
+                            date = data.Key;
+                            value = data.Value;
+                            minute = (date.Minute / 5) * 5;
+
+                            if (minute == newBar.DATE.Minute)
+                            {
+                                newBar.HIGH = Math.Max(newBar.HIGH, value);
+                                newBar.LOW = Math.Min(newBar.LOW, value);
+                                newBar.CLOSE = value;
+                            }
+                            else
+                            {
+                                stockSerie.Add(newBar.DATE, newBar);
+                                var newDate = new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
+                                newBar = new StockDailyValue(stockSerie.StockName, value, value, value, value, 0, newDate);
+                            }
+                        }
+                        if (newBar != null)
+                        {
+                            newBar.IsComplete = false;
+                            stockSerie.Add(newBar.DATE, newBar);
+                        }
+
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
                         var archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().AddDays(-1).Date);
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
 
                         return true;
                     }
