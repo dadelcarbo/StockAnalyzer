@@ -2191,6 +2191,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInZBMenu();
         }
+        void openInSocGenMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInSocGenMenu();
+        }
         void statMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.statMenu_Click();

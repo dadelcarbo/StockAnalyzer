@@ -4631,5 +4631,12 @@ namespace StockAnalyzerApp
                 Process.Start(url);
             }
         }
+        internal void OpenInSocGenMenu()
+        {
+            if (!this.currentStockSerie.StockName.StartsWith("TURBO_"))
+                return;
+            string url = $"https://sgbourse.fr/product-detail?productId={this.currentStockSerie.Ticker}";
+            Process.Start(url);
+        }
     }
 }

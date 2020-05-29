@@ -175,7 +175,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             {
                                 stockSerie.Add(newBar.DATE, newBar);
                                 var newDate = new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
-                                newBar = new StockDailyValue(stockSerie.StockName, value, value, value, value, 0, newDate);
+                                newBar = new StockDailyValue(stockSerie.StockName, newBar.CLOSE, value, value, value, 0, newDate);
                             }
                         }
                         if (newBar != null)

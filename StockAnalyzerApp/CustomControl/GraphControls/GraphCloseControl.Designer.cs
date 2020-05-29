@@ -24,6 +24,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
+            this.openInSocGenMenu = new MenuItem();
             this.statMenu = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
@@ -42,6 +43,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator2,
             this.openInABCMenu,
             this.openInZBMenu,
+            this.openInSocGenMenu,
             this.statMenu});
             // 
             // buyMenu
@@ -108,6 +110,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
+            // openInSocGenMenu
+            // 
+            this.openInSocGenMenu.Index = 10;
+            this.openInSocGenMenu.Text = "Open in SogGen Products";
+            this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
+            // 
             // statMenu
             // 
             this.statMenu.Index = 11;
@@ -133,6 +141,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem agendaMenu;
         private MenuItem openInABCMenu;
         private MenuItem openInZBMenu;
+        private MenuItem openInSocGenMenu;
         private MenuItem statMenu;
 
         #endregion
