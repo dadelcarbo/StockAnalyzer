@@ -57,6 +57,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 if (stop != value)
                 {
                     stop = value;
+                    if (this.openPosition != null)
+                        this.openPosition.Stop = ((this.Stop - this.openPosition.Value) / this.Value).ToString("P2");
                     this.OnPropertyChanged("Stop");
                 }
             }
@@ -70,6 +72,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 if (target1 != value)
                 {
                     target1 = value;
+                    if (this.openPosition != null)
+                        this.openPosition.Target1 = this.Target1 == 0 ? "" : ((this.Target1 - this.openPosition.Value) / this.Value).ToString("P2");
                     this.OnPropertyChanged("Target1");
                 }
             }
@@ -191,7 +195,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             get
             {
-                return buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm=>vm.BuyEnabled, "BuyEnabled"));
+                return buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled"));
             }
         }
         private ICommand sellCommand;
@@ -217,9 +221,23 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             if (++referenceSerieIndex < referenceSerie.Count())
             {
+                //Add value in replay serie
                 CopyReferenceValues(referenceSerieIndex + 1);
-
                 this.SelectedStockChanged(replaySerie.StockName, true);
+
+                // Manage stop and target orders
+                if (openPosition != null)
+                {
+                    var lastValue = replaySerie.Values.Last();
+                    if (this.stop != 0 && lastValue.CLOSE < this.stop) // Stop Loss
+                    {
+                        sell(lastValue, openPosition.Qty, lastValue.CLOSE);
+                    }
+                    else if (this.target1 != 0 && lastValue.HIGH > this.target1) // Target  reached
+                    {
+                        sell(lastValue, 1, this.target1);
+                    }
+                }
             }
             else
             {
@@ -252,21 +270,46 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             int qty = 2;
             StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
 
-            this.Positions.Add(openPosition = new MarketReplayPositionViewModel() { Entry = this.Value, Stop = this.Stop, Target1 = this.Target1 });
+            this.Positions.Add(openPosition = new MarketReplayPositionViewModel()
+            {
+                Entry = this.Value,
+                Stop = ((this.Stop - this.Value) / this.Value).ToString("P2"),
+                Target1 = this.Target1 == 0 ? "" : ((this.Target1 - this.Value) / this.Value).ToString("P2"),
+                Qty = qty
+            });
             this.Forward();
         }
         private void Sell()
         {
-            var date = replaySerie.Keys.Last();
-            int qty = 2;
+            sell(replaySerie.Values.Last(), openPosition.Qty, this._value);
 
-            StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(date, replaySerie.StockName, StockOperation.SELL, qty, this.Value * qty));
-            PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
-            openPosition = null;
-            this.BuyEnabled = true;
-            this.SellEnabled = false;
-            this.Positions.Clear();
             this.Forward();
+        }
+
+        private void sell(StockDailyValue lastValue, int qty, float value)
+        {
+            if (openPosition == null) return;
+
+            if (openPosition.Qty == qty)
+            {
+                // Close full position
+                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
+                PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
+                this.Stop = 0;
+                this.Target1 = 0;
+                openPosition = null;
+                this.BuyEnabled = true;
+                this.SellEnabled = false;
+                this.Positions.Clear();
+            }
+            else
+            {
+                // Partial close
+                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
+                PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
+                openPosition.Qty = 1;
+                this.Target1 = 0;
+            }
         }
 
         static int replayCount = 1;
