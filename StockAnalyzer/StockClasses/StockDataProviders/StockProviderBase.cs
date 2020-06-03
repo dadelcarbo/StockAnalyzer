@@ -305,7 +305,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             DateTime day = DateTime.Parse(row[0], usCulture);
                             stockValue = new StockDailyValue(
-                               stockName,
                                float.Parse(row[1], usCulture),
                                float.Parse(row[2], usCulture),
                                float.Parse(row[3], usCulture),
@@ -331,7 +330,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 row[5] = row[5].Remove(index);
                             }
                             stockValue = new StockDailyValue(
-                               stockName,
                                float.Parse(row[1], usCulture),
                                float.Parse(row[2], usCulture),
                                float.Parse(row[3], usCulture),
@@ -347,7 +345,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             float adjClose = float.Parse(row[6], usCulture);
                             float adjRatio = adjClose / close;
                             stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[1], usCulture) * adjRatio,
                                 float.Parse(row[2], usCulture) * adjRatio,
                                 float.Parse(row[3], usCulture) * adjRatio,
@@ -358,7 +355,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         else
                         {
                             stockValue = new StockDailyValue(
-                                    stockName,
                                     float.Parse(row[1], usCulture),
                                     float.Parse(row[2], usCulture),
                                     float.Parse(row[3], usCulture),
@@ -375,7 +371,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                             DateTime day = DateTime.Parse(row[2], usCulture);
                             stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[3], usCulture),
                                 float.Parse(row[4], usCulture),
                                 float.Parse(row[5], usCulture),
@@ -387,7 +382,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case 10: // Date,Open,High,Low,Close,Volume,Adj Close (UpVolume, Tick, Uptick)
                         {
                             stockValue = new StockDailyValue(
-                                        stockName,
                                         float.Parse(row[1], usCulture),
                                         float.Parse(row[2], usCulture),
                                         float.Parse(row[3], usCulture),

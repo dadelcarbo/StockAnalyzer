@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 
                 if (closeVal != 0.0f)
                 {
-                    typicalSerie.Add(date, new StockDailyValue(typicalSerie.StockName, closeVal, closeVal, closeVal, closeVal, nbSample[i], date));
+                    typicalSerie.Add(date, new StockDailyValue(closeVal, closeVal, closeVal, closeVal, nbSample[i], date));
                     date = date.AddDays(1);
                 }
             }
@@ -129,7 +129,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic
                 if (closeVal != 0.0f)
                 {
                     float closeFloat = (float)closeVal;
-                    newSerie.Add(date, new StockDailyValue(newSerie.StockName, closeFloat, closeFloat, closeFloat, closeFloat, i, date));
+                    newSerie.Add(date, new StockDailyValue(closeFloat, closeFloat, closeFloat, closeFloat, i, date));
 
                     date = date.AddDays(1);
                 }

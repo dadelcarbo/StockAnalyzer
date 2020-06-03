@@ -181,7 +181,7 @@ namespace StockAnalyzerApp.CustomControl
                         lastStockValue = stockSerie.ValueArray[endIndex];
 
                         int k = 0;
-                        subItems[k++] = firstStockValue.NAME;
+                        subItems[k++] = stockSerie.StockName;
                         subItems[k++] = ((lastStockValue.CLOSE - firstStockValue.CLOSE) / firstStockValue.CLOSE).ToString("P2");
                         subItems[k++] = firstStockValue.OPEN.ToString();
                         subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();

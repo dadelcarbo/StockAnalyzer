@@ -68,14 +68,19 @@ namespace StockAnalyzer.StockDrawing
         {
             if (RefDate == null)
                 return;
-            if (dateSerie[RefDateIndex] == RefDate)
+            if (RefDateIndex < dateSerie.Length && dateSerie[RefDateIndex] == RefDate)
                 return;
 
             // Calculate offset
-            int offset = RefDateIndex;
+            int offset = Math.Min(RefDateIndex, dateSerie.Length);
             while (--offset > 0 && dateSerie[offset] != RefDate) ;
-            if (offset == 0)
+            if (offset == 0) // Ref date not found, drawing is too old compared to data history, clear drawings.
+            {
+                this.RefDate = null;
+                this.RefDateIndex = 0;
+                this.Clear();
                 return;
+            }
             foreach (var di in this)
             {
                 di.ApplyOffset(offset - RefDateIndex);

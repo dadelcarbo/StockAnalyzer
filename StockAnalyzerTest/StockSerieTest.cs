@@ -21,7 +21,7 @@ namespace StockAnalyzerTest
             float value = 10.0f;
             for (DateTime date = DateTime.Today.AddDays(-size); date <= DateTime.Today; date = date.AddDays(1))
             {
-                stockSerie.Add(date, new StockDailyValue(stockName, value, value, value, value, 0, date));
+                stockSerie.Add(date, new StockDailyValue(value, value, value, value, 0, date));
                 value += variation;
             }
 

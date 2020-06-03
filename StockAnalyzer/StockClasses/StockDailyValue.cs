@@ -19,7 +19,6 @@ namespace StockAnalyzer.StockClasses
 
     public class StockDailyValue
     {
-        public string NAME { get; set; }
         public DateTime DATE { get; set; }
         public float OPEN { get; set; }
         public float HIGH { get; set; }
@@ -126,10 +125,17 @@ namespace StockAnalyzer.StockClasses
                 return false;
             }
         }
-
-        public StockDailyValue(string name, float open, float high, float low, float close, long volume, DateTime date)
+        public StockDailyValue(DateTime date, StockDailyValue source)
         {
-            this.NAME = name;
+            this.DATE = date;
+            this.OPEN = source.OPEN;
+            this.HIGH = source.HIGH;
+            this.LOW = source.LOW;
+            this.CLOSE = source.CLOSE;
+            this.VOLUME = source.VOLUME;
+        }
+        public StockDailyValue(float open, float high, float low, float close, long volume, DateTime date)
+        {
             this.DATE = date;
             if (open == 0.0f)
             {
@@ -171,7 +177,6 @@ namespace StockAnalyzer.StockClasses
                         float adjClose = float.Parse(row[6], usCulture);
                         float adjRatio = adjClose / close;
                         stockValue = new StockDailyValue(
-                            stockName,
                             float.Parse(row[1], usCulture) * adjRatio,
                             float.Parse(row[2], usCulture) * adjRatio,
                             float.Parse(row[3], usCulture) * adjRatio,
@@ -182,7 +187,6 @@ namespace StockAnalyzer.StockClasses
                     else
                     {
                         stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[1], usCulture),
                                 float.Parse(row[2], usCulture),
                                 float.Parse(row[3], usCulture),
@@ -194,7 +198,6 @@ namespace StockAnalyzer.StockClasses
                 if (row.Length == 6)
                 {
                     stockValue = new StockDailyValue(
-                            stockName,
                             float.Parse(row[1], usCulture),
                             float.Parse(row[2], usCulture),
                             float.Parse(row[3], usCulture),
@@ -205,7 +208,6 @@ namespace StockAnalyzer.StockClasses
                 else if (row.Length == 10)
                 {
                     stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[1], usCulture),
                                 float.Parse(row[2], usCulture),
                                 float.Parse(row[3], usCulture),

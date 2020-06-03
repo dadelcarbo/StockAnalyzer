@@ -1893,14 +1893,14 @@ namespace StockAnalyzer.StockClasses
                 {  // Happy new year !!!
                     close = previousClose * (1.0f + (rebasedSerie[day] - 100f) / 100f);
                     seasonalSerie.Add(date,
-                        new StockDailyValue(seasonalSerie.StockName, previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
+                        new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
                     previousClose = close;
                 }
                 else
                 {
                     close = previousClose * (1.0f + (rebasedSerie[day] - rebasedSerie[previousDay]) / rebasedSerie[previousDay]);
                     seasonalSerie.Add(date,
-                        new StockDailyValue(seasonalSerie.StockName, previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
+                        new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
                     previousClose = close;
                 }
                 previousDay = day;
@@ -1914,7 +1914,7 @@ namespace StockAnalyzer.StockClasses
                 if (occurences[day] == 0) { continue; }
                 close = previousClose * (1.0f + (rebasedSerie[day] - rebasedSerie[previousDay]) / rebasedSerie[previousDay]);
                 seasonalSerie.Add(date,
-                    new StockDailyValue(seasonalSerie.StockName, previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
+                    new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
                 previousClose = close;
                 previousDay = day;
             }
@@ -1948,7 +1948,7 @@ namespace StockAnalyzer.StockClasses
                 currentValue *= 1f + (dailyValue.OPEN - previousClose) / previousClose;
 
                 overnightSerie.Add(dailyValue.DATE,
-                        new StockDailyValue(overnightSerie.StockName, currentValue, currentValue, currentValue, currentValue, 0, dailyValue.DATE));
+                        new StockDailyValue(currentValue, currentValue, currentValue, currentValue, 0, dailyValue.DATE));
 
                 previousClose = dailyValue.CLOSE;
             }
@@ -5652,7 +5652,7 @@ namespace StockAnalyzer.StockClasses
                         ratio = 100 * value2.OPEN / value1.OPEN;
                     }
 
-                    newValue = new StockDailyValue(stockName, ratio * value1.OPEN / value2.OPEN, ratio * value1.HIGH / value2.HIGH, ratio * value1.LOW / value2.LOW, ratio * value1.CLOSE / value2.CLOSE, value1.VOLUME + value2.VOLUME, value1.DATE);
+                    newValue = new StockDailyValue(ratio * value1.OPEN / value2.OPEN, ratio * value1.HIGH / value2.HIGH, ratio * value1.LOW / value2.LOW, ratio * value1.CLOSE / value2.CLOSE, value1.VOLUME + value2.VOLUME, value1.DATE);
                     stockSerie.Add(value1.DATE, newValue);
                 }
             }
@@ -5677,7 +5677,7 @@ namespace StockAnalyzer.StockClasses
             StockDailyValue newValue = null;
             foreach (StockDailyValue value1 in this.Values)
             {
-                newValue = new StockDailyValue(stockName, (float)Math.Log(value1.OPEN * scaleFactor, Math.E), (float)Math.Log(value1.HIGH * scaleFactor, Math.E), (float)Math.Log(value1.LOW * scaleFactor, Math.E), (float)Math.Log(value1.CLOSE * scaleFactor, Math.E), value1.VOLUME, value1.DATE);
+                newValue = new StockDailyValue((float)Math.Log(value1.OPEN * scaleFactor, Math.E), (float)Math.Log(value1.HIGH * scaleFactor, Math.E), (float)Math.Log(value1.LOW * scaleFactor, Math.E), (float)Math.Log(value1.CLOSE * scaleFactor, Math.E), value1.VOLUME, value1.DATE);
                 stockSerie.Add(value1.DATE, newValue);
             }
 
@@ -5699,7 +5699,7 @@ namespace StockAnalyzer.StockClasses
             StockDailyValue destValue;
             foreach (StockDailyValue invStockValue in this.Values)
             {
-                destValue = new StockDailyValue(stockName, scale / invStockValue.OPEN, scale / invStockValue.LOW, scale / invStockValue.HIGH, scale / invStockValue.CLOSE, invStockValue.VOLUME, invStockValue.DATE);
+                destValue = new StockDailyValue(scale / invStockValue.OPEN, scale / invStockValue.LOW, scale / invStockValue.HIGH, scale / invStockValue.CLOSE, invStockValue.VOLUME, invStockValue.DATE);
                 destValue.Serie = stockSerie;
                 stockSerie.Add(destValue.DATE, destValue);
             }
@@ -5781,7 +5781,7 @@ namespace StockAnalyzer.StockClasses
                         {
                             if (newValue == null)
                             {
-                                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                                newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                                    dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                 beginDate = dailyValue.DATE;
                                 previousDayOfWeek = dailyValue.DATE.DayOfWeek;
@@ -5803,8 +5803,7 @@ namespace StockAnalyzer.StockClasses
                                     // We switched to next week
                                     newValue.IsComplete = true;
                                     newBarList.Add(newValue);
-                                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
-                                       dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                     beginDate = dailyValue.DATE;
                                     previousDayOfWeek = dailyValue.DATE.DayOfWeek;
                                     newValue.IsComplete = false;
@@ -5835,7 +5834,7 @@ namespace StockAnalyzer.StockClasses
                         {
                             if (newValue == null)
                             {
-                                newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                                newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                                    dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                 beginDate = dailyValue.DATE;
                                 previousMonth = dailyValue.DATE.Month;
@@ -5857,7 +5856,7 @@ namespace StockAnalyzer.StockClasses
                                     // We switched to next month
                                     newValue.IsComplete = true;
                                     newBarList.Add(newValue);
-                                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
                                        dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                                     beginDate = dailyValue.DATE;
                                     previousMonth = dailyValue.DATE.Month;
@@ -5911,7 +5910,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null)
                 {
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                 }
                 else if (isIntraday && dailyValue.DATE >= newValue.DATE.AddMinutes(nbMinutes))
@@ -5921,7 +5920,7 @@ namespace StockAnalyzer.StockClasses
                     newBarList.Add(newValue);
 
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                 }
                 else
                 {
@@ -5950,7 +5949,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null)
                 {
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     count = 1;
                 }
@@ -5961,7 +5960,7 @@ namespace StockAnalyzer.StockClasses
                     newBarList.Add(newValue);
 
                     // New bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     count = 1;
                 }
@@ -6007,7 +6006,7 @@ namespace StockAnalyzer.StockClasses
                 float close = closeSerie[i];
 
                 // New bar
-                StockDailyValue newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
+                StockDailyValue newValue = new StockDailyValue(open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
                 newValue.IsComplete = dailyValue.IsComplete;
                 newBarList.Add(newValue);
 
@@ -6019,7 +6018,7 @@ namespace StockAnalyzer.StockClasses
         {
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             StockDailyValue dailyValue = stockDailyValueList[0];
-            StockDailyValue newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+            StockDailyValue newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
             newBarList.Add(newValue);
 
             for (int i = 1; i < stockDailyValueList.Count; i++)
@@ -6032,7 +6031,7 @@ namespace StockAnalyzer.StockClasses
                 float close = (dailyValue.OPEN + dailyValue.HIGH + dailyValue.LOW + dailyValue.CLOSE) / 4f; // (Open(0) + High(0) + Low(0) + Close(0)) / 4
 
                 // New bar
-                newValue = new StockDailyValue(this.StockName, open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
+                newValue = new StockDailyValue(open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
                 newValue.IsComplete = dailyValue.IsComplete;
                 newBarList.Add(newValue);
             }
@@ -6043,7 +6042,7 @@ namespace StockAnalyzer.StockClasses
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             StockDailyValue dailyValue = stockDailyValueList[0];
             StockDailyValue lastNewValue = null;
-            StockDailyValue previousNewValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+            StockDailyValue previousNewValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
             newBarList.Add(previousNewValue);
 
             for (int i = 1; i < stockDailyValueList.Count; i++)
@@ -6052,7 +6051,7 @@ namespace StockAnalyzer.StockClasses
                 if (lastNewValue == null) // A new bar was completed in previous iteration
                 {
                     // New bar
-                    lastNewValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    lastNewValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     lastNewValue.IsComplete = false;
 
                     newBarList.Add(lastNewValue);
@@ -6090,8 +6089,8 @@ namespace StockAnalyzer.StockClasses
             float downVar = 1 - variation;
 
             StockDailyValue newValue = dailyValue.OPEN <= dailyValue.CLOSE
-               ? new StockDailyValue(this.StockName, dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE)
-               : new StockDailyValue(this.StockName, dailyValue.CLOSE * upVar, dailyValue.CLOSE * upVar, dailyValue.CLOSE, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+               ? new StockDailyValue(dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE)
+               : new StockDailyValue(dailyValue.CLOSE * upVar, dailyValue.CLOSE * upVar, dailyValue.CLOSE, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
             newBarList.Add(newValue);
             newValue.IsComplete = false;
 
@@ -6112,7 +6111,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         previousBar = newValue;
                         newValue.IsComplete = true;
-                        newValue = new StockDailyValue(this.StockName, previousHigh, newHigh, previousHigh, newHigh, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
+                        newValue = new StockDailyValue(previousHigh, newHigh, previousHigh, newHigh, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
                         newValue.IsComplete = false;
 
                         newBarList.Add(newValue);
@@ -6135,7 +6134,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         previousBar = newValue;
                         newValue.IsComplete = true;
-                        newValue = new StockDailyValue(this.StockName, previousLow, previousLow, newLow, newLow, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
+                        newValue = new StockDailyValue(previousLow, previousLow, newLow, newLow, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
                         newValue.IsComplete = false;
 
                         newBarList.Add(newValue);
@@ -6177,7 +6176,7 @@ namespace StockAnalyzer.StockClasses
                 if (currentDay != newDay)
                 {
                     // Create new bar
-                    newBarList.Add(newValue = new StockDailyValue(this.StockName, open, high, low, close, volume, currentDay));
+                    newBarList.Add(newValue = new StockDailyValue(open, high, low, close, volume, currentDay));
 
                     currentDay = newDay;
                     volume = 0;
@@ -6191,7 +6190,7 @@ namespace StockAnalyzer.StockClasses
                 volume += value.VOLUME;
             }
             // Add last bar
-            newBarList.Add(newValue = new StockDailyValue(this.StockName, open, high, low, close, volume, newDay));
+            newBarList.Add(newValue = new StockDailyValue(open, high, low, close, volume, newDay));
             newValue.IsComplete = false;
 
             return newBarList;
@@ -6214,7 +6213,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
                 {
                     // Need to create a new bar
-                    newValue = new StockDailyValue(this.StockName, dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     newBarList.Add(newValue);
                 }

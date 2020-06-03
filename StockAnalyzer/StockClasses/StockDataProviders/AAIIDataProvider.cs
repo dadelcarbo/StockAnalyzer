@@ -111,8 +111,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                   }
                   ratio = bearish / bullish;
 
-                  bearBullRatioValue = new StockDailyValue(bearBullRatioName,
-                      ratio,
+                  bearBullRatioValue = new StockDailyValue(ratio,
                       ratio,
                       ratio,
                       ratio, 0, date);
@@ -139,8 +138,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             ratio = (float) Math.Log10(dailyValue.CLOSE);
             if (inverse) ratio = -ratio;
 
-            bearBullLogRatioValue = new StockDailyValue(bearBullRatioName,
-               ratio,
+            bearBullLogRatioValue = new StockDailyValue(ratio,
                ratio,
                ratio,
                ratio, 0, dailyValue.DATE);

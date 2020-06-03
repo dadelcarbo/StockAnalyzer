@@ -209,7 +209,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var volString = barchartJson.V[i];
                             long vol = 0;
                             long.TryParse(barchartJson.V[i], out vol);
-                            var dailyValue = new StockDailyValue(stockSerie.StockName,
+                            var dailyValue = new StockDailyValue(
                                    barchartJson.O[i],
                                    barchartJson.H[i],
                                    barchartJson.L[i],

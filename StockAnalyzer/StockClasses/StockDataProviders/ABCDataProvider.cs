@@ -379,7 +379,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockSerie.ContainsKey(date))
                             {
                                 StockDailyValue dailyValue = new StockDailyValue(
-                                  stockSerie.StockName,
                                   float.Parse(row[2], frenchCulture),
                                   float.Parse(row[3], frenchCulture),
                                   float.Parse(row[4], frenchCulture),
@@ -417,7 +416,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                         }
                         StockDailyValue dailyValue = new StockDailyValue(
-                            stockSerie.StockName,
                             float.Parse(row[2], usCulture),
                             float.Parse(row[3], usCulture),
                             float.Parse(row[4], usCulture),
@@ -640,7 +638,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (string.IsNullOrEmpty(line) || line.StartsWith("<") || line.StartsWith("/")) return null;
                 string[] row = line.Split(';');
                 stockValue = new StockDailyValue(
-                    stockName,
                 float.Parse(row[2], usCulture),
                 float.Parse(row[3], usCulture),
                 float.Parse(row[4], usCulture),

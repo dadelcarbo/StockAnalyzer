@@ -70,28 +70,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
             switch (row[0].Split('_')[0])
             {
-                case "ADC":
-                    return stockDictionary.GenerateAdvDeclCumulSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "AD":
                     return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "EQW":
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "TOPEMA":
-                    return stockDictionary.GenerateTOPEMASerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "VAR":
-                    return stockDictionary.GenerateVarBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                case "ER":
                     return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "EMA":
                     return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "STOKF":
                     return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "BULL":
-                    return stockDictionary.GenerateBullishOverboughtSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "ROCEX":
-                    return stockDictionary.GenerateBullishROCEXSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                case "STOKS":
+                    return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "McClellan":
                     return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "McClellanSum":
@@ -100,14 +92,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
                 case "MYOSC":
                     return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "LD":
-                    return stockDictionary.GenerateLowestInDays(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "HD":
-                    return stockDictionary.GenerateHighestInDays(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "RHI":
-                    return stockDictionary.GenerateRecordHighIndexInDays(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
-                case "TRIN":
-                    return stockDictionary.GenerateTrinSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
             }
             return false;
         }

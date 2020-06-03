@@ -16,16 +16,16 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private StockBarDuration barDuration;
 
         public ObservableCollection<MarketReplayPositionViewModel> Positions { get; set; }
-        ObservableCollection<StockPosition> positionHistory;
-        public ObservableCollection<StockPosition> PositionHistory
+        ObservableCollection<MarketReplayTradeViewModel> tradeHistory;
+        public ObservableCollection<MarketReplayTradeViewModel> TradeHistory
         {
-            get => positionHistory;
+            get => tradeHistory;
             set
             {
-                if (positionHistory != value)
+                if (tradeHistory != value)
                 {
-                    positionHistory = value;
-                    this.OnPropertyChanged("PositionHistory");
+                    tradeHistory = value;
+                    this.OnPropertyChanged("TradeHistory");
                 }
             }
         }
@@ -149,7 +149,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.selectedGroup = selectedGroup;
             this.barDuration = barDuration;
             this.Positions = new ObservableCollection<MarketReplayPositionViewModel>();
-            this.PositionHistory = new ObservableCollection<StockPosition>();
+            this.TradeHistory = new ObservableCollection<MarketReplayTradeViewModel>();
 
             this.stopEnabled = true;
             this.forwardEnabled = true;
@@ -213,7 +213,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             // Clear and restart
             this.Positions.Clear();
-            this.PositionHistory.Clear();
+            this.TradeHistory.Clear();
 
             Start();
         }
@@ -294,7 +294,12 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             {
                 // Close full position
                 StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
-                PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
+                TradeHistory.Insert(0, new MarketReplayTradeViewModel()
+                {
+                    Entry = openPosition.Entry,
+                    Target1 = "",
+                    Exit = value
+                });
                 this.Stop = 0;
                 this.Target1 = 0;
                 openPosition = null;
@@ -306,7 +311,12 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             {
                 // Partial close
                 StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
-                PositionHistory = new ObservableCollection<StockPosition>(StockPortfolio.ReplayPortfolio.Positions.Where(p => p.IsClosed));
+                TradeHistory.Insert(0, new MarketReplayTradeViewModel()
+                {
+                    Entry = openPosition.Entry,
+                    Target1 = "",
+                    Exit = value
+                });
                 openPosition.Qty = 1;
                 this.Target1 = 0;
             }
@@ -347,7 +357,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             DateTime currentDate = DateTime.Today;
             foreach (var dailyValue in referenceSerie.Take(nbValues))
             {
-                this.replaySerie.Add(currentDate, dailyValue.Value);
+                this.replaySerie.Add(currentDate, new StockDailyValue(currentDate, dailyValue.Value));
                 currentDate = currentDate.AddDays(1);
             }
             this.Value = replaySerie.ValueArray.Last().CLOSE;

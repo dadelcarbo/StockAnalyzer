@@ -333,9 +333,7 @@ namespace StockAnalyzerApp
                 // Generate breadth 
                 if (Settings.Default.GenerateBreadth)
                 {
-                    foreach (
-                        StockSerie stockserie in
-                        this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
+                    foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                     {
                         StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
                         stockserie.Initialise();
@@ -630,8 +628,7 @@ namespace StockAnalyzerApp
         {
             if (TimerSuspended)
                 return;
-            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 18) return;
-
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 20) return;
             if (this.intradayAlertConfig.AlertLog.LastRefreshDate > DateTime.Now.AddMinutes(-30))
             {
                 if (DateTime.Now.Minute % 30 > Settings.Default.AlertsFrequency)
@@ -2156,6 +2153,63 @@ namespace StockAnalyzerApp
             {
                 return;
             }
+            {
+                var dayVarDico = new SortedDictionary<DayOfWeek, float>();
+                var dayCountDico = new SortedDictionary<DayOfWeek, int>();
+                foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
+                {
+                    dayVarDico.Add(day, 0);
+                    dayCountDico.Add(day, 0);
+                }
+                foreach (var pair in this.currentStockSerie)
+                {
+                    dayVarDico[pair.Key.DayOfWeek] += (pair.Value.CLOSE - pair.Value.OPEN) / pair.Value.OPEN;
+                    dayCountDico[pair.Key.DayOfWeek]++;
+                }
+                foreach (var pair in dayCountDico.Where(p => p.Value > 0))
+                {
+                    Console.WriteLine($"{pair.Key} => {(dayVarDico[pair.Key] / (float)dayCountDico[pair.Key]).ToString("P2")}");
+                }
+            }
+            {
+                var dayVarDico = new SortedDictionary<int, float>();
+                var dayCountDico = new SortedDictionary<int, int>();
+                for (int i = 0; i < 30; i++)
+                {
+                    dayVarDico.Add(i, 0);
+                    dayCountDico.Add(i, 0);
+                }
+                int previousMonth = -1;
+                int day = 0;
+                foreach (var pair in this.currentStockSerie)
+                {
+                    if (pair.Key.Date.Month == previousMonth)
+                    {
+                        day++;
+                    }
+                    else
+                    {
+                        previousMonth = pair.Key.Date.Month;
+                        day = 1;
+                    }
+                    // dayVarDico[day] += (pair.Value.CLOSE - pair.Value.OPEN) / pair.Value.OPEN;
+                    dayVarDico[day] += pair.Value.VARIATION;
+                    dayCountDico[day]++;
+                }
+                foreach (var pair in dayCountDico.Where(p => p.Value > 0))
+                {
+                    Console.WriteLine($"{pair.Key};{(dayVarDico[pair.Key] / (float)dayCountDico[pair.Key]).ToString("P2")}");
+                }
+            }
+
+        }
+        private void generateSeasonalitySerieMenuItem_Click2(object sender, EventArgs e)
+        {
+            if (this.currentStockSerie == null) return;
+            if (!this.currentStockSerie.Initialise())
+            {
+                return;
+            }
             if (this.currentStockSerie.StockGroup != StockSerie.Groups.BREADTH)
             {
                 // Bar duration is set inside the method
@@ -2335,7 +2389,7 @@ namespace StockAnalyzerApp
                     }
                 }
                 value += value * (var / count);
-                cacEWSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
+                cacEWSerie.Add(date, new StockDailyValue(value, value, value, value, (long)volume, date));
                 cacIndex++;
             }
             StockDictionary.Add(serieName, cacEWSerie);
@@ -2393,7 +2447,7 @@ namespace StockAnalyzerApp
                 {
                     value += value * dailyValue.VARIATION;
                 }
-                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(serieName, value, value, value, value, (long)volume, dailyValue.DATE));
+                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(value, value, value, value, (long)volume, dailyValue.DATE));
                 cacIndex++;
             }
             StockDictionary.Add(serieName, cacEWSerie);
@@ -2422,7 +2476,7 @@ namespace StockAnalyzerApp
                 {
                     value += value * dailyValue.VARIATION;
                 }
-                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(serieName, value, value, value, value, (long)volume, dailyValue.DATE));
+                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(value, value, value, value, (long)volume, dailyValue.DATE));
                 cacIndex++;
                 previousDailyValue = dailyValue;
             }
@@ -2476,7 +2530,7 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                 case StockSerie.Groups.INTRADAY:
-                    this.ForceBarDuration(StockBarDuration.Bar_6, true);
+                    this.ForceBarDuration(StockBarDuration.Bar_12, true);
                     break;
                 default:
                     this.ForceBarDuration(StockBarDuration.Daily, true);
@@ -3913,7 +3967,7 @@ namespace StockAnalyzerApp
                                             graphControl.ShowGrid = bool.Parse(fields[3]);
                                             colorItem = fields[4].Split(':');
                                             graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                            
+
                                             if (entry.ToUpper() == "CLOSEGRAPH")
                                             {
                                                 if (fields.Length >= 7)

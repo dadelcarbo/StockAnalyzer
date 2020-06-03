@@ -157,7 +157,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         date = values.First().Key;
                         value = values.First().Value;
                         var minute = (date.Minute / 5) * 5;
-                        StockDailyValue newBar = new StockDailyValue(stockSerie.StockName, value, value, value, value, 0, new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0));
+                        StockDailyValue newBar = new StockDailyValue(value, value, value, value, 0, new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0));
 
                         foreach (var data in values.Skip(1))
                         {
@@ -175,7 +175,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             {
                                 stockSerie.Add(newBar.DATE, newBar);
                                 var newDate = new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
-                                newBar = new StockDailyValue(stockSerie.StockName, newBar.CLOSE, value, value, value, 0, newDate);
+                                newBar = new StockDailyValue(newBar.CLOSE, value, value, value, 0, newDate);
                             }
                         }
                         if (newBar != null)
@@ -253,7 +253,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var volString = barchartJson.V[i];
                             long vol = 0;
                             long.TryParse(barchartJson.V[i], out vol);
-                            var dailyValue = new StockDailyValue(stockSerie.StockName,
+                            var dailyValue = new StockDailyValue(
                                    barchartJson.O[i],
                                    barchartJson.H[i],
                                    barchartJson.L[i],
