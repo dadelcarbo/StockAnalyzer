@@ -96,6 +96,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public string FormatIntradayURL(long ticker)
         {
+            //return $"https://bourse.societegenerale.fr/product-detail?productId={ticker}";
             return $"http://sgbourse.fr/EmcWebApi/api/Prices/Intraday?productId={ticker}";
         }
 
