@@ -50,7 +50,7 @@
             this.Controls.Add(this.elementHost1);
             this.Name = "HorseRaceDlg";
             this.Text = "Horse Race";
-            this.TopMost = true;
+            this.TopLevel = true;
             this.ResumeLayout(false);
 
         }

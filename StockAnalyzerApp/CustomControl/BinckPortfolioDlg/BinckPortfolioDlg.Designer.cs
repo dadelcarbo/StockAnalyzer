@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.binckPortfolioControl1 = new BinckPortfolioControl();
+            this.binckPortfolioControl1 = new BinckPortfolioControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -50,7 +50,7 @@
             this.Name = "BinckPortfolioDlg";
             this.Text = "Portfolio View";
             this.Size = new System.Drawing.Size(800, 400);
-            this.TopMost = true;
+            this.TopLevel = true;
             this.ResumeLayout(false);
 
         }

@@ -1,20 +1,22 @@
 ﻿using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
     /// <summary>
     /// Interaction logic for BinckPortfolioControl.xaml
     /// </summary>
-    public partial class BinckPortfolioControl : UserControl
+    public partial class BinckPortfolioControl : System.Windows.Controls.UserControl
     {
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public BinckPortfolioControl()
+        private System.Windows.Forms.Form Form { get; }
+        public BinckPortfolioControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
 
+            this.Form = form;
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
         }
 
@@ -46,6 +48,9 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 this.SelectedStockChanged(viewModel.StockName, true);
                 StockAnalyzerForm.MainFrame.Activate();
             }
+
+            this.Form.TopMost = true;
+            this.Form.TopMost = false;
         }
 
         private void operationGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)

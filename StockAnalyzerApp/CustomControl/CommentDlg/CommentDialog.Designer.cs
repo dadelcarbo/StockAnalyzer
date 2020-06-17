@@ -55,7 +55,7 @@
             this.Controls.Add(this.elementHost1);
             this.Name = "CommentDialog";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.TopMost = true;
+            this.TopLevel = true;
             this.ResumeLayout(false);
 
         }

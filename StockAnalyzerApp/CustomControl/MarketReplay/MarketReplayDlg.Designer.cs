@@ -53,7 +53,7 @@
             this.Name = "MarketReplayDlg";
             this.ShowIcon = false;
             this.Text = "Market Replay";
-            this.TopMost = true;
+            this.TopLevel = true;
             this.ResumeLayout(false);
 
         }
