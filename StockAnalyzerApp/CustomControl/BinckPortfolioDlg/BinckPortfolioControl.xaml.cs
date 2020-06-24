@@ -45,8 +45,8 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
             if (SelectedStockChanged != null)
             {
-                this.SelectedStockChanged(viewModel.StockName, true);
                 StockAnalyzerForm.MainFrame.Activate();
+                this.SelectedStockChanged(viewModel.StockName, true);
             }
 
             this.Form.TopMost = true;

@@ -29,7 +29,7 @@
       private void InitializeComponent()
       {
          this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-         this.alertControl1 = new AlertDialog.AlertControl();
+         this.alertControl1 = new AlertDialog.AlertControl(this);
          this.SuspendLayout();
          // 
          // elementHost1

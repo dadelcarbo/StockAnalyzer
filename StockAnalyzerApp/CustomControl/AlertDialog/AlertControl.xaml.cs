@@ -18,10 +18,12 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
     /// </summary>
     public partial class AlertControl : UserControl
     {
-        public AlertControl()
+        private System.Windows.Forms.Form Form { get; }
+        public AlertControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
 
+            this.Form = form;
         }
         public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
 
@@ -54,12 +56,15 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             if (alert == null) return;
 
-            if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
-
-            StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
-            StockAnalyzerForm.MainFrame.Activate();
+            if (SelectedStockChanged != null)
+            {
+                StockAnalyzerForm.MainFrame.Activate();
+                this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
+                StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
+                this.Form.TopMost = true;
+                this.Form.TopMost = false;
+            }
         }
-
         private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
         {
             var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;

@@ -5,13 +5,13 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
-    public class StockCloud_BB : StockCloudBase
+    public class StockCloud_ATR : StockCloudBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Definition => "Paint a cloud based on the Bollinger bands";
+        public override string Definition => "Paint a cloud based on ATR Band";
 
         public override string[] ParameterNames
         {
@@ -50,10 +50,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "MA" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var bbIndicator = stockSerie.GetIndicator($"BB({(int)this.parameters[0]},{(float)this.parameters[1]},{(float)this.parameters[2]},{this.parameters[3]})");
-            var bbUp = bbIndicator.Series[0];
-            var bbDown = bbIndicator.Series[1];
-            var maSerie = bbIndicator.Series[2];
+            var atrBandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(float)this.parameters[1]},{(float)this.parameters[2]},{this.parameters[3]})");
+            var bandUp = atrBandIndicator.Series[0];
+            var bandDown = atrBandIndicator.Series[1];
+            var maSerie = atrBandIndicator.Series[2];
+
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             var bullSerie = new FloatSerie(stockSerie.Count);
@@ -63,19 +64,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             for (int i = 0; i < stockSerie.Count; i++)
             {
                 if (isBull)
-                    isBull = closeSerie[i] > bbDown[i];
+                    isBull = closeSerie[i] > bandDown[i];
                 else
-                    isBull = closeSerie[i] > bbUp[i];
+                    isBull = closeSerie[i] > bandUp[i];
 
                 if (isBull)
                 {
-                    bullSerie[i] = bbUp[i];
-                    bearSerie[i] = bbDown[i];
+                    bullSerie[i] = bandUp[i];
+                    bearSerie[i] = bandDown[i];
                 }
                 else
                 {
-                    bullSerie[i] = bbDown[i];
-                    bearSerie[i] = bbUp[i];
+                    bullSerie[i] = bandDown[i];
+                    bearSerie[i] = bandUp[i];
                 }
             }
 

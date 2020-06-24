@@ -42,6 +42,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -233,6 +234,22 @@ namespace StockAnalyzerApp
 
             Settings.Default.PropertyChanged += (sender, args) => Settings.Default.Save();
         }
+
+        #region Activate Function
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+        const int WM_SYSCOMMAND = 0x0112;
+        const int SC_RESTORE = 0xF120;
+        public new void Activate()
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                SendMessage(this.Handle, WM_SYSCOMMAND, SC_RESTORE, IntPtr.Zero);
+                this.ResetZoom();
+            }
+            base.Activate();
+        }
+        #endregion
 
         protected override void OnShown(EventArgs e)
         {
@@ -2360,127 +2377,6 @@ namespace StockAnalyzerApp
             }
             StockSerie newSerie = this.CurrentStockSerie.GenerateInverseStockSerie();
             AddNewSerie(newSerie);
-        }
-        private void GenerateCACEqualWeight()
-        {
-            var cacSeries =
-               this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
-            string serieName = "CAC_EW";
-            StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
-               StockDataProvider.Generated);
-            StockSerie cacSerie = this.StockDictionary["CAC40"];
-            cacSerie.Initialise();
-
-            float value = 1000f;
-            int cacIndex = 0;
-            foreach (DateTime date in cacSerie.Keys)
-            {
-                float var = 0.0f;
-                float volume = 0.0f;
-                int count = 0;
-                foreach (StockSerie serie in cacSeries)
-                {
-                    if (serie.ContainsKey(date))
-                    {
-                        count++;
-                        StockDailyValue dailyValue = serie[date];
-                        var += dailyValue.VARIATION;
-                        volume += dailyValue.CLOSE * dailyValue.VOLUME;
-                    }
-                }
-                value += value * (var / count);
-                cacEWSerie.Add(date, new StockDailyValue(value, value, value, value, (long)volume, date));
-                cacIndex++;
-            }
-            StockDictionary.Add(serieName, cacEWSerie);
-        }
-        private void GenerateSRDEqualWeight()
-        {
-            string serieName = "SRD";
-            StockSerie srdSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES, StockDataProvider.Generated);
-            /*
-            var cacSeries = this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD) && s.Initialise());
-      StockSerie cacSerie = this.StockDictionary["CAC40"];
-            cacSerie.Initialise();
-
-            float value = 1000f;
-            foreach (DateTime date in cacSerie.Keys)
-            {
-               float var = 0.0f;
-               float volume = 0.0f;
-               int count = 0;
-               foreach (StockSerie serie in cacSeries)
-               {
-                  if (serie.ContainsKey(date))
-                  {
-                     count++;
-                     StockDailyValue dailyValue = serie[date];
-                     var += dailyValue.VARIATION;
-                     volume += dailyValue.CLOSE * dailyValue.VOLUME;
-                  }
-               }
-               if (count > 0)
-               {
-                  value += value * (var / count);
-                  volume /= count;
-                  srdSerie.Add(date, new StockDailyValue(serieName, value, value, value, value, (long)volume, date));
-               }
-            }*/
-            StockDictionary.Add(serieName, srdSerie);
-        }
-        private void GenerateIndexNoDay(string stockName, DayOfWeek dayOfWeek)
-        {
-            string serieName = stockName + "_NO_" + dayOfWeek;
-
-            StockSplashScreen.ProgressText = "Generating " + serieName + "...";
-
-            StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC, StockDataProvider.Generated);
-            StockSerie stockSerie = this.StockDictionary[stockName];
-            stockSerie.Initialise();
-
-            float value = stockSerie.First().Value.OPEN;
-            int cacIndex = 0;
-            foreach (StockDailyValue dailyValue in stockSerie.Values)
-            {
-                float volume = 0.0f;
-                if (dailyValue.DATE.DayOfWeek != dayOfWeek)
-                {
-                    value += value * dailyValue.VARIATION;
-                }
-                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(value, value, value, value, (long)volume, dailyValue.DATE));
-                cacIndex++;
-            }
-            StockDictionary.Add(serieName, cacEWSerie);
-        }
-        private void GenerateCACEqualWeightNoUpDay()
-        {
-            //var cacSeries =
-            //   this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CAC40) && s.Initialise());
-            string serieName = "CAC_EW_NO_UP";
-
-            StockSplashScreen.ProgressText = "Generating " + serieName + "...";
-
-            StockSerie cacEWSerie = new StockSerie(serieName, serieName, StockSerie.Groups.INDICES_CALC,
-               StockDataProvider.Generated);
-            StockSerie cacSerie = this.StockDictionary["CAC40"];
-            cacSerie.Initialise();
-
-            float value = cacSerie.First().Value.OPEN;
-            int cacIndex = 0;
-            StockDailyValue previousDailyValue = cacSerie.Values.First();
-
-            foreach (StockDailyValue dailyValue in cacSerie.Values)
-            {
-                float volume = 0.0f;
-                if (previousDailyValue.VARIATION < 0)
-                {
-                    value += value * dailyValue.VARIATION;
-                }
-                cacEWSerie.Add(dailyValue.DATE, new StockDailyValue(value, value, value, value, (long)volume, dailyValue.DATE));
-                cacIndex++;
-                previousDailyValue = dailyValue;
-            }
-            StockDictionary.Add(serieName, cacEWSerie);
         }
         #endregion
 

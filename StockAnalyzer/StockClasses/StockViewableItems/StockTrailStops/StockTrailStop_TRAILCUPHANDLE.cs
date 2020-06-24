@@ -13,17 +13,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop";
 
-        public override string[] ParameterNames => new string[] { "Period" };
+        public override string[] ParameterNames => new string[] { "Period", "Right HL"};
 
-        public override Object[] ParameterDefaultValues => new Object[] { 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 3, true };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool() };
 
         public override string[] SerieNames => new string[] { "TRAILCUPHANDLE.LS", "TRAILCUPHANDLE.SS" };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             var period = (int)this.parameters[0];
+            var rightHigherLow = (bool)this.parameters[1];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
@@ -124,14 +125,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                                 rightLow.Y = low = bodyLow;
                             }
                         }
-                        this.series[0][i] = trailStop = Math.Max(trailStop, low);
-                        highestInBars = highestInSerie[i];
-                        isBull = true;
-                        brokenUpEvents[i] = bullEvents[i] = true;
+                        if (!rightHigherLow || (rightHigherLow &&  rightLow.Y > leftLow.Y))
+                        {
+                            this.series[0][i] = trailStop = Math.Max(trailStop, low);
+                            highestInBars = highestInSerie[i];
+                            isBull = true;
+                            brokenUpEvents[i] = bullEvents[i] = true;
 
-                        // Draw open cup and handle
-                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
-                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
+                            // Draw open cup and handle
+                            var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
+                            stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
+                        }
                     }
                 }
             }

@@ -118,8 +118,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     }
 
                     // Draw open cup and handle
-                    var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
-                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
+                    if (rightLow.Y > leftLow.Y)
+                    {
+                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
+                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
+                    }
                 }
             }
             finally

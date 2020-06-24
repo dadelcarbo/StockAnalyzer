@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return new Object[] { 20, 2.0f, -2.0f, "MA" }; }
         }
-        static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA" };
+        static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA", "MID" };
         public override ParamRange[] ParameterRanges
         {
             get
@@ -75,7 +75,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                     else // Continue;
                     {
                         bullSerie[i] = bbUp[i];
-                        bearSerie[i] = Math.Max(bbDown[i], bearSerie[i-1]);
+                        bearSerie[i] = Math.Max(bbDown[i], bearSerie[i - 1]);
                     }
                 }
                 else

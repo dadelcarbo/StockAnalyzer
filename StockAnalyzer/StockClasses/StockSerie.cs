@@ -336,6 +336,7 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = newBarDuration;
             this.PreInitialise();
             valueArray = StockDailyValuesAsArray();
+            dateArray = null;
             return;
         }
         public void ClearBarDurationCache()
