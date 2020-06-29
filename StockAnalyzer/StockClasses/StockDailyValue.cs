@@ -37,85 +37,8 @@ namespace StockAnalyzer.StockClasses
             }
             Type type = this.GetType();
             System.Reflection.PropertyInfo propInfo = type.GetProperty(dataType.ToString());
-            if (propInfo == null)
-            {
-                return Serie.GetSerie(dataType).Values[Serie.IndexOf(this.DATE)];
-            }
-            else
-            {
-                return (float)propInfo.GetValue(this, null);
-            }
-        }
 
-        public bool Equals(StockDataType dataType, StockDailyValue dailyValue, float accuracyPercent)
-        {
-            float thisValue = this.GetStockData(dataType);
-            float otherValue = dailyValue.GetStockData(dataType);
-            float accuracy = thisValue * accuracyPercent;
-            if (((thisValue - accuracy) <= otherValue) && ((thisValue + accuracy) >= otherValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public bool Lower(StockDataType dataType, StockDailyValue dailyValue, float accuracyPercent)
-        {
-            float thisValue = this.GetStockData(dataType);
-            float otherValue = dailyValue.GetStockData(dataType);
-            float accuracy = thisValue * accuracyPercent;
-            if (((thisValue + accuracy) < otherValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public bool LowerOrEquals(StockDataType dataType, StockDailyValue dailyValue, float accuracyPercent)
-        {
-            float thisValue = this.GetStockData(dataType);
-            float otherValue = dailyValue.GetStockData(dataType);
-            float accuracy = thisValue * accuracyPercent;
-            if (((thisValue - accuracy) <= otherValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public bool Greater(StockDataType dataType, StockDailyValue dailyValue, float accuracyPercent)
-        {
-            float thisValue = this.GetStockData(dataType);
-            float otherValue = dailyValue.GetStockData(dataType);
-            float accuracy = thisValue * accuracyPercent;
-            if (((thisValue - accuracy) > otherValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public bool GreaterOrEquals(StockDataType dataType, StockDailyValue dailyValue, float accuracyPercent)
-        {
-            float thisValue = this.GetStockData(dataType);
-            float otherValue = dailyValue.GetStockData(dataType);
-            float accuracy = thisValue * accuracyPercent;
-            if (((thisValue + accuracy) >= otherValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (float)propInfo.GetValue(this, null);
         }
         public StockDailyValue(DateTime date, StockDailyValue source)
         {

@@ -62,21 +62,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
             }
-            foreach (var duration in cacheDurations)
-            {
-                var durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration;
-                if (!Directory.Exists(durationFileName))
-                {
-                    Directory.CreateDirectory(durationFileName);
-                }
-            }
-
             if (!Directory.Exists(rootFolder + INTRADAY_FOLDER))
             {
                 Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
             }
 
-            // Parse CommerzBankDownload.cfg file
+            // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
@@ -145,8 +136,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             date = DateTime.Parse(dateText, Global.FrenchCulture);
                             if (date > lastDate)
                             {
-                                float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1].Replace(".",","));
-                                float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1].Replace(".",","));
+                                float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1]);
+                                float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1]);
                                 value = ask == 0 ? bid : ask;
 
                                 values.Add(date, value);

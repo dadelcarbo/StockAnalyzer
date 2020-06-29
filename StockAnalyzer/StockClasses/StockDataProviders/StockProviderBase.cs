@@ -11,15 +11,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        static public StockBarDuration[] cacheDurations = new StockBarDuration[]
-                  {
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_3D,
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_6D,
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_3, // 15 Min
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_6, // 30 Min
-                  };
-
         public const int ARCHIVE_START_YEAR = 1999;
         public const int LOAD_START_YEAR = 1999;
 
