@@ -8,9 +8,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_DRAWING : StockPaintBarBase
     {
-        public StockPaintBar_DRAWING()
-        {
-        }
+        public override string Definition => "Generate event in case on manual drawing is broken up or down";
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -75,9 +73,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
                 var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di is Line2DBase);
-                for (int i = 20; i < stockSerie.Count; i++)
+                foreach (Line2DBase item in drawingItems)
                 {
-                    foreach (Line2DBase item in drawingItems)
+                    for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)
                     {
                         if (item.ContainsAbsciss(i) && item.ContainsAbsciss(i - 1))
                         {

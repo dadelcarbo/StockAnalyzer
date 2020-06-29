@@ -136,7 +136,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.drawToolStrip = new System.Windows.Forms.ToolStrip();
             this.magnetStripBtn = new System.Windows.Forms.ToolStripButton();
-            this.sarLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.drawLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addHalfLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addSegmentStripBtn = new System.Windows.Forms.ToolStripButton();
@@ -1067,7 +1066,6 @@ namespace StockAnalyzerApp
             this.drawToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.magnetStripBtn,
             this.cupHandleBtn,
-            this.sarLineStripBtn,
             this.drawLineStripBtn,
             this.addHalfLineStripBtn,
             this.addSegmentStripBtn,
@@ -1098,17 +1096,6 @@ namespace StockAnalyzerApp
             this.magnetStripBtn.Size = new System.Drawing.Size(23, 22);
             this.magnetStripBtn.Text = "Magnet to higher high and lower lows";
             this.magnetStripBtn.Click += new System.EventHandler(this.magnetStripBtn_Click);
-            // 
-            // sarLineStripBtn
-            // 
-            this.sarLineStripBtn.CheckOnClick = true;
-            this.sarLineStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.sarLineStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddSarex;
-            this.sarLineStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.sarLineStripBtn.Name = "sarLineStripBtn";
-            this.sarLineStripBtn.Size = new System.Drawing.Size(23, 22);
-            this.sarLineStripBtn.Text = "Draw SAR stop";
-            this.sarLineStripBtn.Click += new System.EventHandler(this.sarLineStripBtn_Click);
             // 
             // drawLineStripBtn
             // 
@@ -1506,7 +1493,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem helpMenuItem;
         private ToolStripMenuItem optionsMenuItem;
         private ToolStripMenuItem configDataProviderMenuItem;
-        private ToolStripButton sarLineStripBtn;
         private ToolStripButton drawLineStripBtn;
         private ToolStripButton cupHandleBtn;
         private ToolStripButton copyLineStripBtn;

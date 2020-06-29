@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop";
 
-        public override string[] ParameterNames => new string[] { "Period", "Right HL"};
+        public override string[] ParameterNames => new string[] { "Period", "Right HL" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 3, true };
 
@@ -27,6 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var rightHigherLow = (bool)this.parameters[1];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
@@ -54,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 bool isBull = false;
                 float trailStop = float.NaN;
                 float highestInBars = float.MaxValue; // Reference for trailing stop
-
+                float previousLow = float.NaN;
                 for (int i = period * 2; i < stockSerie.Count; i++)
                 {
                     if (isBull) // Trail Stop
@@ -68,15 +69,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         }
                         else if (highestInSerie[i] > highestInBars)// Trail Stop after target has been touched
                         {
-                            // Find previous body bottom
-                            for (int k = i - 1; k > 1; k--)
+                            if (bodyLowSerie[i - 1] < bodyLowSerie[i])
                             {
-                                if (bodyLowSerie[k] < bodyLowSerie[k - 1])
-                                {
-                                    trailStop = bodyLowSerie[k];
-                                    break;
-                                }
+                                trailStop = Math.Max(trailStop, (bodyLowSerie[i] + trailStop) / 2.0f);
                             }
+                            // Find previous body bottom
+                            //for (int k = i - 1; k > 1; k--)
+                            //{
+                            //    if (bodyLowSerie[k] < bodyLowSerie[k - 1])
+                            //    {
+                            //        if (!float.IsNaN(previousLow))
+                            //        {
+                            //            trailStop = (previousLow + trailStop) / 2.0f;
+                            //        }
+                            //        previousLow = lowSerie[k];
+                            //        break;
+                            //    }
+                            //}
                         }
                         this.series[0][i] = trailStop;
                         bullEvents[i] = true;
@@ -125,8 +134,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                                 rightLow.Y = low = bodyLow;
                             }
                         }
-                        if (!rightHigherLow || (rightHigherLow &&  rightLow.Y > leftLow.Y))
+                        if (!rightHigherLow || (rightHigherLow && rightLow.Y > leftLow.Y))
                         {
+                            previousLow = float.NaN;
                             this.series[0][i] = trailStop = Math.Max(trailStop, low);
                             highestInBars = highestInSerie[i];
                             isBull = true;

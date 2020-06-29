@@ -296,8 +296,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PUKE.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DIST.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MOMENTUM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIAN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA2Lines.cs" />
@@ -324,7 +322,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA3Lines.cs" />
@@ -359,6 +356,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FLAG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SPEED.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FIBOCHANNEL.cs" />

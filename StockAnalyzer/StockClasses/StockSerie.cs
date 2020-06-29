@@ -351,6 +351,31 @@ namespace StockAnalyzer.StockClasses
         }
         public FloatSerie GetSerie(StockDataType dataType)
         {
+            if (ValueSeries[(int)dataType] == null)
+            {
+                switch (dataType)
+                {
+                    case StockDataType.CLOSE:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.CLOSE).ToArray(), "CLOSE");
+                        break;
+                    case StockDataType.OPEN:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.OPEN).ToArray(), "OPEN");
+                        break;
+                    case StockDataType.HIGH:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.HIGH).ToArray(), "HIGH");
+                        break;
+                    case StockDataType.LOW:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.LOW).ToArray(), "LOW");
+                        break;
+                    case StockDataType.VARIATION:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VARIATION).ToArray(), "VARIATION");
+                        break;
+                    case StockDataType.VOLUME:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f).ToArray(), "VOLUME");
+                        break;
+                }
+            }
+
             return ValueSeries[(int)dataType];
         }
         public FloatSerie GetSerie(String serieName)
@@ -517,29 +542,6 @@ namespace StockAnalyzer.StockClasses
             throw new ArgumentException("No viewable item matching " + name + " has been found");
         }
 
-        public void AddSerie(StockDataType dataType, FloatSerie serie)
-        {
-            if (serie != null)
-            {
-                serie.Name = dataType.ToString();
-            }
-            this.ValueSeries[(int)dataType] = serie;
-        }
-        public void AddSerie(string serieName, FloatSerie serie)
-        {
-            if (serie != null)
-            {
-                serie.Name = serieName;
-            }
-            if (this.FloatSerieCache.ContainsKey(serieName))
-            {
-                this.FloatSerieCache[serieName] = serie;
-            }
-            else
-            {
-                this.FloatSerieCache.Add(serieName, serie);
-            }
-        }
         public void AddIndicatorSerie(IStockIndicator indicator)
         {
             if (this.IndicatorCache.ContainsKey(indicator.Name))
@@ -678,83 +680,28 @@ namespace StockAnalyzer.StockClasses
 
         public void PreInitialise()
         {
-            float[] openSerie = new float[Values.Count];
-            float[] lowSerie = new float[Values.Count];
-            float[] highSerie = new float[Values.Count];
-            float[] closeSerie = new float[Values.Count];
-            float[] avgSerie = new float[Values.Count];
-            float[] atrSerie = new float[Values.Count];
-            float[] variationSerie = new float[Values.Count];
-            float[] volumeSerie = new float[Values.Count];
-
             if (!this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
             {
                 this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
             }
-            int i = 0;
             StockDailyValue previousValue = null;
             foreach (StockDailyValue dailyValue in this.Values)
             {
                 if (previousValue != null)
                 {
-                    dailyValue.PreviousClose = previousValue.CLOSE;
-                    dailyValue.ATR =
-                       atrSerie[i] =
-                          Math.Max(dailyValue.HIGH - dailyValue.LOW,
-                             Math.Max(Math.Abs(dailyValue.HIGH - previousValue.LOW),
-                                Math.Abs(previousValue.HIGH - dailyValue.LOW)));
+                    dailyValue.VARIATION = (dailyValue.CLOSE - previousValue.CLOSE) / previousValue.CLOSE;
                 }
                 else
                 {
-                    dailyValue.PreviousClose = dailyValue.CLOSE;
-                    dailyValue.ATR = atrSerie[i] = dailyValue.HIGH - dailyValue.LOW;
+                    dailyValue.VARIATION = (dailyValue.CLOSE - dailyValue.OPEN) / dailyValue.OPEN;
                 }
-                variationSerie[i] = (dailyValue.CLOSE - dailyValue.PreviousClose) / dailyValue.PreviousClose;
-                openSerie[i] = dailyValue.OPEN;
-                lowSerie[i] = dailyValue.LOW;
-                highSerie[i] = dailyValue.HIGH;
-                closeSerie[i] = dailyValue.CLOSE;
-                avgSerie[i] = dailyValue.AVG;
-                volumeSerie[i] = dailyValue.VOLUME;
-                i++;
                 previousValue = dailyValue;
             }
 
-            StockDailyValue yesterValue = null;
-            foreach (StockDailyValue currentValue in this.Values)
-            {
-                // Calculate variation
-                if (yesterValue == null)
-                {
-                    currentValue.VARIATION = (currentValue.CLOSE - currentValue.OPEN) / currentValue.OPEN;
-                }
-                else
-                {
-                    currentValue.VARIATION = (currentValue.CLOSE - yesterValue.CLOSE) / yesterValue.CLOSE;
-                }
-                currentValue.AMPLITUDE = (currentValue.HIGH - currentValue.LOW) / currentValue.LOW;
-                yesterValue = currentValue;
-            }
-
             // Check if has volume on the last 10 bars, othewise, disable it
-            this.HasVolume = false;
-            for (i = Math.Max(0, this.Values.Count - 10); i < this.Values.Count; i++)
-            {
-                if (volumeSerie[i] != 0)
-                {
-                    HasVolume = true;
-                    break;
-                }
-            }
+            this.HasVolume = this.Values.Any(d => d.VOLUME > 0);
 
-            this.AddSerie(StockDataType.OPEN, new FloatSerie(openSerie, "OPEN"));
-            this.AddSerie(StockDataType.LOW, new FloatSerie(lowSerie, "LOW"));
-            this.AddSerie(StockDataType.HIGH, new FloatSerie(highSerie, "HIGH"));
-            this.AddSerie(StockDataType.CLOSE, new FloatSerie(closeSerie, "CLOSE"));
-            this.AddSerie(StockDataType.AVG, new FloatSerie(avgSerie, "AVG"));
-            this.AddSerie(StockDataType.ATR, new FloatSerie(atrSerie, "ATR"));
-            this.AddSerie(StockDataType.VARIATION, new FloatSerie(variationSerie, "VARIATION"));
-            this.AddSerie(StockDataType.VOLUME, new FloatSerie(volumeSerie, "VOLUME"));
+            this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
         }
 
         public struct EventMatch
@@ -1563,7 +1510,7 @@ namespace StockAnalyzer.StockClasses
         {
             FloatSerie wadSerie = new FloatSerie(this.Count, "WAD");
 
-            FloatSerie volume = this.GetSerie(StockDataType.VOLUME);
+            FloatSerie volume = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f));
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
@@ -1722,7 +1669,7 @@ namespace StockAnalyzer.StockClasses
             }
 
             FloatSerie OBV = new FloatSerie(this.Count, "OBV");
-            FloatSerie vol = this.GetSerie(StockDataType.VOLUME);
+            FloatSerie vol = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f));
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             float previousClose = closeSerie[0];
             for (int i = 1; i < this.Count; i++)
@@ -4105,9 +4052,9 @@ namespace StockAnalyzer.StockClasses
             sarexFollowerSupport = new FloatSerie(this.Values.Count, "SAREX.S");
             sarexFollowerResistance = new FloatSerie(this.Values.Count, "SAREX.R");
             int i = 0;
-            float currentSarex = this.Values.First().AVG;
+            float currentSarex = this.Values.First().CLOSE;
             sarexFollowerResistance.Values[0] = currentSarex;
-            float previousExtremum = this.Values.First().AVG;
+            float previousExtremum = this.Values.First().CLOSE;
             bool upTrend = true;
 
             float accelerationFactor = accelerationFactorInit;
@@ -4192,7 +4139,7 @@ namespace StockAnalyzer.StockClasses
                 // Check if the sarex has broken
                 if (i < this.Values.Count && (currentSarex < highSerie[i] && currentSarex > lowSerie[i]))
                 {   // The SAREX has broken
-                    previousExtremum = this.ValueArray[i].AVG;
+                    previousExtremum = this.ValueArray[i].CLOSE;
                 }
                 yesterYesterValue = yesterValue;
             }

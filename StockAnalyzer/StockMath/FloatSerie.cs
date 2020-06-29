@@ -436,6 +436,10 @@ namespace StockAnalyzer.StockMath
         {
             this.Values = values;
         }
+        public FloatSerie(IEnumerable<float> values)
+        {
+            this.Values = values.ToArray();
+        }
         #endregion
         public void Reset(float value)
         {

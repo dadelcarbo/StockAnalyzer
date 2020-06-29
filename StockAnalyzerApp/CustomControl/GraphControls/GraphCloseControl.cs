@@ -140,7 +140,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                string graphCopyright = "Copyright © " + DateTime.Today.Year + " www.ultimatechartist.com";
+                string graphCopyright = "Copyright © " + DateTime.Today.Year + " Dad El Carbo";
 
                 Size size = TextRenderer.MeasureText(graphCopyright, this.axisFont);
                 PointF point = new PointF(aGraphic.VisibleClipBounds.Right - size.Width + 10, 5);
@@ -1386,17 +1386,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             switch (this.DrawingMode)
             {
-                case GraphDrawMode.AddSAR:
-                    DrawTmpSR(this.foregroundGraphic, mouseValuePoint);
-                    //if (this.DrawingStep == GraphDrawingStep.SelectItem)
-                    //{
-                    //    // first point is already selected, draw new line
-                    //    if (!selectedValuePoint.Equals(mouseValuePoint))
-                    //    {
-                    //        DrawTmpSAR(this.foregroundGraphic, mouseValuePoint);
-                    //    }
-                    //}
-                    break;
                 case GraphDrawMode.AddLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
@@ -1698,7 +1687,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 point2 = new PointF(mouseValuePoint.X, point1.Y);
             }
-
+            Console.WriteLine("DrawingMode: " + this.DrawingMode + "DrawingStep: " + this.DrawingStep);
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:
@@ -1719,6 +1708,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
@@ -1746,6 +1736,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
@@ -1770,6 +1761,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             break;
                         default:   // Shouldn't come there
@@ -1794,6 +1786,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
@@ -1822,6 +1815,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 HighlightClosestLine(e);
                             }
@@ -2013,9 +2007,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (Line2DBase line2D in this.drawingItems.Where(di => di is Line2DBase)) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
-                if ((line2D is Line2DBase) && line2D.IsPersistent)
+                if (line2D.IsPersistent)
                 {
                     line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
                     currentDistance = line.DistanceTo(point2D);

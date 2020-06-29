@@ -6,13 +6,10 @@ namespace StockAnalyzer.StockClasses
 {
     public enum StockDataType
     {
-        NONE = -1,
         CLOSE = 0,
         OPEN,
         HIGH,
         LOW,
-        AVG,
-        ATR,
         VARIATION,
         VOLUME
     };
@@ -24,13 +21,8 @@ namespace StockAnalyzer.StockClasses
         public float HIGH { get; set; }
         public float LOW { get; set; }
         public float CLOSE { get; set; }
-        public float PreviousClose { get; set; }
-        public float AVG { get; set; }
-        public float ATR { get; set; }
         public long VOLUME { get; set; }
         public float VARIATION { get; set; }
-        public float AMPLITUDE { get; set; }
-        public float Range { get { return this.HIGH - this.LOW; } }
 
         private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
@@ -156,7 +148,6 @@ namespace StockAnalyzer.StockClasses
             }
             this.CLOSE = close;
             this.VOLUME = volume;
-            this.AVG = (open + high + low + 2.0f * close) / 5.0f;
         }
 
         #region CSV file IO

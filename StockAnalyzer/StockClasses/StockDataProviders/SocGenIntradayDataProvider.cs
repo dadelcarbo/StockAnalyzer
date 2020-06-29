@@ -145,8 +145,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             date = DateTime.Parse(dateText, Global.FrenchCulture);
                             if (date > lastDate)
                             {
-                                float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1]);
-                                float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1]);
+                                float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1].Replace(".",","));
+                                float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1].Replace(".",","));
                                 value = ask == 0 ? bid : ask;
 
                                 values.Add(date, value);

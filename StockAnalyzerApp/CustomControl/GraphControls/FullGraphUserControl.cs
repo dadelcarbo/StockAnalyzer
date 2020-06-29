@@ -238,9 +238,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     if (currentStockSerie.HasVolume)
                                     {
                                         graphControl = this.graphVolumeControl;
-                                        curveList.Add(new GraphCurveType(
-                                            currentStockSerie.GetSerie(StockDataType.VOLUME),
-                                            Pens.Green, true));
+                                        curveList.Add(new GraphCurveType( currentStockSerie.GetSerie(StockDataType.VOLUME), Pens.Green, true));
                                     }
                                     else
                                     {

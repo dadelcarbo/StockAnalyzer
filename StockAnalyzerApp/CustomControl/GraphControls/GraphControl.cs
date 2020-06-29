@@ -37,7 +37,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         AddSegment,
         AddCupHandle,
         AddHalfLine,
-        AddSAR,
         CopyLine,
         CutLine,
         DeleteItem

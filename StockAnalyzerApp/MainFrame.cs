@@ -45,6 +45,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml.Serialization;
@@ -334,11 +335,6 @@ namespace StockAnalyzerApp
                 LoadAnalysis(Settings.Default.AnalysisFile);
             }
 
-            //if (this.StockDictionary.ContainsKey("SP500"))
-            //{
-            //    StockSerie cashSerie = this.StockDictionary["SP500"].GenerateCashStockSerie();
-            //    this.StockDictionary.Add(cashSerie.StockName, cashSerie);
-            //}
 
 #if DEBUG
             bool fastStart = false;
@@ -356,10 +352,6 @@ namespace StockAnalyzerApp
                         stockserie.Initialise();
                     }
                 }
-
-                // Generate Vix Premium
-                //StockSplashScreen.ProgressText = "Generating VIX Premium data...";
-                //GenerateVixPremium();
 
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
@@ -424,7 +416,7 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
-            // Refreshes intraday every 2 minutes.
+            // Refresh intraday every 2 minutes.
             refreshTimer = new System.Windows.Forms.Timer();
             refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
             refreshTimer.Interval = 120 * 1000;
@@ -435,6 +427,16 @@ namespace StockAnalyzerApp
             if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
                 GenerateAlert(dailyAlertConfig);
+            }
+            else
+            {
+                Task.Run(() =>
+                {
+                    foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL) && s.Count == 0))
+                    {
+                        stockSerie.Initialise();
+                    }
+                });
             }
 
             if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
@@ -1453,31 +1455,6 @@ namespace StockAnalyzerApp
         #endregion
 
         #region DRAWING TOOLBAR HANDLERS
-
-        private void sarLineStripBtn_Click(object sender, EventArgs e)
-        {
-            foreach (GraphControl graphControl in this.graphList)
-            {
-                if (sarLineStripBtn.Checked)
-                {
-                    graphControl.DrawingMode = GraphDrawMode.AddSAR;
-                    graphControl.DrawingStep = GraphDrawingStep.SelectItem;
-                }
-                else
-                {
-                    graphControl.DrawingMode = GraphDrawMode.Normal;
-                    graphControl.DrawingStep = GraphDrawingStep.Done;
-                }
-            }
-            drawLineStripBtn.Checked = false;
-            copyLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
-            deleteLineStripBtn.Checked = false;
-            addHalfLineStripBtn.Checked = false;
-            addSegmentStripBtn.Checked = false;
-            cutLineStripBtn.Checked = false;
-        }
-
         private void drawLineStripBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
@@ -1493,7 +1470,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1517,7 +1493,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1541,7 +1516,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1565,7 +1539,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1604,7 +1577,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1628,7 +1600,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1652,7 +1623,6 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1670,7 +1640,6 @@ namespace StockAnalyzerApp
             }
 
             // Reset drawing buttons 
-            sarLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;

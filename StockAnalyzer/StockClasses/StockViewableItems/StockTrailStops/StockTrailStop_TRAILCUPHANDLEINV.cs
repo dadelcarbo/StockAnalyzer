@@ -27,6 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var rightLowerHigh = (bool)this.parameters[1];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
 
             var lowestInSerie = stockSerie.GetIndicator($"LOWEST({period})").Series[0];
             this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
@@ -73,7 +74,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             {
                                 if (bodyHighSerie[k] > bodyHighSerie[k - 1])
                                 {
-                                    trailStop = bodyLowSerie[k];
+                                    trailStop = highSerie[k];
                                     break;
                                 }
                             }
