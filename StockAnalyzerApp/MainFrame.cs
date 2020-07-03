@@ -3228,6 +3228,7 @@ namespace StockAnalyzerApp
             }
             return true;
         }
+
         private void GenerateEMAHistogram()
         {
             SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
