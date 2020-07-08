@@ -17,6 +17,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -355,12 +356,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 }
                                             }
                                             break;
+                                        case "CLOUD":
+                                            {
+                                                var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                if (stockCloud != null)
+                                                {
+                                                    curveList.Cloud = stockCloud;
+                                                }
+                                            }
+                                            break;
                                         case "PAINTBAR":
                                             {
-                                                IStockPaintBar paintBar =
-                                                    (IStockPaintBar)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            currentStockSerie);
+                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line,currentStockSerie);
                                                 curveList.PaintBar = paintBar;
                                             }
                                             break;
