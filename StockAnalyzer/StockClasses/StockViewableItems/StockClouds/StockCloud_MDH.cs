@@ -37,11 +37,33 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie bullSerie = stockSerie.GetIndicator($"MDH({(int)this.parameters[0]})").Series[1];
-            FloatSerie bearSerie = stockSerie.GetIndicator($"MDH({(int)this.parameters[1]})").Series[1];
+            int slowPeriod = (int)this.parameters[1];
+            int fastPeriod = (int)this.parameters[0];
 
-            this.Series[0] = bullSerie;
-            this.Series[1] = bearSerie;
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+            // Calculate MID line 
+            FloatSerie fastLine = new FloatSerie(stockSerie.Count);
+            FloatSerie slowLine = new FloatSerie(stockSerie.Count);
+
+            float upLine = highSerie[0];
+            float downLine = lowSerie[0];
+            slowLine[0] = fastLine[0] = (upLine + downLine) / 2.0f;
+
+            for (int i = 1; i < stockSerie.Count; i++)
+            {
+                upLine = highSerie.GetMax(Math.Max(0, i - fastPeriod - 1), i - 1);
+                downLine = lowSerie.GetMin(Math.Max(0, i - fastPeriod - 1), i - 1);
+                fastLine[i] = (upLine + downLine) / 2.0f;
+
+                upLine = highSerie.GetMax(Math.Max(0, i - slowPeriod - 1), i - 1);
+                downLine = lowSerie.GetMin(Math.Max(0, i - slowPeriod - 1), i - 1);
+                slowLine[i] = (upLine + downLine) / 2.0f;
+            }
+
+            this.Series[0] = fastLine;
+            this.Series[1] = slowLine;
 
             // Detecting events
             this.GenerateEvents(stockSerie);

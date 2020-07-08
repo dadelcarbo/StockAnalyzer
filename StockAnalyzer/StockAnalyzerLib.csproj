@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\CloudMDHAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />

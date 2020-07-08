@@ -36,12 +36,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -403,8 +401,8 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator3Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
-
             StockSplashScreen.ProgressText = "Loading " + this.CurrentStockSerie.StockName + " data...";
+            this.ForceBarDuration(StockBarDuration.Daily, false);
             SetDurationForStockGroup(this.CurrentStockSerie.StockGroup);
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
@@ -428,6 +426,7 @@ namespace StockAnalyzerApp
             {
                 GenerateAlert(dailyAlertConfig);
             }
+#if !DEBUG
             else
             {
                 Task.Run(() =>
@@ -438,6 +437,7 @@ namespace StockAnalyzerApp
                     }
                 });
             }
+#endif
 
             if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
@@ -2395,10 +2395,17 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                 case StockSerie.Groups.INTRADAY:
+                    if (this.logScaleBtn.CheckState == CheckState.Checked)
+                    {
+                        this.logScaleBtn_Click(null, null);
+                    }
                     this.ForceBarDuration(StockBarDuration.Bar_12, true);
                     break;
                 default:
-                    this.ForceBarDuration(StockBarDuration.Daily, true);
+                    if (this.barDurationComboBox.SelectedItem != null && this.BarDuration.Duration > StockAnalyzer.StockClasses.BarDuration.Monthly)
+                    {
+                        this.ForceBarDuration(StockBarDuration.Daily, true);
+                    }
                     break;
             }
         }

@@ -2007,17 +2007,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems.Where(di => di is Line2DBase)) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (Line2DBase line2D in this.drawingItems.Where(di => di.IsPersistent && di is Line2DBase)) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
-                if (line2D.IsPersistent)
+                line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
+                currentDistance = line.DistanceTo(point2D);
+                if (currentDistance < minDistance)
                 {
-                    line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
-                    currentDistance = line.DistanceTo(point2D);
-                    if (currentDistance < minDistance)
-                    {
-                        index = counter;
-                        minDistance = currentDistance;
-                    }
+                    index = counter;
+                    minDistance = currentDistance;
                 }
                 counter++;
             }

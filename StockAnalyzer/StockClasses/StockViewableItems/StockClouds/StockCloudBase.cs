@@ -70,12 +70,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         protected static string[] eventNames = new string[]
           {
-             "AboveCloud", "BelowCloud", "InCloud",     // 0,1,2
-             "BullishCloud", "BearishCloud",            // 3, 4
-             "CloudUp", "CloudDown"                     // 5, 6
+             "AboveCloud", "BelowCloud", "InCloud",      // 0,1,2
+             "BullishCloud", "BearishCloud",             // 3, 4
+             "CloudUp", "CloudDown",                     // 5, 6
+             "CloseAboveCloud", "CloseBelowCloud"        // 7, 8
           };
 
-        protected static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true };
+        protected static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true, true, true };
         public virtual bool[] IsEvent => isEvent;
 
         public BoolSerie[] Events { get { return eventSeries; } }
@@ -107,10 +108,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 if (close > upBand)
                 {
                     this.Events[0][i] = true;
+                    this.Events[7][i] = !this.Events[0][i - 1];
                 }
                 else if (close < lowBand)
                 {
                     this.Events[1][i] = true;
+                    this.Events[8][i] = !this.Events[1][i - 1];
                 }
                 else
                 {

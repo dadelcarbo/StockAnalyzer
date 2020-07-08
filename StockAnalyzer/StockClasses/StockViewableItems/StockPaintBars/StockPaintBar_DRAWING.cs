@@ -72,7 +72,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di is Line2DBase);
+                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase);
                 foreach (Line2DBase item in drawingItems)
                 {
                     for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)
