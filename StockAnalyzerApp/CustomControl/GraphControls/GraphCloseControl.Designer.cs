@@ -23,6 +23,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.commentMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
+            this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInSocGenMenu = new MenuItem();
             this.statMenu = new MenuItem();
@@ -42,6 +43,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.commentMenu,
             this.separator2,
             this.openInABCMenu,
+            this.openInPEAPerfMenu,
             this.openInZBMenu,
             this.openInSocGenMenu,
             this.statMenu});
@@ -104,6 +106,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
+            // openInPEAPerf
+            // 
+            this.openInPEAPerfMenu.Index = 9;
+            this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
+            this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
+            // 
             // openInZBMenu
             // 
             this.openInZBMenu.Index = 10;
@@ -140,6 +148,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem commentMenu;
         private MenuItem agendaMenu;
         private MenuItem openInABCMenu;
+        private MenuItem openInPEAPerfMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInSocGenMenu;
         private MenuItem statMenu;

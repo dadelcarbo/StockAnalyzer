@@ -17,17 +17,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20 }; }
+            get { return new Object[] { 20, 1 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period" }; }
+            get { return new string[] { "Period", "Smooting" }; }
         }
-        public override string[] SerieNames { get { return new string[] { "MID(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { $"MID({this.Parameters[0]},{this.Parameters[1]})" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -64,7 +64,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 downLine[i] = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
                 midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
             }
-            this.series[0] = midLine;
+            int smoothing = (int)this.Parameters[1];
+            this.series[0] = smoothing > 1 ? midLine.CalculateEMA(smoothing) : midLine;
             this.series[0].Name = this.Name;
 
             // Detecting events

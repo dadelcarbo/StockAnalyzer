@@ -131,6 +131,16 @@ namespace StockAnalyzer.StockDrawing
             {
                 this.Pen = DefaultPen;
             }
+
+            // Inverse if exists
+            if (reader.Name == "Inverse")
+            {
+                this.Inverse = bool.Parse(reader.ReadElementContentAsString());
+            }
+            else
+            {
+                this.Inverse = false;
+            }
             reader.ReadEndElement();
         }
         public override void WriteXml(System.Xml.XmlWriter writer)
@@ -145,6 +155,11 @@ namespace StockAnalyzer.StockDrawing
             if (this.Pen != null && !Pen.Equals(DefaultPen))
             {
                 writer.WriteElementString("Pen", GraphCurveType.PenToString(this.Pen));
+            }
+
+            if (this.Inverse)
+            {
+                writer.WriteElementString("Inverse", this.Inverse.ToString());
             }
         }
         #endregion

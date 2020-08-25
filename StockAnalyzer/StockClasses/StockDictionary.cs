@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -47,7 +48,71 @@ namespace StockAnalyzer.StockClasses
             }
             return validGroups;
         }
+        #region RANK Calculation
+        public void CalculateRank(StockSerie.Groups group, string indicatorName, StockBarDuration duration, string destinationFolder)
+        {
+            var groupsSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
 
+            var dico = new SortedDictionary<DateTime, List<Tuple<StockSerie, float>>>();
+
+            foreach (var serie in groupsSeries)
+            {
+                serie.BarDuration = duration;
+
+                var indicatorSerie = serie.GetIndicator(indicatorName).Series[0];
+                int i = 0;
+                foreach (var date in serie.Keys)
+                {
+                    if (!dico.ContainsKey(date))
+                    {
+                        dico.Add(date, new List<Tuple<StockSerie, float>>());
+                    }
+                    dico[date].Add(new Tuple<StockSerie, float>(serie, indicatorSerie[i++]));
+                }
+            }
+
+            var ranks = new SortedDictionary<DateTime, List<Tuple<StockSerie, float>>>();
+            foreach (var item in dico)
+            {
+                float rank = 0;
+                var rankList = new List<Tuple<StockSerie, float>>();
+                ranks.Add(item.Key, rankList);
+                foreach (var ranked in item.Value.OrderBy(r => r.Item2).Select(r => r.Item1))
+                {
+                    rankList.Add(new Tuple<StockSerie, float>(ranked, rank * 100f / (item.Value.Count - 1f)));
+                    rank++;
+                }
+            }
+
+            // Persist
+            string fileName = Path.Combine(destinationFolder, $"{group}_{indicatorName}_{duration}.txt");
+            using (StreamWriter sw = new StreamWriter(fileName, false))
+            {
+                foreach (var serie in groupsSeries)
+                {
+                    var serieRanks = ranks.Select(r => r.Value.FirstOrDefault(l => l.Item1 == serie)?.Item2).Where(r => r != null).Select(r => r.Value.ToString("G4"));
+                    sw.WriteLine(serie.StockName + "|" + serieRanks.Aggregate((i, j) => i + "|" + j));
+                }
+            }
+            //foreach (var dailyValue in stockSerie.Values.Reverse().Take(1))
+            //{
+            //    var rank = new List<Tuple<string, float>>();
+            //    foreach (var serie in groupsSeries)
+            //    {
+            //        var index = serie.IndexOf(dailyValue.DATE);
+            //        if (index != -1)
+            //        {
+            //            var indicatorValue = serie.GetIndicator(indicatorName).Series[0][index];
+            //            rank.Add(new Tuple<string, float>(serie.StockName, indicatorValue));
+            //        }
+            //    }
+            //    var orderedRank = rank.OrderBy(r => r.Item2).Select(r => r.Item1).ToList().IndexOf(stockSerie.StockName) + 1f;
+            //    rankSerie[count++] = orderedRank / rank.Count;
+            //}
+
+
+        }
+        #endregion
         #region BREADTH INDICATOR GENERATION
         public bool GenerateAdvDeclSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
@@ -1292,14 +1357,14 @@ namespace StockAnalyzer.StockClasses
             float alpha19 = 2.0f / 20.0f;
             float alpha39 = 2.0f / 40.0f;
             float ema19 = 0.0f;
-            float ema39 = 0.0f; 
+            float ema39 = 0.0f;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
                 if (value.DATE <= lastBreadthDate)
                 {
                     continue;
                 }
-                vol = 0; val = 0; count = 0; 
+                vol = 0; val = 0; count = 0;
                 if (this.ReportProgress != null)
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());

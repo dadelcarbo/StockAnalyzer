@@ -222,7 +222,7 @@ namespace StockAnalyzer.StockClasses
         [XmlIgnore]
         protected Dictionary<string, FloatSerie> FloatSerieCache { get; set; }
         [XmlIgnore]
-        protected Dictionary<string, IStockIndicator> IndicatorCache { get; set; }
+        public Dictionary<string, IStockIndicator> IndicatorCache { get; set; }
         [XmlIgnore]
         protected Dictionary<string, IStockCloud> CloudCache { get; set; }
         [XmlIgnore]
@@ -651,7 +651,7 @@ namespace StockAnalyzer.StockClasses
 
                     if (this.Count == 0)
                     {
-                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this))
+                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this) || this.Count==0)
                         {
                             return false;
                         }

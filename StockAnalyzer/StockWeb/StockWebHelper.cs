@@ -119,8 +119,7 @@ namespace StockAnalyzer.StockWeb
         }
         #endregion
         #region Investing.com
-        private static string urlTemplate =
-            "http://tvc4.forexpros.com/f224d6c61fa87c49c5d7ca273393f2ad/1534757074/1/1/8/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
+        private static string urlTemplate = "http://tvc4.forexpros.com/f224d6c61fa87c49c5d7ca273393f2ad/1534757074/1/1/8/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
 
         private static HttpClient httpClient;
 

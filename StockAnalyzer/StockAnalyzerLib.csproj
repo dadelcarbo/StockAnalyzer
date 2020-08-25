@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StockAgent\Agents\CloudMDHAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWBARS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RORRUSH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />

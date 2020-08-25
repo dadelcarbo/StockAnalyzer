@@ -46,7 +46,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
+using System.Xml;
 using System.Xml.Serialization;
+using Telerik.Windows.Data;
 
 namespace StockAnalyzerApp
 {
@@ -354,6 +356,9 @@ namespace StockAnalyzerApp
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
             }
+            // Calculate Ranks
+            this.StockDictionary.CalculateRank(StockSerie.Groups.EURO_A, "ROR(100,1)", StockBarDuration.Daily, stockRootFolder + @"\data\Rank");
+
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
 
@@ -3746,8 +3751,7 @@ namespace StockAnalyzerApp
                     }
                     if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
-                        this.CurrentStockSerie.PaintBarCache = null;
-                        this.CurrentStockSerie.TrailStopCache = null;
+                        this.CurrentStockSerie.ResetIndicatorCache();
                     }
 
                     // Build curve list from definition
@@ -4544,9 +4548,23 @@ namespace StockAnalyzerApp
                 return;
             string url = "https://www.abcbourse.com/graphes/display.aspx?s=%SYMBOL%p";
             url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
-            {
-                Process.Start(url);
-            }
+            Process.Start(url);
+        }
+        internal void OpenInPEAPerf()
+        {
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+                return;
+            // Find name from PEA Performance
+            StockWebHelper wh = new StockWebHelper();
+            var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(suggestXML);
+            XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
+            if (parentNode.Count != 1)
+                return;
+            var symbol = parentNode.Item(0).InnerText.Split('|')[1];
+            string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
+            Process.Start(url);
         }
         internal void OpenInZBMenu()
         {
@@ -4554,9 +4572,7 @@ namespace StockAnalyzerApp
                 return;
             string url = "https://www.zonebourse.com/recherche/?mots=%ISIN%";
             url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
-            {
-                Process.Start(url);
-            }
+            Process.Start(url);
         }
         internal void OpenInSocGenMenu()
         {

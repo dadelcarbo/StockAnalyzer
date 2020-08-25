@@ -2178,6 +2178,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInABCMenu();
         }
+        void openInPEAPerf_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInPEAPerf();
+        }
         void openInZBMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInZBMenu();
