@@ -63,6 +63,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var period1 = (int)this.parameters[0];
             var period2 = (int)this.parameters[1];
             var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie gradientSerie = new FloatSerie(stockSerie.Count);
             // Create events
             this.CreateEventSeries(stockSerie.Count);
@@ -74,14 +75,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
                 }
                 DrawingItem.CreatePersistent = false;
-                float gradient = float.MinValue;
+                float supportGradient = float.MinValue;
                 Line2D support = null;
+                float resistanceGradient = float.MaxValue;
+                Line2D resistance = null;
                 for (int i = stockSerie.Count - period1 - 1; i < stockSerie.Count - period2 - 1; i++)
                 {
                     for (int j = i + period2; j < stockSerie.Count - 1; j++)
                     {
                         var line = new Line2D(new PointF { X = i, Y = lowSerie[i] }, new PointF { X = j, Y = lowSerie[j] });
-                        // Check if all points are above the line
+                        // Check if all points are above the support
                         var isSupport = true;
                         for (int k = stockSerie.Count - period1; k < stockSerie.Count - 1; k++)
                         {
@@ -93,10 +96,28 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         }
                         if (isSupport)
                         {
-                            if (line.a > gradient)
+                            if (line.a > supportGradient)
                             {
-                                gradient = line.a;
+                                supportGradient = line.a;
                                 support = line;
+                            }
+                        }// Check if all points are below the resistance
+                        line = new Line2D(new PointF { X = i, Y = highSerie[i] }, new PointF { X = j, Y = highSerie[j] });
+                        var isResistance = true;
+                        for (int k = stockSerie.Count - period1; k < stockSerie.Count - 1; k++)
+                        {
+                            if (k != i & k != j && !line.IsAbovePoint(new PointF { X = k, Y = highSerie[k] }))
+                            {
+                                isResistance = false;
+                                break;
+                            }
+                        }
+                        if (isResistance)
+                        {
+                            if (line.a < resistanceGradient)
+                            {
+                                resistanceGradient = line.a;
+                                resistance = line;
                             }
                         }
                     }
@@ -106,9 +127,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(support);
                     stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(new Bullet2D(support.Point1, 3, Brushes.Black));
                     stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(new Bullet2D(support.Point2, 3, Brushes.Black));
-                    gradientSerie[stockSerie.Count - 1] = 100f * gradient / lowSerie[(int)support.Point1.X];
-                    this.Events[0][stockSerie.Count - 1] = gradient > 0;
-                    this.Events[1][stockSerie.Count - 1] = gradient < 0;
+                    gradientSerie[stockSerie.Count - 1] = 100f * supportGradient / lowSerie[(int)support.Point1.X];
+                    this.Events[0][stockSerie.Count - 1] = supportGradient > 0;
+                    this.Events[1][stockSerie.Count - 1] = supportGradient < 0;
+                }
+                if (resistance != null)
+                {
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(resistance);
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(new Bullet2D(resistance.Point1, 3, Brushes.Black));
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(new Bullet2D(resistance.Point2, 3, Brushes.Black));
                 }
                 this.series[0] = gradientSerie;
                 this.Series[0].Name = this.Name;

@@ -85,7 +85,9 @@ namespace StockAnalyzerApp
         public static StockAnalyzerForm MainFrame { get; private set; }
         public bool IsClosing { get; set; }
 
+        private const string PEAPerfTemplatePath = @"Resources\PEAPerformanceTemplate.html";
         private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
+
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
@@ -4550,21 +4552,39 @@ namespace StockAnalyzerApp
             url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
             Process.Start(url);
         }
+
         internal void OpenInPEAPerf()
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
                 return;
-            // Find name from PEA Performance
-            StockWebHelper wh = new StockWebHelper();
-            var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(suggestXML);
-            XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
-            if (parentNode.Count != 1)
+
+            if (!File.Exists(PEAPerfTemplatePath))
                 return;
-            var symbol = parentNode.Item(0).InnerText.Split('|')[1];
-            string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
-            Process.Start(url);
+            var htmlReport = File.ReadAllText(PEAPerfTemplatePath)
+                .Replace("%ISIN%", this.currentStockSerie.ISIN)
+                .Replace("%STOCKNAME%", this.currentStockSerie.StockName);
+
+            string folderName = Settings.Default.RootFolder + @"\CommentReport\";
+
+            string fileName = folderName + @"\PEAPerfReport.html";
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                sw.Write(htmlReport);
+            }
+            Process.Start(fileName);
+
+
+            //// Find name from PEA Performance
+            //StockWebHelper wh = new StockWebHelper();
+            //var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
+            //XmlDocument xmlDoc = new XmlDocument();
+            //xmlDoc.LoadXml(suggestXML);
+            //XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
+            //if (parentNode.Count != 1)
+            //    return;
+            //var symbol = parentNode.Item(0).InnerText.Split('|')[1];
+            //string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
+            //Process.Start(url);
         }
         internal void OpenInZBMenu()
         {

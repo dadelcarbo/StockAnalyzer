@@ -846,6 +846,9 @@
     <None Include="Resources\Options.png" />
     <None Include="Resources\OpenAnalysis.png" />
     <None Include="Resources\Cloud.png" />
+    <Content Include="Resources\PEAPerformanceTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Reload.png" />
     <None Include="Resources\undo.ico" />
     <None Include="Resources\undo.png" />
