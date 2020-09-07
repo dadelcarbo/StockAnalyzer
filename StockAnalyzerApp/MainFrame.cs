@@ -359,7 +359,7 @@ namespace StockAnalyzerApp
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
             }
             // Calculate Ranks
-            this.StockDictionary.CalculateRank(StockSerie.Groups.EURO_A, "ROR(100,1)", StockBarDuration.Daily, stockRootFolder + @"\data\Rank");
+            //this.StockDictionary.CalculateRank(StockSerie.Groups.EURO_A, "ROR(100,1)", StockBarDuration.Daily, stockRootFolder + @"\data\Rank");
 
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";

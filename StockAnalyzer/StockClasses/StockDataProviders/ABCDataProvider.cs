@@ -661,8 +661,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 ASCIIEncoding encoding = new ASCIIEncoding();
 
                 // Send POST request
-                //  string url = "http://www.abcbourse.com/download/telechargement_intraday.aspx";
-                string url = "https://www.abcbourse.com/download/telechargement_intraday.aspx";
+                string url = "https://www.abcbourse.com/download/telechargement_intraday";
 
                 if (intradayViewState == string.Empty)
                 {
@@ -824,7 +823,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     // Send POST request
-                    string url = "https://www.abcbourse.com/download/libelles.aspx";
+                    string url = "https://www.abcbourse.com/download/libelles";
                     if (dailyViewState == string.Empty)
                     {
                         // Get ViewState 
@@ -903,7 +902,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     // Send POST request
-                    string url = "https://www.abcbourse.com/download/libelles.aspx";
+                    string url = "https://www.abcbourse.com/download/libelles";
                     if (dailyViewState == string.Empty)
                     {
                         // Get ViewState 
@@ -976,7 +975,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
 
                 // Send POST request
-                string url = "https://www.abcbourse.com/download/historiques.aspx";
+                string url = "https://www.abcbourse.com/download/historiques";
 
                 if (string.IsNullOrEmpty(dailyViewState) || string.IsNullOrEmpty(dailyViewStateGenerator))
                 {
@@ -1063,7 +1062,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Send POST request
                 //             https://www.abcbourse.com/download/download.aspx?s=PX1p
 
-                string url = "https://www.abcbourse.com/download/historiques.aspx";
+                string url = "https://www.abcbourse.com/download/historiques";
                 if (dailyViewState == string.Empty || dailyViewStateGenerator == string.Empty)
                 {
                     // Get ViewState 
@@ -1145,7 +1144,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         // Read the content.
                         string responseFromServer = reader.ReadToEnd();
 
-                        if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<!DOCTYPE", StringComparison.CurrentCultureIgnoreCase))
+                        if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<", StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Save content to file
                             using (StreamWriter writer = new StreamWriter(fileName))
@@ -1173,7 +1172,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 ASCIIEncoding encoding = new ASCIIEncoding();
 
                 // Send POST request
-                string url = "https://www.abcbourse.com/download/libelles.aspx";
+                string url = "https://www.abcbourse.com/download/libelles";
 
                 if (labelViewState == string.Empty)
                 {
