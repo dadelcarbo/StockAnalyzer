@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_RANGE : StockIndicatorBase
+    public class StockIndicator_ATR : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -12,18 +12,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 1 }; }
+            get { return new Object[] { 20 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period", "InputSmoothing" }; }
+            get { return new string[] { "Period"}; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "RANGE(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "ATR(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -46,16 +46,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            FloatSerie rangeSerie = new FloatSerie(stockSerie.Count);
+            FloatSerie atrSerie = new FloatSerie(stockSerie.Count);
 
             for (int i = 1; i < stockSerie.Count; i++)
             {
-                rangeSerie[i] = (((highSerie[i]-lowSerie[i])*2 - Math.Abs(openSerie[i] - closeSerie[i]))/closeSerie[i])*100f;
+                atrSerie[i] = Math.Max(highSerie[i], closeSerie[i - 1]) - Math.Min(lowSerie[i], closeSerie[i - 1]);
             }
 
-            this.series[0] = rangeSerie.CalculateEMA((int)this.Parameters[0]);
+            this.series[0] = atrSerie.CalculateEMA((int)this.Parameters[0]);
             this.Series[0].Name = this.Name;
         }
 

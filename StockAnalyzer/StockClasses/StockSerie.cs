@@ -5397,114 +5397,15 @@ namespace StockAnalyzer.StockClasses
             }
         }
         #region MIN_MAX_FUNCTIONS
-        public float GetMin(StockDataType dataType)
-        {
-            FloatSerie floatSerie = this.GetSerie(dataType);
-            return floatSerie.Min;
-        }
-        public float GetMin(GraphCurveType curveType)
-        {
-            return curveType.DataSerie.Min;
-        }
-        public float GetMin(List<GraphCurveType> curveList)
-        {
-            float minValue = float.MaxValue;
-            float tmpMin = float.MaxValue;
-            foreach (GraphCurveType currentCurveType in curveList)
-            {
-                tmpMin = GetMin(currentCurveType);
-                minValue = Math.Min(minValue, tmpMin);
-            }
-            return minValue;
-        }
         public float GetMin(int startIndex, int endIndex, StockDataType dataType)
         {
             FloatSerie floatSerie = this.GetSerie(dataType);
             return floatSerie.GetMin(startIndex, endIndex);
         }
-        public float GetMin(int startIndex, int endIndex, GraphCurveType curveType)
-        {
-            return curveType.DataSerie.GetMin(startIndex, endIndex);
-        }
-        public float GetMin(int startIndex, int endIndex, List<GraphCurveType> curveList)
-        {
-            float minValue = float.MaxValue;
-            float tmpMin = float.MaxValue;
-            foreach (GraphCurveType currentCurveType in curveList)
-            {
-                tmpMin = GetMin(currentCurveType);
-                minValue = Math.Min(minValue, tmpMin);
-            }
-            return minValue;
-        }
-
-
-        public float GetMax(StockDataType dataType)
-        {
-            FloatSerie floatSerie = this.GetSerie(dataType);
-            return floatSerie.Max;
-        }
-        public float GetMax(GraphCurveType curveType)
-        {
-            return curveType.DataSerie.Max;
-        }
-        public float GetMax(List<GraphCurveType> curveList)
-        {
-            float maxValue = float.MinValue;
-            float tmpMax = float.MinValue;
-            foreach (GraphCurveType currentCurveType in curveList)
-            {
-                tmpMax = currentCurveType.DataSerie.Max;
-                maxValue = Math.Max(maxValue, tmpMax);
-            }
-            return maxValue;
-        }
         public float GetMax(int startIndex, int endIndex, StockDataType dataType)
         {
             FloatSerie floatSerie = this.GetSerie(dataType);
             return floatSerie.GetMax(startIndex, endIndex);
-        }
-        public float GetMax(int startIndex, int endIndex, GraphCurveType curveType)
-        {
-            return curveType.DataSerie.GetMax(startIndex, endIndex);
-        }
-        public float GetMax(int startIndex, int endIndex, List<GraphCurveType> curveList)
-        {
-            float maxValue = float.MinValue;
-            float tmpMax = float.MinValue;
-            foreach (GraphCurveType currentCurveType in curveList)
-            {
-                tmpMax = GetMax(startIndex, endIndex, currentCurveType);
-                maxValue = Math.Max(maxValue, tmpMax);
-            }
-            return maxValue;
-        }
-
-        public void GetMinMax(StockDataType dataType, ref float minValue, ref float maxValue)
-        {
-            FloatSerie floatSerie = this.GetSerie(dataType);
-            floatSerie.GetMinMax(ref minValue, ref maxValue);
-        }
-        public void GetMinMax(GraphCurveType curveType, ref float minValue, ref float maxValue)
-        {
-            curveType.DataSerie.GetMinMax(ref minValue, ref maxValue);
-        }
-        public void GetMinMax(List<GraphCurveType> curveList, ref float minValue, ref float maxValue)
-        {
-            minValue = float.MaxValue;
-            maxValue = float.MinValue;
-            float tmpMin = float.MaxValue, tmpMax = float.MinValue;
-            foreach (GraphCurveType currentCurveType in curveList)
-            {
-                currentCurveType.DataSerie.GetMinMax(ref minValue, ref maxValue);
-                minValue = Math.Min(minValue, tmpMin);
-                maxValue = Math.Max(maxValue, tmpMax);
-            }
-        }
-        public void GetMinMax(int startIndex, int endIndex, StockDataType dataType, ref float minValue, ref float maxValue)
-        {
-            FloatSerie floatSerie = this.GetSerie(dataType);
-            floatSerie.GetMinMax(startIndex, endIndex, ref minValue, ref maxValue);
         }
         #endregion MIN MAX FUNCTION
         #endregion
@@ -5616,9 +5517,9 @@ namespace StockAnalyzer.StockClasses
             stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
 
             float scaleFactor = 1.0f;
-            if (this.GetSerie(StockDataType.LOW).Min < 1.0f)
+            if (this.GetSerie(StockDataType.LOW).Min() < 1.0f)
             {
-                scaleFactor = 0.5f / this.GetSerie(StockDataType.LOW).Min;
+                scaleFactor = 0.5f / this.GetSerie(StockDataType.LOW).Min();
             }
 
             // Calculate ratio foreach values
@@ -5639,7 +5540,7 @@ namespace StockAnalyzer.StockClasses
             StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated);
             stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
 
-            float scale = (float)Math.Pow(10, Math.Log10(this.GetSerie(StockDataType.HIGH).Max) + 1);
+            float scale = (float)Math.Pow(10, Math.Log10(this.GetSerie(StockDataType.HIGH).Max()) + 1);
 
             var duration = this.BarDuration;
             this.BarDuration = StockBarDuration.Daily;
