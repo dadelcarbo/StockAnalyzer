@@ -1,0 +1,57 @@
+﻿<Window x:Class="Sornette.MainWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"     
+        xmlns:chart="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Chart"    
+        xmlns:chartView="clr-namespace:Telerik.Windows.Controls.ChartView;assembly=Telerik.Windows.Controls.Chart"
+        xmlns:sornette="clr-namespace:Sornette"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <sornette:ViewModel></sornette:ViewModel>
+    </Window.DataContext>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+                <Rectangle Fill="#FF8EC441" Height="2" Width="15" Margin="5,0" />
+                <TextBlock Text="{Binding F1.Name}" Margin="0,0,9,0" />
+                <Rectangle Fill="#FF1B9DDE" Height="2" Width="15" Margin="0,0,5,0" />
+                <TextBlock Text="{Binding F2.Name}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Min" Width="30"/>
+                        <telerik:RadNumericUpDown Width="40" Value="{Binding Min}"/>
+                        <TextBlock Text="ω" Width="10"  Margin="10,0,0,0"/>
+                        <telerik:RadNumericUpDown Value="{Binding ω}"></telerik:RadNumericUpDown>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Max" Width="30"/>
+                        <telerik:RadNumericUpDown Width="40" Value="{Binding Max}"/>
+                        <TextBlock Text="φ"  Width="10" Margin="10,0,0,0"/>
+                        <telerik:RadNumericUpDown Value="{Binding φ}" SmallChange="0.1" LargeChange="1"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <chart:RadCartesianChart Grid.Row="1" Palette="Windows8" >
+            <chart:RadCartesianChart.HorizontalAxis>
+                <chartView:LinearAxis Maximum="{Binding Max}" Minimum="{Binding Min}"/>
+            </chart:RadCartesianChart.HorizontalAxis>
+            <chart:RadCartesianChart.VerticalAxis>
+                <chartView:LinearAxis />
+            </chart:RadCartesianChart.VerticalAxis>
+            <chart:RadCartesianChart.Grid>
+                <chartView:CartesianChartGrid />
+            </chart:RadCartesianChart.Grid>
+            <chart:RadCartesianChart.Series>
+                <telerik:ScatterLineSeries XValueBinding="X" YValueBinding="Y" ItemsSource="{Binding F1.Values}"/>
+                <telerik:ScatterLineSeries XValueBinding="X" YValueBinding="Y" ItemsSource="{Binding F2.Values}"/>
+            </chart:RadCartesianChart.Series>
+        </chart:RadCartesianChart>
+    </Grid>
+</Window>
