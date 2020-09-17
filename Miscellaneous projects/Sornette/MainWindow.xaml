@@ -16,9 +16,9 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
-                <Rectangle Fill="#FF8EC441" Height="2" Width="15" Margin="5,0" />
+                <Rectangle Fill="{Binding Palette.GlobalEntries[0].Fill, ElementName=Chart}" Height="2" Width="15" Margin="5,0" />
                 <TextBlock Text="{Binding F1.Name}" Margin="0,0,9,0" />
-                <Rectangle Fill="#FF1B9DDE" Height="2" Width="15" Margin="0,0,5,0" />
+                <Rectangle Fill="{Binding Palette.GlobalEntries[1].Fill, ElementName=Chart}" Height="2" Width="15" Margin="0,0,5,0" />
                 <TextBlock Text="{Binding F2.Name}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
@@ -27,7 +27,7 @@
                         <TextBlock Text="Min" Width="30"/>
                         <telerik:RadNumericUpDown Width="40" Value="{Binding Min}"/>
                         <TextBlock Text="ω" Width="10"  Margin="10,0,0,0"/>
-                        <telerik:RadNumericUpDown Value="{Binding ω}"></telerik:RadNumericUpDown>
+                        <telerik:RadNumericUpDown Value="{Binding ω}" Minimum="0.0" SmallChange="0.1" LargeChange="1"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <TextBlock Text="Max" Width="30"/>
@@ -38,7 +38,7 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-        <chart:RadCartesianChart Grid.Row="1" Palette="Windows8" >
+        <chart:RadCartesianChart Grid.Row="1" Name="Chart" Palette="Office2019" >
             <chart:RadCartesianChart.HorizontalAxis>
                 <chartView:LinearAxis Maximum="{Binding Max}" Minimum="{Binding Min}"/>
             </chart:RadCartesianChart.HorizontalAxis>
