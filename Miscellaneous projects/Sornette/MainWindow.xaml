@@ -5,7 +5,7 @@
         xmlns:chart="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Chart"    
         xmlns:chartView="clr-namespace:Telerik.Windows.Controls.ChartView;assembly=Telerik.Windows.Controls.Chart"
         xmlns:sornette="clr-namespace:Sornette"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="700" Width="1100">
     <Window.DataContext>
         <sornette:ViewModel></sornette:ViewModel>
     </Window.DataContext>
