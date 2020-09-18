@@ -71,6 +71,40 @@ namespace Sornette
             }
         }
 
+        private double a0;
+
+        public double A0
+        {
+            get { return a0; }
+            set
+            {
+                if (value != a0)
+                {
+                    a0 = value;
+                    this.OnPropertyChanged("A0");
+                    Calculate();
+                }
+            }
+        }
+
+
+        private double gradient;
+
+        public double Gradient
+        {
+            get { return gradient; }
+            set
+            {
+                if (value != gradient)
+                {
+                    gradient = value;
+                    this.OnPropertyChanged("Gradient");
+                    Calculate();
+                }
+            }
+        }
+
+
 
         public ViewModel()
         {
@@ -83,8 +117,8 @@ namespace Sornette
 
         private void Calculate()
         {
-            this.F1 = Function.CreateTrigo("Cos", min, max, 500, Math.Cos, ω, φ);
-            this.F2 = Function.CreateTrigo("Sin", min, max, 500, Math.Sin, ω, φ);
+            //this.F1 = Function.CreateTrigo("Cos", min, max, 500, Math.Cos, ω, φ);
+            this.F1 = Function.CreateSornette(min, max, 500, max * 0.9, ω, φ, A0, gradient);
 
             this.OnPropertyChanged("F1");
             this.OnPropertyChanged("F2");

@@ -22,11 +22,6 @@ namespace Sornette
         public MainWindow()
         {
             InitializeComponent();
-
-            foreach (var entry in this.Chart.Palette.GlobalEntries)
-            {
-                Console.WriteLine(entry.Fill.ToString());
-            }
         }
     }
 }
