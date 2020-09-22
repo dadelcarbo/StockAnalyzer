@@ -14,7 +14,7 @@ namespace Sornette
 
         public string Name { get; private set; }
 
-        static public Function CreateTrigo(string name, double start, double end, int nbValues, Fnct f, double omega, double phi)
+        static public Function CreateTrigo(string name, double start, double end, int nbValues, Fnct f, double ω, double φ)
         {
             double step = (end - start) / (double)(nbValues - 1);
             var function = new Function()
@@ -29,14 +29,14 @@ namespace Sornette
                 function.Values[i] = new Value
                 {
                     X = x,
-                    Y = f(omega * x + phi)
+                    Y = f(ω * x + φ)
                 };
                 x += step;
             }
 
             return function;
         }
-        static public Function CreateSornette(double start, double end, int nbValues, double Tc, double omega, double phi)
+        static public Function CreateSornette(double start, double end, int nbValues, double Tc, double ω, double φ, double A0, double gradient)
         {
             double step = (end - start) / (double)(nbValues - 1);
             var function = new Function()
@@ -45,15 +45,17 @@ namespace Sornette
                 Name = "Sornette"
             };
 
-            double x = start;
+            double t = start;
+            double val = A0;
             for (int i = 0; i < nbValues; i++)
             {
+                val = A0 * Math.Pow(1 + gradient, t);
                 function.Values[i] = new Value
                 {
-                    X = x,
-                    Y = Math.Cos(omega * x + phi)
+                    X = t,
+                    Y = Math.Cos(ω * Math.Log(Tc - t) + φ) + val
                 };
-                x += step;
+                t += step;
             }
 
             return function;
