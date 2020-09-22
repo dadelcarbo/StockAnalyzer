@@ -2296,36 +2296,46 @@ namespace StockAnalyzerApp
             }
         }
 
+        class Momentum
+        {
+            public StockBarDuration BarDuration { get; set; }
+            public StockSerie StockSerie { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public float Value { get; set; }
+            public override string ToString()
+            {
+                return BarDuration.ToString() + " " + StockSerie.StockGroup.ToString().PadRight(10) + " " + StockSerie.StockName.PadRight(30) + " " + StartDate.ToShortDateString() + "=>" + EndDate.ToShortDateString() + ": " + Value.ToString();
+            }
+        }
         private void patternRecognitionMenuItem_Click(object sender, EventArgs e)
         {
-            int before = 10;
-            int after = 200;
-            StockStatisticsEngine engine = new StockStatisticsEngine(before, after);
+            var momentums = new List<Momentum>();
+            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A_B_C)))
+            {
+                int nbBars = 100;
+                if (stockSerie.Initialise())
+                {
+                    stockSerie.BarDuration = StockBarDuration.Weekly;
+                    if (stockSerie.Count <= nbBars) continue;
+                    var rorSerie = stockSerie.GetIndicator($"ROR({nbBars},1)").Series[0];
+                    var maxIndex = rorSerie.FindMaxIndex(nbBars, stockSerie.Count - 1);
+                    var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - nbBars, maxIndex);
 
-            //this.CurrentTheme = "PATTERN";
-
-            //AddNewSerie(engine.GenerateSerie("Test"));
-
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "LowerHigh"));
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "OVERBOUGHTSR(STOKS(30_3_3),75,25)", "SupportDetected"));
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "TRAILSTOP", "TRAILHL(50)", "TrailedDown"));
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "EMA2Lines(49,50)", "BearishCrossing"));
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "ER(60,6,1,0.8)", "Oversold"));
-            var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "PAINTBAR", "TRUE(1)", "AllTimeHigh"));
-            //var pattern = new StockMatchPattern_Any();
-            //var pattern = new StockMatchPattern_StockAlert(new StockAlertDef(StockBarDuration.Daily, "INDICATOR", "HIGHLOWDAYS(200)", "Highest"));
-            //var pattern = new StockMatchPattern_ROR(20);
-
-            var series = this.StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
-            //var series = this.StockDictionary.Values.Where(s => s.StockName == "Test");
-            StockSerie serie = engine.FindPattern(series, BarDuration, pattern);
-
-            var drawingItems = new StockDrawingItems();
-            drawingItems.Add(new Line2D(new PointF(before, 0), 0, 1));
-            serie.StockAnalysis.DrawingItems.Add(StockBarDuration.Daily, drawingItems);
-
-            AddNewSerie(serie);
+                    momentums.Add(new Momentum
+                    {
+                        StockSerie = stockSerie,
+                        BarDuration = StockBarDuration.Weekly,
+                        EndDate = stockSerie.Keys.ElementAt(maxIndex),
+                        StartDate = stockSerie.Keys.ElementAt(minIndex),
+                        Value = rorSerie[maxIndex]
+                    });
+                }
+            }
+            foreach (var mom in momentums.OrderByDescending(m => m.Value))
+            {
+                Console.WriteLine(mom);
+            }
         }
 
         private void logSerieMenuItem_Click(object sender, EventArgs e)

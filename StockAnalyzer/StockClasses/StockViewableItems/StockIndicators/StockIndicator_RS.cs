@@ -50,9 +50,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[2] = refSerie.CalculateEMA(slowSmoothing);
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
+            this.CreateEventSeries(refSerie.Count);
 
-            for (int i = 5; i < stockSerie.Count; i++)
+            for (int i = 5; i < refSerie.Count; i++)
             {
                 this.Events[0][i] = this.Series[1][i - 1] < this.Series[2][i - 1] && this.Series[1][i] > this.Series[2][i];
                 this.Events[1][i] = this.Series[1][i - 1] > this.Series[2][i - 1] && this.Series[1][i] < this.Series[2][i];
