@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.bestTrend1 = new BestTrendUserControl();
+            this.bestTrend1 = new BestTrendUserControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private BestTrendUserControl bestTrend1;
+        public BestTrendUserControl bestTrend1;
     }
 }

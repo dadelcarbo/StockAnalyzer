@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace StockAnalyzerApp.CustomControl.TrendDlgs
@@ -11,9 +12,10 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
     {
         public BestTrendViewModel()
         {
-            this.indicatorName = "ROR(100,1)";
+            this.Period = 100;
         }
-        private string group = string.Empty;
+
+        string group;
         public string Group
         {
             get { return group; }
@@ -31,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
         {
             get { return StockBarDuration.Values; }
         }
-        private StockBarDuration barDuration = StockBarDuration.Daily;
+        private StockBarDuration barDuration;
         public StockBarDuration BarDuration
         {
             get { return barDuration; }
@@ -47,17 +49,17 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
 
         public List<string> Groups { get { return StockDictionary.Instance.GetValidGroupNames(); } }
 
-        private string indicatorName;
+        private int period;
 
-        public string IndicatorName
+        public int Period
         {
-            get { return indicatorName; }
+            get { return period; }
             set
             {
-                if (indicatorName != value)
+                if (period != value)
                 {
-                    indicatorName = value;
-                    this.OnPropertyChanged("IndicatorName");
+                    period = value;
+                    this.OnPropertyChanged("Period");
                 }
             }
         }
@@ -70,19 +72,20 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             {
                 foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.Group)))
                 {
-                    int nbBars = 100;
                     if (stockSerie.Initialise())
                     {
                         stockSerie.BarDuration = this.barDuration;
-                        if (stockSerie.Count <= nbBars) continue;
-                        var indicatorSerie = stockSerie.GetIndicator(indicatorName).Series[0];
-                        var maxIndex = indicatorSerie.FindMaxIndex(nbBars, stockSerie.Count - 1);
-                        var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - nbBars, maxIndex);
+                        if (stockSerie.Count <= period) continue;
+                        var indicatorSerie = stockSerie.GetIndicator($"ROR({this.period},1)").Series[0];
+                        var maxIndex = indicatorSerie.FindMaxIndex(period, stockSerie.Count - 1);
+                        var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - period, maxIndex);
 
                         BestTrends.Add(new MomentumViewModel
                         {
                             StockSerie = stockSerie,
-                            BarDuration = StockBarDuration.Weekly,
+                            BarDuration = this.barDuration,
+                            StartIndex = minIndex,
+                            EndIndex = maxIndex,
                             EndDate = stockSerie.Keys.ElementAt(maxIndex),
                             StartDate = stockSerie.Keys.ElementAt(minIndex),
                             Value = indicatorSerie[maxIndex]

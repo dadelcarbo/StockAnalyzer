@@ -55,6 +55,7 @@ namespace StockAnalyzerApp
 
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockBarDuration barDuration, bool activateMainWindow);
+        public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, StockBarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
 
@@ -1035,6 +1036,48 @@ namespace StockAnalyzerApp
             }
         }
 
+        public void OnSelectedStockAndDurationAndIndexChanged(string stockName, int startIndex, int endIndex, StockBarDuration barDuration, bool activate)
+        {
+            this.barDurationComboBox.SelectedItem = barDuration.Duration;
+            this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
+            this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+
+            if (!this.stockNameComboBox.Items.Contains(stockName))
+            {
+                if (this.StockDictionary.ContainsKey(stockName))
+                {
+                    var stockSerie = this.StockDictionary[stockName];
+
+                    StockSerie.Groups newGroup = stockSerie.StockGroup;
+                    if (this.selectedGroup != newGroup)
+                    {
+                        this.selectedGroup = newGroup;
+
+                        foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                        {
+                            groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
+                        }
+
+                        InitialiseStockCombo(true);
+                    }
+                }
+                else
+                {
+                    this.stockNameComboBox.Items.Add(stockName);
+                }
+            }
+            this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
+            this.stockNameComboBox.Text = stockName;
+            this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
+
+            StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+            this.ChangeZoom(startIndex, endIndex);
+
+            if (activate)
+            {
+                this.Activate();
+            }
+        }
         private void StockAnalyzerForm_StockSerieChanged(StockSerie newSerie, bool ignoreLinkedTheme)
         {
             //
@@ -3551,6 +3594,7 @@ namespace StockAnalyzerApp
             {
                 bestrendDlg = new BestTrendDlg(this.selectedGroup.ToString(), this.BarDuration);
                 bestrendDlg.Disposed += bestrendDialog_Disposed;
+                bestrendDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 bestrendDlg.Show();
             }
             else
@@ -3737,10 +3781,11 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
-                    if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
-                    {
-                        this.CurrentStockSerie.ResetIndicatorCache();
-                    }
+                    // Commented as it was removing drawings from Best Trend
+                    //if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
+                    //{
+                    //    this.CurrentStockSerie.ResetIndicatorCache();
+                    //}
 
                     // Build curve list from definition
                     if (!this.themeDictionary.ContainsKey(currentTheme))

@@ -88,7 +88,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
-            this.patternRecognitionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -551,7 +551,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator8,
             this.exportFinancialsMenuItem,
             this.toolStripSeparator22,
-            this.patternRecognitionMenuItem});
+            this.bestTrendMenuItem});
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
@@ -620,12 +620,12 @@ namespace StockAnalyzerApp
             this.toolStripSeparator22.Name = "toolStripSeparator22";
             this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
             // 
-            // patternRecognitionMenuItem
+            // bestTrendMenuItem
             // 
-            this.patternRecognitionMenuItem.Name = "patternRecognitionMenuItem";
-            this.patternRecognitionMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.patternRecognitionMenuItem.Text = "Pattern Recognition";
-            this.patternRecognitionMenuItem.Click += new System.EventHandler(this.bestTrendViewMenuItem_Click);
+            this.bestTrendMenuItem.Name = "bestTrendMenuItem";
+            this.bestTrendMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.bestTrendMenuItem.Text = "Best Trends";
+            this.bestTrendMenuItem.Click += new System.EventHandler(this.bestTrendViewMenuItem_Click);
             // 
             // portofolioMenuItem
             // 
@@ -1561,7 +1561,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem generateSeasonalitySerieMenuItem;
-        private ToolStripMenuItem patternRecognitionMenuItem;
+        private ToolStripMenuItem bestTrendMenuItem;
         private ToolStripMenuItem inverseSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;

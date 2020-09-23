@@ -10,19 +10,34 @@
     <UserControl.DataContext>
         <local:BestTrendViewModel></local:BestTrendViewModel>
     </UserControl.DataContext>
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Margin="2">Group</Label>
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
             <Label Margin="2">Duration</Label>
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding BarDurations}" SelectedItem="{Binding BarDuration}"/>
-            <Label Content="Indicator" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding IndicatorName}"/>
+            <Label Content="Period" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding Period}"/>
             <Label Margin="2">Indicator</Label>
             <Button Margin="20,2,2,2" Name="performBtn" Content="Perform" Click="performBtn_Click"/>
         </StackPanel>
 
-        <telerik:RadGridView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding BestTrends}" IsReadOnly="True"/>
+        <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding BestTrends}" IsReadOnly="True" 
+                             AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
+                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockSerie.StockGroup}"/>
+                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockSerie.StockName}"/>
+                <telerik:GridViewDataColumn Header="Start" DataMemberBinding="{Binding StartDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
+                <telerik:GridViewDataColumn Header="End" DataMemberBinding="{Binding EndDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
+                <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}"/>
 
-    </StackPanel>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+
+    </Grid>
 </UserControl>

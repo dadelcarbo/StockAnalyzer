@@ -7,12 +7,11 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
     public partial class BestTrendDlg : Form
     {
         public BestTrendDlg(string group, StockBarDuration barDuration)
-      {
+        {
             InitializeComponent();
 
             (this.elementHost1.Child as BestTrendUserControl).ViewModel.BarDuration = barDuration;
             (this.elementHost1.Child as BestTrendUserControl).ViewModel.Group = group;
-
             StockAnalyzerForm.MainFrame.NotifyBarDurationChanged += MainFrame_NotifyBarDurationChanged;
         }
 
