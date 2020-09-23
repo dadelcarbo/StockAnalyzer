@@ -115,7 +115,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.SummaryResults.Clear();
             this.Results.Clear();
 
-            foreach (var stockSerie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(this.group)))
+            foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
                 if (!stockSerie.Initialise()) return false;
                 var results = new List<float[]>();

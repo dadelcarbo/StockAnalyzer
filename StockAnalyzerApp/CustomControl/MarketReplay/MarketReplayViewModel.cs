@@ -335,7 +335,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.replaySerie = new StockSerie(name, name, StockSerie.Groups.Replay, StockDataProvider.Replay);
 
             // Select random serie
-            var series = StockDictionary.StockDictionarySingleton.Values.Where(v => !v.StockAnalysis.Excluded && v.BelongsToGroup(this.selectedGroup)).ToList();
+            var series = StockDictionary.Instance.Values.Where(v => !v.StockAnalysis.Excluded && v.BelongsToGroup(this.selectedGroup)).ToList();
             var rnd = new Random();
 
             referenceSerie = series[rnd.Next(0, series.Count)];
@@ -345,7 +345,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             CopyReferenceValues(referenceSerieIndex + 1);
 
-            StockDictionary.StockDictionarySingleton.Add(name, replaySerie);
+            StockDictionary.Instance.Add(name, replaySerie);
 
             this.SelectedStockChanged(name, true);
         }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
-   partial class GraphMutiTimeFrameControl : GraphControl
+    partial class GraphMutiTimeFrameControl : GraphControl
    {
       private List<BoolSerie> EventSeries { get; set; }
       

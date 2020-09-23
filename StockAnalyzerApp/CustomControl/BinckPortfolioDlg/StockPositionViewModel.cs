@@ -1,10 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockBinckPortfolio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
@@ -24,9 +20,9 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 var mapping = StockPortfolio.GetMapping(StockName);
                 if (mapping == null)
                 {
-                    return StockDictionary.StockDictionarySingleton.ContainsKey(position.StockName);
+                    return StockDictionary.Instance.ContainsKey(position.StockName);
                 }
-                return StockDictionary.StockDictionarySingleton.ContainsKey(mapping.StockName);
+                return StockDictionary.Instance.ContainsKey(mapping.StockName);
             }
         }
         public string StockName => position.StockName;

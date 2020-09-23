@@ -30,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl.GroupViewDlg
                     StockSplashScreen.ShowSplashScreen();
 
                     group = value;
-                    var stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
+                    var stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
 
                     this.GroupLines = new ObservableCollection<GroupLineViewModel>();
                     int count = 0;

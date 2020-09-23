@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie rankSerie = null;
         protected override void Init(StockSerie stockSerie)
         {
-            foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
+            foreach (var serie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
             {
                 if (serie.Initialise())
                 {

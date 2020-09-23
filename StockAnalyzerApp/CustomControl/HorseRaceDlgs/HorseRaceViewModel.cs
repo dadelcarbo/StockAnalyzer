@@ -84,7 +84,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
         }
 
-        static List<string> groups = StockDictionary.StockDictionarySingleton.GetValidGroupNames();
+        static List<string> groups = StockDictionary.Instance.GetValidGroupNames();
         public List<string> Groups { get { return HorseRaceViewModel.groups; } }
 
         private string indicator1Name;
@@ -217,7 +217,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
             List<StockPosition> positions = new List<StockPosition>();
 
-            var series = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(this.group));
+            var series = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group));
 
             StockSplashScreen.ProgressMin = 0;
             StockSplashScreen.ProgressMax = series.Count();

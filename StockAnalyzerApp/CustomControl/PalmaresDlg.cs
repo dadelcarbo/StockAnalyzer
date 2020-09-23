@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
 {

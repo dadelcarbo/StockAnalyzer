@@ -61,9 +61,9 @@ namespace StockAnalyzerApp.CustomControl
         private void StockNameComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             StockSerie selectedSerie = null;
-            if (StockDictionary.StockDictionarySingleton.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
+            if (StockDictionary.Instance.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
             {
-                selectedSerie = StockDictionary.StockDictionarySingleton[stockNameComboBox.SelectedItem.ToString()];
+                selectedSerie = StockDictionary.Instance[stockNameComboBox.SelectedItem.ToString()];
             }
             else
             {
@@ -79,12 +79,12 @@ namespace StockAnalyzerApp.CustomControl
             stockNameComboBox.Items.Clear();
             stockNameComboBox.SelectedItem = string.Empty;
 
-            var stocks = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
+            var stocks = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
             foreach (string stockName in stocks)
             {
-                if (StockDictionary.StockDictionarySingleton.Keys.Contains(stockName))
+                if (StockDictionary.Instance.Keys.Contains(stockName))
                 {
-                    StockSerie stockSerie = StockDictionary.StockDictionarySingleton[stockName];
+                    StockSerie stockSerie = StockDictionary.Instance[stockName];
                     stockNameComboBox.Items.Add(stockName);
                 }
             }

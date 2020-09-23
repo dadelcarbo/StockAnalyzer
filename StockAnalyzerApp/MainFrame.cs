@@ -3,8 +3,6 @@ using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockStatistic;
-using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
@@ -27,6 +25,7 @@ using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
+using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
@@ -43,10 +42,8 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
-using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
 
@@ -2296,48 +2293,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        class Momentum
-        {
-            public StockBarDuration BarDuration { get; set; }
-            public StockSerie StockSerie { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-            public float Value { get; set; }
-            public override string ToString()
-            {
-                return BarDuration.ToString() + " " + StockSerie.StockGroup.ToString().PadRight(10) + " " + StockSerie.StockName.PadRight(30) + " " + StartDate.ToShortDateString() + "=>" + EndDate.ToShortDateString() + ": " + Value.ToString();
-            }
-        }
-        private void patternRecognitionMenuItem_Click(object sender, EventArgs e)
-        {
-            var momentums = new List<Momentum>();
-            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A_B_C)))
-            {
-                int nbBars = 100;
-                if (stockSerie.Initialise())
-                {
-                    stockSerie.BarDuration = StockBarDuration.Weekly;
-                    if (stockSerie.Count <= nbBars) continue;
-                    var rorSerie = stockSerie.GetIndicator($"ROR({nbBars},1)").Series[0];
-                    var maxIndex = rorSerie.FindMaxIndex(nbBars, stockSerie.Count - 1);
-                    var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - nbBars, maxIndex);
-
-                    momentums.Add(new Momentum
-                    {
-                        StockSerie = stockSerie,
-                        BarDuration = StockBarDuration.Weekly,
-                        EndDate = stockSerie.Keys.ElementAt(maxIndex),
-                        StartDate = stockSerie.Keys.ElementAt(minIndex),
-                        Value = rorSerie[maxIndex]
-                    });
-                }
-            }
-            foreach (var mom in momentums.OrderByDescending(m => m.Value))
-            {
-                Console.WriteLine(mom);
-            }
-        }
-
         private void logSerieMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
@@ -3588,6 +3543,27 @@ namespace StockAnalyzerApp
                 this.themeComboBox.SelectedItem = WORK_THEME;
             }
         }
+        #region BEST TRENDS
+        BestTrendDlg bestrendDlg = null;
+        void bestTrendViewMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bestrendDlg == null)
+            {
+                bestrendDlg = new BestTrendDlg(this.selectedGroup.ToString(), this.BarDuration);
+                bestrendDlg.Disposed += bestrendDialog_Disposed;
+                bestrendDlg.Show();
+            }
+            else
+            {
+                bestrendDlg.Activate();
+            }
+        }
+
+        void bestrendDialog_Disposed(object sender, EventArgs e)
+        {
+            this.bestrendDlg = null;
+        }
+        #endregion
         #region HORSE RACE DIALOG
         HorseRaceDlg horseRaceDlg = null;
         void showHorseRaceViewMenuItem_Click(object sender, EventArgs e)
@@ -3609,7 +3585,7 @@ namespace StockAnalyzerApp
             this.horseRaceDlg = null;
         }
         #endregion
-        #region HORSE RACE DIALOG
+        #region MARKET REPLAY
         MarketReplayDlg marketReplayDlg = null;
         void marketReplayViewMenuItem_Click(object sender, EventArgs e)
         {

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockClasses;
@@ -301,17 +297,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             else
                                             {
                                                 if (fields[1].ToUpper() == "NONE" ||
-                                                    !StockDictionary.StockDictionarySingleton.ContainsKey(fields[1]))
+                                                    !StockDictionary.Instance.ContainsKey(fields[1]))
                                                 {
                                                     this.graphCloseControl.SecondaryFloatSerie = null;
                                                 }
                                                 else
                                                 {
-                                                    if (StockDictionary.StockDictionarySingleton.ContainsKey(fields[1]))
+                                                    if (StockDictionary.Instance.ContainsKey(fields[1]))
                                                     {
                                                         this.graphCloseControl.SecondaryFloatSerie =
                                                             currentStockSerie.GenerateSecondarySerieFromOtherSerie(
-                                                                StockDictionary.StockDictionarySingleton[fields[1]], StockDataType.CLOSE);
+                                                                StockDictionary.Instance[fields[1]], StockDataType.CLOSE);
                                                     }
                                                 }
                                             }

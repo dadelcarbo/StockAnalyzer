@@ -625,7 +625,7 @@ namespace StockAnalyzerApp
             this.patternRecognitionMenuItem.Name = "patternRecognitionMenuItem";
             this.patternRecognitionMenuItem.Size = new System.Drawing.Size(240, 22);
             this.patternRecognitionMenuItem.Text = "Pattern Recognition";
-            this.patternRecognitionMenuItem.Click += new System.EventHandler(this.patternRecognitionMenuItem_Click);
+            this.patternRecognitionMenuItem.Click += new System.EventHandler(this.bestTrendViewMenuItem_Click);
             // 
             // portofolioMenuItem
             // 

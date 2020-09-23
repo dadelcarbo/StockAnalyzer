@@ -80,19 +80,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (stockSerie.StockName == "TRIN_LOG")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN"];
                 trinSerie.Initialise();
                 return this.GenerateLogSerie(stockSerie, trinSerie, true);
             }
             if (stockSerie.StockName == "TRIN_SUM")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN"];
                 trinSerie.Initialise();
                 return this.GenerateSumSerie(stockSerie, trinSerie, true);
             }
             if (stockSerie.StockName == "TRIN_LOG_SUM")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN_LOG"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN_LOG"];
                 trinSerie.Initialise();
                 return this.GenerateSumSerie(stockSerie, trinSerie, true);
             }

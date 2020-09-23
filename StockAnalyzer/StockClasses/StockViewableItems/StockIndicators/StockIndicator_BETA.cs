@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             int period = (int)this.parameters[1];
             int smoothing = (int)this.parameters[2];
 
-            var serie = StockDictionary.StockDictionarySingleton[this.parameters[0].ToString()];
+            var serie = StockDictionary.Instance[this.parameters[0].ToString()];
             if (!serie.Initialise()) return;
 
             FloatSerie refSerie = serie.GetIndicator("OSC(" + smoothing + "," + period + ",True)").Series[0];

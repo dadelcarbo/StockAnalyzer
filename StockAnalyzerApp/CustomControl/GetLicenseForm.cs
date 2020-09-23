@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
-using StockAnalyzer.StockSecurity;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
 {
-   public partial class GetLicenseForm : Form
+    public partial class GetLicenseForm : Form
    {
       public GetLicenseForm()
       {

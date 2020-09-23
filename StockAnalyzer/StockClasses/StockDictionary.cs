@@ -17,14 +17,14 @@ namespace StockAnalyzer.StockClasses
 
         public delegate void OnSerieEventDetectionDone();
 
-        public static StockDictionary StockDictionarySingleton { get; set; }
+        public static StockDictionary Instance { get; set; }
 
         public delegate void ReportProgressHandler(string progress);
         public event ReportProgressHandler ReportProgress;
 
         public StockDictionary(System.DateTime archiveEndDate)
         {
-            StockDictionarySingleton = this;
+            Instance = this;
             this.ArchiveEndDate = archiveEndDate;
 
             StockPortfolio.PriceProvider = this;
@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses
         #region RANK Calculation
         public void CalculateRank(StockSerie.Groups group, string indicatorName, StockBarDuration duration, string destinationFolder)
         {
-            var groupsSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
+            var groupsSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
 
             var dico = new SortedDictionary<DateTime, List<Tuple<StockSerie, float>>>();
 

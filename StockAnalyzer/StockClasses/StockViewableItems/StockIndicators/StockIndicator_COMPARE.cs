@@ -49,18 +49,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var fastSmoothing = (int)this.parameters[1];
             var slowSmoothing = (int)this.parameters[2];
 
-            if (!StockDictionary.StockDictionarySingleton.ContainsKey(stockName))
+            if (!StockDictionary.Instance.ContainsKey(stockName))
             {
                 throw new ArgumentException("Stock name not found: " + stockName);
             }
 
-            var otherSerie = StockDictionary.StockDictionarySingleton[stockName];
+            var otherSerie = StockDictionary.Instance[stockName];
             if (!otherSerie.Initialise())
             {
                 throw new ArgumentException("Stock cannot be initialized: " + stockName);
             }
 
-            FloatSerie refSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.StockDictionarySingleton[this.parameters[0].ToString()], StockDataType.CLOSE);
+            FloatSerie refSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.Instance[this.parameters[0].ToString()], StockDataType.CLOSE);
 
             this.Series[0] = refSerie;
             this.Series[1] = refSerie.CalculateEMA(fastSmoothing);

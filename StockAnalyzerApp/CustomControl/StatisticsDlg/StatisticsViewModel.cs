@@ -140,7 +140,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             float stopPercent = -this.s1Percent;
             float targetPercent = this.r1Percent;
 
-            StockSerie stockSerie = StockDictionary.StockDictionarySingleton[name];
+            StockSerie stockSerie = StockDictionary.Instance[name];
             if (!stockSerie.Initialise()) return false;
 
             stockSerie.BarDuration = this.BarDuration;
@@ -207,7 +207,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             R2Count = 0;
             TotalReturn = 0;
 
-            StockSerie stockSerie = StockDictionary.StockDictionarySingleton[name];
+            StockSerie stockSerie = StockDictionary.Instance[name];
             if (!stockSerie.Initialise()) return false;
 
             stockSerie.BarDuration = this.BarDuration;

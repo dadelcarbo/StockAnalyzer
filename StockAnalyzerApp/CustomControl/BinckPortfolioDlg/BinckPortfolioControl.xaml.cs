@@ -1,7 +1,5 @@
 ﻿using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
-using System.Windows.Controls;
-using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
@@ -65,7 +63,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             {
                 stockName = mapping.StockName;
             }
-            if (StockDictionary.StockDictionarySingleton.ContainsKey(stockName) && SelectedStockChanged != null)
+            if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
             {
                 this.SelectedStockChanged(viewModel.StockName, true);
                 StockAnalyzerForm.MainFrame.Activate();

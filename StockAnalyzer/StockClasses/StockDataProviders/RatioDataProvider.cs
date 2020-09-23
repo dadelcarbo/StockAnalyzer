@@ -62,16 +62,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             string[] row = stockSerie.StockName.Split('/');
             string serieName = row[0] + "/" + row[1];
-            if (!StockDictionary.StockDictionarySingleton.ContainsKey(row[0]))
+            if (!StockDictionary.Instance.ContainsKey(row[0]))
             {
                 throw new Exception("Stock " + row[0] + " Not found, cannot calculate ratio");
             }
-            StockSerie s1 = StockDictionary.StockDictionarySingleton[row[0]];
-            if (!StockDictionary.StockDictionarySingleton.ContainsKey(row[1]))
+            StockSerie s1 = StockDictionary.Instance[row[0]];
+            if (!StockDictionary.Instance.ContainsKey(row[1]))
             {
                 throw new Exception("Stock " + row[1] + " Not found, cannot calculate ratio");
             }
-            StockSerie s2 = StockDictionary.StockDictionarySingleton[row[1]];
+            StockSerie s2 = StockDictionary.Instance[row[1]];
 
             // Generate ratio serie
             StockSerie s3 = s1.GenerateRelativeStrenthStockSerie(s2);

@@ -71,6 +71,9 @@ namespace StockAnalyzer.StockClasses
 
         public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
             StockBarDuration.Daily,
+            StockBarDuration.Weekly,
+            StockBarDuration.BiWeekly,
+            StockBarDuration.Monthly,
             StockBarDuration.TLB,
             StockBarDuration.TLB_3D,
             StockBarDuration.TLB_6D,
@@ -80,9 +83,6 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Bar_12,
             StockBarDuration.Bar_24,
             StockBarDuration.Bar_48,
-            StockBarDuration.Weekly,
-            StockBarDuration.BiWeekly,
-            StockBarDuration.Monthly
         };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)

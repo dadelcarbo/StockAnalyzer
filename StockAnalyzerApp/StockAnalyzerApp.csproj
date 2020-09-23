@@ -467,6 +467,17 @@
     <Compile Include="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml.cs">
+      <DependentUpon>BestTrendUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.Designer.cs">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendViewModel.cs" />
+    <Compile Include="CustomControl\TrendDlgs\MomentumViewModel.cs" />
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -684,6 +695,9 @@
       <DependentUpon>StockScannerDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -691,6 +705,7 @@
       <DependentUpon>MainFrame.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -924,6 +939,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\StatisticsDlg\StatisticsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

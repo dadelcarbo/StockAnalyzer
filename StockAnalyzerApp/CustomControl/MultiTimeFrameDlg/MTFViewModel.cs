@@ -73,7 +73,7 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
             if (value != group)
             {
                group = value; 
-               this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group)).ToList();
+               this.stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group)).ToList();
                this.NbStocks = stockSeries.Count(); 
                DurationChanged("Group");
             }
@@ -126,7 +126,7 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          indicatorName = "TRAILHL(1)";
 
          this.group = StockSerie.Groups.INTRADAY;
-         this.stockSeries = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(group)).ToList();
+         this.stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group)).ToList();
          this.NbStocks = stockSeries.Count();
 
          this.Trends = new ObservableCollection<MTFTrend>();
