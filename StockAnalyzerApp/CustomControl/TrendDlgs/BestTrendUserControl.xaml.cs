@@ -33,6 +33,8 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             this.Cursor = Cursors.Wait;
 
             this.ViewModel.Perform();
+
+            this.Cursor = previousCursor;
         }
 
         private void grid_SelectionChanged(object sender, SelectionChangeEventArgs e)

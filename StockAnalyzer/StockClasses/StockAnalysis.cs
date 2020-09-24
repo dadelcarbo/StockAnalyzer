@@ -150,5 +150,14 @@ namespace StockAnalyzer.StockClasses
             }
             return count;
         }
+        public int DeleteAlertDrawings()
+        {
+            int count = 0;
+            foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
+            {
+                count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => d.IsAlert));
+            }
+            return count;
+        }
     }
 }

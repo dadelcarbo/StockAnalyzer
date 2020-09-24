@@ -9,12 +9,16 @@ namespace StockAnalyzer.StockDrawing
     public abstract class DrawingItem : IXmlSerializable
     {
         public static bool CreatePersistent = true;
+        public static bool CreatedByAlert = false;
         [XmlIgnore]
         public bool IsPersistent { get; set; }
+        [XmlIgnore]
+        public bool IsAlert { get; set; }
 
         public DrawingItem()
         {
             this.IsPersistent = DrawingItem.CreatePersistent;
+            this.IsAlert = DrawingItem.CreatedByAlert;
             this.Pen = DefaultPen;
         }
 

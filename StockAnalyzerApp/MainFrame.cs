@@ -677,6 +677,7 @@ namespace StockAnalyzerApp
 
             try
             {
+                DrawingItem.CreatedByAlert = true;
                 string alertString = string.Empty;
 
                 List<StockSerie> stockList;
@@ -783,6 +784,7 @@ namespace StockAnalyzerApp
             }
             finally
             {
+                DrawingItem.CreatedByAlert = false;
                 busy = false;
             }
         }
@@ -3782,11 +3784,11 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
-                    // Commented as it was removing drawings from Best Trend
-                    //if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
-                    //{
-                    //    this.CurrentStockSerie.ResetIndicatorCache();
-                    //}
+                    // Delete transient drawing created by alert Detection
+                    if (this.CurrentStockSerie.StockAnalysis.DeleteAlertDrawings() > 0)
+                    {
+                        this.CurrentStockSerie.ResetIndicatorCache();
+                    }
 
                     // Build curve list from definition
                     if (!this.themeDictionary.ContainsKey(currentTheme))
