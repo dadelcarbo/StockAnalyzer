@@ -17,6 +17,7 @@ using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
+using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.GroupViewDlg;
@@ -3609,6 +3610,27 @@ namespace StockAnalyzerApp
         void bestrendDialog_Disposed(object sender, EventArgs e)
         {
             this.bestrendDlg = null;
+        }
+        #endregion
+        #region BEST TRENDS
+        ExpectedValueDlg expectedValueDlg = null;
+        void expectedValueMenuItem_Click(object sender, EventArgs e)
+        {
+            if (expectedValueDlg == null)
+            {
+                expectedValueDlg = new ExpectedValueDlg();
+                expectedValueDlg.Disposed += expectedValueDlg_Disposed;
+                expectedValueDlg.Show();
+            }
+            else
+            {
+                expectedValueDlg.Activate();
+            }
+        }
+
+        void expectedValueDlg_Disposed(object sender, EventArgs e)
+        {
+            this.expectedValueDlg = null;
         }
         #endregion
         #region HORSE RACE DIALOG

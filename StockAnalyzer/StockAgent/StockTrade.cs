@@ -70,8 +70,30 @@ namespace StockAnalyzer.StockAgent
 
             this.IsPartlyClosed = true;
         }
+        public void Close(int exitIndex, float exitValue)
+        {
+            this.ExitIndex = exitIndex;
 
-        public void Close(int exitIndex)
+            this.ExitValue = exitValue;
+            this.ExitDate = Serie.Keys.ElementAt(exitIndex);
+
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
+
+            this.IsClosed = true;
+            this.IsPartlyClosed = false;
+        }
+        public void CloseAtOpen(int exitIndex)
         {
             this.ExitIndex = exitIndex;
 

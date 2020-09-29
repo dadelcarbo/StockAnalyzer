@@ -207,6 +207,17 @@
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.Designer.cs">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml.cs">
+      <DependentUpon>ExpectedValueControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.Designer.cs">
+      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueViewModel.cs" />
+    <Compile Include="CustomControl\ExpectedValueDlg\TradeResult.cs" />
     <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -544,6 +555,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentReportDlg.resx">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.resx">
+      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\FinancialDlg\StockFinancialForm.resx">
       <DependentUpon>StockFinancialForm.cs</DependentUpon>
@@ -903,6 +917,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\CommentDlg\CommentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockAgent
         {
             if (this.Trade == null)
                 throw new InvalidOperationException("Cannot close the trade as it's not opened");
-            this.Trade.Close(exitIndex);
+            this.Trade.CloseAtOpen(exitIndex);
             this.Trade = null;
         }
         public void PartlyCloseTrade(int exitIndex)

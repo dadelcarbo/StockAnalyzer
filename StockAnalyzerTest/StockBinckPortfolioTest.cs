@@ -57,7 +57,7 @@ namespace StockAnalyzerTest
 
             // Test 2 Open and closed
             int closeIndex = 10;
-            trade.Close(closeIndex);
+            trade.CloseAtOpen(closeIndex);
 
             Assert.AreEqual(true, trade.IsClosed);
             Assert.AreEqual(false, trade.IsPartlyClosed);
@@ -78,7 +78,7 @@ namespace StockAnalyzerTest
             Assert.AreEqual(serie.Values.Last().CLOSE, trade.ExitValue);
 
             // Test 4 Open, partly closed and closed
-            trade.Close(10);
+            trade.CloseAtOpen(10);
 
             Assert.AreEqual(true, trade.IsClosed);
             Assert.AreEqual(false, trade.IsPartlyClosed);
@@ -104,7 +104,7 @@ namespace StockAnalyzerTest
             Assert.IsTrue(portfolio.PositionValue > 0f);
 
             // Test 2 Open and close
-            trade1.Close(10);
+            trade1.CloseAtOpen(10);
             portfolio.InitFromTradeSummary(trades);
             Assert.AreEqual(2, portfolio.Operations.Count);
             Assert.AreEqual(2, portfolio.Positions.Count);
@@ -138,7 +138,7 @@ namespace StockAnalyzerTest
                 Assert.IsTrue(portfolio.Return > 0f);
 
                 // Test 3 Opened, partially closed and closed
-                trade1.Close(10);
+                trade1.CloseAtOpen(10);
                 portfolio.InitFromTradeSummary(trades);
                 Assert.AreEqual(3, portfolio.Operations.Count);
                 Assert.AreEqual(2, portfolio.Positions.Count);
@@ -171,7 +171,7 @@ namespace StockAnalyzerTest
                 Assert.IsTrue(portfolio.Return < 0f);
 
                 // Test 3 Opened, partially closed and closed
-                trade1.Close(10);
+                trade1.CloseAtOpen(10);
                 portfolio.InitFromTradeSummary(trades);
                 Assert.AreEqual(3, portfolio.Operations.Count);
                 Assert.AreEqual(2, portfolio.Positions.Count);

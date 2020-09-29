@@ -89,6 +89,7 @@ namespace StockAnalyzerApp
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -551,7 +552,8 @@ namespace StockAnalyzerApp
             this.toolStripSeparator8,
             this.exportFinancialsMenuItem,
             this.toolStripSeparator22,
-            this.bestTrendMenuItem});
+            this.bestTrendMenuItem,
+            this.expectedValueMenuItem});
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
@@ -626,6 +628,14 @@ namespace StockAnalyzerApp
             this.bestTrendMenuItem.Size = new System.Drawing.Size(240, 22);
             this.bestTrendMenuItem.Text = "Best Trends";
             this.bestTrendMenuItem.Click += new System.EventHandler(this.bestTrendViewMenuItem_Click);
+            // 
+            // expectedValueMenuItem
+            // 
+            this.expectedValueMenuItem.Name = "expectedValueMenuItem";
+            this.expectedValueMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.expectedValueMenuItem.Text = "Expected Value";
+            this.expectedValueMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.expectedValueMenuItem.Click += new System.EventHandler(this.expectedValueMenuItem_Click);
             // 
             // portofolioMenuItem
             // 
@@ -1562,6 +1572,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem generateSeasonalitySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
+        private ToolStripMenuItem expectedValueMenuItem;
         private ToolStripMenuItem inverseSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;
