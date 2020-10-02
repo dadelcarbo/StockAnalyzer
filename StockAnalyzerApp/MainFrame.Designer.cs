@@ -634,7 +634,7 @@ namespace StockAnalyzerApp
             this.expectedValueMenuItem.Name = "expectedValueMenuItem";
             this.expectedValueMenuItem.Size = new System.Drawing.Size(240, 22);
             this.expectedValueMenuItem.Text = "Expected Value";
-            this.expectedValueMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.expectedValueMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
             this.expectedValueMenuItem.Click += new System.EventHandler(this.expectedValueMenuItem_Click);
             // 
             // portofolioMenuItem

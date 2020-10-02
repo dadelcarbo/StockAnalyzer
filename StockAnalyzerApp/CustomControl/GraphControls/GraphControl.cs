@@ -1214,6 +1214,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         entry = y + height;
                         target1 = y;
                         target2 = y - height;
+
+                        this.DrawString(foregroundGraphic, "Stop", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, stop - 5, false);
+                        this.DrawString(foregroundGraphic, "Entry", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, entry - 5, false);
+                        this.DrawString(foregroundGraphic, "T1", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target1 - 5, false);
+                        this.DrawString(foregroundGraphic, "T2", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target2 - 5, false);
+
                         this.foregroundGraphic.DrawLine(stopPen, x - width, stop, x + width, stop); // Stop
                         this.foregroundGraphic.DrawLine(entryPen, x - width, entry, x + width, entry); // Entry
                         this.foregroundGraphic.DrawLine(target1Pen, x - width, target1, x + width, target1); // Target1
@@ -1239,6 +1245,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         entry = y;
                         target1 = y + height;
                         target2 = y + 2 * height;
+
+                        this.DrawString(foregroundGraphic, "Stop", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, stop - 5, false);
+                        this.DrawString(foregroundGraphic, "Entry", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, entry - 5, false);
+                        this.DrawString(foregroundGraphic, "T1", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target1 - 5, false);
+                        this.DrawString(foregroundGraphic, "T2", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target2 - 5, false);
+
                         this.foregroundGraphic.DrawLine(target2Pen, x - width, target2, x + width, target2); // Target2
                         this.foregroundGraphic.DrawLine(target2Pen, x - width, y + height, x + width, y + height); // Target1
                         this.foregroundGraphic.DrawLine(entryPen, x - width, y, x + width, y); // Entry

@@ -22,6 +22,8 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             get { return Enum.GetValues(typeof(StockSerie.Groups)); }
         }
 
+        private StockSerie.Groups trades;
+
         private StockSerie.Groups group;
         public StockSerie.Groups Group
         {
@@ -142,9 +144,9 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
 
         public ExpectedValueViewModel(string indicator, string event1Name, string event2Name)
         {
-            this.IndicatorType1 = "PaintBar";
+            this.IndicatorType1 = "Cloud";
             Indicator1 = indicator;
-            this.IndicatorType2 = "PaintBar";
+            this.IndicatorType2 = "Cloud";
             Indicator2 = indicator;
             this.Event1 = event1Name;
             this.Event2 = event2Name;
@@ -170,10 +172,11 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
 
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+                var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
                 StockTrade trade = null;
                 float stopLoss = 0;
-                for (int i = 0; i < stockSerie.Count; i++)
+                for (int i = 0; i < stockSerie.Count - 2; i++)
                 {
                     if (trade == null) // look for opening a position
                     {
@@ -196,6 +199,10 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                         {
                             trade.CloseAtOpen(i + 1);
                             trades.Add(trade);
+                            //if (stop > 0 && trade.Gain < 0 && trade.Gain < -0.01 * this.stop)
+                            //{
+                            //    Console.WriteLine("Here");
+                            //}
                             trade = null;
                         }
                     }
@@ -210,12 +217,27 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                     Name = group.Key.StockName,
                     NbWin = winners.Count,
                     NbLoss = losers.Count,
-                    AvgGain = winners.Average(),
-                    AvgLoss = losers.Average(),
-                    MaxGain = winners.Max(),
-                    MaxLoss = losers.Min(),
+                    AvgGain = winners.Count == 0 ? 0 : winners.Average(),
+                    AvgLoss = losers.Count == 0 ? 0 : losers.Average(),
+                    MaxGain = winners.Count == 0 ? 0 : winners.Max(),
+                    MaxLoss = losers.Count == 0 ? 0 : losers.Min(),
                     ExpectedValue = group.Average(t => t.Gain)
-                }); ;
+                });
+            }
+            {
+                var winners = trades.Where(t => t.Gain > 0).Select(t => t.Gain).ToList();
+                var losers = trades.Where(t => t.Gain < 0).Select(t => t.Gain).ToList();
+                this.SummaryResults.Add(new TradeResult
+                {
+                    Name = "Summary",
+                    NbWin = winners.Count,
+                    NbLoss = losers.Count,
+                    AvgGain = winners.Count == 0 ? 0 : winners.Average(),
+                    AvgLoss = losers.Count == 0 ? 0 : losers.Average(),
+                    MaxGain = winners.Count == 0 ? 0 : winners.Max(),
+                    MaxLoss = losers.Count == 0 ? 0 : losers.Min(),
+                    ExpectedValue = trades.Average(t => t.Gain)
+                });
             }
             return true;
         }

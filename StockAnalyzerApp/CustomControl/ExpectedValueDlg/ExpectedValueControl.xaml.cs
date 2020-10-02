@@ -20,7 +20,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
     /// </summary>
     public partial class ExpectedValueControl : UserControl
     {
-        ExpectedValueViewModel viewModel = new ExpectedValueViewModel("TOPEMA(0,80,1)", "Bullish", "Bearish");
+        ExpectedValueViewModel viewModel = new ExpectedValueViewModel("TREND(50)", "CloudUp", "CloudDown");
         public ExpectedValueControl()
         {
             InitializeComponent();
