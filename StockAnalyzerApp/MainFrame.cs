@@ -46,6 +46,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
+using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
 
@@ -4616,9 +4617,21 @@ namespace StockAnalyzerApp
 
             if (!File.Exists(PEAPerfTemplatePath))
                 return;
+
+            // Find name from PEA Performance
+            StockWebHelper wh = new StockWebHelper();
+            var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(suggestXML);
+            XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
+            if (parentNode.Count != 1)
+                return;
+            var symbol = parentNode.Item(0).InnerText.Split('|')[1];
+
             var htmlReport = File.ReadAllText(PEAPerfTemplatePath)
                 .Replace("%ISIN%", this.currentStockSerie.ISIN)
-                .Replace("%STOCKNAME%", this.currentStockSerie.StockName);
+                .Replace("%STOCKNAME%", this.currentStockSerie.StockName)
+                .Replace("%SYMBOL%", symbol);
 
             string folderName = Settings.Default.RootFolder + @"\CommentReport\";
 
@@ -4628,19 +4641,6 @@ namespace StockAnalyzerApp
                 sw.Write(htmlReport);
             }
             Process.Start(fileName);
-
-
-            //// Find name from PEA Performance
-            //StockWebHelper wh = new StockWebHelper();
-            //var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
-            //XmlDocument xmlDoc = new XmlDocument();
-            //xmlDoc.LoadXml(suggestXML);
-            //XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
-            //if (parentNode.Count != 1)
-            //    return;
-            //var symbol = parentNode.Item(0).InnerText.Split('|')[1];
-            //string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
-            //Process.Start(url);
         }
         internal void OpenInZBMenu()
         {
