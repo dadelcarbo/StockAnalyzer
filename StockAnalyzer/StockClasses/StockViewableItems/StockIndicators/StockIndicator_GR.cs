@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using StockAnalyzer.StockMath;
 
@@ -7,14 +8,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_GR : StockIndicatorBase
     {
+        public override string Name => "GR(" + ((DateTime)this.Parameters[0]).ToShortDateString() + ")";
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-
-        public override string Name
-        {
-            get { return "GR"; }
         }
 
         public override string Definition
@@ -23,15 +20,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { }; }
+            get { return new Object[] { new DateTime(2000, 01, 01) }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { }; }
+            get { return new ParamRange[] { new ParamRangeDateTime(new DateTime(2000, 01, 01), DateTime.Today.AddDays(1)) }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { }; }
+            get { return new string[] { "StartDate" }; }
         }
         public override string[] SerieNames { get { return new string[] { "GR" }; } }
 
@@ -50,20 +47,26 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var startDate = (DateTime)this.parameters[0];
 
             FloatSerie grSerie = new FloatSerie(stockSerie.Count, "GR");
             this.Series[0] = grSerie;
             grSerie[0] = closeSerie[0];
             float dividend = 0;
             int i = 1;
+            var previousBarDate = stockSerie.Keys.First();
             foreach (var value in stockSerie.Values.Skip(1))
             {
-                var entry = stockSerie?.Dividend?.Entries.FirstOrDefault(e => e.Date == value.DATE.Date);
-                if (entry != null)
+                if (value.DATE.Date >= startDate)
                 {
-                    dividend += entry.Dividend;
+                    var entries = stockSerie?.Dividend?.Entries.Where(e => e.Date > previousBarDate && e.Date <= value.DATE.Date).ToList();
+                    if (entries.Count > 0)
+                    {
+                        dividend += entries.Sum(e => e.Dividend);
+                    }
                 }
                 grSerie[i++] = value.CLOSE + dividend;
+                previousBarDate = value.DATE;
             }
 
             // Detecting events

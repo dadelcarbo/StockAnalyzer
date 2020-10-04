@@ -42,7 +42,15 @@
             </StackPanel>
         </GroupBox>
         <DataGrid Grid.Row="3" Margin="2" ItemsSource="{Binding Results}" CanUserAddRows="False" IsReadOnly="True"/>
-        <DataGrid Grid.Row="4" Margin="2" ItemsSource="{Binding SummaryResults}" CanUserAddRows="False" IsReadOnly="True"/>
+        <DataGrid Grid.Row="4" Margin="2" ItemsSource="{Binding SummaryResults}" CanUserAddRows="False" IsReadOnly="True" AutoGenerateColumns="True" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="NbTrades" Binding="{Binding NbTrades}"/>
+                <DataGridTextColumn Header="WinRate" Binding="{Binding WinRate, StringFormat=P2}"/>
+                <DataGridTextColumn Header="WinLossRatio" Binding="{Binding WinLossRatio}"/>
+                <DataGridTextColumn Header="WinLossRatio" Binding="{Binding WinLossRatio, StringFormat=0.0000}"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content=" Calculate " Click="CalculateBtn_OnClick" Margin="4" />
         </StackPanel>

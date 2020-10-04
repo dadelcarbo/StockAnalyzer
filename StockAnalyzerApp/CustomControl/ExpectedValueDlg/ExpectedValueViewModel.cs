@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using System;
@@ -199,10 +198,10 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                         {
                             trade.CloseAtOpen(i + 1);
                             trades.Add(trade);
-                            //if (stop > 0 && trade.Gain < 0 && trade.Gain < -0.01 * this.stop)
-                            //{
-                            //    Console.WriteLine("Here");
-                            //}
+                            if (stop > 0 && trade.Gain < 0 && trade.Gain < -0.01 * this.stop)
+                            {
+                                Console.WriteLine("Here");
+                            }
                             trade = null;
                         }
                     }
@@ -221,6 +220,8 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                     AvgLoss = losers.Count == 0 ? 0 : losers.Average(),
                     MaxGain = winners.Count == 0 ? 0 : winners.Max(),
                     MaxLoss = losers.Count == 0 ? 0 : losers.Min(),
+                    TotalGain = winners.Count == 0 ? 0 : winners.Sum(),
+                    TotalLoss = losers.Count == 0 ? 0 : losers.Sum(),
                     ExpectedValue = group.Average(t => t.Gain)
                 });
             }
@@ -236,6 +237,8 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                     AvgLoss = losers.Count == 0 ? 0 : losers.Average(),
                     MaxGain = winners.Count == 0 ? 0 : winners.Max(),
                     MaxLoss = losers.Count == 0 ? 0 : losers.Min(),
+                    TotalGain = winners.Count == 0 ? 0 : winners.Sum(),
+                    TotalLoss = losers.Count == 0 ? 0 : losers.Sum(),
                     ExpectedValue = trades.Average(t => t.Gain)
                 });
             }

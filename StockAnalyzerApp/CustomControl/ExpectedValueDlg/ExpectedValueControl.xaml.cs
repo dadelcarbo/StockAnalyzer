@@ -34,7 +34,17 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.viewModel.Calculate();
 
             this.Cursor = Cursors.Arrow;
+        }
 
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            var datagrid = sender as DataGrid;
+            if (datagrid == null)
+                return;
+            if (datagrid.Columns.Any(c => c.Header.ToString() == e.PropertyName))
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

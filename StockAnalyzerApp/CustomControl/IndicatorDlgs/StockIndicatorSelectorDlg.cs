@@ -1409,8 +1409,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         e.CancelEdit = false;
                         RefreshNode(ParamNode);
                         break;
-                    default:
+                    case "DateTime":
+                        ParamNode.ViewableItem.Parameters[e.Item] = DateTime.Parse(e.Label);
+                        e.CancelEdit = false;
+                        RefreshNode(ParamNode);
                         break;
+                    default:
+                        throw new NotImplementedException($"Type {type} not implemented");
                 }
             }
             else
