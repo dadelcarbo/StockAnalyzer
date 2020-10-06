@@ -20,11 +20,11 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
     /// </summary>
     public partial class ExpectedValueControl : UserControl
     {
-        ExpectedValueViewModel viewModel = new ExpectedValueViewModel("TREND(50)", "CloudUp", "CloudDown");
+        ExpectedValueViewModel viewModel;
         public ExpectedValueControl()
         {
             InitializeComponent();
-            this.DataContext = viewModel;
+            this.DataContext = this.viewModel = this.Resources["ViewModel"] as ExpectedValueViewModel;
         }
 
         private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)

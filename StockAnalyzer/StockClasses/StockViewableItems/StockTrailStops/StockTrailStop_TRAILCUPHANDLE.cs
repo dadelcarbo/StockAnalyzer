@@ -55,7 +55,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 bool isBull = false;
                 float trailStop = float.NaN;
                 float highestInBars = float.MaxValue; // Reference for trailing stop
-                float previousLow = float.NaN;
                 for (int i = period * 2; i < stockSerie.Count; i++)
                 {
                     if (isBull) // Trail Stop
@@ -136,7 +135,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         }
                         if (!rightHigherLow || (rightHigherLow && rightLow.Y > leftLow.Y))
                         {
-                            previousLow = float.NaN;
                             this.series[0][i] = trailStop = Math.Max(trailStop, low);
                             highestInBars = highestInSerie[i];
                             isBull = true;

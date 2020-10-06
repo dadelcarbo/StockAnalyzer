@@ -21,8 +21,6 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             get { return Enum.GetValues(typeof(StockSerie.Groups)); }
         }
 
-        private StockSerie.Groups trades;
-
         private StockSerie.Groups group;
         public StockSerie.Groups Group
         {
@@ -139,8 +137,23 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
 
         private ObservableCollection<TradeResult> results;
         public ObservableCollection<TradeResult> Results { get { return results; } set { if (value != results) { results = value; OnPropertyChanged("Results"); } } }
-        public ObservableCollection<TradeResult> SummaryResults { get; set; }
 
+        TradeResult summaryResult;
+        public TradeResult SummaryResult { get { return summaryResult; } set { if (value != summaryResult) { summaryResult = value; OnPropertyChanged("SummaryResult"); } } }
+
+
+        public ExpectedValueViewModel()
+        {
+            this.IndicatorType1 = "Cloud";
+            Indicator1 = "TREND(50)";
+            this.IndicatorType2 = "Cloud";
+            Indicator2 = "TREND(50)";
+            this.Event1 = "CloudUp";
+            this.Event2 = "CloudDown";
+            this.Results = new ObservableCollection<TradeResult>();
+            this.BarDuration = BarDuration.Daily;
+            this.Group = StockSerie.Groups.COUNTRY;
+        }
         public ExpectedValueViewModel(string indicator, string event1Name, string event2Name)
         {
             this.IndicatorType1 = "Cloud";
@@ -150,13 +163,11 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.Event1 = event1Name;
             this.Event2 = event2Name;
             this.Results = new ObservableCollection<TradeResult>();
-            this.SummaryResults = new ObservableCollection<TradeResult>();
             this.BarDuration = BarDuration.Daily;
             this.Group = StockSerie.Groups.COUNTRY;
         }
         public bool Calculate()
         {
-            this.SummaryResults.Clear();
             this.Results.Clear();
             var trades = new List<StockTrade>();
 
@@ -228,7 +239,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             {
                 var winners = trades.Where(t => t.Gain > 0).Select(t => t.Gain).ToList();
                 var losers = trades.Where(t => t.Gain < 0).Select(t => t.Gain).ToList();
-                this.SummaryResults.Add(new TradeResult
+                this.SummaryResult = new TradeResult
                 {
                     Name = "Summary",
                     NbWin = winners.Count,
@@ -240,7 +251,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                     TotalGain = winners.Count == 0 ? 0 : winners.Sum(),
                     TotalLoss = losers.Count == 0 ? 0 : losers.Sum(),
                     ExpectedValue = trades.Average(t => t.Gain)
-                });
+                };
             }
             return true;
         }
