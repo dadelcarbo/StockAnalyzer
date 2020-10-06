@@ -6,9 +6,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILEMA : StockTrailStopBase
     {
-        public StockTrailStop_TRAILEMA()
-        {
-        }
+        public override string Definition => base.Definition + Environment.NewLine + 
+            "Draw a trail stop that is calculated as a EMA starting from the previous extremum.";
+
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -33,8 +33,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             stockSerie.CalculateEMATrailStop((int)this.Parameters[0], (int)this.Parameters[1], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;

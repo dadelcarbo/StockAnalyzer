@@ -1,34 +1,34 @@
 ﻿using System.Windows.Forms;
 namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
-   partial class StockIndicatorSelectorDlg
-   {
-      /// <summary>
-      /// Required designer variable.
-      /// </summary>
-      private System.ComponentModel.IContainer components = null;
+    partial class StockIndicatorSelectorDlg
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-      /// <summary>
-      /// Clean up any resources being used.
-      /// </summary>
-      /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-      protected override void Dispose(bool disposing)
-      {
-         if (disposing && (components != null))
-         {
-            components.Dispose();
-         }
-         base.Dispose(disposing);
-      }
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-      #region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-      /// <summary>
-      /// Required method for Designer support - do not modify
-      /// the contents of this method with the code editor.
-      /// </summary>
-      private void InitializeComponent()
-      {
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StockIndicatorSelectorDlg));
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -70,15 +70,18 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curvePreviewLabel = new System.Windows.Forms.Label();
             this.previewPanel = new System.Windows.Forms.Panel();
             this.paintBarGroupBox = new System.Windows.Forms.GroupBox();
+            this.cloudGroupBox = new System.Windows.Forms.GroupBox();
             this.trailStopGroupBox = new System.Windows.Forms.GroupBox();
             this.graphMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addIndicatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addHorizontalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPaintBarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailStopsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDecoratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indicatorMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cloudMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -92,6 +95,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curveConfigBox.SuspendLayout();
             this.graphMenuStrip.SuspendLayout();
             this.indicatorMenuStrip.SuspendLayout();
+            this.cloudMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeView1
@@ -371,6 +375,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.paintBarGroupBox.Name = "paintBarGroupBox";
             this.paintBarGroupBox.TabStop = false;
             // 
+            // cloudGroupBox
+            // 
+            resources.ApplyResources(this.cloudGroupBox, "cloudGroupBox");
+            this.cloudGroupBox.Name = "cloudGroupBox";
+            this.cloudGroupBox.TabStop = false;
+            // 
             // trailStopGroupBox
             // 
             resources.ApplyResources(this.trailStopGroupBox, "trailStopGroupBox");
@@ -381,6 +391,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             // 
             this.graphMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addIndicatorToolStripMenuItem,
+            this.addCloudToolStripMenuItem,
             this.addHorizontalLineToolStripMenuItem,
             this.addPaintBarsToolStripMenuItem,
             this.addTrailStopsToolStripMenuItem});
@@ -392,6 +403,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addIndicatorToolStripMenuItem.Name = "addIndicatorToolStripMenuItem";
             resources.ApplyResources(this.addIndicatorToolStripMenuItem, "addIndicatorToolStripMenuItem");
             this.addIndicatorToolStripMenuItem.Click += new System.EventHandler(this.addIndicatorToolStripMenuItem_Click);
+            // 
+            // addCloudToolStripMenuItem
+            // 
+            this.addCloudToolStripMenuItem.Name = "addCloudToolStripMenuItem";
+            resources.ApplyResources(this.addCloudToolStripMenuItem, "addCloudToolStripMenuItem");
+            this.addCloudToolStripMenuItem.Click += new System.EventHandler(this.addCloudToolStripMenuItem_Click);
             // 
             // addHorizontalLineToolStripMenuItem
             // 
@@ -432,6 +449,14 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.copyStripMenuItem});
             this.indicatorMenuStrip.Name = "indicatorMenuStrip";
             resources.ApplyResources(this.indicatorMenuStrip, "indicatorMenuStrip");
+            // 
+            // cloudMenuStrip
+            // 
+            this.cloudMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeStripMenuItem,
+            this.copyStripMenuItem});
+            this.cloudMenuStrip.Name = "cloudMenuStrip";
+            resources.ApplyResources(this.cloudMenuStrip, "cloudMenuStrip");
             // 
             // removeStripMenuItem
             // 
@@ -487,6 +512,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.Controls.Add(this.lineConfigBox);
             this.Controls.Add(this.indicatorConfigBox);
             this.Controls.Add(this.paintBarGroupBox);
+            this.Controls.Add(this.cloudGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -503,65 +529,69 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curveConfigBox.PerformLayout();
             this.graphMenuStrip.ResumeLayout(false);
             this.indicatorMenuStrip.ResumeLayout(false);
+            this.cloudMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
-      }
-      #endregion
+        }
+        #endregion
 
-      private System.Windows.Forms.TreeView treeView1;
-      private System.Windows.Forms.GroupBox graphConfigBox;
-      private System.Windows.Forms.GroupBox indicatorConfigBox;
-      private System.Windows.Forms.GroupBox curveConfigBox;
-      private System.Windows.Forms.GroupBox lineConfigBox;
-      private System.Windows.Forms.GroupBox paintBarGroupBox;
-      private System.Windows.Forms.GroupBox trailStopGroupBox;
-      private System.Windows.Forms.ContextMenuStrip graphMenuStrip;
-      private System.Windows.Forms.ToolStripMenuItem addIndicatorToolStripMenuItem;
-      private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
-      private System.Windows.Forms.ToolStripMenuItem removeStripMenuItem;
-      private System.Windows.Forms.ToolStripMenuItem addDecoratorToolStripMenuItem;
-      private System.Windows.Forms.ToolStripMenuItem addTrailToolStripMenuItem;
-      private System.Windows.Forms.ComboBox thicknessComboBox;
-      private System.Windows.Forms.ComboBox lineTypeComboBox;
-      private System.Windows.Forms.Label curvePreviewLabel;
-      private System.Windows.Forms.Panel previewPanel;
-      private System.Windows.Forms.Label label3;
-      private System.Windows.Forms.Label label2;
-      private System.Windows.Forms.Label label1;
-      private System.Windows.Forms.ListView paramListView;
-      private System.Windows.Forms.ColumnHeader nameColumnHeader;
-      private System.Windows.Forms.ColumnHeader typeColumnHeader;
-      private System.Windows.Forms.ColumnHeader valueColumnHeader;
-      private System.Windows.Forms.CheckBox visibleCheckBox;
-      private System.Windows.Forms.Button okButton;
-      private System.Windows.Forms.Button cancelButton;
-      private System.Windows.Forms.Button applyButton;
-      private System.Windows.Forms.Label label5;
-      private System.Windows.Forms.Button applyToAllButton;
-      private System.Windows.Forms.Label label6;
-      private System.Windows.Forms.CheckBox showGridCheckBox;
-      private System.Windows.Forms.Label previewLabel;
-      private System.Windows.Forms.Panel graphPreviewPanel;
-      private System.Windows.Forms.Label label8;
-      private System.Windows.Forms.ComboBox chartModeComboBox;
-      private System.Windows.Forms.ToolStripMenuItem addHorizontalLineToolStripMenuItem;
-      private System.Windows.Forms.TextBox lineValueTextBox;
-      private System.Windows.Forms.Label label9;
-      private System.Windows.Forms.Panel lineColorPanel;
-      private System.Windows.Forms.Panel textBackgroundColorPanel;
-      private System.Windows.Forms.Panel backgroundColorPanel;
-      private System.Windows.Forms.Panel gridColorPanel;
-      private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
-      private System.Windows.Forms.ToolStripMenuItem addTrailStopsToolStripMenuItem;
-      private System.Windows.Forms.ColumnHeader minColumnHeader;
-      private System.Windows.Forms.ColumnHeader maxColumnHeader;
-      private GroupBox secondarySerieGroupBox;
-      private Panel secondaryColorPanel;
-      private Label label11;
-      private Label label10;
-      private ComboBox secondaryThicknessComboBox;
-      private Label someTextLabel;
-      private ToolStripMenuItem copyStripMenuItem;
-   }
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.GroupBox graphConfigBox;
+        private System.Windows.Forms.GroupBox indicatorConfigBox;
+        private System.Windows.Forms.GroupBox curveConfigBox;
+        private System.Windows.Forms.GroupBox lineConfigBox;
+        private System.Windows.Forms.GroupBox paintBarGroupBox;
+        private System.Windows.Forms.GroupBox cloudGroupBox;
+        private System.Windows.Forms.GroupBox trailStopGroupBox;
+        private System.Windows.Forms.ContextMenuStrip graphMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem addIndicatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addCloudToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip cloudMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem removeStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addDecoratorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addTrailToolStripMenuItem;
+        private System.Windows.Forms.ComboBox thicknessComboBox;
+        private System.Windows.Forms.ComboBox lineTypeComboBox;
+        private System.Windows.Forms.Label curvePreviewLabel;
+        private System.Windows.Forms.Panel previewPanel;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListView paramListView;
+        private System.Windows.Forms.ColumnHeader nameColumnHeader;
+        private System.Windows.Forms.ColumnHeader typeColumnHeader;
+        private System.Windows.Forms.ColumnHeader valueColumnHeader;
+        private System.Windows.Forms.CheckBox visibleCheckBox;
+        private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Button applyButton;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button applyToAllButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox showGridCheckBox;
+        private System.Windows.Forms.Label previewLabel;
+        private System.Windows.Forms.Panel graphPreviewPanel;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox chartModeComboBox;
+        private System.Windows.Forms.ToolStripMenuItem addHorizontalLineToolStripMenuItem;
+        private System.Windows.Forms.TextBox lineValueTextBox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Panel lineColorPanel;
+        private System.Windows.Forms.Panel textBackgroundColorPanel;
+        private System.Windows.Forms.Panel backgroundColorPanel;
+        private System.Windows.Forms.Panel gridColorPanel;
+        private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addTrailStopsToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader minColumnHeader;
+        private System.Windows.Forms.ColumnHeader maxColumnHeader;
+        private GroupBox secondarySerieGroupBox;
+        private Panel secondaryColorPanel;
+        private Label label11;
+        private Label label10;
+        private ComboBox secondaryThicknessComboBox;
+        private Label someTextLabel;
+        private ToolStripMenuItem copyStripMenuItem;
+    }
 }

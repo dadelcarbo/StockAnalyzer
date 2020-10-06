@@ -55,6 +55,10 @@ namespace StockAnalyzer.StockDrawing
         {
             throw new NotImplementedException();
         }
+        public override void ApplyOffset(int offset)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

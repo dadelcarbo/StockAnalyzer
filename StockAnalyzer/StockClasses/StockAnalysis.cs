@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses
         public bool IsEmpty()
         {
             return (this.Comments.Count == 0 || (this.Comments.Values.Count(c => !string.IsNullOrWhiteSpace(c)) == 0)) &&
-                (this.DrawingItems.Count == 0 || (this.DrawingItems.Values.Count(d => d.Count > 0) == 0)) &&
+                (this.DrawingItems.Count == 0 || (!this.DrawingItems.Values.Any(dis => dis.Any(d => d.IsPersistent)))) &&
                 this.Excluded == false &&
                 this.FollowUp == false &&
                 this.Theme == string.Empty;
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses
             bool hasComments = bool.Parse(reader.GetAttribute("HasComments"));
 
             reader.ReadStartElement(); // StockAnalysis 
-            
+
             if (hasDrawings)
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(StockDrawingItems));
@@ -84,7 +84,6 @@ namespace StockAnalyzer.StockClasses
                 reader.ReadStartElement(); // Comments
                 while (reader.Name == "Comment")
                 {
-
                     DateTime date = DateTime.Parse(reader.GetAttribute("Date"));
                     string comment = reader.GetAttribute("Value");
                     this.Comments.Add(date, comment);
@@ -115,7 +114,7 @@ namespace StockAnalyzer.StockClasses
             // Serialize drawing items
             if (hasDrawings)
             {
-                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count > 0))
+                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count(item => item.IsPersistent) > 0))
                 {
                     writer.WriteStartElement("DrawingItems");
                     writer.WriteAttributeString("BarDuration", drawingItems.Key.ToString());
@@ -148,6 +147,15 @@ namespace StockAnalyzer.StockClasses
             foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
             {
                 count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => !d.IsPersistent));
+            }
+            return count;
+        }
+        public int DeleteAlertDrawings()
+        {
+            int count = 0;
+            foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
+            {
+                count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => d.IsAlert));
             }
             return count;
         }

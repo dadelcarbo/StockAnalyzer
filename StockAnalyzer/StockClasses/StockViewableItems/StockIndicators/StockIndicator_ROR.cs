@@ -8,13 +8,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override string Definition => base.Definition + Environment.NewLine + "Rate of rise" + Environment.NewLine + "Plots the current percent increase from the lowest low in the period";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
-        public override string[] ParameterNames => new string[] { "Period", "Smoothing", "SignalSmoothing" };
-        public override Object[] ParameterDefaultValues => new Object[] { 200, 6, 12 };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Period", "Smoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { 100, 1 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[]
                     {
-                    "ROR(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")",
-                    "SIGNAL(" + this.Parameters[2].ToString() + ")"
+                    "ROR(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"
                     };
 
         public override System.Drawing.Pen[] SeriePens
@@ -23,7 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkRed) };
+                    seriePens = new Pen[] { new Pen(Color.DarkGreen)};
                 }
                 return seriePens;
             }
@@ -46,13 +45,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie rocSerie = (stockSerie.CalculateRateOfRise((int)this.parameters[0])).CalculateEMA((int)this.parameters[1]) * 100f;
-            FloatSerie signalSerie = rocSerie.CalculateEMA((int)this.parameters[2]);
 
             this.series[0] = rocSerie;
             this.Series[0].Name = this.Name;
-
-            this.series[1] = signalSerie;
-            this.Series[1].Name = this.Name;
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
@@ -61,11 +56,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 this.eventSeries[0][i] = (rocSerie[i - 2] < rocSerie[i - 1] && rocSerie[i - 1] > rocSerie[i]);
                 this.eventSeries[1][i] = (rocSerie[i - 2] > rocSerie[i - 1] && rocSerie[i - 1] < rocSerie[i]);
-                this.eventSeries[2][i] = (rocSerie[i - 1] < 0 && rocSerie[i] >= 0);
-                this.eventSeries[3][i] = (rocSerie[i - 1] > 0 && rocSerie[i] <= 0);
+                this.eventSeries[2][i] = (rocSerie[i] == 0);
+                this.eventSeries[3][i] = (rocSerie[i - 1] == 0 && rocSerie[i] > 0);
             }
         }
-        static string[] eventNames = new string[] { "Top", "Bottom", "TurnedPositive", "TurnedNegative" };
+        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true, true };
         public override bool[] IsEvent => isEvent;

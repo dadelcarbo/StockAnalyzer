@@ -122,8 +122,25 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Windows.Controls.Input">
-      <HintPath>..\lib\Telerik.Windows.Controls.Input.dll</HintPath>
+    <Reference Include="Telerik.Windows.Controls, Version=2019.3.1023.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\RCWPF\2019.3.1023.45\Telerik.Windows.Controls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView, Version=2019.3.1023.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\RCWPF\2019.3.1023.45\Telerik.Windows.Controls.GridView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2019.3.1023.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\RCWPF\2019.3.1023.45\Telerik.Windows.Controls.Input.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2019.3.1023.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\RCWPF\2019.3.1023.45\Telerik.Windows.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
@@ -131,18 +148,6 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Telerik.Windows.Controls, Version=2018.3.911.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\Telerik.Windows.Controls.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.GridView, Version=2018.3.911.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\Telerik.Windows.Controls.GridView.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Data, Version=2018.3.911.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\Telerik.Windows.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutBox.cs">
@@ -169,18 +174,50 @@
     <Compile Include="CustomControl\AlertDialog\AlertDlg.Designer.cs">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml.cs">
+      <DependentUpon>BinckPortfolioControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.Designer.cs">
+      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
+    <Compile Include="CustomControl\CommentDlg\AddCommentDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\CommentDlg\AddCommentDialog.Designer.cs">
+      <DependentUpon>AddCommentDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\CommentDlg\CommentControl.xaml.cs">
+      <DependentUpon>CommentControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\CommentDlg\CommentDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\CommentDlg\CommentDialog.Designer.cs">
       <DependentUpon>CommentDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\CommentDlg\CommentEntry.cs" />
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.Designer.cs">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml.cs">
+      <DependentUpon>ExpectedValueControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.Designer.cs">
+      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueViewModel.cs" />
+    <Compile Include="CustomControl\ExpectedValueDlg\TradeResult.cs" />
     <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +263,24 @@
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceViewModel.cs" />
+    <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.Designer.cs">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayControl.xaml.cs">
+      <DependentUpon>MarketReplayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayDlg.Designer.cs">
+      <DependentUpon>MarketReplayDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\MarketReplay\MarketReplayTradeViewModel.cs" />
+    <Compile Include="CustomControl\MarketReplay\MarketReplayViewModel.cs" />
+    <Compile Include="CustomControl\MarketReplay\MarketReplayPositionViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -244,22 +299,28 @@
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\GroupViewDlg\GroupViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.cs">
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml.cs">
+      <DependentUpon>PortfolioSimulationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml.cs">
+      <DependentUpon>AgentSimulationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.Designer.cs">
-      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
+    <Compile Include="CustomControl\SimulationDlgs\AgentSimulationDlg.Designer.cs">
+      <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml.cs">
-      <DependentUpon>PortofolioRiskManagerUserControl.xaml</DependentUpon>
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PositionViewModel.cs" />
-    <Compile Include="CustomControl\SimulationDlgs\ViewModels\OrderViewModel.cs" />
-    <Compile Include="CustomControl\SimulationDlgs\ViewModels\PositionViewModel.cs" />
-    <Compile Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml.cs">
-      <DependentUpon>StockPositionUserControl.xaml</DependentUpon>
+    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.Designer.cs">
+      <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterRangeViewModel.cs" />
     <Compile Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml.cs">
       <DependentUpon>StatisticsControl.xaml</DependentUpon>
     </Compile>
@@ -287,48 +348,6 @@
     </Compile>
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.Designer.cs">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.Designer.cs">
-      <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrdersControl.xaml.cs">
-      <DependentUpon>ImportBinckOrdersControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\ImportBinckOrderViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\StockOrderViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\RiskCalculatorViewModel.cs" />
-    <Compile Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.Designer.cs">
-      <DependentUpon>StockRiskCalculatorDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.Designer.cs">
-      <DependentUpon>FilteredSimulationParameterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.Designer.cs">
-      <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StockMarketReplay.Designer.cs">
-      <DependentUpon>StockMarketReplay.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\StockStrategyScannerDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StockStrategyScannerDlg.Designer.cs">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\DrawingStyleForm.cs">
       <SubType>Form</SubType>
@@ -435,56 +454,14 @@
     <Compile Include="CustomControl\SaveThemeForm.Designer.cs">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.Designer.cs">
-      <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.Designer.cs">
-      <DependentUpon>PortfolioSimulatorDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\SimulationParameterControl.Designer.cs">
-      <DependentUpon>SimulationParameterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\OrderGenerationDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\OrderGenerationDlg.Designer.cs">
-      <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderListDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderListDlg.Designer.cs">
-      <DependentUpon>OrderListDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\ListViewEx.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderEditionDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\OrderEditionDlg.Designer.cs">
-      <DependentUpon>OrderEditionDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\PalmaresDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\PalmaresDlg.Designer.cs">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortofolioDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\PortofolioDlgs\PortofolioDlg.Designer.cs">
-      <DependentUpon>PortofolioDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\StockAlertDlg.cs">
       <SubType>Form</SubType>
@@ -501,29 +478,22 @@
     <Compile Include="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.cs">
+    <Compile Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml.cs">
+      <DependentUpon>BestTrendUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.Designer.cs">
-      <DependentUpon>StrategySimulatorDlg.cs</DependentUpon>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.Designer.cs">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\WatchListDlgs\StockSelectorDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\WatchListDlgs\StockSelectorDlg.Designer.cs">
-      <DependentUpon>StockSelectorDlg.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendViewModel.cs" />
+    <Compile Include="CustomControl\TrendDlgs\MomentumViewModel.cs" />
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.Designer.cs">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GroupAnalysisDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GroupAnalysisDlg.Designer.cs">
-      <DependentUpon>GroupAnalysisDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -535,12 +505,6 @@
     </Compile>
     <Compile Include="CustomControl\PreferenceDialog.Designer.cs">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\StockEventSelector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StockEventSelector.Designer.cs">
-      <DependentUpon>StockEventSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="MainFrame.cs">
       <SubType>Form</SubType>
@@ -580,14 +544,20 @@
     <EmbeddedResource Include="CustomControl\AlertDialog\AlertDlg.resx">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.fr-FR.resx">
-      <DependentUpon>CommentDialog.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
+      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\CommentDlg\AddCommentDialog.resx">
+      <DependentUpon>AddCommentDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentDialog.resx">
       <DependentUpon>CommentDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentReportDlg.resx">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.resx">
+      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\FinancialDlg\StockFinancialForm.resx">
       <DependentUpon>StockFinancialForm.cs</DependentUpon>
@@ -601,6 +571,14 @@
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
       <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.fr-FR.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailDlg.fr-FR.resx">
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -609,41 +587,26 @@
       <DependentUpon>AddTrailDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\MarketReplay\MarketReplayDlg.resx">
+      <DependentUpon>MarketReplayDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\MultiTimeFrameDlg\MTFDlg.resx">
       <DependentUpon>MTFDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\ImportBinckOrderDlg.resx">
-      <DependentUpon>ImportBinckOrderDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortfolioRiskManagerDlg.resx">
-      <DependentUpon>PortfolioRiskManagerDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\StockRiskCalculatorDlg.resx">
-      <DependentUpon>StockRiskCalculatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredSimulationParameterControl.resx">
-      <DependentUpon>FilteredSimulationParameterControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\FilteredStrategySimulatorDlg.resx">
-      <DependentUpon>FilteredStrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\StockMarketReplay.resx">
-      <DependentUpon>StockMarketReplay.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
+      <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ExpectedValueDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\AgentSimulationDlg.resx">
+      <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StatisticsDlg\StatisticsDlg.resx">
       <DependentUpon>StatisticsDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockStrategyScannerDlg.fr-FR.resx">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockStrategyScannerDlg.resx">
-      <DependentUpon>StockStrategyScannerDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawingStyleForm.fr-FR.resx">
       <DependentUpon>DrawingStyleForm.cs</DependentUpon>
@@ -716,6 +679,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PalmaresDlg.fr-FR.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.fr-FR.resx">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
@@ -726,31 +690,8 @@
     <EmbeddedResource Include="CustomControl\SaveThemeForm.resx">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\BatchStrategySimulatorDlg.resx">
-      <DependentUpon>BatchStrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulatorDlg.resx">
-      <DependentUpon>PortfolioSimulatorDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\SimulationParameterControl.resx">
-      <DependentUpon>SimulationParameterControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\OrderGenerationDlg.resx">
-      <DependentUpon>OrderGenerationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\OrderListDlg.resx">
-      <DependentUpon>OrderListDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\OrderEditionDlg.resx">
-      <DependentUpon>OrderEditionDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PalmaresDlg.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PortofolioDlgs\PortofolioDlg.resx">
-      <DependentUpon>PortofolioDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.resx">
@@ -760,13 +701,6 @@
     <EmbeddedResource Include="CustomControl\StockAlertDlg.resx">
       <DependentUpon>StockAlertDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockEventSelector.resx">
-      <DependentUpon>StockEventSelector.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\SimulationDlgs\StrategySimulatorDlg.resx">
-      <DependentUpon>StrategySimulatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockScannerDlg.fr-FR.resx">
       <DependentUpon>StockScannerDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -775,19 +709,17 @@
       <DependentUpon>StockScannerDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\WatchListDlgs\StockSelectorDlg.resx">
-      <DependentUpon>StockSelectorDlg.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GroupAnalysisDlg.resx">
-      <DependentUpon>GroupAnalysisDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -807,7 +739,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="CustomControl\SimulationDlgs\ViewModels\Replay.cd" />
     <None Include="Properties\DataSources\StockAnalyzer.StockClasses.StockSerie.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.IndicatorDlgs.HilbertSineWaveConfigDlg.datasource" />
@@ -881,14 +812,32 @@
     <Content Include="Resources\AddSegment.bmp" />
     <Content Include="Resources\AddToReport.png" />
     <Content Include="Resources\Backward-icon.png" />
+    <Content Include="Resources\BarChart.bmp" />
+    <Content Include="Resources\ButtonFastForward.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonFirst.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonPlay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ButtonStop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Camera-32.png" />
     <None Include="Resources\chart_curve.png" />
+    <Content Include="Resources\Candle.bmp" />
     <Content Include="Resources\comment-icon.bmp" />
     <None Include="Resources\cut.png" />
     <Content Include="Resources\AddSemiLine.bmp" />
     <Content Include="Resources\CutLeft.PNG" />
     <None Include="Resources\Decorator.png" />
     <None Include="Resources\DeleteTheme.png" />
+    <Content Include="Resources\CupHandle.png" />
+    <Content Include="Resources\Flat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -903,17 +852,20 @@
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
     <None Include="Resources\NewAnalysis.png" />
+    <Content Include="Resources\LineChart.bmp" />
     <Content Include="Resources\Log.png" />
     <Content Include="Resources\Notepad.ico" />
     <None Include="Resources\page-edit-icon.png" />
     <None Include="Resources\SetDefaultTheme.png" />
-    <Content Include="Resources\FanLines.bmp" />
     <Content Include="Resources\CopyLine.bmp" />
     <Content Include="Resources\Magnet.bmp" />
     <None Include="Resources\trashcan.png" />
     <None Include="Resources\SR.png" />
     <None Include="Resources\PaintBar.png" />
     <None Include="Resources\trail.png" />
+    <None Include="Resources\UltimateChartist_URLProtocol.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\VolumeHistogram.PNG" />
     <None Include="Resources\Curve.png" />
     <None Include="Resources\ScrollLeft.png" />
@@ -922,12 +874,19 @@
     <None Include="Resources\redo.png" />
     <None Include="Resources\Options.png" />
     <None Include="Resources\OpenAnalysis.png" />
+    <None Include="Resources\Cloud.png" />
+    <Content Include="Resources\PEAPerformanceTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Reload.png" />
     <None Include="Resources\undo.ico" />
     <None Include="Resources\undo.png" />
     <None Include="Resources\SaveAnalysis.png" />
     <None Include="Resources\SaveAnalysisAs.png" />
     <None Include="Resources\SaveTheme.png" />
+    <Content Include="Resources\ReportTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\search.png" />
     <Content Include="Resources\Up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -953,6 +912,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\CommentDlg\CommentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -965,19 +936,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControl\MarketReplay\MarketReplayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\MultiTimeFrameDlg\MTFUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\PortofolioDlgs\ImportBinckOrdersControl.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\PortofolioDlgs\PortfolioRiskManager\PortofolioRiskManagerUserControl.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\SimulationDlgs\StockPositionUserControl.xaml">
+    <Page Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -986,6 +957,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\StatisticsDlg\StatisticsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
       {
          using (MethodLogger ml = new MethodLogger(typeof(StockTrailStopManager)))
          {
-            StockTrailStopBase trailStop = null;
+            IStockTrailStop trailStop = null;
             if (trailStopList == null)
             {
                GetTrailStopList();
@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                if (trailStopList.Contains(name))
                {
                   StockTrailStopManager sm = new StockTrailStopManager();
-                  trailStop = (StockTrailStopBase)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops.StockTrailStop_" + name);
+                  trailStop = (IStockTrailStop)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops.StockTrailStop_" + name);
                   if (trailStop != null)
                   {
                      if (paramLength > 0)

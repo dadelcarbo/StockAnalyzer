@@ -104,8 +104,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             }
 
-            //FloatSerie upVolume = stockSerie.GetSerie(StockDataType.UPVOLUME).Sqrt();
-            //FloatSerie downVolume = stockSerie.GetSerie(StockDataType.DOWNVOLUME).Sqrt();
             FloatSerie cumulVolume = (upVolume - downVolume).Cumul();
             FloatSerie diffVolume = (cumulVolume - cumulVolume.CalculateEMA((int)this.parameters[0])).CalculateEMA((int)this.parameters[1]);
             FloatSerie fastSerie = diffVolume;

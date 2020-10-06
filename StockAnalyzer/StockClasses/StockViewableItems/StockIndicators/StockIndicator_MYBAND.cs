@@ -5,11 +5,7 @@ using StockAnalyzer.StockMath;
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public class StockIndicator_MYBAND : StockIndicatorBase
-   {
-      public StockIndicator_MYBAND()
-      {
-      }
-      public override IndicatorDisplayTarget DisplayTarget
+   {  public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
@@ -50,11 +46,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          // Calculate Bands
          int period = (int)this.parameters[0];
          FloatSerie ema = stockSerie.GetIndicator("EMA(" + period + ")").Series[0];
-         FloatSerie highEma = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA(period);
-         FloatSerie lowEma = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA(period);
          FloatSerie diff = ema*0.1f;
-
-         FloatSerie atr = stockSerie.GetIndicator("ATR(" + period + ")").Series[0];
 
          float upCoef = (float)this.parameters[1];
          float downCoef = (float)this.parameters[2];

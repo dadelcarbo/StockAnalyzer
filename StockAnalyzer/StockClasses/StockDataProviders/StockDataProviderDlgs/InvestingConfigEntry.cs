@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
-    public class InvestingConfigEntry : INotifyPropertyChanged
+    public class InvestingConfigEntry
     {
         public InvestingConfigEntry(long ticker)
         {
@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public string StockName { get; set; }
         public string Group { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public static List<InvestingConfigEntry> LoadFromFile(string fileName)
         {

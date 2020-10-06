@@ -260,6 +260,12 @@
   <data name="addIndicatorToolStripMenuItem.Text" xml:space="preserve">
     <value>Ajouter un indicateur</value>
   </data>
+  <data name="addCloudToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>227, 22</value>
+  </data>
+  <data name="addCloudToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ajouter un nuage</value>
+  </data>
   <data name="addHorizontalLineToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 22</value>
   </data>

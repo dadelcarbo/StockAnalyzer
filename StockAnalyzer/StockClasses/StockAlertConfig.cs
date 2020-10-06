@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockDrawing;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses
@@ -17,23 +11,28 @@ namespace StockAnalyzer.StockClasses
     {
         public static List<String> TimeFrames = new List<string> { "Intraday", "Daily", "Weekly", "Monthly" };
 
+        public static string AlertDefFolder => Settings.Default.RootFolder + @"\Alert\AlertDef";
+
         private StockAlertConfig(string timeFrame)
         {
             this.TimeFrame = timeFrame;
         }
 
-        private static IEnumerable<StockAlertConfig> configs = null;
-        public static IEnumerable<StockAlertConfig> GetConfigs()
+        private static List<StockAlertConfig> configs = null;
+        public static List<StockAlertConfig> AlertConfigs
         {
-            if (configs == null)
+            get
             {
-                configs = TimeFrames.Select(t => new StockAlertConfig(t));
+                if (configs == null)
+                {
+                    configs = TimeFrames.Select(t => new StockAlertConfig(t)).ToList();
+                }
+                return configs;
             }
-            return configs;
         }
         public static StockAlertConfig GetConfig(string timeFrame)
         {
-            return GetConfigs().First(c=>c.TimeFrame == timeFrame);
+            return AlertConfigs.First(c => c.TimeFrame == timeFrame);
         }
 
         public string TimeFrame { get; set; }
@@ -45,7 +44,23 @@ namespace StockAnalyzer.StockClasses
             {
                 if (alertLog == null)
                 {
-                    alertLog =StockAlertLog.Load($"AlertLog{TimeFrame}.xml", DateTime.Today.AddDays(-5));
+                    var startDate = DateTime.Today;
+                    switch (TimeFrame)
+                    {
+                        case "Weekly":
+                            startDate = startDate.AddMonths(-2);
+                            break;
+                        case "Monthly":
+                            startDate = startDate.AddMonths(-6);
+                            break;
+                        case "Intraday":
+                            startDate = startDate.AddDays(-5);
+                            break;
+                        default:
+                            startDate = startDate.AddDays(-5);
+                            break;
+                    }
+                    alertLog = StockAlertLog.Load($"AlertLog{TimeFrame}.xml", startDate);
                 }
                 return alertLog;
             }
@@ -58,7 +73,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (alertDefs == null)
                 {
-                    string alertFileName = Settings.Default.RootFolder + $@"\Alert{TimeFrame}.xml";
+                    string alertFileName = AlertDefFolder + $@"\AlertDef{TimeFrame}.xml";
                     // Parse alert lists
                     if (File.Exists(alertFileName))
                     {

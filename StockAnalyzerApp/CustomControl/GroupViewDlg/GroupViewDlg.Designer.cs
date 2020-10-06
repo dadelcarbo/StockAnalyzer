@@ -51,7 +51,6 @@
             this.Name = "GroupViewDlg";
             this.Text = "Group Historical view";
             this.ResumeLayout(false);
-
         }
 
         #endregion

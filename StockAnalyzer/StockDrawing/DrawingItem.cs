@@ -9,12 +9,16 @@ namespace StockAnalyzer.StockDrawing
     public abstract class DrawingItem : IXmlSerializable
     {
         public static bool CreatePersistent = true;
+        public static bool CreatedByAlert = false;
         [XmlIgnore]
         public bool IsPersistent { get; set; }
+        [XmlIgnore]
+        public bool IsAlert { get; set; }
 
         public DrawingItem()
         {
             this.IsPersistent = DrawingItem.CreatePersistent;
+            this.IsAlert = DrawingItem.CreatedByAlert;
             this.Pen = DefaultPen;
         }
 
@@ -50,6 +54,7 @@ namespace StockAnalyzer.StockDrawing
         public abstract System.Xml.Schema.XmlSchema GetSchema();
         public abstract void ReadXml(System.Xml.XmlReader reader);
         public abstract void WriteXml(System.Xml.XmlWriter writer);
+        public abstract void ApplyOffset(int offset);
         #endregion
     }
 }

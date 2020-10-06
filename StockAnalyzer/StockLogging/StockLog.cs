@@ -49,12 +49,8 @@ namespace StockAnalyzer.StockLogging
 
         private StockLog()
         {
-#if (DEBUG)
-         isEnabled = false;
-#else
             isEnabled = Settings.Default.LoggingEnabled;
             isMethodLoggingEnabled = Settings.Default.LoggingEnabled;
-#endif
             if (isEnabled)
             {
                 if (!Debugger.IsAttached)

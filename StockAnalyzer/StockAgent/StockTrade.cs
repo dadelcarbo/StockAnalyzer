@@ -1,9 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -11,11 +9,17 @@ namespace StockAnalyzer.StockAgent
     {
         public StockSerie Serie { get; private set; }
         public int EntryIndex { get; private set; }
+        public DateTime EntryDate { get; private set; }
         public float EntryValue { get; private set; }
         public int ExitIndex { get; private set; }
+        public DateTime ExitDate { get; private set; }
+        public float PartialExitValue { get; private set; }
+        public int PartialExitIndex { get; private set; }
+        public DateTime PartialExitDate { get; private set; }
         public float ExitValue { get; private set; }
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
+        public bool IsPartlyClosed { get; private set; }
 
         public int Duration
         {
@@ -29,68 +33,113 @@ namespace StockAnalyzer.StockAgent
 
         public float Gain { get; private set; }
         public float DrawDown { get; private set; }
-        public float MaxGain { get; private set; }
+
+        FloatSerie openSerie;
+        FloatSerie highSerie;
+        FloatSerie lowSerie;
 
         public StockTrade(StockSerie serie, int entryIndex, bool isLong = true)
         {
             this.Serie = serie;
             this.EntryIndex = entryIndex;
+            this.EntryDate = serie.Keys.ElementAt(entryIndex);
             this.ExitIndex = -1;
+            this.PartialExitIndex = -1;
             this.IsLong = isLong;
 
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
+            openSerie = this.Serie.GetSerie(StockDataType.OPEN);
+            highSerie = this.Serie.GetSerie(StockDataType.HIGH);
+            lowSerie = this.Serie.GetSerie(StockDataType.LOW);
+
             this.EntryValue = openSerie[entryIndex];
 
-            this.Gain = float.NaN;
-            this.MaxGain = float.NaN;
-            this.DrawDown = float.NaN;
+            this.Gain = 0;
+            this.DrawDown = 0;
 
             this.IsClosed = false;
         }
-
-        public StockTrade(StockSerie serie, int entryIndex, int exitIndex, bool isLong = true)
+        public void PartialClose(int exitIndex)
         {
-            this.Serie = serie;
-            this.EntryIndex = entryIndex;
-            this.IsLong = isLong;
+            if (this.IsPartlyClosed || this.IsClosed)
+                throw new InvalidOperationException("Cannot partly close a closed or partly closed trade");
 
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
-            this.EntryValue = openSerie[entryIndex];
+            this.PartialExitIndex = exitIndex;
 
-            this.Close(exitIndex);
+            this.PartialExitValue = openSerie[exitIndex];
+            this.PartialExitDate = Serie.Keys.ElementAt(exitIndex);
+
+            this.IsPartlyClosed = true;
         }
-
-        public void Close(int exitIndex)
+        public void Close(int exitIndex, float exitValue)
         {
             this.ExitIndex = exitIndex;
 
-            FloatSerie openSerie = this.Serie.GetSerie(StockDataType.OPEN);
-            FloatSerie closeSerie = this.Serie.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = this.Serie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = this.Serie.GetSerie(StockDataType.LOW);
+            this.ExitValue = exitValue;
+            this.ExitDate = Serie.Keys.ElementAt(exitIndex);
 
-            this.ExitValue = closeSerie[exitIndex];
-            float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
-            float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
-
-            this.Gain = this.IsLong ?
-                (this.ExitValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - this.ExitValue) / this.EntryValue;
-
-            this.MaxGain = this.IsLong ?
-                (maxValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - minValue) / this.EntryValue;
-
-            this.DrawDown = this.IsLong ?
-                (minValue - this.EntryValue) / this.EntryValue :
-                (this.EntryValue - maxValue) / this.EntryValue;
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
 
             this.IsClosed = true;
+            this.IsPartlyClosed = false;
+        }
+        public void CloseAtOpen(int exitIndex)
+        {
+            this.ExitIndex = exitIndex;
+
+            this.ExitValue = openSerie[exitIndex];
+            this.ExitDate = Serie.Keys.ElementAt(exitIndex);
+
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
+
+            this.IsClosed = true;
+            this.IsPartlyClosed = false;
+        }
+        public void Evaluate()
+        {
+            if (this.IsClosed)
+                throw new InvalidOperationException("Cannot evaluate a closed trade");
+
+            this.ExitValue = Serie.GetSerie(StockDataType.CLOSE).Last;
+            if (this.IsLong)
+            {
+                this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
+                float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex - 1);
+                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+            }
+            else
+            {
+                this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
+                float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex - 1);
+                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+            }
         }
 
         public float GainAt(int index)
         {
-            if (index < this.EntryIndex) {
+            if (index < this.EntryIndex)
+            {
                 throw new ArgumentOutOfRangeException("Cannot get gain before trade is opened");
             }
             if (this.IsClosed && index > this.EntryIndex)
@@ -108,11 +157,11 @@ namespace StockAnalyzer.StockAgent
 
         public static string ToHeaderLog()
         {
-            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;MaxGain;DrawDown";
+            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;DrawDown";
         }
         public string ToLog()
         {
-            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.MaxGain.ToString("P2") + ";" + this.DrawDown.ToString("P2") + ";";
+            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.DrawDown.ToString("P2") + ";";
         }
     }
 }

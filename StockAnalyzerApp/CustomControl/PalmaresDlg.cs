@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -21,7 +20,6 @@ namespace StockAnalyzerApp.CustomControl
 
         public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedPortofolioNameChangedEventHandler SelectedPortofolioChanged;
         public event StockAnalyzerForm.StockWatchListsChangedEventHandler StockWatchListsChanged;
 
         public DateTime StartDate { get { return this.fromDateTimePicker.Value; } set { this.fromDateTimePicker.Value = value; } }
@@ -44,8 +42,6 @@ namespace StockAnalyzerApp.CustomControl
             this.groupComboBox.Items.Clear();
             this.groupComboBox.Items.AddRange(stockDico.GetValidGroupNames().ToArray());
             this.groupComboBox.SelectedItem = selectedGroup.ToString();
-
-            this.indicatorTextBox.Text = Settings.Default.MomentumIndicator;
 
             // Create an instance of a ListView column sorter and assign it to the ListView control.
             lvwColumnSorter = new ListViewColumnSorter();
@@ -71,6 +67,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             previousFromDate = fromDateTimePicker.Value;
             previousUntilDate = untilDateTimePicker.Value;
+            this.indicatorTextBox.Text = "ROR(100,1)";
 
             // 
             InitializeListView();
@@ -111,7 +108,7 @@ namespace StockAnalyzerApp.CustomControl
             this.progressBar.Value = 0;
 
             bool validIndicator = false;
-            if (StockIndicatorManager.Supports(this.indicatorTextBox.Text))
+            if (!string.IsNullOrWhiteSpace(this.indicatorTextBox.Text) && StockIndicatorManager.Supports(this.indicatorTextBox.Text))
             {
                 validIndicator = true;
             }
@@ -145,7 +142,7 @@ namespace StockAnalyzerApp.CustomControl
                 {
                     if (stockSerie.Initialise())
                     {
-                        stockSerie.BarDuration = StockBarDuration.Daily;
+                        stockSerie.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
                         if (stockSerie.Values.Count == 0 || stockSerie.Values.Last().DATE < this.fromDateTimePicker.Value)
                         {
                             continue;
@@ -183,29 +180,12 @@ namespace StockAnalyzerApp.CustomControl
                         lastStockValue = stockSerie.ValueArray[endIndex];
 
                         int k = 0;
-                        subItems[k++] = firstStockValue.NAME;
+                        subItems[k++] = stockSerie.StockName;
                         subItems[k++] = ((lastStockValue.CLOSE - firstStockValue.CLOSE) / firstStockValue.CLOSE).ToString("P2");
                         subItems[k++] = firstStockValue.OPEN.ToString();
                         subItems[k++] = stockSerie.GetMax(startIndex, endIndex, StockDataType.HIGH).ToString();
                         subItems[k++] = stockSerie.GetMin(startIndex, endIndex, StockDataType.LOW).ToString();
                         subItems[k++] = lastStockValue.CLOSE.ToString();
-                        if (stockSerie.Financial != null)
-                        {
-                            stockSerie.Financial.Value = lastStockValue.CLOSE;
-                            subItems[k++] = stockSerie.Financial.PriceBookValueRatio.ToString();
-                        }
-                        else
-                        {
-                            subItems[k++] = "0";
-                        }
-                        if (stockSerie.Financial != null)
-                        {
-                            subItems[k++] = stockSerie.Financial.PriceTangibleBookValueRatio.ToString();
-                        }
-                        else
-                        {
-                            subItems[k++] = "0";
-                        }
                         if (validIndicator && stockSerie.Count > 100)
                         {
                             subItems[k++] = stockSerie.GetIndicator(indicatorTextBox.Text).Series[0][endIndex].ToString();
@@ -261,10 +241,6 @@ namespace StockAnalyzerApp.CustomControl
                 if (this.portofolioCheckBox.Checked)
                 {
                     string stockPortofolioName = this.palmaresView.SelectedItems[0].Text;
-                    if (SelectedPortofolioChanged != null)
-                    {
-                        SelectedPortofolioChanged(stockPortofolioName, false);
-                    }
                     SelectedStockChanged(stockPortofolioName.Substring(0, stockPortofolioName.Length - 2), true);
                 }
                 else

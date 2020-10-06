@@ -74,8 +74,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 int shortPeriod = (int)this.parameters[1];
                 float range = (int)this.parameters[2] / 100.0f;
 
-                //FloatSerie RORSerie = stockSerie.GetIndicator($"ROR({longPeriod},1,1)").Series[0];
-                //FloatSerie RODSerie = stockSerie.GetIndicator($"ROD({shortPeriod},1,1)").Series[0];
+                //FloatSerie RORSerie = stockSerie.GetIndicator($"ROR({longPeriod},1)").Series[0];
+                //FloatSerie RODSerie = stockSerie.GetIndicator($"ROD({shortPeriod},1)").Series[0];
                 FloatSerie STOCKSSerie = stockSerie.GetIndicator($"STOKS({shortPeriod},1,1)").Series[0];
 
                 for (int i = stockSerie.Count - 1; i > longPeriod + 1; i--)

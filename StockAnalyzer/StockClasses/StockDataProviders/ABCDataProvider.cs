@@ -20,8 +20,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
-        private static string FINANCIAL_SUBFOLDER = @"\data\financial";
-        private static string AGENDA_SUBFOLDER = @"\data\agenda";
+        static private string FINANCIAL_SUBFOLDER = @"\data\financial";
+        static private string AGENDA_SUBFOLDER = @"\data\agenda";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         static private string CONFIG_FILE = @"\EuronextDownload.cfg";
         static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         // IStockDataProvider Implementation
         public override bool SupportsIntradayDownload
         {
-            get { return false; }
+            get { return true; }
         }
         public override void InitDictionary(string rootFolder, StockDictionary dictionary, bool download)
         {
@@ -210,11 +210,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockDictionary.ContainsKey(row[1]))
                             {
                                 stockDictionary.Add(row[1], stockSerie);
-                                //if (stockSerie.StockGroup == StockSerie.Groups.CAC40)
-                                //{
-                                //   StockSerie stockSerieRS = new StockSerie(row[1] + "_RS", row[3] + "_RS", StockSerie.Groups.CAC40_RS, StockDataProvider.ABC);
-                                //   stockDictionary.Add(stockSerieRS.StockName, stockSerieRS);
-                                //}
                             }
                             else
                             {
@@ -231,21 +226,95 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static string loadingGroup = null;
-        static List<string> loadedGroups = new List<string>();
         public override bool LoadData(string rootFolder, StockSerie stockSerie)
         {
             StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName + " - " + stockSerie.Count);
             bool res = false;
+            string abcGroup = GetABCGroup(stockSerie);
+            string fileName = null;
+            string[] files;
+            if (abcGroup != null)
+            {
+                try
+                {
+                    if (loadingGroup == null)
+                    {
+                        loadingGroup = abcGroup;
+                    }
+                    else
+                    {
+                        StockLog.Write("Already busy loading group: " + stockSerie.StockGroup);
+                        if (loadingGroup == abcGroup)
+                        {
+                            do
+                            {
+                                Thread.Sleep(100);
+                            } while (loadingGroup == abcGroup);
+                            return stockSerie.Count != 0;
+                        }
+                        else
+                        {
+                            do
+                            {
+                                Thread.Sleep(100);
+                            } while (loadingGroup == abcGroup);
+                        }
+                    }
 
-            //if (stockSerie.StockGroup == StockSerie.Groups.CAC40_RS)
-            //{
-            //   StockSerie baseSerie = stockDictionary[stockSerie.StockName.Replace("_RS", "")];
-            //   StockSerie cacSerie = stockDictionary["CAC40"];
+                    //
+                    StockLog.Write("Sync OK Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+                    fileName = abcGroup + "_*.csv";
+                    var groupFiles = Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
+                    foreach (string archiveFileName in groupFiles)
+                    {
+                        NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
+                        if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
+                        else
+                        {
+                            res = true;
+                        }
+                    }
+                    groupFiles = Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
+                    foreach (string currentFileName in groupFiles)
+                    {
+                        res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
+                    }
+                    fileName = Path.Combine(rootFolder + ABC_INTRADAY_FOLDER, abcGroup + ".csv");
+                    if (File.Exists(fileName))
+                    {
+                        res = ParseABCGroupCSVFile(fileName, stockSerie.StockGroup, true);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    StockLog.Write(ex);
+                }
+                finally
+                {
+                    loadingGroup = null;
+                }
+            }
+            else
+            {
+                // Read archive first
+                fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
+                files = Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName);
+                foreach (string archiveFileName in files)
+                {
+                    res |= ParseCSVFile(stockSerie, archiveFileName);
+                }
 
-            //   return stockSerie.GenerateRelativeStrenthStockSerie(baseSerie, cacSerie);
-            //}
+                // Read daily value
+                fileName = rootFolder + ABC_DAILY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
+                           stockSerie.StockGroup.ToString() + ".csv";
+                res |= ParseCSVFile(stockSerie, fileName);
+            }
+            return res;
+        }
+
+        private static string GetABCGroup(StockSerie stockSerie)
+        {
             string abcGroup = null;
-
             switch (stockSerie.StockGroup)
             {
                 case StockSerie.Groups.SRD:
@@ -269,118 +338,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.SECTORS_CAC:
                     abcGroup = "indicessecp";
                     break;
-                default:
-                    break;
             }
-            string fileName = null;
-            string[] files;
-            if (abcGroup != null)
-            {
-                if (loadedGroups.Contains(abcGroup))
-                {
-                    return false;
-                }
-                else
-                {
-                    try
-                    {
-                        if (loadingGroup == null)
-                        {
-                            loadingGroup = abcGroup;
-                        }
-                        else
-                        {
-                            StockLog.Write("Already busy loading group: " + stockSerie.StockGroup);
-                            if (loadingGroup == abcGroup)
-                            {
-                                do
-                                {
-                                    Thread.Sleep(100);
-                                } while (loadingGroup == abcGroup);
-                                return stockSerie.Count != 0;
-                            }
-                            else
-                            {
-                                do
-                                {
-                                    Thread.Sleep(100);
-                                } while (loadingGroup == abcGroup);
-                            }
-                        }
-
-                        //
-                        StockLog.Write("Sync OK Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
-                        fileName = abcGroup + "_*.csv";
-                        var groupFiles =
-                           System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName).OrderByDescending(s => s);
-                        foreach (string archiveFileName in groupFiles)
-                        {
-                            NotifyProgress("Loading data for " + Path.GetFileNameWithoutExtension(archiveFileName));
-                            if (!ParseABCGroupCSVFile(archiveFileName, stockSerie.StockGroup)) break;
-                            else
-                            {
-                                res = true;
-                            }
-                        }
-                        groupFiles =
-                           System.IO.Directory.GetFiles(rootFolder + ABC_DAILY_FOLDER, fileName).OrderByDescending(s => s);
-                        foreach (string currentFileName in groupFiles)
-                        {
-                            res = ParseABCGroupCSVFile(currentFileName, stockSerie.StockGroup);
-                        }
-                    }
-                    catch (System.Exception ex)
-                    {
-                        StockLog.Write(ex);
-                    }
-                    finally
-                    {
-                        loadingGroup = null;
-                        loadedGroups.Add(abcGroup);
-                    }
-                }
-            }
-
-            if (stockSerie.Count == 0)
-            {
-                // Read archive first
-                fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() +
-                           "_*.csv";
-                files = System.IO.Directory.GetFiles(rootFolder + ARCHIVE_FOLDER, fileName);
-                foreach (string archiveFileName in files)
-                {
-                    res |= ParseCSVFile(stockSerie, archiveFileName);
-                }
-
-                // Read daily value
-                fileName = rootFolder + ABC_DAILY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                           stockSerie.StockGroup.ToString() + ".csv";
-                res |= ParseCSVFile(stockSerie, fileName);
-            }
-            // Read intraday
-            // @@@@ Removed intraday
-            //if (res && stockSerie.Keys.Last() != DateTime.Today)
-            //{
-            //    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
-            //    {
-            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
-            //        ParseABCGroupCSVFile(fileName, StockSerie.Groups.SRD, true);
-            //        return true;
-            //    }
-            //    else if (stockSerie.BelongsToGroup(StockSerie.Groups.SP500))
-            //    {
-            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "SP500.csv";
-            //        ParseABCGroupCSVFile(fileName, StockSerie.Groups.SP500, true);
-            //        return true;
-            //    }
-            //    else if (stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
-            //    {
-            //        fileName = rootFolder + ABC_INTRADAY_FOLDER + "\\" + DateTime.Today.ToString("yyMMdd_") + "IndicesFR.csv";
-            //        ParseABCIntradayFile(stockSerie, fileName);
-            //        return true;
-            //    }
-            //}
-            return res;
+            return abcGroup;
         }
 
         private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
@@ -391,10 +350,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             StockSerie stockSerie = null;
             using (StreamReader sr = new StreamReader(fileName, true))
             {
-                string line = sr.ReadLine();
                 string previousISIN = string.Empty;
+                DateTime date = File.GetLastWriteTime(fileName); ;
                 while (!sr.EndOfStream)
                 {
+                    string line = sr.ReadLine();
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
                     {
@@ -403,10 +363,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     if (stockSerie != null)
                     {
-                        DateTime date;
                         if (intraday)
                         {
-                            date = File.GetLastWriteTime(fileName);
+                            if (DateTime.Parse(row[1]) != DateTime.Today)
+                            {
+                                continue;
+                            }
                         }
                         else
                         {
@@ -417,7 +379,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockSerie.ContainsKey(date))
                             {
                                 StockDailyValue dailyValue = new StockDailyValue(
-                                  stockSerie.StockName,
                                   float.Parse(row[2], frenchCulture),
                                   float.Parse(row[3], frenchCulture),
                                   float.Parse(row[4], frenchCulture),
@@ -432,7 +393,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                         }
                     }
-                    line = sr.ReadLine();
                 }
             }
             return true;
@@ -456,7 +416,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                         }
                         StockDailyValue dailyValue = new StockDailyValue(
-                            stockSerie.StockName,
                             float.Parse(row[2], usCulture),
                             float.Parse(row[3], usCulture),
                             float.Parse(row[4], usCulture),
@@ -489,11 +448,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         stockSerie.Remove(lastDate);
                         lastDate = stockSerie.Keys.Last();
                     }
-
-                    isUpTodate = (lastDate >= DateTime.Today) ||
-                                 (lastDate.DayOfWeek == DayOfWeek.Friday && (DateTime.Now - lastDate).Days <= 3 &&
-                                  (DateTime.Today.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour < 18)) ||
-                                 (lastDate == DateTime.Today.AddDays(-1) && DateTime.Now.Hour < 18);
+                    DateTime today = DateTime.Today;
+                    isUpTodate = (lastDate >= today) ||
+                       (today.DayOfWeek == DayOfWeek.Saturday && lastDate >= today.AddDays(-1)) ||
+                       (today.DayOfWeek == DayOfWeek.Sunday && lastDate >= today.AddDays(-2)) ||
+                       (today.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour < 18 && lastDate >= today.AddDays(-2));
 
                     if (!isUpTodate)
                     {
@@ -502,10 +461,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         // Happy new year !!! it's time to archive old data...
                         for (int year = lastDate.Year; year < DateTime.Today.Year; year++)
                         {
-                            if (
-                               !File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" +
-                                            stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" +
-                                            year.ToString() + ".csv"))
+                            if (!File.Exists(rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" + year.ToString() + ".csv"))
                             {
                                 this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER,
                                    stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() +
@@ -514,10 +470,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                         }
                         DateTime startDate = new DateTime(DateTime.Today.Year, 01, 01);
-                        string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                                          stockSerie.StockGroup.ToString() + ".csv";
-                        this.DownloadFileFromProvider(rootFolder + ABC_DAILY_FOLDER, fileName, startDate, DateTime.Today,
-                           stockSerie.ISIN);
+                        string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+                        this.DownloadFileFromProvider(rootFolder + ABC_DAILY_FOLDER, fileName, startDate, DateTime.Today, stockSerie.ISIN);
 
                         if (stockSerie.StockName == "CAC40")
                         // Check if something new has been downloaded using CAC40 as the reference for all downloads
@@ -533,7 +487,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistbp");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurolistcp");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "eurogp");
-                                //DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "srdp");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "sp500u");
                                 DownloadMonthlyFileFromABC(rootFolder + ABC_DAILY_FOLDER, DateTime.Today, "indicessecp");
                             }
@@ -547,9 +500,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             this.needDownload = false;
                         }
                     }
-                    stockSerie.IsInitialised = isUpTodate; // && !needReloadIntraday; Why need reload intraday ???
                     if (!isUpTodate)
+                    {
+                        stockSerie.IsInitialised = false;
                         stockSerie.ClearBarDurationCache();
+                    }
                 }
                 else
                 {
@@ -564,16 +519,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurogp");
-                            //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                             DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                         }
                     }
                     for (int i = lastDate.Year - 1; i > ARCHIVE_START_YEAR; i--)
                     {
-                        if (
-                           !this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER,
-                              stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" +
+                        if (!this.DownloadFileFromProvider(rootFolder + ARCHIVE_FOLDER, stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_" +
                               i.ToString() + ".csv", new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ISIN))
                         {
                             break;
@@ -587,7 +539,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistbp");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurolistcp");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "eurogp");
-                                //DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "srdp");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "sp500u");
                                 DownloadMonthlyFileFromABC(rootFolder + ARCHIVE_FOLDER, month, "indicessecp");
                             }
@@ -613,44 +564,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
 
-                if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday
-                        || DateTime.Today.DayOfWeek == DayOfWeek.Sunday
-                        || stockSerie.Keys.Last() == DateTime.Today)
+                if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || stockSerie.Keys.Last() == DateTime.Today)
                 {
                     return false;
                 }
 
                 string folder = rootFolder + ABC_INTRADAY_FOLDER;
-                string fileName;
-                string item;
-                if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
-                {
-                    fileName = DateTime.Today.ToString("yyMMdd_") + "SRD.csv";
-                    item = "complet";
-                }
-                else
-                {
-                    fileName = DateTime.Today.ToString("yyMMdd_") + "IndicesFr.csv";
-                    item = "indicesfrp";
-                }
+                string abcGroup = GetABCGroup(stockSerie);
+                if (abcGroup == null)
+                    return false;
+                string fileName = abcGroup + ".csv";
+
                 if (File.Exists(folder + "\\" + fileName))
                 {
                     if (File.GetLastWriteTime(folder + "\\" + fileName) > DateTime.Now.AddMinutes(-4))
                         return false;
                 }
                 // TODO Check the time of the day to avoid useless download
-                if (this.DownloadIntradayFileFromABC(folder, fileName, item))
+                if (this.DownloadIntradayFileFromABC(folder, fileName, abcGroup))
                 {
-                    // Deinitialise all the SBF120 stock
+                    // Deinitialise all the stocks belonging to group
                     foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
                     {
                         serie.IsInitialised = false;
+                        stockSerie.ClearBarDurationCache();
                     }
-                    loadedGroups.Clear();
-                    //foreach (StockSerie serie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth && s.StockName.Contains("SBF120") || s.StockName.Contains("CAC40")))
-                    //{
-                    //   serie.IsInitialised = false;
-                    //}
                 }
             }
             return true;
@@ -700,7 +638,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (string.IsNullOrEmpty(line) || line.StartsWith("<") || line.StartsWith("/")) return null;
                 string[] row = line.Split(';');
                 stockValue = new StockDailyValue(
-                    stockName,
                 float.Parse(row[2], usCulture),
                 float.Parse(row[3], usCulture),
                 float.Parse(row[4], usCulture),
@@ -723,10 +660,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Build post data
                 ASCIIEncoding encoding = new ASCIIEncoding();
 
-
                 // Send POST request
-
-                string url = "http://www.abcbourse.com/download/telechargement_intraday.aspx";
+                string url = "https://www.abcbourse.com/download/telechargement_intraday";
 
                 if (intradayViewState == string.Empty)
                 {
@@ -888,7 +823,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     // Send POST request
-                    string url = "https://www.abcbourse.com/download/libelles.aspx";
+                    string url = "https://www.abcbourse.com/download/libelles";
                     if (dailyViewState == string.Empty)
                     {
                         // Get ViewState 
@@ -967,7 +902,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     // Send POST request
-                    string url = "https://www.abcbourse.com/download/libelles.aspx";
+                    string url = "https://www.abcbourse.com/download/libelles";
                     if (dailyViewState == string.Empty)
                     {
                         // Get ViewState 
@@ -1033,14 +968,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (destFolder.Contains("archive") && File.Exists(fileName))
                     return true;
 
-                if (month.Month>1 && DateTime.Today.Month== month.Month)
+                if (month.Month > 1 && DateTime.Today.Month == month.Month)
                 {
                     // Force loading previous month in order to avoid missing some days
                     DownloadMonthlyFileFromABC(destFolder, new DateTime(month.Year, month.Month - 1, 1), abcGroup);
                 }
 
                 // Send POST request
-                string url = "https://www.abcbourse.com/download/historiques.aspx";
+                string url = "https://www.abcbourse.com/download/historiques";
 
                 if (string.IsNullOrEmpty(dailyViewState) || string.IsNullOrEmpty(dailyViewStateGenerator))
                 {
@@ -1127,7 +1062,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Send POST request
                 //             https://www.abcbourse.com/download/download.aspx?s=PX1p
 
-                string url = "https://www.abcbourse.com/download/historiques.aspx";
+                string url = "https://www.abcbourse.com/download/historiques";
                 if (dailyViewState == string.Empty || dailyViewStateGenerator == string.Empty)
                 {
                     // Get ViewState 
@@ -1209,7 +1144,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         // Read the content.
                         string responseFromServer = reader.ReadToEnd();
 
-                        if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<!DOCTYPE", StringComparison.CurrentCultureIgnoreCase))
+                        if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<", StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Save content to file
                             using (StreamWriter writer = new StreamWriter(fileName))
@@ -1237,7 +1172,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 ASCIIEncoding encoding = new ASCIIEncoding();
 
                 // Send POST request
-                string url = "https://www.abcbourse.com/download/libelles.aspx";
+                string url = "https://www.abcbourse.com/download/libelles";
 
                 if (labelViewState == string.Empty)
                 {
@@ -1590,68 +1525,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private static void ParseFinancialDetails(StockSerie stockSerie, StockFinancial financial, HtmlElement table)
-        {
-            HtmlElementCollection tables = table.GetElementsByTagName(("table"));
-            foreach (HtmlElement tbl in tables)
-            {
-
-            }
-        }
-
-        //private static void ParseFinancialGeneral(StockSerie stockSerie, StockFinancial financial, HtmlElement tbl)
-        //{
-        //    List<List<string>> data = getTableData(tbl);
-        //    foreach (var row in data)
-        //    {
-        //        if (row.Count == 2)
-        //        {
-        //            switch (row[0].Trim())
-        //            {
-        //                case "Marché":
-        //                    financial.Market = row[1];
-        //                    break;
-        //                case "Nombre de titres":
-        //                    financial.ShareNumber = long.Parse(row[1].Replace(" ", ""));
-        //                    break;
-        //                case "Place de cotation":
-        //                    financial.MarketPlace = row[1];
-        //                    break;
-        //                case "Secteur d'activité":
-        //                    financial.Sector = row[1];
-        //                    break;
-        //                case "Eligible au SRD":
-        //                    financial.SRD = row[1];
-        //                    break;
-        //                case "Eligible au PEA":
-        //                    financial.PEA = row[1];
-        //                    break;
-        //                case "Indices":
-        //                    financial.Indices = row[1];
-        //                    break;
-        //                case "Capitalisation (milliers d'euros)":
-        //                    //financial.MarketCap = int.Parse(row[1].Replace(" ", ""));
-        //                    break;
-        //                case "Rendement":
-        //                    float yield = 0f;
-        //                    if (float.TryParse(row[1].Replace(",", ".").Replace("%", ""), out yield))
-        //                    {
-        //                        financial.Yield = yield / 100f;
-        //                    }
-        //                    break;
-        //                case "Dividende (Date de versement)":
-        //                    financial.Dividend = row[1];
-        //                    break;
-        //                case "Date Assemblée Générale":
-        //                    financial.MeetingDate = row[1];
-        //                    break;
-        //            }
-        //        }
-        //        financial.DownloadDate = DateTime.Now;
-        //        stockSerie.StockAnalysis.Financial = financial;
-        //    }
-        //}
-
         public static void DownloadAgenda(StockSerie stockSerie)
         {
             if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
@@ -1664,8 +1537,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) return;
             }
 
-            string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName",
-               stockSerie.ShortName);
+            string url = "http://www.abcbourse.com/marches/events.aspx?s=$ShortNamep".Replace("$ShortName", stockSerie.ShortName);
 
             StockWebHelper swh = new StockWebHelper();
             string html = swh.DownloadHtml(url, Encoding.UTF8);

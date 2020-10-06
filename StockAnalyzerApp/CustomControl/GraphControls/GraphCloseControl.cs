@@ -1,18 +1,21 @@
-﻿using StockAnalyzer.Portofolio;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockPortfolio;
+using StockAnalyzer.StockBinckPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzerSettings.Properties;
+using System.IO;
+using StockAnalyzerApp.CustomControl.CommentDlg;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -27,14 +30,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             set
             {
                 this.drawingMode = value;
-                this.andrewPitchFork = null;
-                this.XABCD = null;
             }
         }
 
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
-        public StockPortofolio Portofolio { get; set; }
+        public StockPortfolio BinckPortfolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
+
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
         {
@@ -47,16 +49,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private PointF selectedValuePoint;
 
-        private AndrewPitchFork andrewPitchFork;
-        private XABCD XABCD;
+        protected bool ShowOrders { get { return Settings.Default.ShowOrders; } }
+        protected bool ShowEventMarquee { get { return Settings.Default.ShowEventMarquee; } }
+        protected bool ShowCommentMarquee { get { return Settings.Default.ShowCommentMarquee; } }
+        protected bool ShowDividend { get { return Settings.Default.ShowDividend; } }
 
-        protected bool ShowOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowOrders; } }
-        protected bool ShowSummaryOrders { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowSummaryOrders; } }
-        protected bool ShowEventMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowEventMarquee; } }
-        protected bool ShowCommentMarquee { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowCommentMarquee; } }
-        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), StockAnalyzerSettings.Properties.Settings.Default.ShowAgenda); } }
-        protected bool ShowIndicatorDiv { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorDiv; } }
-        protected bool ShowIndicatorText { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowIndicatorText; } }
+        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda); } }
+        protected bool ShowIndicatorDiv { get { return Settings.Default.ShowIndicatorDiv; } }
+        protected bool ShowIndicatorText { get { return Settings.Default.ShowIndicatorText; } }
 
 
         GraphCurveType closeCurveType = null;
@@ -84,6 +84,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public Dictionary<DateTime, String> Comments { get; set; }
         public StockAgenda Agenda { get; set; }
+        public StockDividend Dividends { get; set; }
 
         // Secondary serie management
         protected System.Drawing.Drawing2D.Matrix matrixSecondaryScreenToValue;
@@ -139,7 +140,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                string graphCopyright = "Copyright © " + DateTime.Today.Year + " www.ultimatechartist.com";
+                string graphCopyright = "Copyright © " + DateTime.Today.Year + " Dad El Carbo";
 
                 Size size = TextRenderer.MeasureText(graphCopyright, this.axisFont);
                 PointF point = new PointF(aGraphic.VisibleClipBounds.Right - size.Width + 10, 5);
@@ -226,16 +227,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #region Draw orders
 
-                if (ShowOrders && this.Portofolio != null)
+                if (ShowOrders && this.BinckPortfolio != null)
                 {
-                    if (ShowSummaryOrders)
-                    {
-                        PaintSummaryOrders(aGraphic);
-                    }
-                    else
-                    {
-                        PaintOrders(aGraphic);
-                    }
+                    PaintBinckOrders(aGraphic);
                 }
 
                 #endregion
@@ -249,6 +243,67 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Draw indicator1Name first not to hide the value
                 if (!HideIndicators)
                 {
+                    #region DISPLAY CLOUD
+                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 0)
+                    {
+                        var bullColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
+                        var bullBrush = new SolidBrush(bullColor);
+                        var bullPen = this.CurveList.Cloud.SeriePens[0];
+
+                        var bearColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
+                        var bearBrush = new SolidBrush(bearColor);
+                        var bearPen = this.CurveList.Cloud.SeriePens[1];
+
+                        var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
+                        var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
+
+                        bool isBull = bullPoints[0].Y < bearPoints[0].Y;
+                        var nbPoints = bullPoints.Length;
+                        var upPoints = new List<PointF>() { bullPoints[0] };
+                        var downPoints = new List<PointF>() { bearPoints[0] };
+                        for (int i = 1; i < nbPoints; i++)
+                        {
+                            if (isBull && bullPoints[i].Y < bearPoints[i].Y) // Bull cloud continuing
+                            {
+                                upPoints.Add(bullPoints[i]);
+                                downPoints.Insert(0, bearPoints[i]);
+                            }
+                            else if (!isBull && bullPoints[i].Y > bearPoints[i].Y) // Bear cloud continuing
+                            {
+                                upPoints.Add(bullPoints[i]);
+                                downPoints.Insert(0, bearPoints[i]);
+                            }
+                            else // Cloud reversing, need a draw
+                            {
+                                if (upPoints.Count > 0)
+                                {
+                                    upPoints.Add(bearPoints[i]);
+                                    downPoints.Insert(0, bullPoints[i]);
+                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                                    upPoints.AddRange(downPoints);
+                                    aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                                }
+                                isBull = !isBull;
+                                upPoints.Clear();
+                                downPoints.Clear();
+                                upPoints = new List<PointF>() { bullPoints[i] };
+                                downPoints = new List<PointF>() { bearPoints[i] };
+                            }
+                        }
+                        if (upPoints.Count > 1)
+                        {
+                            aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                            aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                            upPoints.AddRange(downPoints);
+                            aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                            upPoints.Clear();
+                            downPoints.Clear();
+                        }
+                        bullBrush.Dispose();
+                        bearBrush.Dispose();
+                    }
+                    #endregion
                     #region DISPLAY TRAIL STOPS
 
                     if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.Series[0].Count > 0)
@@ -258,7 +313,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         Pen longPen = this.CurveList.TrailStop.SeriePens[0];
                         Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
 
-                        using (Brush longBrush = new SolidBrush(longPen.Color)) {
+                        using (Brush longBrush = new SolidBrush(longPen.Color))
+                        {
                             using (Brush shortBrush = new SolidBrush(shortPen.Color))
                             {
                                 PointF srPoint1;
@@ -277,12 +333,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     if (isSupport) // upTrend
                                     {
                                         srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
-                                        aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                        }
                                     }
                                     else
                                     {
                                         srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
-                                        aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                        }
                                     }
                                     srPoint1 = srPoint2;
 
@@ -354,14 +416,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     #region DISPLAY INDICATORS
 
-                    foreach (IStockIndicator stockIndicator in CurveList.Indicators)
+                    foreach (var stockIndicator in CurveList.Indicators)
                     {
                         for (int i = 0; i < stockIndicator.SeriesCount; i++)
                         {
                             if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
                             {
                                 bool isHilbertSR = stockIndicator.Name.StartsWith("HILBERT");
-                                bool isTrailSR = stockIndicator.Name.StartsWith("TRAILHLSR");
+                                int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
+                                int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
+
                                 bool isSupport = stockIndicator.SerieNames[i].EndsWith(".S");
                                 bool isResistance = stockIndicator.SerieNames[i].EndsWith(".R");
                                 if (isSupport || isResistance)
@@ -382,8 +446,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             aGraphic.FillEllipse(srBrush, srPoint.X - pointSize, srPoint.Y - pointSize,
                                                2 * pointSize, 2 * pointSize);
 
-
-                                            if (this.ShowIndicatorText)
+                                            if (this.ShowIndicatorText && indexOfPB != -1 && indexOfEoT != -1)
                                             {
                                                 const int textOffset = 4;
 
@@ -392,13 +455,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                    : srPoint.Y - 2 * pointSize - 12;
 
                                                 // Draw PB and EndOfTrend text
-                                                if (stockIndicator.Events[2][index])
+                                                if (stockIndicator.Events[indexOfPB][index])
                                                 {
                                                     // Pullback in trend detected
                                                     this.DrawString(aGraphic, "PB", axisFont, srBrush,
                                                        this.backgroundBrush, srPoint.X - textOffset, yPos, false);
                                                 }
-                                                else if (stockIndicator.Events[3][index])
+                                                else if (stockIndicator.Events[indexOfEoT][index])
                                                 {
                                                     // End of trend detected
                                                     this.DrawString(aGraphic, "End", axisFont, srBrush,
@@ -436,7 +499,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
-
+                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 2)
+                    {
+                        for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
+                        {
+                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i].Count > 0)
+                            {
+                                tmpPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[i]);
+                                if (tmpPoints != null)
+                                {
+                                    aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[i], tmpPoints);
+                                }
+                            }
+                        }
+                    }
                     #endregion
 
                     #region DISPLAY DECORATORS
@@ -480,16 +556,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     foreach (DrawingItem item in this.drawingItems)
                     {
-                        item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
-                        // display support résistance value
-                        if (item.GetType() == typeof(Line2D))
+                        if (item.GetType() == typeof(CupHandle2D))
                         {
-                            Line2D line = (Line2D)item;
-                            if (line.IsHorizontal)
+                            var cupHandle = (CupHandle2D)item;
+                            DrawTmpCupHandle(aGraphic, DrawingPen, cupHandle, true);
+                        }
+                        else
+                        {
+                            item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
+                            // Display support résistance value
+                            if (item.GetType() == typeof(Line2D))
                             {
-                                PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
-                                this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
-                                   new PointF(1, textLocation.Y - 8), true);
+                                Line2D line = (Line2D)item;
+                                if (line.IsHorizontal)
+                                {
+                                    PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
+                                    this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
+                                       new PointF(1, textLocation.Y - 8), true);
+                                }
                             }
                         }
                     }
@@ -564,14 +648,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
 
                                 CandleStick candleStick = new CandleStick();
-                                candleStick.Width = 0.35f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count();
+                                candleStick.Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count());
                                 for (int i = 0; i < tmpPoints.Count(); i++)
                                 {
-                                    candleStick.X = tmpPoints[i].X;
-                                    candleStick.Close = tmpPoints[i].Y;
-                                    candleStick.High = tmpHighPoints[i].Y;
-                                    candleStick.Open = tmpOpenPoints[i].Y;
-                                    candleStick.Low = tmpLowPoints[i].Y;
+                                    candleStick.X = (int)tmpPoints[i].X;
+                                    candleStick.Close = (int)tmpPoints[i].Y;
+                                    candleStick.High = (int)tmpHighPoints[i].Y;
+                                    candleStick.Open = (int)tmpOpenPoints[i].Y;
+                                    candleStick.Low = (int)tmpLowPoints[i].Y;
 
                                     Color? color = null;
                                     if (!this.HideIndicators && this.CurveList.PaintBar != null)
@@ -688,11 +772,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (!eventFound && this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
                         {
                             int j = 0;
-                            foreach (
-                               BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
+                            foreach (var eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
                             {
                                 if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null &&
                                     this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
+                                {
+                                    eventFound = true;
+                                    break;
+                                }
+                                j++;
+                            }
+                        }
+                        // Cloud
+                        if (!eventFound && this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                        {
+                            int j = 0;
+                            foreach (var eventSerie in this.CurveList.Cloud.Events.Where(ev => ev != null && ev.Count > 0))
+                            {
+                                if (this.CurveList.Cloud.IsEvent != null && this.CurveList.Cloud.IsEvent[j] && eventSerie[i])
                                 {
                                     eventFound = true;
                                     break;
@@ -730,18 +827,29 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
                 {
-                    for (int i = StartIndex; i <= EndIndex; i++)
+                    var startDate = this.dateSerie[StartIndex];
+                    var endDate = this.dateSerie[EndIndex];
+                    foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
                     {
-                        DateTime agendaDate = this.dateSerie[i];
-                        if (this.Agenda.ContainsKey(agendaDate))
+                        if (agendaEntry.IsOfType(this.ShowAgenda))
                         {
-                            var agendaEntry = this.Agenda[agendaDate];
-                            if (agendaEntry.IsOfType(this.ShowAgenda))
-                            {
-                                PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(i);
-                                aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
-                            }
+                            int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
+
+                            PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                            aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
                         }
+                    }
+                }
+                if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
+                {
+                    var startDate = this.dateSerie[StartIndex];
+                    var endDate = this.dateSerie[EndIndex];
+                    foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
+                    {
+                        int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
+
+                        PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                        aGraphic.FillPolygon(Brushes.DarkGreen, marqueePoints);
                     }
                 }
                 #endregion
@@ -758,10 +866,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString("TIME", this.dateSerie[lastMouseIndex].ToShortTimeString(), 12) + "\r\n";
             }
+            float closeValue = float.NaN;
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
+                    if (closeCurveType.DataSerie.Name == "CLOSE")
+                        closeValue = curveType.DataSerie[this.lastMouseIndex];
                     if (curveType.DataSerie.Name.Length > 6)
                     {
                         value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
@@ -784,13 +895,36 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             // Add Trail Stops
+            var trailValue = float.NaN;
+            var trailName = string.Empty;
             if (CurveList.TrailStop != null)
             {
                 for (int i = 0; i < CurveList.TrailStop.SeriesCount; i++)
                 {
                     if (CurveList.TrailStop.Series[i] != null && CurveList.TrailStop.Series[i].Count > 0 && !float.IsNaN(CurveList.TrailStop.Series[i][this.lastMouseIndex]))
                     {
-                        value += BuildTabbedString(CurveList.TrailStop.Series[i].Name, CurveList.TrailStop.Series[i][this.lastMouseIndex], 12) + "\r\n";
+                        trailName = CurveList.TrailStop.Series[i].Name;
+                        trailValue = CurveList.TrailStop.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
+                    }
+                }
+                if (!float.IsNaN(trailValue))
+                {
+                    value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                }
+            }
+            // Add Cloud
+            var cloudValue = float.NaN;
+            var cloudName = string.Empty;
+            if (CurveList.Cloud != null)
+            {
+                for (int i = 0; i < CurveList.Cloud.SeriesCount; i++)
+                {
+                    if (CurveList.Cloud.Series[i] != null && CurveList.Cloud.Series[i].Count > 0 && !float.IsNaN(CurveList.Cloud.Series[i][this.lastMouseIndex]))
+                    {
+                        cloudName = CurveList.Cloud.SerieNames[i];
+                        cloudValue = CurveList.Cloud.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(cloudName, cloudValue, 12) + "\r\n";
                     }
                 }
             }
@@ -804,6 +938,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
             }
+#if DEBUG
+            value += BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12) + "\r\n";
+#endif
             // Remove last new line.
             if (value.Length != 0)
             {
@@ -827,6 +964,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += " " + (indicator.Name);
             }
+            if (this.CurveList.Cloud != null)
+            {
+                graphTitle += " " + (this.CurveList.Cloud.Name);
+            }
             if (this.CurveList.PaintBar != null)
             {
                 graphTitle += " " + (this.CurveList.PaintBar.Name);
@@ -845,152 +986,76 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        private void PaintOrders(Graphics graphic)
+        private void PaintBinckOrders(Graphics graphic)
         {
-            if (this.Portofolio == null || this.Portofolio.OrderList.Count == 0)
+            if (this.BinckPortfolio == null)
             {
                 return;
             }
+            var name = this.serieName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            foreach (StockOrder stockOrder in this.Portofolio.OrderList.FindAll(order => order.StockName == this.serieName && order.ExecutionDate >= this.dateSerie[this.StartIndex] && order.ExecutionDate.Date <= this.dateSerie[this.EndIndex]))
+            foreach (var operation in this.BinckPortfolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
             {
-                DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
-                valuePoint2D.X = this.IndexOf(orderDate);
+                DateTime orderDate = serieName.StartsWith("INT_") || serieName.StartsWith("FUT_") ? operation.Date : operation.Date.Date;
+                int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
+                valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
                 {
-                    StockLog.Write("Order date not found: " + stockOrder.ExecutionDate);
+                    StockLog.Write("Order date not found: " + operation.Date);
                 }
                 else
                 {
-                    screenPoint2D = GetScreenPointFromOrder(stockOrder);
-
-                    this.DrawArrow(graphic, screenPoint2D, stockOrder.IsBuyOrder(), stockOrder.IsShortOrder);
+                    if (operation.OperationType == StockOperation.BUY)
+                    {
+                        valuePoint2D.Y = operation.IsShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
+                        screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+                        this.DrawArrow(graphic, screenPoint2D, true, operation.IsShort);
+                    }
+                    else
+                    {
+                        valuePoint2D.Y = operation.IsShort ? this.lowCurveType.DataSerie[index] : this.highCurveType.DataSerie[index];
+                        screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+                        this.DrawArrow(graphic, screenPoint2D, false, operation.IsShort);
+                    }
                 }
             }
         }
+
+        static Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static Pen buyShortPen = new Pen(Color.Red, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
+        static Pen sellLongPen = new Pen(Color.Red, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static Pen sellShortPen = new Pen(Color.Green, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
 
         private void DrawArrow(Graphics g, PointF point, bool isBuy, bool isShort)
         {
-            int width = 3;
-            int arrowLengh = 20;
+            int arrowLengh = 15;
+            float offset = 10;
             isBuy = isShort ? !isBuy : isBuy;
+            Pen p = buyLongPen;
             if (isBuy)
             {
-                using (Pen p = new Pen(Color.Green, width))
+                if (isShort)
                 {
-                    if (isShort)
-                    {
-                        p.StartCap = LineCap.ArrowAnchor;
-                    }
-                    p.EndCap = LineCap.ArrowAnchor;
-                    g.DrawLine(p, point.X, point.Y + arrowLengh + 10, point.X, point.Y + 10);
-                }
-            }
-            else
-            {
-                using (Pen p = new Pen(Color.Red, width))
-                {
-                    if (isShort)
-                    {
-                        p.StartCap = LineCap.RoundAnchor;
-                    }
-                    p.EndCap = LineCap.ArrowAnchor;
-                    g.DrawLine(p, point.X, point.Y - arrowLengh - 10, point.X, point.Y - 10);
-                }
-            }
-        }
-        private void PaintSummaryOrders(Graphics graphic)
-        {
-            if (this.Portofolio == null || this.Portofolio.OrderList.Count == 0)
-            {
-                return;
-            }
-
-            // The GetSummaryOrderList funtion guaranties to have a succession of Buy/Sell foreach period a stock has been bought.
-            // The only special case, it may finish by a Buy order without matching sell.
-            StockOrderList stockOrderList = this.Portofolio.OrderList.GetSummaryOrderList(this.serieName, false);
-            if (stockOrderList.Count == 0)
-            {
-                return;
-            }
-
-            PointF buyScreenPoint2D = PointF.Empty;
-            PointF sellScreenPoint2D = PointF.Empty;
-
-            StockOrder buyOrder = null;
-            StockOrder sellOrder = null;
-            for (int i = 0; i < stockOrderList.Count; i += 2)
-            {
-                // Is there a matching sell order
-                buyOrder = stockOrderList[i];
-                buyScreenPoint2D = GetScreenPointFromOrder(buyOrder);
-                if (i < (stockOrderList.Count - 1))
-                {
-                    sellOrder = stockOrderList[i + 1];
-                    sellScreenPoint2D = GetScreenPointFromOrder(sellOrder);
-
-                    if (sellScreenPoint2D.X < this.GraphRectangle.Left || buyScreenPoint2D.X > this.GraphRectangle.Right)
-                    {
-                        continue;
-                    }
-                    if (buyScreenPoint2D.X < this.GraphRectangle.Left)
-                    {
-                        buyScreenPoint2D.X = this.GraphRectangle.Left - 5;
-                    }
-                    // Draw order area
-                    Pen currentPen = greenPen;
-                    Brush currentBrush = greenBrush;
-                    float buyCost = buyOrder.IsShortOrder ? -buyOrder.TotalCost : buyOrder.TotalCost;
-                    float sellCost = sellOrder.IsShortOrder ? -sellOrder.TotalCost : sellOrder.TotalCost;
-
-                    if (buyCost > sellCost ^ buyOrder.IsShortOrder)
-                    {
-                        currentPen = redPen;
-                        currentBrush = redBrush;
-                    }
-
-                    if (buyCost < sellCost)
-                    {
-                        // Draw rectangle
-                        graphic.DrawRectangle(currentPen, buyScreenPoint2D.X, sellScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, buyScreenPoint2D.Y - sellScreenPoint2D.Y);
-                        graphic.FillRectangle(currentBrush, buyScreenPoint2D.X, sellScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, buyScreenPoint2D.Y - sellScreenPoint2D.Y);
-                    }
-                    else
-                    {
-                        // Draw rectangle
-                        graphic.DrawRectangle(currentPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, sellScreenPoint2D.Y - buyScreenPoint2D.Y);
-                        graphic.FillRectangle(currentBrush, buyScreenPoint2D.X, buyScreenPoint2D.Y, sellScreenPoint2D.X - buyScreenPoint2D.X, sellScreenPoint2D.Y - buyScreenPoint2D.Y);
-                    }
-                    if (buyOrder.IsShortOrder)
-                    {
-                        float bottomPoint = Math.Min(buyScreenPoint2D.Y, sellScreenPoint2D.Y);
-                        PointF[] marquee = { new PointF(buyScreenPoint2D.X, bottomPoint), new PointF(buyScreenPoint2D.X + 4, bottomPoint), new PointF(buyScreenPoint2D.X, bottomPoint + 4) };
-                        graphic.FillPolygon(Brushes.Red, marquee);
-                    }
-                    else
-                    {
-                        float bottomPoint = Math.Max(buyScreenPoint2D.Y, sellScreenPoint2D.Y);
-                        PointF[] marquee = { new PointF(buyScreenPoint2D.X, bottomPoint), new PointF(buyScreenPoint2D.X + 4, bottomPoint), new PointF(buyScreenPoint2D.X, bottomPoint - 4) };
-                        graphic.FillPolygon(Brushes.Green, marquee);
-                    }
+                    p = buyShortPen;
                 }
                 else
                 {
-                    // Calcule the order Pen color
-                    if (buyOrder.UnitCost >= this.closeCurveType.DataSerie.Last && !buyOrder.IsShortOrder)
-                    {
-                        // Draw isBuy order
-                        graphic.DrawLine(redPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, GraphRectangle.Right, buyScreenPoint2D.Y);
-                        graphic.DrawLine(redPen, buyScreenPoint2D.X - 10, buyScreenPoint2D.Y - 10, buyScreenPoint2D.X, buyScreenPoint2D.Y);
-                    }
-                    else
-                    {
-                        // Draw isBuy order
-                        graphic.DrawLine(greenPen, buyScreenPoint2D.X, buyScreenPoint2D.Y, GraphRectangle.Right, buyScreenPoint2D.Y);
-                        graphic.DrawLine(greenPen, buyScreenPoint2D.X - 10, buyScreenPoint2D.Y - 10, buyScreenPoint2D.X, buyScreenPoint2D.Y);
-                    }
+                    p = buyLongPen;
                 }
+                g.DrawLine(p, point.X, point.Y + arrowLengh + offset, point.X, point.Y + offset);
+            }
+            else
+            {
+                if (isShort)
+                {
+                    p = sellShortPen;
+                }
+                else
+                {
+                    p = sellLongPen;
+                }
+                g.DrawLine(p, point.X, point.Y - arrowLengh - offset, point.X, point.Y - offset);
             }
         }
         #endregion
@@ -1079,7 +1144,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         RefreshMouseMarquee(index, e.Location, true);
                         ManageMouseMoveDrawing(e, mouseValuePoint);
                     }
-
                     #region Display Event text box
                     // Display events if required
                     if (mouseOverThis && this.ShowEventMarquee &&
@@ -1099,6 +1163,21 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     {
                                         eventTypeString += indicator.Name + " - " + eventSerie.Name +
                                                            System.Environment.NewLine;
+                                    }
+                                }
+                            }
+                        }
+                        // Cloud
+                        if (this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                        {
+                            for (int j = 0; j < CurveList.Cloud.EventCount; j++)
+                            {
+                                BoolSerie eventSerie = CurveList.Cloud.Events[j];
+                                if (CurveList.Cloud.IsEvent[j] && eventSerie != null && CurveList.Cloud.Events.Count() > 0)
+                                {
+                                    if (eventSerie[i])
+                                    {
+                                        eventTypeString += CurveList.Cloud.Name + " - " + eventSerie.Name + System.Environment.NewLine;
                                     }
                                 }
                             }
@@ -1160,24 +1239,50 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
+                    #endregion
+                    #region Display Agenda Text
                     if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
                          (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                         (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
+                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
                     {
                         int i = this.RoundToIndex(mousePoint);
-                        DateTime agendaDate = this.dateSerie[i];
-                        if (this.Agenda.ContainsKey(agendaDate))
+                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                        var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
+                        if (agendaEntry != null)
                         {
-                            var agendaEntry = this.Agenda[agendaDate];
-                            if (agendaEntry.IsOfType(this.ShowAgenda))
-                            {
-                                Size size = TextRenderer.MeasureText(agendaEntry.Event, axisFont);
-
-                                this.DrawString(this.foregroundGraphic, agendaEntry.Event, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                            }
+                            string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
+                            eventText += "Date : " + agendaEntry.Date.ToShortDateString();
+                            Size size = TextRenderer.MeasureText(eventText, axisFont);
+                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                         }
                     }
                     #endregion
+                    #region Display Dividend Text
+                    if (mouseOverThis && this.ShowDividend &&
+                        this.Dividends != null && this.Dividends.Entries.Count > 0 &&
+                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
+                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
+                    {
+                        int i = this.RoundToIndex(mousePoint);
+                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                        var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
+                        if (dividendEntry != null)
+                        {
+                            var coupon = dividendEntry.Dividend;
+                            float yield = coupon / closeCurveType.DataSerie[i];
+                            var eventText = "Dividende";
+                            eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
+                            eventText += Environment.NewLine + "Coupon: " + dividendEntry.Dividend.ToString();
+                            eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
+
+                            Size size = TextRenderer.MeasureText(eventText, axisFont);
+                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                        }
+                    }
+                    #endregion
+
                 }
                 this.PaintForeground();
             }
@@ -1230,6 +1335,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                                 Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
                                 drawingItems.Add(newLine);
+                                drawingItems.RefDate = dateSerie[(int)mouseValuePoint.X];
+                                drawingItems.RefDateIndex = (int)mouseValuePoint.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
@@ -1268,111 +1375,41 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected void ManageMouseMoveDrawing(System.Windows.Forms.MouseEventArgs e, PointF mouseValuePoint)
         {
+            PointF point1 = selectedValuePoint;
+            PointF point2 = mouseValuePoint;
+
+            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
+                return;
+            if ((Control.ModifierKeys & Keys.Shift) != 0)
+            {
+                point2 = new PointF(mouseValuePoint.X, point1.Y);
+            }
             switch (this.DrawingMode)
             {
-                case GraphDrawMode.AddSAR:
-                    DrawTmpSR(this.foregroundGraphic, mouseValuePoint);
-                    //if (this.DrawingStep == GraphDrawingStep.SelectItem)
-                    //{
-                    //    // first point is already selected, draw new line
-                    //    if (!selectedValuePoint.Equals(mouseValuePoint))
-                    //    {
-                    //        DrawTmpSAR(this.foregroundGraphic, mouseValuePoint);
-                    //    }
-                    //}
-                    break;
                 case GraphDrawMode.AddLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
-                        }
+                        DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(point1, point2), true);
                     }
                     break;
                 case GraphDrawMode.AddSegment:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
-                        }
+                        DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
+                    }
+                    break;
+                case GraphDrawMode.AddCupHandle:
+                    // Detect Cap and Handle
+                    var cupHandle = DetectCupHandle(mouseValuePoint);
+                    if (cupHandle != null)
+                    {
+                        DrawTmpCupHandle(foregroundGraphic, DrawingPen, cupHandle, true);
                     }
                     break;
                 case GraphDrawMode.AddHalfLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, selectedValuePoint, mouseValuePoint, true);
-                        }
-                    }
-                    break;
-                case GraphDrawMode.FanLine:
-                    if (this.DrawingStep == GraphDrawingStep.ItemSelected)
-                    {
-                        // first point is already selected, draw new line
-                        if (!selectedValuePoint.Equals(mouseValuePoint))
-                        {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(selectedValuePoint, mouseValuePoint), true);
-                        }
-                    }
-                    break;
-                case GraphDrawMode.AndrewPitchFork:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the second point
-                            if (andrewPitchFork != null && !andrewPitchFork.Point1.Equals(mouseValuePoint))
-                            {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, andrewPitchFork.Point1, mouseValuePoint, true);
-                            }
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting third point
-
-                            if (mouseValuePoint.Equals(andrewPitchFork.Point1) || mouseValuePoint.Equals(andrewPitchFork.Point2))
-                            {
-                                break;
-                            }
-                            andrewPitchFork.Point3 = mouseValuePoint;
-                            try
-                            {
-                                foreach (Line2DBase newLine in andrewPitchFork.GetLines(this.DrawingPen))
-                                {
-                                    DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
-                                }
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.XABCD:
-                    if (XABCD != null)
-                    {
-                        if (XABCD.NbPoint == 1)
-                        {
-                            if (!XABCD.X.Equals(mouseValuePoint)) {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, XABCD.X, mouseValuePoint, true);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var newLine in XABCD.GetLines(this.DrawingPen))
-                            {
-                                DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newLine, true);
-                            }
-                            var lastPoint = XABCD.GetLastPoint();
-                            if (!lastPoint.Equals(mouseValuePoint))
-                            {
-                                DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, lastPoint, mouseValuePoint, true);
-                            }
-                        }
+                        DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1408,23 +1445,220 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
             }
         }
-        private void DrawTmpConvexHull(Graphics graphics, PointF mouseValuePoint)
+
+        private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
-            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
+            if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X]))
             {
-                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-
-                if (index < 200) return;
-                HalfLine2D support, resistance;
-
-                StockPaintBar_CONVEXCULL.GetConvexCull(false, StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index, out resistance, out support, Pens.DarkRed, Pens.DarkGreen);
-
-                foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
+                PointF pivot = PointF.Empty;
+                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
                 {
-                    DrawTmpItem(graphics, item.Pen, item, true);
+                    var startBody = Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
+                    if (pivot == PointF.Empty) // Search for pivot
+                    {
+                        var prevBody = Math.Max(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
+                        if (startBody > prevBody && (startBody > mouseValuePoint.Y))
+                        {
+                            pivot.X = i;
+                            pivot.Y = startBody;
+                        }
+                    }
+                    else if (startBody > pivot.Y) // Cup Handle start
+                    {
+                        var startPoint = new PointF(i, pivot.Y);
+                        int j;
+                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
+                        {
+                            var endBody = Math.Max(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
+                            if (endBody > pivot.Y) // Look for Cup Handle end
+                            {
+                                break;
+                            }
+                        }
+                        // Calculate indices of right and left lows
+                        var leftLow = new PointF();
+                        var rightLow = new PointF();
+                        var low = float.MaxValue;
+                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
+                        {
+                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (low >= bodyLow)
+                            {
+                                leftLow.X = k;
+                                leftLow.Y = low = bodyLow;
+                            }
+                        }
+                        low = float.MaxValue;
+                        for (int k = (int)pivot.X + 1; k < j; k++)
+                        {
+                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (low > bodyLow)
+                            {
+                                rightLow.X = k;
+                                rightLow.Y = low = bodyLow;
+                            }
+                        }
+                        // Draw open cup and handle (not completed yet)
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftLow, rightLow, DrawingPen);
+                    }
                 }
             }
+            else
+            {
+                PointF pivot = PointF.Empty;
+                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
+                {
+                    var startBody = Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
+                    if (pivot == PointF.Empty) // Search for pivot
+                    {
+                        var prevBody = Math.Min(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
+                        if (startBody < prevBody && (startBody < mouseValuePoint.Y))
+                        {
+                            pivot.X = i;
+                            pivot.Y = startBody;
+                        }
+                    }
+                    else if (startBody < pivot.Y) // Cup Handle start
+                    {
+                        var startPoint = new PointF(i, pivot.Y);
+                        int j;
+                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
+                        {
+                            var endBody = Math.Min(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
+                            if (endBody < pivot.Y) // Look for Cup Handle end
+                            {
+                                break;
+                            }
+                        }
+                        // Calculate indices of right and left lows
+                        var leftHigh = new PointF();
+                        var rightHigh = new PointF();
+                        var high = float.MinValue;
+                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
+                        {
+                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (high <= bodyHigh)
+                            {
+                                leftHigh.X = k;
+                                leftHigh.Y = high = bodyHigh;
+                            }
+                        }
+                        high = float.MinValue;
+                        for (int k = (int)pivot.X + 1; k < j; k++)
+                        {
+                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
+                            if (high < bodyHigh)
+                            {
+                                rightHigh.X = k;
+                                rightHigh.Y = high = bodyHigh;
+                            }
+                        }
+                        // Draw open cup and handle (not completed yet)
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true);
+                    }
+                }
+            }
+            return null;
         }
+
+        protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
+        {
+            // Fill the area in green if bullish
+            var start = (int)Math.Min(cupHandle.Point1.X, cupHandle.Point2.X);
+            var end = (int)Math.Max(cupHandle.Point1.X, cupHandle.Point2.X);
+            if (end < StartIndex || start > EndIndex)
+                return;
+            start = Math.Max(StartIndex, start);
+            end = Math.Min(EndIndex, end);
+            PointF[] polygonPoints = new PointF[end - start + 1];
+            if (cupHandle.Inverse)
+            {
+                // Calculate lower body low
+                for (int i = start; i < end; i++)
+                {
+                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                }
+            }
+            else
+            {
+                // Calculate upper body high
+                for (int i = start; i < end; i++)
+                {
+                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                }
+            }
+            polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
+            polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
+            if (cupHandle.Inverse)
+            {
+                graph.FillPolygon(CupHandleInvBrush, polygonPoints);
+            }
+            else
+            {
+                graph.FillPolygon(CupHandleBrush, polygonPoints);
+            }
+
+            // Calculate intersection with bounding rectangle
+            Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
+            if (useTransform)
+            {
+                cupHandle.Draw(graph, pen, this.matrixValueToScreen, rect2D, this.IsLogScale);
+            }
+            else
+            {
+                cupHandle.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
+            }
+            if (!ShowIndicatorText)
+                return;
+            string text;
+            // Draw Handle metrics
+            var textPos = GetScreenPointFromValuePoint(cupHandle.Pivot.X, cupHandle.Pivot.Y);
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 15;
+                textPos.Y += 9;
+                text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            }
+            else
+            {
+                textPos.X -= 15;
+                textPos.Y -= 16;
+                text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+            }
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+
+            // Draw HL and LL
+            textPos = GetScreenPointFromValuePoint(cupHandle.LeftLow.X, cupHandle.LeftLow.Y);
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 5;
+                textPos.Y -= 16;
+                text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LH" : "HH";
+            }
+            else
+            {
+                textPos.X -= 5;
+                textPos.Y += 5;
+                text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LL" : "HL";
+            }
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+
+            textPos = GetScreenPointFromValuePoint(cupHandle.RightLow.X, cupHandle.RightLow.Y);
+            if (cupHandle.Inverse)
+            {
+                textPos.X -= 5;
+                textPos.Y -= 16;
+                text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LH" : "HH";
+            }
+            else
+            {
+                textPos.X -= 5;
+                textPos.Y += 5;
+                text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LL" : "HL";
+            }
+            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+        }
+
         private void DrawTmpSR(Graphics graphics, PointF mouseValuePoint)
         {
             if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
@@ -1442,34 +1676,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        private void DrawTmpSAR(Graphics graphics, PointF mouseValuePoint)
-        {
-            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
-            {
-                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-                FloatSerie sarSerie = null;
-                int sarStartIndex;
-                bool isSupport = this.closeCurveType.DataSerie[index] > mouseValuePoint.Y;
-                StockAnalyzerForm.MainFrame.CurrentStockSerie.CalculateSARStop(index, out sarStartIndex, out sarSerie, isSupport, 0.01f, 0.01f, 0.1f, 3);
-
-                Color color = Color.Red;
-                if (!isSupport)
-                {
-                    color = Color.Green;
-                }
-                using (Brush srBrush = new SolidBrush(color))
-                {
-                    PointF srPoint;
-                    for (int i = 0; i < sarSerie.Count; i++)
-                    {
-                        srPoint = GetScreenPointFromValuePoint(sarStartIndex + i, sarSerie[i]);
-                        graphics.FillEllipse(srBrush, srPoint.X - 2, srPoint.Y - 2, 2 * 2, 2 * 2);
-                    }
-                }
-            }
-        }
         private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {
+            PointF point1 = selectedValuePoint;
+            PointF point2 = mouseValuePoint;
+
+            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
+                return;
+            if ((Control.ModifierKeys & Keys.Shift) != 0)
+            {
+                point2 = new PointF(mouseValuePoint.X, point1.Y);
+            }
+            Console.WriteLine("DrawingMode: " + this.DrawingMode + "DrawingStep: " + this.DrawingStep);
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:
@@ -1480,16 +1698,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 Line2D newLine = new Line2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newLine);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
@@ -1507,19 +1726,42 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 Segment2D newSegment = new Segment2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newSegment);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newSegment);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
+                            }
+                            break;
+                        default:   // Shouldn't come there
+                            break;
+                    }
+                    break;
+                case GraphDrawMode.AddCupHandle:
+                    switch (this.DrawingStep)
+                    {
+                        case GraphDrawingStep.SelectItem:
+                            // Detect Cap and Handle
+                            var cupHandle = DetectCupHandle(mouseValuePoint);
+                            if (cupHandle != null)
+                            {
+                                drawingItems.Add(cupHandle);
+                                drawingItems.RefDate = dateSerie[(int)cupHandle.Point1.X];
+                                drawingItems.RefDateIndex = (int)cupHandle.Point1.X;
+                                AddToUndoBuffer(GraphActionType.AddItem, cupHandle);
+                                this.DrawingStep = GraphDrawingStep.SelectItem;
+                                this.BackgroundDirty = true; // The new line becomes a part of the background
+                                selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             break;
                         default:   // Shouldn't come there
@@ -1534,16 +1776,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.DrawingStep = GraphDrawingStep.ItemSelected;
                             break;
                         case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
                             try
                             {
                                 HalfLine2D newhalfLine = new HalfLine2D(point1, point2, this.DrawingPen);
                                 drawingItems.Add(newhalfLine);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newhalfLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                             }
                             catch (System.ArithmeticException)
                             {
@@ -1551,101 +1794,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             break;
                         default:   // Shouldn't come there
                             break;
-                    }
-                    break;
-                case GraphDrawMode.FanLine:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the first point
-                            selectedValuePoint = mouseValuePoint;
-                            this.DrawingStep = GraphDrawingStep.ItemSelected;
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting second point
-                            PointF point1 = selectedValuePoint;
-                            PointF point2 = mouseValuePoint;
-                            try
-                            {
-                                Line2D newLine = (Line2D)new Line2D(point1, point2, this.DrawingPen);
-                                drawingItems.Add(newLine);
-                                AddToUndoBuffer(GraphActionType.AddItem, newLine);
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.AndrewPitchFork:
-                    switch (this.DrawingStep)
-                    {
-                        case GraphDrawingStep.SelectItem: // Selecting the first point
-                            if (andrewPitchFork == null)
-                            {
-                                andrewPitchFork = new AndrewPitchFork(mouseValuePoint, PointF.Empty, PointF.Empty);
-                            }
-                            else
-                            {
-                                // Selecting second point
-                                andrewPitchFork.Point2 = mouseValuePoint;
-                                this.DrawingStep = GraphDrawingStep.ItemSelected;
-                            }
-                            break;
-                        case GraphDrawingStep.ItemSelected: // Selecting third point
-                            andrewPitchFork.Point3 = mouseValuePoint;
-                            try
-                            {
-                                foreach (Line2DBase newLine in andrewPitchFork.GetLines(this.DrawingPen))
-                                {
-                                    drawingItems.Add(newLine);
-                                    AddToUndoBuffer(GraphActionType.AddItem, newLine);
-                                }
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                                this.DrawingStep = GraphDrawingStep.SelectItem;
-                                andrewPitchFork = null;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                            break;
-                        default:   // Shouldn't come there
-                            break;
-                    }
-                    break;
-                case GraphDrawMode.XABCD:
-                    if (XABCD==null)
-                    {
-                        XABCD = new XABCD();
-                        XABCD.AddPoint(mouseValuePoint);
-                    }
-                    else
-                    {
-                        if (XABCD.NbPoint<4)
-                        {
-                            XABCD.AddPoint(mouseValuePoint);
-                        }
-                        else
-                        {
-                            try
-                            {
-                                XABCD.AddPoint(mouseValuePoint);
-                                foreach (var newLine in XABCD.GetLines(this.DrawingPen))
-                                {
-                                    drawingItems.Add(newLine);
-                                    AddToUndoBuffer(GraphActionType.AddItem, newLine);
-                                }
-                                this.BackgroundDirty = true; // The new line becomes a part of the background
-                                selectedLineIndex = -1;
-                                XABCD = null;
-                            }
-                            catch (System.ArithmeticException)
-                            {
-                            }
-                        }
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1667,6 +1815,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 HighlightClosestLine(e);
                             }
@@ -1683,10 +1832,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (selectedLineIndex != -1)
                             {
                                 DrawingItem removeLine = this.drawingItems.ElementAt(selectedLineIndex);
-                                this.drawingItems.RemoveAt(selectedLineIndex);
-                                AddToUndoBuffer(GraphActionType.DeleteItem, removeLine);
-                                this.BackgroundDirty = true; // New to redraw the background
-                                HighlightClosestLine(e);
+                                if (removeLine.IsPersistent)
+                                {
+                                    this.drawingItems.RemoveAt(selectedLineIndex);
+                                    AddToUndoBuffer(GraphActionType.DeleteItem, removeLine);
+                                    this.BackgroundDirty = true; // New to redraw the background
+                                    HighlightClosestLine(e);
+                                }
                             }
                             break;
                         default:   // Shouldn't come there
@@ -1855,7 +2007,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems.Where(d => (d is Line2DBase) && d.IsPersistent)) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (Line2DBase line2D in this.drawingItems.Where(di => di.IsPersistent && di is Line2DBase)) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
                 line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
                 currentDistance = line.DistanceTo(point2D);
@@ -1870,166 +2022,173 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
 
-        private PointF GetScreenPointFromOrder(StockOrder stockOrder)
-        {
-            PointF valuePoint2D = PointF.Empty;
-
-            DateTime orderDate = serieName.StartsWith("INT_") ? stockOrder.ExecutionDate : stockOrder.ExecutionDate.Date;
-            valuePoint2D.X = this.IndexOf(orderDate);
-            valuePoint2D.Y = stockOrder.UnitCost;
-            return this.GetScreenPointFromValuePoint(valuePoint2D);
-        }
-        private int IndexOfRec(DateTime date, int startIndex, int endIndex)
-        {
-            if (startIndex < endIndex)
-            {
-                if (dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                if (dateSerie[endIndex] == date)
-                {
-                    return endIndex;
-                }
-                int midIndex = (startIndex + endIndex) / 2;
-                int comp = date.CompareTo(dateSerie[midIndex]);
-                if (comp == 0)
-                {
-                    return midIndex;
-                }
-                else if (comp < 0)
-                {// 
-                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
-                }
-                else
-                {
-                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
-                }
-            }
-            else
-            {
-                if (startIndex == endIndex && dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                return -1;
-            }
-        }
         #region Order Management
 
 
         void buyMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-                newOrder.Value = this.closeCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 0;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var value = this.closeCurveType.DataSerie[lastMouseIndex];
+                int qty = 10;
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, qty, -value * qty));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
-                }
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void sellMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.SellAtLimit;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
-
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
+                var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+                if (pos == null || pos.IsShort)
                 {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
+                    MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+                int qty = pos.Qty;
+                switch (MessageBox.Show("Do yo want to fully close the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        qty = pos.Qty / 2;
+                        break;
+                    case DialogResult.Cancel:
+                        return;
+                }
+                var value = this.closeCurveType.DataSerie[lastMouseIndex];
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, value * qty));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void shortMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.SellAtLimit;
-                newOrder.IsShortOrder = true;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
+                var value = this.closeCurveType.DataSerie[lastMouseIndex];
+                int qty = 10;
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, qty, value * qty, true));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
-
-                    this.ForegroundDirty = true;
-                }
+                this.BackgroundDirty = true;
+                PaintGraph();
             }
         }
 
         void coverMenu_Click(object sender, System.EventArgs e)
         {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                StockOrder newOrder = new StockOrder();
-                newOrder.State = StockOrder.OrderStatus.Executed;
-                newOrder.StockName = this.serieName;
-                newOrder.Type = StockOrder.OrderType.BuyAtLimit;
-                newOrder.IsShortOrder = true;
-                newOrder.Value = this.openCurveType.DataSerie[lastMouseIndex];
-                newOrder.Number = 10;
-                newOrder.CreationDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExecutionDate = this.dateSerie[lastMouseIndex];
-                newOrder.ExpiryDate = this.dateSerie[lastMouseIndex].AddMonths(1);
-
-                OrderEditionDlg dlg = new OrderEditionDlg(newOrder);
-                if (dlg.ShowDialog() == DialogResult.OK)
+                var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+                if (pos == null || !pos.IsShort)
                 {
-                    StockAnalyzerForm.MainFrame.CurrentPortofolio.OrderList.Add(newOrder);
+                    MessageBox.Show("Cannot cover not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                int qty = pos.Qty;
+                switch (MessageBox.Show("Do yo want to fully cover the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        qty = pos.Qty / 2;
+                        break;
+                    case DialogResult.Cancel:
+                        return;
+                }
+                var value = this.closeCurveType.DataSerie[lastMouseIndex];
+                var date = this.dateSerie[lastMouseIndex];
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
+                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                    this.ForegroundDirty = true;
+                this.BackgroundDirty = true;
+                PaintGraph();
+            }
+        }
+
+        void deleteOperationMenu_Click(object sender, System.EventArgs e)
+        {
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            {
+                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
+            {
+                var date = this.dateSerie[lastMouseIndex];
+
+                var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
+                if (operation != null)
+                {
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Remove(operation);
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+
+                    this.BackgroundDirty = true;
+                    PaintGraph();
                 }
             }
         }
-        void financialMenu_Click(object sender, System.EventArgs e)
+        void commentMenu_Click(object sender, System.EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.ShowFinancials();
+            var date = this.dateSerie[lastMouseIndex];
+
+            var commentDlg = new AddCommentDialog(date);
+            var res = commentDlg.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.Comments.Add(date, commentDlg.Comment);
+                StockAnalyzerForm.MainFrame.SaveAnalysis(Settings.Default.AnalysisFile);
+
+                this.BackgroundDirty = true;
+                PaintGraph();
+            }
         }
         void agendaMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
         }
-        void openInFTMenu_Click(object sender, System.EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.OpenInFTMenu();
-        }
         void openInABCMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInABCMenu();
+        }
+        void openInPEAPerf_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInPEAPerf();
+        }
+        void openInZBMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInZBMenu();
+        }
+        void openInSocGenMenu_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInSocGenMenu();
         }
         void statMenu_Click(object sender, System.EventArgs e)
         {

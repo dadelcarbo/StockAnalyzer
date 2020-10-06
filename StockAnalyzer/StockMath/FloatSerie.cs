@@ -1,86 +1,16 @@
 ﻿using StockAnalyzer.StockLogging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace StockAnalyzer.StockMath
 {
-    public class FloatSerie
+    public class FloatSerie : IEnumerable<float>
     {
         public string Name { get; set; }
-        public string Script { get; protected set; }
 
-        private float max = float.MinValue;
-        private float min = float.MaxValue;
-        private float stdev = float.MinValue;
-        private float variance = float.MinValue;
-        private float mean = float.MinValue;
-        private float median = float.MinValue;
-        private float gamma = float.MinValue;
-
-        #region STATISTICS PROPERTIES
-        public void ResetStatistics()
-        {
-            max = float.MinValue;
-            min = float.MaxValue;
-            stdev = float.MinValue;
-            mean = float.MinValue;
-            median = float.MinValue;
-            gamma = float.MinValue;
-        }
-        public float Max
-        {
-            get
-            {
-                if (max == float.MinValue)
-                {
-                    max = this.GetMax();
-                }
-                return max;
-            }
-        }
-        public float Min
-        {
-            get
-            {
-                if (min == float.MaxValue)
-                {
-                    min = this.GetMin();
-                }
-                return min;
-            }
-        }
-        public float Stdev
-        {
-            get
-            {
-                if (stdev == float.MinValue)
-                {
-                    this.CalculateStdev();
-                }
-                return stdev;
-            }
-        }
-        public float Variance
-        {
-            get
-            {
-                if (variance == float.MinValue)
-                {
-                    this.CalculateStdev();
-                }
-                return variance;
-            }
-        }
-        public float CalculateAVG()
-        {
-            float sum = 0.0f;
-            foreach (float value in Values)
-            {
-                sum += value;
-            }
-            return sum / (float)Values.Count();
-        }
+        #region STATISTICAL FUNCTIONS
         public float CalculateAVG(int startIndex, int endIndex)
         {
             float sum = 0.0f;
@@ -91,20 +21,6 @@ namespace StockAnalyzer.StockMath
             return sum / (endIndex - startIndex);
         }
 
-        private void CalculateStdev()
-        {
-            float avg = this.Mean;
-            float sum = 0.0f;
-            float spread = 0.0f;
-            foreach (float value in Values)
-            {
-                spread = value - avg;
-                sum += spread * spread;
-            }
-            variance = sum / (float)Values.Count();
-            stdev = (float)Math.Sqrt(variance);
-        }
-        #region STATISTICAL FUNCTIONS
         public FloatSerie CalculateVariance(int period)
         {
             FloatSerie ema = this.CalculateMA(period);
@@ -313,18 +229,6 @@ namespace StockAnalyzer.StockMath
             }
             return stdev;
         }
-        public float CalculateVariance(int startIndex, int endIndex)
-        {
-            float avg = this.CalculateAVG(startIndex, endIndex);
-            float sum = 0.0f;
-            float spread = 0.0f;
-            for (int i = startIndex; i <= endIndex; i++)
-            {
-                spread = this[i] - avg;
-                sum += spread * spread;
-            }
-            return sum / (endIndex - startIndex);
-        }
         public float CalculateStdev(int startIndex, int endIndex)
         {
             float avg = this.CalculateAVG(startIndex, endIndex);
@@ -337,64 +241,6 @@ namespace StockAnalyzer.StockMath
             }
             return (float)Math.Sqrt(sum / (endIndex - startIndex));
         }
-        private void CalculateMedian()
-        {
-            List<float> list = this.Values.ToList();
-            list.Sort();
-            int mediumIndex = list.Count / 2;
-            int q1Index = list.Count / 4;
-            int q3Index = list.Count * 3 / 4;
-            if (list.Count % 2 == 0)
-            {
-                this.median = (list[mediumIndex - 1] + list[mediumIndex]) / 2.0f;
-            }
-            else
-            {
-                this.median = list[mediumIndex];
-            }
-            if (list.Count % 4 == 0)
-            {
-                this.gamma = (list[q3Index - 1] + list[q3Index] - list[q1Index - 1] - list[q1Index]) / 4.0f;
-            }
-            else
-            {
-                this.gamma = (list[q3Index] - list[q1Index]) / 2.0f;
-            }
-        }
-        public float Mean
-        {
-            get
-            {
-                if (mean == float.MinValue)
-                {
-                    mean = this.CalculateAVG();
-                }
-                return mean;
-            }
-        }
-        public float Median
-        {
-            get
-            {
-                if (median == float.MinValue)
-                {
-                    this.CalculateMedian();
-                }
-                return median;
-            }
-        }
-        public float Gamma
-        {
-            get
-            {
-                if (gamma == float.MinValue)
-                {
-                    this.CalculateMedian();
-                }
-                return gamma;
-            }
-        }
-        #endregion
         #endregion
 
         public float[] Values { get; set; }
@@ -435,6 +281,10 @@ namespace StockAnalyzer.StockMath
         public FloatSerie(float[] values)
         {
             this.Values = values;
+        }
+        public FloatSerie(IEnumerable<float> values)
+        {
+            this.Values = values.ToArray();
         }
         #endregion
         public void Reset(float value)
@@ -482,32 +332,6 @@ namespace StockAnalyzer.StockMath
                 }
             }
         }
-        public FloatSerie CalculateWMA(int maPeriod, FloatSerie weightSerie)
-        {
-            float[] serie = new float[Values.Count()];
-            float cumul = 0.0f;
-            float weightCumul = 0.0f;
-            for (int i = 0; i < Values.Count(); i++)
-            {
-                if (i < maPeriod)
-                {
-                    cumul += Values[i] * weightSerie[i];
-                    weightCumul += weightSerie[i];
-                    serie[i] = cumul / weightCumul;
-                }
-                else
-                {
-                    cumul += Values[i] * weightSerie[i] - Values[i - maPeriod] * weightSerie[i - maPeriod];
-                    weightCumul += weightSerie[i] - weightSerie[i - maPeriod];
-                    serie[i] = cumul / weightCumul;
-                }
-                if (weightCumul == 0.0f)
-                {
-                    return null;
-                }
-            }
-            return new FloatSerie(serie, "WMA_" + maPeriod);
-        }
         public FloatSerie CalculateMA(int maPeriod)
         {
             float[] serie = new float[Values.Count()];
@@ -551,23 +375,6 @@ namespace StockAnalyzer.StockMath
             serie.Name = "EMA_" + emaPeriod.ToString();
             return serie;
         }
-        public FloatSerie CalculateKEMA(int fastPeriod, int slowPeriod)
-        {
-            FloatSerie serie = new FloatSerie(Values.Count());
-            FloatSerie erSerie = CalculateER((fastPeriod + slowPeriod) / 2);
-            erSerie = erSerie.Abs(); // Calculate square
-
-            serie[0] = Values[0];
-            for (int i = 1; i < Values.Count(); i++)
-            {
-                int period = (int)((erSerie[i]) * (slowPeriod - fastPeriod)) + fastPeriod;
-
-                float alpha = 2.0f / (float)(period + 1);
-                serie[i] = serie[i - 1] + alpha * (Values[i] - serie[i - 1]);
-            }
-            serie.Name = "KEMA_" + slowPeriod + "_" + fastPeriod;
-            return serie;
-        }
         public FloatSerie CalculateER(int period)
         {
             float volatility = 0;
@@ -596,6 +403,10 @@ namespace StockAnalyzer.StockMath
         {
             FloatSerie newSerie = new FloatSerie(this.Count);
 
+            for (int i = 0; i < length; i++)
+            {
+                newSerie[i] = this[0];
+            }
             for (int i = length; i < this.Count; i++)
             {
                 newSerie[i] = this[i - length];
@@ -897,67 +708,6 @@ namespace StockAnalyzer.StockMath
                 if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
             }
         }
-
-        public void CalculateBBOSC(FloatSerie referenceAverage, FloatSerie widthSerie, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
-        {
-            bbUpSerie = new FloatSerie(this.Values.Count());
-            bbUpSerie.Name = "BBOSCUp";
-            bbDownSerie = new FloatSerie(this.Values.Count());
-            bbDownSerie.Name = "BBOSCDown";
-
-            for (int i = 0; i < this.Values.Count(); i++)
-            {
-                float absWidth = Math.Abs(widthSerie[i]);
-                bbDownSerie[i] = referenceAverage[i] + BBDownCoef * absWidth;
-                bbUpSerie[i] = referenceAverage[i] + BBUpCoef * absWidth;
-            }
-        }
-        public FloatSerie CalculateEC(int emaPeriod, float gain)
-        {
-            FloatSerie serie = new FloatSerie(Values.Count(), "EMA_" + emaPeriod.ToString());
-            if (emaPeriod <= 1)
-            {
-                for (int i = 0; i < this.Count; i++)
-                {
-                    serie[i] = this[i];
-                }
-            }
-            else
-            {
-                float alpha = 2.0f / (float)(emaPeriod + 1);
-
-                // Tradestation code: EC = a*(Price + gain*(Price – EC[1])) + (1 – a)*EC[1];
-
-                serie[0] = Values[0];
-                for (int i = 1; i < Values.Count(); i++)
-                {
-                    serie[i] = alpha * (Values[i] + gain * (Values[i] - serie[i - 1])) + (1 - alpha) * serie[i - 1];
-                }
-            }
-            return serie;
-        }
-        static public float CalculateNextEMA(int emaPeriod, float previousEMA, float currentValue)
-        {
-            float alpha = 2.0f / (float)(emaPeriod + 1);
-            return previousEMA + alpha * (currentValue - previousEMA);
-        }
-        static public float CalculateValueNextEMA(int emaPeriod, float currentEMA, float requiredNextEMA)
-        {
-            float alpha = 2.0f / (float)(emaPeriod + 1);
-            return (requiredNextEMA - currentEMA) / alpha + currentEMA;
-        }
-        public float CalculateValueNextMA(int maPeriod, int index, float previousMA, float requiredNextMA)
-        {
-            if (index <= maPeriod)
-            {
-                return Values.ElementAt(index);
-            }
-            else
-            {
-                float requiredMA = maPeriod * (requiredNextMA - previousMA) + this.Values[index - maPeriod - 1];
-                return requiredMA;
-            }
-        }
         #region ARITHMETIC CALCULUS
         public static FloatSerie operator +(FloatSerie s1, FloatSerie s2)
         {
@@ -1047,7 +797,7 @@ namespace StockAnalyzer.StockMath
             return new FloatSerie(squareSerie);
         }
         /// <summary>
-        /// Calculate the Powe root series
+        /// Calculate the Power series
         /// </summary>
         /// <returns></returns>
         public FloatSerie Pow(double power)
@@ -1145,6 +895,16 @@ namespace StockAnalyzer.StockMath
             for (int i = 0; i < this.Values.Count(); i++)
             {
                 serie[i] = Values[i] * mult;
+            }
+            return new FloatSerie(serie);
+        }
+        public FloatSerie Log10()
+        {
+            float[] serie = new float[this.Values.Count()];
+
+            for (int i = 0; i < this.Values.Count(); i++)
+            {
+                serie[i] = (float)(Math.Log10(Values[i]));
             }
             return new FloatSerie(serie);
         }
@@ -1275,18 +1035,6 @@ namespace StockAnalyzer.StockMath
         }
         #endregion
 
-        public FloatSerie ApplySmoothing(StockMathToolkit.SmoothingType smoothingType, float scale)
-        {
-            FloatSerie serie = new FloatSerie(this.Count);
-            float width = this.Max - this.Min;
-            StockMathToolkit.SmoothingFunction smoothingFunction = StockMathToolkit.GetSmoothingFunction(smoothingType);
-            int i = 0;
-            foreach (float value in this.Values)
-            {
-                serie[i++] = smoothingFunction(value, width, scale);
-            }
-            return serie;
-        }
         public FloatSerie ApplySmoothing(StockMathToolkit.SmoothingType smoothingType, float inputWidth, float scale)
         {
             FloatSerie serie = new FloatSerie(this.Count);
@@ -1336,16 +1084,6 @@ namespace StockAnalyzer.StockMath
 
 
         #region MIN_MAX Functions
-        private float GetMin()
-        {
-            float minValue = float.MaxValue;
-
-            foreach (float currentValue in Values)
-            {
-                if (minValue > currentValue) minValue = currentValue;
-            }
-            return minValue;
-        }
         public float GetMin(int startIndex, int endIndex)
         {
             float minValue = float.MaxValue;
@@ -1359,16 +1097,6 @@ namespace StockAnalyzer.StockMath
                 if (minValue > Values[i]) minValue = Values[i];
             }
             return minValue;
-        }
-        private float GetMax()
-        {
-            float maxValue = float.MinValue;
-
-            foreach (float currentValue in Values)
-            {
-                if (maxValue < currentValue) maxValue = currentValue;
-            }
-            return maxValue;
         }
         public float GetMax(int startIndex, int endIndex)
         {
@@ -1903,6 +1631,16 @@ namespace StockAnalyzer.StockMath
                 }
             }
             return trailSerie;
+        }
+
+        public IEnumerator<float> GetEnumerator()
+        {
+            return ((IEnumerable<float>)Values).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Values.GetEnumerator();
         }
     }
 }

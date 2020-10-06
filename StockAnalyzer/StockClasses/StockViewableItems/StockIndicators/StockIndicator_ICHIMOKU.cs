@@ -6,10 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ICHIMOKU : StockIndicatorBase
     {
-        public StockIndicator_ICHIMOKU()
-        {
-        }
-
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -95,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[2] = SenkouSpanA;
             SenkouSpanA.Name = "SenkouSpanA";
 
-            FloatSerie SenkouSpanB = new FloatSerie(highSerie.Count, "SenkouSpanB"); // (highest high + lowest low)/2 calculated over the past 52 time periods and plotted 26 periods ahead
+            FloatSerie SenkouSpanB; // (highest high + lowest low)/2 calculated over the past 52 time periods and plotted 26 periods ahead
             FloatSerie tmpSerie = new FloatSerie(highSerie.Count, "tmp");
             period = (int)this.parameters[2];
             for (int i = 0; i < highSerie.Count; i++)

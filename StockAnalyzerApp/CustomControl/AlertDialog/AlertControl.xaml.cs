@@ -1,13 +1,9 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using Telerik.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using UserControl = System.Windows.Controls.UserControl;
@@ -19,45 +15,20 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
     /// </summary>
     public partial class AlertControl : UserControl
     {
-        public AlertControl()
+        private System.Windows.Forms.Form Form { get; }
+        public AlertControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
 
-            this.grid.AddHandler(GridViewCellBase.CellDoubleClickEvent, new EventHandler<RadRoutedEventArgs>(OnCellDoubleClick), true);
-
-            foreach (var item in StockAlertConfig.GetConfigs())
-            {
-                this.TimeFrameComboBox.Items.Add(item);
-                if (this.selectedTimeFrame==null)
-                {
-                    this.SelectedTimeFrame = item;
-                }
-            }
+            this.Form = form;
         }
-        private StockAlertConfig selectedTimeFrame;
-
-        public StockAlertConfig SelectedTimeFrame {
-            get
-            {
-                return selectedTimeFrame;
-            }
-            set
-            {
-                if (selectedTimeFrame != value)
-                {
-                    selectedTimeFrame = value;
-                    this.TimeFrameComboBox.SelectedItem = selectedTimeFrame;
-                }
-            }
-        }
+        public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
 
-        public List<StockAlertDef> AlertDefs { get; set; }
-
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            var alertLog = this.DataContext as StockAlertLog;
+            var alertLog = this.SelectedTimeFrame.AlertLog;
             alertLog.Clear();
         }
 
@@ -65,18 +36,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                if (AlertDefs == null)
-                {
-                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateIntradayAlert);
-                    alertThread.Name = "Intraday Alert";
-                    alertThread.Start();
-                }
-                else
-                {
-                    Thread alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-                    alertThread.Name = "Alert";
-                    alertThread.Start(Tuple.Create(AlertDefs, (StockAlertLog)this.DataContext));
-                }
+                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                alertThread.Name = "Alert";
+                alertThread.Start(this.SelectedTimeFrame);
             }
             catch (Exception ex)
             {
@@ -84,18 +46,35 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             }
         }
 
-        private void OnCellDoubleClick(object sender, RadRoutedEventArgs e)
+        private void grid_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
             StockAlert alert = ((RadGridView)sender).SelectedItem as StockAlert;
 
             if (alert == null) return;
 
-            if (SelectedStockChanged != null) this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
-
-            StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
-
-            StockAnalyzerForm.MainFrame.WindowState = FormWindowState.Normal;
+            if (SelectedStockChanged != null)
+            {
+                StockAnalyzerForm.MainFrame.Activate();
+                this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
+                StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
+                this.Form.TopMost = true;
+                this.Form.TopMost = false;
+            }
+        }
+        private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
+        {
+            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            if (column != null && column.DataType == typeof(string))
+            {
+                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
+                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
+            }
+            else if (column != null && column.DataType == typeof(DateTime))
+            {
+                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
+                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
+            }
         }
     }
 }

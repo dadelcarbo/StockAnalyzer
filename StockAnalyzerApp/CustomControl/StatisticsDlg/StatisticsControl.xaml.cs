@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.StatisticsDlg
@@ -39,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                 float avgReturn = 0;
                 viewModel.Results.Clear();
                 viewModel.Summary.Clear();
-                foreach (var serie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(viewModel.Group) && s.Initialise()))
+                foreach (var serie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(viewModel.Group) && s.Initialise()))
                 {
                     if (viewModel.CalculateFixedStopProfit(serie.StockName))
                     {

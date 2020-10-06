@@ -52,7 +52,7 @@ namespace StockAnalyzerApp
                 this.label1.Text = ProgressSubText;
                 this.progressBar1.Minimum = ProgressMin;
                 this.progressBar1.Maximum = ProgressMax;
-                this.progressBar1.Value = ProgressVal;
+                this.progressBar1.Value = Math.Min(ProgressVal, ProgressMax);
             }
         }
         static StockSplashScreen splashScreen = null;

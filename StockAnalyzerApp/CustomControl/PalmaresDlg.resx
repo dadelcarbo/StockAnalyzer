@@ -155,11 +155,11 @@
   <data name="tangibleBookValueHdr.Text" xml:space="preserve">
     <value>Tangible Book Value</value>
   </data>
-  <data name="ROCEXHdr.DisplayIndex" type="System.Int32, mscorlib">
+  <data name="indicatorHdr.DisplayIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="ROCEXHdr.Text" xml:space="preserve">
-    <value>ROCEX</value>
+  <data name="indicatorHdr.Text" xml:space="preserve">
+    <value>Indicator</value>
   </data>
   <metadata name="palmaresContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -465,10 +465,10 @@
   <data name="&gt;&gt;closeHdr.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ROCEXHdr.Name" xml:space="preserve">
-    <value>ROCEXHdr</value>
+  <data name="&gt;&gt;indicatorHdr.Name" xml:space="preserve">
+    <value>indicatorHdr</value>
   </data>
-  <data name="&gt;&gt;ROCEXHdr.Type" xml:space="preserve">
+  <data name="&gt;&gt;indicatorHdr.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;addToWinnerWatchListToolStripMenuItem.Name" xml:space="preserve">

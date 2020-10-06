@@ -32,27 +32,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var fastSmoothing = (int)this.parameters[1];
             var slowSmoothing = (int)this.parameters[2];
 
-            if (!StockDictionary.StockDictionarySingleton.ContainsKey(stockName))
+            if (!StockDictionary.Instance.ContainsKey(stockName))
             {
                 throw new ArgumentException("Stock name not found: " + stockName);
             }
 
-            var otherSerie = StockDictionary.StockDictionarySingleton[stockName];
+            var otherSerie = StockDictionary.Instance[stockName];
             if (!otherSerie.Initialise())
             {
                 throw new ArgumentException("Stock cannot be initialized: " + stockName);
             }
 
-            var refSerie = stockSerie.GenerateRelativeStrenthStockSerie(StockDictionary.StockDictionarySingleton[this.parameters[0].ToString()]).GetSerie(StockDataType.CLOSE);
+            var refSerie = stockSerie.GenerateRelativeStrenthStockSerie(StockDictionary.Instance[this.parameters[0].ToString()]).GetSerie(StockDataType.CLOSE);
 
             this.Series[0] = refSerie;
             this.Series[1] = refSerie.CalculateEMA(fastSmoothing);
             this.Series[2] = refSerie.CalculateEMA(slowSmoothing);
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
+            this.CreateEventSeries(refSerie.Count);
 
-            for (int i = 5; i < stockSerie.Count; i++)
+            for (int i = 5; i < refSerie.Count; i++)
             {
                 this.Events[0][i] = this.Series[1][i - 1] < this.Series[2][i - 1] && this.Series[1][i] > this.Series[2][i];
                 this.Events[1][i] = this.Series[1][i - 1] > this.Series[2][i - 1] && this.Series[1][i] < this.Series[2][i];

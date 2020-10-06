@@ -90,8 +90,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 }
                 StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
 
-                bool inRange = false;
-
                 int period = (int)this.parameters[0];
                 float maxWidth = (int)this.parameters[1] * 0.01f;
 

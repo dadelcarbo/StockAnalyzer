@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
    public class StockIndicator_DONCHIANWIDTH : StockIndicatorBase
    {
-      public StockIndicator_DONCHIANWIDTH()
-      {
-      }
       public override IndicatorDisplayTarget DisplayTarget
       {
          get { return IndicatorDisplayTarget.NonRangedIndicator; }
@@ -24,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
       public override Object[] ParameterDefaultValues
       {
-         get { return new Object[] { 20, 20 }; }
+         get { return new Object[] { 60, 1 }; }
       }
       public override ParamRange[] ParameterRanges
       {
@@ -51,16 +48,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          int smoothing = (int)this.parameters[1];
          IStockIndicator donchianIndicator = stockSerie.GetIndicator("DONCHIAN(" + period + ")");
 
-
          // Calculate Donchian Channel
          FloatSerie upLine = donchianIndicator.Series[0];
          FloatSerie downLine = donchianIndicator.Series[4];
 
          FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-         this.series[0] = ((upLine - downLine) / (closeSerie * 0.01f)).CalculateEMA(smoothing);
+         this.series[0] = ((upLine - downLine) / downLine).CalculateEMA(smoothing);
          this.Series[0].Name = this.SerieNames[0];
-
 
          // Detecting events
          this.CreateEventSeries(stockSerie.Count);

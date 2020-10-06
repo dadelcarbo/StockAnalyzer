@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Resources;
-using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -12,9 +7,16 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.CustomControl.CloudDlgs;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.Properties;
 using StockAnalyzerSettings.Properties;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Resources;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
@@ -32,6 +34,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         {
             Graph,
             Indicator,
+            Cloud,
             Curve,
             Event, // For decorators
             Line,
@@ -128,6 +131,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
             }
         }
+        public class CloudNode : ViewableItemNode
+        {
+            public CloudNode(string name, ContextMenuStrip menuStrip, IStockCloud stockCloud)
+                : base(name, NodeType.Cloud, menuStrip, (IStockViewableSeries)stockCloud)
+            {
+                this.ImageKey = "CLOUD";
+                this.SelectedImageKey = "CLOUD";
+            }
+        }
         public class DecoratorNode : ViewableItemNode
         {
             public DecoratorNode(string name, ContextMenuStrip menuStrip, IStockDecorator stockDecorator)
@@ -171,6 +183,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 : base(name, NodeType.Line, menuStrip)
             {
                 this.CurvePen = linePen;
+                this.LineValue = value;
                 this.LineValue = value;
                 this.ImageKey = "LINE";
                 this.SelectedImageKey = "LINE";
@@ -252,12 +265,14 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.treeView1.ImageList.Images.Add("VH", Resources.VolumeHistogram);
             this.treeView1.ImageList.Images.Add("LINE", Resources.Line);
             this.treeView1.ImageList.Images.Add("DECO", Resources.Decorator);
+            this.treeView1.ImageList.Images.Add("CLOUD", Resources.Cloud);
 
             this.groupBoxList.Add(indicatorConfigBox);
             this.groupBoxList.Add(curveConfigBox);
             this.groupBoxList.Add(lineConfigBox);
             this.groupBoxList.Add(graphConfigBox);
             this.groupBoxList.Add(paintBarGroupBox);
+            this.groupBoxList.Add(cloudGroupBox);
             this.groupBoxList.Add(trailStopGroupBox);
 
             suspendPreview = false;
@@ -411,6 +426,21 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                         treeNode.Nodes.Add(treeNode1);
                                     }
                                     break;
+                                case "CLOUD":
+                                    {
+                                        var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line);
+                                        treeNode1 = new CloudNode(stockCloud.Name, this.cloudMenuStrip, stockCloud);
+                                        for (int i = 0; i < stockCloud.SeriesCount; i++)
+                                        {
+                                            CurveNode curveNode = new CurveNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i], true, stockCloud.SerieVisibility[i]);
+                                            treeNode1.Nodes.Add(curveNode);
+
+                                            curveNode.ImageKey = treeNode1.ImageKey;
+                                            curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
+                                        }
+                                        treeNode.Nodes.Add(treeNode1);
+                                    }
+                                    break;
                                 case "PAINTBAR":
                                     {
                                         IStockPaintBar stockPaintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line);
@@ -525,6 +555,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 StockNode stockNode = (StockNode)node;
                 switch (stockNode.Type)
                 {
+                    case NodeType.Cloud:
                     case NodeType.PaintBars:
                     case NodeType.TrailStops:
                     case NodeType.Line:
@@ -552,6 +583,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                             }
                         }
                         break;
+                    default:
+                        throw new NotImplementedException("Invalid StockNode Type: " + stockNode.Type);
                 }
             }
         }
@@ -684,7 +717,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 trailNode.Expand();
             }
         }
-
         void addIndicatorToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             AddIndicatorDlg addDlg;
@@ -754,6 +786,53 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                 }
                 this.treeView1.SelectedNode = indicatorNode;
+            }
+        }
+        void addCloudToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            AddCloudDlg addDlg;
+            StockNode treeNode = (StockNode)this.treeView1.SelectedNode;
+            switch (treeNode.Text)
+            {
+                case "CloseGraph":
+                    addDlg = new AddCloudDlg();
+                    break;
+                case "VolumeGraph":
+                default:
+                    return;
+            }
+            if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
+                var stockCloud = StockCloudManager.CreateCloud(addDlg.CloudName);
+                if (stockCloud == null)
+                {
+                    return;
+                }
+
+                // Only one cloud1Name per graph (except data serie) (multiple ema, BB, ....)
+                List<StockNode> nodeList = new List<StockNode>();
+                foreach (StockNode node in stockNode.Nodes)
+                {
+                    if (node.Type == NodeType.Cloud || node.Type == NodeType.Line)
+                    {
+                        nodeList.Add(node);
+                    }
+                }
+                foreach (StockNode node in nodeList)
+                {
+                    stockNode.Nodes.Remove(node);
+                }
+                StockNode cloudNode = new CloudNode(stockCloud.Name, this.cloudMenuStrip, stockCloud);
+                stockNode.Nodes.Add(cloudNode);
+                int i = 0;
+                foreach (string curveName in stockCloud.SerieNames)
+                {
+                    cloudNode.Nodes.Add(new CurveNode(curveName, null, stockCloud.SeriePens[i], true));
+                    i++;
+                }
+                cloudNode.Expand();
+                this.treeView1.SelectedNode = cloudNode;
             }
         }
         void addHorizontalLineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -858,6 +937,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 PaintPreviewWithPaintBars(g, curveNode.CurvePen);
             }
+            else if (parentNode.Type == NodeType.Cloud || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
+            {
+                PaintPreviewWithCloud(g, curveNode.CurvePen, parentNode);
+            }
             else
             {
                 if (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.CandleStick)
@@ -936,7 +1019,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
             }
         }
-
         private static void PaintPreviewWithPaintBars(Graphics g, Pen pen)
         {
             OHLCBar bar;
@@ -971,6 +1053,76 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 i++;
             }
         }
+        private static void PaintPreviewWithCloud(Graphics g, Pen pen, StockNode parentNode)
+        {
+            var tag = parentNode.Nodes[0] as StockNode;
+            var bullColor = Color.FromArgb(127, tag.CurvePen.Color.R, tag.CurvePen.Color.G, tag.CurvePen.Color.B);
+            var bullBrush = new SolidBrush(bullColor);
+            var bullPen = tag.CurvePen;
+
+            tag = parentNode.Nodes[1] as StockNode;
+            var bearColor = Color.FromArgb(127, tag.CurvePen.Color.R, tag.CurvePen.Color.G, tag.CurvePen.Color.B);
+            var bearBrush = new SolidBrush(bearColor);
+            var bearPen = tag.CurvePen;
+
+            double x, y;
+            PointF[] bullPoints = new PointF[(int)Math.Floor(g.VisibleClipBounds.Width)];
+            PointF[] bearPoints = new PointF[(int)Math.Floor(g.VisibleClipBounds.Width)];
+            int i = 0;
+            for (x = g.VisibleClipBounds.Left; x < g.VisibleClipBounds.Right; x++)
+            {
+                y = (Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                bullPoints[i].X = (float)x;
+                bullPoints[i].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
+                y = (Math.Sin((x*1.12 + 25) * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                bearPoints[i].X = (float)x;
+                bearPoints[i++].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
+            }
+
+            bool isBull = bullPoints[0].Y >= bearPoints[0].Y;
+            var nbPoints = bullPoints.Length;
+            var upPoints = new List<PointF>() { bullPoints[0] };
+            var downPoints = new List<PointF>() { bearPoints[0] };
+            for (i = 1; i < nbPoints; i++)
+            {
+                if (isBull && bullPoints[i].Y >= bearPoints[i].Y) // Bull cloud continuing
+                {
+                    upPoints.Add(bullPoints[i]);
+                    downPoints.Insert(0, bearPoints[i]);
+                }
+                else if (!isBull && bullPoints[i].Y < bearPoints[i].Y) // Bear cloud continuing
+                {
+                    upPoints.Add(bullPoints[i]);
+                    downPoints.Insert(0, bearPoints[i]);
+                }
+                else // Cloud reversing, need a draw
+                {
+                    if (upPoints.Count > 0)
+                    {
+                        upPoints.Add(bullPoints[i]);
+                        downPoints.Insert(0, bearPoints[i]);
+                        g.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                        g.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                        upPoints.AddRange(downPoints);
+                        g.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                    }
+                    isBull = !isBull;
+                    upPoints.Clear();
+                    downPoints.Clear();
+                    upPoints = new List<PointF>() { bullPoints[i] };
+                    downPoints = new List<PointF>() { bearPoints[i] };
+                }
+            }
+            if (upPoints.Count > 0)
+            {
+                g.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                g.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                upPoints.AddRange(downPoints);
+                g.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                upPoints.Clear();
+                downPoints.Clear();
+            }
+        }
         private static void PaintPreviewWithCandleSticks(Graphics g, Pen pen)
         {
             CandleStick bar;
@@ -997,7 +1149,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 if (i % 8 == 0)
                 {
                     bar = new CandleStick((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y);
-                    bar.Width = 3f;
+                    bar.Width = 3;
                     bar.Draw(g, pen, null);
                     open = points[i].Y; min = double.MaxValue;
                     max = double.MinValue;
@@ -1015,6 +1167,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 case NodeType.PaintBars:
                 case NodeType.Indicator:
                 case NodeType.Trail:
+                case NodeType.Cloud:
                     {
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
                         IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
@@ -1094,6 +1247,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     case NodeType.PaintBars:
                     case NodeType.Indicator:
+                    case NodeType.Cloud:
                     case NodeType.Decorator:
                     case NodeType.Trail:
                     case NodeType.TrailStops:
@@ -1117,6 +1271,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     case NodeType.PaintBars:
                     case NodeType.Indicator:
+                    case NodeType.Cloud:
                     case NodeType.Trail:
                     case NodeType.TrailStops:
                         {
@@ -1160,6 +1315,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         case NodeType.PaintBars:
                         case NodeType.Indicator:
+                        case NodeType.Cloud:
                         case NodeType.Trail:
                         case NodeType.TrailStops:
                             {
@@ -1253,8 +1409,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         e.CancelEdit = false;
                         RefreshNode(ParamNode);
                         break;
-                    default:
+                    case "DateTime":
+                        ParamNode.ViewableItem.Parameters[e.Item] = DateTime.Parse(e.Label);
+                        e.CancelEdit = false;
+                        RefreshNode(ParamNode);
                         break;
+                    default:
+                        throw new NotImplementedException($"Type {type} not implemented");
                 }
             }
             else
@@ -1320,6 +1481,25 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                 }
             }
+        }
+        #endregion
+        #region Indicator1 Config
+        private void ActivateCloudConfigPanel(string groupBoxText)
+        {
+            IStockViewableSeries viewableItem = ((ViewableItemNode)this.treeView1.SelectedNode).ViewableItem;
+
+            ResourceManager resources = new ResourceManager(typeof(IndicatorDlgs));
+
+            this.indicatorConfigBox.Text = resources.GetString(groupBoxText);
+            this.MakeVisible(indicatorConfigBox);
+            this.paramListView.Items.Clear();
+
+            ListViewItem[] viewItems = new ListViewItem[viewableItem.ParameterCount];
+            for (int i = 0; i < viewableItem.ParameterCount; i++)
+            {
+                viewItems[i] = new ListViewItem(new string[] { viewableItem.Parameters[i].ToString(), viewableItem.ParameterNames[i], viewableItem.ParameterRanges[i].MinValue.ToString(), viewableItem.ParameterRanges[i].MaxValue.ToString(), resources.GetString(viewableItem.ParameterTypes[i].Name) });
+            }
+            this.paramListView.Items.AddRange(viewItems);
         }
         #endregion
         #region Horizontal Lines config
@@ -1418,6 +1598,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         }
                     }
                     break;
+                case NodeType.Cloud:
+                    {
+                        ActivateCloudConfigPanel("CloudParam");
+
+                        this.removeStripMenuItem.Visible = true;
+                        this.addDecoratorToolStripMenuItem.Visible = false;
+                        this.addTrailToolStripMenuItem.Visible = false;
+                    }
+                    break;
                 case NodeType.PaintBars:
                     {
                         ActivateIndicatorConfigPanel("PaintBarParam");
@@ -1458,6 +1647,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     if (((StockNode)treeNode.Parent).Type == NodeType.PaintBars)
                     {
                         ActivatePaintBarConfigPanel((CurveNode)treeNode);
+                    }
+                    if (((StockNode)treeNode.Parent).Type == NodeType.Cloud)
+                    {
+                        ActivateCloudConfigPanel((CurveNode)treeNode);
                     }
                     else
                     {
@@ -1688,6 +1881,39 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         }
 
         #endregion
+
+        #region CLOUD PARAMATERS
+        private void ActivateCloudConfigPanel(CurveNode curveNode)
+        {
+            this.MakeVisible(this.cloudGroupBox);
+            this.suspendPreview = true;
+
+            this.lineTypeComboBox.Parent = this.cloudGroupBox;
+            this.thicknessComboBox.Parent = this.cloudGroupBox;
+            this.lineColorPanel.Parent = this.cloudGroupBox;
+
+            if (curveNode.SupportVisibility)
+            {
+                this.visibleCheckBox.Parent = cloudGroupBox;
+                this.visibleCheckBox.Visible = true;
+                this.visibleCheckBox.Checked = curveNode.Visible;
+            }
+            else
+            {
+                this.visibleCheckBox.Visible = false;
+            }
+
+            this.lineTypeComboBox.SelectedItem = curveNode.CurvePen.DashStyle.ToString();
+            this.thicknessComboBox.SelectedItem = (int)curveNode.CurvePen.Width;
+            this.lineColorPanel.BackColor = curveNode.CurvePen.Color;
+
+            this.curvePreviewLabel.Parent = this.cloudGroupBox;
+            this.previewPanel.Parent = this.cloudGroupBox;
+            this.suspendPreview = false;
+            this.previewPanel.Refresh();
+        }
+
+        #endregion
         private void applyButton_Click(object sender, EventArgs e)
         {
             if (this.ThemeEdited != null)
@@ -1700,10 +1926,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             if (e.KeyCode == Keys.Delete)
             {
                 StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
-                if (stockNode.Type == NodeType.Indicator || stockNode.Type == NodeType.Line || stockNode.Type == NodeType.PaintBars || stockNode.Type == NodeType.Decorator || stockNode.Type == NodeType.TrailStops || stockNode.Type == NodeType.Trail)
+                if (stockNode.Type == NodeType.Graph
+                    || stockNode.Type == NodeType.Curve
+                    || stockNode.Type == NodeType.Event)
                 {
-                    this.treeView1.Nodes.Remove(stockNode);
+                    return;
                 }
+                this.treeView1.Nodes.Remove(stockNode);
             }
         }
 

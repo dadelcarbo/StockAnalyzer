@@ -115,7 +115,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.SummaryResults.Clear();
             this.Results.Clear();
 
-            foreach (var stockSerie in StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(this.group)))
+            foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
                 if (!stockSerie.Initialise()) return false;
                 var results = new List<float[]>();
@@ -170,10 +170,6 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             {
                 for (int i = 0; i < nbBars; i++)
                 {
-                    float avg = 0;
-                    float max = float.MinValue;
-                    float min = float.MaxValue;
-
                     var indexResults = this.Results.Where(r => r.Index == i).ToList();
 
                     this.SummaryResults.Add(new StatisticsResult()

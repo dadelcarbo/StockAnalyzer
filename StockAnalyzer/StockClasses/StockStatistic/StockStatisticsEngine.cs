@@ -91,40 +91,12 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 
                 if (closeVal != 0.0f)
                 {
-                    typicalSerie.Add(date, new StockDailyValue(typicalSerie.StockName, closeVal, closeVal, closeVal, closeVal, nbSample[i], date));
+                    typicalSerie.Add(date, new StockDailyValue(closeVal, closeVal, closeVal, closeVal, nbSample[i], date));
                     date = date.AddDays(1);
                 }
             }
             return typicalSerie;
         }
-        public StockSerie GenerateSerie2(string name)
-        {
-            float[] close = new float[sampleSize];
-
-            float initialValue = 100.0f;
-            int size = 2000;
-
-            // Calculate average daily returns
-            StockSerie newSerie = new StockSerie(name, name, StockSerie.Groups.NONE, StockDataProvider.Generated);
-
-            DateTime date = DateTime.Today;
-            float closeVal = 100f;
-            for (int i = 0; i < size; i++)
-            {
-                //  float closeVal = i % 2 == 0 ? initialValue + 10 : initialValue - 10;
-                closeVal += closeVal * 0.001f;
-                if (closeVal != 0.0f)
-                {
-                    newSerie.Add(date,
-                        new StockDailyValue(newSerie.StockName, closeVal, closeVal, closeVal,
-                            closeVal, i, date));
-
-                    date = date.AddDays(1);
-                }
-            }
-            return newSerie;
-        }
-
         public StockSerie GenerateSerie(string name)
         {
             double[] close = new double[sampleSize];
@@ -157,7 +129,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic
                 if (closeVal != 0.0f)
                 {
                     float closeFloat = (float)closeVal;
-                    newSerie.Add(date, new StockDailyValue(newSerie.StockName, closeFloat, closeFloat, closeFloat, closeFloat, i, date));
+                    newSerie.Add(date, new StockDailyValue(closeFloat, closeFloat, closeFloat, closeFloat, i, date));
 
                     date = date.AddDays(1);
                 }

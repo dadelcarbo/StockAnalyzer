@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       }
       public override void ApplyTo(StockSerie stockSerie)
       {
-         FloatSerie refSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.StockDictionarySingleton[this.parameters[0].ToString()], StockDataType.CLOSE);
+         FloatSerie refSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.Instance[this.parameters[0].ToString()], StockDataType.CLOSE);
 
          refSerie = refSerie.CalculateEMA((int)this.parameters[2]);
 

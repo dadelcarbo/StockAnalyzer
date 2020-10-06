@@ -81,6 +81,10 @@ namespace StockAnalyzer.StockDrawing
       public override void WriteXml(System.Xml.XmlWriter writer)
       {
           throw new NotImplementedException();
-      }
-   }
+        }
+        public override void ApplyOffset(int offset)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

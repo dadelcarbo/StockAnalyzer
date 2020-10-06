@@ -978,6 +978,32 @@
   <data name="&gt;&gt;paintBarGroupBox.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
+
+  <data name="cloudGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>228, 12</value>
+  </data>
+  <data name="cloudGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>414, 327</value>
+  </data>
+  <data name="cloudGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="cloudGroupBox.Text" xml:space="preserve">
+    <value>Cloud configuration</value>
+  </data>
+  <data name="&gt;&gt;cloudGroupBox.Name" xml:space="preserve">
+    <value>cloudGroupBox</value>
+  </data>
+  <data name="&gt;&gt;cloudGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cloudGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cloudGroupBox.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  
   <data name="trailStopGroupBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 12</value>
   </data>
@@ -1010,6 +1036,12 @@
   </data>
   <data name="addIndicatorToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Indicator</value>
+  </data>
+  <data name="addCloudToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 22</value>
+  </data>
+  <data name="addCloudToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add Cloud</value>
   </data>
   <data name="addHorizontalLineToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 22</value>

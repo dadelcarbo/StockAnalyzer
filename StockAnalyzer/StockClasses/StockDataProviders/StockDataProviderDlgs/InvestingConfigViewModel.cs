@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             get
             {
-                return _addCommand ?? (_addCommand = new CommandBase(AddEntry));
+                return _addCommand ?? (_addCommand = new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled"));
             }
         }
         public StockDictionary StockDico { get; private set; }
@@ -104,13 +104,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
             {
-                Group = "FUTURE",
+                Group = StockSerie.Groups.INTRADAY.ToString(),
                 ShortName = this.SelectedItem.Symbol,
                 StockName = this.SelectedItem.FullName
             });
 
             this.PropertyChanged(this, new PropertyChangedEventArgs("AddEnabled"));
         }
-
     }
 }

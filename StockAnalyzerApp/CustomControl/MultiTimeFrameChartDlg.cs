@@ -13,8 +13,8 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
-            this.fullGraphUserControl1 = new FullGraphUserControl(StockBarDuration.Weekly);
-            this.fullGraphUserControl2 = new FullGraphUserControl(StockBarDuration.TLB);
+            this.fullGraphUserControl1 = new FullGraphUserControl(StockBarDuration.Monthly);
+            this.fullGraphUserControl2 = new FullGraphUserControl(StockBarDuration.Weekly);
             this.fullGraphUserControl3 = new FullGraphUserControl(StockBarDuration.Daily);
             InitializeComponent();
 
@@ -35,15 +35,10 @@ namespace StockAnalyzerApp.CustomControl
 
             switch (this.selectedGroup)
             {
-                case StockSerie.Groups.FUTURE:
-                    fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
-                    fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
-                    fullGraphUserControl3.SetDuration(StockBarDuration.TLB);
-                    break;
                 case StockSerie.Groups.INTRADAY:
-                    fullGraphUserControl1.SetDuration(StockBarDuration.TLB_9D);
-                    fullGraphUserControl2.SetDuration(StockBarDuration.TLB_3D);
-                    fullGraphUserControl3.SetDuration(StockBarDuration.TLB);
+                    fullGraphUserControl1.SetDuration(StockBarDuration.Bar_24);
+                    fullGraphUserControl2.SetDuration(StockBarDuration.Bar_6);
+                    fullGraphUserControl3.SetDuration(StockBarDuration.Daily);
                     break;
             }
 
@@ -66,9 +61,9 @@ namespace StockAnalyzerApp.CustomControl
         private void StockNameComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             StockSerie selectedSerie = null;
-            if (StockDictionary.StockDictionarySingleton.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
+            if (StockDictionary.Instance.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
             {
-                selectedSerie = StockDictionary.StockDictionarySingleton[stockNameComboBox.SelectedItem.ToString()];
+                selectedSerie = StockDictionary.Instance[stockNameComboBox.SelectedItem.ToString()];
             }
             else
             {
@@ -84,12 +79,12 @@ namespace StockAnalyzerApp.CustomControl
             stockNameComboBox.Items.Clear();
             stockNameComboBox.SelectedItem = string.Empty;
 
-            var stocks = StockDictionary.StockDictionarySingleton.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
+            var stocks = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
             foreach (string stockName in stocks)
             {
-                if (StockDictionary.StockDictionarySingleton.Keys.Contains(stockName))
+                if (StockDictionary.Instance.Keys.Contains(stockName))
                 {
-                    StockSerie stockSerie = StockDictionary.StockDictionarySingleton[stockName];
+                    StockSerie stockSerie = StockDictionary.Instance[stockName];
                     stockNameComboBox.Items.Add(stockName);
                 }
             }

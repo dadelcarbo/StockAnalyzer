@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
         public bool MatchPattern(StockSerie stockSerie, int index)
         {
             if (index < lookback) return false;
-            var ror = stockSerie.GetIndicator("ROR("+lookback+",1,1)").Series[1];
+            var ror = stockSerie.GetIndicator("ROR("+lookback+",1)").Series[1];
             for (int i = index - lookback; i < index; i++)
             {
                 if (ror[i] > Trigger) return false;
@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 
         public string Suffix
         {
-            get { return "ROR(" + lookback + ",1,1)"; }
+            get { return "ROR(" + lookback + ",1)"; }
         }
     }
 }

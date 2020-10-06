@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockClasses;
@@ -17,6 +13,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -41,6 +38,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
 
             // Fill the control list
+            this.graphCloseControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
             this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphScrollerControl);
             this.graphList.Add(this.graphIndicator1Control);
@@ -219,6 +217,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
                                     this.graphCloseControl.Comments = currentStockSerie.StockAnalysis.Comments;
                                     this.graphCloseControl.Agenda = currentStockSerie.Agenda;
+                                    this.graphCloseControl.Dividends = currentStockSerie.Dividend;
                                     break;
                                 case "SCROLLGRAPH":
                                     graphControl = this.graphScrollerControl;
@@ -236,9 +235,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     if (currentStockSerie.HasVolume)
                                     {
                                         graphControl = this.graphVolumeControl;
-                                        curveList.Add(new GraphCurveType(
-                                            currentStockSerie.GetSerie(StockDataType.VOLUME),
-                                            Pens.Green, true));
+                                        curveList.Add(new GraphCurveType( currentStockSerie.GetSerie(StockDataType.VOLUME), Pens.Green, true));
                                     }
                                     else
                                     {
@@ -300,17 +297,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             else
                                             {
                                                 if (fields[1].ToUpper() == "NONE" ||
-                                                    !StockDictionary.StockDictionarySingleton.ContainsKey(fields[1]))
+                                                    !StockDictionary.Instance.ContainsKey(fields[1]))
                                                 {
                                                     this.graphCloseControl.SecondaryFloatSerie = null;
                                                 }
                                                 else
                                                 {
-                                                    if (StockDictionary.StockDictionarySingleton.ContainsKey(fields[1]))
+                                                    if (StockDictionary.Instance.ContainsKey(fields[1]))
                                                     {
                                                         this.graphCloseControl.SecondaryFloatSerie =
                                                             currentStockSerie.GenerateSecondarySerieFromOtherSerie(
-                                                                StockDictionary.StockDictionarySingleton[fields[1]], StockDataType.CLOSE);
+                                                                StockDictionary.Instance[fields[1]], StockDataType.CLOSE);
                                                     }
                                                 }
                                             }
@@ -355,12 +352,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 }
                                             }
                                             break;
+                                        case "CLOUD":
+                                            {
+                                                var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                if (stockCloud != null)
+                                                {
+                                                    curveList.Cloud = stockCloud;
+                                                }
+                                            }
+                                            break;
                                         case "PAINTBAR":
                                             {
-                                                IStockPaintBar paintBar =
-                                                    (IStockPaintBar)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            currentStockSerie);
+                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line,currentStockSerie);
                                                 curveList.PaintBar = paintBar;
                                             }
                                             break;

@@ -80,19 +80,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (stockSerie.StockName == "TRIN_LOG")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN"];
                 trinSerie.Initialise();
                 return this.GenerateLogSerie(stockSerie, trinSerie, true);
             }
             if (stockSerie.StockName == "TRIN_SUM")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN"];
                 trinSerie.Initialise();
                 return this.GenerateSumSerie(stockSerie, trinSerie, true);
             }
             if (stockSerie.StockName == "TRIN_LOG_SUM")
             {
-                StockSerie trinSerie = StockDictionary.StockDictionarySingleton["TRIN_LOG"];
+                StockSerie trinSerie = StockDictionary.Instance["TRIN_LOG"];
                 trinSerie.Initialise();
                 return this.GenerateSumSerie(stockSerie, trinSerie, true);
             }
@@ -117,7 +117,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 sum += dailyValue.CLOSE;
 
-                logValue = new StockDailyValue(stockSerie.StockName,
+                logValue = new StockDailyValue(
                    sum,
                    sum,
                    sum,
@@ -138,7 +138,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     ratio = (float)Math.Log10(dailyValue.CLOSE);
                     if (inverse) ratio = -ratio;
                 }
-                logValue = new StockDailyValue(stockSerie.StockName,
+                logValue = new StockDailyValue(
                    ratio,
                    ratio,
                    ratio,
@@ -159,8 +159,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     using (StreamReader sr = new StreamReader(fileName))
                     {
-                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-                        Response jsonResponse = jsonSerializer.ReadObject(sr.BaseStream) as Response;
+                        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(BarChartResponse));
+                        BarChartResponse jsonResponse = jsonSerializer.ReadObject(sr.BaseStream) as BarChartResponse;
                         if (jsonResponse != null && jsonResponse.error != null)
                         {
                             foreach (var data in jsonResponse.data.series[0].data)
@@ -168,7 +168,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DateTime date = refDate.AddMilliseconds(data[0]).Date;
                                 if (!stockSerie.ContainsKey(date))
                                 {
-                                    stockSerie.Add(date, new StockDailyValue(stockSerie.StockName, (float)data[1], (float)data[2], (float)data[3], (float)data[4], 0, date));
+                                    stockSerie.Add(date, new StockDailyValue((float)data[1], (float)data[2], (float)data[3], (float)data[4], 0, date));
                                 }
                             }
 
@@ -197,7 +197,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             public List<Series> series { get; set; }
         }
 
-        public class Response
+        public class BarChartResponse
         {
             public string error { get; set; }
             public string data_time_type { get; set; }

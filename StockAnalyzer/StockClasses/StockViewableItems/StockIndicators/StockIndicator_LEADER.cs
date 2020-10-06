@@ -48,8 +48,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var trail = stockSerie.GetTrailStop("TRAILEMA(" + trailPeriod + ",1)") as IStockEvent;
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             // Detecting events
             bool bullish = false;

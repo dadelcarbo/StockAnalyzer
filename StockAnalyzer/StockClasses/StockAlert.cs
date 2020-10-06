@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
 using System.Xml.Serialization;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -64,9 +56,12 @@ namespace StockAnalyzer.StockClasses
 
         public override string ToString()
         {
-            return StockName + "\t" + Date + "\t" + BarDuration + "\t" + Alert;
+            if (Date.Date == Date)
+            {
+                return StockName.PadRight(30) + "\t" + Date.ToShortDateString() + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
+            }
+            return StockName.PadRight(30) + "\t" + Date + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
         }
-
         public static bool operator ==(StockAlert a, StockAlert b)
         {
             if (object.ReferenceEquals(a, null))
@@ -98,9 +93,14 @@ namespace StockAnalyzer.StockClasses
             return this.StockName == other.StockName &&
                    this.StockGroup == other.StockGroup &&
                    this.Date == other.Date &&
-                   this.Alert == other.Alert &&
+                   this.Alert.ToString() == other.Alert.ToString() &&
                    this.BarDuration == other.BarDuration &&
                    this.AlertClose == other.AlertClose;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

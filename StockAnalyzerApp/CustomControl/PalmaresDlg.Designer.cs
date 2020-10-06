@@ -37,7 +37,7 @@
             this.highHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lowHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.closeHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ROCEXHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.indicatorHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.palmaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToWinnerWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToLoserWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,8 +50,6 @@
             this.portofolioCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.indicatorTextBox = new System.Windows.Forms.TextBox();
-            this.bookValueHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tangibleBookValueHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.palmaresContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,9 +63,7 @@
             this.highHdr,
             this.lowHdr,
             this.closeHdr,
-            this.bookValueHdr,
-            this.tangibleBookValueHdr,
-            this.ROCEXHdr});
+            this.indicatorHdr});
             this.palmaresView.ContextMenuStrip = this.palmaresContextMenuStrip;
             this.palmaresView.FullRowSelect = true;
             this.palmaresView.GridLines = true;
@@ -104,7 +100,7 @@
             // 
             // ROCEXHdr
             // 
-            resources.ApplyResources(this.ROCEXHdr, "ROCEXHdr");
+            resources.ApplyResources(this.indicatorHdr, "indicatorHdr");
             // 
             // palmaresContextMenuStrip
             // 
@@ -185,14 +181,6 @@
             this.indicatorTextBox.Name = "indicatorTextBox";
             this.indicatorTextBox.LostFocus += new System.EventHandler(this.indicatorTextBox_TextChanged);
             // 
-            // bookValueHdr
-            // 
-            resources.ApplyResources(this.bookValueHdr, "bookValueHdr");
-            // 
-            // tangibleBookValueHdr
-            // 
-            resources.ApplyResources(this.tangibleBookValueHdr, "tangibleBookValueHdr");
-            // 
             // PalmaresDlg
             // 
             resources.ApplyResources(this, "$this");
@@ -207,11 +195,9 @@
             this.Controls.Add(this.palmaresView);
             this.Controls.Add(this.fromDateTimePicker);
             this.Name = "PalmaresDlg";
-            this.TopMost = true;
             this.palmaresContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
       }
       #endregion
 
@@ -224,7 +210,7 @@
       private System.Windows.Forms.ColumnHeader closeHdr;
       private System.Windows.Forms.ColumnHeader lowHdr;
       private System.Windows.Forms.ColumnHeader highHdr;
-      private System.Windows.Forms.ColumnHeader ROCEXHdr;
+      private System.Windows.Forms.ColumnHeader indicatorHdr;
       private System.Windows.Forms.ComboBox groupComboBox;
       private System.Windows.Forms.CheckBox untilCheckBox;
       private System.Windows.Forms.DateTimePicker untilDateTimePicker;
@@ -235,7 +221,5 @@
       private System.Windows.Forms.ToolStripMenuItem saveToFileToolStripMenuItem;
       private System.Windows.Forms.Label label2;
       private System.Windows.Forms.TextBox indicatorTextBox;
-      private System.Windows.Forms.ColumnHeader bookValueHdr;
-      private System.Windows.Forms.ColumnHeader tangibleBookValueHdr;
    }
 }

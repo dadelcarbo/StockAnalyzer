@@ -4,29 +4,24 @@ namespace StockAnalyzer.StockDrawing
 {
    public class CandleStick
    {
-      public float Width { get; set; }
-      public float X { get; set; }
-      public float Open { get; set; }
-      public float High { get; set; }
-      public float Low { get; set; }
-      public float Close { get; set; }
+      public int Width { get; set; }
+      public int X { get; set; }
+      public int Open { get; set; }
+      public int High { get; set; }
+      public int Low { get; set; }
+      public int Close { get; set; }
       public CandleStick()
       {
-         Width = 5.0f;
-         X = 0.0f;
-         Open = 0.0f;
-         High = 0.0f;
-         Low = 0.0f;
-         Close = 0.0f;
+         Width = 5;
       }
       public CandleStick(float x, float open, float high, float low, float close)
       {
-         Width = 5.0f;
-         X = x;
-         Open = open;
-         High = high;
-         Low = low;
-         Close = close;
+         Width = 5;
+         X = (int)x;
+         Open = (int)open;
+         High = (int)high;
+         Low = (int)low;
+         Close = (int)close;
       }
       public void Draw(Graphics graphic, Pen pen, Brush paintBrush)
       {

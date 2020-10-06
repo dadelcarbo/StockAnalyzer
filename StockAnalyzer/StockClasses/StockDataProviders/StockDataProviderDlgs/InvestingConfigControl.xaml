@@ -18,9 +18,9 @@
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="4">
             <Label>Search:</Label>
             <TextBox Text="{Binding SearchText, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" HorizontalAlignment="Left" Width="80"/>
-            <Button IsEnabled="{Binding AddEnabled}" Command="{Binding AddCommand}">Add</Button>
+            <Button Command="{Binding AddCommand}">Add</Button>
         </StackPanel>
         <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" AutoGenerateColumns="True" MaxHeight="160" MinHeight="100" Margin="4" IsReadOnly="True" ShowGroupPanel="False" VerticalAlignment="Top"/>
-        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False"/>
+        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" SelectionUnit="FullRow" SelectionMode="Single" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False" CanUserDeleteRows="True"/>
     </Grid>
 </UserControl>

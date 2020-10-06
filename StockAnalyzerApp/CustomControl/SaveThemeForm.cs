@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl
 {
    public partial class SaveThemeForm : Form
    {
-      static private string WORK_THEME = "NewTheme*";
+      static private string WORK_THEME = "__NewTheme*";
       public string Theme
       {
          get

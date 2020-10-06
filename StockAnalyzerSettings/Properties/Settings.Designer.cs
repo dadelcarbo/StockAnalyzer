@@ -73,18 +73,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowSummaryOrders {
-            get {
-                return ((bool)(this["ShowSummaryOrders"]));
-            }
-            set {
-                this["ShowSummaryOrders"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowOrders {
             get {
@@ -374,6 +362,20 @@ namespace StockAnalyzerSettings.Properties {
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowDividend
+        {
+            get
+            {
+                return ((bool)(this["ShowDividend"]));
+            }
+            set
+            {
+                this["ShowDividend"] = value;
+            }
+        }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("No")]
         public string ShowAgenda
         {
@@ -444,18 +446,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["PortofolioValue"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ROC(120,1)")]
-        public string MomentumIndicator {
-            get {
-                return ((string)(this["MomentumIndicator"]));
-            }
-            set {
-                this["MomentumIndicator"] = value;
             }
         }
         

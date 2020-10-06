@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Windows.Media;
 using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 {
-   public class TrendToColorConverter : IValueConverter
+    public class TrendToColorConverter : IValueConverter
    {
       public static readonly IValueConverter Instance = new TrendToColorConverter();
 

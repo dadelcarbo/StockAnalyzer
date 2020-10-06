@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie supportSerie, resistanceSerie, secondarySupport, secondaryResistance;
+            FloatSerie supportSerie, resistanceSerie;
             IStockIndicator stokIndicator = stockSerie.GetIndicator(this.Parameters[0].ToString().Replace("_", ","));
 
             stockSerie.CalculateCrossSR(stokIndicator.Series[0], (int)this.Parameters[1], out supportSerie, out resistanceSerie);

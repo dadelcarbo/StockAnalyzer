@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return new Object[] { 20, 2.0f, -2.0f, "MA" }; }
       }
-      static List<string> emaTypes = new List<string>(){"EMA", "HMA", "MA", "EA"};
+      static List<string> emaTypes = new List<string>(){"EMA", "HMA", "MA", "EA", "MID"};
       public override ParamRange[] ParameterRanges
       {
          get

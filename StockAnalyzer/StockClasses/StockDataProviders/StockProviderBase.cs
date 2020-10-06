@@ -11,15 +11,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        static public StockBarDuration[] cacheDurations = new StockBarDuration[]
-                  {
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_3D,
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_6D,
-                     StockAnalyzer.StockClasses.StockBarDuration.TLB_9D,
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_3, // 15 Min
-                     StockAnalyzer.StockClasses.StockBarDuration.Bar_6, // 30 Min
-                  };
-
         public const int ARCHIVE_START_YEAR = 1999;
         public const int LOAD_START_YEAR = 1999;
 
@@ -44,9 +35,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static protected string DAILY_ARCHIVE_SUBFOLDER = @"\data\archive\daily";
         static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"\data\archive\intraday";
 
-        static private string ABC_SUBFOLDER = DAILY_SUBFOLDER + @"\ABC";
-        static private string YAHOO_SUBFOLDER = DAILY_SUBFOLDER + @"\Yahoo";
-        static private string CBOE_SUBFOLDER = DAILY_SUBFOLDER + @"\CBOE";
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
         #endregion
@@ -115,35 +103,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                //case StockDataProvider.Yahoo:
-                //    dataProvider = new YahooDataProvider();
-                //    break;
-                //case StockDataProvider.YahooIntraday:
-                //    dataProvider = new YahooIntradayDataProvider();
-                //    break;
-                //case StockDataProvider.Google:
-                //    dataProvider = new GoogleDataProvider();
-                //    break;
-                //case StockDataProvider.GoogleIntraday:
-                //    dataProvider = new GoogleIntradayDataProvider();
-                //    break;
-                case StockDataProvider.CommerzBankIntraday:
-                    dataProvider = new CommerzBankIntradayDataProvider();
-                    break;
-                case StockDataProvider.CBOE:
-                    dataProvider = new CBOEDataProvider();
-                    break;
-                case StockDataProvider.FINRA:
-                    dataProvider = new FINRADataProvider();
-                    break;
-                case StockDataProvider.Harpex:
-                    dataProvider = new HarpexDataProvider();
-                    break;
-                //case StockDataProvider.COT:
-                //    dataProvider = new COTDataProvider();
-                //    break;
-                case StockDataProvider.Portofolio:
-                    dataProvider = new PortfolioDataProvider();
+                case StockDataProvider.BinckPortfolio:
+                    dataProvider = new BinckPortfolioDataProvider();
                     break;
                 case StockDataProvider.Generated:
                     dataProvider = new GeneratedDataProvider();
@@ -151,29 +112,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Breadth:
                     dataProvider = new BreadthDataProvider();
                     break;
-                case StockDataProvider.Rydex:
-                    dataProvider = new RydexDataProvider();
-                    break;
                 case StockDataProvider.AAII:
                     dataProvider = new AAIIDataProvider();
                     break;
                 case StockDataProvider.Ratio:
                     dataProvider = new RatioDataProvider();
                     break;
-                //case StockDataProvider.NASDACQShortInterest:
-                //    //dataProvider = new NASDACQShortInterestDataProvider();
-                //    break;
-                //case StockDataProvider.BarChart:
-                //    dataProvider = new BarChartDataProvider();
-                //    break;
                 case StockDataProvider.Investing:
                     dataProvider = new InvestingDataProvider();
                     break;
                 case StockDataProvider.InvestingIntraday:
                     dataProvider = new InvestingIntradayDataProvider();
                     break;
-                case StockDataProvider.BNPIntraday:
-                    dataProvider = new BNPIntradayDataProvider();
+                case StockDataProvider.SocGenIntraday:
+                    dataProvider = new SocGenIntradayDataProvider();
                     break;
                 case StockDataProvider.Test:
                     break;
@@ -198,6 +150,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     res |= dataProvider.DownloadIntradayData(rootFolder, serie);
                 }
+
                 serie.BarDuration = currentBarDuration;
                 return res;
             }
@@ -343,7 +296,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             DateTime day = DateTime.Parse(row[0], usCulture);
                             stockValue = new StockDailyValue(
-                               stockName,
                                float.Parse(row[1], usCulture),
                                float.Parse(row[2], usCulture),
                                float.Parse(row[3], usCulture),
@@ -369,7 +321,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 row[5] = row[5].Remove(index);
                             }
                             stockValue = new StockDailyValue(
-                               stockName,
                                float.Parse(row[1], usCulture),
                                float.Parse(row[2], usCulture),
                                float.Parse(row[3], usCulture),
@@ -385,7 +336,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             float adjClose = float.Parse(row[6], usCulture);
                             float adjRatio = adjClose / close;
                             stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[1], usCulture) * adjRatio,
                                 float.Parse(row[2], usCulture) * adjRatio,
                                 float.Parse(row[3], usCulture) * adjRatio,
@@ -396,7 +346,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         else
                         {
                             stockValue = new StockDailyValue(
-                                    stockName,
                                     float.Parse(row[1], usCulture),
                                     float.Parse(row[2], usCulture),
                                     float.Parse(row[3], usCulture),
@@ -413,7 +362,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                             DateTime day = DateTime.Parse(row[2], usCulture);
                             stockValue = new StockDailyValue(
-                                stockName,
                                 float.Parse(row[3], usCulture),
                                 float.Parse(row[4], usCulture),
                                 float.Parse(row[5], usCulture),
@@ -425,15 +373,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case 10: // Date,Open,High,Low,Close,Volume,Adj Close (UpVolume, Tick, Uptick)
                         {
                             stockValue = new StockDailyValue(
-                                        stockName,
                                         float.Parse(row[1], usCulture),
                                         float.Parse(row[2], usCulture),
                                         float.Parse(row[3], usCulture),
                                         float.Parse(row[4], usCulture),
                                         long.Parse(row[5], usCulture),
-                                        long.Parse(row[7], usCulture),
-                                        int.Parse(row[8], usCulture),
-                                        int.Parse(row[9], usCulture),
                                         DateTime.Parse(row[0], usCulture));
                         }
                         break;
@@ -442,57 +386,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             catch (System.Exception ex)
             {
                 StockLog.Write(ex.Message);
-                // Assume input is right, Ignore invalid lines
-            }
-            return stockValue;
-        }
-        public static StockDailyValue ReadPCRFromCSVStream(StreamReader sr, string name)
-        {
-            StockDailyValue stockValue = null;
-            try
-            {
-                string[] row = sr.ReadLine().Split(',');
-                if (row.GetLength(0) == 5)
-                {
-                    stockValue = new StockDailyValue(
-                        name,
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        float.Parse(row[4], usCulture),
-                        long.Parse(row[3], usCulture),
-                        DateTime.Parse(row[0], usCulture));
-                }
-            }
-            catch (System.Exception)
-            {
-                // Assume input is right, Ignore invalid lines
-            }
-            return stockValue;
-        }
-        public static StockDailyValue ReadCBOEIndexDataFromCSVStream(StreamReader sr, string name)
-        {
-            StockDailyValue stockValue = null;
-            try
-            {
-                // File format
-                // Date,Close
-                // 10-May-07,27.09
-                string[] row = sr.ReadLine().Split(',');
-                if (row.GetLength(0) == 2 && row[1] != "")
-                {
-                    stockValue = new StockDailyValue(
-                        name,
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        float.Parse(row[1], usCulture),
-                        100,
-                        DateTime.Parse(row[0], usCulture));
-                }
-            }
-            catch (System.Exception)
-            {
                 // Assume input is right, Ignore invalid lines
             }
             return stockValue;

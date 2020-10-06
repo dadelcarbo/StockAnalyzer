@@ -2,34 +2,22 @@
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     class StockPaintBar_CUPHANDLE : StockPaintBarBase
     {
-        public StockPaintBar_CUPHANDLE()
-        {
-        }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override bool HasTrendLine { get { return true; } }
+        public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop";
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LongPeriod", "ShortPeriod" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 200, 100 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period" };
+
+        public override Object[] ParameterDefaultValues => new Object[] { 3 };
+
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500) };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -38,28 +26,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "CUPHANDLE", "ReversedCUPHANDLE" };
+                    eventNames = new string[] { "CupAndHandle" };
                 }
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { true, true };
+        static readonly bool[] isEvent = new bool[] { true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
         }
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
-                    foreach (Pen pen in seriePens)
-                    {
-                        pen.Width = 2;
-                    }
+                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 } };
                 }
                 return seriePens;
             }
@@ -67,72 +51,78 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            DrawingItem.CreatePersistent = false;
+            var period = (int)this.parameters[0];
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+
+            var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
+
+            // Detecting events
+            this.CreateEventSeries(stockSerie.Count);
+            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "CupAndHandle")];
+
             try
             {
-                // Detecting events
-                this.CreateEventSeries(stockSerie.Count);
-
-                if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
-                {
-                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
-                }
-                else
+                if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
                 {
                     stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
                 }
-                StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
+                DrawingItem.CreatePersistent = false;
 
-                int longPeriod = (int)this.parameters[0];
-                int shortPeriod = (int)this.parameters[1];
+                var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
-                FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                float longHigh = float.MinValue, longLow = float.MaxValue, shortHigh = float.MinValue, shortLow = float.MaxValue;
-                for (int i = longPeriod; i < stockSerie.Count; i++)
+                for (int i = period * 2; i < stockSerie.Count; i++)
                 {
-                    closeSerie.GetMinMax(i - longPeriod, i - shortPeriod, ref longLow, ref longHigh);
-                    closeSerie.GetMinMax(i - shortPeriod, i - 1, ref shortLow, ref shortHigh);
-                    float longRange = longHigh - longLow;
-                    float shortRange = shortHigh - shortLow;
-                    if (shortRange > longRange) continue;
+                    if (highestInSerie[i] <= (period * 2)) // Smaller than period
+                        continue;
 
-                    // Check bullish Cup And Handle
-                    if (closeSerie[i] > longHigh && shortLow > longLow && shortHigh < longHigh)
+                    // Find Pivot
+                    int startIndex = i - (int)highestInSerie[i];
+                    var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 2, i - 1);
+                    while (pivotIndex - startIndex + 1 < period && i - pivotIndex > (period * 2))
                     {
-                        this.eventSeries[0][i] = true;
-                        int highIndex = closeSerie.FindMaxIndex(i - longPeriod, i - shortPeriod);
-                        int lowIndex = closeSerie.FindMinIndex(i - longPeriod, i - shortPeriod);
+                        startIndex = pivotIndex;
+                        pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
+                    }
+                    if (pivotIndex - startIndex + 1 < period || i - pivotIndex < period) // Pivot distance smaller than period
+                        continue;
 
-                        drawingItems.Add(new Rectangle2D(new PointF(i - longPeriod, longHigh), new PointF(i, longLow)));
+                    var pivot = new PointF { X = pivotIndex, Y = bodyHighSerie[pivotIndex] };
+                    var startPoint = new PointF { X = startIndex - 1, Y = pivot.Y };
+                    var endPoint = new PointF { X = i, Y = pivot.Y };
 
-                        //drawingItems.Add(new Bullet2D(new PointF(highIndex, longHigh), 3) { Pen = SeriePens[0] });
-                        //drawingItems.Add(new Bullet2D(new PointF(lowIndex, longLow), 3) { Pen = SeriePens[0] });
-
-                        //drawingItems.Add(new Segment2D(highIndex, longHigh, i, longHigh) { Pen = SeriePens[0] });
-                        //drawingItems.Add(new Segment2D(i - shortPeriod, shortLow, i, shortLow) { Pen = SeriePens[0] });
-
-                        //// Support management
-                        //PointF lowPoint = new PointF(lowIndex, longLow);
-                        //HalfLine2D support = new HalfLine2D(lowPoint, new PointF(lowIndex + 1, closeSerie[lowIndex + 1])) { Pen = SeriePens[0] };
-                        //for (int j = lowIndex + 2; j < i; j++)
-                        //{
-                        //    HalfLine2D line = new HalfLine2D(new PointF(lowIndex, longLow), new PointF(j, closeSerie[j])) { Pen = SeriePens[0] };
-                        //    if (line.a < support.a) support = line;
-                        //}
-                        //drawingItems.Add(support);
+                    // Calculate  right and left lows
+                    var leftLow = new PointF();
+                    var rightLow = new PointF();
+                    var low = float.MaxValue;
+                    for (int k = startIndex; k < pivotIndex; k++)
+                    {
+                        var bodyLow = bodyLowSerie[k];
+                        if (low >= bodyLow)
+                        {
+                            leftLow.X = k;
+                            leftLow.Y = low = bodyLow;
+                        }
                     }
 
-                    //// Check bearish Cup And Handle
-                    //if (closeSerie[i] < longLow && shortHigh < longHigh && shortLow > longLow)
-                    //{
-                    //    this.eventSeries[1][i] = true;
+                    low = float.MaxValue;
+                    for (int k = pivotIndex + 1; k < i; k++)
+                    {
+                        var bodyLow = bodyLowSerie[k];
+                        if (low > bodyLow)
+                        {
+                            rightLow.X = k;
+                            rightLow.Y = low = bodyLow;
+                        }
+                    }
 
-                    //    int lowhIndex = closeSerie.FindMinIndex(i - longPeriod, i - shortPeriod);
-                    //    drawingItems.Add(new Bullet2D(new PointF(lowhIndex, longLow), 3) { Pen = SeriePens[1] });
-
-                    //    drawingItems.Add(new Segment2D(lowhIndex, longLow, i, longLow) { Pen = SeriePens[1] });
-                    //    drawingItems.Add(new Segment2D(i - shortPeriod, shortHigh, i, shortHigh) { Pen = SeriePens[1] });
-                    //}
+                    // Draw open cup and handle
+                    if (rightLow.Y > leftLow.Y)
+                    {
+                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
+                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, cupHandle);
+                    }
                 }
             }
             finally

@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer;
-using System.Collections.Generic;
 
 namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
 {

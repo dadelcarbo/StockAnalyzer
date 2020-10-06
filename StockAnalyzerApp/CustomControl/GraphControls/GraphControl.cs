@@ -35,13 +35,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         Normal,
         AddLine,
         AddSegment,
+        AddCupHandle,
         AddHalfLine,
-        AddSAR,
-        FanLine,
         CopyLine,
         CutLine,
-        AndrewPitchFork,
-        XABCD,
         DeleteItem
     }
     public enum GraphDrawingStep
@@ -86,6 +83,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected float minValue = float.MaxValue;
         protected float maxValue = float.MinValue;
         public bool IsLogScale { get; set; }
+        public bool IsInverse { get; set; }
         public bool ScaleInvisible { get; set; }
         protected bool ShowDrawings { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowDrawings; } }
         public bool ShowGrid { get; set; }
@@ -225,10 +223,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public Pen DrawingPen { get; set; }
 
+        public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(128, Color.LightGreen));
+        public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(128, Color.LightCoral));
+
         // Transformation Matrix
-        protected System.Drawing.Drawing2D.Matrix matrixScreenToValue;
-        protected System.Drawing.Drawing2D.Matrix matrixValueToScreen;
-        static protected System.Drawing.Drawing2D.Matrix matrixIdentity = new Matrix();
+        protected Matrix matrixScreenToValue;
+        protected Matrix matrixValueToScreen;
+        static protected Matrix matrixIdentity = new Matrix();
 
         protected string alternateString = string.Empty;
 
@@ -280,6 +281,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 this.IsInitialized = true;
                 this.alternateString = string.Empty;
+
+                this.DrawingStep = GraphDrawingStep.SelectItem;
+
+                drawingItems.ApplyDateOffset(dateSerie);
             }
         }
         public void Deactivate(string msg, bool setInitialisedTo)
@@ -385,11 +390,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
                     float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
 
-                    matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
+                    matrixValueToScreen = new Matrix();
                     matrixValueToScreen.Translate(this.GraphRectangle.X - (StartIndex - 0.5f) * coefX, tmpMaxValue * coefY + this.GraphRectangle.Y);
+                    if (IsInverse)
+                    {
+                        coefY = -coefY;
+                    }
                     matrixValueToScreen.Scale(coefX, -coefY);
 
-                    matrixScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();
+                    matrixScreenToValue = (Matrix)matrixValueToScreen.Clone();
                     matrixScreenToValue.Invert();
                 }
                 else
@@ -886,46 +895,28 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.matrixValueToScreen.TransformPoints(points);
             return points[0];
         }
-        public int IndexOf(DateTime date)
+        public int IndexOf(DateTime date, int startIndex, int endIndex)
         {
-            if (date < dateSerie[0]) { return -1; }
-            if (date > dateSerie[dateSerie.Length - 1]) { return -1; }
-            return IndexOfRec(date, 0, dateSerie.Length - 1);
+            if (date < dateSerie[startIndex]) { return -1; }
+            if (date > dateSerie[endIndex]) { return endIndex == (dateSerie.Length - 1) ? endIndex : - 1; }
+            return IndexOfRec(date, startIndex + 1, endIndex);
         }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
-            if (startIndex < endIndex)
+            if (date <= dateSerie[startIndex]) { return startIndex; }
+            if (date >= dateSerie[endIndex]) { return endIndex; }
+
+            int midIndex = (startIndex + endIndex) / 2;
+            switch (date.CompareTo(dateSerie[midIndex]))
             {
-                if (dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                if (dateSerie[endIndex] == date)
-                {
-                    return endIndex;
-                }
-                int midIndex = (startIndex + endIndex) / 2;
-                int comp = date.CompareTo(dateSerie[midIndex]);
-                if (comp == 0)
-                {
+                case 0:
                     return midIndex;
-                }
-                else if (comp < 0)
-                {// 
-                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
-                }
-                else
-                {
-                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
-                }
-            }
-            else
-            {
-                if (startIndex == endIndex && dateSerie[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                return -1;
+                case -1:
+                    return IndexOfRec(date, startIndex + 1, midIndex);
+                case 1:
+                    return IndexOfRec(date, midIndex, endIndex - 1);
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -938,7 +929,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if (this.IsInitialized)
                 {
-                    int index = IndexOf(date);
+                    int index = IndexOf(date, this.StartIndex, this.EndIndex);
                     if (index == -1) return;
                     PointF valuePoint = new PointF(index, value);
                     PointF mousePoint = GetScreenPointFromValuePoint(valuePoint);
@@ -1134,7 +1125,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         static float[] fibonacciRetracements = new float[] { 0.236f, 0.382f, 0.5f, 0.618f, 0.764f };
-        static bool drawFibo = false;
         protected void DrawSelectionZone(System.Windows.Forms.MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1224,6 +1214,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         entry = y + height;
                         target1 = y;
                         target2 = y - height;
+
+                        this.DrawString(foregroundGraphic, "Stop", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, stop - 5, false);
+                        this.DrawString(foregroundGraphic, "Entry", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, entry - 5, false);
+                        this.DrawString(foregroundGraphic, "T1", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target1 - 5, false);
+                        this.DrawString(foregroundGraphic, "T2", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target2 - 5, false);
+
                         this.foregroundGraphic.DrawLine(stopPen, x - width, stop, x + width, stop); // Stop
                         this.foregroundGraphic.DrawLine(entryPen, x - width, entry, x + width, entry); // Entry
                         this.foregroundGraphic.DrawLine(target1Pen, x - width, target1, x + width, target1); // Target1
@@ -1249,6 +1245,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         entry = y;
                         target1 = y + height;
                         target2 = y + 2 * height;
+
+                        this.DrawString(foregroundGraphic, "Stop", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, stop - 5, false);
+                        this.DrawString(foregroundGraphic, "Entry", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, entry - 5, false);
+                        this.DrawString(foregroundGraphic, "T1", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target1 - 5, false);
+                        this.DrawString(foregroundGraphic, "T2", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target2 - 5, false);
+
                         this.foregroundGraphic.DrawLine(target2Pen, x - width, target2, x + width, target2); // Target2
                         this.foregroundGraphic.DrawLine(target2Pen, x - width, y + height, x + width, y + height); // Target1
                         this.foregroundGraphic.DrawLine(entryPen, x - width, y, x + width, y); // Entry
@@ -1303,7 +1305,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
-            HalfLine2D newLine = new HalfLine2D(point1, point2);
+            HalfLine2D newLine = new HalfLine2D(point1, point2, null);
             if (useTransform)
             {
                 newLine.Draw(graph, pen, this.matrixValueToScreen, rect2D, this.IsLogScale);
@@ -1480,6 +1482,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             else if (duration.Days >= 1 || endIndex - startIndex > 50)
             {
+                int barCount = 0;
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     if (this.dateSerie[i].DayOfYear != previousDay)
@@ -1492,10 +1495,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
+                        barCount = 0;
                     }
                     else
                     {
-                        if (this.dateSerie[i].Minute % 15 == 0)
+                        if (this.dateSerie[i].Minute == 0 && barCount >= 50)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
                             aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
@@ -1503,7 +1507,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
+                            barCount = 0;
                         }
+                        barCount++;
                     }
                 }
             }
@@ -1672,11 +1678,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (this.drawingItems != null)
             {
-                foreach (DrawingItem drawingItem in this.drawingItems)
+                foreach (DrawingItem drawingItem in this.drawingItems.Where(di => di.IsPersistent))
                 {
                     AddToUndoBuffer(GraphActionType.DeleteItem, drawingItem);
+
                 }
-                this.drawingItems.Clear();
+                this.drawingItems.RemoveAll(di => di.IsPersistent);
             }
         }
         protected string BuildTabbedString(string type, float value, int tabLocation)

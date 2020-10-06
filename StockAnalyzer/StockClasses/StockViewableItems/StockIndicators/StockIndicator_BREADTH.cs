@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             if (breadthSeries == null)
             {
-               breadthSeries = StockDictionary.StockDictionarySingleton.Values.Where(v => v.BelongsToGroup(StockSerie.Groups.BREADTH)).Select(v => v.StockName).ToList();
+               breadthSeries = StockDictionary.Instance.Values.Where(v => v.BelongsToGroup(StockSerie.Groups.BREADTH)).Select(v => v.StockName).ToList();
             }
             return new ParamRange[]
             {
@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          FloatSerie breadthIndicator = new FloatSerie(stockSerie.Count);
          int fastSmoothing = (int)this.parameters[1];
 
-         StockSerie breadthSerie = StockDictionary.StockDictionarySingleton[(string)this.parameters[0]];
+         StockSerie breadthSerie = StockDictionary.Instance[(string)this.parameters[0]];
          breadthSerie.Initialise();
 
          int index = -1;
