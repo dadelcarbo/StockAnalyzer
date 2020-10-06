@@ -46,9 +46,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var bullSerie = new FloatSerie(stockSerie.Count);
             var bearSerie = new FloatSerie(stockSerie.Count);
 
-            var high = bullSerie[0] = highSerie[0];
-            var low = bearSerie[0] = lowSerie[0];
-            int i = 1;
+            var high = bullSerie[0] = Math.Max(highSerie[0], highSerie[1]);
+            var low = bearSerie[0] = Math.Min(lowSerie[0], lowSerie[1]);
+            int i = 2;
             bool broken = false;
             bool bullish = false;
             while (!broken) // Prepare trend
@@ -75,7 +75,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 }
             }
 
-            for (i = 1; i < stockSerie.Count; i++)
+            bool waitForText = false;
+            for (; i < stockSerie.Count; i++)
             {
                 if (bullish)
                 {
@@ -88,6 +89,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                     }
                     else // Bull run continues
                     {
+                        if (highSerie[i] > high)
+                        {
+                            waitForText = true;
+                        }
+                        else if (waitForText && highSerie[i - 1] > highSerie[i - 2] && highSerie[i] < highSerie[i - 1])
+                        {
+                            this.stockTexts.Add(new StockText
+                            {
+                                AbovePrice = true,
+                                Index = i - 1,
+                                Text = "Top"
+                            });
+                            waitForText = false;
+                        }
                         low = Math.Max(low, lowSerie.GetMin(Math.Max(0, i - fastPeriod), i));
                         high = Math.Max(high, highSerie[i]);
                         bullSerie[i] = high;
@@ -105,6 +120,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                     }
                     else // Bear run continues
                     {
+                        if (lowSerie[i] < low)
+                        {
+                            waitForText = true;
+                        }
+                        else if (waitForText && lowSerie[i - 1] < lowSerie[i - 2] && lowSerie[i] > lowSerie[i - 1])
+                        {
+                            this.stockTexts.Add(new StockText
+                            {
+                                AbovePrice = false,
+                                Index = i - 1,
+                                Text = "Bot"
+                            }); 
+                            waitForText = false;
+                        }
                         low = Math.Min(low, lowSerie[i]);
                         high = Math.Min(high, highSerie.GetMax(Math.Max(0, i - fastPeriod), i));
                         bullSerie[i] = low;

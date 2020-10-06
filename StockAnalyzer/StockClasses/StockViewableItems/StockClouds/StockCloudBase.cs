@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
@@ -143,5 +144,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         #endregion
 
+        #region IStockText implementation
+        protected List<StockText> stockTexts = new List<StockText>();
+        public List<StockText> StockTexts => stockTexts;
+        #endregion
     }
 }

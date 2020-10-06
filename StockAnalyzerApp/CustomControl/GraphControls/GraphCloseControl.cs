@@ -16,6 +16,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System.IO;
 using StockAnalyzerApp.CustomControl.CommentDlg;
+using StockAnalyzer.StockClasses.StockViewableItems;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -246,6 +247,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     #region DISPLAY CLOUD
                     if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 0)
                     {
+                        this.DrawStockText(aGraphic, this.CurveList.Cloud.StockTexts);
+
                         var bullColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
                         var bullBrush = new SolidBrush(bullColor);
                         var bullPen = this.CurveList.Cloud.SeriePens[0];
@@ -853,6 +856,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
+            }
+        }
+
+        private void DrawStockText(Graphics g, List<StockText> stockTexts)
+        {
+            if (!this.ShowIndicatorText || stockTexts == null || stockTexts.Count == 0)
+                return;
+            foreach (var text in stockTexts.Where(t => t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
+            {
+                var point = GetScreenPointFromValuePoint(text.Index, this.highCurveType.DataSerie[text.Index]);
+                this.DrawString(g, text.Text, axisFont, textBrush, this.backgroundBrush, point.X, point.Y - 15, false);
+            }
+            foreach (var text in stockTexts.Where(t => !t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
+            {
+                var point = GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]);
+                this.DrawString(g, text.Text, axisFont, textBrush, this.backgroundBrush, point.X, point.Y + 5, false);
             }
         }
 

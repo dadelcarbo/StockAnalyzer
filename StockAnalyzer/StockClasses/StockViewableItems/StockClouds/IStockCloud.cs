@@ -2,7 +2,7 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
-    public interface IStockCloud : IStockViewableSeries, IStockEvent
+    public interface IStockCloud : IStockViewableSeries, IStockEvent, IStockText
     {
         FloatSerie[] Series { get; }
 
