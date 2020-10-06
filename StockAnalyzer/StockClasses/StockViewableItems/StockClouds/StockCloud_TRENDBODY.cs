@@ -48,9 +48,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var bullSerie = new FloatSerie(stockSerie.Count);
             var bearSerie = new FloatSerie(stockSerie.Count);
 
-            var high = bullSerie[0] = bodyHighSerie[0];
-            var low = bearSerie[0] = bodyLowSerie[0];
-            int i = 1;
+            var high = bullSerie[0] = bullSerie[1] = Math.Max(bodyHighSerie[0], bodyHighSerie[1]);
+            var low = bearSerie[0] = bearSerie[1] = Math.Min(bodyLowSerie[0], bodyLowSerie[1]);
+            int i = 2;
             bool broken = false;
             bool bullish = false;
             while (!broken) // Prepare trend

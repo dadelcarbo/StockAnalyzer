@@ -39,6 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override void ApplyTo(StockSerie stockSerie)
         {
             var fastPeriod = (int)this.parameters[0];
+
             var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
@@ -46,8 +47,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var bullSerie = new FloatSerie(stockSerie.Count);
             var bearSerie = new FloatSerie(stockSerie.Count);
 
-            var high = bullSerie[0] = Math.Max(highSerie[0], highSerie[1]);
-            var low = bearSerie[0] = Math.Min(lowSerie[0], lowSerie[1]);
+            var high = bullSerie[0] = bullSerie[1] = Math.Max(highSerie[0], highSerie[1]);
+            var low = bearSerie[0] = bearSerie[1] = Math.Min(lowSerie[0], lowSerie[1]);
             int i = 2;
             bool broken = false;
             bool bullish = false;

@@ -96,6 +96,7 @@
     <Compile Include="StockAgent\Agents\HorseRaceAgent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
+    <Compile Include="StockAgent\Agents\OSCAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
