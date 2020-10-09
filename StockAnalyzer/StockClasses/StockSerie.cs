@@ -5644,6 +5644,15 @@ namespace StockAnalyzer.StockClasses
                 case StockClasses.BarDuration.TLB:
                     newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
                     break;
+                case StockClasses.BarDuration.LineBreak_3H:
+                    newBarList = GenerateNbLineBreakBar(GenerateMultipleBar(dailyValueList, 12), 3);
+                    break;
+                case StockClasses.BarDuration.LineBreak_3D:
+                    newBarList = GenerateNbLineBreakBar(dailyValueList, 3);
+                    break;
+                case StockClasses.BarDuration.LineBreak_3W:
+                    newBarList = GenerateNbLineBreakBar(GenerateSerieForTimeSpan(dailyValueList, StockClasses.BarDuration.Weekly), 3);
+                    break;
                 case StockClasses.BarDuration.TLB_3D:
                     newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
                     break;
@@ -5840,64 +5849,46 @@ namespace StockAnalyzer.StockClasses
         private List<StockDailyValue> GenerateNbLineBreakBar(List<StockDailyValue> stockDailyValueList, int nbBar)
         {
             bool isIntraday = this.StockGroup == Groups.INTRADAY;
-            int count = 0;
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             List<StockDailyValue> tmpBarList = new List<StockDailyValue>();
-            StockDailyValue newValue = null;
-            foreach (StockDailyValue dailyValue in stockDailyValueList)
+            var firstValue = stockDailyValueList.First();
+            StockDailyValue newValue = new StockDailyValue(firstValue.OPEN, firstValue.HIGH, firstValue.LOW, firstValue.CLOSE, firstValue.VOLUME, firstValue.DATE);
+            float periodLow = Math.Max(firstValue.CLOSE, firstValue.OPEN), periodHigh = Math.Max(firstValue.CLOSE, firstValue.OPEN);
+            tmpBarList.Add(newValue);
+            newBarList.Add(newValue);
+            long volume = 0;
+            float low = float.MaxValue, high = float.MinValue;
+            DateTime date = DateTime.MaxValue;
+            foreach (StockDailyValue dailyValue in stockDailyValueList.Skip(1))
             {
-                if (newValue == null)
+                if (dailyValue.CLOSE > periodHigh || dailyValue.CLOSE < periodLow)
                 {
-                    // New bar
-                    newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                    newValue.IsComplete = false;
-                    count = 1;
+                    // New up or down bar
+                    float open = tmpBarList.Last().CLOSE;
+                    newValue = new StockDailyValue(open, Math.Max(high, dailyValue.HIGH), Math.Min(low, dailyValue.LOW), dailyValue.CLOSE, dailyValue.VOLUME + volume, date == DateTime.MaxValue ? dailyValue.DATE : date);
+                    newValue.IsComplete = true;
+                    volume = 0; low = float.MaxValue; high = float.MinValue; date = DateTime.MaxValue;
+
+                    if (tmpBarList.Count == nbBar) tmpBarList.RemoveAt(0);
                     tmpBarList.Add(newValue);
+                    newBarList.Add(newValue);
+                    periodHigh = tmpBarList.Max(v => Math.Max(v.CLOSE, v.OPEN));
+                    periodLow = tmpBarList.Min(v => Math.Min(v.CLOSE, v.OPEN));
                 }
                 else
                 {
-                    if (dailyValue.CLOSE > tmpBarList.Max(v => v.CLOSE))
-                    {
-                        // New up bar
-                        newValue.IsComplete = true;
-                        newBarList.Add(newValue);
-                        if (tmpBarList.Count == nbBar)
-                        {
-                            tmpBarList.RemoveAt(0);
-                            tmpBarList.Add(newValue);
-                        }
-                        newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                        newValue.IsComplete = false;
-                        count = 1;
-                        tmpBarList.Add(newValue);
-                    }
-                    else if (dailyValue.CLOSE > tmpBarList.Min(v => v.CLOSE))
-                    {
-                        // New down bar
-                        newValue.IsComplete = true;
-                        newBarList.Add(newValue);
-                        if (tmpBarList.Count == nbBar)
-                        {
-                            tmpBarList.RemoveAt(0);
-                            tmpBarList.Add(newValue);
-                        }
-                        newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                        newValue.IsComplete = false;
-                        count = 1;
-                        tmpBarList.Add(newValue);
-                    }
-                    else
-                    {
-                        // continue in same bar
-                        newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.CLOSE);
-                        newValue.LOW = Math.Min(newValue.LOW, dailyValue.CLOSE);
-                        newValue.CLOSE = dailyValue.CLOSE;
-                        newValue.VOLUME += dailyValue.VOLUME;
-                    }
+                    if (date == DateTime.MaxValue) date = dailyValue.DATE;
+                    volume += dailyValue.VOLUME;
+                    low = Math.Min(low, dailyValue.LOW);
+                    high = Math.Max(high, dailyValue.HIGH);
                 }
             }
-            if (newValue != null)
+            if (date != DateTime.MaxValue)
             {
+                var lastValue = stockDailyValueList.Last();
+                float open = tmpBarList.Last().CLOSE;
+                newValue = new StockDailyValue(open, Math.Max(high, lastValue.HIGH), Math.Min(low, lastValue.LOW), lastValue.CLOSE, lastValue.VOLUME + volume, date == DateTime.MaxValue ? lastValue.DATE : date);
+                newValue.IsComplete = false;
                 newBarList.Add(newValue);
             }
             return newBarList;

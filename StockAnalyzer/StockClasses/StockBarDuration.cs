@@ -9,6 +9,9 @@ namespace StockAnalyzer.StockClasses
         Weekly,
         BiWeekly,
         Monthly,
+        LineBreak_3H,
+        LineBreak_3D,
+        LineBreak_3W,
         Bar_2,
         Bar_3,
         Bar_6,
@@ -60,6 +63,9 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration TLB_3D = new StockBarDuration(BarDuration.TLB_3D);
         public static StockBarDuration TLB_6D = new StockBarDuration(BarDuration.TLB_6D);
         public static StockBarDuration TLB_9D = new StockBarDuration(BarDuration.TLB_9D);
+        public static StockBarDuration LineBreak_3H = new StockBarDuration(BarDuration.LineBreak_3H);
+        public static StockBarDuration LineBreak_3D = new StockBarDuration(BarDuration.LineBreak_3D);
+        public static StockBarDuration LineBreak_3W = new StockBarDuration(BarDuration.LineBreak_3W);
         public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
         public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
@@ -74,6 +80,9 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Weekly,
             StockBarDuration.BiWeekly,
             StockBarDuration.Monthly,
+            StockBarDuration.LineBreak_3H,
+            StockBarDuration.LineBreak_3D,
+            StockBarDuration.LineBreak_3W,
             StockBarDuration.TLB,
             StockBarDuration.TLB_3D,
             StockBarDuration.TLB_6D,
