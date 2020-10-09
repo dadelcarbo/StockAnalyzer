@@ -1142,6 +1142,48 @@ namespace StockAnalyzer.StockMath
                 }
             }
         }
+
+        /// <summary>
+        /// Return the highest from the n highest bars looking backward, if a bar is lower it's ignored
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="lookback"></param>
+        /// <returns></returns>
+        public float GetCountBackHigh(int startIndex, int lookback)
+        {
+            float highest = this[startIndex];
+            int count = 1;
+            for (int i = startIndex - 1; count < lookback && i >= 0; i--)
+            {
+                if (this[i] > highest)
+                {
+                    count++;
+                    highest = this[i];
+                }
+            }
+            return highest;
+        }
+        /// <summary>
+        /// Return the lowest from the n lowest bars looking backward, if a bar is lower it's ignored
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="lookback"></param>
+        /// <returns></returns>
+        public float GetCountBackLow(int startIndex, int lookback)
+        {
+            float lowest = this[startIndex];
+            int count = 1;
+            for (int i = startIndex - 1; count < lookback && i >= 0; i--)
+            {
+                if (this[i] < lowest)
+                {
+                    count++;
+                    lowest = this[i];
+                }
+            }
+            return lowest;
+        }
+
         #endregion
         #region TOP AND BOTTOMS
         public bool IsTop(int index)

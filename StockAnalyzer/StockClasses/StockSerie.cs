@@ -651,7 +651,7 @@ namespace StockAnalyzer.StockClasses
 
                     if (this.Count == 0)
                     {
-                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this) || this.Count==0)
+                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this) || this.Count == 0)
                         {
                             return false;
                         }
@@ -2362,7 +2362,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                 }
-                else if (i > 0)
+                else
                 {
                     if (upTrend)
                     {
@@ -3148,6 +3148,75 @@ namespace StockAnalyzer.StockClasses
         /// <param name="period"></param>
         /// <param name="longStopSerie"></param>
         /// <param name="shortStopSerie"></param>
+        public void CalculateCountbackLineTrailStop(int period, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        {
+            longStopSerie = new FloatSerie(this.Count, "TRAILCBL.LS");
+            shortStopSerie = new FloatSerie(this.Count, "TRAILCBL.SS");
+
+            if (this.ValueArray.Length < period) return;
+
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+            bool upTrend = closeSerie[1] > closeSerie[0];
+            if (upTrend)
+            {
+                longStopSerie[0] = Math.Min(lowSerie[0], lowSerie[1]);
+                shortStopSerie[0] = float.NaN;
+            }
+            else
+            {
+                longStopSerie[0] = float.NaN;
+                shortStopSerie[0] = Math.Max(highSerie[0], highSerie[1]);
+            }
+            for (int i = 1; i < this.Count; i++)
+            {
+                if (upTrend)
+                {
+                    if (closeSerie[i] < longStopSerie[i - 1])
+                    {// Trailing stop has been broken => reverse trend
+                        upTrend = false;
+                        longStopSerie[i] = float.NaN;
+                        shortStopSerie[i] = highSerie.GetCountBackHigh(i, period);
+                    }
+                    else
+                    {// Trail the stop  
+                        longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowSerie.GetCountBackLow(i, period));
+                        shortStopSerie[i] = float.NaN;
+                    }
+                }
+                else
+                {
+                    if (closeSerie[i] > shortStopSerie[i - 1])
+                    {  // Trailing stop has been broken => reverse trend
+                        upTrend = true;
+                        longStopSerie[i] = lowSerie.GetCountBackLow(i, period);
+                        shortStopSerie[i] = float.NaN;
+                    }
+                    else
+                    {
+                        // Trail the stop  
+                        longStopSerie[i] = float.NaN;
+                        if (lowSerie[i] < lowSerie[i - 1])
+                        {
+                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie.GetCountBackHigh(i, period));
+                        }
+                        else
+                        {
+                            shortStopSerie[i] = shortStopSerie[i - 1];
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculate trail stop trailing using the minimum low in period for up trend and maximum high in period for down trend
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="longStopSerie"></param>
+        /// <param name="shortStopSerie"></param>
         public void CalculateHighLowTrailStop(int period, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
@@ -3207,7 +3276,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                 }
-                else if (i > 0)
+                else
                 {
                     if (upTrend)
                     {
@@ -3310,7 +3379,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                 }
-                else if (i > 0)
+                else
                 {
                     if (upTrend)
                     {
@@ -3418,7 +3487,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                 }
-                else if (i > 0)
+                else
                 {
                     if (upTrend)
                     {
@@ -5594,31 +5663,6 @@ namespace StockAnalyzer.StockClasses
                              GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2),
                                 3), 2), 3);
                     break;
-                /*   
-                 *   case StockClasses.BarDuration.HA:
-                      newBarList = GenerateHeikinAshiBarFromDaily(dailyValueList);
-                      break;
-                  case StockClasses.BarDuration.HA_3D:
-                      newBarList = GenerateHeikinAshiBarFromDaily(GenerateMultipleBar(dailyValueList, 3));
-                      break;
-
-              //case StockBarDuration.ThreeLineBreak:
-              //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 3);
-              //    break;
-              //case StockBarDuration.ThreeLineBreak_BIS:
-              //    newBarList =
-              //       GenerateNbLineBreakBarFromDaily(
-              //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak), 3);
-              //    break;
-              //case StockBarDuration.ThreeLineBreak_TER:
-              //    newBarList =
-              //       GenerateNbLineBreakBarFromDaily(
-              //          GenerateSerieForTimeSpan(dailyValueList, StockBarDuration.ThreeLineBreak_BIS), 3);
-              //    break;
-              //case StockBarDuration.SixLineBreak:
-              //    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 6);
-              //    break;
-              */
                 case StockClasses.BarDuration.Weekly:
                     {
                         StockDailyValue newValue = null;
@@ -5787,6 +5831,54 @@ namespace StockAnalyzer.StockClasses
             return newBarList;
         }
 
+        private List<StockDailyValue> GenerateNbLineBreakBar(List<StockDailyValue> stockDailyValueList, int nbDay)
+        {
+            bool isIntraday = this.StockGroup == Groups.INTRADAY;
+            int count = 0;
+            List<StockDailyValue> newBarList = new List<StockDailyValue>();
+            StockDailyValue newValue = null;
+            foreach (StockDailyValue dailyValue in stockDailyValueList)
+            {
+                if (newValue == null)
+                {
+                    // New bar
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue.IsComplete = false;
+                    count = 1;
+                }
+                else if (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date)
+                {
+                    // Force bar end at the end of a day
+                    newValue.IsComplete = true;
+                    newBarList.Add(newValue);
+
+                    // New bar
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue.IsComplete = false;
+                    count = 1;
+                }
+                else
+                {
+                    // Next bar
+                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                    newValue.CLOSE = dailyValue.CLOSE;
+                    newValue.VOLUME += dailyValue.VOLUME;
+                    if ((++count == nbDay))
+                    {
+                        // Final bar set to comlete only is last bar is complete
+                        newValue.IsComplete = dailyValue.IsComplete;
+                        newBarList.Add(newValue);
+                        newValue = null;
+                    }
+                }
+            }
+            if (newValue != null)
+            {
+                newBarList.Add(newValue);
+            }
+            return newBarList;
+        }
         private List<StockDailyValue> GenerateMultipleBar(List<StockDailyValue> stockDailyValueList, int nbDay)
         {
             bool isIntraday = this.StockGroup == Groups.INTRADAY;
