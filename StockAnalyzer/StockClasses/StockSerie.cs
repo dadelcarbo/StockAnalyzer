@@ -5831,45 +5831,68 @@ namespace StockAnalyzer.StockClasses
             return newBarList;
         }
 
-        private List<StockDailyValue> GenerateNbLineBreakBar(List<StockDailyValue> stockDailyValueList, int nbDay)
+        /// <summary>
+        /// Real 3 line break - GenerateNbLineBreakBar
+        /// </summary>
+        /// <param name="stockDailyValueList"></param>
+        /// <param name="nbBar"></param>
+        /// <returns></returns>
+        private List<StockDailyValue> GenerateNbLineBreakBar(List<StockDailyValue> stockDailyValueList, int nbBar)
         {
             bool isIntraday = this.StockGroup == Groups.INTRADAY;
             int count = 0;
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
+            List<StockDailyValue> tmpBarList = new List<StockDailyValue>();
             StockDailyValue newValue = null;
             foreach (StockDailyValue dailyValue in stockDailyValueList)
             {
                 if (newValue == null)
                 {
                     // New bar
-                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                    newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
                     newValue.IsComplete = false;
                     count = 1;
-                }
-                else if (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date)
-                {
-                    // Force bar end at the end of a day
-                    newValue.IsComplete = true;
-                    newBarList.Add(newValue);
-
-                    // New bar
-                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                    newValue.IsComplete = false;
-                    count = 1;
+                    tmpBarList.Add(newValue);
                 }
                 else
                 {
-                    // Next bar
-                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
-                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
-                    newValue.CLOSE = dailyValue.CLOSE;
-                    newValue.VOLUME += dailyValue.VOLUME;
-                    if ((++count == nbDay))
+                    if (dailyValue.CLOSE > tmpBarList.Max(v => v.CLOSE))
                     {
-                        // Final bar set to comlete only is last bar is complete
-                        newValue.IsComplete = dailyValue.IsComplete;
+                        // New up bar
+                        newValue.IsComplete = true;
                         newBarList.Add(newValue);
-                        newValue = null;
+                        if (tmpBarList.Count == nbBar)
+                        {
+                            tmpBarList.RemoveAt(0);
+                            tmpBarList.Add(newValue);
+                        }
+                        newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        newValue.IsComplete = false;
+                        count = 1;
+                        tmpBarList.Add(newValue);
+                    }
+                    else if (dailyValue.CLOSE > tmpBarList.Min(v => v.CLOSE))
+                    {
+                        // New down bar
+                        newValue.IsComplete = true;
+                        newBarList.Add(newValue);
+                        if (tmpBarList.Count == nbBar)
+                        {
+                            tmpBarList.RemoveAt(0);
+                            tmpBarList.Add(newValue);
+                        }
+                        newValue = new StockDailyValue(dailyValue.OPEN, Math.Max(dailyValue.OPEN, dailyValue.CLOSE), Math.Max(dailyValue.OPEN, dailyValue.CLOSE), dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        newValue.IsComplete = false;
+                        count = 1;
+                        tmpBarList.Add(newValue);
+                    }
+                    else
+                    {
+                        // continue in same bar
+                        newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.CLOSE);
+                        newValue.LOW = Math.Min(newValue.LOW, dailyValue.CLOSE);
+                        newValue.CLOSE = dailyValue.CLOSE;
+                        newValue.VOLUME += dailyValue.VOLUME;
                     }
                 }
             }
@@ -5879,6 +5902,7 @@ namespace StockAnalyzer.StockClasses
             }
             return newBarList;
         }
+
         private List<StockDailyValue> GenerateMultipleBar(List<StockDailyValue> stockDailyValueList, int nbDay)
         {
             bool isIntraday = this.StockGroup == Groups.INTRADAY;
