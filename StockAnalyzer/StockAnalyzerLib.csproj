@@ -208,6 +208,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMATRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY.cs" />

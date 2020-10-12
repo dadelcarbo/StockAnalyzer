@@ -750,7 +750,8 @@ namespace StockAnalyzerApp
                                         stockSerie.StockName,
                                         stockSerie.StockGroup.ToString(),
                                         dailyValue.CLOSE,
-                                        dailyValue.VOLUME);
+                                        dailyValue.VOLUME,
+                                        stockSerie.GetIndicator("ROR(100,1").Series[0][i]);
 
                                     if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
@@ -3808,7 +3809,7 @@ namespace StockAnalyzerApp
                         return;
                     }
                     // Delete transient drawing created by alert Detection
-                    if (this.CurrentStockSerie.StockAnalysis.DeleteAlertDrawings() > 0)
+                    if (this.CurrentStockSerie.StockAnalysis.DeleteAlertDrawings() > 0 || this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
                         this.CurrentStockSerie.ResetIndicatorCache();
                     }

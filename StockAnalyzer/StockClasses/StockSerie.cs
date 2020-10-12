@@ -3230,7 +3230,7 @@ namespace StockAnalyzer.StockClasses
 
             StockDailyValue previousValue = this.Values.First();
             bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
-            int i = 0;
+            int i = 1;
             if (upTrend)
             {
                 longStopSerie[0] = previousValue.LOW;
@@ -3241,7 +3241,7 @@ namespace StockAnalyzer.StockClasses
                 longStopSerie[0] = float.NaN;
                 shortStopSerie[0] = previousValue.HIGH;
             }
-            foreach (StockDailyValue currentValue in this.Values)
+            foreach (StockDailyValue currentValue in this.Values.Skip(1))
             {
                 if (i > period)
                 {

@@ -45,6 +45,7 @@
                 <telerik:GridViewDataColumn ToolTip="{Binding Indicator}" Header="Indicator" DataMemberBinding="{Binding Indicator, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Event}" Header="Event" DataMemberBinding="{Binding Event, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding AlertClose}" Header="Alert&#xA;Close" DataMemberBinding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Speed}" Header="Speed" DataMemberBinding="{Binding Speed, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding ExchangedMoney}" Header="Exchanged&#xA;Money (K€)" DataMemberBinding="{Binding ExchangedMoney, Mode=OneWay}" IsReadOnly="True"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>

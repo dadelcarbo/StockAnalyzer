@@ -46,16 +46,28 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 this.Series[i] = closeSerie.CalculateEMA((int)this.parameters[i]);
             }
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
+
+            var fastSerie1 = this.Series[0];
+            var slowSerie1 = this.Series[5];
+            var fastSerie2 = this.Series[6];
+            var slowSerie2 = this.Series[11];
+
+            for (int i = (int)this.parameters.Last(); i < stockSerie.Count; i++)
+            {
+                this.eventSeries[0][i] = fastSerie2[i] > slowSerie2[i] && fastSerie1[i] > slowSerie1[i] && fastSerie1[i - 1] < slowSerie1[i - 1];
+                this.eventSeries[1][i] = fastSerie2[i] < slowSerie2[i] && fastSerie1[i] < slowSerie1[i] && fastSerie1[i - 1] > slowSerie1[i - 1];
+            }
         }
 
-        static string[] eventNames = new string[] { "UpTrend", "DownTrend" };
+        static string[] eventNames = new string[] { "BullStart", "BearStart" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { false, false };
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }

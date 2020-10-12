@@ -34,6 +34,7 @@ namespace StockAnalyzer.StockClasses
         public StockBarDuration BarDuration { get; set; }
 
         public float AlertClose { get; set; }
+        public float Speed { get; set; }
 
         public long ExchangedMoney { get; set; }
 
@@ -43,7 +44,7 @@ namespace StockAnalyzer.StockClasses
         {
         }
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume)
+        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
         {
             this.Alert = alertDef.EventFullName;
             this.BarDuration = alertDef.BarDuration;
@@ -51,6 +52,7 @@ namespace StockAnalyzer.StockClasses
             StockName = stockName;
             StockGroup = stockGroup;
             AlertClose = alertClose;
+            Speed = speed;
             ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
         }
 
