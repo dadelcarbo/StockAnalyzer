@@ -5866,7 +5866,7 @@ namespace StockAnalyzer.StockClasses
                     // New up or down bar
                     float open = tmpBarList.Last().CLOSE;
                     newValue = new StockDailyValue(open, Math.Max(high, dailyValue.HIGH), Math.Min(low, dailyValue.LOW), dailyValue.CLOSE, dailyValue.VOLUME + volume, date == DateTime.MaxValue ? dailyValue.DATE : date);
-                    newValue.IsComplete = true;
+                    newValue.IsComplete = dailyValue.IsComplete;
                     volume = 0; low = float.MaxValue; high = float.MinValue; date = DateTime.MaxValue;
 
                     if (tmpBarList.Count == nbBar) tmpBarList.RemoveAt(0);
