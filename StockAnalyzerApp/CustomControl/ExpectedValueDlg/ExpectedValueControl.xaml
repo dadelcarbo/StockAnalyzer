@@ -28,26 +28,26 @@
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Entry">
             <StackPanel Orientation="Horizontal" Margin="2">
-                <ComboBox SelectedItem="{Binding IndicatorType1}"  ItemsSource="{Binding IndicatorTypes}"  Width="80"/>
-                <TextBox Text="{Binding Indicator1}" Width="200" Margin="2" />
+                <ComboBox SelectedItem="{Binding IndicatorType1}"  ItemsSource="{Binding IndicatorTypes}"  Width="80" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Indicator1}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
                 <Label Content="Event"/>
-                <ComboBox SelectedItem="{Binding Event1, Mode=TwoWay}" ItemsSource="{Binding Events1}" Width="200" Margin="2"/>
+                <ComboBox SelectedItem="{Binding Event1, Mode=TwoWay}" ItemsSource="{Binding Events1}" Width="200" Margin="2" VerticalAlignment="Center"/>
             </StackPanel>
         </GroupBox>
         <GroupBox Grid.Row="2" Header="Exit">
             <StackPanel Orientation="Horizontal" Margin="2">
-                <ComboBox SelectedItem="{Binding IndicatorType2}"  ItemsSource="{Binding IndicatorTypes}"  Width="80"/>
-                <TextBox Text="{Binding Indicator2}" Width="200" Margin="2" />
+                <ComboBox SelectedItem="{Binding IndicatorType2}"  ItemsSource="{Binding IndicatorTypes}"  Width="80" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Indicator2}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
                 <Label Content="Event"/>
-                <ComboBox SelectedItem="{Binding Event2, Mode=TwoWay}" ItemsSource="{Binding Events2}" Width="200" Margin="2"/>
+                <ComboBox SelectedItem="{Binding Event2, Mode=TwoWay}" ItemsSource="{Binding Events2}" Width="200" Margin="2" VerticalAlignment="Center"/>
                 <Label Content="Stop %" Width="56"/>
-                <TextBox Text="{Binding Stop}" Width="30" Margin="2" />
+                <TextBox Text="{Binding Stop}" Width="30" Margin="2" VerticalContentAlignment="Center"/>
             </StackPanel>
         </GroupBox>
         <TabControl Grid.Row="3" Margin="2" >
             <TabItem Header="Summary" DataContext="{Binding SummaryResult}">
                 <StackPanel Orientation="Horizontal">
-                    <GroupBox Header="Trades" BorderThickness="2" Width="80" Height="">
+                    <GroupBox Header="Trades" BorderThickness="2" Width="100">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Width="40">Total:</Label>
@@ -67,7 +67,7 @@
                         </StackPanel>
                     </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Gains" BorderThickness="2">
+                    <GroupBox Header="Gains" BorderThickness="2" Width="140">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Width="40">Total:</Label>
@@ -87,7 +87,8 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-
+                    <GroupBox Header="Kelly" Visibility="Collapsed">
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Trade Details">
