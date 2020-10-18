@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                Type st = t.GetInterface("IStockIndicator");
                if (st != null)
                {
-                  if (!(t.Name.EndsWith("IndicatorBase") || t.Name.Contains("StockTrail")))
+                  if (!(t.Name.EndsWith("Base") || t.Name.Contains("StockTrail")))
                   {
                      indicatorList.Add(t.Name.Replace("StockIndicator_", ""));
                   }

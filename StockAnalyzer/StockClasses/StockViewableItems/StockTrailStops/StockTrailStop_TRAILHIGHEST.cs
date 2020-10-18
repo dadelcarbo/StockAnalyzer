@@ -4,10 +4,12 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILHIGHLOW : StockTrailStopBase
+    public class StockTrailStop_TRAILHIGHEST : StockTrailStopBase
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
+
+        public override string Definition => "Trails when making a new high to the lowest in period (and vice versa in down trend)";
 
         public override string[] ParameterNames => new string[] { "Period" };
 
@@ -15,32 +17,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
-        public override string[] SerieNames => new string[] { "TRAILHIGHLOW.LS", "TRAILHIGHLOW.SS" };
+        public override string[] SerieNames => new string[] { "TRAILHIGHEST.LS", "TRAILHIGHEST.SS" };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
 
             int period = (int)this.Parameters[0];
 
-            var trailEMA = stockSerie.GetTrailStop($"TRAILEMA({period.ToString()})");
-
-            //"BrokenUp", "BrokenDown",           // 0,1
-            //"Pullback", "EndOfTrend",           // 2,3
-            //"HigherLow", "LowerHigh",           // 4,5
-            //"Bullish", "Bearish"                // 6,7
-            var higherLow = trailEMA.Events[4];
-            var lowerHigh = trailEMA.Events[5];
-            var bullish = trailEMA.Events[6];
-
-            bool upTrend = bullish[period - 1];
+            float lowest = lowSerie.GetMin(0, period - 1);
+            float highest = highSerie.GetMax(0, period - 1);
             for (int i = 0; i < period; i++)
             {
-                longStopSerie[i] = trailEMA.Series[0][i];
-                shortStopSerie[i] = trailEMA.Series[1][i];
+                longStopSerie[i] = lowest;
+                shortStopSerie[i] = float.NaN;
             }
+            bool upTrend = true;
+
             for (int i = period; i < stockSerie.Count; i++)
             {
                 if (upTrend)
@@ -48,14 +45,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (closeSerie[i] < longStopSerie[i - 1]) // Broken Down
                     {
                         upTrend = false;
-                        shortStopSerie[i] = trailEMA.Series[1][i];
+                        shortStopSerie[i] = highSerie.GetMax(i - period, i);
                         longStopSerie[i] = float.NaN;
+                        lowest = lowSerie[i];
                     }
                     else
                     {
-                        if (higherLow[i]) // TrailUp
+                        if (highSerie[i] > highest) // TrailUp
                         {
-                            longStopSerie[i] = trailEMA.Series[0][i];
+                            longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(i - period, i));
+                            highest = highSerie[i];
                         }
                         else
                         {
@@ -69,14 +68,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (closeSerie[i] > shortStopSerie[i - 1]) // Broken Up
                     {
                         upTrend = true;
-                        longStopSerie[i] = trailEMA.Series[0][i];
+                        longStopSerie[i] = lowSerie.GetMin(i - period, i);
                         shortStopSerie[i] = float.NaN;
+                        highest = highSerie[i];
                     }
                     else
                     {
-                        if (lowerHigh[i]) // TrailDown
+                        if (lowSerie[i] < lowest) // TrailDown
                         {
-                            shortStopSerie[i] = trailEMA.Series[1][i];
+                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie.GetMax(i - period, i));
+                            lowest = lowSerie[i];
                         }
                         else
                         {
@@ -95,6 +96,5 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             // Generate events
             this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
         }
-
     }
 }
