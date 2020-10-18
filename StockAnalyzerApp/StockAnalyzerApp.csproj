@@ -208,6 +208,15 @@
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.Designer.cs">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
+      <DependentUpon>ConditionalStatisticsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.cs" />
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.Designer.cs">
+      <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\CondStatisticsResult.cs" />
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\CondStatisticsViewModel.cs" />
     <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml.cs">
       <DependentUpon>ExpectedValueControl.xaml</DependentUpon>
     </Compile>
@@ -556,6 +565,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CommentDlg\CommentReportDlg.resx">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.resx">
+      <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.resx">
       <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
@@ -920,6 +932,10 @@
     <Page Include="CustomControl\CommentDlg\CommentControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
       <SubType>Designer</SubType>

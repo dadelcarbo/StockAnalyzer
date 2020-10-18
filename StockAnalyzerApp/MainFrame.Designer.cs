@@ -90,6 +90,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -553,7 +554,8 @@ namespace StockAnalyzerApp
             this.exportFinancialsMenuItem,
             this.toolStripSeparator22,
             this.bestTrendMenuItem,
-            this.expectedValueMenuItem});
+            this.expectedValueMenuItem,
+            this.statisticsMenuItem});
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
@@ -636,6 +638,14 @@ namespace StockAnalyzerApp
             this.expectedValueMenuItem.Text = "Expected Value";
             this.expectedValueMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
             this.expectedValueMenuItem.Click += new System.EventHandler(this.expectedValueMenuItem_Click);
+            // 
+            // statisticsMenuItem
+            // 
+            this.statisticsMenuItem.Name = "statisticsMenuItem";
+            this.statisticsMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.statisticsMenuItem.Text = "Statistics";
+            this.statisticsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F12)));
+            this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
             // 
             // portofolioMenuItem
             // 
@@ -1573,6 +1583,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem generateSeasonalitySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
         private ToolStripMenuItem expectedValueMenuItem;
+        private ToolStripMenuItem statisticsMenuItem;
         private ToolStripMenuItem inverseSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;

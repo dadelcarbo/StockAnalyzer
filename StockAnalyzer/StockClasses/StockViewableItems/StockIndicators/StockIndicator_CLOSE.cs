@@ -14,29 +14,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-
-        public override string Name
-        {
-            get { return "CLOSE(" + this.Parameters[0].ToString() + ")"; }
-        }
-
-        public override string Definition
-        {
-            get { return "CLOSE(int Period)"; }
-        }
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20 }; }
+            get { return new Object[] { }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] {  }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period" }; }
+            get { return new string[] {}; }
         }
-        public override string[] SerieNames { get { return new string[] { "ACTUALCLOSE(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "ACTUALCLOSE()" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {

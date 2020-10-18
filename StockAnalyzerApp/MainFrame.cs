@@ -17,6 +17,7 @@ using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
+using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
@@ -3614,7 +3615,28 @@ namespace StockAnalyzerApp
             this.bestrendDlg = null;
         }
         #endregion
-        #region BEST TRENDS
+        #region Conditional Statistics
+        ConditionalStatisticsDlg statisticsDlg = null;
+        void statisticsMenuItem_Click(object sender, EventArgs e)
+        {
+            if (statisticsDlg == null)
+            {
+                statisticsDlg = new ConditionalStatisticsDlg();
+                statisticsDlg.Disposed += statisticsDlg_Disposed;
+                statisticsDlg.Show();
+            }
+            else
+            {
+                statisticsDlg.Activate();
+            }
+        }
+
+        void statisticsDlg_Disposed(object sender, EventArgs e)
+        {
+            this.statisticsDlg = null;
+        }
+        #endregion
+        #region EXPECTED VALUE
         ExpectedValueDlg expectedValueDlg = null;
         void expectedValueMenuItem_Click(object sender, EventArgs e)
         {

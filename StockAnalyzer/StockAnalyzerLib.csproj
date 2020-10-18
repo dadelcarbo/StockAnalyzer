@@ -231,6 +231,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBANDWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
@@ -271,8 +272,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAH.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSSR.cs" />

@@ -4,87 +4,14 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_MA : StockIndicatorBase
-   {
-      public StockIndicator_MA()
-      {
-      }
+    public class StockIndicator_MA : StockIndicatorMovingAvgBase
+    {
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            this.Series[0] = closeSerie.CalculateMA((int)this.parameters[0]);
 
-      public override IndicatorDisplayTarget DisplayTarget
-      {
-         get { return IndicatorDisplayTarget.PriceIndicator; }
-      }
-
-      public override string Name
-      {
-         get { return "MA(" + this.Parameters[0].ToString() + ")"; }
-      }
-
-      public override string Definition
-      {
-         get { return "MA(int Period)"; }
-      }
-
-      public override Object[] ParameterDefaultValues
-      {
-         get { return new Object[] { 20 }; }
-      }
-      public override ParamRange[] ParameterRanges
-      {
-         get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-      }
-      public override string[] ParameterNames
-      {
-         get { return new string[] { "Period" }; }
-      }
-
-      public override string[] SerieNames { get { return new string[] { "MA(" + this.Parameters[0].ToString() + ")" }; } }
-
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
-            {
-               seriePens = new Pen[] { new Pen(Color.Blue) };
-            }
-            return seriePens;
-         }
-      }
-
-      public override void ApplyTo(StockSerie stockSerie)
-      {
-         FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-         FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-         FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-         FloatSerie maSerie = closeSerie.CalculateMA((int)this.parameters[0]);
-         this.series[0] = maSerie;
-         this.series[0].Name = this.Name;
-
-         // Detecting events
-         this.CreateEventSeries(stockSerie.Count);
-         for (int i = 2; i < maSerie.Count; i++)
-         {
-            this.eventSeries[0][i] = (maSerie[i - 2] > maSerie[i - 1] && maSerie[i - 1] < maSerie[i]);
-            this.eventSeries[1][i] = (maSerie[i - 2] < maSerie[i - 1] && maSerie[i - 1] > maSerie[i]);
-            this.eventSeries[2][i] = closeSerie[i - 1] < maSerie[i - 1] && closeSerie[i] > maSerie[i];
-            this.eventSeries[3][i] = closeSerie[i - 1] > maSerie[i - 1] && closeSerie[i] < maSerie[i];
-            this.eventSeries[4][i] = lowSerie[i] > maSerie[i] && lowSerie[i - 1] < maSerie[i - 1];
-            this.eventSeries[5][i] = highSerie[i] < maSerie[i] && highSerie[i - 1] > maSerie[i - 1];
-            this.eventSeries[6][i] = lowSerie[i] > maSerie[i] && closeSerie[i - 1] < closeSerie[i];
-            this.eventSeries[7][i] = highSerie[i] < maSerie[i] && closeSerie[i - 1] > closeSerie[i];
-         }
-      }
-
-      static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "Bullish", "Bearish" };
-      public override string[] EventNames
-      {
-         get { return eventNames; }
-      }
-      static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false };
-      public override bool[] IsEvent
-      {
-         get { return isEvent; }
-      }
-   }
+            this.CalculateEvents(stockSerie);
+        }
+    }
 }
