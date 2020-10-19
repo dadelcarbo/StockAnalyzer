@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -175,9 +176,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            wc.DownloadFile(url, fileName);
-                            stockSerie.IsInitialised = false;
-                            return true;
+                            HttpClient client = new HttpClient();
+                            var response = client.GetAsync(url).Result;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var content = response.Content.ReadAsStringAsync().Result;
+                                File.WriteAllText(fileName, content);
+                                stockSerie.IsInitialised = false;
+                                return true;
+                            }
+                            nbTries--;
                         }
                         catch (Exception)
                         {
