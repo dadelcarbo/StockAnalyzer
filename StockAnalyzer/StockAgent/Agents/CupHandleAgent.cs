@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 

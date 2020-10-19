@@ -1,9 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Collections.Generic;
 
 namespace StockAnalyzerTest

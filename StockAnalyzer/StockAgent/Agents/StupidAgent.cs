@@ -1,6 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockMath;
-using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {

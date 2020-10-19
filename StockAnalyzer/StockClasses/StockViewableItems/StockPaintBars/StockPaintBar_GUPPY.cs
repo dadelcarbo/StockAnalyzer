@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockMath;
-using System;
+﻿using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars

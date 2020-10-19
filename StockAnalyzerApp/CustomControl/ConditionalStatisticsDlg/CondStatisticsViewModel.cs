@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

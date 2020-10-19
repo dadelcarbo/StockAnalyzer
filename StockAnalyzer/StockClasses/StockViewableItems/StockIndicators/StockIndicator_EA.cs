@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

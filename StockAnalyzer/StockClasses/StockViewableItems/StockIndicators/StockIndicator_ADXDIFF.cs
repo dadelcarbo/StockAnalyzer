@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-   public class StockIndicator_ADXDIFF : StockIndicatorBase
+    public class StockIndicator_ADXDIFF : StockIndicatorBase
    {
       public StockIndicator_ADXDIFF()
       {

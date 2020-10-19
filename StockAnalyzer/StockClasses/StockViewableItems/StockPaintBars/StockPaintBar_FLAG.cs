@@ -3,7 +3,6 @@ using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {

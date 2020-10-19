@@ -1,10 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzerTest.Utility

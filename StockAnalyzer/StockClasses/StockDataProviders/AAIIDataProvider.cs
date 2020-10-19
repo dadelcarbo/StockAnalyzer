@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-   public class AAIIDataProvider : StockDataProviderBase
+    public class AAIIDataProvider : StockDataProviderBase
    {
       private static StockDictionary stockDictionary;
       // IStockDataProvider Implemetation

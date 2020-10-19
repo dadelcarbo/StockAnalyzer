@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Xml.Serialization;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockDrawing
 {

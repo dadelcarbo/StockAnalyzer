@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
+﻿namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 {
     public class StockMatchPattern_StockAlert : IStockMatchPattern
     {

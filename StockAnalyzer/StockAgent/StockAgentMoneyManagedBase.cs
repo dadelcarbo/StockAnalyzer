@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockMath;
-using System.Reflection;
-
-namespace StockAnalyzer.StockAgent
+﻿namespace StockAnalyzer.StockAgent
 {
     public abstract class StockAgentMoneyManagedBase : StockAgentBase
     {

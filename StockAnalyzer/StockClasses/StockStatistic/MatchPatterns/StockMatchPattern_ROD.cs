@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 {
     public class StockMatchPattern_ROD : IStockMatchPattern
