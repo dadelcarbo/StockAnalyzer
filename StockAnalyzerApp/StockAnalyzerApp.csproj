@@ -208,6 +208,7 @@
     <Compile Include="CustomControl\CommentDlg\CommentReportDlg.Designer.cs">
       <DependentUpon>CommentReportDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\Class1.cs" />
     <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
       <DependentUpon>ConditionalStatisticsControl.xaml</DependentUpon>
     </Compile>
