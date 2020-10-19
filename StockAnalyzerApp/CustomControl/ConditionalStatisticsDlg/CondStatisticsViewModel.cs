@@ -133,15 +133,15 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
         private ObservableCollection<CondStatisticsResult> summary;
         public ObservableCollection<CondStatisticsResult> Summary { get { return summary; } set { if (value != summary) { summary = value; OnPropertyChanged("Summary"); } } }
 
-        public CondStatisticsViewModel(string indicator, string eventName)
+        public CondStatisticsViewModel(string indicatorType1, string indicator1, string event1Name, string indicatorType2, string indicator2, string event2Name)
         {
-            this.IndicatorType1 = "PaintBar";
-            Indicator1 = indicator;
-            this.Event1 = eventName;
+            this.IndicatorType1 = indicatorType1;
+            Indicator1 = indicator1;
+            this.Event1 = event1Name;
 
-            this.IndicatorType2 = "PaintBar";
-            Indicator2 = indicator;
-            this.Event2 = eventName;
+            this.IndicatorType2 = indicatorType2;
+            Indicator2 = indicator2;
+            this.Event2 = event2Name;
 
             this.Results = new ObservableCollection<CondStatisticsResult>();
             this.Summary = new ObservableCollection<CondStatisticsResult>();
