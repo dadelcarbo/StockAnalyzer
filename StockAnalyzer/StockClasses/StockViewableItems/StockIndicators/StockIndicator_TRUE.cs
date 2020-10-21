@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TRUE : StockIndicatorBase, IRange
+    public class StockIndicator_TRUE : StockIndicatorBase
     {
-        public StockIndicator_TRUE()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
-            get { return IndicatorDisplayTarget.RangedIndicator; }
+            get { return IndicatorDisplayTarget.PriceIndicator; }
         }
 
         public override object[] ParameterDefaultValues
         {
-            get { return new Object[] { 1 }; }
+            get { return new Object[] { 3 }; }
         }
         public override ParamRange[] ParameterRanges
         {
@@ -27,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "NbBars" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "TRUE()" }; } }
+        public override string[] SerieNames { get { return new string[] { }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -35,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Blue) };
+                    seriePens = new Pen[] { };
                 }
                 return seriePens;
             }
@@ -43,16 +39,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie TRUESerie = new FloatSerie(stockSerie.Count);
-            this.series[0] = TRUESerie;
-            this.series[0].Name = this.Name;
-
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
             int i = 0;
             int nbBar = (int)this.parameters[0];
             float max = float.MinValue;
             float min = float.MaxValue;
+            float previousHigh = float.MinValue;
+            float previousLow = float.MaxValue;
+            int higherLowIndex = Array.IndexOf<string>(this.EventNames, "HigherLow");
+            int lowerHighIndex = Array.IndexOf<string>(this.EventNames, "LowerHigh");
             foreach (StockDailyValue value in stockSerie.Values)
             {
                 this.eventSeries[0][i] = true;
@@ -74,6 +70,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         {
                             // EndOfHigherClose
                             this.eventSeries[6][i] = true;
+                            if (value.HIGH < previousHigh)
+                            {
+                                this.eventSeries[lowerHighIndex][i] = true; // LowerHigh
+
+                                this.stockTexts.Add(new StockText
+                                {
+                                    AbovePrice = true,
+                                    Index = i - 1,
+                                    Text = "LH"
+                                });
+                            }
+                            previousHigh = value.HIGH;
                         }
                     }
                     else
@@ -95,6 +103,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         {
                             // EndOfLowerClose
                             this.eventSeries[7][i] = true;
+                            if (value.LOW > previousLow)
+                            {
+                                this.eventSeries[higherLowIndex][i] = true; // HigherLow
+
+                                this.stockTexts.Add(new StockText
+                                {
+                                    AbovePrice = false,
+                                    Index = i - 1,
+                                    Text = "HL"
+                                });
+                            }
+                            previousLow = value.LOW;
                         }
                     }
                     else
@@ -116,25 +136,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { "True", "False", "HigherClose", "LowerClose", "RecHigherClose", "RecLowerClose", "EndOfHigherClose", "EndOfLowerClose", "BarComplete", "AllTimeHigh", "AllTimeLow" };
+        static string[] eventNames = new string[] {
+            "True", "False",
+            "HigherClose", "LowerClose",
+            "RecHigherClose", "RecLowerClose",
+            "EndOfHigherClose", "EndOfLowerClose",
+            "BarComplete",
+            "AllTimeHigh", "AllTimeLow",
+            "HigherLow", "LowerHigh"
+        };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false, true, true, false, true, true };
+        static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false, true, true, false, true, true, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
-        }
-
-        public float Max
-        {
-            get { return 1.0f; }
-        }
-
-        public float Min
-        {
-            get { return -1.0f; }
         }
     }
 }

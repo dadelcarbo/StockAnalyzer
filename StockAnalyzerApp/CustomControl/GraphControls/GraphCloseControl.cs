@@ -421,6 +421,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     foreach (var stockIndicator in CurveList.Indicators)
                     {
+                        this.DrawStockText(aGraphic, stockIndicator.StockTexts);
                         for (int i = 0; i < stockIndicator.SeriesCount; i++)
                         {
                             if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
