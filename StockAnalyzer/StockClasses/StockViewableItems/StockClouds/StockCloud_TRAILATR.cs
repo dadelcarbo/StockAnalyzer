@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Mid", "Signal" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var atrBandIndicator = stockSerie.GetTrailStop($"TRAILATRBAND({(int)this.parameters[0]},{(float)this.parameters[1]},{(float)this.parameters[2]},{this.parameters[3]})");
+            var atrBandIndicator = stockSerie.GetTrailStop($"TRAILATRBAND({(int)this.parameters[0]},{((float)this.parameters[1]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{((float)this.parameters[2]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{this.parameters[3]})");
             var longStop = atrBandIndicator.Series[0];
             var shortStop = atrBandIndicator.Series[1];
 
