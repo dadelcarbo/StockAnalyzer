@@ -144,9 +144,12 @@ namespace StockAnalyzer.StockClasses
         public int DeleteTransientDrawings()
         {
             int count = 0;
-            foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
+            if (!DrawingItem.KeepTransient)
             {
-                count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => !d.IsPersistent));
+                foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
+                {
+                    count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => !d.IsPersistent));
+                }
             }
             return count;
         }

@@ -60,6 +60,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                             new PointF(momentum.StartIndex, momentum.StockSerie.GetSerie(StockDataType.LOW)[momentum.StartIndex]),
                             new PointF(momentum.EndIndex, momentum.StockSerie.GetSerie(StockDataType.HIGH)[momentum.EndIndex])));
 
+                    DrawingItem.KeepTransient = true;
                     this.SelectedStockChanged(momentum.StockSerie.StockName, Math.Max(0, momentum.StartIndex - 100), Math.Min(momentum.StockSerie.Count - 1, momentum.EndIndex + 100), momentum.BarDuration, true);
                     this.Form.TopMost = true;
                     this.Form.TopMost = false;
@@ -68,6 +69,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                 finally
                 {
                     DrawingItem.CreatePersistent = true;
+                    DrawingItem.KeepTransient = false;
                 }
             }
         }

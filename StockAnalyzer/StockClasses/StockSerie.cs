@@ -1605,10 +1605,11 @@ namespace StockAnalyzer.StockClasses
             return distanceSerie;
         }
 
-        public FloatSerie CalculateRateOfRise(int period)
+        public FloatSerie CalculateRateOfRise(int period, bool bodyLow = true)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : new FloatSerie(this.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)));
+
             FloatSerie serie = new FloatSerie(Values.Count());
             float min;
 

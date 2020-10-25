@@ -10,6 +10,7 @@ namespace StockAnalyzer.StockDrawing
     {
         public static bool CreatePersistent = true;
         public static bool CreatedByAlert = false;
+        public static bool KeepTransient = false;
         [XmlIgnore]
         public bool IsPersistent { get; set; }
         [XmlIgnore]

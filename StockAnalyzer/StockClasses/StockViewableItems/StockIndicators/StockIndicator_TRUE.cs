@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[0][i] = true;
                 this.eventSeries[1][i] = false;
 
-                if (i > nbBar)
+                if (i > nbBar && value.IsComplete)
                 {
                     this.eventSeries[2][i] = value.VARIATION > 0f;
                     this.eventSeries[3][i] = value.VARIATION < 0f;
