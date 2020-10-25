@@ -115,7 +115,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 {
                     this.Events[9][i] = true;
                 }
-                if (this.Events[3][i] == true) // 
+                if (this.Events[3][i] == true)
                 {
                     if (closeSerie[i - 1] < signalSerie[i - 1] && closeSerie[i] > signalSerie[i])
                     {
@@ -126,7 +126,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 {
                     if (closeSerie[i - 1] < signalSerie[i - 1] && closeSerie[i] > signalSerie[i])
                     {
-                        this.Events[12][i] = true;
+                        this.Events[13][i] = true;
                     }
                 }
             }

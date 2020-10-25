@@ -49,7 +49,6 @@ namespace StockAnalyzerApp.CustomControl
          this.progressLabel = new System.Windows.Forms.Label();
          this.reloadButton = new System.Windows.Forms.Button();
          this.refreshDataCheckBox = new System.Windows.Forms.CheckBox();
-         this.statisticsButton = new System.Windows.Forms.Button();
          this.groupBox1.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -178,19 +177,11 @@ namespace StockAnalyzerApp.CustomControl
          this.refreshDataCheckBox.UseVisualStyleBackColor = true;
          this.refreshDataCheckBox.CheckState = CheckState.Unchecked;
          // 
-         // statisticsButton
-         // 
-         resources.ApplyResources(this.statisticsButton, "statisticsButton");
-         this.statisticsButton.Name = "statisticsButton";
-         this.statisticsButton.UseVisualStyleBackColor = true;
-         this.statisticsButton.Click += new System.EventHandler(this.selectButton_Click2);
-         // 
          // StockScannerDlg
          // 
          this.AcceptButton = this.selectButton;
          resources.ApplyResources(this, "$this");
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.statisticsButton);
          this.Controls.Add(this.refreshDataCheckBox);
          this.Controls.Add(this.reloadButton);
          this.Controls.Add(this.progressLabel);
@@ -230,7 +221,6 @@ namespace StockAnalyzerApp.CustomControl
       private System.Windows.Forms.CheckBox completeBarCheckBox;
       private System.Windows.Forms.Button reloadButton;
       private System.Windows.Forms.CheckBox refreshDataCheckBox;
-      private System.Windows.Forms.Button statisticsButton;
       private FixedTreeView eventTreeView;
    }
 }
