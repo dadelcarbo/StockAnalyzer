@@ -95,6 +95,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             fileName = rootFolder + CONFIG_FILE_USER;
             InitFromFile(rootFolder, download, fileName);
 
+            dailyViewState = null;
             // Init From LBL file
             //            DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, new string[] { "srdp", "srdlop" }, StockSerie.Groups.SRD);
             DownloadLibelleFromABC(rootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdp", StockSerie.Groups.SRD);
@@ -903,7 +904,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     // Send POST request
                     string url = "https://www.abcbourse.com/download/libelles";
-                    if (dailyViewState == string.Empty)
+                    if (string.IsNullOrEmpty(dailyViewState))
                     {
                         // Get ViewState 
                         using (WebClient webClient = new WebClient())
@@ -1063,7 +1064,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 //             https://www.abcbourse.com/download/download.aspx?s=PX1p
 
                 string url = "https://www.abcbourse.com/download/historiques";
-                if (dailyViewState == string.Empty || dailyViewStateGenerator == string.Empty)
+                if (string.IsNullOrEmpty(dailyViewState))
                 {
                     // Get ViewState 
                     using (WebClient webClient = new WebClient())
