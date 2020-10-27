@@ -5421,6 +5421,9 @@ namespace StockAnalyzer.StockClasses
                 case StockClasses.BarDuration.LineBreak_3W:
                     newBarList = GenerateNbLineBreakBar(GenerateSerieForTimeSpan(dailyValueList, StockClasses.BarDuration.Weekly), 3);
                     break;
+                case StockClasses.BarDuration.LineBreak_3M:
+                    newBarList = GenerateNbLineBreakBar(GenerateSerieForTimeSpan(dailyValueList, StockClasses.BarDuration.Monthly), 3);
+                    break;
                 case StockClasses.BarDuration.TLB_3D:
                     newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
                     break;

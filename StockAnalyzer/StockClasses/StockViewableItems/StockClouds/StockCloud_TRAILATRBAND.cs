@@ -58,28 +58,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
-
             var maSerie = stockSerie.GetIndicator(this.parameters[3] + "(" + (int)this.parameters[0] + ")").Series[0];
             var signalSerie = closeSerie.CalculateMA((int)this.parameters[4]);
 
             var bullSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0]);
             var bearSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1]);
 
-            bool isBull = true;
             for (int i = 0; i < stockSerie.Count; i++)
             {
-                isBull = float.IsNaN(shortStop[i]);
-
-                if (isBull)
+                bullSerie[i] = signalSerie[i];
+                if (float.IsNaN(shortStop[i]))
                 {
-                    bullSerie[i] = bodyLowSerie[i];
                     bearSerie[i] = longStop[i];
                 }
                 else
                 {
-                    bullSerie[i] = bodyHighSerie[i];
                     bearSerie[i] = shortStop[i];
                 }
             }
@@ -124,7 +117,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 }
                 else
                 {
-                    if (closeSerie[i - 1] < signalSerie[i - 1] && closeSerie[i] > signalSerie[i])
+                    if (closeSerie[i - 1] > signalSerie[i - 1] && closeSerie[i] < signalSerie[i])
                     {
                         this.Events[13][i] = true;
                     }
