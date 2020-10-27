@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockAgent.Agents
     {
         public ATRStopAgent()
         {
-            Period = 13;
+            Period = 12;
             UpWidth = 2.0f;
         }
 
