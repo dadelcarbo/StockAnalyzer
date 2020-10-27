@@ -335,7 +335,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                StockSplashScreen.ProgressText = "Reading Drawing items...";
+                StockSplashScreen.ProgressText = "Reading Drawing items ...";
                 LoadAnalysis(Settings.Default.AnalysisFile);
             }
 
