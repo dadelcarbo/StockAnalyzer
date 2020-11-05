@@ -465,14 +465,7 @@ namespace StockAnalyzerApp
                 string fileName = Settings.Default.RootFolder + @"\CommentReport\Daily\Report.html";
                 if (!File.Exists(fileName) || File.GetLastWriteTime(fileName).Date != DateTime.Today)
                 {
-                    var durations = new StockBarDuration[]
-                         {
-                            StockBarDuration.Daily,
-                            StockBarDuration.TLB,
-                            StockBarDuration.TLB_3D
-                         };
-
-                    GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
+                    GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
                 }
 
                 fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
@@ -484,12 +477,7 @@ namespace StockAnalyzerApp
                          (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastUpdate < DateTime.Today.AddDays(-2)) ||
                          (DateTime.Today.DayOfWeek == DayOfWeek.Monday && lastUpdate < DateTime.Today.AddDays(-3)))
                     {
-                        var durations = new StockBarDuration[]
-                             {
-                            StockBarDuration.Weekly
-                             };
-
-                        GenerateReport("Weekly Report", durations, weeklyAlertConfig.AlertDefs);
+                        GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
                     }
                 }
 
@@ -497,12 +485,7 @@ namespace StockAnalyzerApp
                 lastUpdate = File.GetLastWriteTime(fileName).Date;
                 if (!File.Exists(fileName) || lastUpdate.Month != DateTime.Today.Month)
                 {
-                    var durations = new StockBarDuration[]
-                         {
-                            StockBarDuration.Monthly
-                             };
-
-                    GenerateReport("Montly Report", durations, monthlyAlertConfig.AlertDefs);
+                    GenerateReport("Montly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                 }
             }
 
@@ -1116,7 +1099,7 @@ namespace StockAnalyzerApp
                 return;
             }
 
-            var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem);
+            var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem, this.barHeikinAshiCheckBox.CheckBox.Checked, (int)this.barLineBreakComboBox.SelectedItem);
             this.currentStockSerie.BarDuration = bd;
 
             if (!ignoreLinkedTheme
@@ -2101,6 +2084,12 @@ namespace StockAnalyzerApp
                 this.barSmoothingComboBox.Items.Add(barSmoothing);
             }
             this.barSmoothingComboBox.SelectedItem = this.barSmoothingComboBox.Items.OfType<int>().First();
+
+            foreach (int lineBreak in new List<int> { 0, 1, 2, 3, 4, 5 })
+            {
+                this.barLineBreakComboBox.Items.Add(lineBreak);
+            }
+            this.barLineBreakComboBox.SelectedItem = this.barLineBreakComboBox.Items.OfType<int>().First();
         }
 
         private void BarDurationChanged(object sender, EventArgs e)
@@ -2110,6 +2099,8 @@ namespace StockAnalyzerApp
             StockBarDuration barDuration = (BarDuration)barDurationComboBox.SelectedItem;
             barDuration.Smoothing = (int)barSmoothingComboBox.SelectedItem;
             barDuration.HeikinAshi = barHeikinAshiCheckBox.CheckBox.CheckState == CheckState.Checked;
+            barDuration.LineBreak = (int)barLineBreakComboBox.SelectedItem;
+
             if (this.CurrentStockSerie.BarDuration != barDuration)
             {
                 int previousBarCount = this.CurrentStockSerie.Count;
@@ -2146,6 +2137,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedItem = barDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+            this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
 
             if (!triggerEvent)
             {
@@ -2644,7 +2636,7 @@ namespace StockAnalyzerApp
            @"<td><img alt=""%DIR%"" src=""../../img/%DIR%.png"" height=""16"" width=""16""/></td>" +
            Environment.NewLine;
 
-        private void GenerateReport(string title, StockBarDuration[] durations, List<StockAlertDef> alertDefs)
+        private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {
             if (!File.Exists(ReportTemplatePath))
                 return;
@@ -2654,8 +2646,7 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            var duration = durations.First();
-            string timeFrame = durations.First().ToString();
+            string timeFrame = duration.ToString();
             string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
             CleanReportFolder(folderName);
 
@@ -2703,6 +2694,7 @@ namespace StockAnalyzerApp
 
             //           Process.Start("http://www.ultimatechartist.com/CommentReport/report.html");
             Process.Start(fileName);
+
             this.CurrentStockSerie = previousStockSerie;
             this.CurrentTheme = previousTheme;
             this.barDurationComboBox.SelectedItem = previousBarDuration.Duration;
@@ -2716,7 +2708,7 @@ namespace StockAnalyzerApp
 
             foreach (StockAlertDef alertDef in alertDefs)
             {
-                var commentTitle = alertDef.IndicatorName + " => " + alertDef.EventName;
+                var commentTitle = alertDef.BarDuration + ": " + alertDef.IndicatorName + " => " + alertDef.EventName;
 
                 var alertMsgs = new List<string>();
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
@@ -3038,14 +3030,7 @@ namespace StockAnalyzerApp
         }
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
-            var durations = new StockBarDuration[]
-            {
-            StockBarDuration.Daily,
-            StockBarDuration.TLB,
-            StockBarDuration.TLB_3D,
-            };
-
-            GenerateReport("Daily Report", durations, dailyAlertConfig.AlertDefs);
+            GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
         }
         #endregion
         WatchListDlg watchlistDlg = null;

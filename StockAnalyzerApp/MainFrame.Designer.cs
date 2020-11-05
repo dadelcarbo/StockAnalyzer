@@ -121,6 +121,8 @@ namespace StockAnalyzerApp
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.smoothingLabel = new System.Windows.Forms.ToolStripLabel();
             this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.lineBreakLabel = new System.Windows.Forms.ToolStripLabel();
+            this.barLineBreakComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barHeikinAshiCheckBox = new ToolStripCheckedBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.searchText = new System.Windows.Forms.ToolStripTextBox();
@@ -906,6 +908,8 @@ namespace StockAnalyzerApp
             this.barDurationComboBox,
             this.smoothingLabel,
             this.barSmoothingComboBox,
+            this.lineBreakLabel,
+            this.barLineBreakComboBox,
             this.barHeikinAshiCheckBox,
             this.downloadBtn,
             this.searchText,
@@ -952,6 +956,19 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
             this.barSmoothingComboBox.Size = new System.Drawing.Size(25, 23);
             this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
+            // 
+            // lineBreakLabel
+            // 
+            this.lineBreakLabel.Name = "lineBreakLabel";
+            this.lineBreakLabel.Size = new System.Drawing.Size(52, 24);
+            this.lineBreakLabel.Text = "LineBreak:";
+            // 
+            // barLineBreakComboBox
+            // 
+            this.barLineBreakComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.barLineBreakComboBox.Name = "barLineBreakComboBox";
+            this.barLineBreakComboBox.Size = new System.Drawing.Size(25, 23);
+            this.barLineBreakComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // barHeikinAshiCheckBox
             // 
@@ -1508,6 +1525,7 @@ namespace StockAnalyzerApp
         private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
         private ToolStripComboBox barSmoothingComboBox;
+        private ToolStripComboBox barLineBreakComboBox;
         private ToolStripCheckedBox barHeikinAshiCheckBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
@@ -1621,6 +1639,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem newAnalysisMenuItem;
         private ToolStripTextBox searchText;
         private ToolStripLabel smoothingLabel;
+        private ToolStripLabel lineBreakLabel;
         private ToolStripButton goBtn;
     }
 }

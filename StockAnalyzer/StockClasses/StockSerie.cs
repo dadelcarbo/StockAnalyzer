@@ -296,6 +296,10 @@ namespace StockAnalyzer.StockClasses
                 {
                     newList = this.GenerateSmoothedBars(newList, newBarDuration.Smoothing);
                 }
+                if (newBarDuration.LineBreak > 0)
+                {
+                    newList = this.GenerateNbLineBreakBar(newList, newBarDuration.LineBreak);
+                }
                 if (newBarDuration.HeikinAshi)
                 {
                     newList = this.GenerateHeikinAshiBarFromDaily(newList);
@@ -5414,6 +5418,9 @@ namespace StockAnalyzer.StockClasses
                     break;
                 case StockClasses.BarDuration.LineBreak_3H:
                     newBarList = GenerateNbLineBreakBar(GenerateMultipleBar(dailyValueList, 12), 3);
+                    break;
+                case StockClasses.BarDuration.LineBreak_3Q:
+                    newBarList = GenerateNbLineBreakBar(GenerateMultipleBar(dailyValueList, 3), 3);
                     break;
                 case StockClasses.BarDuration.LineBreak_3D:
                     newBarList = GenerateNbLineBreakBar(dailyValueList, 3);

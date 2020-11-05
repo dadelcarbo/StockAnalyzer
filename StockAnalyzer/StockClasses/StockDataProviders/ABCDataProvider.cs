@@ -825,7 +825,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     // Send POST request
                     string url = "https://www.abcbourse.com/download/libelles";
-                    if (dailyViewState == string.Empty)
+                    if (string.IsNullOrEmpty(dailyViewState))
                     {
                         // Get ViewState 
                         using (WebClient webClient = new WebClient())

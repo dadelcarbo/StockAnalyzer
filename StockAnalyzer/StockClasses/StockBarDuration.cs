@@ -10,6 +10,7 @@ namespace StockAnalyzer.StockClasses
         BiWeekly,
         Monthly,
         LineBreak_3H,
+        LineBreak_3Q,
         LineBreak_3D,
         LineBreak_3W,
         LineBreak_3M,
@@ -37,6 +38,7 @@ namespace StockAnalyzer.StockClasses
     {
         public BarDuration Duration { get; set; }
         public int Smoothing { get; set; }
+        public int LineBreak { get; set; }
 
         public bool HeikinAshi { get; set; }
 
@@ -44,19 +46,22 @@ namespace StockAnalyzer.StockClasses
         {
             this.Duration = BarDuration.Daily;
             this.Smoothing = 1;
+            this.LineBreak = 0;
             this.HeikinAshi = false;
         }
         public StockBarDuration(BarDuration duration)
         {
             this.Duration = duration;
             this.Smoothing = 1;
+            this.LineBreak = 0;
             this.HeikinAshi = false;
         }
-        public StockBarDuration(BarDuration duration, int smoothing, bool heikinAshi = false)
+        public StockBarDuration(BarDuration duration, int smoothing, bool heikinAshi = false, int lineBreak = 0)
         {
             this.Duration = duration;
             this.Smoothing = smoothing;
             this.HeikinAshi = heikinAshi;
+            this.LineBreak = lineBreak;
         }
 
         public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
@@ -65,6 +70,7 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration TLB_6D = new StockBarDuration(BarDuration.TLB_6D);
         public static StockBarDuration TLB_9D = new StockBarDuration(BarDuration.TLB_9D);
         public static StockBarDuration LineBreak_3H = new StockBarDuration(BarDuration.LineBreak_3H);
+        public static StockBarDuration LineBreak_3Q = new StockBarDuration(BarDuration.LineBreak_3Q);
         public static StockBarDuration LineBreak_3D = new StockBarDuration(BarDuration.LineBreak_3D);
         public static StockBarDuration LineBreak_3W = new StockBarDuration(BarDuration.LineBreak_3W);
         public static StockBarDuration LineBreak_3M = new StockBarDuration(BarDuration.LineBreak_3M);
@@ -83,6 +89,7 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.BiWeekly,
             StockBarDuration.Monthly,
             StockBarDuration.LineBreak_3H,
+            StockBarDuration.LineBreak_3Q,
             StockBarDuration.LineBreak_3D,
             StockBarDuration.LineBreak_3W,
             StockBarDuration.LineBreak_3M,
@@ -126,6 +133,7 @@ namespace StockAnalyzer.StockClasses
         public override string ToString()
         {
             var str = this.Smoothing <= 1 ? this.Duration.ToString() : this.Duration + "_EMA" + this.Smoothing;
+            str += this.LineBreak == 0 ? string.Empty : "_LB" + this.LineBreak;
             return this.HeikinAshi ? str + "_HA" : str;
         }
         public override bool Equals(object obj)
@@ -138,7 +146,7 @@ namespace StockAnalyzer.StockClasses
             else
             {
                 StockBarDuration p = (StockBarDuration)obj;
-                return (Duration == p.Duration) && (Smoothing == p.Smoothing) && (HeikinAshi == p.HeikinAshi);
+                return (Duration == p.Duration) && (Smoothing == p.Smoothing) && (HeikinAshi == p.HeikinAshi) && (LineBreak == p.LineBreak);
             }
         }
 

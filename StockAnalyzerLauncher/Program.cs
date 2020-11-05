@@ -11,6 +11,7 @@ namespace UltimateChartistLauncher
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Nb Args: " + args.Length);
             foreach (var arg in args)
             {
                 Console.WriteLine(arg);
