@@ -105,7 +105,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((DateTime.Now - refDate).TotalSeconds);
 
-            return $"http://tvc4.forexpros.com/0f8a29a810801b55700d8d096869fe1f/1567000256/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            return $"http://tvc4.forexpros.com/8eba36b91cd91bfd8f5f0331b2ced7c8/1604647813/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            //return $"http://tvc4.forexpros.com/0f8a29a810801b55700d8d096869fe1f/1567000256/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
@@ -161,13 +162,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (response.IsSuccessStatusCode)
                             {
                                 var content = response.Content.ReadAsStringAsync().Result;
-                                File.WriteAllText(fileName, content);
-                                stockSerie.IsInitialised = false;
-                                return true;
+                                if (content.StartsWith("{"))
+                                {
+                                    File.WriteAllText(fileName, content);
+                                    stockSerie.IsInitialised = false;
+                                    return true;
+                                }
+                                return false;
                             }
                             nbTries--;
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
                             nbTries--;
                         }
@@ -222,7 +227,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var sr = new StreamReader(fileName))
                 {
                     var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
-
+                    if (barchartJson == null || barchartJson.C == null)
+                        return false;
                     for (var i = 0; i < barchartJson.C.Length; i++)
                     {
                         if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)

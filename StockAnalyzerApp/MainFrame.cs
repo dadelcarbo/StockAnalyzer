@@ -989,6 +989,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedItem = barDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+            this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
 
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
@@ -1031,6 +1032,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedItem = barDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+            this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
 
             if (!this.stockNameComboBox.Items.Contains(stockName))
             {
@@ -2700,6 +2702,7 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedItem = previousBarDuration.Duration;
             this.barSmoothingComboBox.SelectedItem = previousBarDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = previousBarDuration.HeikinAshi;
+            this.barLineBreakComboBox.SelectedItem = previousBarDuration.LineBreak;
         }
 
         private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup)
