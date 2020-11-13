@@ -898,7 +898,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public int IndexOf(DateTime date, int startIndex, int endIndex)
         {
             if (date < dateSerie[startIndex]) { return -1; }
-            if (date > dateSerie[endIndex]) { return endIndex == (dateSerie.Length - 1) ? endIndex : - 1; }
+            if (date > dateSerie[endIndex]) { return endIndex; }
             return IndexOfRec(date, startIndex + 1, endIndex);
         }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)

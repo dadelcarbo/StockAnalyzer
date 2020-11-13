@@ -2114,7 +2114,7 @@ namespace StockAnalyzerApp
                 }
                 this.endIndex = this.CurrentStockSerie.Count - 1;
                 this.startIndex = Math.Max(0, this.endIndex - NbBars);
-                if (endIndex - startIndex < 25)
+                if (endIndex - startIndex < 10)
                 {
                     this.DeactivateGraphControls("Not enough data to display...");
                     return;

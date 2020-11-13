@@ -906,10 +906,10 @@ namespace StockAnalyzerApp
             this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stockNameComboBox,
             this.barDurationComboBox,
-            this.smoothingLabel,
-            this.barSmoothingComboBox,
             this.lineBreakLabel,
             this.barLineBreakComboBox,
+            this.smoothingLabel,
+            this.barSmoothingComboBox,
             this.barHeikinAshiCheckBox,
             this.downloadBtn,
             this.searchText,
@@ -947,7 +947,6 @@ namespace StockAnalyzerApp
             // smoothingLabel
             // 
             this.smoothingLabel.Name = "smoothingLabel";
-            this.smoothingLabel.Size = new System.Drawing.Size(52, 24);
             this.smoothingLabel.Text = "Smooth:";
             // 
             // barSmoothingComboBox
@@ -960,21 +959,22 @@ namespace StockAnalyzerApp
             // lineBreakLabel
             // 
             this.lineBreakLabel.Name = "lineBreakLabel";
-            this.lineBreakLabel.Size = new System.Drawing.Size(52, 24);
             this.lineBreakLabel.Text = "LineBreak:";
             // 
             // barLineBreakComboBox
             // 
             this.barLineBreakComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.barLineBreakComboBox.Name = "barLineBreakComboBox";
-            this.barLineBreakComboBox.Size = new System.Drawing.Size(25, 23);
+            this.barLineBreakComboBox.DropDownWidth = 25;
+            this.barLineBreakComboBox.Size = new System.Drawing.Size(25, 20);
             this.barLineBreakComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // barHeikinAshiCheckBox
             // 
-            this.barHeikinAshiCheckBox.Text = "Heikin Ashi";
+            this.barHeikinAshiCheckBox.Text = "HA";
             this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
-            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(75, 23);
+            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(50, 23);
+            this.barHeikinAshiCheckBox.ToolTipText = "Heikin Ashi";
             this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn

@@ -204,8 +204,8 @@ namespace StockAnalyzer.StockClasses
 
 
         public bool IsPortofolioSerie { get; set; }
-        public int LastIndex { get { return this.valueArray.Length - 1; } }
-        public int LastCompleteIndex { get { return this.valueArray.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }
+        public int LastIndex { get { return this.ValueArray.Length - 1; } }
+        public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }
 
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
@@ -267,7 +267,8 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (valueArray == null) valueArray = this.StockDailyValuesAsArray();
+                if (valueArray == null) 
+                    valueArray = this.StockDailyValuesAsArray();
                 return valueArray;
             }
         }
@@ -5415,21 +5416,6 @@ namespace StockAnalyzer.StockClasses
                     break;
                 case StockClasses.BarDuration.TLB:
                     newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
-                    break;
-                case StockClasses.BarDuration.LineBreak_3H:
-                    newBarList = GenerateNbLineBreakBar(GenerateMultipleBar(dailyValueList, 12), 3);
-                    break;
-                case StockClasses.BarDuration.LineBreak_3Q:
-                    newBarList = GenerateNbLineBreakBar(GenerateMultipleBar(dailyValueList, 3), 3);
-                    break;
-                case StockClasses.BarDuration.LineBreak_3D:
-                    newBarList = GenerateNbLineBreakBar(dailyValueList, 3);
-                    break;
-                case StockClasses.BarDuration.LineBreak_3W:
-                    newBarList = GenerateNbLineBreakBar(GenerateSerieForTimeSpan(dailyValueList, StockClasses.BarDuration.Weekly), 3);
-                    break;
-                case StockClasses.BarDuration.LineBreak_3M:
-                    newBarList = GenerateNbLineBreakBar(GenerateSerieForTimeSpan(dailyValueList, StockClasses.BarDuration.Monthly), 3);
                     break;
                 case StockClasses.BarDuration.TLB_3D:
                     newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);

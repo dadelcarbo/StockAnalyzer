@@ -1015,7 +1015,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var name = this.serieName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            foreach (var operation in this.BinckPortfolio.Operations.Where(p => p.Date >= this.dateSerie[this.StartIndex] && p.Date <= this.dateSerie[this.EndIndex] && p.StockName.ToUpper() == name && p.IsOrder))
+            var operations = this.BinckPortfolio.Operations.Where(p => p.StockName.ToUpper() == name && p.IsOrder);
+            var startDate = this.dateSerie[this.StartIndex];
+            var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
+            foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate))
             {
                 DateTime orderDate = serieName.StartsWith("INT_") || serieName.StartsWith("FUT_") ? operation.Date : operation.Date.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
