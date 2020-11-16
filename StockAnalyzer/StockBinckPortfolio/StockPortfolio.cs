@@ -41,6 +41,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
+            this.TradeLog = new StockTradeLog(this);
         }
 
         static int instanceCount = 0;
@@ -63,6 +64,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                 this.AddOperation(operation);
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
+
+          this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
         }
 
         public static int MaxPositions { get; set; } = 20;
@@ -80,6 +83,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                 content += Environment.NewLine + operation.ToFileString() + "\t" + balance;
             }
             File.WriteAllText(Path.Combine(folder, this.Name + ".tptf"), content);
+
+            this.TradeLog.Save(folder);
         }
 
         public void AddOperation(StockOperation operation)
@@ -341,6 +346,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
 
         public List<StockOperation> Operations { get; }
+        public StockTradeLog TradeLog { get; }
         public List<StockPosition> Positions { get; }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }

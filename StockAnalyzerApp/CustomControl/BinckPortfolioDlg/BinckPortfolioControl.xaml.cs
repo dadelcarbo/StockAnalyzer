@@ -36,6 +36,14 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             }
         }
 
+        private void tradeLogGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "NameMapping")
+            {
+                e.Cancel = true;
+            }
+        }
+
         private void positionGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
         {
             var viewModel = this.positionGridView.SelectedItem as StockPositionViewModel;

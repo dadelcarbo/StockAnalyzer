@@ -39,6 +39,12 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
+            <TabItem Header="TradeLog">
+                <telerik:RadGridView Name="tradeLogGridView" ItemsSource="{Binding Portfolio.TradeLog.LogEntries}" 
+                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="operationGridView_SelectionChanged" 
+                                     FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
+                                     AutoGeneratingColumn="tradeLogGridView_AutoGeneratingColumn"></telerik:RadGridView>
+            </TabItem>
             <TabItem Header="Operations">
                 <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding Portfolio.Operations}" 
                                      SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="operationGridView_SelectionChanged" 

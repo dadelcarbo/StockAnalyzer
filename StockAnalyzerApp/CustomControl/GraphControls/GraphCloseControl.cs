@@ -17,6 +17,7 @@ using StockAnalyzerSettings.Properties;
 using System.IO;
 using StockAnalyzerApp.CustomControl.CommentDlg;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -2055,13 +2056,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
             {
-                var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                int qty = 10;
-                var date = this.dateSerie[lastMouseIndex];
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, qty, -value * qty));
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                var openTradeViewModel = new OpenTradeViewModel
+                {
+                    BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
+                    EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
+                    Qty = 10,
+                    EntryDate = this.dateSerie[lastMouseIndex],
+                    StockName = this.serieName
+                };
+
+
+                OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
+                if (openPositionDlg.ShowDialog() == DialogResult.OK)
+                {
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(openTradeViewModel.EntryDate, this.serieName, StockOperation.BUY, openTradeViewModel.Qty, -openTradeViewModel.EntryCost));
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                }
+
 
                 this.BackgroundDirty = true;
                 PaintGraph();

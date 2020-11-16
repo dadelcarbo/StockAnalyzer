@@ -252,6 +252,16 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.Designer.cs">
+      <DependentUpon>OpenPositionDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml.cs">
+      <DependentUpon>OpenTradeUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeViewModel.cs" />
     <Compile Include="CustomControl\GroupViewDlg\GroupLineViewModel.cs" />
     <Compile Include="CustomControl\GroupViewDlg\GroupViewDlg.cs">
       <SubType>Form</SubType>
@@ -577,6 +587,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.resx">
+      <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GroupViewDlg\GroupViewDlg.resx">
       <DependentUpon>GroupViewDlg.cs</DependentUpon>
@@ -945,6 +958,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControl\GroupViewDlg\GroupViewUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -982,7 +999,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="CustomControl\TradeLogDlg\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

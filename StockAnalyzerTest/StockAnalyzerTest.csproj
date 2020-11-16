@@ -64,18 +64,20 @@
     <Compile Include="StockBinckPortfolioTest.cs" />
     <Compile Include="StockAgentTest.cs" />
     <Compile Include="StockWebTest.cs" />
+    <Compile Include="StockTradeLogTest.cs" />
     <Compile Include="Utility\StockTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">
+      <Project>{D7BE95C8-BCE9-4E66-B305-C85D07936F73}</Project>
+      <Name>StockAnalyzerSettings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StockAnalyzer\StockAnalyzerLib.csproj">
       <Project>{723891d8-b467-4277-bfc7-9d4e71def426}</Project>
       <Name>StockAnalyzerLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="01-FullTestSuite.orderedtest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="YahooJson\EURGBP=X_INT_FX_EUR_GBP_INTRADAY.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
