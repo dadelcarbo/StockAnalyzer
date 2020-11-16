@@ -425,13 +425,11 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             this.TradeLog.LogEntries.Add(logEntry);
         }
-
         public void RemoveOperation(StockOperation operation)
         {
             this.Operations.Remove(operation);
             TradeLog.LogEntries.RemoveAll(l => l.Id == operation.Id);
         }
-
         public int GetNextOperationId()
         {
             return this.Operations.Count;
