@@ -37,7 +37,7 @@
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(597, 230);
+            this.elementHost1.Size = new System.Drawing.Size(500, 230);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.openTradeUserControl1;
@@ -46,12 +46,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(597, 230);
+            this.ClientSize = new System.Drawing.Size(500, 230);
             this.Controls.Add(this.elementHost1);
             this.Name = "OpenPositionDlg";
             this.Text = "OpenPositionDlg";
             this.ResumeLayout(false);
-
         }
 
         #endregion

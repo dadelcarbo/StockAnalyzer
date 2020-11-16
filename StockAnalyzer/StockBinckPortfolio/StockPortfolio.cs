@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.Positions = new List<StockPosition>();
             int id = 0;
             var lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1252));
-            bool hasId = lines[0].Split('\t')[0] == "ID";
+            bool hasId = lines[0].StartsWith("#ID");
             foreach (var l in lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")))
             {
                 var operation = IsSimu ? StockOperation.FromSimuLine(hasId, id++, l) : StockOperation.FromBinckLine(l);
@@ -67,20 +67,18 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
 
-          this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
+            this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
         }
 
         public static int MaxPositions { get; set; } = 20;
 
         public void Save(string folder)
         {
-            const string header = "#DATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT\tBALANCE";
+            const string header = "#ID\tDATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT\tBALANCE";
             string content = header;
             float balance = this.Balance;
-            int index = 1;
             foreach (var operation in this.Operations.OrderBy(o => o.Id))
             {
-                operation.Id = index;
                 balance += operation.Amount;
                 content += Environment.NewLine + operation.ToFileString() + "\t" + balance;
             }
