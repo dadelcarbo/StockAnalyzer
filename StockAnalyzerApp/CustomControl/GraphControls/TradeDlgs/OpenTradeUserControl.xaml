@@ -29,27 +29,24 @@
         <Label Grid.Column="0" Grid.Row="0">Name:</Label>
         <TextBlock  Grid.Column="1" Grid.Row="0" Text="{Binding StockName}" Padding="4"></TextBlock>
         <Label Grid.Column="0" Grid.Row="1">Qty:</Label>
-        <TextBox  Grid.Column="1" Grid.Row="1" Text="{Binding Qty}" Width="50" HorizontalAlignment="Left" Padding="4"></TextBox>
+        <TextBox  Grid.Column="1" Grid.Row="1" Text="{Binding EntryQty}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
         <Label Grid.Column="0" Grid.Row="2">Value:</Label>
-        <TextBox  Grid.Column="1" Grid.Row="2" Text="{Binding EntryValue}" Width="50" HorizontalAlignment="Left" Padding="4"></TextBox>
+        <TextBox  Grid.Column="1" Grid.Row="2" Text="{Binding EntryValue}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
         <Label Grid.Column="0" Grid.Row="3">Date:</Label>
         <TextBox  Grid.Column="1" Grid.Row="3" Text="{Binding EntryDate}" Width="120" HorizontalAlignment="Left" Padding="4"></TextBox>
         <Label Grid.Column="0" Grid.Row="4">Duration:</Label>
         <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
-            <ComboBox SelectedItem="{Binding BarDuration.Duration}" ItemsSource="{Binding BarDurations}" Padding="4"></ComboBox>
+            <ComboBox SelectedItem="{Binding BarDuration.Duration}" ItemsSource="{Binding BarDurations}" Padding="4" Width="80"></ComboBox>
             <Label>LineBreak</Label>
             <ComboBox SelectedItem="{Binding BarDuration.LineBreak}" ItemsSource="{Binding LineBreaks}" Padding="4"></ComboBox>
         </StackPanel>
         <Label Grid.Column="0" Grid.Row="5">Indicator:</Label>
-        <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal">
-            <ComboBox SelectedItem="{Binding IndicatorType}" ItemsSource="{Binding IndicatorTypes}" Padding="4" Width="70"></ComboBox>
-            <ComboBox SelectedItem="{Binding IndicatorName}" ItemsSource="{Binding IndicatorNames}" Padding="4" Width="160" IsEditable="True"></ComboBox>
-        </StackPanel>
+        <ComboBox Grid.Column="1" Grid.Row="5" SelectedItem="{Binding IndicatorName}" ItemsSource="{Binding IndicatorNames}" Padding="4" IsEditable="True"></ComboBox>
         <Label Grid.Column="0" Grid.Row="6">Comment:</Label>
         <TextBox  Grid.Column="1" Grid.Row="6" Text="{Binding EntryComment}" Padding="4"></TextBox>
         <StackPanel Grid.Column="2" Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Content="Ok" Margin="2"></Button>
-            <Button Content="Cancel" Margin="2"></Button>
+            <Button Content="Ok" Margin="2" Click="okButton_Click" IsDefault="True"></Button>
+            <Button Content="Cancel" Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>
         </StackPanel>
     </Grid>
 </UserControl>

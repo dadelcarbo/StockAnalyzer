@@ -268,7 +268,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             var date = replaySerie.Keys.Last();
             int qty = 2;
-            StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
+            var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
+            StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
 
             this.Positions.Add(openPosition = new MarketReplayPositionViewModel()
             {
@@ -293,7 +294,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             if (openPosition.Qty == qty)
             {
                 // Close full position
-                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
+                var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
+                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
                 TradeHistory.Insert(0, new MarketReplayTradeViewModel()
                 {
                     Entry = openPosition.Entry,
@@ -310,7 +312,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             else
             {
                 // Partial close
-                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
+                var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
+                StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
                 TradeHistory.Insert(0, new MarketReplayTradeViewModel()
                 {
                     Entry = openPosition.Entry,

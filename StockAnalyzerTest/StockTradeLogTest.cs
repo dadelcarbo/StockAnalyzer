@@ -33,9 +33,9 @@ namespace StockAnalyzerTest
             tradeLog.LogEntries.Add(new StockTradeLogEntry
             {
                 BarDuration = StockBarDuration.Daily,
-                OpenValue = 15,
-                Qty = 100,
-                StartDate = DateTime.Today,
+                EntryValue = 15,
+                EntryQty = 100,
+                EntryDate = DateTime.Today,
                 StockName = "ACCOR"
             });
 

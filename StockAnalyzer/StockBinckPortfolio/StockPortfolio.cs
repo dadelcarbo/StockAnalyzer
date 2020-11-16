@@ -57,10 +57,12 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.IsSimu = ext == ".tptf";
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
-            StockOperation.OperationId = 0;
-            foreach (var operation in File.ReadAllLines(fileName, Encoding.GetEncoding(1252)).Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#"))
-                .Select(l => IsSimu ? StockOperation.FromSimuLine(l) : StockOperation.FromBinckLine(l)).OrderBy(o => o.Id))
+            int id = 0;
+            var lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1252));
+            bool hasId = lines[0].Split('\t')[0] == "ID";
+            foreach (var l in lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")))
             {
+                var operation = IsSimu ? StockOperation.FromSimuLine(hasId, id++, l) : StockOperation.FromBinckLine(l);
                 this.AddOperation(operation);
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
@@ -76,7 +78,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             string content = header;
             float balance = this.Balance;
             int index = 1;
-            foreach (var operation in this.Operations.OrderBy(o => o.Date))
+            foreach (var operation in this.Operations.OrderBy(o => o.Id))
             {
                 operation.Id = index;
                 balance += operation.Amount;
@@ -230,7 +232,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                     var partialQty = (pos.Qty / 2);
                     var amount = partialQty * trade.PartialExitValue;
                     this.Balance += amount;
-                    var exit = StockOperation.FromSimu(trade.PartialExitDate, trade.Serie.StockName, StockOperation.SELL, partialQty, amount, !trade.IsLong);
+                    var id = this.GetNextOperationId();
+                    var exit = StockOperation.FromSimu(id, trade.PartialExitDate, trade.Serie.StockName, StockOperation.SELL, partialQty, amount, !trade.IsLong);
                     exit.Balance = this.Balance;
                     this.AddOperation(exit);
                 }
@@ -243,7 +246,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                         continue;
                     var amount = pos.Qty * trade.ExitValue;
                     this.Balance += amount;
-                    var exit = StockOperation.FromSimu(trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.Qty, amount, !trade.IsLong);
+                    var id = this.GetNextOperationId();
+                    var exit = StockOperation.FromSimu(id, trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.Qty, amount, !trade.IsLong);
                     exit.Balance = this.Balance;
                     this.AddOperation(exit);
                     openedPosition--;
@@ -260,7 +264,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                     var amount = qty * trade.EntryValue;
                     this.Balance -= amount;
 
-                    var entry = StockOperation.FromSimu(trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
+                    var id = this.GetNextOperationId();
+                    var entry = StockOperation.FromSimu(id, trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
                     entry.Balance = this.Balance;
                     this.AddOperation(entry);
                     openedPosition++;
@@ -283,7 +288,6 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.Positions.Clear();
             this.Balance = this.InitialBalance;
             this.PositionValue = 0;
-            StockOperation.OperationId = 0;
         }
 
         public void Dump()
@@ -415,6 +419,22 @@ namespace StockAnalyzer.StockBinckPortfolio
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public void AddLogEntry(StockTradeLogEntry logEntry)
+        {
+            this.TradeLog.LogEntries.Add(logEntry);
+        }
+
+        public void RemoveOperation(StockOperation operation)
+        {
+            this.Operations.Remove(operation);
+            TradeLog.LogEntries.RemoveAll(l => l.Id == operation.Id);
+        }
+
+        public int GetNextOperationId()
+        {
+            return this.Operations.Count;
         }
     }
 }

@@ -35,9 +35,21 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
                 }
             }
         }
+
+        public OpenPositionDlg ParentDlg { get; set; }
         public OpenTradeUserControl()
         {
             InitializeComponent();
+        }
+
+        private void okButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ParentDlg.Ok();
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ParentDlg.Cancel();
         }
     }
 }

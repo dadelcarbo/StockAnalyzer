@@ -2063,19 +2063,31 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
                     EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
-                    Qty = 10,
+                    EntryQty = 10,
                     EntryDate = this.dateSerie[lastMouseIndex],
                     StockName = this.serieName
                 };
-
+                openTradeViewModel.SetIndicatorsFromTheme(StockAnalyzerForm.MainFrame.GetCurrentTheme());
 
                 OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
                 if (openPositionDlg.ShowDialog() == DialogResult.OK)
                 {
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(openTradeViewModel.EntryDate, this.serieName, StockOperation.BUY, openTradeViewModel.Qty, -openTradeViewModel.EntryCost));
+                    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+                    var operation = StockOperation.FromSimu(id, openTradeViewModel.EntryDate, this.serieName, StockOperation.BUY, openTradeViewModel.EntryQty, -openTradeViewModel.EntryCost);
+                    var logEntry = new StockTradeLogEntry
+                    {
+                        Id = operation.Id,
+                        EntryDate = openTradeViewModel.EntryDate,
+                        EntryValue = openTradeViewModel.EntryValue,
+                        EntryQty = openTradeViewModel.EntryQty,
+                        BarDuration = openTradeViewModel.BarDuration,
+                        EntryComment = openTradeViewModel.EntryComment,
+                        StockName = openTradeViewModel.StockName
+                    };
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(operation);
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddLogEntry(logEntry);
                     StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
-
 
                 this.BackgroundDirty = true;
                 PaintGraph();
@@ -2108,7 +2120,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 var value = this.closeCurveType.DataSerie[lastMouseIndex];
                 var date = this.dateSerie[lastMouseIndex];
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, value * qty));
+                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, value * qty));
                 StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
                 this.BackgroundDirty = true;
@@ -2128,7 +2141,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var value = this.closeCurveType.DataSerie[lastMouseIndex];
                 int qty = 10;
                 var date = this.dateSerie[lastMouseIndex];
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.BUY, qty, value * qty, true));
+                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.BUY, qty, value * qty, true));
                 StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
                 this.BackgroundDirty = true;
@@ -2162,7 +2176,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 var value = this.closeCurveType.DataSerie[lastMouseIndex];
                 var date = this.dateSerie[lastMouseIndex];
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
+                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
                 StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
                 this.BackgroundDirty = true;
@@ -2184,7 +2199,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
                 if (operation != null)
                 {
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Remove(operation);
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
                     StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
                     this.BackgroundDirty = true;

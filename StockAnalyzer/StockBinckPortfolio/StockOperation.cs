@@ -34,23 +34,25 @@ namespace StockAnalyzer.StockBinckPortfolio
             return operation;
         }
 
-        static public StockOperation FromSimuLine(string line)
+        static public StockOperation FromSimuLine(bool hasId, int id, string line)
         {
             // DATE TYPE NAME SHORT QTY AMOUNT
             var operation = new StockOperation();
             var fields = line.Split('\t');
 
-            operation.Id = OperationId++;
-            operation.Date = DateTime.Parse(fields[0]);
-            operation.OperationType = fields[1].ToLower();
+            int idOffset = hasId ? 1: 0;
 
-            operation.Description = fields[4] + " " + fields[2];
-            operation.BinckName = fields[2];
-            operation.StockName = fields[2];
-            operation.IsShort = bool.Parse(fields[3]);
+            operation.Id = hasId ? int.Parse(fields[0]) : id;
+            operation.Date = DateTime.Parse(fields[0 + idOffset]);
+            operation.OperationType = fields[1 + idOffset].ToLower();
+
+            operation.Description = fields[4 + idOffset] + " " + fields[2 + idOffset];
+            operation.BinckName = fields[2 + idOffset];
+            operation.StockName = fields[2 + idOffset];
+            operation.IsShort = bool.Parse(fields[3 + idOffset]);
 
             float amount;
-            float.TryParse(fields[5], out amount);
+            float.TryParse(fields[5 + idOffset], out amount);
             operation.Amount = amount;
 
             float balance = 0;
@@ -59,12 +61,11 @@ namespace StockAnalyzer.StockBinckPortfolio
             return operation;
         }
 
-        public static int OperationId = 0;
-        static public StockOperation FromSimu(DateTime date, string name, string type, int qty, float amount, bool isShort = false)
+        static public StockOperation FromSimu(int id, DateTime date, string name, string type, int qty, float amount, bool isShort = false)
         {
             var operation = new StockOperation();
 
-            operation.Id = OperationId++;
+            operation.Id = id;
             operation.Date = date;
             operation.OperationType = type;
             operation.IsShort = isShort;
@@ -108,14 +109,14 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string ToFileString()
         {
             // DATE TYPE NAME SHORT QTY AMOUNT
-            return $"{Date}\t{OperationType}\t{StockName}\t{IsShort}\t{Qty}\t{Amount}";
+            return $"{Id}\t{Date}\t{OperationType}\t{StockName}\t{IsShort}\t{Qty}\t{Amount}";
         }
 
         const string SHORT = "Short";
         const string LONG = "Long";
         public override string ToString()
         {
-            return $"{Date} {OperationType} {Qty} {StockName} {Amount} {Balance} {(IsShort ? SHORT : LONG)}";
+            return $"{Id} {Date} {OperationType} {Qty} {StockName} {Amount} {Balance} {(IsShort ? SHORT : LONG)}";
         }
     }
 }
