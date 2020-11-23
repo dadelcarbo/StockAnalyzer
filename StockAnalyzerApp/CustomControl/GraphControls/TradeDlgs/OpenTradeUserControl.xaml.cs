@@ -22,20 +22,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
     /// </summary>
     public partial class OpenTradeUserControl : UserControl
     {
-        private OpenTradeViewModel trade;
-        public OpenTradeViewModel Trade
-        {
-            get { return trade; }
-            set
-            {
-                if (value != trade)
-                {
-                    this.trade = value;
-                    this.Resources["ViewModel"] = trade;
-                }
-            }
-        }
-
         public OpenPositionDlg ParentDlg { get; set; }
         public OpenTradeUserControl()
         {

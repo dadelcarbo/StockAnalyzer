@@ -11,7 +11,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
             InitializeComponent();
 
             this.openTradeUserControl = this.elementHost1.Child as OpenTradeUserControl;
-            this.openTradeUserControl.Trade = tradeLogViewModel;
+            this.openTradeUserControl.DataContext = tradeLogViewModel;
             this.openTradeUserControl.ParentDlg = this;
             this.TradeViewModel = tradeLogViewModel;
         }

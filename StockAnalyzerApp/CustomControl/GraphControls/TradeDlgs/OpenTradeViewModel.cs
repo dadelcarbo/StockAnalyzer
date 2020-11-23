@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer;
+using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
         public int EntryQty { get; set; }
         public float EntryValue { get; set; }
         public float EntryCost => EntryQty * EntryValue;
+        public float StopValue { get; set; }
+        public float TradeRisk => (EntryValue - StopValue) / EntryValue;
+        public float PortfolioRisk => (this.Portfolio.TotalValue - ((EntryValue - StopValue) * EntryQty)) / this.Portfolio.TotalValue;
         public DateTime EntryDate { get; set; }
         public StockBarDuration BarDuration { get; set; }
         public string IndicatorName { get; set; }
@@ -19,6 +23,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
         public static Array BarDurations => Enum.GetValues(typeof(BarDuration));
         public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };
         public IList<string> IndicatorNames { get; set; }
+        public StockPortfolio Portfolio { get; set; }
 
         public void SetIndicatorsFromTheme(Dictionary<string, List<string>> theme)
         {

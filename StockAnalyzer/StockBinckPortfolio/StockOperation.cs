@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockBinckPortfolio
 {
     public class StockOperation
     {
-        private StockOperation() { }
+        public StockOperation() { }
         static public StockOperation FromBinckLine(string line)
         {
             var operation = new StockOperation();

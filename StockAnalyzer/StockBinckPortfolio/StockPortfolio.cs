@@ -70,6 +70,22 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
         }
 
+        internal void Serialize(string folder)
+        {
+            string filepath = Path.Combine(folder, this.Name + ".xml");
+            using (FileStream fs = new FileStream(filepath, FileMode.Create))
+            {
+                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
+                {
+                    Indent = true,
+                    NewLineOnAttributes = true
+                };
+                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                var serializer = new XmlSerializer(this.GetType());
+                serializer.Serialize(xmlWriter, this);
+            }
+        }
+
         public static int MaxPositions { get; set; } = 20;
 
         public void Save(string folder)
@@ -86,7 +102,122 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             this.TradeLog.Save(folder);
         }
+        public void AddTradeOperation(StockOperation operation)
+        {
+            this.Operations.Add(operation);
 
+            this.Balance -= operation.Balance;
+            if (operation.StockName.StartsWith("SRD "))
+                return;
+            switch (operation.OperationType.ToLower())
+            {
+                case StockOperation.DEPOSIT:
+                    {
+                        if (!operation.BinckName.StartsWith("DIVIDEND"))
+                        {
+                            this.Positions.Add(new StockPosition
+                            {
+                                StartDate = operation.Date,
+                                Qty = operation.Qty,
+                                StockName = operation.StockName,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                            });
+                        }
+                    }
+                    break;
+                case StockOperation.TRANSFER:
+                    {
+                        if (!operation.BinckName.StartsWith("DIVIDEND") && !operation.BinckName.StartsWith("DROITS"))
+                        {
+                            var qty = operation.Qty;
+                            var stockName = operation.StockName;
+                            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+                            if (position != null)
+                            {
+                                position.EndDate = operation.Date;
+                                if (position.Qty != qty)
+                                {
+                                    this.Positions.Add(new StockPosition
+                                    {
+                                        StartDate = operation.Date,
+                                        Qty = position.Qty - qty,
+                                        StockName = operation.StockName,
+                                        OpenValue = position.OpenValue,
+                                        Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                            }
+                        }
+                    }
+                    break;
+                case StockOperation.BUY:
+                    {
+                        var qty = operation.Qty;
+                        var stockName = operation.StockName;
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+                        if (position != null) // Position on this stock already exists, add new values
+                        {
+                            position.EndDate = operation.Date;
+
+                            var openValue = (position.OpenValue * position.Qty - operation.Amount) / (position.Qty + qty);
+
+                            this.Positions.Add(new StockPosition
+                            {
+                                StartDate = operation.Date,
+                                Qty = position.Qty + qty,
+                                StockName = stockName,
+                                OpenValue = openValue,
+                                IsShort = operation.IsShort,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                            });
+                        }
+                        else // Position on this stock doen't exists, create a new one
+                        {
+                            this.Positions.Add(new StockPosition
+                            {
+                                StartDate = operation.Date,
+                                Qty = qty,
+                                StockName = stockName,
+                                OpenValue = -operation.Amount / qty,
+                                IsShort = operation.IsShort,
+                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                            });
+                        }
+                    }
+                    break;
+                case StockOperation.SELL:
+                    {
+                        var qty = operation.Qty;
+                        var stockName = operation.StockName;
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+                        if (position != null)
+                        {
+                            position.EndDate = operation.Date;
+                            if (position.Qty != qty)
+                            {
+                                this.Positions.Add(new StockPosition
+                                {
+                                    StartDate = operation.Date,
+                                    Qty = position.Qty - qty,
+                                    StockName = operation.StockName,
+                                    OpenValue = position.OpenValue,
+                                    IsShort = operation.IsShort,
+                                    Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                });
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                        }
+                    }
+                    break;
+            }
+        }
         public void AddOperation(StockOperation operation)
         {
             //if (this.Operations.Any(op => op.Id == operation.Id))
@@ -346,14 +477,17 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             return positionValue;
         }
-
+        [XmlIgnore]
         public List<StockOperation> Operations { get; }
-        public StockTradeLog TradeLog { get; }
+        public List<StockTradeOperation> TradeOperations { get; }
+        public StockTradeLog TradeLog { get; set; }
+        [XmlIgnore]
         public List<StockPosition> Positions { get; }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
+        [XmlIgnore]
         public float PositionValue { get; private set; }
         public float TotalValue => this.Balance + this.PositionValue;
         public float Return => (TotalValue - InitialBalance) / InitialBalance;

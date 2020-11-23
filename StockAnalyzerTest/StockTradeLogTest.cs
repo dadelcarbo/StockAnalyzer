@@ -45,5 +45,32 @@ namespace StockAnalyzerTest
             Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, expectedPortfolio.TradeLog.LogEntries);
             StockTradeLog.Load(folder, expectedPortfolio);
         }
+
+        [TestMethod]
+        public void StockPortfolioPersistTest()
+        {
+            var folder = Path.Combine(Environment.CurrentDirectory, "TradeLog");
+            var expectedPortfolio = new StockPortfolio()
+            {
+                Name = "TestPortfolio"
+            };
+            expectedPortfolio.AddOperation(StockOperation.FromSimu(1, DateTime.Today, "ACCOR", StockOperation.BUY, 100, 1500, false));
+
+            var tradeLog = expectedPortfolio.TradeLog;
+            tradeLog.LogEntries.Add(new StockTradeLogEntry
+            {
+                BarDuration = StockBarDuration.Daily,
+                EntryValue = 15,
+                EntryQty = 100,
+                EntryDate = DateTime.Today,
+                StockName = "ACCOR"
+            });
+
+            expectedPortfolio.Serialize(folder);
+
+            //var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == expectedPortfolio.Name);
+            //Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, expectedPortfolio.TradeLog.LogEntries);
+            //StockTradeLog.Load(folder, expectedPortfolio);
+        }
     }
 }

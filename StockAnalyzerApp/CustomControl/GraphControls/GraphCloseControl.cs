@@ -2065,7 +2065,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
                     EntryQty = 10,
                     EntryDate = this.dateSerie[lastMouseIndex],
-                    StockName = this.serieName
+                    StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
+                    StockName = this.serieName,
+                    Portfolio = this.BinckPortfolio
                 };
                 openTradeViewModel.SetIndicatorsFromTheme(StockAnalyzerForm.MainFrame.GetCurrentTheme());
 

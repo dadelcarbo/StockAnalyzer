@@ -72,7 +72,8 @@
             this.palmaresView.UseCompatibleStateImageBehavior = false;
             this.palmaresView.View = System.Windows.Forms.View.Details;
             this.palmaresView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.palmaresView_ColumnClick);
-            this.palmaresView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PalmaresDlg_MouseDoubleClick);
+            this.palmaresView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PalmaresDlg_MouseDoubleClick);
+            //this.palmaresView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PalmaresDlg_MouseDoubleClick);
             // 
             // nameHdr
             // 
