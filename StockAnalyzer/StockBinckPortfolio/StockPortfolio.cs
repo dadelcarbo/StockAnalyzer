@@ -30,6 +30,10 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
+            foreach (var file in Directory.EnumerateFiles(folder, "*.*xml").OrderBy(s => s))
+            {
+                StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
+            }
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
@@ -39,6 +43,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public StockPortfolio()
         {
+            this.TradeOperations = new List<StockTradeOperation>();
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
             this.TradeLog = new StockTradeLog(this);
@@ -70,7 +75,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
         }
 
-        internal void Serialize(string folder)
+        public void Serialize(string folder)
         {
             string filepath = Path.Combine(folder, this.Name + ".xml");
             using (FileStream fs = new FileStream(filepath, FileMode.Create))
@@ -83,6 +88,15 @@ namespace StockAnalyzer.StockBinckPortfolio
                 var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                 var serializer = new XmlSerializer(this.GetType());
                 serializer.Serialize(xmlWriter, this);
+            }
+        }
+
+        public static StockPortfolio Deserialize(string filepath)
+        {
+            using (FileStream fs = new FileStream(filepath, FileMode.Open))
+            {
+                var serializer = new XmlSerializer(typeof(StockPortfolio));
+                return serializer.Deserialize(fs) as StockPortfolio;
             }
         }
 

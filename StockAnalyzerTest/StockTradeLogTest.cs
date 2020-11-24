@@ -42,7 +42,7 @@ namespace StockAnalyzerTest
             expectedPortfolio.Save(folder);
 
             var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == expectedPortfolio.Name);
-            Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, expectedPortfolio.TradeLog.LogEntries);
+            Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, actualPortfolio.TradeLog.LogEntries);
             StockTradeLog.Load(folder, expectedPortfolio);
         }
 
@@ -67,6 +67,14 @@ namespace StockAnalyzerTest
             });
 
             expectedPortfolio.Serialize(folder);
+
+            var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == "TestPortfolio");
+
+            Assert.AreEqual(expectedPortfolio.Operations.Count, actualPortfolio.Operations.Count);
+            Assert.AreEqual(expectedPortfolio.Positions.Count, actualPortfolio.Positions.Count);
+            Assert.AreEqual(expectedPortfolio.TradeOperations.Count, actualPortfolio.TradeOperations.Count);
+            Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries.Count, actualPortfolio.TradeLog.LogEntries.Count);
+
 
             //var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == expectedPortfolio.Name);
             //Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, expectedPortfolio.TradeLog.LogEntries);
