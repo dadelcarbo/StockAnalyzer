@@ -14,6 +14,10 @@ namespace StockAnalyzer.StockBinckPortfolio
         public const string SIMU_P = "Simu_P";
         public const string REPLAY_P = "Replay_P";
 
+        const string PORTFOLIO_FILE_EXT = ".ucptf";
+        const string SIMU_PORTFOLIO_FILE_EXT = ".tptf";
+        const string BINCK_PORTFOLIO_FILE_EXT = ".ptf";
+
         public static StockPortfolio SimulationPortfolio { get; private set; }
         public static StockPortfolio ReplayPortfolio { get; private set; }
 
@@ -26,11 +30,15 @@ namespace StockAnalyzer.StockBinckPortfolio
             LoadMappings();
             // Load Binck Portfolio from Operations(mouvements)
             StockPortfolio.Portfolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*.*ptf").OrderBy(s => s))
+            foreach (var file in Directory.EnumerateFiles(folder, "*" + BINCK_PORTFOLIO_FILE_EXT).OrderBy(s => s))
             {
                 StockPortfolio.Portfolios.Add(new StockPortfolio(file));
             }
-            foreach (var file in Directory.EnumerateFiles(folder, "*.*xml").OrderBy(s => s))
+            foreach (var file in Directory.EnumerateFiles(folder, "*" + SIMU_PORTFOLIO_FILE_EXT).OrderBy(s => s))
+            {
+                StockPortfolio.Portfolios.Add(new StockPortfolio(file));
+            }
+            foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
             {
                 StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
             }
@@ -39,14 +47,14 @@ namespace StockAnalyzer.StockBinckPortfolio
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
             ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(ReplayPortfolio);
-            return StockPortfolio.Portfolios;
+            return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
         }
         public StockPortfolio()
         {
             this.TradeOperations = new List<StockTradeOperation>();
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
-            this.TradeLog = new StockTradeLog(this);
+            this.LogEntries = new List<StockTradeLogEntry>();
         }
 
         static int instanceCount = 0;
@@ -59,7 +67,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             this.Name = Path.GetFileNameWithoutExtension(fileName);
             var ext = Path.GetExtension(fileName);
-            this.IsSimu = ext == ".tptf";
+            this.IsSimu = ext == SIMU_PORTFOLIO_FILE_EXT;
             this.Operations = new List<StockOperation>();
             this.Positions = new List<StockPosition>();
             int id = 0;
@@ -71,13 +79,10 @@ namespace StockAnalyzer.StockBinckPortfolio
                 this.AddOperation(operation);
             }
             this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
-
-            this.TradeLog = StockTradeLog.Load(Path.GetDirectoryName(fileName), this);
         }
-
         public void Serialize(string folder)
         {
-            string filepath = Path.Combine(folder, this.Name + ".xml");
+            string filepath = Path.Combine(folder, this.Name + PORTFOLIO_FILE_EXT);
             using (FileStream fs = new FileStream(filepath, FileMode.Create))
             {
                 System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
@@ -112,125 +117,116 @@ namespace StockAnalyzer.StockBinckPortfolio
                 balance += operation.Amount;
                 content += Environment.NewLine + operation.ToFileString() + "\t" + balance;
             }
-            File.WriteAllText(Path.Combine(folder, this.Name + ".tptf"), content);
-
-            this.TradeLog.Save(folder);
+            File.WriteAllText(Path.Combine(folder, this.Name + SIMU_PORTFOLIO_FILE_EXT), content);
         }
-        public void AddTradeOperation(StockOperation operation)
+        public int GetNextOperationId()
         {
-            this.Operations.Add(operation);
-
-            this.Balance -= operation.Balance;
-            if (operation.StockName.StartsWith("SRD "))
-                return;
-            switch (operation.OperationType.ToLower())
+            return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
+        }
+        public void BuyTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator)
+        {
+            var operation = new StockTradeOperation()
             {
-                case StockOperation.DEPOSIT:
-                    {
-                        if (!operation.BinckName.StartsWith("DIVIDEND"))
-                        {
-                            this.Positions.Add(new StockPosition
-                            {
-                                StartDate = operation.Date,
-                                Qty = operation.Qty,
-                                StockName = operation.StockName,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
-                            });
-                        }
-                    }
-                    break;
-                case StockOperation.TRANSFER:
-                    {
-                        if (!operation.BinckName.StartsWith("DIVIDEND") && !operation.BinckName.StartsWith("DROITS"))
-                        {
-                            var qty = operation.Qty;
-                            var stockName = operation.StockName;
-                            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
-                            if (position != null)
-                            {
-                                position.EndDate = operation.Date;
-                                if (position.Qty != qty)
-                                {
-                                    this.Positions.Add(new StockPosition
-                                    {
-                                        StartDate = operation.Date,
-                                        Qty = position.Qty - qty,
-                                        StockName = operation.StockName,
-                                        OpenValue = position.OpenValue,
-                                        Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
-                            }
-                        }
-                    }
-                    break;
-                case StockOperation.BUY:
-                    {
-                        var qty = operation.Qty;
-                        var stockName = operation.StockName;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
-                        if (position != null) // Position on this stock already exists, add new values
-                        {
-                            position.EndDate = operation.Date;
+                Id = GetNextOperationId(),
+                Date = date,
+                OperationType = TradeOperationType.Buy,
+                Qty = qty,
+                StockName = stockName,
+                Value = Value,
+                Fee = fee,
+            };
+            this.TradeOperations.Add(operation);
+            var amount = operation.Value * operation.Qty + operation.Fee;
+            this.Balance -= amount;
+            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
+            if (position != null) // Position on this stock already exists, add new values
+            {
+                position.EndDate = operation.Date;
 
-                            var openValue = (position.OpenValue * position.Qty - operation.Amount) / (position.Qty + qty);
+                var openValue = (position.OpenValue * position.Qty - amount) / (position.Qty + operation.Qty);
 
-                            this.Positions.Add(new StockPosition
-                            {
-                                StartDate = operation.Date,
-                                Qty = position.Qty + qty,
-                                StockName = stockName,
-                                OpenValue = openValue,
-                                IsShort = operation.IsShort,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
-                            });
-                        }
-                        else // Position on this stock doen't exists, create a new one
-                        {
-                            this.Positions.Add(new StockPosition
-                            {
-                                StartDate = operation.Date,
-                                Qty = qty,
-                                StockName = stockName,
-                                OpenValue = -operation.Amount / qty,
-                                IsShort = operation.IsShort,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
-                            });
-                        }
-                    }
-                    break;
-                case StockOperation.SELL:
-                    {
-                        var qty = operation.Qty;
-                        var stockName = operation.StockName;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
-                        if (position != null)
-                        {
-                            position.EndDate = operation.Date;
-                            if (position.Qty != qty)
-                            {
-                                this.Positions.Add(new StockPosition
-                                {
-                                    StartDate = operation.Date,
-                                    Qty = position.Qty - qty,
-                                    StockName = operation.StockName,
-                                    OpenValue = position.OpenValue,
-                                    IsShort = operation.IsShort,
-                                    Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
-                                });
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
-                        }
-                    }
-                    break;
+                position = new StockPosition
+                {
+                    StartDate = operation.Date,
+                    Qty = position.Qty + operation.Qty,
+                    StockName = operation.StockName,
+                    OpenValue = openValue
+                };
             }
+            else // Position on this stock doen't exists, create a new one
+            {
+                position = new StockPosition
+                {
+                    StartDate = operation.Date,
+                    Qty = operation.Qty,
+                    StockName = operation.StockName,
+                    OpenValue = operation.Value
+                };
+            }
+            this.Positions.Add(position);
+        }
+        public void SellTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, string exitComment)
+        {
+            var operation = new StockTradeOperation()
+            {
+                Id = GetNextOperationId(),
+                Date = date,
+                OperationType = TradeOperationType.Sell,
+                Qty = qty,
+                StockName = stockName,
+                Value = Value,
+                Fee = fee,
+            };
+            this.TradeOperations.Add(operation);
+            var amount = operation.Value * operation.Qty - operation.Fee;
+            this.Balance += amount;
+            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
+            if (position != null)
+            {
+                position.EndDate = operation.Date;
+                if (position.Qty != qty)
+                {
+                    this.Positions.Add(new StockPosition
+                    {
+                        StartDate = operation.Date,
+                        Qty = position.Qty - qty,
+                        StockName = operation.StockName,
+                        OpenValue = position.OpenValue
+                    });
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+            }
+        }
+        public void DepositTradeOperation(DateTime date, float value)
+        {
+            var operation = new StockTradeOperation()
+            {
+                Id = GetNextOperationId(),
+                Date = date,
+                OperationType = TradeOperationType.Transfer,
+                Qty = 1,
+                StockName = value > 0 ? "Deposit" : "Withdraw",
+                Value = value
+            };
+            this.TradeOperations.Add(operation);
+            this.Balance += value;
+        }
+        public void DividendTradeOperation(string stockName, DateTime date, float value, int qty)
+        {
+            var operation = new StockTradeOperation()
+            {
+                Id = GetNextOperationId(),
+                Date = date,
+                OperationType = TradeOperationType.Dividend,
+                Qty = qty,
+                StockName = stockName,
+                Value = value
+            };
+            this.TradeOperations.Add(operation);
+            this.Balance += value * qty;
         }
         public void AddOperation(StockOperation operation)
         {
@@ -494,7 +490,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         [XmlIgnore]
         public List<StockOperation> Operations { get; }
         public List<StockTradeOperation> TradeOperations { get; }
-        public StockTradeLog TradeLog { get; set; }
+        public List<StockTradeLogEntry> LogEntries { get; set; }
         [XmlIgnore]
         public List<StockPosition> Positions { get; }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
@@ -569,16 +565,12 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public void AddLogEntry(StockTradeLogEntry logEntry)
         {
-            this.TradeLog.LogEntries.Add(logEntry);
+            this.LogEntries.Add(logEntry);
         }
         public void RemoveOperation(StockOperation operation)
         {
             this.Operations.Remove(operation);
-            TradeLog.LogEntries.RemoveAll(l => l.Id == operation.Id);
-        }
-        public int GetNextOperationId()
-        {
-            return this.Operations.Count;
+            LogEntries.RemoveAll(l => l.Id == operation.Id);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public DateTime EntryDate { get; set; }
         public StockBarDuration BarDuration { get; set; }
         public string EntryComment { get; set; }
+        public string Indicator { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsClosed => EndDate != null;
         internal void Dump()

@@ -29,6 +29,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public int Qty { get; set; }
         public string StockName { get; set; }
         public float Value { get; set; }
+        public float Fee { get; set; }
 
         public override string ToString()
         {

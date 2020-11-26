@@ -506,7 +506,6 @@
     <Compile Include="StockSecurity\StockLicense.cs" />
     <Compile Include="StockSecurity\StockToolKit.cs" />
     <Compile Include="StockSecurity\StockUser.cs" />
-    <Compile Include="StockBinckPortfolio\StockTradeLog.cs" />
     <Compile Include="StockBinckPortfolio\StockTradeLogEntry.cs" />
     <Compile Include="StockWeb\StockDetails.cs" />
     <Compile Include="StockWeb\StockMail.cs" />
