@@ -66,6 +66,8 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
 
             actualPortfolio.SellTradeOperation("ACCOR HOTELS", DateTime.Today.AddDays(nbOperation++), 100, 20f, 2.5f, "Exit for Unit Test");
             expectedBalance += 100f * 20f - 2.5f;
@@ -73,6 +75,8 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(0, actualPortfolio.OpenedPositions.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Count());
+            Assert.AreEqual(0, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
             #endregion
 
         }
@@ -88,17 +92,7 @@ namespace StockAnalyzerTest
                 Balance = 10000,
                 IsSimu = false
             };
-            expectedPortfolio.BuyTradeOperation("ACCOR HOTELS", DateTime.Today, 100, 15, 2.5f, 2.25f,
-                "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
-
-            expectedPortfolio.LogEntries.Add(new StockTradeLogEntry
-            {
-                BarDuration = StockBarDuration.Daily,
-                EntryValue = 15,
-                EntryQty = 100,
-                EntryDate = DateTime.Today,
-                StockName = "ACCOR"
-            });
+            expectedPortfolio.BuyTradeOperation("ACCOR HOTELS", DateTime.Today, 100, 15f, 2.5f, 14f, "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
 
             expectedPortfolio.Serialize(folder);
 

@@ -9,10 +9,36 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
 {
     public class OpenTradeViewModel : NotifyPropertyChangedBase
     {
+        private int entryQty;
+
         public string StockName { get; set; }
-        public int EntryQty { get; set; }
+
+        private void OnEntryChanged()
+        {
+            this.OnPropertyChanged("EntryQty");
+            this.OnPropertyChanged("EntryValue");
+            this.OnPropertyChanged("EntryCost");
+            this.OnPropertyChanged("Fee");
+
+            this.OnPropertyChanged("TradeRisk");
+            this.OnPropertyChanged("PortfolioRisk");
+        }
+
+        public int EntryQty
+        {
+            get => entryQty;
+            set
+            {
+                if (entryQty != value)
+                {
+                    entryQty = value;
+                    OnEntryChanged();
+                }
+            }
+        }
         public float EntryValue { get; set; }
-        public float EntryCost => EntryQty * EntryValue;
+        public float EntryCost => EntryQty * EntryValue + Fee;
+        public float Fee => (EntryQty * EntryValue) < 1000f ? 2.5f : 5.0f;
         public float StopValue { get; set; }
         public float TradeRisk => (EntryValue - StopValue) / EntryValue;
         public float PortfolioRisk => (this.Portfolio.TotalValue - ((EntryValue - StopValue) * EntryQty)) / this.Portfolio.TotalValue;

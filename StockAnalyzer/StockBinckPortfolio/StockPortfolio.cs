@@ -142,9 +142,9 @@ namespace StockAnalyzer.StockBinckPortfolio
             if (position != null) // Position on this stock already exists, add new values
             {
                 position.EndDate = operation.Date;
+                var logEntry = this.LogEntries.Find(l => l.Id == position.Id);
 
                 var openValue = (position.OpenValue * position.Qty - amount) / (position.Qty + operation.Qty);
-
                 position = new StockPosition
                 {
                     StartDate = operation.Date,
@@ -157,12 +157,26 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 position = new StockPosition
                 {
+                    Id = operation.Id,
                     StartDate = operation.Date,
                     Qty = operation.Qty,
                     StockName = operation.StockName,
                     OpenValue = operation.Value
                 };
+                var logEntry = new StockTradeLogEntry
+                {
+                    Id = operation.Id,
+                    EntryDate = operation.Date,
+                    EntryQty = operation.Qty,
+                    StockName = operation.StockName,
+                    EntryValue = operation.Value,
+                    BarDuration = barDuration,
+                    EntryComment = entryComment,
+                    Indicator = indicator
+                };
+                this.LogEntries.Add(logEntry);
             }
+
             this.Positions.Add(position);
         }
         public void SellTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, string exitComment)
@@ -183,6 +197,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
             if (position != null)
             {
+                var logEntry = this.LogEntries.Find(l => l.Id == position.Id);
+                logEntry.EndDate = date;
                 position.EndDate = operation.Date;
                 if (position.Qty != qty)
                 {
@@ -491,7 +507,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         public List<StockOperation> Operations { get; }
         public List<StockTradeOperation> TradeOperations { get; }
         public List<StockTradeLogEntry> LogEntries { get; set; }
-        [XmlIgnore]
         public List<StockPosition> Positions { get; }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
@@ -563,14 +578,5 @@ namespace StockAnalyzer.StockBinckPortfolio
             return this.Name;
         }
 
-        public void AddLogEntry(StockTradeLogEntry logEntry)
-        {
-            this.LogEntries.Add(logEntry);
-        }
-        public void RemoveOperation(StockOperation operation)
-        {
-            this.Operations.Remove(operation);
-            LogEntries.RemoveAll(l => l.Id == operation.Id);
-        }
     }
 }

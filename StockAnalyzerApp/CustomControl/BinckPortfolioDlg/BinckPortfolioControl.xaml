@@ -24,7 +24,7 @@
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
                 <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}" 
-                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="positionGridView_SelectionChanged"
+                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false" RowIndicatorVisibility="Collapsed">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
@@ -40,14 +40,14 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="TradeLog">
-                <telerik:RadGridView Name="tradeLogGridView" ItemsSource="{Binding Portfolio.TradeLog.LogEntries}" 
-                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="operationGridView_SelectionChanged" 
+                <telerik:RadGridView Name="tradeLogGridView" ItemsSource="{Binding Portfolio.LogEntries}" 
+                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
                                      AutoGeneratingColumn="tradeLogGridView_AutoGeneratingColumn"></telerik:RadGridView>
             </TabItem>
             <TabItem Header="Operations">
-                <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding Portfolio.Operations}" 
-                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells" SelectionChanged="operationGridView_SelectionChanged" 
+                <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding Portfolio.TradeOperations}" 
+                                     SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
                                      AutoGeneratingColumn="OperationGridView_AutoGeneratingColumn"></telerik:RadGridView>
             </TabItem>

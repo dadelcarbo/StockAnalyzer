@@ -131,7 +131,10 @@ namespace StockAnalyzerApp
 
         public StockBarDuration BarDuration
         {
-            get { return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem); }
+            get
+            {
+                return new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem, this.barHeikinAshiCheckBox.CheckBox.Checked, (int)this.barLineBreakComboBox.SelectedItem);
+            }
         }
 
         private StockPortfolio binckPortfolio;

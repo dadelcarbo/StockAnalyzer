@@ -9,6 +9,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             EndDate = DateTime.MaxValue;
             this.Leverage = 1;
         }
+        public int Id { get; set; }
         public string StockName { get; set; }
         public int Qty { get; set; }
         public float OpenValue { get; set; }

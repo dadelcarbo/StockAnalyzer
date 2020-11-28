@@ -2087,7 +2087,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         StockName = openTradeViewModel.StockName
                     };
                     StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(operation);
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddLogEntry(logEntry);
                     StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
 
@@ -2201,7 +2200,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
                 if (operation != null)
                 {
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
+
+                    // StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
                     StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
                     this.BackgroundDirty = true;
