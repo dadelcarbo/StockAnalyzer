@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string StockName { get; set; }
         public int Qty { get; set; }
         public float OpenValue { get; set; }
+        public float NetOpenValue => OpenValue;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsClosed => EndDate != DateTime.MaxValue;

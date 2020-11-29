@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public int EntryQty { get; set; }
         public float EntryValue { get; set; }
         public float EntryCost => EntryQty * EntryValue;
+        public float Stop { get; set; }
         public DateTime EntryDate { get; set; }
         public StockBarDuration BarDuration { get; set; }
         public string EntryComment { get; set; }

@@ -8,7 +8,7 @@
        mc:Ignorable="d" Background="LightYellow"
        d:DesignHeight="381" d:DesignWidth="630" 
        Height="381" Width="630" 
-       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}">
+       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}"  Language="fr-FR">
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Trade Entry">
@@ -21,13 +21,13 @@
                         <Label Width="45">Qty:</Label>
                         <TextBox Text="{Binding EntryQty}" Width="80" HorizontalAlignment="Left" Padding="4"/>
                         <Label Width="44">Fee:</Label>
-                        <TextBox Text="{Binding Fee, Mode=OneWay}" Width="60" HorizontalAlignment="Left" Padding="4"/>
+                        <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"/>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Value:</Label>
                         <TextBox Text="{Binding EntryValue}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
                         <Label Width="44">Cost:</Label>
-                        <TextBox Text="{Binding EntryCost, Mode=OneWay}" Width="60" HorizontalAlignment="Left" Padding="4"></TextBox>
+                        <TextBox Text="{Binding EntryCost, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Date:</Label>
@@ -41,32 +41,36 @@
             <GroupBox Header="Risk Management">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
+                        <Label Width="82">Portfolio %:</Label>
+                        <TextBox Width="80" Text="{Binding PortfolioPercent, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Stop:</Label>
                         <TextBox Width="80" Text="{Binding StopValue}" Padding="4"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Trade Risk:</Label>
-                        <TextBox Width="80" Text="{Binding TradeRisk, Mode=OneWay}" Padding="4"></TextBox>
+                        <TextBox Width="80" Text="{Binding TradeRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Portfolio Risk:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay}" Padding="4"></TextBox>
+                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Portfolio">
+            <GroupBox Header="Portfolio History">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Initial Value:</Label>
-                        <TextBox Width="80" Text="{Binding StopValue}" Padding="4"></TextBox>
+                        <TextBox Width="80" Text="{Binding Portfolio.InitialBalance, StringFormat=C2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Value:</Label>
-                        <TextBox Width="80" Text="{Binding TradeRisk, Mode=OneWay}" Padding="4"></TextBox>
+                        <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Return:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay}" Padding="4"></TextBox>
+                        <TextBox Width="80" Text="{Binding PortfolioReturn, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

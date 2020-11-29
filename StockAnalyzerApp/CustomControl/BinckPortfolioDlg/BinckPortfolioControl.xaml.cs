@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
+using Telerik.Windows.Data;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
@@ -13,7 +14,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
     /// </summary>
     public partial class BinckPortfolioControl : System.Windows.Controls.UserControl
     {
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged; 
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockAndDurationChanged;
 
         private System.Windows.Forms.Form Form { get; }
@@ -69,7 +70,9 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
         {
             var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
-            if (column != null && column.DataType == typeof(string))
+            if (column == null)
+                return;
+            if (column.DataType == typeof(string))
             {
                 e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;

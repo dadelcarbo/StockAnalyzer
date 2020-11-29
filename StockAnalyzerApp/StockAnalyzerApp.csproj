@@ -185,6 +185,7 @@
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\StockDateToStringConverter.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
     <Compile Include="CustomControl\CommentDlg\AddCommentDialog.cs">
       <SubType>Form</SubType>
@@ -211,7 +212,9 @@
     <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
       <DependentUpon>ConditionalStatisticsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.cs" />
+    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.Designer.cs">
       <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
     </Compile>
@@ -252,15 +255,25 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.Designer.cs">
+      <DependentUpon>ClosePositionDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.Designer.cs">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\CloseTradeUserControl.xaml.cs">
+      <DependentUpon>CloseTradeUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml.cs">
       <DependentUpon>OpenTradeUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\GraphControls\TradeDlgs\CloseTradeViewModel.cs" />
     <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeViewModel.cs" />
     <Compile Include="CustomControl\GroupViewDlg\GroupLineViewModel.cs" />
     <Compile Include="CustomControl\GroupViewDlg\GroupViewDlg.cs">
@@ -587,6 +600,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.resx">
+      <DependentUpon>ClosePositionDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.resx">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
@@ -957,6 +973,10 @@
     <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\GraphControls\TradeDlgs\CloseTradeUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml">
       <SubType>Designer</SubType>

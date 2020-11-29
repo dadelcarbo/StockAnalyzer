@@ -170,6 +170,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     EntryQty = operation.Qty,
                     StockName = operation.StockName,
                     EntryValue = operation.Value,
+                    Stop = stop,
                     BarDuration = barDuration,
                     EntryComment = entryComment,
                     Indicator = indicator

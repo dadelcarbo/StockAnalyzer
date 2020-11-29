@@ -1016,7 +1016,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var name = this.serieName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var operations = this.BinckPortfolio.Operations.Where(p => p.StockName.ToUpper() == name && p.IsOrder);
+            var operations = this.BinckPortfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name && p.IsOrder);
             var startDate = this.dateSerie[this.StartIndex];
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate))
@@ -1030,7 +1030,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    if (operation.OperationType == StockOperation.BUY)
+                    if (operation.OperationType == TradeOperationType.Buy)
                     {
                         valuePoint2D.Y = operation.IsShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
                         screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
@@ -2074,20 +2074,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
                 if (openPositionDlg.ShowDialog() == DialogResult.OK)
                 {
-                    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
-                    var operation = StockOperation.FromSimu(id, openTradeViewModel.EntryDate, this.serieName, StockOperation.BUY, openTradeViewModel.EntryQty, -openTradeViewModel.EntryCost);
-                    var logEntry = new StockTradeLogEntry
-                    {
-                        Id = operation.Id,
-                        EntryDate = openTradeViewModel.EntryDate,
-                        EntryValue = openTradeViewModel.EntryValue,
-                        EntryQty = openTradeViewModel.EntryQty,
-                        BarDuration = openTradeViewModel.BarDuration,
-                        EntryComment = openTradeViewModel.EntryComment,
-                        StockName = openTradeViewModel.StockName
-                    };
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(operation);
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.BuyTradeOperation(openTradeViewModel.StockName,
+                        openTradeViewModel.EntryDate,
+                        openTradeViewModel.EntryQty,
+                        openTradeViewModel.EntryValue,
+                        openTradeViewModel.Fee,
+                        openTradeViewModel.StopValue,
+                        openTradeViewModel.EntryComment,
+                        openTradeViewModel.BarDuration,
+                        openTradeViewModel.IndicatorName
+                        );
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
 
                 this.BackgroundDirty = true;
@@ -2110,21 +2107,29 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                int qty = pos.Qty;
-                switch (MessageBox.Show("Do yo want to fully close the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
-                {
-                    case DialogResult.No:
-                        qty = pos.Qty / 2;
-                        break;
-                    case DialogResult.Cancel:
-                        return;
-                }
-                var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                var date = this.dateSerie[lastMouseIndex];
-                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, value * qty));
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
+                var tradeViewModel = new CloseTradeViewModel
+                {
+                    Position = pos,
+                    ExitValue = this.closeCurveType.DataSerie[lastMouseIndex],
+                    ExitQty = pos.Qty,
+                    ExitDate = this.dateSerie[lastMouseIndex],
+                    StockName = this.serieName,
+                    Portfolio = this.BinckPortfolio
+                };
+
+                var positionDlg = new ClosePositionDlg(tradeViewModel);
+                if (positionDlg.ShowDialog() == DialogResult.OK)
+                {
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.SellTradeOperation(tradeViewModel.StockName,
+                        tradeViewModel.ExitDate,
+                        tradeViewModel.ExitQty,
+                        tradeViewModel.ExitValue,
+                        tradeViewModel.Fee,
+                        tradeViewModel.ExitComment
+                        );
+                    StockAnalyzerForm.MainFrame.BinckPortfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                }
                 this.BackgroundDirty = true;
                 PaintGraph();
             }

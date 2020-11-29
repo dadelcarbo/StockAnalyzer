@@ -30,6 +30,9 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string StockName { get; set; }
         public float Value { get; set; }
         public float Fee { get; set; }
+        public bool IsOrder => this.OperationType == TradeOperationType.Buy || this.OperationType == TradeOperationType.Sell || this.IsShort;
+
+        public bool IsShort => this.OperationType == TradeOperationType.Short || this.OperationType == TradeOperationType.Cover;
 
         public override string ToString()
         {

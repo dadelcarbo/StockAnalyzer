@@ -10,6 +10,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
     public class OpenTradeViewModel : NotifyPropertyChangedBase
     {
         private int entryQty;
+        private float entryValue;
+        private float stopValue;
 
         public string StockName { get; set; }
 
@@ -20,8 +22,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
             this.OnPropertyChanged("EntryCost");
             this.OnPropertyChanged("Fee");
 
+            this.OnPropertyChanged("StopValue");
             this.OnPropertyChanged("TradeRisk");
             this.OnPropertyChanged("PortfolioRisk");
+            this.OnPropertyChanged("PortfolioPercent");
         }
 
         public int EntryQty
@@ -36,12 +40,37 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
                 }
             }
         }
-        public float EntryValue { get; set; }
+        public float EntryValue
+        {
+            get => entryValue;
+            set
+            {
+                if (entryValue != value)
+                {
+                    entryValue = value;
+                    OnEntryChanged();
+                }
+            }
+        }
         public float EntryCost => EntryQty * EntryValue + Fee;
         public float Fee => (EntryQty * EntryValue) < 1000f ? 2.5f : 5.0f;
-        public float StopValue { get; set; }
+        public float StopValue
+        {
+            get => stopValue;
+            set
+            {
+                if (stopValue != value)
+                {
+                    stopValue = value;
+                    OnEntryChanged();
+                }
+            }
+        }
         public float TradeRisk => (EntryValue - StopValue) / EntryValue;
-        public float PortfolioRisk => (this.Portfolio.TotalValue - ((EntryValue - StopValue) * EntryQty)) / this.Portfolio.TotalValue;
+        public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
+        public float PortfolioRisk => (EntryValue - StopValue) * EntryQty / this.Portfolio.TotalValue;
+
+        public float PortfolioReturn => (this.Portfolio.TotalValue - this.Portfolio.InitialBalance) / this.Portfolio.TotalValue;
         public DateTime EntryDate { get; set; }
         public StockBarDuration BarDuration { get; set; }
         public string IndicatorName { get; set; }
