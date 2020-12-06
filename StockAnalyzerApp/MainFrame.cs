@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -732,8 +733,9 @@ namespace StockAnalyzerApp
                                     break;
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
+                                    var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
                                     var stockAlert = new StockAlert(alertDef,
-                                        dailyValue.DATE,
+                                        date,
                                         stockSerie.StockName,
                                         stockSerie.StockGroup.ToString(),
                                         dailyValue.CLOSE,
@@ -1512,6 +1514,31 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
+            drawAreaStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
+            cupHandleBtn.Checked = false;
+            deleteLineStripBtn.Checked = false;
+            addHalfLineStripBtn.Checked = false;
+            addSegmentStripBtn.Checked = false;
+            cutLineStripBtn.Checked = false;
+        }
+
+        private void drawAreaStripBtn_Click(object sender, EventArgs e)
+        {
+            foreach (GraphControl graphControl in this.graphList)
+            {
+                if (drawAreaStripBtn.Checked)
+                {
+                    graphControl.DrawingMode = GraphDrawMode.AddArea;
+                    graphControl.DrawingStep = GraphDrawingStep.SelectItem;
+                }
+                else
+                {
+                    graphControl.DrawingMode = GraphDrawMode.Normal;
+                    graphControl.DrawingStep = GraphDrawingStep.Done;
+                }
+            }
+            drawLineStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1535,6 +1562,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
+            drawAreaStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1558,6 +1586,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
+            drawAreaStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1581,6 +1610,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
+            drawAreaStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1620,6 +1650,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
+            drawAreaStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1643,6 +1674,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
+            drawAreaStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1666,6 +1698,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
+            drawAreaStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1683,6 +1716,7 @@ namespace StockAnalyzerApp
 
             // Reset drawing buttons 
             copyLineStripBtn.Checked = false;
+            drawAreaStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1815,13 +1849,6 @@ namespace StockAnalyzerApp
         private void magnetStripBtn_Click(object sender, EventArgs e)
         {
             this.graphCloseControl.Magnetism = this.magnetStripBtn.Checked;
-        }
-
-        private void generateChannelStripButton_Click(object sender, EventArgs e)
-        {
-            //this.CurrentStockSerie.generateAutomaticTrendLines(this.graphCloseControl.StartIndex, this.graphCloseControl.EndIndex, 3, 3, 10);
-
-            OnNeedReinitialise(true);
         }
 
         #endregion DRAWING TOOLBAR HANDLERS
@@ -2653,6 +2680,7 @@ namespace StockAnalyzerApp
 
             string timeFrame = duration.ToString();
             string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
+            string imgFolderName = folderName + @"\Img";
             CleanReportFolder(folderName);
 
             string fileName = folderName + @"\Report.html";
@@ -2670,21 +2698,21 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
             string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CAC40, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.CAC40);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.CAC40, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND, imgFolderName);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -2708,7 +2736,7 @@ namespace StockAnalyzerApp
             this.barLineBreakComboBox.SelectedItem = previousBarDuration.LineBreak;
         }
 
-        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup)
+        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup, string imgFolder)
         {
             string htmlBody = string.Empty;
 
@@ -2717,6 +2745,7 @@ namespace StockAnalyzerApp
                 var commentTitle = alertDef.BarDuration + ": " + alertDef.IndicatorName + " => " + alertDef.EventName;
 
                 var alertMsgs = new List<string>();
+                string html = string.Empty;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
                 {
                     StockSplashScreen.ProgressVal++;
@@ -2729,16 +2758,30 @@ namespace StockAnalyzerApp
                         var values = stockSerie.GetValues(alertDef.BarDuration);
                         string alertLine = stockSerie.StockName.PadRight(30) + "\t" + values.ElementAt(values.Count - 1).DATE.ToShortDateString();
                         alertMsgs.Add(alertLine + "\t" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE);
+
+                        // Generate Snapshot
+                        this.OnSelectedStockAndDurationChanged(stockSerie.StockName, alertDef.BarDuration, false);
+
+                        var bitmap = this.graphCloseControl.GetSnapshot();
+                        string fileName = Path.Combine(imgFolder, stockSerie.StockName + ".png");
+                        bitmap.Save(fileName, ImageFormat.Png);
                     }
                 }
                 if (alertMsgs.Count > 0)
                 {
-                    var alertMsg = "\r\n<pre>\r\n" + alertMsgs.Aggregate((i, j) => i + "\r\n" + j) + "\r\n</pre>";
+                    var alertMsg = "\r\n<pre>\r\n";
+                    foreach (var msg in alertMsgs)
+                    {
+                        alertMsg += AlertLineTemplate.Replace("%MSG%", msg).Replace("%STOCKNAME%", msg.Split('\t')[0].Trim()) + "\r\n";
+                    }
+                    alertMsg += "</pre>";
                     htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);
                 }
             }
             return htmlBody;
         }
+
+        const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"Img/%STOCKNAME%.png\"></a>";
 
         private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
         {
@@ -3023,8 +3066,8 @@ namespace StockAnalyzerApp
             else
             {
                 Directory.CreateDirectory(folderName);
-                Directory.CreateDirectory(folderName + "\\img");
             }
+            Directory.CreateDirectory(folderName + "\\Img");
         }
 
         void addToReportStripBtn_Click(object sender, EventArgs e)

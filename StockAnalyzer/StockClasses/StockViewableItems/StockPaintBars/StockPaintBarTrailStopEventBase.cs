@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
@@ -154,5 +155,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         public bool[] IsEvent { get; set; }
         #endregion
 
+        #region IStockText implementation
+        protected List<StockText> stockTexts = new List<StockText>();
+        public List<StockText> StockTexts => stockTexts;
+        #endregion
     }
 }

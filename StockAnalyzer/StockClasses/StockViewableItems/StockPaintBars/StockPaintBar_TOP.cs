@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -7,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_TOP : StockPaintBarBase
     {
-        public StockPaintBar_TOP()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -20,16 +16,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "LeftPeriod", "RightPeriod", "InputSmooting" }; }
+            get { return new string[] { }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 1, 1, 1 }; }
+            get { return new Object[] { }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 100), new ParamRangeInt(1, 100), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { }; }
         }
 
         static string[] eventNames = null;
@@ -39,12 +35,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "Top", "Bottom" };
+                    eventNames = new string[] { "Top", "Bottom", "LowerHigh", "HigherLow" };
                 }
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
@@ -56,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
+                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green) };
                     foreach (Pen pen in seriePens)
                     {
                         pen.Width = 2;
@@ -68,45 +64,54 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            /// Detecting events
+            // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+
+            int startIndex = 2;
+            int endIndex = stockSerie.LastCompleteIndex;
+
+            float previousTop = float.MaxValue;
+            float previousBottom = float.MinValue;
+
+            for (int i = startIndex; i <= endIndex; i++)
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
-            }
-            else
-            {
-                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
-            }
-            StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
-
-            int leftPeriod = (int)this.parameters[0];
-            int rightPeriod = (int)this.parameters[1];
-            int inputSmoothing = (int)this.parameters[2];
-
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
-
-            int startIndex = leftPeriod;
-            int endIndex = stockSerie.Count - 1 - rightPeriod;
-
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                int maxIndex = highSerie.FindMaxIndex(i - leftPeriod, i + rightPeriod);
-                if (maxIndex == i)
+                float close = closeSerie[i];
+                if (closeSerie[i - 2] < closeSerie[i - 1] && closeSerie[i - 1] > close)
                 {
-                    this.eventSeries[0][i + rightPeriod] = true;
-                    drawingItems.Add(new Bullet2D(new PointF(i, highSerie[i]), 2));
+                    this.eventSeries[0][i] = true;
+                    if (close < previousTop)
+                    {
+                        this.eventSeries[2][i] = true;
+                        this.stockTexts.Add(new StockText
+                        {
+                            AbovePrice = true,
+                            Index = i,
+                            Text = "LH"
+                        });
+                    }
+                    previousTop = close;
                 }
-                int minIndex = lowSerie.FindMinIndex(i - leftPeriod, i + rightPeriod);
-                if (minIndex == i)
+
+                if (closeSerie[i - 2] > closeSerie[i - 1] && closeSerie[i - 1] < close)
                 {
-                    this.eventSeries[1][i + rightPeriod] = true;
-                    drawingItems.Add(new Bullet2D(new PointF(i, lowSerie[i]), 2));
+                    this.eventSeries[1][i] = true;
+                    if (close > previousBottom)
+                    {
+                        this.eventSeries[3][i] = true;
+                        this.stockTexts.Add(new StockText
+                        {
+                            AbovePrice = false,
+                            Index = i,
+                            Text = "HL"
+                        });
+                    }
+                    previousBottom = close;
                 }
             }
         }
     }
 }
-

@@ -7,24 +7,51 @@
             width: 100%;
             text-align: left;
         }
+        table.reportTable tbody td {
+            font-size: 12px;
+        }
+        table.reportTable thead {
+            background: #948473;
+            background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+            background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+            background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
+        }
+        table.reportTable thead th {
+            font-size: 14px;
+            font-weight: bold;
+            color: #F0F0F0;
+            text-align: center;
+        }
+        .tooltip {
+            text-decoration: none;
+            position: relative;
+        }
+        .tooltip span {
+            display: none;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            color: black;
+            background: white;
+        }
+        .tooltip span img {
+            float: right;
+            margin: 0px 8px 8px 0;
+        }
 
-            table.reportTable tbody td {
-                font-size: 12px;
-            }
-
-            table.reportTable thead {
-                background: #948473;
-                background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
-                background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
-                background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
-            }
-
-                table.reportTable thead th {
-                    font-size: 14px;
-                    font-weight: bold;
-                    color: #F0F0F0;
-                    text-align: center;
-                }
+        .tooltip:hover span {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            width: auto;
+            border: 1px solid black;
+            margin-top: 12px;
+            margin-left: 32px;
+            overflow: hidden;
+            padding: 8px;
+        }
     </style>
     <meta charset="utf-8" />
     <title>%HTML_TILE%</title>

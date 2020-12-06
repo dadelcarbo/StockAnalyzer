@@ -146,7 +146,7 @@ namespace StockAnalyzerApp
             this.cupHandleBtn = new System.Windows.Forms.ToolStripButton();
             this.copyLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.cutLineStripBtn = new System.Windows.Forms.ToolStripButton();
-            this.generateChannelStripButton = new System.Windows.Forms.ToolStripButton();
+            this.drawAreaStripBtn = new System.Windows.Forms.ToolStripButton();
             this.deleteLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.drawingStyleStripBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -1104,11 +1104,11 @@ namespace StockAnalyzerApp
             this.magnetStripBtn,
             this.cupHandleBtn,
             this.drawLineStripBtn,
+            this.drawAreaStripBtn,
             this.addHalfLineStripBtn,
             this.addSegmentStripBtn,
             this.copyLineStripBtn,
             this.cutLineStripBtn,
-            this.generateChannelStripButton,
             this.deleteLineStripBtn,
             this.drawingStyleStripBtn,
             this.toolStripSeparator13,
@@ -1144,6 +1144,17 @@ namespace StockAnalyzerApp
             this.drawLineStripBtn.Size = new System.Drawing.Size(23, 22);
             this.drawLineStripBtn.Text = "Add a line";
             this.drawLineStripBtn.Click += new System.EventHandler(this.drawLineStripBtn_Click);
+            // 
+            // drawAreaStripBtn
+            // 
+            this.drawAreaStripBtn.CheckOnClick = true;
+            this.drawAreaStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.drawAreaStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddArea;
+            this.drawAreaStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.drawAreaStripBtn.Name = "drawAreaStripBtn";
+            this.drawAreaStripBtn.Size = new System.Drawing.Size(23, 22);
+            this.drawAreaStripBtn.Text = "Draw areas";
+            this.drawAreaStripBtn.Click += new System.EventHandler(this.drawAreaStripBtn_Click);
             // 
             // addHalfLineStripBtn
             // 
@@ -1201,16 +1212,6 @@ namespace StockAnalyzerApp
             this.cutLineStripBtn.Text = "Cut a line";
             this.cutLineStripBtn.ToolTipText = "Cut the right part of a line, press CTRL to cut the left part";
             this.cutLineStripBtn.Click += new System.EventHandler(this.cutLineStripBtn_Click);
-            // 
-            // generateChannelStripButton
-            // 
-            this.generateChannelStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.generateChannelStripButton.Image = global::StockAnalyzerApp.Properties.Resources.Wizard;
-            this.generateChannelStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.generateChannelStripButton.Name = "generateChannelStripButton";
-            this.generateChannelStripButton.Size = new System.Drawing.Size(23, 22);
-            this.generateChannelStripButton.Text = "Generate auto-trend lines";
-            this.generateChannelStripButton.Click += new System.EventHandler(this.generateChannelStripButton_Click);
             // 
             // deleteLineStripBtn
             // 
@@ -1532,6 +1533,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem optionsMenuItem;
         private ToolStripMenuItem configDataProviderMenuItem;
         private ToolStripButton drawLineStripBtn;
+        private ToolStripButton drawAreaStripBtn;
         private ToolStripButton cupHandleBtn;
         private ToolStripButton copyLineStripBtn;
         private ToolStripButton deleteLineStripBtn;
@@ -1574,7 +1576,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator22;
         private ToolStripMenuItem currentPortfolioMenuItem;
         private ToolStripMenuItem showPortfolioSerieMenuItem;
-        private ToolStripButton generateChannelStripButton;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;

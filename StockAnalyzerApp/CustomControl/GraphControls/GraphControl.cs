@@ -34,6 +34,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     {
         Normal,
         AddLine,
+        AddArea,
         AddSegment,
         AddCupHandle,
         AddHalfLine,

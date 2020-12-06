@@ -69,6 +69,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             var ext = Path.GetExtension(fileName);
             this.IsSimu = ext == SIMU_PORTFOLIO_FILE_EXT;
             this.Operations = new List<StockOperation>();
+            this.TradeOperations = new List<StockTradeOperation>();
             this.Positions = new List<StockPosition>();
             int id = 0;
             var lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1252));
@@ -302,6 +303,15 @@ namespace StockAnalyzer.StockBinckPortfolio
                     break;
                 case StockOperation.BUY:
                     {
+                        this.TradeOperations.Add(new StockTradeOperation
+                        {
+                            OperationType = TradeOperationType.Buy,
+                            Date = operation.Date,
+                            Id = operation.Id,
+                            Qty = operation.Qty,
+                            StockName = operation.StockName,
+                            Value = operation.Amount / operation.Qty
+                        });
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
                         var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
@@ -337,6 +347,15 @@ namespace StockAnalyzer.StockBinckPortfolio
                     break;
                 case StockOperation.SELL:
                     {
+                        this.TradeOperations.Add(new StockTradeOperation
+                        {
+                            OperationType = TradeOperationType.Sell,
+                            Date = operation.Date,
+                            Id = operation.Id,
+                            Qty = operation.Qty,
+                            StockName = operation.StockName,
+                            Value = operation.Amount / operation.Qty
+                        });
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
                         var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);

@@ -587,6 +587,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 #endregion
 
                 #region Display the stock value
+                if (this.CurveList.PaintBar != null)
+                {
+                    this.DrawStockText(aGraphic, this.CurveList.PaintBar.StockTexts);
+                }
 
                 // Then draw the value
                 if (closeCurveType != null && closeCurveType.IsVisible)
@@ -1416,6 +1420,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(point1, point2), true);
                     }
                     break;
+                case GraphDrawMode.AddArea:
+                    if (this.DrawingStep == GraphDrawingStep.ItemSelected)
+                    {
+                        DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Rectangle2D(point1, point2), true);
+                    }
+                    break;
                 case GraphDrawMode.AddSegment:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
@@ -1729,6 +1739,34 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
+                                this.DrawingStep = GraphDrawingStep.SelectItem;
+                                this.BackgroundDirty = true; // The new line becomes a part of the background
+                                selectedLineIndex = -1;
+                                selectedValuePoint = PointF.Empty;
+                            }
+                            catch (System.ArithmeticException)
+                            {
+                            }
+                            break;
+                        default:   // Shouldn't come there
+                            break;
+                    }
+                    break;
+                case GraphDrawMode.AddArea:
+                    switch (this.DrawingStep)
+                    {
+                        case GraphDrawingStep.SelectItem: // Selecting the first point
+                            selectedValuePoint = mouseValuePoint;
+                            this.DrawingStep = GraphDrawingStep.ItemSelected;
+                            break;
+                        case GraphDrawingStep.ItemSelected: // Selecting second point
+                            try
+                            {
+                                var newArea = new Rectangle2D(point1, point2);
+                                drawingItems.Add(newArea);
+                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDateIndex = (int)point1.X;
+                                AddToUndoBuffer(GraphActionType.AddItem, newArea);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;

@@ -843,6 +843,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="chart_line.ico" />
+    <Content Include="Resources\AddArea.bmp" />
     <Content Include="Resources\AddItem.bmp" />
     <Content Include="Resources\AddLine.bmp" />
     <None Include="Properties\DataSources\StockAnalyzer.datasource" />

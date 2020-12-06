@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockBinckPortfolio;
-using StockAnalyzer.StockClasses;
 using System;
-using System.Collections.Generic;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
 {
