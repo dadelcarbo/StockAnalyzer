@@ -2744,35 +2744,46 @@ namespace StockAnalyzerApp
             {
                 var commentTitle = alertDef.BarDuration + ": " + alertDef.IndicatorName + " => " + alertDef.EventName;
 
-                var alertMsgs = new List<string>();
+                var alertMsgs = new List<StockAlert>();
                 string html = string.Empty;
+                int counter = 0;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
                 {
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
 
-                    if (!stockSerie.Initialise() || stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000) continue;
+                    if (!stockSerie.Initialise()) continue;
+
+                    StockBarDuration currentBarDuration = stockSerie.BarDuration;
+
+                    if (stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000) continue;
 
                     if (stockSerie.MatchEvent(alertDef))
                     {
                         var values = stockSerie.GetValues(alertDef.BarDuration);
                         string alertLine = stockSerie.StockName.PadRight(30) + "\t" + values.ElementAt(values.Count - 1).DATE.ToShortDateString();
-                        alertMsgs.Add(alertLine + "\t" + stockSerie.GetValues(StockBarDuration.Daily).Last().CLOSE);
+
+                        var dailyValue = stockSerie.GetValues(StockBarDuration.Daily).Last();
+
+                        alertMsgs.Add(new StockAlert(alertDef, dailyValue.DATE, stockSerie.StockName, stockSerie.StockGroup.ToString(), dailyValue.CLOSE, dailyValue.VOLUME, 0f));
 
                         // Generate Snapshot
                         this.OnSelectedStockAndDurationChanged(stockSerie.StockName, alertDef.BarDuration, false);
+                        StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
 
                         var bitmap = this.graphCloseControl.GetSnapshot();
-                        string fileName = Path.Combine(imgFolder, stockSerie.StockName + ".png");
+                        string fileName = Path.Combine(imgFolder, stockSerie.StockName +"_" + alertDef.IndicatorName + ".png");
                         bitmap.Save(fileName, ImageFormat.Png);
                     }
+                    stockSerie.BarDuration = currentBarDuration;
                 }
                 if (alertMsgs.Count > 0)
                 {
+                    counter = 0;
                     var alertMsg = "\r\n<pre>\r\n";
-                    foreach (var msg in alertMsgs)
+                    foreach (var alert in alertMsgs)
                     {
-                        alertMsg += AlertLineTemplate.Replace("%MSG%", msg).Replace("%STOCKNAME%", msg.Split('\t')[0].Trim()) + "\r\n";
+                        alertMsg += AlertLineTemplate.Replace("%MSG%", alert.StockName).Replace("%STOCKNAME%", alert.StockName + "_" + alertDef.IndicatorName) + "\r\n";
                     }
                     alertMsg += "</pre>";
                     htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);

@@ -38,7 +38,6 @@
          this.okButton = new System.Windows.Forms.Button();
          this.label1 = new System.Windows.Forms.Label();
          this.isinTextBox = new System.Windows.Forms.TextBox();
-         this.testButton = new System.Windows.Forms.Button();
          this.addButton = new System.Windows.Forms.Button();
          this.label2 = new System.Windows.Forms.Label();
          this.nameTextBox = new System.Windows.Forms.TextBox();
@@ -105,13 +104,6 @@
          resources.ApplyResources(this.isinTextBox, "isinTextBox");
          this.isinTextBox.Name = "isinTextBox";
          // 
-         // testButton
-         // 
-         resources.ApplyResources(this.testButton, "testButton");
-         this.testButton.Name = "testButton";
-         this.testButton.UseVisualStyleBackColor = true;
-         this.testButton.Click += new System.EventHandler(this.testButton_Click);
-         // 
          // addButton
          // 
          resources.ApplyResources(this.addButton, "addButton");
@@ -140,7 +132,6 @@
          resources.ApplyResources(this.step1GroupBox, "step1GroupBox");
          this.step1GroupBox.Controls.Add(this.isinTextBox);
          this.step1GroupBox.Controls.Add(this.label1);
-         this.step1GroupBox.Controls.Add(this.testButton);
          this.step1GroupBox.Name = "step1GroupBox";
          this.step1GroupBox.TabStop = false;
          // 
@@ -224,7 +215,6 @@
       private System.Windows.Forms.ColumnHeader groupColumnHeader;
       private System.Windows.Forms.Label label1;
       private System.Windows.Forms.TextBox isinTextBox;
-      private System.Windows.Forms.Button testButton;
       private System.Windows.Forms.Button addButton;
       private System.Windows.Forms.Label label2;
       private System.Windows.Forms.TextBox nameTextBox;
