@@ -796,12 +796,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string line = sr.ReadLine().Trim();
                 if (string.IsNullOrEmpty(line) || line.StartsWith("<") || line.StartsWith("/")) return null;
                 string[] row = line.Split(';');
+                if (row.Length < 7)
+                    return null;
                 stockValue = new StockDailyValue(
-                float.Parse(row[2], usCulture),
-                float.Parse(row[3], usCulture),
-                float.Parse(row[4], usCulture),
-                float.Parse(row[5], usCulture),
-                long.Parse(row[6], usCulture),
+                float.Parse(row[2], frenchCulture),
+                float.Parse(row[3], frenchCulture),
+                float.Parse(row[4], frenchCulture),
+                float.Parse(row[5], frenchCulture),
+                long.Parse(row[6], frenchCulture),
                 DateTime.Parse(row[1], frenchCulture));
             }
             catch (System.Exception ex)
