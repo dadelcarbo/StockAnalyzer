@@ -20,6 +20,7 @@ namespace StockAnalyzerTest
             }
             Directory.CreateDirectory(folder);
         }
+
         [TestMethod]
         public void StockPortfolioOperationTest()
         {
@@ -35,28 +36,27 @@ namespace StockAnalyzerTest
             int nbOperation = 0;
 
             #region DEPOSIT/WITHDRAWAL
-            actualPortfolio.DepositTradeOperation(DateTime.Today.AddDays(nbOperation++), 1000f);
+            actualPortfolio.DepositOperation(DateTime.Today.AddDays(nbOperation++), 1000f);
 
             expectedBalance += 1000f;
             Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
 
-            actualPortfolio.DepositTradeOperation(DateTime.Today.AddDays(nbOperation++), -1000f);
+            actualPortfolio.DepositOperation(DateTime.Today.AddDays(nbOperation++), -1000f);
 
             expectedBalance -= 1000f;
             Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
 
-            actualPortfolio.DividendTradeOperation("SOLOCAL", DateTime.Today.AddDays(nbOperation++), 0.25f, 100);
+            actualPortfolio.DividendOperation("SOLOCAL", DateTime.Today.AddDays(nbOperation++), 0.25f, 100);
 
             expectedBalance += 0.25f * 100;
             Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             #endregion
-
 
             #region BUY/SELL Full Positions
             actualPortfolio.BuyTradeOperation("ACCOR HOTELS", DateTime.Today.AddDays(nbOperation++), 100, 15f, 2.5f, 14f, "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
@@ -79,6 +79,35 @@ namespace StockAnalyzerTest
             Assert.AreEqual(0, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
             #endregion
 
+            #region BUY/SELL in two times
+            actualPortfolio.BuyTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 100, 15f, 2.5f, 14f, "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
+
+            expectedBalance -= 100f * 15f + 2.5f;
+            Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
+            Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
+            Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
+            Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
+            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
+
+            actualPortfolio.SellTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 50, 16, 2.5f, "Partial Exit for Unit Test");
+            expectedBalance += 50 * 16 - 2.5f;
+            Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
+            Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
+            Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
+            Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
+            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
+
+            actualPortfolio.SellTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 50, 18, 2.5f, "Partial Exit for Unit Test");
+            expectedBalance += 50 * 18 - 2.5f;
+            Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
+            Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
+            Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
+            Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
+            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
+            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
+            #endregion
         }
 
         [TestMethod]

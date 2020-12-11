@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
             }
 
-            // Parse CommerzBankDownload.cfg file
+            // Parse cfg file
             this.needDownload = download;
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
             InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);

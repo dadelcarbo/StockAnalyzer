@@ -124,8 +124,14 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
         }
-        public void BuyTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator)
+        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator)
         {
+            var amount = value * qty + fee;
+            if (this.Balance < amount)
+            {
+                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+            }
+            this.Balance -= amount;
             var operation = new StockTradeOperation()
             {
                 Id = GetNextOperationId(),
@@ -133,12 +139,11 @@ namespace StockAnalyzer.StockBinckPortfolio
                 OperationType = TradeOperationType.Buy,
                 Qty = qty,
                 StockName = stockName,
-                Value = Value,
+                Value = value,
                 Fee = fee,
             };
             this.TradeOperations.Add(operation);
-            var amount = operation.Value * operation.Qty + operation.Fee;
-            this.Balance -= amount;
+
             var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
             if (position != null) // Position on this stock already exists, add new values
             {
@@ -183,6 +188,11 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public void SellTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, string exitComment)
         {
+            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+            if (position != null)
+            {
+                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+            }
             var operation = new StockTradeOperation()
             {
                 Id = GetNextOperationId(),
@@ -196,29 +206,21 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.TradeOperations.Add(operation);
             var amount = operation.Value * operation.Qty - operation.Fee;
             this.Balance += amount;
-            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
-            if (position != null)
+            var logEntry = this.LogEntries.Find(l => l.Id == position.Id);
+            logEntry.EndDate = date;
+            position.EndDate = operation.Date;
+            if (position.Qty != qty)
             {
-                var logEntry = this.LogEntries.Find(l => l.Id == position.Id);
-                logEntry.EndDate = date;
-                position.EndDate = operation.Date;
-                if (position.Qty != qty)
+                this.Positions.Add(new StockPosition
                 {
-                    this.Positions.Add(new StockPosition
-                    {
-                        StartDate = operation.Date,
-                        Qty = position.Qty - qty,
-                        StockName = operation.StockName,
-                        OpenValue = position.OpenValue
-                    });
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+                    StartDate = operation.Date,
+                    Qty = position.Qty - qty,
+                    StockName = operation.StockName,
+                    OpenValue = position.OpenValue
+                });
             }
         }
-        public void DepositTradeOperation(DateTime date, float value)
+        public void DepositOperation(DateTime date, float value)
         {
             var operation = new StockTradeOperation()
             {
@@ -232,7 +234,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.TradeOperations.Add(operation);
             this.Balance += value;
         }
-        public void DividendTradeOperation(string stockName, DateTime date, float value, int qty)
+        public void DividendOperation(string stockName, DateTime date, float value, int qty)
         {
             var operation = new StockTradeOperation()
             {
