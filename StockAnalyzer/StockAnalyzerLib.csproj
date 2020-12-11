@@ -213,6 +213,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMATRAIL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2Lines.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBANDWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MID.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
