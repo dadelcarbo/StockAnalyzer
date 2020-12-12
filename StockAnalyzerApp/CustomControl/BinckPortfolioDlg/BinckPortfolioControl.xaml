@@ -29,24 +29,6 @@
                 <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding OpenedPositions}"
                                      SelectionMode="Multiple" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false" RowIndicatorVisibility="Collapsed">
-                    <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
-                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}" />
-                        <telerik:GridViewDataColumn Header="Nb" DataMemberBinding="{Binding Qty}" />
-                        <telerik:GridViewDataColumn Header="Open Value" DataMemberBinding="{Binding OpenValue}" />
-                        <telerik:GridViewDataColumn Header="Last Value" DataMemberBinding="{Binding LastValue}" />
-                        <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation}" DataFormatString="{}{0:P}"/>
-                        <telerik:GridViewDataColumn Header="Portfolio %" DataMemberBinding="{Binding PortfolioPercent}" DataFormatString="{}{0:P}"/>
-                        <telerik:GridViewDataColumn Header="Open Date" DataMemberBinding="{Binding StartDate, Converter={StaticResource StockDateConverter}}"/>
-                        <telerik:GridViewDataColumn Header="Valid Name" DataMemberBinding="{Binding IsValidName}" />
-                    </telerik:RadGridView.Columns>
-                </telerik:RadGridView>
-            </TabItem>
-            <TabItem Header="TradeLog">
-                <telerik:RadGridView Name="tradeLogGridView" ItemsSource="{Binding Portfolio.LogEntries}"
-                                     SelectionMode="Multiple" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header" LeftFrozenColumnCount="2"
-                                     FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
-                                     AutoGenerateColumns="False" AutoGeneratingColumn="tradeLogGridView_AutoGeneratingColumn">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry" />
@@ -67,6 +49,18 @@
                         <telerik:GridViewDataColumn Header="LineBreak" DataMemberBinding="{Binding BarDuration.LineBreak}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Exit Date" DataMemberBinding="{Binding ExitDate}" ColumnGroupName="Exit"/>
+
+                        <!--
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
+                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}" />
+                        <telerik:GridViewDataColumn Header="Nb" DataMemberBinding="{Binding Qty}" />
+                        <telerik:GridViewDataColumn Header="Open Value" DataMemberBinding="{Binding OpenValue}" />
+                        <telerik:GridViewDataColumn Header="Last Value" DataMemberBinding="{Binding LastValue}" />
+                        <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation}" DataFormatString="{}{0:P}"/>
+                        <telerik:GridViewDataColumn Header="Portfolio %" DataMemberBinding="{Binding PortfolioPercent}" DataFormatString="{}{0:P}"/>
+                        <telerik:GridViewDataColumn Header="Open Date" DataMemberBinding="{Binding StartDate, Converter={StaticResource StockDateConverter}}"/>
+                        <telerik:GridViewDataColumn Header="Valid Name" DataMemberBinding="{Binding IsValidName}" />
+                        -->
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>

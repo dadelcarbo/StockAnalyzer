@@ -2150,7 +2150,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     Position = pos,
                     ExitValue = this.closeCurveType.DataSerie[lastMouseIndex],
-                    ExitQty = pos.Qty,
+                    ExitQty = pos.EntryQty,
                     ExitDate = this.dateSerie[lastMouseIndex],
                     StockName = this.serieName,
                     Portfolio = this.BinckPortfolio
@@ -2209,11 +2209,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     MessageBox.Show("Cannot cover not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                int qty = pos.Qty;
+                int qty = pos.EntryQty;
                 switch (MessageBox.Show("Do yo want to fully cover the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                 {
                     case DialogResult.No:
-                        qty = pos.Qty / 2;
+                        qty = pos.EntryQty / 2;
                         break;
                     case DialogResult.Cancel:
                         return;

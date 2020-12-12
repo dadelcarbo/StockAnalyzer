@@ -25,7 +25,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             this.Form = form;
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationChanged;
-            this.tradeLogGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.positionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
         }
@@ -43,12 +42,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                         {
                             StockTradeOperation item = row.Item as StockTradeOperation;
                             SelectionChanged(item.StockName);
-                        }
-                        break;
-                    case "StockTradeLogEntry":
-                        {
-                            StockTradeLogEntry item = row.Item as StockTradeLogEntry;
-                            SelectionChanged(item.StockName, item.BarDuration, item.Indicator);
                         }
                         break;
                     case "StockPositionViewModel":

@@ -20,9 +20,8 @@ namespace StockAnalyzerTest
             }
             Directory.CreateDirectory(folder);
         }
-
         [TestMethod]
-        public void StockPortfolioOperationTest()
+        public void PortfolioSimpleOperationTest()
         {
             float expectedBalance = 10000f;
             var actualPortfolio = new StockPortfolio()
@@ -66,8 +65,6 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
 
             actualPortfolio.SellTradeOperation("ACCOR HOTELS", DateTime.Today.AddDays(nbOperation++), 100, 20f, 2.5f, "Exit for Unit Test");
             expectedBalance += 100f * 20f - 2.5f;
@@ -75,20 +72,53 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(0, actualPortfolio.OpenedPositions.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Count());
-            Assert.AreEqual(0, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
             #endregion
+        }
+
+        [TestMethod]
+        public void PortfolioCompositeOperationTest()
+        {
+            float expectedBalance = 10000f;
+            var actualPortfolio = new StockPortfolio()
+            {
+                Name = "TestPortfolio",
+                InitialBalance = expectedBalance,
+                Balance = expectedBalance,
+                IsSimu = false
+            };
+
+            int nbOperation = 0;
 
             #region BUY/SELL in two times
-            actualPortfolio.BuyTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 100, 15f, 2.5f, 14f, "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
+            actualPortfolio.BuyTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 100, 15f, 2.5f, 14f, "Entry1 for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
 
             expectedBalance -= 100f * 15f + 2.5f;
             Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
-            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
+            var actualPosition = actualPortfolio.OpenedPositions.First();
+            Assert.AreEqual(100, actualPosition.EntryQty);
+            Assert.AreEqual(15f, actualPosition.EntryValue);
+            Assert.AreEqual(100f * 15f + 2.5f, actualPosition.EntryCost);
+
+            actualPortfolio.BuyTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 50, 16f, 2.5f, 15f, "Entry2 for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
+
+            expectedBalance -= 50f * 16f + 2.5f;
+            Assert.AreEqual(expectedBalance, actualPortfolio.Balance);
+            Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
+            Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
+            Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
+            actualPosition = actualPortfolio.OpenedPositions.First();
+
+            try
+            {
+                actualPortfolio.BuyTradeOperation("TTT", DateTime.Today, 1000, 100, 5, 90, "Should be rejected", StockBarDuration.Daily, null);
+                Assert.Fail("Buy operation shoulld have been rejected");
+            }
+            catch
+            {
+            }
 
             actualPortfolio.SellTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 50, 16, 2.5f, "Partial Exit for Unit Test");
             expectedBalance += 50 * 16 - 2.5f;
@@ -96,8 +126,6 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
-            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
 
             actualPortfolio.SellTradeOperation("AIRBUS", DateTime.Today.AddDays(nbOperation++), 50, 18, 2.5f, "Partial Exit for Unit Test");
             expectedBalance += 50 * 18 - 2.5f;
@@ -105,13 +133,11 @@ namespace StockAnalyzerTest
             Assert.AreEqual(nbOperation, actualPortfolio.GetNextOperationId());
             Assert.AreEqual(nbOperation, actualPortfolio.TradeOperations.Count);
             Assert.AreEqual(1, actualPortfolio.OpenedPositions.Count());
-            Assert.AreEqual(2, actualPortfolio.LogEntries.Count());
-            Assert.AreEqual(1, actualPortfolio.LogEntries.Where(l => !l.IsClosed).Count());
             #endregion
         }
 
         [TestMethod]
-        public void StockPortfolioPersistTest()
+        public void PortfolioPersistTest()
         {
             var folder = Path.Combine(Environment.CurrentDirectory, "TradeLog");
             var expectedPortfolio = new StockPortfolio()
@@ -130,7 +156,6 @@ namespace StockAnalyzerTest
             Assert.AreEqual(0, actualPortfolio.Operations.Count);
             Assert.AreEqual(expectedPortfolio.Positions.Count, actualPortfolio.Positions.Count);
             Assert.AreEqual(expectedPortfolio.TradeOperations.Count, actualPortfolio.TradeOperations.Count);
-            Assert.AreEqual(expectedPortfolio.LogEntries.Count, actualPortfolio.LogEntries.Count);
 
 
             //var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == expectedPortfolio.Name);
