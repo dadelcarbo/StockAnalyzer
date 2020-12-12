@@ -129,7 +129,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             index = 0;
 
             this.indicator1Name = "STOKF(100,20,75,25)";
-            this.indicator2Name = "ROR(100,1)";
+            this.indicator2Name = "ROR(100,1,20)";
 
             this.stockPositions = new ObservableCollection<StockPosition>();
         }

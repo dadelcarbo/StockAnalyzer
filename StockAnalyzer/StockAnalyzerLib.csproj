@@ -206,6 +206,7 @@
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBANDWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MID.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />

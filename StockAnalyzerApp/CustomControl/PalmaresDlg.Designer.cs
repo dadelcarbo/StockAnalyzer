@@ -47,7 +47,6 @@
             this.groupComboBox = new System.Windows.Forms.ComboBox();
             this.untilCheckBox = new System.Windows.Forms.CheckBox();
             this.untilDateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.portofolioCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.indicatorTextBox = new System.Windows.Forms.TextBox();
             this.palmaresContextMenuStrip.SuspendLayout();
@@ -164,13 +163,6 @@
             this.untilDateTimePicker.Name = "untilDateTimePicker";
             this.untilDateTimePicker.Value = new System.DateTime(2006, 1, 1, 0, 0, 0, 0);
             // 
-            // portofolioCheckBox
-            // 
-            resources.ApplyResources(this.portofolioCheckBox, "portofolioCheckBox");
-            this.portofolioCheckBox.Name = "portofolioCheckBox";
-            this.portofolioCheckBox.UseVisualStyleBackColor = true;
-            this.portofolioCheckBox.CheckedChanged += new System.EventHandler(this.portofolioCheckBox_CheckedChanged);
-            // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
@@ -188,7 +180,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.indicatorTextBox);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.portofolioCheckBox);
             this.Controls.Add(this.groupComboBox);
             this.Controls.Add(this.untilCheckBox);
             this.Controls.Add(this.untilDateTimePicker);
@@ -215,7 +206,6 @@
       private System.Windows.Forms.ComboBox groupComboBox;
       private System.Windows.Forms.CheckBox untilCheckBox;
       private System.Windows.Forms.DateTimePicker untilDateTimePicker;
-      private System.Windows.Forms.CheckBox portofolioCheckBox;
       private System.Windows.Forms.ContextMenuStrip palmaresContextMenuStrip;
       private System.Windows.Forms.ToolStripMenuItem addToWinnerWatchListToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem addToLoserWatchListToolStripMenuItem;

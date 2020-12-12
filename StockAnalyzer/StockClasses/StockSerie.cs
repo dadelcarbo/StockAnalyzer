@@ -216,7 +216,11 @@ namespace StockAnalyzer.StockClasses
         public SortedDictionary<string, List<StockDailyValue>> BarSmoothedDictionary { get; private set; }
 
         StockBarDuration barDuration = StockBarDuration.Daily;
-        public StockBarDuration BarDuration { get { return barDuration; } set { this.SetBarDuration(value); } }
+        public StockBarDuration BarDuration
+        {
+            get { return barDuration; }
+            set { this.SetBarDuration(value); }
+        }
 
         [XmlIgnore]
         public FloatSerie[] ValueSeries { get; set; }
@@ -267,7 +271,7 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (valueArray == null) 
+                if (valueArray == null)
                     valueArray = this.StockDailyValuesAsArray();
                 return valueArray;
             }
@@ -328,6 +332,7 @@ namespace StockAnalyzer.StockClasses
         }
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
+            StockLog.Write($"Serie {this.StockName} {this.BarDuration} => {newBarDuration}");
             if (!this.Initialise() || (newBarDuration == this.barDuration))
             {
                 this.barDuration = newBarDuration;
@@ -403,6 +408,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrailStop trailStop = StockTrailStopManager.CreateTrailStop(trailStopName);
                 if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply {trailStopName} to {this.StockName}");
                     trailStop.ApplyTo(this);
                     this.TrailStopCache = trailStop;
                     return trailStop;

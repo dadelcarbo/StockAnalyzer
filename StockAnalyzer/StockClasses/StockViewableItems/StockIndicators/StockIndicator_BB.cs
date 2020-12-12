@@ -11,10 +11,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
       {
          get { return IndicatorDisplayTarget.PriceIndicator; }
       }
-      public override string Definition
-      {
-         get { return "BB(int Period, float NbUpDev, float NbDownDev, string MAType)"; }
-      }
       public override string[] ParameterNames
       {
          get { return new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" }; }

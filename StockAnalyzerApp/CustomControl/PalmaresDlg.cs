@@ -24,7 +24,6 @@ namespace StockAnalyzerApp.CustomControl
 
         public DateTime StartDate { get { return this.fromDateTimePicker.Value; } set { this.fromDateTimePicker.Value = value; } }
         public DateTime EndDate { get { return this.untilDateTimePicker.Value; } set { this.untilDateTimePicker.Value = value; } }
-        public bool DisplayPortofolio { get { return this.portofolioCheckBox.Checked; } set { this.portofolioCheckBox.Checked = value; } }
 
         private DateTime previousFromDate;
         private DateTime previousUntilDate;
@@ -67,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             previousFromDate = fromDateTimePicker.Value;
             previousUntilDate = untilDateTimePicker.Value;
-            this.indicatorTextBox.Text = "ROR(100,1)";
+            this.indicatorTextBox.Text = "ROR(100,1,20)";
 
             // 
             InitializeListView();
@@ -113,30 +112,9 @@ namespace StockAnalyzerApp.CustomControl
                 validIndicator = true;
             }
 
-            StockSerie underlyingStockSerie = null;
             foreach (StockSerie stockSerie in stockSeries)
             {
                 StockSplashScreen.ProgressText = stockSerie.StockName;
-                underlyingStockSerie = null;
-                if (this.portofolioCheckBox.Checked)
-                {
-                    string stockName = stockSerie.StockName;
-                    if (stockName.EndsWith("_P"))
-                    {
-                        if (StockDico.ContainsKey(stockName.Substring(0, stockName.Length - 2)))
-                        {
-                            underlyingStockSerie = StockDico[stockName.Substring(0, stockName.Length - 2)];
-                        }
-                    }
-                }
-                if (!stockSerie.IsPortofolioSerie && portofolioCheckBox.Checked)
-                {
-                    continue;
-                }
-                if (stockSerie.IsPortofolioSerie && !portofolioCheckBox.Checked)
-                {
-                    continue;
-                }
 
                 if (!stockSerie.StockAnalysis.Excluded)
                 {
@@ -150,11 +128,6 @@ namespace StockAnalyzerApp.CustomControl
                         this.progressBar.Value++;
 
                         startIndex = stockSerie.IndexOfFirstGreaterOrEquals(this.fromDateTimePicker.Value);
-                        //int days = 1;
-                        //while (startIndex == -1 && this.fromDateTimePicker.Value.AddDays(days) <= this.untilDateTimePicker.Value)
-                        //{
-                        //    startIndex = stockSerie.IndexOf(this.fromDateTimePicker.Value.AddDays(days++));
-                        //}
                         if (startIndex == -1)
                         {
                             continue;
@@ -238,15 +211,7 @@ namespace StockAnalyzerApp.CustomControl
         {
             if (SelectedStockChanged != null)
             {
-                if (this.portofolioCheckBox.Checked)
-                {
-                    string stockPortofolioName = this.palmaresView.SelectedItems[0].Text;
-                    SelectedStockChanged(stockPortofolioName.Substring(0, stockPortofolioName.Length - 2), true);
-                }
-                else
-                {
-                    SelectedStockChanged(this.palmaresView.SelectedItems[0].Text, true);
-                }
+                SelectedStockChanged(this.palmaresView.SelectedItems[0].Text, true);
             }
         }
         private void fromDateTimePicker_ValueChanged(object sender, EventArgs e)

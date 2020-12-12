@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockLogging
         private StockLog()
         {
             isEnabled = Settings.Default.LoggingEnabled;
-            isMethodLoggingEnabled = Settings.Default.LoggingEnabled;
+            isMethodLoggingEnabled = false; // Settings.Default.LoggingEnabled;
             if (isEnabled)
             {
                 if (!Debugger.IsAttached)
