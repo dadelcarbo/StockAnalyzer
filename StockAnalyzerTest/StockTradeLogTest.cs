@@ -29,7 +29,6 @@ namespace StockAnalyzerTest
                 Name = "TestPortfolio",
                 InitialBalance = expectedBalance,
                 Balance = expectedBalance,
-                IsSimu = false
             };
 
             int nbOperation = 0;
@@ -84,7 +83,6 @@ namespace StockAnalyzerTest
                 Name = "TestPortfolio",
                 InitialBalance = expectedBalance,
                 Balance = expectedBalance,
-                IsSimu = false
             };
 
             int nbOperation = 0;
@@ -145,7 +143,6 @@ namespace StockAnalyzerTest
                 Name = "TestPortfolio",
                 InitialBalance = 10000,
                 Balance = 10000,
-                IsSimu = false
             };
             expectedPortfolio.BuyTradeOperation("ACCOR HOTELS", DateTime.Today, 100, 15f, 2.5f, 14f, "Entry for Unit Test", StockBarDuration.Daily, "CLOUD|TRAILATRBAND(20,2.5,-2.5,MA,3)");
 
@@ -153,7 +150,6 @@ namespace StockAnalyzerTest
 
             var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == "TestPortfolio");
 
-            Assert.AreEqual(0, actualPortfolio.Operations.Count);
             Assert.AreEqual(expectedPortfolio.Positions.Count, actualPortfolio.Positions.Count);
             Assert.AreEqual(expectedPortfolio.TradeOperations.Count, actualPortfolio.TradeOperations.Count);
 

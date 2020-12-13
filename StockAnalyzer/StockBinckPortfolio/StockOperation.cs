@@ -80,23 +80,29 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             return operation;
         }
+
         public int Id { get; set; }
         public DateTime Date { get; set; }
-
         public string OperationType { get; set; }
+
+
+        public string StockName { get; set; }
+        public string Description { get; set; }
+        public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
+
+
+
+
+
+
         public bool IsShort { get; set; }
 
         public StockNameMapping NameMapping { get; set; }
 
         public bool IsProduct => NameMapping != null && NameMapping.Leverage != 1;
-
-        public string Description { get; set; }
-
-        public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
         public string BinckName { get; set; }
         //public StockNameMapping NameMapping { get; }
 
-        public string StockName { get; set; }
         public float Amount { get; set; }
         public float Balance { get; set; }
         public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT || this.OperationType == TRANSFER;

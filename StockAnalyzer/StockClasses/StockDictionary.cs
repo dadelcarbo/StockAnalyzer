@@ -1609,7 +1609,7 @@ namespace StockAnalyzer.StockClasses
                 return null;
 
             refStock.BarDuration = BarDuration.Daily;
-            var startDate = binckPortfolio.Operations.OrderBy(op => op.Id).First().Date;
+            var startDate = binckPortfolio.TradeOperations.OrderBy(op => op.Id).First().Date;
 
             StockSerie portfolioSerie = new StockSerie(binckPortfolio.Name, binckPortfolio.Name, refStock.StockGroup, StockDataProvider.BinckPortfolio);
             portfolioSerie.IsPortofolioSerie = true;

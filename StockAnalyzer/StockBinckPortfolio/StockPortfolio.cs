@@ -15,71 +15,40 @@ namespace StockAnalyzer.StockBinckPortfolio
         public const string REPLAY_P = "Replay_P";
 
         const string PORTFOLIO_FILE_EXT = ".ucptf";
-        const string SIMU_PORTFOLIO_FILE_EXT = ".tptf";
-        const string BINCK_PORTFOLIO_FILE_EXT = ".ptf";
 
+        #region STATIC METHODS/PROPERTIES
+        static int instanceCount = 0;
         public static StockPortfolio SimulationPortfolio { get; private set; }
         public static StockPortfolio ReplayPortfolio { get; private set; }
-
         public static IStockPriceProvider PriceProvider { get; set; }
-
         public static List<StockPortfolio> Portfolios { get; private set; }
-
-        public static List<StockPortfolio> LoadPortfolios(string folder)
-        {
-            LoadMappings();
-            // Load Binck Portfolio from Operations(mouvements)
-            StockPortfolio.Portfolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*" + BINCK_PORTFOLIO_FILE_EXT).OrderBy(s => s))
-            {
-                StockPortfolio.Portfolios.Add(new StockPortfolio(file));
-            }
-            foreach (var file in Directory.EnumerateFiles(folder, "*" + SIMU_PORTFOLIO_FILE_EXT).OrderBy(s => s))
-            {
-                StockPortfolio.Portfolios.Add(new StockPortfolio(file));
-            }
-            foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
-            {
-                StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
-            }
-            // Add simulation portfolio
-            SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
-            StockPortfolio.Portfolios.Add(SimulationPortfolio);
-            ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
-            StockPortfolio.Portfolios.Add(ReplayPortfolio);
-            return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
-        }
-        public StockPortfolio()
-        {
-            this.TradeOperations = new List<StockTradeOperation>();
-            this.Operations = new List<StockOperation>();
-            this.Positions = new List<StockPosition>();
-        }
-
-        static int instanceCount = 0;
         static public StockPortfolio CreateSimulationPortfolio()
         {
             return new StockPortfolio() { Name = SIMU_P + "_" + instanceCount++, InitialBalance = 10000, IsSimu = true };
         }
+        #endregion
 
-        public StockPortfolio(string fileName)
+        public StockPortfolio()
         {
-            this.Name = Path.GetFileNameWithoutExtension(fileName);
-            var ext = Path.GetExtension(fileName);
-            this.IsSimu = ext == SIMU_PORTFOLIO_FILE_EXT;
-            this.Operations = new List<StockOperation>();
             this.TradeOperations = new List<StockTradeOperation>();
             this.Positions = new List<StockPosition>();
-            int id = 0;
-            var lines = File.ReadAllLines(fileName, Encoding.GetEncoding(1252));
-            bool hasId = lines[0].StartsWith("#ID");
-            foreach (var l in lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#")))
-            {
-                var operation = IsSimu ? StockOperation.FromSimuLine(hasId, id++, l) : StockOperation.FromBinckLine(l);
-                this.AddOperation(operation);
-            }
-            this.Operations = this.Operations.OrderByDescending(o => o.Id).ToList();
         }
+
+        //[XmlIgnore]
+        // public List<StockOperation> Operations { get; }
+        public List<StockTradeOperation> TradeOperations { get; set; }
+        public List<StockPosition> Positions { get; }
+        public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
+        public string Name { get; set; }
+        public float InitialBalance { get; set; }
+        public float Balance { get; set; }
+        [XmlIgnore]
+        public float PositionValue { get; private set; }
+        public float TotalValue => this.Balance + this.PositionValue;
+        public float Return => (TotalValue - InitialBalance) / InitialBalance;
+        public bool IsSimu { get; set; }
+
+        #region PERSISTENCY
         public void Serialize(string folder)
         {
             string filepath = Path.Combine(folder, this.Name + PORTFOLIO_FILE_EXT);
@@ -95,7 +64,6 @@ namespace StockAnalyzer.StockBinckPortfolio
                 serializer.Serialize(xmlWriter, this);
             }
         }
-
         public static StockPortfolio Deserialize(string filepath)
         {
             using (FileStream fs = new FileStream(filepath, FileMode.Open))
@@ -104,21 +72,27 @@ namespace StockAnalyzer.StockBinckPortfolio
                 return serializer.Deserialize(fs) as StockPortfolio;
             }
         }
+        public static List<StockPortfolio> LoadPortfolios(string folder)
+        {
+            LoadMappings();
+            // Load Binck Portfolio from Operations(mouvements)
+            StockPortfolio.Portfolios = new List<StockPortfolio>();
+            foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
+            {
+                StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
+            }
+            // Add simulation portfolio
+            SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
+            StockPortfolio.Portfolios.Add(SimulationPortfolio);
+            ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
+            StockPortfolio.Portfolios.Add(ReplayPortfolio);
+            return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
+        }
+        #endregion
 
         public static int MaxPositions { get; set; } = 20;
 
-        public void Save(string folder)
-        {
-            const string header = "#ID\tDATE\tTYPE\tNAME\tSHORT\tQTY\tAMOUNT\tBALANCE";
-            string content = header;
-            float balance = this.Balance;
-            foreach (var operation in this.Operations.OrderBy(o => o.Id))
-            {
-                balance += operation.Amount;
-                content += Environment.NewLine + operation.ToFileString() + "\t" + balance;
-            }
-            File.WriteAllText(Path.Combine(folder, this.Name + SIMU_PORTFOLIO_FILE_EXT), content);
-        }
+        #region OPERATION MANAGEMENT
         public int GetNextOperationId()
         {
             return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
@@ -243,7 +217,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             //if (this.Operations.Any(op => op.Id == operation.Id))
             //    throw new InvalidOperationException($"Operation {operation.Id} already in portfolio");
 
-            this.Operations.Add(operation);
+            //this.Operations.Add(operation);
 
             this.Balance = operation.Balance;
             if (operation.StockName.StartsWith("SRD "))
@@ -375,6 +349,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                     break;
             }
         }
+        #endregion
+
         /// <summary>
         /// Converts from Trade list to portfolio operations. This function is limited to the MaxPosition variable
         /// </summary>
@@ -451,7 +427,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public void Clear()
         {
-            this.Operations.Clear();
             this.Positions.Clear();
             this.Balance = this.InitialBalance;
             this.PositionValue = 0;
@@ -500,34 +475,22 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             // Calculate cash balance
             StockOperation lastOperation = null;
-            foreach (var op in this.Operations)
-            {
-                if (op.Date <= date)
-                {
-                    lastOperation = op;
-                }
-                else
-                {
-                    break;
-                }
-            }
+            //foreach (var op in this.Operations)
+            //{
+            //    if (op.Date <= date)
+            //    {
+            //        lastOperation = op;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
             positionValue += lastOperation == null ? this.InitialBalance : lastOperation.Balance;
 
             return positionValue;
         }
-        [XmlIgnore]
-        public List<StockOperation> Operations { get; }
-        public List<StockTradeOperation> TradeOperations { get; }
-        public List<StockPosition> Positions { get; }
-        public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
-        public string Name { get; set; }
-        public float InitialBalance { get; set; }
-        public float Balance { get; set; }
-        [XmlIgnore]
-        public float PositionValue { get; private set; }
-        public float TotalValue => this.Balance + this.PositionValue;
-        public float Return => (TotalValue - InitialBalance) / InitialBalance;
-        public bool IsSimu { get; set; }
+
 
         #region Binck Name Mapping
         private static List<StockNameMapping> mappings;

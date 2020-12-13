@@ -61,7 +61,6 @@
     <Compile Include="StockBarChartTest.cs" />
     <Compile Include="StockSerieTest.cs" />
     <Compile Include="StockAlertTest.cs" />
-    <Compile Include="StockBinckPortfolioTest.cs" />
     <Compile Include="StockAgentTest.cs" />
     <Compile Include="StockWebTest.cs" />
     <Compile Include="StockTradeLogTest.cs" />

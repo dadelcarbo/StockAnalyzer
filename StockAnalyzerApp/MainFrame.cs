@@ -2549,7 +2549,7 @@ namespace StockAnalyzerApp
 
         private void showPortfolioSerieMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.BinckPortfolio == null || this.BinckPortfolio.Operations.Count == 0)
+            if (this.BinckPortfolio == null || this.BinckPortfolio.TradeOperations.Count == 0)
                 return;
 
             this.AddNewSerie(this.StockDictionary.GeneratePortfolioSerie(this.BinckPortfolio));

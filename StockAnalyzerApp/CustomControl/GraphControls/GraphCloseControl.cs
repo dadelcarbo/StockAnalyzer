@@ -2089,7 +2089,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void buyMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null)
             {
                 MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -2132,7 +2132,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void sellMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null)
             {
                 MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -2175,82 +2175,82 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void shortMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
-            {
-                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
-            {
-                var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                int qty = 10;
-                var date = this.dateSerie[lastMouseIndex];
-                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.BUY, qty, value * qty, true));
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            //{
+            //    MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+            //if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
+            //{
+            //    var value = this.closeCurveType.DataSerie[lastMouseIndex];
+            //    int qty = 10;
+            //    var date = this.dateSerie[lastMouseIndex];
+            //    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.BUY, qty, value * qty, true));
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                this.BackgroundDirty = true;
-                PaintGraph();
-            }
+            //    this.BackgroundDirty = true;
+            //    PaintGraph();
+            //}
         }
 
         void coverMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
-            {
-                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
-            {
-                var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
-                if (pos == null || !pos.IsShort)
-                {
-                    MessageBox.Show("Cannot cover not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                int qty = pos.EntryQty;
-                switch (MessageBox.Show("Do yo want to fully cover the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
-                {
-                    case DialogResult.No:
-                        qty = pos.EntryQty / 2;
-                        break;
-                    case DialogResult.Cancel:
-                        return;
-                }
-                var value = this.closeCurveType.DataSerie[lastMouseIndex];
-                var date = this.dateSerie[lastMouseIndex];
-                var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
-                StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            //{
+            //    MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+            //if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
+            //{
+            //    var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+            //    if (pos == null || !pos.IsShort)
+            //    {
+            //        MessageBox.Show("Cannot cover not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+            //    int qty = pos.EntryQty;
+            //    switch (MessageBox.Show("Do yo want to fully cover the position ?", "Close position", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+            //    {
+            //        case DialogResult.No:
+            //            qty = pos.EntryQty / 2;
+            //            break;
+            //        case DialogResult.Cancel:
+            //            return;
+            //    }
+            //    var value = this.closeCurveType.DataSerie[lastMouseIndex];
+            //    var date = this.dateSerie[lastMouseIndex];
+            //    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                this.BackgroundDirty = true;
-                PaintGraph();
-            }
+            //    this.BackgroundDirty = true;
+            //    PaintGraph();
+            //}
         }
 
         void deleteOperationMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
-            {
-                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
-            {
-                var date = this.dateSerie[lastMouseIndex];
+            //if (StockAnalyzerForm.MainFrame.BinckPortfolio == null || !StockAnalyzerForm.MainFrame.BinckPortfolio.IsSimu)
+            //{
+            //    MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+            //if (lastMouseIndex != -1 && this.openCurveType != null && this.dateSerie != null)
+            //{
+            //    var date = this.dateSerie[lastMouseIndex];
 
-                var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
-                if (operation != null)
-                {
+            //    var operation = StockAnalyzerForm.MainFrame.BinckPortfolio.Operations.Where(o => o.StockName == this.serieName).OrderByDescending(o => o.Date).FirstOrDefault(o => o.Date <= date);
+            //    if (operation != null)
+            //    {
 
-                    // StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
-                    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //        // StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
+            //        StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
-                    this.BackgroundDirty = true;
-                    PaintGraph();
-                }
-            }
+            //        this.BackgroundDirty = true;
+            //        PaintGraph();
+            //    }
+            //}
         }
         void commentMenu_Click(object sender, System.EventArgs e)
         {
