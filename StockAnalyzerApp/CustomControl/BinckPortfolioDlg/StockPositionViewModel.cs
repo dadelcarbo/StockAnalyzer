@@ -49,10 +49,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
         public DateTime? ExitDate => position.ExitDate;
 
-        public DateTime? EndDate => position.ExitDate;
-
-
-
         public float LastValue { get; set; }
         public string Type => position.IsShort ? "Short" : "Long";
         public float Variation => position.IsShort && Leverage == 1 ? (EntryValue - LastValue) / (EntryValue) : (LastValue - EntryValue) / (EntryValue);

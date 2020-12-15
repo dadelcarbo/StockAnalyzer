@@ -31,24 +31,24 @@
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false" RowIndicatorVisibility="Collapsed">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
-                        <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry" />
+                        <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
                         <telerik:GridViewColumnGroup Name="Risk" Header="Risk" />
                         <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
                         <telerik:GridViewColumnGroup Name="Trade Exit" Header="Exit" />
                     </telerik:RadGridView.ColumnGroups>
                     <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade"/>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade"/>
+                        <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Entry Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
-                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry"/>
-                        <telerik:GridViewDataColumn Header="Cost" DataMemberBinding="{Binding EntryCost, StringFormat=C2}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=C2}" ColumnGroupName="Entry" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" ColumnGroupName="Risk"/>
-                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" ColumnGroupName="Technical"/>
-                        <telerik:GridViewDataColumn Header="LineBreak" DataMemberBinding="{Binding BarDuration.LineBreak}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" ColumnGroupName="Technical" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="LineBreak" DataMemberBinding="{Binding BarDuration.LineBreak}" ColumnGroupName="Technical" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>
-                        <telerik:GridViewDataColumn Header="Exit Date" DataMemberBinding="{Binding ExitDate}" ColumnGroupName="Exit"/>
+                        <telerik:GridViewDataColumn Header="Exit Date" DataMemberBinding="{Binding ExitDate}" ColumnGroupName="Exit" IsReadOnly="True"/>
 
                         <!--
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />

@@ -25,8 +25,8 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public string EntryComment { get; set; }
         public string Indicator { get; set; }
-        public DateTime ExitDate { get; set; }
-        public bool IsClosed => ExitDate != DateTime.MaxValue;
+        public DateTime? ExitDate { get; set; }
+        public bool IsClosed => ExitDate != null;
 
         public bool IsShort { get; set; }
         public float Leverage { get; set; }
@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             if (this.IsClosed)
             {
-                Console.WriteLine($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.ToShortDateString()}");
+                Console.WriteLine($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.Value.ToShortDateString()}");
             }
             else
             {
@@ -45,7 +45,7 @@ namespace StockAnalyzer.StockBinckPortfolio
 
         public override string ToString()
         {
-            return this.IsClosed ? $"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.ToShortDateString()}"
+            return this.IsClosed ? $"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.Value.ToShortDateString()}"
                 : $"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} Opened";
         }
     }
