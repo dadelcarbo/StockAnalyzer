@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             var amount = value * qty + fee;
             if (this.Balance < amount)
             {
-                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+                throw new InvalidOperationException($"You have insufficient cash to make this trade");
             }
             this.Balance -= amount;
             var operation = new StockTradeOperation()
@@ -140,7 +140,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     EntryDate = operation.Date,
                     EntryQty = operation.Qty,
                     StockName = operation.StockName,
-                    EntryValue = operation.Value,
+                    EntryValue = amount / qty,
                     Stop = stop,
                     BarDuration = barDuration,
                     EntryComment = entryComment,
