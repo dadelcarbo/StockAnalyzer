@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Linq;
 
 namespace StockAnalyzer.StockBinckPortfolio
 {
@@ -26,8 +24,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public TradeOperationType OperationType { get; set; }
-        public int Qty { get; set; }
         public string StockName { get; set; }
+        public int Qty { get; set; }
         public float Value { get; set; }
         public float Fee { get; set; }
         public bool IsOrder => this.OperationType == TradeOperationType.Buy || this.OperationType == TradeOperationType.Sell || this.IsShort;

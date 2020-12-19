@@ -2091,7 +2091,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.BinckPortfolio == null)
             {
-                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -2112,16 +2112,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
                 if (openPositionDlg.ShowDialog() == DialogResult.OK)
                 {
+                    var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
+                    if (StockAnalyzerForm.MainFrame.BinckPortfolio.Balance < amount)
+                    {
+                        MessageBox.Show("You have insufficient cash to make this trade", "Invalid Operation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                     StockAnalyzerForm.MainFrame.BinckPortfolio.BuyTradeOperation(openTradeViewModel.StockName,
-                        openTradeViewModel.EntryDate,
-                        openTradeViewModel.EntryQty,
-                        openTradeViewModel.EntryValue,
-                        openTradeViewModel.Fee,
-                        openTradeViewModel.StopValue,
-                        openTradeViewModel.EntryComment,
-                        openTradeViewModel.BarDuration,
-                        openTradeViewModel.IndicatorName
-                        );
+                    openTradeViewModel.EntryDate,
+                    openTradeViewModel.EntryQty,
+                    openTradeViewModel.EntryValue,
+                    openTradeViewModel.Fee,
+                    openTradeViewModel.StopValue,
+                    openTradeViewModel.EntryComment,
+                    openTradeViewModel.BarDuration,
+                    openTradeViewModel.IndicatorName
+                    );
                     StockAnalyzerForm.MainFrame.BinckPortfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
 

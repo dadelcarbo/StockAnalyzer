@@ -7,15 +7,13 @@ namespace StockAnalyzer.StockBinckPortfolio
     {
         public StockPosition()
         {
-            ExitDate = DateTime.MaxValue;
             this.Leverage = 1;
         }
         public int Id { get; set; }
         public string StockName { get; set; }
 
         public int EntryQty { get; set; }
-        public float EntryValue { get; set; }
-        public float EntryNetValue => EntryCost / EntryQty;
+        public float EntryValue { get; set; } // This includes transaction fees
         public float EntryCost => EntryValue * EntryQty;
         public DateTime EntryDate { get; set; }
 
