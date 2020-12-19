@@ -2772,7 +2772,7 @@ namespace StockAnalyzerApp
                         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
 
                         var bitmap = this.graphCloseControl.GetSnapshot();
-                        string fileName = Path.Combine(imgFolder, stockSerie.StockName +"_" + alertDef.IndicatorName + ".png");
+                        string fileName = Path.Combine(imgFolder, stockSerie.StockName.Replace(":","") +"_" + alertDef.IndicatorName + ".png");
                         bitmap.Save(fileName, ImageFormat.Png);
                     }
                     stockSerie.BarDuration = currentBarDuration;
@@ -2783,7 +2783,7 @@ namespace StockAnalyzerApp
                     var alertMsg = "\r\n<pre>\r\n";
                     foreach (var alert in alertMsgs)
                     {
-                        alertMsg += AlertLineTemplate.Replace("%MSG%", alert.StockName).Replace("%STOCKNAME%", alert.StockName + "_" + alertDef.IndicatorName) + "\r\n";
+                        alertMsg += AlertLineTemplate.Replace("%MSG%", alert.StockName).Replace("%STOCKNAME%", alert.StockName.Replace(":", "") + "_" + alertDef.IndicatorName) + "\r\n";
                     }
                     alertMsg += "</pre>";
                     htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);

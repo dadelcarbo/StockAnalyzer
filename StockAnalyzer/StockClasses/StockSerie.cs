@@ -728,8 +728,32 @@ namespace StockAnalyzer.StockClasses
             try
             {
                 this.BarDuration = stockAlert.BarDuration;
+                int eventIndex;
                 IStockEvent stockEvent = null;
-                IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+                IStockViewableSeries indicator;
+                if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
+                {
+                    indicator = StockViewableItemsManager.GetViewableItem(stockAlert.FilterFullName);
+                    if (this.HasVolume || !indicator.RequiresVolumeData)
+                    {
+                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.FilterEventName);
+                    if (eventIndex == -1)
+                    {
+                        StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                        return false;
+                    }
+                    else
+                    {
+                        if (!stockEvent.Events[eventIndex][index]) return false;
+                    }
+                }
+                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
                 if (this.HasVolume || !indicator.RequiresVolumeData)
                 {
                     stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
@@ -738,7 +762,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     return false;
                 }
-                int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
                 if (eventIndex == -1)
                 {
                     StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);

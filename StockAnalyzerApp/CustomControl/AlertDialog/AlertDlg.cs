@@ -21,11 +21,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             StockAnalyzerForm.MainFrame.AlertDetectionStarted += MainFrame_AlertDetectionStarted;
         }
 
-        public AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)
-        {
-            throw new NotImplementedException("AlertDlg(StockAlertLog dailyAlertLog, List<StockAlertDef> dailyAlertDefs)");
-        }
-
         void MainFrame_AlertDetectionProgress(string stockName)
         {
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressName = stockName;

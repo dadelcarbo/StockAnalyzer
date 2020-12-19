@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -157,6 +159,42 @@ namespace StockAnalyzerTest
             //var actualPortfolio = StockPortfolio.LoadPortfolios(folder).First(p => p.Name == expectedPortfolio.Name);
             //Assert.AreEqual(expectedPortfolio.TradeLog.LogEntries, expectedPortfolio.TradeLog.LogEntries);
             //StockTradeLog.Load(folder, expectedPortfolio);
+        }
+
+        [TestMethod]
+        public void LoadFromExcelFile()
+        {
+            var fileName = @"C:\Users\David\Downloads\Transactions_13040737_2020-01-01_2020-12-15.xlsx";
+
+            var dataTable = LoadWorksheetInDataTable(fileName, "Transactions");
+
+            var blabla = dataTable.Select().Where(r => r["Account ID"] as string == "78800/719479EUR");
+
+            foreach (var row in blabla)
+            {
+                var x = row[""];
+            }
+        }
+
+        DataTable LoadWorksheetInDataTable(string fileName, string sheetName)
+        {
+            DataTable sheetData = new DataTable();
+            using (OleDbConnection conn = this.returnConnection(fileName))
+            {
+                conn.Open();
+                // retrieve the data using data adapter
+                OleDbDataAdapter sheetAdapter = new OleDbDataAdapter("select * from [" + sheetName + "$]", conn);
+                sheetAdapter.Fill(sheetData);
+                conn.Close();
+            }
+            return sheetData;
+        }
+
+        private OleDbConnection returnConnection(string fileName)
+        {
+            //return new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + "; Jet OLEDB:Engine Type=5;Extended Properties=\"Excel 8.0;\"");
+            return new OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileName + ";Extended Properties=Excel 12.0;");
+
         }
     }
 }
