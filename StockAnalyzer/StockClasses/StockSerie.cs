@@ -22,6 +22,7 @@ namespace StockAnalyzer.StockClasses
 {
     public partial class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
     {
+
         #region Type Definition
         public enum Groups
         {
@@ -212,6 +213,13 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
+        public new void Add(DateTime date, StockDailyValue dailyValue)
+        {
+            base.Add(date, dailyValue);
+        }
+
+        [XmlIgnore]
+        public StockDataSource DataSource { get; set; }
         [XmlIgnore]
         public SortedDictionary<string, List<StockDailyValue>> BarSmoothedDictionary { get; private set; }
 
@@ -596,7 +604,7 @@ namespace StockAnalyzer.StockClasses
                                            System.TimeSpan.MaxValue};
         #endregion
         #region Constructors
-        public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider)
+        public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
             this.ShortName = shortName;
@@ -607,9 +615,14 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
+            this.DataSource = new StockDataSource
+            {
+                Duration = duration,
+                Values = new List<StockDailyValue>()
+            };
             ResetAllCache();
         }
-        public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider)
+        public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
             this.ShortName = shortName;
@@ -621,6 +634,11 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
+            this.DataSource = new StockDataSource
+            {
+                Duration = duration,
+                Values = new List<StockDailyValue>()
+            };
             ResetAllCache();
         }
         private void ResetAllCache()
@@ -1811,134 +1829,6 @@ namespace StockAnalyzer.StockClasses
             }
             volatilitySerie[0] = volatilitySerie[1];
             return volatilitySerie;
-        }
-        public StockSerie CalculateSeasonality()
-        {
-            this.barDuration = StockBarDuration.Daily;
-            // Calculate average daily returns
-            StockSerie seasonalSerie = new StockSerie(this.StockName + ".SEAS", this.ShortName + ".SEAS", this.StockGroup, StockDataProvider.Generated);
-            float[] dailyVariation = new float[366];
-            int[] occurences = new int[366];
-            long[] volume = new long[366];
-            int dayOfYear;
-            double exponent = 1.25;
-            double reverseExponent = 1.0 / exponent;
-            foreach (StockDailyValue dailyValue in this.Values)
-            {
-                dayOfYear = dailyValue.DATE.DayOfYear - 1;
-                occurences[dayOfYear]++;
-                if (dailyValue.VARIATION >= 0f)
-                {
-                    dailyVariation[dayOfYear] += (float)Math.Pow(dailyValue.VARIATION, exponent);
-                }
-                else
-                {
-                    dailyVariation[dayOfYear] -= (float)Math.Pow(-dailyValue.VARIATION, exponent);
-                }
-                volume[dayOfYear] += dailyValue.VOLUME;
-            }
-            for (int i = 0; i < 366; i++)
-            {
-                if (dailyVariation[i] >= 0)
-                {
-                    dailyVariation[i] = (float)Math.Pow(dailyVariation[i], reverseExponent);
-                }
-                else
-                {
-                    dailyVariation[i] = -(float)Math.Pow(-dailyVariation[i], reverseExponent);
-                }
-            }
-
-            // Calculate rebased serie over a year
-            float[] rebasedSerie = new float[366];
-            float previousClose = 100;
-            float close = 100;
-            for (int i = 0; i < 366; i++)
-            {
-                if (occurences[i] != 0)
-                {
-                    close = previousClose * (1 + dailyVariation[i] / (float)occurences[i]);
-                    rebasedSerie[i] = close;
-                    previousClose = close;
-                }
-                else
-                {
-                    rebasedSerie[i] = close;
-                }
-            }
-            float reference = 1000f;
-            previousClose = reference;
-            close = reference;
-            int day = 0;
-            int previousDay = 0;
-            foreach (DateTime date in this.Keys)
-            {
-                day = date.DayOfYear - 1;
-                if (occurences[day] == 0) { throw new System.Exception("WTF"); }
-                if (day < previousDay)
-                {  // Happy new year !!!
-                    close = previousClose * (1.0f + (rebasedSerie[day] - 100f) / 100f);
-                    seasonalSerie.Add(date,
-                        new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
-                    previousClose = close;
-                }
-                else
-                {
-                    close = previousClose * (1.0f + (rebasedSerie[day] - rebasedSerie[previousDay]) / rebasedSerie[previousDay]);
-                    seasonalSerie.Add(date,
-                        new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
-                    previousClose = close;
-                }
-                previousDay = day;
-            }
-            // Continue filling the serie until the end of the year
-            DateTime startDate = seasonalSerie.Keys.Last().Date.AddDays(1);
-            DateTime endDate = new DateTime(startDate.Year, 12, 31);
-            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
-            {
-                day = date.DayOfYear - 1;
-                if (occurences[day] == 0) { continue; }
-                close = previousClose * (1.0f + (rebasedSerie[day] - rebasedSerie[previousDay]) / rebasedSerie[previousDay]);
-                seasonalSerie.Add(date,
-                    new StockDailyValue(previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[day], date));
-                previousClose = close;
-                previousDay = day;
-            }
-
-            //DateTime date = new DateTime(DateTime.Today.Year, 1, 1);
-            //for (int i = 0; i < 366; i++)
-            //{
-            //    if (occurences[i] != 0)
-            //    {
-            //        close = previousClose * (1 + dailyVariation[i] / (float)occurences[i]);
-            //        seasonalSerie.Add(date,
-            //            new StockDailyValue(seasonalSerie.StockName, previousClose, Math.Max(previousClose, close), Math.Min(previousClose, close), close, occurences[i], date));
-            //        previousClose = close;
-            //    }
-            //    date = date.AddDays(1);
-            //}
-            seasonalSerie.Initialise();
-            return seasonalSerie;
-        }
-
-        public StockSerie GenerateOvernightStockSerie()
-        {
-            this.barDuration = StockBarDuration.Daily;
-            // Calculate average daily returns
-            StockSerie overnightSerie = new StockSerie(this.StockName + ".OVN", this.ShortName + ".OVN", this.StockGroup, StockDataProvider.Generated);
-            float currentValue = this.Values.First().OPEN;
-            float previousClose = currentValue;
-
-            foreach (StockDailyValue dailyValue in this.Values)
-            {
-                currentValue *= 1f + (dailyValue.OPEN - previousClose) / previousClose;
-
-                overnightSerie.Add(dailyValue.DATE,
-                        new StockDailyValue(currentValue, currentValue, currentValue, currentValue, 0, dailyValue.DATE));
-
-                previousClose = dailyValue.CLOSE;
-            }
-            return overnightSerie;
         }
 
         public FloatSerie CalculateFastOscillator(int period)
@@ -5346,47 +5236,10 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
         #region Generate related series
-        public StockSerie GenerateRelativeStrenthStockSerie(StockSerie referenceSerie)
-        {
-            if (!this.Initialise() || !referenceSerie.Initialise())
-            {
-                return null;
-            }
-            string stockName = this.StockName + "_" + referenceSerie.StockName;
-            StockSerie stockSerie = new StockSerie(stockName, stockName, referenceSerie.StockGroup, StockDataProvider.Generated);
-            stockSerie.IsPortofolioSerie = false;
-
-            // Calculate ratio foreach values
-            StockDailyValue newValue = null;
-            StockDailyValue value2 = null;
-            float ratio = float.NaN;
-            foreach (StockDailyValue value1 in this.Values)
-            {
-                if (referenceSerie.ContainsKey(value1.DATE))
-                {
-                    value2 = referenceSerie[value1.DATE];
-                    if (float.IsNaN(ratio))
-                    {
-                        if (value1.OPEN == 0 || value2.OPEN == 0)
-                        {
-                            continue;
-                        }
-                        ratio = 100 * value2.OPEN / value1.OPEN;
-                    }
-
-                    newValue = new StockDailyValue(ratio * value1.OPEN / value2.OPEN, ratio * value1.HIGH / value2.HIGH, ratio * value1.LOW / value2.LOW, ratio * value1.CLOSE / value2.CLOSE, value1.VOLUME + value2.VOLUME, value1.DATE);
-                    stockSerie.Add(value1.DATE, newValue);
-                }
-            }
-
-            // Initialise the serie
-            stockSerie.Initialise();
-            return stockSerie;
-        }
         public StockSerie GenerateLogStockSerie()
         {
             string stockName = this.StockName + "_LOG";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated);
+            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated, this.DataSource.Duration);
             stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
 
             float scaleFactor = 1.0f;
@@ -5402,30 +5255,6 @@ namespace StockAnalyzer.StockClasses
                 newValue = new StockDailyValue((float)Math.Log(value1.OPEN * scaleFactor, Math.E), (float)Math.Log(value1.HIGH * scaleFactor, Math.E), (float)Math.Log(value1.LOW * scaleFactor, Math.E), (float)Math.Log(value1.CLOSE * scaleFactor, Math.E), value1.VOLUME, value1.DATE);
                 stockSerie.Add(value1.DATE, newValue);
             }
-
-            // Initialise the serie
-            stockSerie.Initialise();
-            return stockSerie;
-        }
-        public StockSerie GenerateInverseStockSerie()
-        {
-            string stockName = this.StockName + "_INV";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated);
-            stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
-
-            float scale = (float)Math.Pow(10, Math.Log10(this.GetSerie(StockDataType.HIGH).Max()) + 1);
-
-            var duration = this.BarDuration;
-            this.BarDuration = StockBarDuration.Daily;
-
-            StockDailyValue destValue;
-            foreach (StockDailyValue invStockValue in this.Values)
-            {
-                destValue = new StockDailyValue(scale / invStockValue.OPEN, scale / invStockValue.LOW, scale / invStockValue.HIGH, scale / invStockValue.CLOSE, invStockValue.VOLUME, invStockValue.DATE);
-                destValue.Serie = stockSerie;
-                stockSerie.Add(destValue.DATE, destValue);
-            }
-            this.BarDuration = duration;
 
             // Initialise the serie
             stockSerie.Initialise();

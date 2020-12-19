@@ -335,10 +335,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             string[] row = line.Split(';');
                             if (!stockDictionary.ContainsKey(row[1].ToUpper()))
                             {
-                                StockSerie stockSerie = new StockSerie(row[1].ToUpper(), row[2], row[0], group, StockDataProvider.ABC);
+                                StockSerie stockSerie = new StockSerie(row[1].ToUpper(), row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
                                 stockDictionary.Add(row[1].ToUpper(), stockSerie);
-
                             }
                             else
                             {
@@ -365,7 +364,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
-                            StockSerie stockSerie = new StockSerie(row[1], row[3], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC);
+                            StockSerie stockSerie = new StockSerie(row[1], row[3], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
                             if (!stockDictionary.ContainsKey(row[1]))
                             {
                                 stockDictionary.Add(row[1], stockSerie);

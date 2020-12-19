@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
+using StockAnalyzerSettings.Properties;
+
+namespace StockAnalyzer.StockClasses
+{
+    public class StockAlertConfig
+    {
+        public static List<String> TimeFrames = new List<string> { "Intraday", "Daily", "Weekly", "Monthly" };
+
+        public static string AlertDefFolder => Settings.Default.RootFolder + @"\Alert\AlertDef";
+
+        private StockAlertConfig(string timeFrame)
+        {
+            this.TimeFrame = timeFrame;
+        }
+
+        private static List<StockAlertConfig> configs = null;
+        public static List<StockAlertConfig> AlertConfigs
+        {
+            get
+            {
+                if (configs == null)
+                {
+                    configs = TimeFrames.Select(t => new StockAlertConfig(t)).ToList();
+                }
+                return configs;
+            }
+        }
+        public static StockAlertConfig GetConfig(string timeFrame)
+        {
+            return AlertConfigs.First(c => c.TimeFrame == timeFrame);
+        }
+
+        public string TimeFrame { get; set; }
+
+        private StockAlertLog alertLog = null;
+        public StockAlertLog AlertLog
+        {
+            get
+            {
+                if (alertLog == null)
+                {
+                    var startDate = DateTime.Today;
+                    switch (TimeFrame)
+                    {
+                        case "Weekly":
+                            startDate = startDate.AddMonths(-2);
+                            break;
+                        case "Monthly":
+                            startDate = startDate.AddMonths(-6);
+                            break;
+                        case "Intraday":
+                            startDate = startDate.AddDays(-5);
+                            break;
+                        default:
+                            startDate = startDate.AddDays(-5);
+                            break;
+                    }
+                    alertLog = StockAlertLog.Load($"AlertLog{TimeFrame}.xml", startDate);
+                }
+                return alertLog;
+            }
+        }
+
+        private List<StockAlertDef> alertDefs = null;
+        public List<StockAlertDef> AlertDefs
+        {
+            get
+            {
+                if (alertDefs == null)
+                {
+                    string alertFileName = AlertDefFolder + $@"\AlertDef{TimeFrame}.xml";
+                    // Parse alert lists
+                    if (File.Exists(alertFileName))
+                    {
+                        using (var fs = new FileStream(alertFileName, FileMode.Open))
+                        {
+                            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                            {
+                                IgnoreWhitespace = true
+                            };
+                            System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                            var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                            alertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                        }
+                    }
+                    else
+                    {
+                        alertDefs = new List<StockAlertDef>();
+                    }
+                }
+                return alertDefs;
+            }
+        }
+    }
+}

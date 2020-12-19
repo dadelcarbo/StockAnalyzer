@@ -1,0 +1,607 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{723891D8-B467-4277-BFC7-9D4E71DEF426}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StockAnalyzer</RootNamespace>
+    <AssemblyName>StockAnalyzer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Windows.Controls, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UltimateChartist\lib\RCWPF\2020.3.1020.45\Telerik.Windows.Controls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UltimateChartist\lib\RCWPF\2020.3.1020.45\Telerik.Windows.Controls.GridView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UltimateChartist\lib\RCWPF\2020.3.1020.45\Telerik.Windows.Controls.Input.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UltimateChartist\lib\RCWPF\2020.3.1020.45\Telerik.Windows.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StockAgent\Agents\CloudMDHAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
+    <Compile Include="StockAgent\Agents\STOKSAgent.cs" />
+    <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
+    <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
+    <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
+    <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailEMA2Agent.cs" />
+    <Compile Include="StockAgent\Agents\HeikinAshiAgent.cs" />
+    <Compile Include="StockAgent\Agents\HIGHLOWBARSAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
+    <Compile Include="StockAgent\Agents\HorseRaceAgent.cs" />
+    <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
+    <Compile Include="StockAgent\Agents\OSCAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailPEMAAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
+    <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLMMAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLAgent.cs" />
+    <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMAAgent.cs" />
+    <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.Designer.cs">
+      <DependentUpon>NameMappingDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
+      <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
+    <Compile Include="StockBinckPortfolio\StockTradeOperation.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataSource.cs" />
+    <Compile Include="StockClasses\StockDividend.cs" />
+    <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
+    <Compile Include="StockClasses\IStockPriceProvider.cs" />
+    <Compile Include="NotifyPropertyChanged.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockAgent\IStockAgent.cs" />
+    <Compile Include="StockAgent\StockAgentBase.cs" />
+    <Compile Include="StockAgent\StockAgentEngine.cs" />
+    <Compile Include="StockAgent\StockAgentParamAttribute.cs" />
+    <Compile Include="StockAgent\StockTrade.cs" />
+    <Compile Include="StockAgent\StockTradeSummary.cs" />
+    <Compile Include="StockAgent\Agents\StupidAgent.cs" />
+    <Compile Include="StockAnalyzer.cs" />
+    <Compile Include="StockClasses\StockAlertConfig.cs" />
+    <Compile Include="StockClasses\StockAlertDef.cs" />
+    <Compile Include="StockClasses\StockAlertLog.cs" />
+    <Compile Include="StockClasses\StockAlert.cs" />
+    <Compile Include="StockClasses\StockBarDuration.cs" />
+    <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\AAIIDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\InvestingIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\BarChartDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.Designer.cs">
+      <DependentUpon>DataProviderString.fr-FR.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\DataProviderString.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataProviderString.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\RatioDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\CommandBase.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.Designer.cs">
+      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\IConfigDialog.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml.cs">
+      <DependentUpon>InvestingConfigControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigEntry.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigViewModel.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.Designer.cs">
+      <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
+    <Compile Include="StockClasses\StockAgenda.cs" />
+    <Compile Include="StockClasses\StockFinancial.cs" />
+    <Compile Include="StockClasses\StockFinancialAttibute.cs" />
+    <Compile Include="StockClasses\StockGeneralAttibute.cs" />
+    <Compile Include="StockClasses\StockPercent.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\IStockMatchPattern.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_Any.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarDown.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_ROD.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_ROR.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarUp.cs" />
+    <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_StockAlert.cs" />
+    <Compile Include="StockClasses\StockStatistic\StockPatternIndex.cs" />
+    <Compile Include="StockClasses\StockStatistic\StockStatisticsEngine.cs" />
+    <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
+    <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
+    <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
+    <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
+    <Compile Include="StockClasses\StockDataProviders\GeneratedDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\IStockDataProvider.cs" />
+    <Compile Include="StockClasses\StockAnalysis.cs" />
+    <Compile Include="StockClasses\StockDailyValue.cs" />
+    <Compile Include="StockClasses\StockDictionary.cs" />
+    <Compile Include="StockClasses\StockViewableItems\ParamRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMATRAIL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TREND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ICHIMOKU.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TARGET.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_SIGNAL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP2.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_OVERBOUGHT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIVWAIT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockDecorators.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_TOP.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecoratorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBANDWIDTH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MID.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWBARS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COMPARE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DELTA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HEIKINASHI.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMODIST.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SENOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CORREL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCOVAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BREADTH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCORREL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKRSI.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEST.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLSAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOW.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR2.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VIXFIX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLPROAM.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMONEY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROCEX3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PUKE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANWIDTH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIAN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SARHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADXDIFF.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANK.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWDAYS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ICHIMOKU.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BROKENSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMACD.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR2.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBUPBARS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA3Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MACD.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicators.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockIndicators.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NSTDEV.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OBVEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OBV.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\IRange.cs" />
+    <Compile Include="StockClasses\StockViewableItems\IStockVisibility.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SCOR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
+    <Compile Include="StockAnalyzerException.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWBARS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_GUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ROR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SCREENER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BBEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CANDLEPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BARPATTERN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CONVEXHULL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CROSSING.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CROSSSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_LEADER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PRICE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHTSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FLAG.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SPEED.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FIBOCHANNEL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOPEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOPSAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TOP.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SAFERANGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLPROAM.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CUPHANDLE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_WEDGE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLAVG.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DRAWING.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINEHL2.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINEHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRUE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLMOMEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ROXEX3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWDAYS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MOMENTUM.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ZIGZAGLINE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DOWLINE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA3Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MACD.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HILBERTSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PIVOT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RSI.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarIndicatorEventBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBars.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockPaintBars.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBREAK.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLEINV.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMDH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMABB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSSAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFIBO.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHIGHEST.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStops.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StockTrailStops.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_SAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_HLEX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_EMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\IStockTrail.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_HL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrailBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrailManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockViewableItemsManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAREX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\IStockPaintBar.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\IStockDecorator.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\HLine.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockDecorators\StockDecorator_DIV.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKF.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSI.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERTSR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BB.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\IStockIndicator.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\Parameterizable.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarManager.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BB.cs" />
+    <Compile Include="StockClasses\StockSerie.cs" />
+    <Compile Include="StockClasses\StockStatistics.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\IStockTrailStop.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
+    <Compile Include="StockClasses\StockWatchList.cs" />
+    <Compile Include="StockDrawing\CupHandle2D.cs" />
+    <Compile Include="StockDrawing\StockDrawingItems2.cs" />
+    <Compile Include="StockDrawing\Bullet2D.cs" />
+    <Compile Include="StockDrawing\CandleStick.cs" />
+    <Compile Include="StockDrawing\HalfLine2D.cs" />
+    <Compile Include="StockDrawing\Line2DBase.cs" />
+    <Compile Include="StockDrawing\DrawingItem.cs" />
+    <Compile Include="StockDrawing\GraphCurveType.cs" />
+    <Compile Include="StockDrawing\GraphCurveTypeList.cs" />
+    <Compile Include="StockDrawing\Line2D.cs" />
+    <Compile Include="StockDrawing\OHLCBar.cs" />
+    <Compile Include="StockDrawing\Rectangle2D.cs" />
+    <Compile Include="StockDrawing\Segment2D.cs" />
+    <Compile Include="StockDrawing\StockDrawingItems.cs" />
+    <Compile Include="StockLogging\StockLog.cs" />
+    <Compile Include="StockMath\BoolSerie.cs" />
+    <Compile Include="StockMath\Complex.cs" />
+    <Compile Include="StockMath\FloatRandom.cs" />
+    <Compile Include="StockMath\FloatRange.cs" />
+    <Compile Include="StockMath\FloatSerie.cs" />
+    <Compile Include="StockMath\Histogram.cs" />
+    <Compile Include="StockMath\StockMathToolkit.cs" />
+    <Compile Include="StockBinckPortfolio\StockOperation.cs" />
+    <Compile Include="StockBinckPortfolio\StockPortfolio.cs" />
+    <Compile Include="StockBinckPortfolio\StockPosition.cs" />
+    <Compile Include="StockScripting\ScriptDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockScripting\ScriptDlg.Designer.cs">
+      <DependentUpon>ScriptDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockScripting\StockFilter.cs" />
+    <Compile Include="StockSecurity\StockLicense.cs" />
+    <Compile Include="StockSecurity\StockToolKit.cs" />
+    <Compile Include="StockSecurity\StockUser.cs" />
+    <Compile Include="StockBinckPortfolio\StockTradeLogEntry.cs" />
+    <Compile Include="StockWeb\StockDetails.cs" />
+    <Compile Include="StockWeb\StockMail.cs" />
+    <Compile Include="StockWeb\StockFTP.cs" />
+    <Compile Include="StockWeb\StockWebHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.resx">
+      <DependentUpon>NameMappingDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DataProviderString.fr-FR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DataProviderString.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.fr-FR.resx">
+      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.resx">
+      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.resx">
+      <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.fr-FR.resx" />
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StockDecorators.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockIndicators\StockIndicators.fr-FR.resx" />
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockIndicators\StockIndicators.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StockIndicators.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBars.fr-FR.resx" />
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBars.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StockPaintBars.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStops.fr-FR.resx" />
+    <EmbeddedResource Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStops.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StockTrailStops.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockScripting\ScriptDlg.resx">
+      <DependentUpon>ScriptDlg.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="StockAgent\StockAgentEngine.cd" />
+    <None Include="StockBinckPortfolio\PortfolioDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">
+      <Project>{D7BE95C8-BCE9-4E66-B305-C85D07936F73}</Project>
+      <Name>StockAnalyzerSettings</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="StockTradeLog\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

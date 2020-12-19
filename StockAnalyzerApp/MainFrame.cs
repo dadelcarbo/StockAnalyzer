@@ -383,7 +383,6 @@ namespace StockAnalyzerApp
 
             // Update dynamic menu
             InitialiseBarDurationComboBox();
-            CreateRelativeStrengthMenuItem();
             CreateSecondarySerieMenuItem();
 
             // Update dynamic menu
@@ -2025,44 +2024,6 @@ namespace StockAnalyzerApp
         }
 
         #region MENU CREATION
-
-        private void CreateRelativeStrengthMenuItem()
-        {
-            // Clean existing menus
-            this.indexRelativeStrengthMenuItem.DropDownItems.Clear();
-
-            List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-            ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count];
-
-            int i = 0;
-            foreach (string group in validGroups)
-            {
-                groupMenuItems[i] = new ToolStripMenuItem(group);
-
-                // 
-                var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
-                if (groupSeries.Count() != 0)
-                {
-                    ToolStripMenuItem[] indexRelativeStrengthMenuItems = new ToolStripMenuItem[groupSeries.Count()];
-                    ToolStripMenuItem indexRelativeStrengthMenuSubItem;
-
-                    int n = 0;
-                    foreach (StockSerie stockSerie in groupSeries)
-                    {
-                        // Create indexRelativeStrength menu items
-                        indexRelativeStrengthMenuSubItem = new ToolStripMenuItem(stockSerie.StockName);
-                        indexRelativeStrengthMenuSubItem.Click +=
-                           new EventHandler(indexRelativeStrengthDetailsSubMenuItem_Click);
-                        indexRelativeStrengthMenuItems[n++] = indexRelativeStrengthMenuSubItem;
-                    }
-                    groupMenuItems[i].DropDownItems.AddRange(indexRelativeStrengthMenuItems);
-                }
-
-                i++;
-            }
-            this.indexRelativeStrengthMenuItem.DropDownItems.AddRange(groupMenuItems);
-        }
-
         private void CreateSecondarySerieMenuItem()
         {
             // Clean existing menus
@@ -2198,126 +2159,6 @@ namespace StockAnalyzerApp
 
             this.StockAnalyzerForm_StockSerieChanged(newSerie, false);
         }
-
-        private void indexRelativeStrengthDetailsSubMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            StockSerie newSerie = this.CurrentStockSerie.GenerateRelativeStrenthStockSerie(StockDictionary[sender.ToString()]);
-            if (newSerie == null)
-            {
-                MessageBox.Show("This operation is not allowed");
-                return;
-            }
-            AddNewSerie(newSerie);
-        }
-        private void generateSeasonalitySerieMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            if (!this.currentStockSerie.Initialise())
-            {
-                return;
-            }
-            {
-                var dayVarDico = new SortedDictionary<DayOfWeek, float>();
-                var dayCountDico = new SortedDictionary<DayOfWeek, int>();
-                foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
-                {
-                    dayVarDico.Add(day, 0);
-                    dayCountDico.Add(day, 0);
-                }
-                foreach (var pair in this.currentStockSerie)
-                {
-                    dayVarDico[pair.Key.DayOfWeek] += (pair.Value.CLOSE - pair.Value.OPEN) / pair.Value.OPEN;
-                    dayCountDico[pair.Key.DayOfWeek]++;
-                }
-                foreach (var pair in dayCountDico.Where(p => p.Value > 0))
-                {
-                    Console.WriteLine($"{pair.Key} => {(dayVarDico[pair.Key] / (float)dayCountDico[pair.Key]).ToString("P2")}");
-                }
-            }
-            {
-                var dayVarDico = new SortedDictionary<int, float>();
-                var dayCountDico = new SortedDictionary<int, int>();
-                for (int i = 0; i < 30; i++)
-                {
-                    dayVarDico.Add(i, 0);
-                    dayCountDico.Add(i, 0);
-                }
-                int previousMonth = -1;
-                int day = 0;
-                foreach (var pair in this.currentStockSerie)
-                {
-                    if (pair.Key.Date.Month == previousMonth)
-                    {
-                        day++;
-                    }
-                    else
-                    {
-                        previousMonth = pair.Key.Date.Month;
-                        day = 1;
-                    }
-                    // dayVarDico[day] += (pair.Value.CLOSE - pair.Value.OPEN) / pair.Value.OPEN;
-                    dayVarDico[day] += pair.Value.VARIATION;
-                    dayCountDico[day]++;
-                }
-                foreach (var pair in dayCountDico.Where(p => p.Value > 0))
-                {
-                    Console.WriteLine($"{pair.Key};{(dayVarDico[pair.Key] / (float)dayCountDico[pair.Key]).ToString("P2")}");
-                }
-            }
-
-        }
-        private void generateSeasonalitySerieMenuItem_Click2(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-            if (!this.currentStockSerie.Initialise())
-            {
-                return;
-            }
-            if (this.currentStockSerie.StockGroup != StockSerie.Groups.BREADTH)
-            {
-                // Bar duration is set inside the method
-                StockSerie seasonalSerie = this.currentStockSerie.CalculateSeasonality();
-                if (seasonalSerie.Initialise())
-                {
-                    int previousSerieCount = this.currentStockSerie.Count;
-                    string stockSerieName = this.currentStockSerie.StockName;
-
-                    // 
-                    AddNewSerie(seasonalSerie);
-
-                    // Set current serie as secondary serie
-                    ToolStripMenuItem currentSerieMenuItem = null;
-                    foreach (ToolStripMenuItem otherMenuItem in this.secondarySerieMenuItem.DropDownItems)
-                    {
-                        foreach (ToolStripMenuItem subMenuItem in otherMenuItem.DropDownItems)
-                        {
-                            if (subMenuItem.Text == stockSerieName)
-                            {
-                                currentSerieMenuItem = subMenuItem;
-                                break;
-                            }
-                        }
-                        if (currentSerieMenuItem != null)
-                        {
-                            break;
-                        }
-                    }
-
-                    // Display initial serie as secondary serie
-                    if (currentSerieMenuItem != null)
-                    {
-                        this.secondarySerieMenuItem_Click(currentSerieMenuItem, null);
-                    }
-
-                    // Set appropriate zoom
-                    this.ChangeZoom(
-                       this.CurrentStockSerie.Count - (this.CurrentStockSerie.Count - previousSerieCount + 200),
-                       this.CurrentStockSerie.Count - 1);
-                }
-            }
-        }
-
         private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
 
         struct stat
@@ -2371,26 +2212,6 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie == null) return;
             StockSerie newSerie = this.CurrentStockSerie.GenerateLogStockSerie();
-            AddNewSerie(newSerie);
-        }
-
-        private void inverseSerieMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null || !this.currentStockSerie.Initialise()) return;
-
-            if (this.currentStockSerie.StockName.EndsWith("_INV"))
-            {
-                stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(this.currentStockSerie.StockName.Replace("_INV", ""));
-                OnNeedReinitialise(true);
-                return;
-            }
-            if (this.StockDictionary.ContainsKey(this.currentStockSerie.StockName + "_INV"))
-            {
-                stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(this.currentStockSerie.StockName + "_INV");
-                OnNeedReinitialise(true);
-                return;
-            }
-            StockSerie newSerie = this.CurrentStockSerie.GenerateInverseStockSerie();
             AddNewSerie(newSerie);
         }
         #endregion
@@ -4589,7 +4410,6 @@ namespace StockAnalyzerApp
                 dataProvider.InitDictionary(Settings.Default.RootFolder, this.StockDictionary, true);
                 this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
-                this.CreateRelativeStrengthMenuItem();
                 this.InitialiseStockCombo(true);
             }
         }

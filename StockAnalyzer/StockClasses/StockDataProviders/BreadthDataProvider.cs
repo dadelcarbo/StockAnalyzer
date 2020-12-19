@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             
                             if (!stockDictionary.ContainsKey(longName))
                             {
-                                stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth));
+                                stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
                             }
                         }
                     }

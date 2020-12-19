@@ -47,15 +47,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          AAIIDataProvider.stockDictionary = stockDictionary;
          if (!stockDictionary.ContainsKey(bearBullRatioName))
          {
-            stockDictionary.Add(bearBullRatioName, new StockSerie(bearBullRatioName, bearBullRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
+            stockDictionary.Add(bearBullRatioName, new StockSerie(bearBullRatioName, bearBullRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII, BarDuration.Weekly));
          }
          if (!stockDictionary.ContainsKey(bearBullLogRatioName))
          {
-            stockDictionary.Add(bearBullLogRatioName, new StockSerie(bearBullLogRatioName, bearBullLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
+            stockDictionary.Add(bearBullLogRatioName, new StockSerie(bearBullLogRatioName, bearBullLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII, BarDuration.Weekly));
          }
          if (!stockDictionary.ContainsKey(bullBearLogRatioName))
          {
-            stockDictionary.Add(bullBearLogRatioName, new StockSerie(bullBearLogRatioName, bullBearLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII));
+            stockDictionary.Add(bullBearLogRatioName, new StockSerie(bullBearLogRatioName, bullBearLogRatioName, StockSerie.Groups.INDICATOR, StockDataProvider.AAII, BarDuration.Weekly));
          }
       }
 

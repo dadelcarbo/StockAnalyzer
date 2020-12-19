@@ -12,8 +12,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Test,
         Replay,
         Breadth,
-        Investing,
-        Ratio
+        Investing
     }
 
     public delegate void DownloadingStockEventHandler(string text);

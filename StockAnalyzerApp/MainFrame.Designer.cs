@@ -75,7 +75,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.inverseSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,7 +82,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateSeasonalitySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -371,10 +369,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.indexRelativeStrengthMenuItem,
-            this.inverseSerieMenuItem,
-            this.logSerieMenuItem,
-            this.toolStripSeparator20,
-            this.generateSeasonalitySerieMenuItem});
+            this.logSerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewMenuItem.Text = "View";
@@ -530,13 +525,6 @@ namespace StockAnalyzerApp
             this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(233, 22);
             this.indexRelativeStrengthMenuItem.Text = "Index Relative Strength";
             // 
-            // inverseSerieMenuItem
-            // 
-            this.inverseSerieMenuItem.Name = "inverseSerieMenuItem";
-            this.inverseSerieMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.inverseSerieMenuItem.Text = "Inverse Serie";
-            this.inverseSerieMenuItem.Click += new System.EventHandler(this.inverseSerieMenuItem_Click);
-            // 
             // logSerieMenuItem
             // 
             this.logSerieMenuItem.Name = "logSerieMenuItem";
@@ -596,13 +584,6 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem.Text = "Portofolio Simulation";
             this.portfolioSimulationMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F9;
             this.portfolioSimulationMenuItem.Click += new System.EventHandler(this.portfolioSimulationMenuItem_Click);
-            // 
-            // generateSeasonalitySerieMenuItem
-            // 
-            this.generateSeasonalitySerieMenuItem.Name = "generateSeasonalitySerieMenuItem";
-            this.generateSeasonalitySerieMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.generateSeasonalitySerieMenuItem.Text = "Generate Seasonality Serie";
-            this.generateSeasonalitySerieMenuItem.Click += new System.EventHandler(this.generateSeasonalitySerieMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
@@ -1599,11 +1580,9 @@ namespace StockAnalyzerApp
         private TableLayoutPanel indicatorLayoutPanel;
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
-        private ToolStripMenuItem generateSeasonalitySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
         private ToolStripMenuItem expectedValueMenuItem;
         private ToolStripMenuItem statisticsMenuItem;
-        private ToolStripMenuItem inverseSerieMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;

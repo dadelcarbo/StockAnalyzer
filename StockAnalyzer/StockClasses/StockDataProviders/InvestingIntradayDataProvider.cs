@@ -205,7 +205,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             var stockSerie = new StockSerie(row[2], row[1],
                                 (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
-                                StockDataProvider.InvestingIntraday);
+                                StockDataProvider.InvestingIntraday, BarDuration.MIN_5);
                             stockSerie.Ticker = long.Parse(row[0]);
 
                             stockDictionary.Add(row[2], stockSerie);

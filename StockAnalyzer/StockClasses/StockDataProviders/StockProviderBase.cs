@@ -106,17 +106,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.BinckPortfolio:
                     dataProvider = new BinckPortfolioDataProvider();
                     break;
-                case StockDataProvider.Generated:
-                    dataProvider = new GeneratedDataProvider();
-                    break;
                 case StockDataProvider.Breadth:
                     dataProvider = new BreadthDataProvider();
                     break;
                 case StockDataProvider.AAII:
                     dataProvider = new AAIIDataProvider();
-                    break;
-                case StockDataProvider.Ratio:
-                    dataProvider = new RatioDataProvider();
                     break;
                 case StockDataProvider.Investing:
                     dataProvider = new InvestingDataProvider();

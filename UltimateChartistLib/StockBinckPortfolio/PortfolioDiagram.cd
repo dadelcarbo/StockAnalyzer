@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StockAnalyzer.StockBinckPortfolio.StockPortfolio">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Positions" Type="StockAnalyzer.StockBinckPortfolio.StockPosition" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.688" Y="1.93" />
+        <Point X="1.688" Y="2.219" />
+        <Point X="4" Y="2.219" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ABoAKIAKIAAgAAAkAAgY0EQAAQAAgAAAAQAAEABAEGA=</HashCode>
+      <FileName>StockBinckPortfolio\StockPortfolio.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Mappings" />
+      <Property Name="Operations" />
+      <Property Name="Positions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="StockAnalyzer.StockBinckPortfolio.StockNameMapping" Collapsed="true">
+    <Position X="4" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAACAAA=</HashCode>
+      <FileName>StockBinckPortfolio\StockNameMapping.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StockAnalyzer.StockBinckPortfolio.StockOperation">
+    <Position X="1.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>oCACAFAgAAAgAAAEAAgAgACAgAEAAAQDACFAAAACAAQ=</HashCode>
+      <FileName>StockBinckPortfolio\StockOperation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StockAnalyzer.StockBinckPortfolio.StockPosition">
+    <Position X="4" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAgAAAABAAEAAAAgAAggAAAAEACAAAAAEAAAAA=</HashCode>
+      <FileName>StockBinckPortfolio\StockPosition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

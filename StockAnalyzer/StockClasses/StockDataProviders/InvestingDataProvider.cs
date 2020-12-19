@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var row = line.Split(',');
                         if (!stockDictionary.ContainsKey(row[2]))
                         {
-                            var stockSerie = new StockSerie(row[2], row[1], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.Investing);
+                            var stockSerie = new StockSerie(row[2], row[1], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.Investing, BarDuration.Daily);
                             stockSerie.Ticker = long.Parse(row[0]);
 
                             stockDictionary.Add(row[2], stockSerie);

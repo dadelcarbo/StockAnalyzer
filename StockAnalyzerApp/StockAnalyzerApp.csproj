@@ -564,6 +564,7 @@
     <Compile Include="StockSplashScreen.Designer.cs">
       <DependentUpon>StockSplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\MainFrameViewModel.cs" />
     <EmbeddedResource Include="AboutBox.fr-FR.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>

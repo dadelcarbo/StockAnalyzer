@@ -335,7 +335,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private void Start()
         {
             var name = "Replay_" + replayCount++;
-            this.replaySerie = new StockSerie(name, name, StockSerie.Groups.Replay, StockDataProvider.Replay);
+            this.replaySerie = new StockSerie(name, name, StockSerie.Groups.Replay, StockDataProvider.Replay, BarDuration.Daily);
 
             // Select random serie
             var series = StockDictionary.Instance.Values.Where(v => !v.StockAnalysis.Excluded && v.BelongsToGroup(this.selectedGroup)).ToList();

@@ -15,7 +15,7 @@ namespace StockAnalyzerTest
         public static StockSerie GenerateTestStockSerie(int size, float variation)
         {
             const string stockName = "TEST";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, Groups.NONE, StockDataProvider.Generated);
+            StockSerie stockSerie = new StockSerie(stockName, stockName, Groups.NONE, StockDataProvider.Generated, BarDuration.Daily);
             stockSerie.IsPortofolioSerie = false;
 
             float value = 10.0f;
