@@ -763,7 +763,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         readValue = this.ReadMarketDataFromABCCSVStream(sr, stockSerie.StockName, true);
-                        if (readValue != null)
+                        if (readValue != null && readValue.DATE.Year > LOAD_START_YEAR)
                         {
                             if (!stockSerie.ContainsKey(readValue.DATE))
                             {

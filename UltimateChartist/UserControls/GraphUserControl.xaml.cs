@@ -13,7 +13,7 @@ namespace UltimateChartist.UserControls
             InitializeComponent();
         }
 
-        private void AddPanel_Click(object sender, RoutedEventArgs e)
+        private void AddIndicator_Click(object sender, RoutedEventArgs e)
         {
             int count = this.MainGrid.RowDefinitions.Count;
             this.MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -28,7 +28,7 @@ namespace UltimateChartist.UserControls
             gridSplitter.SetValue(Grid.RowProperty, count++);
             this.MainGrid.Children.Add(gridSplitter);
 
-            var textBox = new TextBox { Text = $"Text{count}" };
+            var textBox = new IndicatorUserControl { Header = $"Indicator{count - 1}" };
             textBox.SetValue(Grid.RowProperty, count);
             this.MainGrid.Children.Add(textBox);
         }

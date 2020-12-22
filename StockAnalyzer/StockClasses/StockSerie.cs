@@ -215,6 +215,7 @@ namespace StockAnalyzer.StockClasses
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
         public new void Add(DateTime date, StockDailyValue dailyValue)
         {
+            this.DataSource.Values.Add(dailyValue);
             base.Add(date, dailyValue);
         }
 
@@ -617,8 +618,7 @@ namespace StockAnalyzer.StockClasses
             this.IsInitialised = false;
             this.DataSource = new StockDataSource
             {
-                Duration = duration,
-                Values = new List<StockDailyValue>()
+                Duration = duration
             };
             ResetAllCache();
         }
@@ -636,8 +636,7 @@ namespace StockAnalyzer.StockClasses
             this.IsInitialised = false;
             this.DataSource = new StockDataSource
             {
-                Duration = duration,
-                Values = new List<StockDailyValue>()
+                Duration = duration
             };
             ResetAllCache();
         }

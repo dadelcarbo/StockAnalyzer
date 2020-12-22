@@ -8,7 +8,13 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockDataSource
     {
+        public StockDataSource()
+        {
+            this.Values = new List<StockDailyValue>();
+        }
         public List<StockDailyValue> Values;
         public BarDuration Duration;
+
+
     }
 }

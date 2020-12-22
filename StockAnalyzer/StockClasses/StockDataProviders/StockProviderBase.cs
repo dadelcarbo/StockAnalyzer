@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         protected bool needDownload = true;
 
         public const int ARCHIVE_START_YEAR = 1999;
-        public const int LOAD_START_YEAR = 1999;
+        public const int LOAD_START_YEAR = 2010;
 
         private static string rootFolder = null;
         public static string RootFolder

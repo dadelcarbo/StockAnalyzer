@@ -12,10 +12,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Background="AntiqueWhite" BorderThickness="1">
-            <Button x:Name="AddPanel" Content="Add Panel" Click="AddPanel_Click" HorizontalAlignment="Center"/>
+            <Button x:Name="AddIndicator" Content="Add Indicator" Click="AddIndicator_Click" HorizontalAlignment="Center"/>
         </Border>
-        <Border Grid.Row="1" Background="AntiqueWhite" BorderThickness="1">
-            <TextBox Text="Test" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
-        </Border>
+        <local:SerieUserControl Grid.Row="1"></local:SerieUserControl>
     </Grid>
 </UserControl>

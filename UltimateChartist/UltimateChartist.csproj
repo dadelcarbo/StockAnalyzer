@@ -50,6 +50,14 @@
       <HintPath>lib\RCWPF\2020.3.1020.45\Telerik.Windows.Controls.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>lib\RCWPF\2020.3.1020.45\Telerik.Windows.Controls.Navigation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>lib\RCWPF\2020.3.1020.45\Telerik.Windows.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -61,6 +69,13 @@
     </ApplicationDefinition>
     <Compile Include="UserControls\GraphUserControl.xaml.cs">
       <DependentUpon>GraphUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GraphViewModel.cs" />
+    <Compile Include="UserControls\IndicatorUserControl.xaml.cs">
+      <DependentUpon>IndicatorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SerieUserControl.xaml.cs">
+      <DependentUpon>SerieUserControl.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -74,6 +89,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\GraphUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\IndicatorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SerieUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -97,6 +120,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Images\Backward-icon.png.old" />
+    <None Include="Images\UltimateChartist_URLProtocol.reg" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -111,6 +136,86 @@
       <Project>{723891d8-b467-4277-bfc7-9d4e71def426}</Project>
       <Name>StockAnalyzerLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\AddArea.bmp" />
+    <Resource Include="Images\AddItem.bmp" />
+    <Resource Include="Images\AddLine.bmp" />
+    <Resource Include="Images\AddSarex.bmp" />
+    <Resource Include="Images\AddSegment.bmp" />
+    <Resource Include="Images\AddSemiLine.bmp" />
+    <Resource Include="Images\AddToReport.png" />
+    <Resource Include="Images\Backward-icon.png" />
+    <Resource Include="Images\BarChart.bmp" />
+    <Resource Include="Images\Button-Add-icon.png" />
+    <Resource Include="Images\Button-Delete-icon.png" />
+    <Resource Include="Images\ButtonFastForward.png" />
+    <Resource Include="Images\ButtonFirst.png" />
+    <Resource Include="Images\ButtonPlay.png" />
+    <Resource Include="Images\ButtonStop.png" />
+    <Resource Include="Images\Camera-32.png" />
+    <Resource Include="Images\Candle.bmp" />
+    <Resource Include="Images\chart_curve.png" />
+    <Resource Include="Images\chart_line.ico" />
+    <Resource Include="Images\Cloud.png" />
+    <Resource Include="Images\comment-icon.bmp" />
+    <Resource Include="Images\CopyLine.bmp" />
+    <Resource Include="Images\CupHandle.png" />
+    <Resource Include="Images\Curve.png" />
+    <Resource Include="Images\cut.png" />
+    <Resource Include="Images\CutLeft.PNG" />
+    <Resource Include="Images\CutRight.PNG" />
+    <Resource Include="Images\Decorator.png" />
+    <Resource Include="Images\delete-icon.png" />
+    <Resource Include="Images\DeleteTheme.png" />
+    <Resource Include="Images\Down.png" />
+    <Resource Include="Images\email.png" />
+    <Resource Include="Images\FanLines2.bmp" />
+    <Resource Include="Images\filesaveas.png" />
+    <Resource Include="Images\Flat.png" />
+    <Resource Include="Images\folder-add-icon.png" />
+    <Resource Include="Images\Forward-icon.png" />
+    <Resource Include="Images\gear.png" />
+    <Resource Include="Images\HilbertAVG.bmp" />
+    <Resource Include="Images\HilbertRSI.bmp" />
+    <Resource Include="Images\HilbertStok.bmp" />
+    <Resource Include="Images\Line.png" />
+    <Resource Include="Images\LineChart.bmp" />
+    <Resource Include="Images\Log.png" />
+    <Resource Include="Images\Magnet.bmp" />
+    <Resource Include="Images\magnet_pencil.png" />
+    <Resource Include="Images\Misc-Zoom-In-icon.png" />
+    <Resource Include="Images\Misc-Zoom-Out-icon.png" />
+    <Resource Include="Images\NewAnalysis.png" />
+    <Resource Include="Images\notepad.ico" />
+    <Resource Include="Images\OpenAnalysis.png" />
+    <Resource Include="Images\Options.png" />
+    <Resource Include="Images\page-edit-icon.png" />
+    <Resource Include="Images\paint.ico" />
+    <Resource Include="Images\Paint.png" />
+    <Resource Include="Images\PaintBar.png" />
+    <Content Include="Images\PEAPerformanceTemplate.html" />
+    <Resource Include="Images\real_one.png" />
+    <Resource Include="Images\redo.png" />
+    <Resource Include="Images\Reload.png" />
+    <Content Include="Images\ReportTemplate.html" />
+    <Resource Include="Images\SaveAnalysis.png" />
+    <Resource Include="Images\SaveAnalysisAs.png" />
+    <Resource Include="Images\SaveTheme.png" />
+    <Resource Include="Images\ScrollLeft.png" />
+    <Resource Include="Images\ScrollRight.png" />
+    <Resource Include="Images\search.png" />
+    <Resource Include="Images\SetDefaultTheme.png" />
+    <Resource Include="Images\Settings.ico" />
+    <Resource Include="Images\splash.PNG" />
+    <Resource Include="Images\SR.png" />
+    <Resource Include="Images\trail.png" />
+    <Resource Include="Images\trashcan.png" />
+    <Resource Include="Images\TrashLine.bmp" />
+    <Resource Include="Images\undo.png" />
+    <Resource Include="Images\Up.png" />
+    <Resource Include="Images\VolumeHistogram.PNG" />
+    <Resource Include="Images\Wizard.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
