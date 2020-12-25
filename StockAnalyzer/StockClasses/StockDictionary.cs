@@ -1177,7 +1177,6 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-
         public bool GenerateMcClellanSumSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;

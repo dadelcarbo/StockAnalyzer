@@ -221,6 +221,7 @@ namespace StockAnalyzer.StockClasses
 
         [XmlIgnore]
         public StockDataSource DataSource { get; set; }
+
         [XmlIgnore]
         public SortedDictionary<string, List<StockDailyValue>> BarSmoothedDictionary { get; private set; }
 
@@ -321,22 +322,6 @@ namespace StockAnalyzer.StockClasses
                 this.BarSmoothedDictionary.Add(barSmoothedDuration, newList);
 
                 return newList;
-            }
-        }
-
-        public List<StockDailyValue> GetExactValues()
-        {
-            if (ExactDataDurationMapping == null)
-            {
-                ExactDataDurationMapping = new SortedDictionary<StockBarDuration, StockBarDuration>();
-            }
-            if (ExactDataDurationMapping.ContainsKey(this.barDuration))
-            {
-                return GetValues(ExactDataDurationMapping[this.barDuration]);
-            }
-            else
-            {
-                return GetValues(StockBarDuration.Daily);
             }
         }
         private void SetBarDuration(StockBarDuration newBarDuration)
@@ -5804,9 +5789,8 @@ namespace StockAnalyzer.StockClasses
         /// This function extract a float serie from another serie in order to be compared with the current serie. This function manages inconsistent date issues
         /// </summary>
         /// <param name="otherSerie"></param>
-        /// <param name="dataType"></param>
         /// <returns></returns>
-        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie, StockDataType dataType)
+        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie)
         {
             if (!otherSerie.Initialise())
             {
@@ -5819,7 +5803,7 @@ namespace StockAnalyzer.StockClasses
             FloatSerie newSerie = new FloatSerie(this.Count);
             newSerie.Name = otherSerie.StockName;
 
-            FloatSerie otherFloatSerie = otherSerie.GetSerie(dataType);
+            FloatSerie otherFloatSerie = otherSerie.GetSerie(StockDataType.CLOSE);
             float previousValue = otherFloatSerie[0];
             DateTime startDate = otherSerie.Keys.First();
             DateTime lastDate = otherSerie.Keys.Last();
@@ -5835,7 +5819,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     if (otherSerie.ContainsKey(dailyValue.DATE))
                     {
-                        newSerie[i] = otherSerie[dailyValue.DATE].GetStockData(dataType);
+                        newSerie[i] = otherSerie[dailyValue.DATE].GetStockData(StockDataType.CLOSE);
                         previousValue = newSerie[i];
                     }
                     else

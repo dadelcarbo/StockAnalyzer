@@ -26,7 +26,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInSocGenMenu = new MenuItem();
-            this.statMenu = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
             // 
@@ -45,8 +44,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInABCMenu,
             this.openInPEAPerfMenu,
             this.openInZBMenu,
-            this.openInSocGenMenu,
-            this.statMenu});
+            this.openInSocGenMenu});
             // 
             // buyMenu
             // 
@@ -124,12 +122,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInSocGenMenu.Text = "Open in SogGen Products";
             this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
             // 
-            // statMenu
-            // 
-            this.statMenu.Index = 11;
-            this.statMenu.Text = "Make Stats";
-            this.statMenu.Click += new System.EventHandler(this.statMenu_Click);
-            // 
             // GraphCloseControl
             // 
             this.Name = "GraphCloseControl";
@@ -151,9 +143,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem openInPEAPerfMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInSocGenMenu;
-        private MenuItem statMenu;
-
         #endregion
-
     }
 }

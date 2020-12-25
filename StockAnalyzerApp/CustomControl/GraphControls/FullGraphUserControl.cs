@@ -290,9 +290,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         case "SECONDARY":
                                             if (currentStockSerie.SecondarySerie != null)
                                             {
-                                                this.graphCloseControl.SecondaryFloatSerie =
-                                                    currentStockSerie.GenerateSecondarySerieFromOtherSerie(
-                                                        currentStockSerie.SecondarySerie, StockDataType.CLOSE);
+                                                this.graphCloseControl.SecondaryFloatSerie = currentStockSerie.GenerateSecondarySerieFromOtherSerie(currentStockSerie.SecondarySerie);
                                             }
                                             else
                                             {
@@ -305,9 +303,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 {
                                                     if (StockDictionary.Instance.ContainsKey(fields[1]))
                                                     {
-                                                        this.graphCloseControl.SecondaryFloatSerie =
-                                                            currentStockSerie.GenerateSecondarySerieFromOtherSerie(
-                                                                StockDictionary.Instance[fields[1]], StockDataType.CLOSE);
+                                                        this.graphCloseControl.SecondaryFloatSerie = currentStockSerie.GenerateSecondarySerieFromOtherSerie( StockDictionary.Instance[fields[1]]);
                                                     }
                                                 }
                                             }
@@ -369,10 +365,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             break;
                                         case "DECORATOR":
                                             {
-                                                IStockDecorator decorator =
-                                                    (IStockDecorator)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            currentStockSerie);
+                                                IStockDecorator decorator = (IStockDecorator) StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
                                                 curveList.Decorator = decorator;
                                                 this.graphCloseControl.CurveList.ShowMes.Add(decorator);
                                             }

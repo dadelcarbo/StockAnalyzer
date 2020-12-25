@@ -251,9 +251,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_COMPARE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DELTA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BETA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HEIKINASHI.cs" />
@@ -267,7 +265,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBEX.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CORREL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AUTOCOVAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BREADTH.cs" />
