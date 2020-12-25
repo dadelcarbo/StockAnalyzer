@@ -243,6 +243,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWBARS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EXP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />

@@ -495,10 +495,43 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 }
                                 else
                                 {
-                                    tmpPoints = GetScreenPoints(StartIndex, EndIndex, stockIndicator.Series[i]);
-                                    if (tmpPoints != null)
+                                    List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
+                                    int start = -1;
+                                    int end = -1;
+                                    for (int k = StartIndex; k <= EndIndex; k++)
                                     {
-                                        aGraphic.DrawLines(stockIndicator.SeriePens[i], tmpPoints);
+                                        if (float.IsNaN(stockIndicator.Series[i][k]))
+                                        {
+                                            if (start != -1)
+                                            {
+                                                if (start != end) // Draw only if there are at least two points
+                                                {
+                                                    tuples.Add(new Tuple<int, int>(start, end));
+                                                    start = -1;
+                                                    end = -1;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (start == -1)
+                                            {
+                                                start = k;
+                                            }
+                                            end = k;
+                                        }
+                                    }
+                                    if (start != end) // Draw only if there are at least two points
+                                    {
+                                        tuples.Add(new Tuple<int, int>(start, end));
+                                    }
+                                    foreach (var tuple in tuples)
+                                    {
+                                        tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, stockIndicator.Series[i]);
+                                        if (tmpPoints != null)
+                                        {
+                                            aGraphic.DrawLines(stockIndicator.SeriePens[i], tmpPoints);
+                                        }
                                     }
                                 }
                             }

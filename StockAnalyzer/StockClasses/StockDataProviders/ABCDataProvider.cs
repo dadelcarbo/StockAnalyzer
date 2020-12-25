@@ -502,7 +502,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
         {
-            //StockLog.Write(fileName);
+            StockLog.Write(fileName);
 
             if (!File.Exists(fileName)) return false;
             StockSerie stockSerie = null;
@@ -512,7 +512,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 DateTime date = File.GetLastWriteTime(fileName); ;
                 while (!sr.EndOfStream)
                 {
-                    string line = sr.ReadLine();
+                    string line = sr.ReadLine().Replace(",",".");
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
                     {

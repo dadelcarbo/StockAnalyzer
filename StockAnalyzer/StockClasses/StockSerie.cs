@@ -418,7 +418,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrailStop trailStop = StockTrailStopManager.CreateTrailStop(trailStopName);
                 if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply {trailStopName} to {this.StockName}");
+                    StockLog.Write($"Apply TrailStop {trailStopName} to {this.StockName}");
                     trailStop.ApplyTo(this);
                     this.TrailStopCache = trailStop;
                     return trailStop;
@@ -437,6 +437,7 @@ namespace StockAnalyzer.StockClasses
                 IStockIndicator indicator = StockIndicatorManager.CreateIndicator(indicatorName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply GetIndicator {indicatorName} to {this.StockName}");
                     indicator.ApplyTo(this);
                     AddIndicatorSerie(indicator);
                     return indicator;
@@ -445,17 +446,18 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-        public IStockCloud GetCloud(String indicatorName)
+        public IStockCloud GetCloud(String cloudName)
         {
-            if (this.CloudCache.ContainsKey(indicatorName))
+            if (this.CloudCache.ContainsKey(cloudName))
             {
-                return this.CloudCache[indicatorName];
+                return this.CloudCache[cloudName];
             }
             else
             {
-                IStockCloud indicator = StockCloudManager.CreateCloud(indicatorName);
+                IStockCloud indicator = StockCloudManager.CreateCloud(cloudName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply GetCloud {cloudName} to {this.StockName}");
                     indicator.ApplyTo(this);
                     AddCloudSerie(indicator);
                     return indicator;
@@ -474,6 +476,7 @@ namespace StockAnalyzer.StockClasses
                 IStockPaintBar paintBar = StockPaintBarManager.CreatePaintBar(paintBarName);
                 if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply PaintBar {paintBarName} to {this.StockName}");
                     paintBar.ApplyTo(this);
 
                     this.PaintBarCache = paintBar;
@@ -494,6 +497,7 @@ namespace StockAnalyzer.StockClasses
                 IStockDecorator decorator = StockDecoratorManager.CreateDecorator(decoratorName, decoratedItem);
                 if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply GetIndicator {decoratorName} to {this.StockName}");
                     decorator.ApplyTo(this);
                     this.DecoratorCache.Add(fullDecoratorName, decorator);
                     return decorator;
@@ -512,37 +516,13 @@ namespace StockAnalyzer.StockClasses
                 IStockTrail trail = StockTrailManager.CreateTrail(trailName, trailedItem);
                 if (trail != null && (this.HasVolume || !trail.RequiresVolumeData))
                 {
+                    StockLog.Write($"Apply GetIndicator {trailName} to {this.StockName}");
                     trail.ApplyTo(this);
                     this.TrailCache = trail;
                     return trail;
                 }
                 return null;
             }
-        }
-
-        public IStockEvent GetStockEvents(IStockViewableSeries stockViewableSerie)
-        {
-            if (stockViewableSerie is IStockIndicator)
-            {
-                return this.GetIndicator(stockViewableSerie.Name);
-            }
-            if (stockViewableSerie is IStockPaintBar)
-            {
-                return this.GetPaintBar(stockViewableSerie.Name);
-            }
-            if (stockViewableSerie is IStockTrail)
-            {
-                return this.GetTrail(stockViewableSerie.Name, (stockViewableSerie as IStockTrail).TrailedItem);
-            }
-            if (stockViewableSerie is IStockTrailStop)
-            {
-                return this.GetTrailStop(stockViewableSerie.Name);
-            }
-            if (stockViewableSerie is IStockDecorator)
-            {
-                return this.GetDecorator(stockViewableSerie.Name, (stockViewableSerie as IStockDecorator).DecoratedItem);
-            }
-            throw new StockAnalyzerException("Type not supported, cannot apply to serie the viewable item: " + stockViewableSerie.Name);
         }
 
         public IStockViewableSeries GetViewableItem(string name)
@@ -587,30 +567,13 @@ namespace StockAnalyzer.StockClasses
             }
         }
         #endregion
-        #region Private members
-        private System.DateTime lastDate;
-        #endregion
-        #region Calculation constants
 
-        // RSI Relative Strength index
-        static private int RSITimePeriod = 14;
-        static private float alphaEMA_RSI = 2.0f / (float)(RSITimePeriod + 1);
-
-        public static System.TimeSpan[] DateRangeDate = {
-                                           System.TimeSpan.FromDays(31),
-                                           System.TimeSpan.FromDays(92),
-                                           System.TimeSpan.FromDays(184),
-                                           System.TimeSpan.FromDays(365),
-                                           System.TimeSpan.FromDays(630),
-                                           System.TimeSpan.MaxValue};
-        #endregion
         #region Constructors
         public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
             this.ShortName = shortName;
             this.StockGroup = stockGroup;
-            this.lastDate = DateTime.MinValue;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortofolioSerie = false;
             this.barDuration = StockBarDuration.Daily;
@@ -628,7 +591,6 @@ namespace StockAnalyzer.StockClasses
             this.ShortName = shortName;
             this.ISIN = isin;
             this.StockGroup = stockGroup;
-            this.lastDate = DateTime.MinValue;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortofolioSerie = false;
             this.barDuration = StockBarDuration.Daily;
