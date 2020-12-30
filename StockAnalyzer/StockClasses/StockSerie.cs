@@ -403,7 +403,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrailStop trailStop = StockTrailStopManager.CreateTrailStop(trailStopName);
                 if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply TrailStop {trailStopName} to {this.StockName}");
+                    StockLog.Write($"{trailStopName} to {this.StockName}-{this.BarDuration}");
                     trailStop.ApplyTo(this);
                     this.TrailStopCache = trailStop;
                     return trailStop;
@@ -422,7 +422,7 @@ namespace StockAnalyzer.StockClasses
                 IStockIndicator indicator = StockIndicatorManager.CreateIndicator(indicatorName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply GetIndicator {indicatorName} to {this.StockName}");
+                    StockLog.Write($"{indicatorName} to {this.StockName}-{this.BarDuration}");
                     indicator.ApplyTo(this);
                     AddIndicatorSerie(indicator);
                     return indicator;
@@ -442,7 +442,7 @@ namespace StockAnalyzer.StockClasses
                 IStockCloud indicator = StockCloudManager.CreateCloud(cloudName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply GetCloud {cloudName} to {this.StockName}");
+                    StockLog.Write($"{cloudName} to {this.StockName}-{this.BarDuration}");
                     indicator.ApplyTo(this);
                     AddCloudSerie(indicator);
                     return indicator;
@@ -461,7 +461,7 @@ namespace StockAnalyzer.StockClasses
                 IStockPaintBar paintBar = StockPaintBarManager.CreatePaintBar(paintBarName);
                 if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply PaintBar {paintBarName} to {this.StockName}");
+                    StockLog.Write($"{paintBarName} to {this.StockName}-{this.BarDuration}");
                     paintBar.ApplyTo(this);
 
                     this.PaintBarCache = paintBar;
@@ -482,7 +482,7 @@ namespace StockAnalyzer.StockClasses
                 IStockDecorator decorator = StockDecoratorManager.CreateDecorator(decoratorName, decoratedItem);
                 if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply GetIndicator {decoratorName} to {this.StockName}");
+                    StockLog.Write($"{decoratorName} to {this.StockName}-{this.BarDuration}");
                     decorator.ApplyTo(this);
                     this.DecoratorCache.Add(fullDecoratorName, decorator);
                     return decorator;
@@ -501,7 +501,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrail trail = StockTrailManager.CreateTrail(trailName, trailedItem);
                 if (trail != null && (this.HasVolume || !trail.RequiresVolumeData))
                 {
-                    StockLog.Write($"Apply GetIndicator {trailName} to {this.StockName}");
+                    StockLog.Write($"{trailName} to {this.StockName}-{this.BarDuration}");
                     trail.ApplyTo(this);
                     this.TrailCache = trail;
                     return trail;
@@ -621,10 +621,12 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!this.IsInitialised)
                 {
+                    StockLog.Write($"Initialising {StockName}");
                     // Multithread management
                     while (initialisingThread != null && initialisingThread != Thread.CurrentThread)
                         Thread.Sleep(50);
                     this.initialisingThread = Thread.CurrentThread;
+
 
                     if (this.Count == 0)
                     {
@@ -1776,7 +1778,6 @@ namespace StockAnalyzer.StockClasses
             volatilitySerie[0] = volatilitySerie[1];
             return volatilitySerie;
         }
-
         public FloatSerie CalculateFastOscillator(int period)
         {
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
@@ -1792,6 +1793,38 @@ namespace StockAnalyzer.StockClasses
             {
                 lowestLow = lowSerie.GetMin(Math.Max(0, i - period), i);
                 highestHigh = highSerie.GetMax(Math.Max(0, i - period), i);
+                if (highestHigh == lowestLow)
+                {
+                    fastOscillatorSerie[i] = 50.0f;
+                }
+                else
+                {
+                    fastOscillatorSerie[i] = 100.0f * (closeSerie.Values[i] - lowestLow) / (highestHigh - lowestLow);
+                }
+                if (i < period)
+                {
+                    fastOscillatorSerie[i] = Math.Max(30.0f, fastOscillatorSerie[i]);
+                    fastOscillatorSerie[i] = Math.Min(70.0f, fastOscillatorSerie[i]);
+                }
+            }
+            fastOscillatorSerie.Name = "FastK(" + period.ToString() + ")";
+            return fastOscillatorSerie;
+        }
+        public FloatSerie CalculateFastBodyOscillator(int period)
+        {
+            //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
+            //  %D = MA3(%K)
+            FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            var bodyHighSerie = new FloatSerie(this.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(this.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            float lowestLow = float.MaxValue;
+            float highestHigh = float.MinValue;
+
+            for (int i = 0; i < this.Values.Count; i++)
+            {
+                lowestLow = bodyLowSerie.GetMin(Math.Max(0, i - period), i);
+                highestHigh = bodyHighSerie.GetMax(Math.Max(0, i - period), i);
                 if (highestHigh == lowestLow)
                 {
                     fastOscillatorSerie[i] = 50.0f;
@@ -5208,7 +5241,7 @@ namespace StockAnalyzer.StockClasses
         }
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, StockBarDuration timeSpan)
         {
-            StockLog.Write("GenerateSerieForTimeSpan Name:" + this.StockName + " barDuration:" + timeSpan.ToString() + " CurrentBarDuration:" + this.BarDuration);
+            StockLog.Write("Name:" + this.StockName + " barDuration:" + timeSpan.ToString() + " CurrentBarDuration:" + this.BarDuration);
             List<StockDailyValue> newBarList = null;
             if (dailyValueList.Count == 0) return new List<StockDailyValue>();
 

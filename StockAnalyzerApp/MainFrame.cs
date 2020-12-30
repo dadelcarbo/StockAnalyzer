@@ -2608,44 +2608,45 @@ namespace StockAnalyzerApp
         <table>
             <tr>
             <td>";
-
-            List<RankedSerie> leadersDico = new List<RankedSerie>();
-            var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)).ToList();
-
-            StockSplashScreen.ProgressVal = 0;
-            StockSplashScreen.ProgressMax = stockList.Count();
-            StockSplashScreen.ProgressMin = 0;
-
-            foreach (StockSerie stockSerie in stockList)
+            try
             {
-                StockSplashScreen.ProgressVal++;
-                StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                if (stockSerie.Initialise() && stockSerie.Count > 100)
+                List<RankedSerie> leadersDico = new List<RankedSerie>();
+                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)).ToList();
+
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ProgressMax = stockList.Count();
+                StockSplashScreen.ProgressMin = 0;
+
+                foreach (StockSerie stockSerie in stockList)
                 {
-                    stockSerie.BarDuration = duration;
-                    var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
-                    leadersDico.Add(new RankedSerie()
+                    StockSplashScreen.ProgressVal++;
+                    StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                    if (stockSerie.Initialise() && stockSerie.Count > 100)
                     {
-                        rankIndicatorValue = indicatorSerie.Last,
-                        previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
-                        stockSerie = stockSerie
-                    });
+                        stockSerie.BarDuration = duration;
+                        var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
+                        leadersDico.Add(new RankedSerie()
+                        {
+                            rankIndicatorValue = indicatorSerie.Last,
+                            previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
+                            stockSerie = stockSerie
+                        });
+                    }
                 }
-            }
-            // Calculate ranks
-            int rank = 1;
-            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
-            {
-                rankSerie.rank = rank++;
-            }
-            rank = 1;
-            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
-            {
-                rankSerie.previousRank = rank++;
-            }
+                // Calculate ranks
+                int rank = 1;
+                foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
+                {
+                    rankSerie.rank = rank++;
+                }
+                rank = 1;
+                foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
+                {
+                    rankSerie.previousRank = rank++;
+                }
 
-            var tableHeader = "Leaders for " + reportGroup;
-            html += $@"
+                var tableHeader = "Leaders for " + reportGroup;
+                html += $@"
             <table  class=""reportTable"">
                 <thead>
                 <tr>
@@ -2663,81 +2664,81 @@ namespace StockAnalyzerApp
                 </thead>
                 <tbody>";
 
-            var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
-            foreach (RankedSerie pair in leaders)
-            {
-                var lastValue = pair.stockSerie.ValueArray.Last();
-                html += rowTemplate.
-                    Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rankIndicatorValue / 100.0f).ToString("P2")).
-                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
-                    Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
+                var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
+                foreach (RankedSerie pair in leaders)
+                {
+                    var lastValue = pair.stockSerie.ValueArray.Last();
+                    html += rowTemplate.
+                        Replace("%COL1%", pair.stockSerie.StockName).
+                        Replace("%COL2%", (pair.rankIndicatorValue / 100.0f).ToString("P2")).
+                        Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
+                        Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
-                if (pair.previousRank < pair.rank)
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    if (pair.previousRank < pair.rank)
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    }
+                    else if (pair.previousRank > pair.rank)
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
+                    }
+                    else
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
+                    }
+                    if (lastValue.VARIATION > 0)
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    }
+                    else if (lastValue.VARIATION < 0)
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
+                    }
+                    else
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
+                    }
                 }
-                else if (pair.previousRank > pair.rank)
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
-                }
-                else
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
-                }
-                if (lastValue.VARIATION > 0)
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
-                }
-                else if (lastValue.VARIATION < 0)
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
-                }
-                else
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
-                }
-            }
 
-            html += @" 
+                html += @" 
 </tbody>
 </table>";
 
-            html += "</td><td width=100></td><td>";
+                html += "</td><td width=100></td><td>";
 
-            leadersDico.Clear();
+                leadersDico.Clear();
 
-            StockSplashScreen.ProgressVal = 0;
-            foreach (StockSerie stockSerie in stockList)
-            {
-                StockSplashScreen.ProgressVal++;
-                StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                if (stockSerie.Initialise() && stockSerie.Count > 100)
+                StockSplashScreen.ProgressVal = 0;
+                foreach (StockSerie stockSerie in stockList)
                 {
-                    stockSerie.BarDuration = duration;
-                    var indicatorSerie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
-                    leadersDico.Add(new RankedSerie()
+                    StockSplashScreen.ProgressVal++;
+                    StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                    if (stockSerie.Initialise() && stockSerie.Count > 100)
                     {
-                        rankIndicatorValue = indicatorSerie.Last,
-                        previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
-                        stockSerie = stockSerie
-                    });
+                        stockSerie.BarDuration = duration;
+                        var indicatorSerie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
+                        leadersDico.Add(new RankedSerie()
+                        {
+                            rankIndicatorValue = indicatorSerie.Last,
+                            previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
+                            stockSerie = stockSerie
+                        });
+                    }
                 }
-            }
-            // Calculate ranks
-            rank = 1;
-            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
-            {
-                rankSerie.rank = rank++;
-            }
-            rank = 1;
-            foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
-            {
-                rankSerie.previousRank = rank++;
-            }
+                // Calculate ranks
+                rank = 1;
+                foreach (var rankSerie in leadersDico.OrderBy(rs => rs.rankIndicatorValue))
+                {
+                    rankSerie.rank = rank++;
+                }
+                rank = 1;
+                foreach (var rankSerie in leadersDico.OrderBy(rs => rs.previousRankIndicatorValue))
+                {
+                    rankSerie.previousRank = rank++;
+                }
 
-            tableHeader = "Losers for " + reportGroup;
-            html += $@"
+                tableHeader = "Losers for " + reportGroup;
+                html += $@"
             <table  class=""reportTable"">
                 <thead>
                 <tr>
@@ -2755,47 +2756,52 @@ namespace StockAnalyzerApp
                 </thead>
                 <tbody>";
 
-            leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
-            foreach (RankedSerie pair in leaders)
-            {
-                var lastValue = pair.stockSerie.ValueArray.Last();
-                html += rowTemplate.
-                    Replace("%COL1%", pair.stockSerie.StockName).
-                    Replace("%COL2%", (pair.rankIndicatorValue / -100.0f).ToString("P2")).
-                    Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
-                    Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
+                leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
+                foreach (RankedSerie pair in leaders)
+                {
+                    var lastValue = pair.stockSerie.ValueArray.Last();
+                    html += rowTemplate.
+                        Replace("%COL1%", pair.stockSerie.StockName).
+                        Replace("%COL2%", (pair.rankIndicatorValue / -100.0f).ToString("P2")).
+                        Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
+                        Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
-                if (pair.previousRank > pair.rank)
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    if (pair.previousRank > pair.rank)
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    }
+                    else if (pair.previousRank < pair.rank)
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
+                    }
+                    else
+                    {
+                        html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
+                    }
+                    if (lastValue.VARIATION > 0)
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
+                    }
+                    else if (lastValue.VARIATION < 0)
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
+                    }
+                    else
+                    {
+                        html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
+                    }
                 }
-                else if (pair.previousRank < pair.rank)
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
-                }
-                else
-                {
-                    html = html.Replace("%RANK_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
-                }
-                if (lastValue.VARIATION > 0)
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Up"));
-                }
-                else if (lastValue.VARIATION < 0)
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Down"));
-                }
-                else
-                {
-                    html = html.Replace("%CLOSE_DIR_IMG%", CELL_DIR_IMG_TEMPLATE.Replace("%DIR%", "Flat"));
-                }
+
+                html += " </table>";
+                html += "</td></tr></table>";
+
+
+                return html;
             }
-
-            html += " </table>";
-            html += "</td></tr></table>";
-
-
-            return html;
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         private string ExtractEventsForReport()

@@ -384,6 +384,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static string loadingGroup = null;
+        static List<string> loadedGroups = new List<string>();
         public override bool LoadData(string rootFolder, StockSerie stockSerie)
         {
             StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName + " - " + stockSerie.Count);
@@ -393,6 +394,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string[] files;
             if (abcGroup != null)
             {
+                if (loadedGroups.Contains(abcGroup))
+                {
+                    return true;
+                }
                 try
                 {
                     if (loadingGroup == null)
@@ -442,6 +447,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         res = ParseABCGroupCSVFile(fileName, stockSerie.StockGroup, true);
                     }
+                    loadedGroups.Add(abcGroup);
                 }
                 catch (System.Exception ex)
                 {
@@ -512,7 +518,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 DateTime date = File.GetLastWriteTime(fileName); ;
                 while (!sr.EndOfStream)
                 {
-                    string line = sr.ReadLine().Replace(",",".");
+                    string line = sr.ReadLine().Replace(",", ".");
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
                     {

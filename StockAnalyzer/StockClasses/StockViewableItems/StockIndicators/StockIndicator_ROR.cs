@@ -9,9 +9,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override string Definition => base.Definition + Environment.NewLine + "Rate of rise" + Environment.NewLine + "Plots the current percent increase from the lowest low in the period";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
-        public override string[] ParameterNames => new string[] { "Period", "Smoothing", "EventTrigger" };
-        public override Object[] ParameterDefaultValues => new Object[] { 100, 1, 40.0f };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0.0f, 500.0f) };
+        public override string[] ParameterNames => new string[] { "Period", "Smoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { 100, 1 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[]
         {
         "ROR(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"
@@ -53,27 +53,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-
-            float trigger = (float)this.parameters[2];
-            int lastZeroIndex = 0;
             for (int i = 2; i < stockSerie.Count; i++)
             {
                 float roc = rocSerie[i];
                 float previousRoc = rocSerie[i - 1];
                 this.eventSeries[0][i] = (rocSerie[i - 2] < previousRoc && previousRoc > roc);
                 this.eventSeries[1][i] = (rocSerie[i - 2] > previousRoc && previousRoc < roc);
-                if (roc == 0)
-                {
-                    lastZeroIndex = i;
-                    this.eventSeries[2][i] = true;
-                }
+                this.eventSeries[2][i] = roc == 0;
                 this.eventSeries[3][i] = (previousRoc == 0 && roc > 0);
-                this.eventSeries[4][i] = (previousRoc < trigger && roc > trigger && (i - lastZeroIndex) < period);
             }
         }
-        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero", "Trigger" };
+        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
         public override string[] EventNames => eventNames;
-        static readonly bool[] isEvent = new bool[] { true, true, true, true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, true, true };
         public override bool[] IsEvent => isEvent;
     }
 }

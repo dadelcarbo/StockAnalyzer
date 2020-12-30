@@ -39,6 +39,7 @@ namespace StockAnalyzer.StockAgent
         public int NbWinTrade { get { return Trades.Count(t => t.Gain >= 0); } }
         public int NbLostTrade { get { return Trades.Count(t => t.Gain < 0); } }
         public float WinRatio { get { return NbLostTrade != 0 ? NbWinTrade / (float)NbLostTrade : 0f; } }
+        public float Expectancy { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) / this.Trades.Count : float.NaN; } }
 
         public string ToLog()
         {
@@ -52,6 +53,7 @@ namespace StockAnalyzer.StockAgent
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade: " + NbLostTrade + Environment.NewLine;
             res += "Win Ratio: " + WinRatio + Environment.NewLine;
+            res += "Expectancy: " + Expectancy + Environment.NewLine;
             res += "Portfolio Return: " + Portfolio.Return.ToString("P2") + Environment.NewLine;
 
             //res += Environment.NewLine;
