@@ -130,8 +130,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                        || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
                        || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
                     {
-                        first = false;
-                        return false;
+                        if (!stockSerie.StockName.Contains("CC_"))
+                        {
+                            first = false;
+                            return false;
+                        }
                     }
                     else
                     {

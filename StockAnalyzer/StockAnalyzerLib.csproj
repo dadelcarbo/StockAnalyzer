@@ -82,6 +82,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\CloudMDH2Agent.cs" />
     <Compile Include="StockAgent\Agents\CloudMDHAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSAgent.cs" />

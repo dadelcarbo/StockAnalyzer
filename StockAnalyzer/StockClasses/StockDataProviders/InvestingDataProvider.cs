@@ -130,8 +130,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                        || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
                        || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
                     {
-                        first = false;
-                        return false;
+                        if (!stockSerie.StockName.Contains("CC_"))
+                        {
+                            first = false;
+                            return false;
+                        }
                     }
                     else
                     {
@@ -149,7 +152,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var startDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7);
                         if (startDate > DateTime.Today) return true;
 
-                        url = FormatURL(stockSerie.Ticker, startDate, DateTime.Today);
+                        url = FormatURL(stockSerie.Ticker, startDate, DateTime.Now);
                     }
                     else
                     {
