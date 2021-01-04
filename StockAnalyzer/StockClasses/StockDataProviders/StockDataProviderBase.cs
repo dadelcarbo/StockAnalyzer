@@ -11,17 +11,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         protected bool needDownload = true;
 
-        public const int ARCHIVE_START_YEAR = 1999;
-        public const int LOAD_START_YEAR = 2010;
+        public const int ARCHIVE_START_YEAR = 2016;
+        public const int LOAD_START_YEAR = 2016;
 
         private static string rootFolder = null;
         public static string RootFolder
         {
-            get
-            {
-                if (rootFolder == null) rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder;
-                return rootFolder;
-            }
+            get => rootFolder ?? (rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder);
             set
             {
                 rootFolder = value;
@@ -41,22 +37,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region IStockDataProvider default implementation
 
         abstract public bool SupportsIntradayDownload { get; }
-        virtual public bool LoadData(string rootFolder, StockSerie stockSerie)
+        virtual public bool LoadData(StockSerie stockSerie)
         {
             // Read archive first
             string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            string fullFileName = rootFolder + "\\data\\archive\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            string fullFileName = RootFolder + "\\data\\archive\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
-            fullFileName = rootFolder + "\\data\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            fullFileName = RootFolder + "\\data\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
             return ParseCSVFile(stockSerie, fullFileName) || res;
         }
-        abstract public bool DownloadDailyData(string rootFolder, StockSerie stockSerie);
-        virtual public bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
+        public virtual bool ForceDownloadData(StockSerie stockSerie)
+        {
+            return this.DownloadDailyData(stockSerie);
+        }
+        abstract public bool DownloadDailyData(StockSerie stockSerie);
+        virtual public bool DownloadIntradayData(StockSerie stockSerie)
         {
             return this.SupportsIntradayDownload;
         }
-        abstract public void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
+        abstract public void InitDictionary(StockDictionary stockDictionary, bool download);
 
         #endregion
         #region NOTIFICATION EVENTS
@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
         #region STATIC HELPERS
-        public static bool LoadSerieData(string rootFolder, StockSerie serie)
+        public static bool LoadSerieData(StockSerie serie)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
@@ -79,10 +79,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                return dataProvider.LoadData(rootFolder, serie);
+                return dataProvider.LoadData(serie);
             }
         }
-        public static bool LoadIntradayDurationArchive(string rootFolder, StockSerie serie, StockBarDuration duration)
+        public static bool LoadIntradayDurationArchive(StockSerie serie, StockBarDuration duration)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                return dataProvider.LoadIntradayDurationArchiveData(rootFolder, serie, duration);
+                return dataProvider.LoadIntradayDurationArchiveData(serie, duration);
             }
         }
 
@@ -128,7 +128,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return dataProvider;
         }
-        public static bool DownloadSerieData(string rootFolder, StockSerie serie)
+        public static bool DownloadSerieData(StockSerie serie)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
@@ -139,17 +139,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 StockBarDuration currentBarDuration = serie.BarDuration;
                 serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
-                bool res = dataProvider.DownloadDailyData(rootFolder, serie);
+                bool res = dataProvider.DownloadDailyData(serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
-                    res |= dataProvider.DownloadIntradayData(rootFolder, serie);
+                    res |= dataProvider.DownloadIntradayData(serie);
+                }
+
+                serie.BarDuration = currentBarDuration;
+                return res;
+            }
+        } 
+        public static bool ForceDownloadSerieData(StockSerie serie)
+        {
+            IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
+            if (dataProvider == null)
+            {
+                return false;
+            }
+            else
+            {
+                StockBarDuration currentBarDuration = serie.BarDuration;
+                serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
+                bool res = dataProvider.ForceDownloadData(serie);
+                if (dataProvider.SupportsIntradayDownload)
+                {
+                    res |= dataProvider.DownloadIntradayData(serie);
                 }
 
                 serie.BarDuration = currentBarDuration;
                 return res;
             }
         }
-        public static void InitStockDictionary(string rootFolder, StockDictionary stockDictionary, bool download, DownloadingStockEventHandler downloadListener)
+        public static void InitStockDictionary(StockDictionary stockDictionary, bool download, DownloadingStockEventHandler downloadListener)
         {
             foreach (StockDataProvider dataProviderType in Enum.GetValues(typeof(StockDataProvider)))
             {
@@ -159,7 +180,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (dataProvider != null)
                     {
                         dataProvider.DownloadStarted += downloadListener;
-                        dataProvider.InitDictionary(rootFolder, stockDictionary, download);
+                        dataProvider.InitDictionary(stockDictionary, download);
                         dataProvider.DownloadStarted -= downloadListener;
                     }
                 }
@@ -221,7 +242,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         //   }
         //}
 
-        //protected bool DownloadOptixData(string rootFolder, StockSerie stockSerie)
+        //protected bool DownloadOptixData(StockSerie stockSerie)
         //{
         //   if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && stockSerie.HasOptix)
         //   {
@@ -263,7 +284,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR && !stockSerie.ContainsKey(readValue.DATE))
                         {
                             stockSerie.Add(readValue.DATE, readValue);
-                            readValue.Serie = stockSerie;
                         }
                     }
                 }
@@ -387,7 +407,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #endregion
 
 
-        public virtual bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration)
+        public virtual bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {
             return false;
         }

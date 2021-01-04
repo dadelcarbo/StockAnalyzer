@@ -18,25 +18,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string CONFIG_FILE_USER = @"\InvestingDownload.user.cfg";
         public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
 
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+        public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Parse Investing.cfg file// Create data folder if not existing
-            if (!Directory.Exists(rootFolder + FOLDER))
+            if (!Directory.Exists(RootFolder + FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + FOLDER);
+                Directory.CreateDirectory(RootFolder + FOLDER);
             }
-            if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
+            if (!Directory.Exists(RootFolder + ARCHIVE_FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
+                Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
             }
 
             this.needDownload = download;
 
             // Parse InvestingDownload.cfg file
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE_USER);
         }
-        private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
+        private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
             string line;
             if (File.Exists(fileName))
@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
-                                this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
+                                this.needDownload = this.DownloadDailyData(stockSerie);
                             }
                         }
                         else
@@ -71,17 +71,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool SupportsIntradayDownload => false;
 
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
+        public override bool LoadData(StockSerie stockSerie)
         {
             bool res = false;
-            var archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
                 res = true;
             }
 
-            var fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
             if (File.Exists(fileName))
             {
@@ -115,13 +115,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static bool first = true;
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadDailyData(StockSerie stockSerie)
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 NotifyProgress("Downloading daily data for " + stockSerie.StockName);
 
-                var fileName = rootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                 if (File.Exists(fileName))
                 {

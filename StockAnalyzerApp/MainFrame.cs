@@ -324,7 +324,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;
 
-            StockDataProviderBase.InitStockDictionary(stockRootFolder, this.StockDictionary,
+            StockDataProviderBase.InitStockDictionary(this.StockDictionary,
                 Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(),
                 new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
@@ -613,7 +613,7 @@ namespace StockAnalyzerApp
                 {
                     this.Cursor = Cursors.WaitCursor;
 
-                    if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
+                    if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                     {
                         if (this.currentStockSerie.Initialise())
                         {
@@ -710,7 +710,7 @@ namespace StockAnalyzerApp
 
                     if (alertConfig.TimeFrame == "Intraday")
                     {
-                        StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
                     }
 
                     if (!stockSerie.Initialise()) continue;
@@ -1099,7 +1099,7 @@ namespace StockAnalyzerApp
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
                     this.Cursor = Cursors.WaitCursor;
-                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, newSerie);
+                    StockDataProviderBase.DownloadSerieData(newSerie);
                 }
                 if (!newSerie.IsInitialised)
                 {
@@ -1381,7 +1381,58 @@ namespace StockAnalyzerApp
             }
             busy = false;
         }
+        private void ForceDownloadStock(bool showSplash)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
+            {
+                if (this.currentStockSerie != null)
+                {
+                    this.Cursor = Cursors.WaitCursor;
+                    if (showSplash)
+                    {
+                        StockSplashScreen.FadeInOutSpeed = 0.25;
+                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
+                        StockSplashScreen.ProgressVal = 0;
+                        StockSplashScreen.ProgressMax = 100;
+                        StockSplashScreen.ProgressMin = 0;
+                        StockSplashScreen.ShowSplashScreen();
+                    }
 
+                    if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
+                    {
+                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
+                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                        {
+                            try
+                            {
+                                //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
+                                ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                            }
+                            catch (Exception ex)
+                            {
+                                StockLog.Write(ex);
+                            }
+                        }
+
+                        if (this.currentStockSerie.Initialise())
+                        {
+                            this.ApplyTheme();
+                        }
+                        else
+                        {
+                            this.DeactivateGraphControls("Unable to download selected stock data...");
+                        }
+                    }
+
+                    if (showSplash)
+                    {
+                        StockSplashScreen.CloseForm(true);
+                    }
+                    this.Cursor = Cursors.Arrow;
+                }
+            }
+
+        }
         private void DownloadStock(bool showSplash)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1399,9 +1450,9 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    if (StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, this.currentStockSerie))
+                    if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                     {
-                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(Settings.Default.RootFolder, this.CurrentStockSerie);
+                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
                             try
@@ -1453,7 +1504,7 @@ namespace StockAnalyzerApp
 
                 foreach (var stockSerie in stockSeries)
                 {
-                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                    StockDataProviderBase.DownloadSerieData(stockSerie);
                     StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
 
                     if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
@@ -2570,7 +2621,7 @@ namespace StockAnalyzerApp
                         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
 
                         var bitmap = this.graphCloseControl.GetSnapshot();
-                        string fileName = Path.Combine(imgFolder, stockSerie.StockName.Replace(":","") +"_" + alertDef.IndicatorName + ".png");
+                        string fileName = Path.Combine(imgFolder, stockSerie.StockName.Replace(":", "") + "_" + alertDef.IndicatorName + ".png");
                         bitmap.Save(fileName, ImageFormat.Png);
                     }
                     stockSerie.BarDuration = currentBarDuration;
@@ -3082,6 +3133,11 @@ namespace StockAnalyzerApp
                             this.DownloadStockGroup();
                         }
                         break;
+                    case Keys.Control | Keys.Shift | Keys.F5:
+                        {
+                            this.ForceDownloadStock(true);
+                        }
+                        break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
                         {
                             MTFDlg mtfDlg = new MTFDlg();
@@ -3175,7 +3231,7 @@ namespace StockAnalyzerApp
         }
         private void GenerateTrainingData()
         {
-            var fileName = Path.Combine(Settings.Default.RootFolder, this.selectedGroup.ToString() + "_Train.csv");
+            var fileName = Path.Combine(this.selectedGroup.ToString() + "_Train.csv");
             using (var fs = new StreamWriter(fileName, false))
             {
                 fs.WriteLine("Name,Index,Close,Var,indic1,indic2,indic3,indic4,indic5,indic6");
@@ -4392,7 +4448,7 @@ namespace StockAnalyzerApp
             if (configDialog.ShowDialog(this.StockDictionary) == DialogResult.OK)
             {
                 var dataProvider = (IStockDataProvider)configDialog;
-                dataProvider.InitDictionary(Settings.Default.RootFolder, this.StockDictionary, true);
+                dataProvider.InitDictionary(this.StockDictionary, true);
                 this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
                 this.InitialiseStockCombo(true);

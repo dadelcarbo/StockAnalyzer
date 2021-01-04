@@ -20,10 +20,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public string UserConfigFileName => CONFIG_FILE_USER;
 
-        public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration)
+        public override bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {
             StockLog.Write("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
-            var durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
+            var durationFileName = RootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
             if (File.Exists(durationFileName))
             {
                 var values = serie.GetValues(duration);
@@ -51,29 +51,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+        public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Create data folder if not existing
-            if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
+            if (!Directory.Exists(RootFolder + ARCHIVE_FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
+                Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
             }
-            if (!Directory.Exists(rootFolder + INTRADAY_FOLDER))
+            if (!Directory.Exists(RootFolder + INTRADAY_FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
+                Directory.CreateDirectory(RootFolder + INTRADAY_FOLDER);
             }
 
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE_USER);
         }
 
         public override bool SupportsIntradayDownload => true;
 
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
+        public override bool LoadData(StockSerie stockSerie)
         {
-            var archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
@@ -87,12 +87,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return $"https://sgbourse.fr/EmcWebApi/api/Prices/Intraday?productId={ticker}";
         }
 
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadDailyData(StockSerie stockSerie)
         {
             return true;
         }
         static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
-        public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadIntradayData(StockSerie stockSerie)
         {
             if (stockSerie.Count > 0 && DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
             {
@@ -120,7 +120,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
                         }
                         stockSerie.IsInitialised = false;
-                        this.LoadData(rootFolder, stockSerie);
+                        this.LoadData(stockSerie);
                         DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last().Date.AddDays(1) : DateTime.MinValue;
                         var values = new Dictionary<DateTime, float>();
                         DateTime date;
@@ -173,7 +173,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
 
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                        var archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                        var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                         stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
 
@@ -187,7 +187,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return false;
         }
-        private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
+        private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
             string line;
             if (File.Exists(fileName))
@@ -208,7 +208,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
-                                this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
+                                this.needDownload = this.DownloadDailyData(stockSerie);
                             }
                         }
                         else

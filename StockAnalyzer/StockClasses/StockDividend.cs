@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockWeb;
+﻿using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockWeb;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,7 @@ namespace StockAnalyzer.StockClasses
     public class StockDividend
     {
         public static string DIVIDEND_SUBFOLDER = @"\data\dividend";
-        public StockDividend(string rootFolder, StockSerie stockSerie)
+        public StockDividend(StockSerie stockSerie)
         {
             this.Entries = new List<StockDividendEntry>();
             var shortName = stockSerie.ShortName;
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses
             {
                 shortName += ".PA";
             }
-            var filePath = Path.Combine(rootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
             if (File.Exists(filePath))
             {
                 this.LoadFromFile(filePath);
@@ -70,7 +71,7 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-        public bool DownloadFromYahoo(string rootFolder, StockSerie stockSerie)
+        public bool DownloadFromYahoo(StockSerie stockSerie)
         {
             var shortName = stockSerie.ShortName;
             if (stockSerie.DataProvider == StockDataProviders.StockDataProvider.ABC)
@@ -84,7 +85,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            var filePath = Path.Combine(rootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
             if (File.Exists(filePath) && File.GetLastWriteTimeUtc(filePath) > DateTime.Today.AddMonths(-1))
                 return false;
 
@@ -97,7 +98,7 @@ namespace StockAnalyzer.StockClasses
             var webHelper = new StockWebHelper();
 
             this.DownloadDate = DateTime.Today;
-            if (webHelper.DownloadFile(rootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv", url))
+            if (webHelper.DownloadFile(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv", url))
             {
                 this.LoadFromFile(filePath);
                 return true;

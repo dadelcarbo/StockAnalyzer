@@ -8,10 +8,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
    {
       private static StockDictionary stockDictionary;
       // IStockDataProvider Implemetation
-      public override bool LoadData(string rootFolder, StockSerie stockSerie)
+      public override bool LoadData(StockSerie stockSerie)
       {
          bool res = false;
-         string fileName = rootFolder + BULLBEARRATIO_FILENAME;
+         string fileName = RootFolder + BULLBEARRATIO_FILENAME;
          if (stockSerie.StockName == bullBearLogRatioName)
          {
             stockDictionary[bearBullRatioName].Initialise();
@@ -38,11 +38,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       {
          get { return false; }
       }
-      public override bool DownloadDailyData(string rootFolder, StockSerie serie)
+      public override bool DownloadDailyData(StockSerie serie)
       {
          throw new NotImplementedException();
       }
-      public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+      public override void InitDictionary(StockDictionary stockDictionary, bool download)
       {
          AAIIDataProvider.stockDictionary = stockDictionary;
          if (!stockDictionary.ContainsKey(bearBullRatioName))
@@ -115,7 +115,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                       ratio,
                       ratio, 0, date);
                   stockSerie.Add(bearBullRatioValue.DATE, bearBullRatioValue);
-                  bearBullRatioValue.Serie = stockSerie;
                }
             }
             res = true;
@@ -142,7 +141,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                ratio,
                ratio, 0, dailyValue.DATE);
             stockSerie.Add(bearBullLogRatioValue.DATE, bearBullLogRatioValue);
-            bearBullLogRatioValue.Serie = stockSerie;
          }
          return true;
       }

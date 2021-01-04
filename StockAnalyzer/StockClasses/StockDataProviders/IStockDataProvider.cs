@@ -23,11 +23,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         bool SupportsIntradayDownload { get; }
 
-        bool LoadData(string rootFolder, StockSerie stockSerie);
-        bool DownloadDailyData(string rootFolder, StockSerie stockSerie);
-        bool DownloadIntradayData(string rootFolder, StockSerie stockSerie);
-        void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download);
+        bool LoadData(StockSerie stockSerie);
+        bool DownloadDailyData(StockSerie stockSerie);
+        bool ForceDownloadData(StockSerie stockSerie);
+        bool DownloadIntradayData(StockSerie stockSerie);
+        void InitDictionary(StockDictionary stockDictionary, bool download);
 
-        bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie, StockBarDuration duration);
+        bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration);
     }
 }

@@ -14,9 +14,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             get { return false; }
         }
 
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+        public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            string folder = Path.Combine(rootFolder, PORTFOLIO_FOLDER);
+            string folder = Path.Combine(RootFolder, PORTFOLIO_FOLDER);
             try
             {
                 Portofolios = StockPortfolio.LoadPortfolios(folder);
@@ -27,12 +27,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadDailyData(StockSerie stockSerie)
         {
             return true;
         }
 
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
+        public override bool LoadData(StockSerie stockSerie)
         {
             return true;
         }

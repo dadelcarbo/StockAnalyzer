@@ -181,7 +181,7 @@
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.Designer.cs">
       <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockProviderBase.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockAgenda.cs" />
     <Compile Include="StockClasses\StockFinancial.cs" />
     <Compile Include="StockClasses\StockFinancialAttibute.cs" />

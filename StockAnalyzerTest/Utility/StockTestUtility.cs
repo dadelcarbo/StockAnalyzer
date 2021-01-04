@@ -30,7 +30,7 @@ namespace StockAnalyzerTest.Utility
 
             IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(dataProviderType);
 
-            dataProvider.InitDictionary(StockDataProviderBase.RootFolder, stockDictionary, false);
+            dataProvider.InitDictionary(stockDictionary, false);
 
             return stockDictionary;
         }

@@ -162,7 +162,7 @@ namespace StockAnalyzer.StockClasses
 
         private StockDividend dividend;
 
-        public StockDividend Dividend => dividend ?? (dividend = new StockDividend(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this));
+        public StockDividend Dividend => dividend ?? (dividend = new StockDividend(this));
 
         private static string AGENDA_SUBFOLDER = @"\data\agenda";
         private StockAgenda LoadAgenda()
@@ -258,12 +258,12 @@ namespace StockAnalyzer.StockClasses
             {
                 if (isInitialised != value)
                 {
+                    this.isInitialised = value;
                     if (!value)
                     {
                         this.Clear();
                         ResetAllCache();
                     }
-                    this.isInitialised = value;
                 }
             }
         }
@@ -554,6 +554,13 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         #region Constructors
+        public StockSerie()
+        {
+            this.DataSource = new StockDataSource
+            {
+                Duration = StockClasses.BarDuration.Daily
+            };
+        }
         public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
@@ -587,7 +594,7 @@ namespace StockAnalyzer.StockClasses
             };
             ResetAllCache();
         }
-        private void ResetAllCache()
+        public void ResetAllCache()
         {
             this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
             this.FloatSerieCache = new Dictionary<string, FloatSerie>();
@@ -600,6 +607,7 @@ namespace StockAnalyzer.StockClasses
             this.dateArray = null;
             this.valueArray = null;
             this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
+            this.IsInitialised = false;
         }
         public void ResetIndicatorCache()
         {
@@ -630,7 +638,7 @@ namespace StockAnalyzer.StockClasses
 
                     if (this.Count == 0)
                     {
-                        if (!StockDataProviderBase.LoadSerieData(StockDataProviderBase.RootFolder, this) || this.Count == 0)
+                        if (!StockDataProviderBase.LoadSerieData(this) || this.Count == 0)
                         {
                             return false;
                         }
@@ -5884,7 +5892,6 @@ namespace StockAnalyzer.StockClasses
                         if (readValue != null && !this.ContainsKey(readValue.DATE))
                         {
                             this.Add(readValue.DATE, readValue);
-                            readValue.Serie = this;
                         }
                     }
                 }
@@ -5920,7 +5927,6 @@ namespace StockAnalyzer.StockClasses
                         if (readValue != null && readValue.DATE > lastDateTime) //!bars.Any(b => b.DATE == readValue.DATE))
                         {
                             bars.Add(readValue);
-                            readValue.Serie = this;
                         }
                     }
                 }

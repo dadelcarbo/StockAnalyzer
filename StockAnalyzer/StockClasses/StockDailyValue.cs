@@ -27,8 +27,6 @@ namespace StockAnalyzer.StockClasses
         private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public StockSerie Serie { get; set; }
-
         public float GetStockData(StockDataType dataType)
         {
             if (dataType == StockDataType.VOLUME)

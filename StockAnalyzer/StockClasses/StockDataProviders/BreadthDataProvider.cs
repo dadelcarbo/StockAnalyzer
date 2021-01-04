@@ -10,18 +10,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private static StockDictionary stockDictionary = null;
 
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
+        public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             string line;
-            string fileName = rootFolder + "\\BreadthCfg.txt";
+            string fileName = RootFolder + "\\BreadthCfg.txt";
             // Parse yahoo.cfg file// Create data folder if not existing
-            if (!Directory.Exists(rootFolder + FOLDER))
+            if (!Directory.Exists(RootFolder + FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + FOLDER);
+                Directory.CreateDirectory(RootFolder + FOLDER);
             }
-            if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
+            if (!Directory.Exists(RootFolder + ARCHIVE_FOLDER))
             {
-                Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
+                Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
             }
 
             BreadthDataProvider.stockDictionary = stockDictionary;
@@ -50,63 +50,63 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
+        public override bool LoadData(StockSerie stockSerie)
         {
             // Read archive first
             string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            string fullFileName = rootFolder + ARCHIVE_FOLDER + "\\" + fileName;
+            string fullFileName = RootFolder + ARCHIVE_FOLDER + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
-            fullFileName = rootFolder + FOLDER + "\\" + fileName;
+            fullFileName = RootFolder + FOLDER + "\\" + fileName;
             res = ParseCSVFile(stockSerie, fullFileName) || res;
 
-            res |= GenerateBreadthData(rootFolder, stockSerie);
+            res |= GenerateBreadthData(stockSerie);
 
             return res;
         }
-        private bool GenerateBreadthData(string rootFolder, StockSerie stockSerie)
+        private bool GenerateBreadthData(StockSerie stockSerie)
         {
             string[] row = stockSerie.ShortName.Split('.');
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
             switch (row[0].Split('_')[0])
             {
                 case "AD":
-                    return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "EQW":
-                    return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "HL":
-                    return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                case "ER":
-                    return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "EMA":
-                    return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "STOKF":
-                    return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "STOKS":
-                    return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "McClellan":
-                    return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "McClellanSum":
-                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "BBWIDTH":
-                    return stockDictionary.GenerateBBWidthBreadth(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateBBWidthBreadth(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "MM":
-                    return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "MYOSC":
-                    return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], rootFolder + FOLDER, rootFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
             }
             return false;
         }
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadDailyData(StockSerie stockSerie)
         {
             return true;
         }
-        public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
+        public override bool DownloadIntradayData(StockSerie stockSerie)
         {
             if (stockSerie.StockName.Contains("CAC40") || stockSerie.StockName.Contains("SBF120"))
             {
-                StockDataProviderBase.DownloadSerieData(rootFolder, stockDictionary["CAC40"]);
-                StockDataProviderBase.DownloadSerieData(rootFolder, stockDictionary["ACCOR"]);
+                StockDataProviderBase.DownloadSerieData(stockDictionary["CAC40"]);
+                StockDataProviderBase.DownloadSerieData(stockDictionary["ACCOR"]);
                 stockSerie.IsInitialised = false;
 
                 stockSerie.ClearBarDurationCache();

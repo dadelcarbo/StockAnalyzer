@@ -466,7 +466,7 @@ namespace StockAnalyzerApp.CustomControl
             try
             {
                 StockLog.Write("StockName:" + stockSerie.StockName + "ThreadID:" + Thread.CurrentThread.ManagedThreadId);
-                StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                StockDataProviderBase.DownloadSerieData(stockSerie);
                 lock (progress)
                 {
                     progress[stockSerie] = ProgressStatus.Downloaded;
@@ -540,7 +540,7 @@ namespace StockAnalyzerApp.CustomControl
                     if (this.refreshDataCheckBox.Checked)
                     {
                         stockSerie.IsInitialised = false;
-                        StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
                     }
 
                     if (!stockSerie.Initialise())
@@ -669,7 +669,7 @@ namespace StockAnalyzerApp.CustomControl
                 {
                     stockSerie.IsInitialised = false;
                     StockSplashScreen.ProgressText = "Downloading " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                    StockDataProviderBase.DownloadSerieData(Settings.Default.RootFolder, stockSerie);
+                    StockDataProviderBase.DownloadSerieData(stockSerie);
                 }
             }
             catch (Exception ex)
