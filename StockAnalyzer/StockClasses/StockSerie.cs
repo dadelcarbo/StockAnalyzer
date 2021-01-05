@@ -41,6 +41,7 @@ namespace StockAnalyzer.StockClasses
             INDICES,
             INDICES_CALC,
             INDICATOR,
+            SECTORS,
             SECTORS_CAC,
             CURRENCY,
             COMMODITY,

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -90,11 +91,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     stockSerie.Values.Last().IsComplete = false;
                     var lastDate = stockSerie.Keys.Last();
 
-                    var previousMonth = lastDate.AddMonths(-2);
-                    var firstArchiveDate = new DateTime(previousMonth.Year, previousMonth.Month, 1); // Archive two month back
-
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
-                    File.Delete(fileName);
+                    var task = new Task(() =>
+                    {
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
+                        File.Delete(fileName);
+                    });
+                    task.Start();
                 }
                 else
                 {
@@ -149,9 +151,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var url = string.Empty;
                     if (stockSerie.Initialise() && stockSerie.Count > 0)
                     {
-                        var startDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7);
-                        if (startDate > DateTime.Today) return true;
-
+                        var startDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                        if (startDate >= DateTime.Today)
+                            return false;
+                        startDate = startDate.AddMonths(-2);
                         url = FormatURL(stockSerie.Ticker, startDate, DateTime.Now);
                     }
                     else
