@@ -21,7 +21,6 @@ using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using StockAnalyzerApp.CustomControl.GroupViewDlg;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
@@ -3110,26 +3109,6 @@ namespace StockAnalyzerApp
                             ZoomIn();
                         }
                         break;
-                    //case Keys.F4:
-                    //    {
-                    //                private StockMarketReplay marketReplay = null;
-
-                    //        if (marketReplay == null)
-                    //        {
-                    //            marketReplay = new StockMarketReplay();
-
-                    //            marketReplay.FormClosing += new FormClosingEventHandler(delegate
-                    //            {
-                    //                this.marketReplay = null;
-                    //            });
-                    //            marketReplay.Show();
-                    //        }
-                    //        else
-                    //        {
-                    //            marketReplay.Activate();
-                    //        }
-                    //    }
-                    //    break;
                     case Keys.F5:
                         {
                             this.DownloadStock(false);
@@ -3149,17 +3128,6 @@ namespace StockAnalyzerApp
                         {
                             MTFDlg mtfDlg = new MTFDlg();
                             mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                            mtfDlg.Show();
-                        }
-                        break;
-                    case Keys.Control | Keys.G: // Historical group view
-                        {
-                            var mtfDlg = new GroupViewDlg();
-                            mtfDlg.groupUserViewControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                            mtfDlg.Disposed += delegate
-                            {
-                                mtfDlg.groupUserViewControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                            };
                             mtfDlg.Show();
                         }
                         break;
