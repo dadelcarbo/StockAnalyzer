@@ -1400,7 +1400,7 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
                     {
-                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
+                        //this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
                             try
@@ -1452,13 +1452,13 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                     {
-                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
+                        // this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
                             try
                             {
                                 //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
-                                ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                                //ABCDataProvider.DownloadAgenda(this.currentStockSerie);
                             }
                             catch (Exception ex)
                             {
@@ -1489,50 +1489,57 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie != null)
             {
-                StockSplashScreen.FadeInOutSpeed = 0.25;
-                StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                 this.currentStockSerie.StockName;
-
-                var stockSeries =
-                   this.StockDictionary.Values.Where(
-                      s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
-
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = stockSeries.Count();
-                StockSplashScreen.ProgressMin = 0;
-                StockSplashScreen.ShowSplashScreen();
-
-                foreach (var stockSerie in stockSeries)
+                try
                 {
-                    StockDataProviderBase.DownloadSerieData(stockSerie);
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+                    StockSplashScreen.FadeInOutSpeed = 0.25;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
+                                                     this.currentStockSerie.StockName;
 
-                    if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                    var stockSeries =
+                       this.StockDictionary.Values.Where(
+                          s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
+
+                    StockSplashScreen.ProgressVal = 0;
+                    StockSplashScreen.ProgressMax = stockSeries.Count();
+                    StockSplashScreen.ProgressMin = 0;
+                    StockSplashScreen.ShowSplashScreen();
+
+                    foreach (var stockSerie in stockSeries)
                     {
-                        try
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
+                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+
+                        if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
-                            StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                            ABCDataProvider.DownloadAgenda(stockSerie);
-                            ABCDataProvider.DownloadFinancial(stockSerie);
+                            try
+                            {
+                                //StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                                //ABCDataProvider.DownloadAgenda(stockSerie);
+                                //ABCDataProvider.DownloadFinancial(stockSerie);
+                            }
+                            catch (Exception ex)
+                            {
+                                StockLog.Write(ex);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            StockLog.Write(ex);
-                        }
+
+                        StockSplashScreen.ProgressVal++;
                     }
 
-                    StockSplashScreen.ProgressVal++;
-                }
+                    this.SaveAnalysis(Settings.Default.AnalysisFile);
 
-                this.SaveAnalysis(Settings.Default.AnalysisFile);
-
-                if (this.currentStockSerie.Initialise())
-                {
-                    this.ApplyTheme();
+                    if (this.currentStockSerie.Initialise())
+                    {
+                        this.ApplyTheme();
+                    }
+                    else
+                    {
+                        this.DeactivateGraphControls("Unable to download selected stock data...");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.DeactivateGraphControls("Unable to download selected stock data...");
+                    StockLog.Write(ex);
                 }
 
                 StockSplashScreen.CloseForm(true);

@@ -94,7 +94,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 var resp = client.PostAsync("download/historiques", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType != "text/csv")
+                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
                 {
@@ -232,7 +232,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         // IStockDataProvider Implementation
         public override bool SupportsIntradayDownload
         {
-            get { return true; }
+            get { return false; }
         }
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
@@ -574,7 +574,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override bool ForceDownloadData(StockSerie stockSerie)
         {
-            string filePattern = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
+            string filePattern = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
             string fileName;
             StockLog.Write(stockSerie.StockName + " " + stockSerie.ISIN);
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -582,7 +582,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write("Network is Available");
                 stockSerie.ResetAllCache();
                 int nbFile = 0;
-                for (int i = DateTime.Today.Year - 1; i > ARCHIVE_START_YEAR; i--)
+                for (int i = DateTime.Today.Year - 1; i >= ARCHIVE_START_YEAR; i--)
                 {
                     fileName = filePattern.Replace("*", i.ToString());
                     if (!this.DownloadISIN(RootFolder + ABC_TMP_FOLDER, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ISIN))
@@ -619,8 +619,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
 
                 this.SaveToCSV(stockSerie, true);
-                stockSerie.IsInitialised = false; // @@@@
-
                 return true;
             }
             else
@@ -629,8 +627,54 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return false;
             }
         }
-
+        DateTime lastLoadedCAC40Date = new DateTime(LOAD_START_YEAR,1, 1);
+        DateTime lastDownloadedCAC40Date;
+        bool happyNewYear = false;
         public override bool DownloadDailyData(StockSerie stockSerie)
+        {
+            StockLog.Write("DownloadDailyData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.LoadData(stockSerie);
+                if (stockSerie.StockName == "CAC40")
+                {
+                    lastLoadedCAC40Date = stockSerie.Count > 0 ? stockSerie.Keys.Last() : new DateTime(LOAD_START_YEAR, 1, 1);
+                    if (lastLoadedCAC40Date.Date == DateTime.Today)
+                    {
+                        this.needDownload = false;
+                        return true;
+                    }
+                }
+                if (stockSerie.Count == 0)
+                {
+                    ForceDownloadData(stockSerie);
+                }
+                else
+                {
+                    var fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+                    this.DownloadISIN(RootFolder + ABC_TMP_FOLDER, fileName, lastLoadedCAC40Date, DateTime.Today, stockSerie.ISIN);
+
+                    stockSerie.IsInitialised = false;
+                    this.LoadData(stockSerie);
+
+                    if (stockSerie.StockName == "CAC40")
+                    {
+                        lastDownloadedCAC40Date = stockSerie.Keys.Last();
+                        this.needDownload = lastDownloadedCAC40Date > lastLoadedCAC40Date;
+                        happyNewYear = lastDownloadedCAC40Date.Year != lastLoadedCAC40Date.Year;
+                    }
+
+                    this.SaveToCSV(stockSerie, happyNewYear);
+
+                    File.Delete(fileName);
+                }
+                return true;
+            }
+            stockSerie.Initialise();
+            return true;
+        }
+        public bool DownloadDailyData2(StockSerie stockSerie)
         {
             string fileName;
             StockLog.Write("DownloadDailyData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
