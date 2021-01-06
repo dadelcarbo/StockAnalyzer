@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.palmaresControl1 = new CustomControl.PalmaresDlg.PalmaresControl();
+            this.palmaresControl1 = new CustomControl.PalmaresDlg.PalmaresControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -49,7 +49,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.elementHost1);
             this.Name = "PalmaresDlg";
-            this.Text = "PalmaresDlg";
+            this.Text = "Palmares";
             this.ResumeLayout(false);
 
         }
@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private CustomControl.PalmaresDlg.PalmaresControl palmaresControl1;
+        public CustomControl.PalmaresDlg.PalmaresControl palmaresControl1;
     }
 }

@@ -28,13 +28,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
-        static public Array BarDurations
-        {
-            get { return Enum.GetValues(typeof(BarDuration)); }
-        }
 
-        private BarDuration barDuration;
-        public BarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
+        private StockBarDuration barDuration;
+        public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
         private string indicator1;
         public string Indicator1
@@ -63,15 +59,45 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        private DateTime fromDate;
+        public DateTime FromDate
+        {
+            get { return fromDate; }
+            set
+            {
+                if (value != fromDate)
+                {
+                    fromDate = value;
+                    OnPropertyChanged("FromDate");
+                }
+            }
+        }
+
+        private DateTime toDate;
+        public DateTime ToDate
+        {
+            get { return toDate; }
+            set
+            {
+                if (value != toDate)
+                {
+                    toDate = value;
+                    OnPropertyChanged("ToDate");
+                }
+            }
+        }
+
+
         public List<PalmaresLine> Lines { get; set; }
 
         public PalmaresViewModel()
         {
             Indicator1 = "ROR(100,1)";
             Indicator2 = "HIGHEST(20)";
-            this.BarDuration = BarDuration.Daily;
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
+            this.ToDate = DateTime.Now;
+            this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
         }
         public bool Calculate()
         {
@@ -103,6 +129,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     continue;
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
+
+                #region Calculate Indicators
                 float stockIndicator1 = float.NaN;
                 if (viewableSeries1 != null)
                 {
@@ -113,18 +141,36 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0].Last; } catch { }
                 }
-
+                #endregion
+                #region Calculate 
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
+                var startIndex = stockSerie.IndexOfFirstGreaterOrEquals(this.FromDate);
+                if (startIndex == -1)
+                {
+                    continue;
+                }
+                var endIndex = stockSerie.IndexOfFirstLowerOrEquals(this.ToDate);
+                if (endIndex == -1)
+                {
+                    continue;
+                }
+
+                float lastValue = closeSerie[endIndex];
+                float firstValue = closeSerie[startIndex];
+                float variation = (lastValue - firstValue) / firstValue;
+
+                #endregion
+
                 Lines.Add(new PalmaresLine
                 {
-                    Serie = stockSerie.StockName,
-                    Value = closeSerie.Last,
+                    Name = stockSerie.StockName,
+                    Value = lastValue,
                     Indicator1 = stockIndicator1,
                     Indicator2 = stockIndicator2,
-                    Variation = 0
+                    Variation = variation
                 });
 
                 stockSerie.BarDuration = previousDuration;

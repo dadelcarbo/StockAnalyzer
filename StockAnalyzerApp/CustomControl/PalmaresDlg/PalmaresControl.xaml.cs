@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Telerik.Windows.Controls;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -10,18 +11,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     /// </summary>
     public partial class PalmaresControl : UserControl
     {
-        PalmaresViewModel viewModel;
-        public PalmaresControl()
+        private System.Windows.Forms.Form Form { get; }
+        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+
+        public PalmaresViewModel ViewModel;
+        public PalmaresControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
-            this.DataContext = this.viewModel = this.Resources["ViewModel"] as PalmaresViewModel;
+            this.Form = form;
+            this.DataContext = this.ViewModel = this.Resources["ViewModel"] as PalmaresViewModel;
         }
 
         private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
 
-            this.viewModel.Calculate();
+            this.ViewModel.Calculate();
 
             this.Cursor = Cursors.Arrow;
         }
@@ -34,6 +39,30 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             if (datagrid.Columns.Any(c => c.Header.ToString() == e.PropertyName))
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Variation")
+            {
+                var col = e.Column as GridViewDataColumn;
+                col.DataFormatString = "P2";
+            }
+        }
+        private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+        {
+            // Open on the alert stock
+            var line = ((RadGridView)sender).SelectedItem as PalmaresLine;
+
+            if (line == null) return;
+
+            if (SelectedStockChanged != null)
+            {
+                StockAnalyzerForm.MainFrame.Activate();
+                this.SelectedStockChanged(line.Name, ViewModel.BarDuration, true);
+                this.Form.TopMost = true;
+                this.Form.TopMost = false;
             }
         }
     }

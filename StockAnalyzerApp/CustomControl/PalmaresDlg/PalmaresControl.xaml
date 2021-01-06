@@ -4,14 +4,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PalmaresDlg"
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PalmaresDlg" xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:PalmaresViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <local:PalmaresViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
-    <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}">
+    <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -20,20 +20,33 @@
         <GroupBox Grid.Row="0" Header="Config">
             <StackPanel Orientation="Horizontal" Margin="2">
                 <Label Content="Group " Width="56"/>
-                <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center" />
-                <Label Content="Duration" Width="56"/>
-                <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration}" Width="100" VerticalAlignment="Center"></ComboBox>
-                <Button Content=" Calculate " Click="CalculateBtn_OnClick" Margin="50,0,0,0"/>
+                <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center"/>
+                <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                <Button Content="Refresh" Click="CalculateBtn_OnClick" Margin="50,0,0,0"  VerticalAlignment="Center"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="Speed Indicators">
-            <StackPanel Orientation="Horizontal" Margin="2">
-                <TextBox Text="{Binding Indicator1}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
-                <TextBox Text="{Binding Indicator2}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
-            </StackPanel>
-        </GroupBox>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
+            <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBox Text="{Binding Indicator1}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator2}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Date Range" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Label Content="From "/>
+                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate}"/>
+                    <Label Content="To "/>
+                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate}"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
         <telerik:RadGridView Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
-                             ItemsSource="{Binding Lines}" >
+                             ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGeneratingColumn="RadGridView_AutoGeneratingColumn"
+                             SelectionChanged="RadGridView_SelectionChanged">
+            <telerik:RadGridView.Columns>
+                
+            </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>
 </UserControl>

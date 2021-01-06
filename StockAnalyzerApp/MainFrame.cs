@@ -161,7 +161,6 @@ namespace StockAnalyzerApp
         private StockSerie.Groups selectedGroup;
         public StockSerie.Groups Group => selectedGroup;
 
-        private PalmaresDlg palmaresDlg = null;
 
         private static int NbBars { get; set; }
 
@@ -2253,13 +2252,16 @@ namespace StockAnalyzerApp
         }
         #endregion
 
-        private void palmaresMenuItem_Click(object sender, EventArgs e)
+        private PalmaresDlg palmaresDlg = null;
+    private void palmaresMenuItem_Click(object sender, EventArgs e)
         {
             if (palmaresDlg == null)
             {
                 palmaresDlg = new PalmaresDlg();
+                palmaresDlg.palmaresControl1.ViewModel.BarDuration = this.BarDuration;
+                palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
-
+                palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 palmaresDlg.Show();
             }
             else
@@ -2269,7 +2271,8 @@ namespace StockAnalyzerApp
         }
         private void palmaresDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
-            palmaresDlg = null;
+            palmaresDlg.palmaresControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+            this.palmaresDlg = null;
         }
         private void OnSelectedStockGroupChanged(string stockGroup)
         {
@@ -2550,9 +2553,9 @@ namespace StockAnalyzerApp
             int nbLeaders = 12;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
-            StockSplashScreen.ShowSplashScreen(); 
-            
-            string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders*2);
+            StockSplashScreen.ShowSplashScreen();
+
+            string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A, imgFolderName);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);

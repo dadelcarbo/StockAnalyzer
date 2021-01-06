@@ -50,13 +50,7 @@ namespace StockAnalyzer.StockClasses
             RATIO,
             BREADTH,
             BOND,
-            TICK,
-            RANGE,
             INTRADAY,
-            USER1,
-            USER2,
-            USER3,
-            ShortInterest,
             Portfolio,
             Replay,
             ALL
