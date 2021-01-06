@@ -320,6 +320,17 @@
     <Compile Include="CustomControl\MultiTimeFrameChartDlg.Designer.cs">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PalmaresDlg\PalmaresControl.xaml.cs">
+      <DependentUpon>PalmaresControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PalmaresDlg\PalmaresDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\PalmaresDlg\PalmaresDlg.Designer.cs">
+      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PalmaresDlg\PalmaresLine.cs" />
+    <Compile Include="CustomControl\PalmaresDlg\PalmaresViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml.cs">
       <DependentUpon>PortfolioSimulationControl.xaml</DependentUpon>
@@ -478,11 +489,11 @@
     <Compile Include="CustomControl\ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControl\PalmaresDlg.cs">
+    <Compile Include="CustomControl\PalmaresDlg2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\PalmaresDlg.Designer.cs">
-      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    <Compile Include="CustomControl\PalmaresDlg2.Designer.cs">
+      <DependentUpon>PalmaresDlg2.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\StockAlertDlg.cs">
       <SubType>Form</SubType>
@@ -624,6 +635,9 @@
     <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
       <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PalmaresDlg\PalmaresDlg.resx">
+      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -705,8 +719,8 @@
     <EmbeddedResource Include="CustomControl\MultiTimeFrameGrid.resx">
       <DependentUpon>MultiTimeFrameGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PalmaresDlg.fr-FR.resx">
-      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\PalmaresDlg2.fr-FR.resx">
+      <DependentUpon>PalmaresDlg2.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.fr-FR.resx">
@@ -718,8 +732,8 @@
     <EmbeddedResource Include="CustomControl\SaveThemeForm.resx">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\PalmaresDlg.resx">
-      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\PalmaresDlg2.resx">
+      <DependentUpon>PalmaresDlg2.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.resx">
@@ -980,6 +994,10 @@
     <Page Include="CustomControl\MultiTimeFrameDlg\MTFUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\PalmaresDlg\PalmaresControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml">
       <Generator>MSBuild:Compile</Generator>

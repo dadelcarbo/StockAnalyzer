@@ -9,7 +9,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 
 namespace StockAnalyzerApp.CustomControl
 {
-    public partial class PalmaresDlg : Form
+    public partial class PalmaresDlg2 : Form
     {
         public StockDictionary StockDico { get; set; }
         public List<StockWatchList> WatchLists { get; set; }
@@ -28,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl
         private DateTime previousFromDate;
         private DateTime previousUntilDate;
 
-        public PalmaresDlg(StockDictionary stockDico, List<StockWatchList> watchLists, StockSerie.Groups selectedGroup, ToolStripProgressBar progressBar)
+        public PalmaresDlg2(StockDictionary stockDico, List<StockWatchList> watchLists, StockSerie.Groups selectedGroup, ToolStripProgressBar progressBar)
         {
             InitializeComponent();
 

@@ -1,6 +1,6 @@
 ﻿namespace StockAnalyzerApp.CustomControl
 {
-   partial class PalmaresDlg
+   partial class PalmaresDlg2
    {
       /// <summary>
       /// Required designer variable.
@@ -29,7 +29,7 @@
       private void InitializeComponent()
       {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PalmaresDlg));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PalmaresDlg2));
             this.palmaresView = new System.Windows.Forms.ListView();
             this.nameHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.variationHdr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

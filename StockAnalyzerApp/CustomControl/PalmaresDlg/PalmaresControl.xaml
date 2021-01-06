@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.PalmaresDlg.PalmaresControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PalmaresDlg"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800" Background="AntiqueWhite"
+             d:DataContext="{d:DesignInstance Type=local:PalmaresViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <local:PalmaresViewModel x:Key="ViewModel"/>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Config">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Content="Group " Width="56"/>
+                <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center" />
+                <Label Content="Duration" Width="56"/>
+                <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration}" Width="100" VerticalAlignment="Center"></ComboBox>
+                <Button Content=" Calculate " Click="CalculateBtn_OnClick" Margin="50,0,0,0"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Header="Speed Indicators">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <TextBox Text="{Binding Indicator1}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
+                <TextBox Text="{Binding Indicator2}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
+        <telerik:RadGridView Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+                             ItemsSource="{Binding Lines}" >
+        </telerik:RadGridView>
+    </Grid>
+</UserControl>

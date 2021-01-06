@@ -25,6 +25,7 @@ using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
+using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
@@ -2256,17 +2257,13 @@ namespace StockAnalyzerApp
         {
             if (palmaresDlg == null)
             {
-                palmaresDlg = new PalmaresDlg(StockDictionary, this.WatchLists, this.selectedGroup, this.progressBar);
-                palmaresDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                palmaresDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
-
+                palmaresDlg = new PalmaresDlg();
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
 
                 palmaresDlg.Show();
             }
             else
             {
-                this.palmaresDlg.InitializeListView();
                 palmaresDlg.Activate();
             }
         }
