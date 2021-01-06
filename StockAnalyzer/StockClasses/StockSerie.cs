@@ -211,8 +211,11 @@ namespace StockAnalyzer.StockClasses
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
         public new void Add(DateTime date, StockDailyValue dailyValue)
         {
-            this.DataSource.Values.Add(dailyValue);
-            base.Add(date, dailyValue);
+            if (date.Year >= StockDataProviderBase.LOAD_START_YEAR)
+            {
+                this.DataSource.Values.Add(dailyValue);
+                base.Add(date, dailyValue);
+            }
         }
 
         [XmlIgnore]

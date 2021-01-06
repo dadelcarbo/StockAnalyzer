@@ -229,7 +229,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private static StockDictionary stockDictionary = null;
 
-        // IStockDataProvider Implementation
         public override bool SupportsIntradayDownload
         {
             get { return false; }
@@ -263,7 +262,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             fileName = RootFolder + CONFIG_FILE_USER;
             InitFromFile(download, fileName);
         }
-
         public static void CreateDirectories()
         {
             // Create data folder if not existing
@@ -320,7 +318,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-
         private void InitFromLibelleFile(string fileName)
         {
             if (File.Exists(fileName))
@@ -351,7 +348,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-
         private void InitFromFile(bool download, string fileName)
         {
             StockLog.Write("InitFromFile " + fileName);
@@ -502,7 +498,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return abcGroup;
         }
-
         private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
         {
             try
@@ -569,7 +564,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return true;
         }
-
         public override bool ForceDownloadData(StockSerie stockSerie)
         {
             string filePattern = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + "_*.csv";
@@ -740,7 +734,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        // private functions
+        /// <summary>
+        /// Parse ABC file
+        /// </summary>
+        /// <param name="stockSerie"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         protected override bool ParseCSVFile(StockSerie stockSerie, string fileName)
         {
             if (File.Exists(fileName))
@@ -799,24 +798,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockValue;
         }
 
-        private string ExtractValue(string s, string nameDelimiter)
-        {
-            string valueDelimiter = "value=\"";
-
-            int viewStateNamePosition = s.IndexOf(nameDelimiter);
-            if (viewStateNamePosition == -1)
-                return string.Empty;
-            int viewStateValuePosition = s.IndexOf(
-                  valueDelimiter, viewStateNamePosition
-               );
-
-            int viewStateStartPosition = viewStateValuePosition +
-                                         valueDelimiter.Length;
-            int viewStateEndPosition = s.IndexOf("\"", viewStateStartPosition);
-
-            return HttpUtility.UrlEncode(s.Substring(viewStateStartPosition, viewStateEndPosition - viewStateStartPosition));
-        }
-
         public static SortedDictionary<string, string> SectorCodes = new SortedDictionary<string, string>()
       {
          {"2710", "Aerospatiale et defense"},
@@ -857,7 +838,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
          {"2770", "Transport industriel"},
          {"5750", "Voyages et loisirs"}
       };
-
         private bool DownloadSectorFromABC(string destFolder, string sectorID)
         {
             bool success = true;
@@ -917,7 +897,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup)
         {
             bool success = true;
@@ -950,7 +929,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-
         private bool SaveResponseToFile(string fileName, HttpWebRequest req)
         {
             bool success = true;
@@ -996,7 +974,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             get { return "Euronext"; }
         }
         #endregion
-
 
         private static List<string> cac40List = null;
         public static bool BelongsToCAC40(StockSerie stockSerie)
@@ -1338,6 +1315,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return data;
         }
 
+        #region Persistency
         const string DATEFORMAT = "dd/MM/yyyy";
         public void SaveToCSV(StockSerie stockSerie, bool forceArchive = true)
         {
@@ -1383,8 +1361,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         string[] row = sr.ReadLine().Split(';');
-                        var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), DateTime.ParseExact(row[0], DATEFORMAT, usCulture));
-                        stockSerie.Add(value.DATE, value);
+                        DateTime date = DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                        if (date.Year >= LOAD_START_YEAR)
+                        {
+                            var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), date);
+                            stockSerie.Add(value.DATE, value);
+                        }
                     }
                 }
                 result = true;
@@ -1405,5 +1387,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return result;
         }
+        #endregion
     }
 }
