@@ -44,7 +44,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
         {
-            if (e.Column.Header.ToString() == "Variation")
+            var columnName = e.Column.Header.ToString();
+            if (columnName == "Variation" || columnName == "Stop")
             {
                 var col = e.Column as GridViewDataColumn;
                 col.DataFormatString = "P2";

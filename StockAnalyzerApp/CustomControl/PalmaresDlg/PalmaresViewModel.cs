@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,32 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+        private string indicator3;
+        public string Indicator3
+        {
+            get { return indicator3; }
+            set
+            {
+                if (value != indicator3)
+                {
+                    indicator3 = value;
+                    OnPropertyChanged("Indicator3");
+                }
+            }
+        }
+        private string stop;
+        public string Stop
+        {
+            get { return stop; }
+            set
+            {
+                if (value != stop)
+                {
+                    stop = value;
+                    OnPropertyChanged("Stop");
+                }
+            }
+        }
 
         private DateTime fromDate;
         public DateTime FromDate
@@ -92,8 +119,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public PalmaresViewModel()
         {
-            Indicator1 = "ROR(100,1)";
-            Indicator2 = "HIGHEST(20)";
+            this.Indicator1 = "ROR(100,1)";
+            this.Indicator2 = "HIGHEST(20)";
+            this.Indicator3 = "STOKFBODY(20,3)";
+            this.Stop = "TRAILMDH(30,1,-1)";
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
@@ -120,6 +149,24 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 catch { }
             }
+            IStockIndicator viewableSeries3 = null;
+            if (!string.IsNullOrEmpty(this.indicator3))
+            {
+                try
+                {
+                    viewableSeries3 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator3) as IStockIndicator;
+                }
+                catch { }
+            }
+            IStockTrailStop trailStopSerie = null;
+            if (!string.IsNullOrEmpty(this.stop))
+            {
+                try
+                {
+                    trailStopSerie = StockViewableItemsManager.GetViewableItem("TRAILSTOP|" + this.stop) as IStockTrailStop;
+                }
+                catch { }
+            }
             #endregion
 
             Lines = new List<PalmaresLine>();
@@ -130,19 +177,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
 
-                #region Calculate Indicators
-                float stockIndicator1 = float.NaN;
-                if (viewableSeries1 != null)
-                {
-                    try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0].Last; } catch { }
-                }
-                float stockIndicator2 = float.NaN;
-                if (viewableSeries2 != null)
-                {
-                    try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0].Last; } catch { }
-                }
-                #endregion
-                #region Calculate 
+                #region Calculate variation
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
@@ -163,6 +198,34 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 float variation = (lastValue - firstValue) / firstValue;
 
                 #endregion
+                #region Calculate Indicators
+                float stockIndicator1 = float.NaN;
+                if (viewableSeries1 != null)
+                {
+                    try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
+                }
+                float stockIndicator2 = float.NaN;
+                if (viewableSeries2 != null)
+                {
+                    try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
+                }
+                float stockIndicator3 = float.NaN;
+                if (viewableSeries3 != null)
+                {
+                    try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
+                }
+                float stopValue = float.NaN;
+                if (trailStopSerie != null)
+                {
+                    try
+                    {
+                        trailStopSerie.ApplyTo(stockSerie);
+                        stopValue = trailStopSerie.Series[0][endIndex];
+                        stopValue = (lastValue - stopValue) / lastValue;
+                    }
+                    catch { }
+                }
+                #endregion
 
                 Lines.Add(new PalmaresLine
                 {
@@ -170,6 +233,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Value = lastValue,
                     Indicator1 = stockIndicator1,
                     Indicator2 = stockIndicator2,
+                    Indicator3 = stockIndicator3,
+                    Stop = stopValue,
                     Variation = variation
                 });
 
