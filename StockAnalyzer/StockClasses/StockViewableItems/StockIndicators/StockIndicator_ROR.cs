@@ -9,12 +9,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override string Definition => base.Definition + Environment.NewLine + "Rate of rise" + Environment.NewLine + "Plots the current percent increase from the lowest low in the period";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
-        public override string[] ParameterNames => new string[] { "Period", "Smoothing" };
-        public override Object[] ParameterDefaultValues => new Object[] { 100, 1 };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Period" };
+        public override Object[] ParameterDefaultValues => new Object[] { 100 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[]
         {
-        "ROR(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")"
+        "ROR(" + this.Parameters[0].ToString() + ")"
         };
 
         public override System.Drawing.Pen[] SeriePens
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (lines == null)
                 {
-                    lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)), new HLine((float)this.parameters[2], new Pen(Color.Gray)) };
+                    lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
                 }
                 return lines;
             }
@@ -46,7 +46,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            FloatSerie rocSerie = (stockSerie.CalculateRateOfRise(period, false)).CalculateEMA((int)this.parameters[1]) * 100f;
+            FloatSerie rocSerie = (stockSerie.CalculateRateOfRise(period, false));
 
             this.series[0] = rocSerie;
             this.Series[0].Name = this.Name;

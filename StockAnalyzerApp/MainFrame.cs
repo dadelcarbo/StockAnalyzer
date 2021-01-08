@@ -4511,8 +4511,7 @@ namespace StockAnalyzerApp
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
                 return;
-            string url = "https://www.abcbourse.com/graphes/display.aspx?s=%SYMBOL%p";
-            url = url.Replace("%SYMBOL%", this.currentStockSerie.ShortName);
+            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={this.currentStockSerie.ShortName}p";
             Process.Start(url);
         }
 

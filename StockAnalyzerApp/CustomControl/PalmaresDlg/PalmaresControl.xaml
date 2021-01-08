@@ -9,6 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:PalmaresViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:PalmaresViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
@@ -45,16 +46,22 @@
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate, Mode=TwoWay}"/>
                     <Label Content="To "/>
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate, Mode=TwoWay}"/>
-                    <Button Content="Apply" Click="CalculateBtn_OnClick" VerticalAlignment="Center" Margin="6"/>
+                    <Button Content="Apply" Click="CalculateBtn_OnClick" Margin="6"/>
                 </StackPanel>
             </GroupBox>
+            <Button x:Name="exportToExcel" Height="24" Width="24"  VerticalAlignment="Center" Margin="6,10,0,0" 
+                    Visibility="{Binding ExportEnabled, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
+                    Click="exportToExcel_Click">
+                <Image Source="../../Resources/Excel.png" />
+            </Button>
         </StackPanel>
-        <telerik:RadGridView Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+        <telerik:RadGridView Name="gridView" Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGeneratingColumn="RadGridView_AutoGeneratingColumn"
-                             SelectionChanged="RadGridView_SelectionChanged">
-            <telerik:RadGridView.Columns>
-
-            </telerik:RadGridView.Columns>
+                             SelectionChanged="RadGridView_SelectionChanged"
+                             ElementExportingToDocument="gridView_ElementExportingToDocument">
+            <!--<telerik:RadGridView.Columns>
+                <telerik:GridViewHyperlinkColumn Header="Name" DataMemberBinding="{Binding Link}" ContentBinding="{Binding Name}" />
+            </telerik:RadGridView.Columns>-->
         </telerik:RadGridView>
     </Grid>
 </UserControl>

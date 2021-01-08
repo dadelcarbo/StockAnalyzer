@@ -114,6 +114,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        public bool ExportEnabled => this.Lines != null && this.Lines.Count > 0;
 
         public List<PalmaresLine> Lines { get; set; }
 
@@ -238,12 +239,14 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator3 = stockIndicator3,
                     Stop = stopValue,
                     Variation = variation
+                    // Link = stockSerie.DataProvider == StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC ? $"https://www.abcbourse.com/graphes/eod/{stockSerie.ShortName}p" : null
                 });
 
                 stockSerie.BarDuration = previousDuration;
             }
 
             OnPropertyChanged("Lines");
+            OnPropertyChanged("ExportEnabled");
             return true;
         }
     }
