@@ -17,19 +17,26 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Header="Config">
-            <StackPanel Orientation="Horizontal" Margin="2">
-                <Label Content="Group " Width="56"/>
-                <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center"/>
-                <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
-                <Button Content="Refresh" Click="CalculateBtn_OnClick" Margin="50,0,0,0"  VerticalAlignment="Center"/>
-            </StackPanel>
-        </GroupBox>
+        <StackPanel Orientation="Horizontal" Margin="2">
+            <GroupBox Header="Config">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Label Content="Group " Width="56"/>
+                    <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center"/>
+                    <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Stop" >
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBox Text="{Binding Stop}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Indicator1}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator2}" Width="200" Margin="2"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator1}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator2}" Width="144" Margin="2"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator3}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Date Range" HorizontalAlignment="Right">
@@ -38,6 +45,7 @@
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate}"/>
                     <Label Content="To "/>
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate}"/>
+                    <Button Content="Apply" Click="CalculateBtn_OnClick" VerticalAlignment="Center" Margin="6"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
@@ -45,7 +53,7 @@
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGeneratingColumn="RadGridView_AutoGeneratingColumn"
                              SelectionChanged="RadGridView_SelectionChanged">
             <telerik:RadGridView.Columns>
-                
+
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

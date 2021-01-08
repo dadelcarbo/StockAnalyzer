@@ -1101,7 +1101,6 @@ namespace StockAnalyzer.StockClasses
                 previousIsUpCycle = isUpCycle;
             }
         }
-
         public void CalculateHilbertSR(IStockIndicator hilbertIndicator, int nbLatencyBars, out FloatSerie hilbertS, out FloatSerie hilbertR, out FloatSerie secondarySupport, out FloatSerie secondaryResistance)
         {
             hilbertS = new FloatSerie(this.Count, "HILBERT.S");
@@ -1438,7 +1437,6 @@ namespace StockAnalyzer.StockClasses
                 latestLow = Math.Min(lowSerie[i], Math.Min(lowSerie[i - 1], latestLow));
             }
         }
-
         public void CalculateOverboughtSR(FloatSerie serie, float overbought, float oversold, out FloatSerie supportSerie, out FloatSerie resistanceSerie)
         {
             supportSerie = new FloatSerie(this.Count, serie.Name + ".S", float.NaN);
