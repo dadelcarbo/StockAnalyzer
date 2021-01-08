@@ -1449,19 +1449,7 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                     {
-                        // this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
-                        {
-                            try
-                            {
-                                //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
-                                //ABCDataProvider.DownloadAgenda(this.currentStockSerie);
-                            }
-                            catch (Exception ex)
-                            {
-                                StockLog.Write(ex);
-                            }
-                        }
+                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
 
                         if (this.currentStockSerie.Initialise())
                         {

@@ -126,7 +126,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Indicator1 = "ROR(100)";
             this.Indicator2 = "HIGHEST(20)";
             this.Indicator3 = "STOKFBODY(20,3)";
-            this.Stop = "TRAILMDH(30,1,-1)";
+            this.Stop = "TRAILBODY(12)";
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
@@ -235,6 +235,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 Lines.Add(new PalmaresLine
                 {
+                    ShortName = stockSerie.ShortName,
+                    //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",
                     Name = stockSerie.StockName,
                     Value = lastValue,
                     Indicator1 = stockIndicator1,

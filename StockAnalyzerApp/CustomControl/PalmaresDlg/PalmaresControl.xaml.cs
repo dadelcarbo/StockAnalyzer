@@ -102,9 +102,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.Cursor = Cursors.Wait;
             try
             {
-
                 string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, @"CommentReport\Palmares.xlsx");
-                using (System.IO.FileStream fileStream = new System.IO.FileStream(exportFile, FileMode.Create, FileAccess.Write))
+                using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
                     var options = new GridViewDocumentExportOptions()
                     {
@@ -113,6 +112,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     };
                     this.gridView.ExportToXlsx(fileStream, options);
                 }
+                System.Diagnostics.Process.Start(exportFile);
             }
             catch (System.Exception ex)
             {
@@ -146,6 +146,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 else
                 {
+                    var column = cellExportingArgs.Column as GridViewDataColumn;
                     var tryInt = int.TryParse(cellExportingArgs.Value.ToString(), out var i);
                     if (tryInt)
                     {

@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses
         {
             this.Entries = new List<StockDividendEntry>();
             var shortName = stockSerie.ShortName;
-            if (stockSerie.DataProvider == StockDataProviders.StockDataProvider.ABC)
+            if (stockSerie.DataProvider == StockDataProvider.ABC)
             {
                 shortName += ".PA";
             }
@@ -74,7 +74,7 @@ namespace StockAnalyzer.StockClasses
         public bool DownloadFromYahoo(StockSerie stockSerie)
         {
             var shortName = stockSerie.ShortName;
-            if (stockSerie.DataProvider == StockDataProviders.StockDataProvider.ABC)
+            if (stockSerie.DataProvider == StockDataProvider.ABC)
             {
                 if (!shortName.EndsWith(".PA"))
                 {
