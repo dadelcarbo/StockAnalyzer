@@ -363,8 +363,6 @@ namespace StockAnalyzerApp
                 this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
                 this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
             }
-            // Calculate Ranks
-            //this.StockDictionary.CalculateRank(StockSerie.Groups.EURO_A, "ROR(100,1)", StockBarDuration.Daily, stockRootFolder + @"\data\Rank");
 
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portofolio data...";
@@ -738,7 +736,7 @@ namespace StockAnalyzerApp
                                         stockSerie.StockGroup.ToString(),
                                         dailyValue.CLOSE,
                                         dailyValue.VOLUME,
-                                        stockSerie.GetIndicator("ROR(100,1").Series[0][i]);
+                                        stockSerie.GetIndicator("ROR(100)").Series[0][i]);
 
                                     if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
@@ -2548,8 +2546,8 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
-            string rankLeaderIndicatorName = "ROR(100,1)";
-            string rankLoserIndicatorName = "ROD(100,1)";
+            string rankLeaderIndicatorName = "ROR(100)";
+            string rankLoserIndicatorName = "ROD(100)";
             int nbLeaders = 12;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;

@@ -23,8 +23,8 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie rodFilterSerie;
         protected override void Init(StockSerie stockSerie)
         {
-            rorFilterSerie = stockSerie.GetIndicator($"ROR({RORPeriod},1,40)").Series[0];
-            rodFilterSerie = stockSerie.GetIndicator($"ROD({RORPeriod},1,40)").Series[0];
+            rorFilterSerie = stockSerie.GetIndicator($"ROR({RORPeriod})").Series[0];
+            rodFilterSerie = stockSerie.GetIndicator($"ROD({RORPeriod})").Series[0];
         }
 
         protected override TradeAction TryToOpenPosition(int index)

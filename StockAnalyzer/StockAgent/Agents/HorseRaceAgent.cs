@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockAgent.Agents
                     serie.BarDuration = stockSerie.BarDuration;
                 }
             }
-            rankSerie = stockSerie.GetIndicator("RANK(ROR(12_1))").Series[0];
+            rankSerie = stockSerie.GetIndicator("RANK(ROR(12))").Series[0];
         }
 
         protected override TradeAction TryToOpenPosition(int index)

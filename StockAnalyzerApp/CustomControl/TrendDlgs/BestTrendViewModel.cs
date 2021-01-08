@@ -75,7 +75,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                     {
                         stockSerie.BarDuration = this.barDuration;
                         if (stockSerie.Count <= period) continue;
-                        var indicatorSerie = stockSerie.GetIndicator($"ROR({this.period},1)").Series[0];
+                        var indicatorSerie = stockSerie.GetIndicator($"ROR({this.period})").Series[0];
                         var maxIndex = indicatorSerie.FindMaxIndex(period, stockSerie.Count - 1);
                         var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - period, maxIndex);
 
