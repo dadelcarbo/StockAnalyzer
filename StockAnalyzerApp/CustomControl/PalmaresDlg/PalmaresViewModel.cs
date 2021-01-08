@@ -26,6 +26,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     group = value;
                     OnPropertyChanged("Group");
+                    this.Lines?.Clear();
+                    OnPropertyChanged("Lines");
+                    OnPropertyChanged("ExportEnabled");
                 }
             }
         }
@@ -120,7 +123,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public PalmaresViewModel()
         {
-            this.Indicator1 = "ROR(100,1)";
+            this.Indicator1 = "ROR(100)";
             this.Indicator2 = "HIGHEST(20)";
             this.Indicator3 = "STOKFBODY(20,3)";
             this.Stop = "TRAILMDH(30,1,-1)";

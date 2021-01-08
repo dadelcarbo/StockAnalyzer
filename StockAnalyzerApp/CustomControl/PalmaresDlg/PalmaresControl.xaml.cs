@@ -35,17 +35,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Cursor = Cursors.Arrow;
         }
 
-        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            var datagrid = sender as DataGrid;
-            if (datagrid == null)
-                return;
-            if (datagrid.Columns.Any(c => c.Header.ToString() == e.PropertyName))
-            {
-                e.Cancel = true;
-            }
-        }
-
         private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
         {
             var columnName = e.Column.Header.ToString();
@@ -110,8 +99,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         private void exportToExcel_Click(object sender, RoutedEventArgs e)
         {
+                this.Cursor = Cursors.Wait;
             try
             {
+
                 string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, @"CommentReport\Palmares.xlsx");
                 using (System.IO.FileStream fileStream = new System.IO.FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
@@ -127,6 +118,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 StockAnalyzerException.MessageBox(ex);
             }
+            this.Cursor = Cursors.Arrow;
         }
 
         private void gridView_ElementExportingToDocument(object sender, GridViewElementExportingToDocumentEventArgs e)
