@@ -495,7 +495,7 @@ namespace StockAnalyzerApp
             // multipleTimeFrameViewMenuItem
             // 
             this.multipleTimeFrameViewMenuItem.Name = "multipleTimeFrameViewMenuItem";
-            this.multipleTimeFrameViewMenuItem.ShortcutKeys = Keys.F3;
+            this.multipleTimeFrameViewMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Shift | Keys.F3;
             this.multipleTimeFrameViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.multipleTimeFrameViewMenuItem.Text = "Multiple Time Frame View";
             this.multipleTimeFrameViewMenuItem.Click += multipleTimeFrameViewMenuItem_Click;
@@ -562,6 +562,7 @@ namespace StockAnalyzerApp
             this.palmaresMenuItem.Name = "palmaresMenuItem";
             this.palmaresMenuItem.Size = new System.Drawing.Size(240, 22);
             this.palmaresMenuItem.Text = "Palmares";
+            this.palmaresMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
             this.palmaresMenuItem.Click += new System.EventHandler(this.palmaresMenuItem_Click);
             // 
             // toolStripSeparator10

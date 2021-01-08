@@ -45,10 +45,31 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
         {
             var columnName = e.Column.Header.ToString();
-            if (columnName == "Variation" || columnName == "Stop")
+            var col = e.Column as GridViewDataColumn;
+            switch (columnName)
             {
-                var col = e.Column as GridViewDataColumn;
-                col.DataFormatString = "P2";
+                case "Variation":
+                case "Stop":
+                    col.DataFormatString = "P2";
+                    break;
+                case "Indicator1":
+                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
+                    {
+                        col.Header = ViewModel.Indicator1.Split('(')[0];
+                    }
+                    break;
+                case "Indicator2":
+                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
+                    {
+                        col.Header = ViewModel.Indicator2.Split('(')[0];
+                    }
+                    break;
+                case "Indicator3":
+                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
+                    {
+                        col.Header = ViewModel.Indicator3.Split('(')[0];
+                    }
+                    break;
             }
         }
         private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)

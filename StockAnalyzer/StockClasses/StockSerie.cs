@@ -207,7 +207,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (date.Year >= StockDataProviderBase.LOAD_START_YEAR)
             {
-                this.DataSource.Values.Add(dailyValue);
+                //this.DataSource.Values.Add(dailyValue);
                 base.Add(date, dailyValue);
             }
         }

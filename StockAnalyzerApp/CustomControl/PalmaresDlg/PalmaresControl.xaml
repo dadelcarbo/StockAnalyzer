@@ -42,9 +42,9 @@
             <GroupBox Header="Date Range" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal" Margin="2">
                     <Label Content="From "/>
-                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate}"/>
+                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate, Mode=TwoWay}"/>
                     <Label Content="To "/>
-                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate}"/>
+                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate, Mode=TwoWay}"/>
                     <Button Content="Apply" Click="CalculateBtn_OnClick" VerticalAlignment="Center" Margin="6"/>
                 </StackPanel>
             </GroupBox>

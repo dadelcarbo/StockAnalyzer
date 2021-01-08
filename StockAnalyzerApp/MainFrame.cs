@@ -2253,7 +2253,7 @@ namespace StockAnalyzerApp
         #endregion
 
         private PalmaresDlg palmaresDlg = null;
-    private void palmaresMenuItem_Click(object sender, EventArgs e)
+        private void palmaresMenuItem_Click(object sender, EventArgs e)
         {
             if (palmaresDlg == null)
             {
