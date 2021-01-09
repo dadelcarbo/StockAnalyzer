@@ -395,7 +395,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA3Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MACD.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HILBERTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PIVOT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarIndicatorEventBase.cs" />
@@ -449,8 +448,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSI.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERT.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HILBERTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\IStockIndicator.cs" />

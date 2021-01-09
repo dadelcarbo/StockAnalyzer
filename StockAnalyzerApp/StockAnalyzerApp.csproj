@@ -782,7 +782,6 @@
     </None>
     <None Include="Properties\DataSources\StockAnalyzer.StockClasses.StockSerie.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />
-    <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.IndicatorDlgs.HilbertSineWaveConfigDlg.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.PortofolioDlgs.StockRiskCalculatorDlg.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.SimulationDlgs.StockMarketReplay.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.Properties.Settings.datasource" />
@@ -889,9 +888,6 @@
     <Content Include="Resources\email.png" />
     <Content Include="Resources\Forward-icon.png" />
     <Content Include="Resources\gear.png" />
-    <Content Include="Resources\HilbertAVG.bmp" />
-    <Content Include="Resources\HilbertRSI.bmp" />
-    <Content Include="Resources\HilbertStok.bmp" />
     <None Include="Resources\Misc-Zoom-In-icon.png" />
     <None Include="Resources\Misc-Zoom-Out-icon.png" />
     <None Include="Resources\magnet_pencil.png" />
