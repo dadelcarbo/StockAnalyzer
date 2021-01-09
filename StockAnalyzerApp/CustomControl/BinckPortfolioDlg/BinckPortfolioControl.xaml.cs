@@ -1,6 +1,9 @@
 ﻿using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzerSettings.Properties;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
@@ -120,10 +123,10 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         private void SelectionChanged(string stockName, StockBarDuration duration = null, string indicator = null)
         {
             var mapping = StockPortfolio.GetMapping(stockName);
-            if (mapping != null)
-            {
+            if (mapping != null) 
                 stockName = mapping.StockName;
-            }
+            if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName) 
+                return;
             if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
             {
                 StockAnalyzerForm.MainFrame.Activate();
@@ -139,6 +142,11 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 this.Form.TopMost = true;
                 this.Form.TopMost = false;
             }
+        }
+        private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (BinckPortfolioViewModel)this.DataContext;
+            viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
         }
     }
 }

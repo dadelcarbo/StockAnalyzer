@@ -37,7 +37,7 @@
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(583, 391);
+            this.elementHost1.Size = new System.Drawing.Size(991, 270);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.binckPortfolioControl1;
@@ -49,7 +49,7 @@
             this.Controls.Add(this.elementHost1);
             this.Name = "BinckPortfolioDlg";
             this.Text = "Portfolio View";
-            this.Size = new System.Drawing.Size(800, 400);
+            this.Size = new System.Drawing.Size(1000, 400);
             this.TopLevel = true;
             this.ResumeLayout(false);
 

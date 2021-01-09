@@ -126,7 +126,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Indicator1 = "ROR(100)";
             this.Indicator2 = "HIGHEST(20)";
             this.Indicator3 = "STOKFBODY(20,3)";
-            this.Stop = "TRAILBODY(12)";
+            this.Stop = "TRAILHLBODY(12)";
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
