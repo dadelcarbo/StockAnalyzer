@@ -165,47 +165,19 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
 
         private ICommand stopCommand;
-        public ICommand StopCommand
-        {
-            get
-            {
-                return stopCommand ?? (stopCommand = new CommandBase(StopReplay));
+        public ICommand StopCommand => stopCommand ?? (stopCommand = new CommandBase(StopReplay));
 
-
-            }
-        }
         private ICommand forwardCommand;
-        public ICommand ForwardCommand
-        {
-            get
-            {
-                return forwardCommand ?? (forwardCommand = new CommandBase(Forward));
-            }
-        }
+        public ICommand ForwardCommand => forwardCommand ?? (forwardCommand = new CommandBase(Forward));
+
         private ICommand fastForwardCommand;
-        public ICommand FastForwardCommand
-        {
-            get
-            {
-                return fastForwardCommand ?? (fastForwardCommand = new CommandBase(FastForward));
-            }
-        }
+        public ICommand FastForwardCommand => fastForwardCommand ?? (fastForwardCommand = new CommandBase(FastForward));
+
         private ICommand buyCommand;
-        public ICommand BuyCommand
-        {
-            get
-            {
-                return buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled"));
-            }
-        }
+        public ICommand BuyCommand => buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled"));
+
         private ICommand sellCommand;
-        public ICommand SellCommand
-        {
-            get
-            {
-                return sellCommand ?? (sellCommand = new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled"));
-            }
-        }
+        public ICommand SellCommand => sellCommand ?? (sellCommand = new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled"));
 
         private void StopReplay()
         {

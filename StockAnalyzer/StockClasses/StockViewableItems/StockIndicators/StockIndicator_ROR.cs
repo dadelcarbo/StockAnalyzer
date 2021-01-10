@@ -12,36 +12,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period" };
         public override Object[] ParameterDefaultValues => new Object[] { 100 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
-        public override string[] SerieNames => new string[]
-        {
-        "ROR(" + this.Parameters[0].ToString() + ")"
-        };
+        public override string[] SerieNames => new string[] { "ROR(" + this.Parameters[0].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.DarkGreen) };
-                }
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] { new Pen(Color.Black) });
 
         static HLine[] lines = null;
-
-        public override HLine[] HorizontalLines
-        {
-            get
-            {
-                if (lines == null)
-                {
-                    lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
-                }
-                return lines;
-            }
-        }
+        public override HLine[] HorizontalLines => lines ?? (lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) });
 
         public override void ApplyTo(StockSerie stockSerie)
         {

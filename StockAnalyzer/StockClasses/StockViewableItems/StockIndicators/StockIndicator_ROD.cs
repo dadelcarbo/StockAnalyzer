@@ -6,58 +6,28 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ROD : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override string Definition => base.Definition + Environment.NewLine + "Rate of decline" + Environment.NewLine + "Plots the current percent decrease from the highest high in the period";
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 100 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period" };
+
+        public override Object[] ParameterDefaultValues => new Object[] { 100 };
+
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
         public override string[] SerieNames => new string[] { $"ROD({this.Parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.DarkGreen) };
-                }
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] { new Pen(Color.Black) });
 
         static HLine[] lines = null;
-
-        public override HLine[] HorizontalLines
-        {
-            get
-            {
-                if (lines == null)
-                {
-                    lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
-                }
-                return lines;
-            }
-        }
+        public override HLine[] HorizontalLines => lines ?? (lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) });
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie rocSerie = (stockSerie.CalculateRateOfDecline((int)this.parameters[0]));
+            FloatSerie rodSerie = (stockSerie.CalculateRateOfDecline((int)this.parameters[0]));
 
-            this.series[0] = rocSerie;
+            this.series[0] = rodSerie;
             this.Series[0].Name = this.Name;
 
             // Detecting events
@@ -65,10 +35,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = 2; i < stockSerie.Count; i++)
             {
-                this.eventSeries[0][i] = (rocSerie[i - 2] < rocSerie[i - 1] && rocSerie[i - 1] > rocSerie[i]);
-                this.eventSeries[1][i] = (rocSerie[i - 2] > rocSerie[i - 1] && rocSerie[i - 1] < rocSerie[i]);
-                this.eventSeries[2][i] = (rocSerie[i] == 0);
-                this.eventSeries[3][i] = (rocSerie[i - 1] == 0 && rocSerie[i] > 0);
+                this.eventSeries[0][i] = (rodSerie[i - 2] < rodSerie[i - 1] && rodSerie[i - 1] > rodSerie[i]);
+                this.eventSeries[1][i] = (rodSerie[i - 2] > rodSerie[i - 1] && rodSerie[i - 1] < rodSerie[i]);
+                this.eventSeries[2][i] = (rodSerie[i] == 0);
+                this.eventSeries[3][i] = (rodSerie[i - 1] == 0 && rodSerie[i] > 0);
             }
         }
         static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };

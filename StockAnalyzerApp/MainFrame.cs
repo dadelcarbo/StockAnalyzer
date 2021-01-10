@@ -2665,7 +2665,7 @@ namespace StockAnalyzerApp
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
-                    StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Initializing " + reportGroup + " - " + stockSerie.StockName;
                     if (stockSerie.Initialise() && stockSerie.Count > 100)
                     {
                         stockSerie.BarDuration = duration;
@@ -2757,7 +2757,7 @@ namespace StockAnalyzerApp
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
-                    StockSplashScreen.ProgressText = "Initializing " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Initializing " + reportGroup + " - " + stockSerie.StockName;
                     if (stockSerie.Initialise() && stockSerie.Count > 100)
                     {
                         stockSerie.BarDuration = duration;
@@ -2792,7 +2792,7 @@ namespace StockAnalyzerApp
                 </tr>
                 <tr>
                     <th>Stock Name</th>
-                    <th>{rankLeaderIndicatorName}</th>
+                    <th>{rankLoserIndicatorName}</th>
                     <th>Rank Trend</th>
                     <th>Daily %</th>
                     <th>Daily Trend</th>
@@ -2801,13 +2801,13 @@ namespace StockAnalyzerApp
                 </thead>
                 <tbody>";
 
-                leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
+                leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
                 foreach (RankedSerie pair in leaders)
                 {
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
                         Replace("%COL1%", pair.stockSerie.StockName).
-                        Replace("%COL2%", (-pair.rankIndicatorValue).ToString("P2")).
+                        Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
                         Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                         Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
