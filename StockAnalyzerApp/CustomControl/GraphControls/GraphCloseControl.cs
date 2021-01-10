@@ -17,7 +17,7 @@ using StockAnalyzerSettings.Properties;
 using System.IO;
 using StockAnalyzerApp.CustomControl.CommentDlg;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs;
+using StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -2138,9 +2138,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     EntryDate = this.dateSerie[lastMouseIndex],
                     StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
                     StockName = this.serieName,
-                    Portfolio = this.BinckPortfolio
+                    Portfolio = this.BinckPortfolio,
+                    IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
                 };
-                openTradeViewModel.SetIndicatorsFromTheme(StockAnalyzerForm.MainFrame.GetCurrentTheme());
+                openTradeViewModel.IndicatorName = openTradeViewModel.IndicatorNames?.FirstOrDefault();
 
                 OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
                 if (openPositionDlg.ShowDialog() == DialogResult.OK)

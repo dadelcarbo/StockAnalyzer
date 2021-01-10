@@ -2,7 +2,7 @@
 using StockAnalyzer.StockBinckPortfolio;
 using System;
 
-namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
+namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
 {
     public class CloseTradeViewModel : NotifyPropertyChangedBase
     {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
+namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
 {
     /// <summary>
     /// Interaction logic for CloseTradeUserControl.xaml

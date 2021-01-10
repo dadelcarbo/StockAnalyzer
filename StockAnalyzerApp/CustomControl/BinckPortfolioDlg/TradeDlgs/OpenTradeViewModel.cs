@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
+namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
 {
     public class OpenTradeViewModel : NotifyPropertyChangedBase
     {
@@ -102,19 +102,5 @@ namespace StockAnalyzerApp.CustomControl.GraphControls.TradeDlgs
         public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };
         public IList<string> IndicatorNames { get; set; }
         public StockPortfolio Portfolio { get; set; }
-
-        public void SetIndicatorsFromTheme(Dictionary<string, List<string>> theme)
-        {
-            this.IndicatorNames = new List<string>();
-            foreach (var section in theme)
-            {
-                foreach (var line in section.Value.Where(l => l.StartsWith("INDICATOR") || l.StartsWith("CLOUD") || l.StartsWith("PAINTBAR") || l.StartsWith("TRAILSTOP") || l.StartsWith("DECORATOR") || l.StartsWith("TRAIL")))
-                {
-                    var fields = line.Split('|');
-                    this.IndicatorNames.Add($"{fields[0]}|{fields[1]}");
-                }
-            }
-            this.IndicatorName = this.IndicatorNames.FirstOrDefault();
-        }
     }
 }

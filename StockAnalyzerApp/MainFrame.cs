@@ -3660,6 +3660,19 @@ namespace StockAnalyzerApp
                 LoadCurveTheme(currentTheme);
             return this.themeDictionary[this.CurrentTheme];
         }
+        public List<string> GetIndicatorsFromCurrentTheme()
+        {
+            var indicatorNames = new List<string>();
+            foreach (var section in this.GetCurrentTheme())
+            {
+                foreach (var line in section.Value.Where(l => l.StartsWith("INDICATOR") || l.StartsWith("CLOUD") || l.StartsWith("PAINTBAR") || l.StartsWith("TRAILSTOP") || l.StartsWith("DECORATOR") || l.StartsWith("TRAIL")))
+                {
+                    var fields = line.Split('|');
+                    indicatorNames.Add($"{fields[0]}|{fields[1]}");
+                }
+            }
+            return indicatorNames;
+        }
 
 
         public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;

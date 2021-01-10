@@ -268,26 +268,26 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.Designer.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.Designer.cs">
       <DependentUpon>ClosePositionDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.Designer.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.Designer.cs">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\CloseTradeUserControl.xaml.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml.cs">
       <DependentUpon>CloseTradeUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml.cs">
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml.cs">
       <DependentUpon>OpenTradeUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\CloseTradeViewModel.cs" />
-    <Compile Include="CustomControl\GraphControls\TradeDlgs\OpenTradeViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeViewModel.cs" />
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
       <DependentUpon>HorseRaceControl.xaml</DependentUpon>
     </Compile>
@@ -608,10 +608,10 @@
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\GraphControls\TradeDlgs\ClosePositionDlg.resx">
+    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.resx">
       <DependentUpon>ClosePositionDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\GraphControls\TradeDlgs\OpenPositionDlg.resx">
+    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.resx">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
@@ -977,11 +977,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\GraphControls\TradeDlgs\CloseTradeUserControl.xaml">
+    <Page Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControl\GraphControls\TradeDlgs\OpenTradeUserControl.xaml">
+    <Page Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
