@@ -73,6 +73,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.cloudGroupBox = new System.Windows.Forms.GroupBox();
             this.trailStopGroupBox = new System.Windows.Forms.GroupBox();
             this.graphMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.indicatorMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addIndicatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addHorizontalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,8 +81,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addTrailStopsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDecoratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indicatorMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cloudMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -95,7 +94,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curveConfigBox.SuspendLayout();
             this.graphMenuStrip.SuspendLayout();
             this.indicatorMenuStrip.SuspendLayout();
-            this.cloudMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeView1
@@ -450,14 +448,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.indicatorMenuStrip.Name = "indicatorMenuStrip";
             resources.ApplyResources(this.indicatorMenuStrip, "indicatorMenuStrip");
             // 
-            // cloudMenuStrip
-            // 
-            this.cloudMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeStripMenuItem,
-            this.copyStripMenuItem});
-            this.cloudMenuStrip.Name = "cloudMenuStrip";
-            resources.ApplyResources(this.cloudMenuStrip, "cloudMenuStrip");
-            // 
             // removeStripMenuItem
             // 
             this.removeStripMenuItem.Name = "removeStripMenuItem";
@@ -529,7 +519,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curveConfigBox.PerformLayout();
             this.graphMenuStrip.ResumeLayout(false);
             this.indicatorMenuStrip.ResumeLayout(false);
-            this.cloudMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -545,10 +534,9 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.GroupBox cloudGroupBox;
         private System.Windows.Forms.GroupBox trailStopGroupBox;
         private System.Windows.Forms.ContextMenuStrip graphMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem addIndicatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCloudToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
-        private System.Windows.Forms.ContextMenuStrip cloudMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem removeStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addDecoratorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTrailToolStripMenuItem;

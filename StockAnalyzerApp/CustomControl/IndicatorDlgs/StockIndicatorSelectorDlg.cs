@@ -429,7 +429,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                 case "CLOUD":
                                     {
                                         var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line);
-                                        treeNode1 = new CloudNode(stockCloud.Name, this.cloudMenuStrip, stockCloud);
+                                        treeNode1 = new CloudNode(stockCloud.Name, this.indicatorMenuStrip, stockCloud);
                                         for (int i = 0; i < stockCloud.SeriesCount; i++)
                                         {
                                             CurveNode curveNode = new CurveNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i], true, stockCloud.SerieVisibility[i]);
@@ -823,7 +823,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     stockNode.Nodes.Remove(node);
                 }
-                StockNode cloudNode = new CloudNode(stockCloud.Name, this.cloudMenuStrip, stockCloud);
+                StockNode cloudNode = new CloudNode(stockCloud.Name, this.indicatorMenuStrip, stockCloud);
                 stockNode.Nodes.Add(cloudNode);
                 int i = 0;
                 foreach (string curveName in stockCloud.SerieNames)
@@ -1074,7 +1074,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 y = (Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
                 bullPoints[i].X = (float)x;
                 bullPoints[i].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
-                y = (Math.Sin((x*1.12 + 25) * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                y = (Math.Sin((x * 1.12 + 25) * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
                 bearPoints[i].X = (float)x;
                 bearPoints[i++].Y = (float)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
             }
@@ -1603,6 +1603,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         ActivateCloudConfigPanel("CloudParam");
 
                         this.removeStripMenuItem.Visible = true;
+                        this.copyStripMenuItem.Visible = true;
                         this.addDecoratorToolStripMenuItem.Visible = false;
                         this.addTrailToolStripMenuItem.Visible = false;
                     }
@@ -1611,15 +1612,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         ActivateIndicatorConfigPanel("PaintBarParam");
                         ViewableItemNode viewableItemNode = (ViewableItemNode)treeNode;
+                        this.removeStripMenuItem.Visible = true;
+                        this.copyStripMenuItem.Visible = true;
                         if (viewableItemNode.ViewableItem.DisplayTarget == IndicatorDisplayTarget.PriceIndicator)
                         {
-                            this.removeStripMenuItem.Visible = true;
                             this.addDecoratorToolStripMenuItem.Visible = false;
                             this.addTrailToolStripMenuItem.Visible = false;
                         }
                         else
                         {
-                            this.removeStripMenuItem.Visible = true;
                             this.addDecoratorToolStripMenuItem.Visible = true;
                             this.addTrailToolStripMenuItem.Visible = true;
                         }
@@ -1629,15 +1630,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         ActivateIndicatorConfigPanel("TrailStopParam");
                         ViewableItemNode viewableItemNode = (ViewableItemNode)treeNode;
+                        this.removeStripMenuItem.Visible = true;
+                        this.copyStripMenuItem.Visible = true;
                         if (viewableItemNode.ViewableItem.DisplayTarget == IndicatorDisplayTarget.PriceIndicator)
                         {
-                            this.removeStripMenuItem.Visible = true;
                             this.addDecoratorToolStripMenuItem.Visible = false;
                             this.addTrailToolStripMenuItem.Visible = false;
                         }
                         else
                         {
-                            this.removeStripMenuItem.Visible = true;
                             this.addDecoratorToolStripMenuItem.Visible = true;
                             this.addTrailToolStripMenuItem.Visible = true;
                         }

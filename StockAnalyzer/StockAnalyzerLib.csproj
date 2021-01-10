@@ -243,7 +243,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EXP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKFBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RODIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
@@ -294,10 +293,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLPROAM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMONEY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD3.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROCEX3.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR3.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCIEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANWIDTH.cs" />

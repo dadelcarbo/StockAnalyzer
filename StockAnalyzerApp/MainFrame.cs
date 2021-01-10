@@ -2715,7 +2715,7 @@ namespace StockAnalyzerApp
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
                         Replace("%COL1%", pair.stockSerie.StockName).
-                        Replace("%COL2%", (pair.rankIndicatorValue / 100.0f).ToString("P2")).
+                        Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
                         Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                         Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
@@ -2807,7 +2807,7 @@ namespace StockAnalyzerApp
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
                         Replace("%COL1%", pair.stockSerie.StockName).
-                        Replace("%COL2%", (pair.rankIndicatorValue / -100.0f).ToString("P2")).
+                        Replace("%COL2%", (-pair.rankIndicatorValue).ToString("P2")).
                         Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
                         Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
 
