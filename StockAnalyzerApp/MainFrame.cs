@@ -724,7 +724,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                //this.GenerateAlert(p);
+                this.GenerateAlert(p);
             }
         }
 
