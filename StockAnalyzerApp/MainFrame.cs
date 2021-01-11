@@ -684,11 +684,11 @@ namespace StockAnalyzerApp
             }
         }
 
+        private StockAlertConfig userDefinedAlertConfig = StockAlertConfig.GetConfig("UserDefined");
         private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig("Intraday");
         private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig("Daily");
         private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig("Weekly");
         private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig("Monthly");
-        private StockAlertConfig userDefinedAlertConfig = StockAlertConfig.GetConfig("UserDefined");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
