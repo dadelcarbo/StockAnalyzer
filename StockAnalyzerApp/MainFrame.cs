@@ -884,9 +884,9 @@ namespace StockAnalyzerApp
                             var dailyValue = values.ElementAt(i);
                             string eventName = null;
                             if (drawingIndicator.Events[0][i])
-                                eventName = "PAINTBAR|ResistanceBroken";
+                                eventName = "PAINTBAR|DRAWING()=>ResistanceBroken";
                             else if (drawingIndicator.Events[1][i])
-                                eventName = "PAINTBAR|SupportBroken";
+                                eventName = "PAINTBAR|DRAWING()=>SupportBroken";
                             if (eventName!=null)
                             {
                                 var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
