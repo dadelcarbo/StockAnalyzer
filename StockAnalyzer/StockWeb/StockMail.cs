@@ -42,11 +42,11 @@ namespace StockAnalyzer.StockWeb
                         message.IsBodyHtml = false;
                         SmtpClient smtp = new SmtpClient(SMTPServer);
 
-                        smtp.Send(message);
+                        //smtp.Send(message);
                     }
                     catch (System.Exception exp)
                     {
-                        System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
+                        //System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
                     }
                 }
             }

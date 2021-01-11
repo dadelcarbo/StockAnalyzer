@@ -45,7 +45,6 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
@@ -276,6 +275,13 @@ namespace StockAnalyzerApp
 
             // Enable timers and multithreading
             busy = false;
+
+            this.FormClosing += StockAnalyzerForm_FormClosing1;
+        }
+
+        private void StockAnalyzerForm_FormClosing1(object sender, FormClosingEventArgs e)
+        {
+            TimerSuspended = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -435,28 +441,16 @@ namespace StockAnalyzerApp
             {
                 GenerateAlert(dailyAlertConfig);
             }
-#if !DEBUG
-            else
-            {
-                Task.Run(() =>
-                {
-                    foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL) && s.Count == 0))
-                    {
-                        stockSerie.Initialise();
-                    }
-                });
-            }
-#endif
 
             if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
                 GenerateAlert(weeklyAlertConfig);
             }
-
             if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
             {
                 GenerateAlert(monthlyAlertConfig);
             }
+
             #endregion
 
             if (Settings.Default.GenerateDailyReport)
@@ -592,9 +586,69 @@ namespace StockAnalyzerApp
             }
         }
 
+        private bool CheckLicense()
+        {
+            return true;
+            //StockLicense stockLicense = null;
+
+            //// Check on local disk in license is found
+            //string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
+            //if (File.Exists(licenseFileName))
+            //{
+            //    string fileName = licenseFileName;
+            //    using (StreamReader sr = new StreamReader(fileName))
+            //    {
+            //        try
+            //        {
+            //            stockLicense = new StockLicense(Settings.Default.UserId, sr.ReadLine());
+            //        }
+            //        catch
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseCorrupted);
+            //            return false;
+            //        }
+            //        if (stockLicense.UserID != Settings.Default.UserId)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidUserId);
+            //            return false;
+            //        }
+            //        if (Settings.Default.MachineID == string.Empty)
+            //        {
+            //            Settings.Default.MachineID = StockToolKit.GetMachineUID();
+            //            Settings.Default.Save();
+            //        }
+            //        if (stockLicense.MachineID != Settings.Default.MachineID)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidMachineId);
+            //            return false;
+            //        }
+            //        if (stockLicense.ExpiryDate < DateTime.Today)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseExpired);
+            //            return false;
+            //        }
+            //        if (Assembly.GetExecutingAssembly().GetName().Version.Major > stockLicense.MajorVerion)
+            //        {
+            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseWrongVersion);
+            //            return false;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseNoFile);
+            //}
+            //return true;
+        }
+
+        private void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
+        {
+            this.startIndex = startIndex;
+            this.endIndex = endIndex;
+        }
+
+        #endregion
         #region TIMER MANAGEMENT
-
-
         public static bool busy = false;
 
         private void refreshTimer_Tick(object sender, EventArgs e)
@@ -634,6 +688,7 @@ namespace StockAnalyzerApp
         private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig("Daily");
         private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig("Weekly");
         private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig("Monthly");
+        private StockAlertConfig userDefinedAlertConfig = StockAlertConfig.GetConfig("UserDefined");
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -646,18 +701,39 @@ namespace StockAnalyzerApp
                     return;
             }
 
-            if (this.intradayAlertConfig == null || this.intradayAlertConfig.AlertDefs.Count == 0) return;
+            if (this.intradayAlertConfig != null && this.intradayAlertConfig.AlertDefs.Count > 0)
+            {
+                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                alertThread.Name = "IntradayAlert";
+                alertThread.Start(this.intradayAlertConfig);
+            }
 
-            var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-            alertThread.Name = "Alert";
-            alertThread.Start(this.intradayAlertConfig);
+            if (this.userDefinedAlertConfig != null && this.userDefinedAlertConfig.AlertDefs.Count > 0)
+            {
+                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                alertThread.Name = "UserDefinedAlert";
+                alertThread.Start(this.userDefinedAlertConfig);
+            }
         }
         public void GenerateAlert_Thread(object param)
         {
-            this.GenerateAlert((StockAlertConfig)param);
+            var p = (StockAlertConfig)param;
+            if (p.TimeFrame == "UserDefined")
+            {
+                this.GenerateUserDefinedAlert(p);
+            }
+            else
+            {
+                //this.GenerateAlert(p);
+            }
         }
+
+        ManualResetEvent alertThreadEvent = new ManualResetEvent(true);
         public void GenerateAlert(StockAlertConfig alertConfig)
         {
+            StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
+            alertThreadEvent.WaitOne();
+            alertThreadEvent.Reset();
             if (busy || alertConfig == null) return;
             busy = true;
 
@@ -705,7 +781,7 @@ namespace StockAnalyzerApp
                         }
                     }
 
-                    if (alertConfig.TimeFrame == "Intraday")
+                    if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
                     {
                         StockDataProviderBase.DownloadSerieData(stockSerie);
                     }
@@ -774,6 +850,146 @@ namespace StockAnalyzerApp
             {
                 DrawingItem.CreatedByAlert = false;
                 busy = false;
+                alertThreadEvent.Set();
+            }
+        }
+        public void GenerateUserDefinedAlert(StockAlertConfig alertConfig)
+        {
+            StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
+            alertThreadEvent.WaitOne();
+            alertThreadEvent.Reset();
+            if (busy || alertConfig == null) return;
+            busy = true;
+
+            try
+            {
+                int lookbackPeriod = 10;
+
+                DrawingItem.CreatedByAlert = true;
+                string alertString = string.Empty;
+
+                #region Detect alert from drawing
+                var drawingIndicator = StockViewableItemsManager.GetViewableItem("PAINTBAR|DRAWING()") as IStockPaintBar;
+                foreach (var stockSerie in StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockAnalysis.DrawingItems.Sum(di=>di.Value.Count) != 0))
+                {
+                    StockBarDuration previouBarDuration = stockSerie.BarDuration;
+                    foreach (var drawings in stockSerie.StockAnalysis.DrawingItems.Where(dr => dr.Value.Any(d => d.IsPersistent)))
+                    {
+                        stockSerie.BarDuration = drawings.Key;
+                        var values = stockSerie.GetValues(drawings.Key);
+                        drawingIndicator.ApplyTo(stockSerie);
+                        int stopIndex = Math.Max(100, stockSerie.LastCompleteIndex - lookbackPeriod);
+                        for (int i = stockSerie.LastCompleteIndex; i >= stopIndex; i--)
+                        {
+                            var dailyValue = values.ElementAt(i);
+                            string eventName = null;
+                            if (drawingIndicator.Events[0][i])
+                                eventName = "PAINTBAR|ResistanceBroken";
+                            else if (drawingIndicator.Events[1][i])
+                                eventName = "PAINTBAR|SupportBroken";
+                            if (eventName!=null)
+                            {
+                                var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
+                                var stockAlert = new StockAlert(eventName,
+                                    drawings.Key,
+                                    date,
+                                    stockSerie.StockName,
+                                    stockSerie.StockGroup.ToString(),
+                                    dailyValue.CLOSE,
+                                    dailyValue.VOLUME,
+                                    stockSerie.GetIndicator("ROR(100)").Series[0][i]);
+
+                                if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                                {
+                                    alertString += stockAlert.ToString() + Environment.NewLine;
+                                    if (this.InvokeRequired)
+                                    {
+                                        this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                    }
+                                    else
+                                    {
+                                        alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    stockSerie.BarDuration = previouBarDuration;
+                }
+                #endregion
+                #region Detect Alert from Alert Definition
+                foreach (var alertDef in alertConfig.AlertDefs.Where(ad => !string.IsNullOrEmpty(ad.StockName)))
+                {
+                    #region Find Serie for alert
+                    if (TimerSuspended)
+                        return;
+
+                    var stockSerie = this.StockDictionary.Values.FirstOrDefault(s => !s.StockAnalysis.Excluded && s.StockName == alertDef.StockName);
+                    if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
+                    {
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
+                    }
+                    if (!stockSerie.Initialise())
+                        continue;
+
+                    StockBarDuration previouBarDuration = stockSerie.BarDuration;
+                    #endregion
+
+                    stockSerie.BarDuration = alertDef.BarDuration;
+                    var values = stockSerie.GetValues(alertDef.BarDuration);
+                    int stopIndex = stockSerie.IndexOfFirstLowerOrEquals(alertDef.CreationDate);
+                    for (int i = stockSerie.LastCompleteIndex; i >= stopIndex; i--)
+                    {
+                        var dailyValue = values.ElementAt(i);
+
+                        if (stockSerie.MatchEvent(alertDef, i))
+                        {
+                            var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
+                            var stockAlert = new StockAlert(alertDef,
+                                date,
+                                stockSerie.StockName,
+                                stockSerie.StockGroup.ToString(),
+                                dailyValue.CLOSE,
+                                dailyValue.VOLUME,
+                                stockSerie.GetIndicator("ROR(100)").Series[0][i]);
+
+                            if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                            {
+                                alertString += stockAlert.ToString() + Environment.NewLine;
+                                if (this.InvokeRequired)
+                                {
+                                    this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                }
+                                else
+                                {
+                                    alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                }
+                            }
+                        }
+                    }
+                    stockSerie.BarDuration = previouBarDuration;
+                }
+                #endregion
+                alertConfig.AlertLog.Save();
+
+                if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
+                {
+                    StockMail.SendEmail("Ultimate Chartist - " + alertConfig.AlertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
+                }
+
+                if (this.AlertDetected != null)
+                {
+                    this.Invoke(this.AlertDetected);
+                }
+
+                StockSplashScreen.CloseForm(true);
+            }
+            finally
+            {
+                DrawingItem.CreatedByAlert = false;
+                busy = false;
+                alertThreadEvent.Set();
+                StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame + "alertThreadEvent.Set()");
             }
         }
         #endregion
@@ -783,68 +999,6 @@ namespace StockAnalyzerApp
         private System.Windows.Forms.Timer refreshTimer;
         private System.Windows.Forms.Timer alertTimer;
 
-        private bool CheckLicense()
-        {
-            return true;
-            //StockLicense stockLicense = null;
-
-            //// Check on local disk in license is found
-            //string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
-            //if (File.Exists(licenseFileName))
-            //{
-            //    string fileName = licenseFileName;
-            //    using (StreamReader sr = new StreamReader(fileName))
-            //    {
-            //        try
-            //        {
-            //            stockLicense = new StockLicense(Settings.Default.UserId, sr.ReadLine());
-            //        }
-            //        catch
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseCorrupted);
-            //            return false;
-            //        }
-            //        if (stockLicense.UserID != Settings.Default.UserId)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidUserId);
-            //            return false;
-            //        }
-            //        if (Settings.Default.MachineID == string.Empty)
-            //        {
-            //            Settings.Default.MachineID = StockToolKit.GetMachineUID();
-            //            Settings.Default.Save();
-            //        }
-            //        if (stockLicense.MachineID != Settings.Default.MachineID)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidMachineId);
-            //            return false;
-            //        }
-            //        if (stockLicense.ExpiryDate < DateTime.Today)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseExpired);
-            //            return false;
-            //        }
-            //        if (Assembly.GetExecutingAssembly().GetName().Version.Major > stockLicense.MajorVerion)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseWrongVersion);
-            //            return false;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseNoFile);
-            //}
-            //return true;
-        }
-
-        private void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
-        {
-            this.startIndex = startIndex;
-            this.endIndex = endIndex;
-        }
-
-        #endregion
 
         private void StockDictionary_ReportProgress(string progress)
         {
@@ -2482,7 +2636,7 @@ namespace StockAnalyzerApp
 
         #endregion
 
-        #region
+        #region REPORTING
 
         private static string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
         private static string commentTemplate = "COMMENT_TEMPLATE";
@@ -2492,11 +2646,6 @@ namespace StockAnalyzerApp
         private static string htmlEventTemplate = "<br />" + eventTemplate;
 
         private static string htmlAlertTemplate = "\r\n<B><U>" + commentTitleTemplate + "</U></B>" + commentTemplate;
-
-        private string GenerateEventReport()
-        {
-            return string.Empty;
-        }
 
         class RankedSerie
         {
@@ -3126,97 +3275,6 @@ namespace StockAnalyzerApp
             return true;
         }
 
-        private void GenerateEMAHistogram()
-        {
-            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
-            histogram.Add(0, 0);
-            for (int i = 1; i < 100; i++)
-            {
-                histogram.Add(i, 0);
-                histogram.Add(-i, 0);
-            }
-            int period = 6;
-            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
-            for (int i = period; i < this.currentStockSerie.Count; i++)
-            {
-                var value = this.currentStockSerie.ValueArray[i];
-                float distPercent = (emaSerie[i] - value.CLOSE) / value.CLOSE;
-                int rank = (int)Math.Round(distPercent * 100);
-                rank = Math.Min(99, rank);
-                histogram[rank]++;
-            }
-            for (int i = -99; i < 100; i++)
-            {
-                Console.WriteLine(i.ToString() + "," + histogram[i]);
-            }
-        }
-        private void GenerateNbUpDaysHistogram()
-        {
-            SortedDictionary<int, int> histogram = new SortedDictionary<int, int>();
-            histogram.Add(0, 0);
-            for (int i = 1; i < 100; i++)
-            {
-                histogram.Add(-i, 0);
-                histogram.Add(i, 0);
-            }
-            int period = 6;
-            FloatSerie emaSerie = this.currentStockSerie.GetIndicator("EMA(" + period + ")").Series[0];
-            bool up = true;
-            int cumul = 0;
-            for (int i = 1; i < this.currentStockSerie.Count; i++)
-            {
-                var value = this.currentStockSerie.ValueArray[i];
-                if (up)
-                {
-                    if (value.VARIATION > 0) cumul++;
-                    else
-                    {
-                        histogram[cumul]++;
-                        cumul = 0;
-                        up = false;
-                    }
-                }
-                else
-                {
-                    if (value.VARIATION < 0) cumul++;
-                    else
-                    {
-                        histogram[-cumul]++;
-                        cumul = 0;
-                        up = true;
-                    }
-                }
-            }
-            for (int i = -99; i < 100; i++)
-            {
-                Console.WriteLine(i.ToString() + "," + histogram[i]);
-            }
-        }
-        private void GenerateTrainingData()
-        {
-            var fileName = Path.Combine(this.selectedGroup.ToString() + "_Train.csv");
-            using (var fs = new StreamWriter(fileName, false))
-            {
-                fs.WriteLine("Name,Index,Close,Var,indic1,indic2,indic3,indic4,indic5,indic6");
-                foreach (var stockSerie in this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup) && s.Initialise()).Take(1))
-                {
-                    stockSerie.BarDuration = this.BarDuration;
-                    var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                    var varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
-                    var indic1 = (stockSerie.GetIndicator("STOKS(14,3,3)").Series[0] - 50.0f) / 50f;
-                    var indic2 = (stockSerie.GetIndicator("STOKS(42,3,3)").Series[0] - 50.0f) / 50f;
-                    var indic3 = (stockSerie.GetIndicator("STOKS(126, 3, 3)").Series[0] - 50.0f) / 50f;
-                    var indic4 = stockSerie.GetIndicator("SPEED(EMA(20),1)").Series[0];
-                    var indic5 = stockSerie.GetIndicator("SPEED(EMA(60),1)").Series[0];
-                    var indic6 = stockSerie.GetIndicator("SPEED(EMA(120),1)").Series[0];
-                    for (int i = 120; i < stockSerie.Count; i++)
-                    {
-                        fs.WriteLine($"{stockSerie.StockName},{i},{closeSerie[i]},{varSerie[i]},{indic1[i]},{indic2[i]},{indic3[i]},{indic4[i]},{indic5[i]},{indic6[i]}");
-                    }
-                }
-            }
-
-        }
 
         #region MULTI TIME FRAME VIEW
         void multipleTimeFrameViewMenuItem_Click(object sender, EventArgs e)
@@ -4490,18 +4548,6 @@ namespace StockAnalyzerApp
                 else
                 {
                     MessageBox.Show("No financial information for this stock");
-                }
-            }
-        }
-
-        internal void OpenInFTMenu()
-        {
-            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
-            {
-                string url = "https://www.investing.com/search/?q=%SYMBOL%";
-                url = url.Replace("%SYMBOL%", this.currentStockSerie.StockName);
-                {
-                    Process.Start(url);
                 }
             }
         }

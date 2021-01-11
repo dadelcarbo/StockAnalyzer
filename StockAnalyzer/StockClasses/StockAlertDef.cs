@@ -1,18 +1,16 @@
-﻿namespace StockAnalyzer.StockClasses
+﻿using System;
+
+namespace StockAnalyzer.StockClasses
 {
     public class StockAlertDef
     {
         public StockAlertDef()
         {
             this.BarDuration = StockBarDuration.Daily;
+            this.CreationDate = DateTime.MinValue;
         }
-        public StockAlertDef(StockBarDuration barDuration, string indicatorType, string indicatorName, string eventName)
-        {
-            this.BarDuration = barDuration;
-            this.IndicatorType = indicatorType;
-            this.IndicatorName = indicatorName;
-            this.EventName = eventName;
-        }
+
+        public DateTime CreationDate { get; set; }
         public string StockName { get; set; }
         public float PriceTrigger { get; set; }
         public bool TriggerBrokenUp { get; set; }

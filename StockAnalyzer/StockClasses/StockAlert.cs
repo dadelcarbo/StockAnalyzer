@@ -43,7 +43,17 @@ namespace StockAnalyzer.StockClasses
         public StockAlert()
         {
         }
-
+        public StockAlert(string eventFullName, StockBarDuration duration, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
+        {
+            this.Alert = eventFullName;
+            this.BarDuration = duration;
+            Date = date;
+            StockName = stockName;
+            StockGroup = stockGroup;
+            AlertClose = alertClose;
+            Speed = speed;
+            ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
+        }
         public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
         {
             this.Alert = alertDef.EventFullName;

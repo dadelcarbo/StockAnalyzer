@@ -33,7 +33,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             var alertDef = new StockAlertDef()
             {
                 StockName = viewModel.StockName,
-                BarDuration = viewModel.BarDuration
+                BarDuration = viewModel.BarDuration,
+                CreationDate = DateTime.Now
             };
             switch (this.tabControl.SelectedIndex)
             {

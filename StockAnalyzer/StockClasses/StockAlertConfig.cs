@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlertConfig
     {
-        public static List<String> TimeFrames = new List<string> { "Intraday", "Daily", "Weekly", "Monthly", "UserDefined" };
+        public static List<String> TimeFrames = new List<string> { "UserDefined", "Intraday", "Daily", "Weekly", "Monthly" };
 
         public static string AlertDefFolder => Settings.Default.RootFolder + @"\Alert\AlertDef";
 
@@ -48,6 +48,9 @@ namespace StockAnalyzer.StockClasses
                     var startDate = DateTime.Today;
                     switch (TimeFrame)
                     {
+                        case "UserDefined":
+                            startDate = startDate.AddMonths(-1);
+                            break;
                         case "Weekly":
                             startDate = startDate.AddMonths(-2);
                             break;
