@@ -13,6 +13,9 @@
             this.IndicatorName = indicatorName;
             this.EventName = eventName;
         }
+        public string StockName { get; set; }
+        public float PriceTrigger { get; set; }
+        public bool TriggerBrokenUp { get; set; }
         public StockBarDuration BarDuration { get; set; }
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }

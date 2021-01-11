@@ -9,9 +9,9 @@
     <StackPanel Orientation="Horizontal">
         <Label>Duration</Label>
         <ComboBox SelectedItem="{Binding BarDuration.Duration, Mode=TwoWay}" ItemsSource="{Binding Durations, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" Width="80" VerticalAlignment="Center"/>
-        <Label>LineBreak</Label>
-        <ComboBox SelectedItem="{Binding BarDuration.LineBreak, Mode=TwoWay}" ItemsSource="{Binding LineBreaks, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" VerticalAlignment="Center"/>
-        <Label>Smooth</Label>
-        <ComboBox SelectedItem="{Binding BarDuration.Smoothing, Mode=TwoWay}" ItemsSource="{Binding Smoothings, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" Width="40" VerticalAlignment="Center"/>
+        <Label Visibility="{Binding LineBreakVisibility, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}">LineBreak</Label>
+        <ComboBox SelectedItem="{Binding BarDuration.LineBreak, Mode=TwoWay}" ItemsSource="{Binding LineBreaks, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" Visibility="{Binding LineBreakVisibility, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" VerticalAlignment="Center"/>
+        <Label Visibility="{Binding SmoothingVisibility, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}">Smooth</Label>
+        <ComboBox SelectedItem="{Binding BarDuration.Smoothing, Mode=TwoWay}" ItemsSource="{Binding Smoothings, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" Visibility="{Binding SmoothingVisibility, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BarDurationControl}}}" Width="40" VerticalAlignment="Center"/>
     </StackPanel>
 </UserControl>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 using StockAnalyzerSettings.Properties;
 
@@ -9,7 +10,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlertConfig
     {
-        public static List<String> TimeFrames = new List<string> { "Intraday", "Daily", "Weekly", "Monthly" };
+        public static List<String> TimeFrames = new List<string> { "Intraday", "Daily", "Weekly", "Monthly", "UserDefined" };
 
         public static string AlertDefFolder => Settings.Default.RootFolder + @"\Alert\AlertDef";
 
@@ -94,6 +95,28 @@ namespace StockAnalyzer.StockClasses
                     }
                 }
                 return alertDefs;
+            }
+        }
+
+        public static void SaveConfig(string timeFrame)
+        {
+            var alertDef = GetConfig(timeFrame)?.AlertDefs;
+            if (alertDef != null)
+            {
+                string alertFileName = AlertDefFolder + $@"\AlertDef{timeFrame}.xml";
+                // Parse alert lists
+                using (var fs = new FileStream(alertFileName, FileMode.Create))
+                {
+
+                    var settings = new System.Xml.XmlWriterSettings
+                    {
+                        Indent = true,
+                        NewLineOnAttributes = true
+                    };
+                    var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                    serializer.Serialize(xmlWriter, alertDef);
+                }
             }
         }
     }

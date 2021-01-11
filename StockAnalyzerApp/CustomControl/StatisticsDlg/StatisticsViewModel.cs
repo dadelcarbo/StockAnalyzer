@@ -57,8 +57,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                 {
                     indicator = value;
 
-                    IStockViewableSeries viewableSeries =
-                       StockViewableItemsManager.GetViewableItem(this.indicatorType.ToUpper() + "|" + this.Indicator);
+                    IStockViewableSeries viewableSeries = StockViewableItemsManager.GetViewableItem(this.indicatorType.ToUpper() + "|" + this.Indicator);
 
                     this.Events = (viewableSeries as IStockEvent).EventNames;
 
@@ -70,7 +69,8 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 
         public string[] Events { get; set; }
 
-        private string eventName;
+        private string eventName; 
+        private int eventIndex = 2;
 
         public string Event
         {
@@ -100,8 +100,6 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 
         private float totalReturn;
         public float TotalReturn { get { return totalReturn; } set { if (value != totalReturn) { totalReturn = value; OnPropertyChanged("TotalReturn"); } } }
-
-        private int eventIndex = 2;
 
         private float s1Percent;
         public float S1Percent { get { return s1Percent; } set { if (value != s1Percent) { s1Percent = value; OnPropertyChanged("S1Percent"); } } }

@@ -185,6 +185,16 @@
     <Compile Include="CustomControl\AlertDialog\AlertDlg.Designer.cs">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml.cs">
+      <DependentUpon>AddStockAlert.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.Designer.cs">
+      <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertViewModel.cs" />
     <Compile Include="CustomControl\BarDurationCtrl\BarDurationControl.xaml.cs">
       <DependentUpon>BarDurationControl.xaml</DependentUpon>
     </Compile>
@@ -584,6 +594,9 @@
     <EmbeddedResource Include="CustomControl\AlertDialog\AlertDlg.resx">
       <DependentUpon>AlertDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.resx">
+      <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -950,6 +963,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\AlertDialog\AlertControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
