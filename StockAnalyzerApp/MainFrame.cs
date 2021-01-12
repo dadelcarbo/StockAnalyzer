@@ -1604,7 +1604,6 @@ namespace StockAnalyzerApp
                     if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                     {
                         this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
-
                         if (this.currentStockSerie.Initialise())
                         {
                             this.ApplyTheme();
@@ -1652,7 +1651,8 @@ namespace StockAnalyzerApp
                         {
                             try
                             {
-                                //StockSplashScreen.ProgressText = "Downloading Agenda " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                                StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
                                 //ABCDataProvider.DownloadAgenda(stockSerie);
                                 //ABCDataProvider.DownloadFinancial(stockSerie);
                             }
