@@ -235,7 +235,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     if (currentStockSerie.HasVolume)
                                     {
                                         graphControl = this.graphVolumeControl;
-                                        curveList.Add(new GraphCurveType( currentStockSerie.GetSerie(StockDataType.VOLUME), Pens.Green, true));
+                                        curveList.Add(new GraphCurveType(currentStockSerie.GetSerie(StockDataType.VOLUME), Pens.Green, true));
                                     }
                                     else
                                     {
@@ -303,7 +303,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 {
                                                     if (StockDictionary.Instance.ContainsKey(fields[1]))
                                                     {
-                                                        this.graphCloseControl.SecondaryFloatSerie = currentStockSerie.GenerateSecondarySerieFromOtherSerie( StockDictionary.Instance[fields[1]]);
+                                                        this.graphCloseControl.SecondaryFloatSerie = currentStockSerie.GenerateSecondarySerieFromOtherSerie(StockDictionary.Instance[fields[1]]);
                                                     }
                                                 }
                                             }
@@ -359,13 +359,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             break;
                                         case "PAINTBAR":
                                             {
-                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line,currentStockSerie);
+                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
                                                 curveList.PaintBar = paintBar;
                                             }
                                             break;
                                         case "DECORATOR":
                                             {
-                                                IStockDecorator decorator = (IStockDecorator) StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
+                                                IStockDecorator decorator = (IStockDecorator)StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
                                                 curveList.Decorator = decorator;
                                                 this.graphCloseControl.CurveList.ShowMes.Add(decorator);
                                             }
@@ -414,25 +414,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                 false));
                                     }
                                 }
-                                if (
-                                    !currentStockSerie.StockAnalysis.DrawingItems.ContainsKey(
-                                        currentStockSerie.BarDuration))
+                                if (!currentStockSerie.StockAnalysis.DrawingItems.ContainsKey(currentStockSerie.BarDuration))
                                 {
-                                    currentStockSerie.StockAnalysis.DrawingItems.Add(
-                                        currentStockSerie.BarDuration, new StockDrawingItems());
+                                    currentStockSerie.StockAnalysis.DrawingItems.Add(currentStockSerie.BarDuration, new StockDrawingItems());
                                 }
                                 graphControl.Initialize(curveList, horizontalLines, dateSerie,
-                                    currentStockSerie.StockName,
+                                    currentStockSerie,
                                     currentStockSerie.StockAnalysis.DrawingItems[currentStockSerie.BarDuration],
                                     startIndex, endIndex);
                             }
                             catch (System.Exception e)
                             {
-                                //StockLog.Write("Exception londing theme: " + this.currentTheme);
-                                //foreach (string line in this.currentTheme[entry])
-                                //{
-                                //    StockLog.Write(line);
-                                //}
                                 StockLog.Write(e);
                             }
                         }

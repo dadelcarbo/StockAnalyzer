@@ -92,6 +92,7 @@
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\HorseRaceAgent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
     <Compile Include="StockAgent\Agents\OSCAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
@@ -304,7 +305,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADXDIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADX.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ICHIMOKU.cs" />
@@ -338,6 +338,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_GUPPY.cs" />

@@ -7,7 +7,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TRAILHLSR : StockUpDownIndicatorBase
+    public class StockIndicator_TRAILHLSR : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -114,12 +114,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (supportDetectedSerie[i])
                 {
-                    this.UpDownState[i] = StockSerie.Trend.UpTrend;
                     extremum = lowSerie.GetMin(0, i);
                 }
                 if (resistanceDetectedSerie[i])
                 {
-                    this.UpDownState[i] = StockSerie.Trend.DownTrend;
                     extremum = highSerie.GetMax(0, i);
                 }
             }
@@ -127,7 +125,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (; i < stockSerie.Count; i++)
             {
                 bool upSwing = float.IsNaN(shortStopSerie[i]);
-                this.UpDownState[i] = StockUpDownIndicatorBase.BoolToTrend(upSwing);
 
                 this.Events[8][i] = upSwing;
                 this.Events[9][i] = !upSwing;

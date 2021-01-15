@@ -4,8 +4,8 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TRAILHLSR3 : StockUpDownIndicatorBase
-   {
+    public class StockIndicator_TRAILHLSR3 : StockIndicatorBase
+    {
       public StockIndicator_TRAILHLSR3()
       {
       }

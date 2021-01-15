@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockDrawing;
@@ -94,7 +95,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool IsInitialized { get; protected set; }
         protected DateTime[] dateSerie;
 
-        protected string serieName;
+        protected StockSerie serie;
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
 
@@ -257,7 +258,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.BackgroundColor = Color.White;
             SetFrameMargin();
         }
-        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, string serieName, StockDrawingItems drawingItems, int startIndex, int endIndex)
+        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, StockSerie serie, StockDrawingItems drawingItems, int startIndex, int endIndex)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
@@ -265,7 +266,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.CurveList = curveList;
                 this.StartIndex = startIndex;
                 this.EndIndex = endIndex;
-                this.serieName = serieName;
+                this.serie = serie;
                 this.drawingItems = drawingItems;
                 this.horizontalLines = horizontallines;
 

@@ -4044,7 +4044,7 @@ namespace StockAnalyzerApp
                                     this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
                                 }
                                 graphControl.Initialize(curveList, horizontalLines, dateSerie,
-                                    CurrentStockSerie.StockName,
+                                    CurrentStockSerie,
                                     CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
                                     startIndex, endIndex);
                             }

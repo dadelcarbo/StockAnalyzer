@@ -4,7 +4,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_OVERBOUGHTSR : StockUpDownIndicatorBase
+    public class StockIndicator_OVERBOUGHTSR : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {

@@ -1016,7 +1016,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected override void PaintGraphTitle(Graphics gr)
         {
-            string graphTitle = this.serieName;
+            string graphTitle = this.serie?.StockName;
 
             // Add PaintBars, SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
@@ -1051,7 +1051,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 return;
             }
-            var name = this.serieName.ToUpper();
+            var name = this.serie.StockName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
             var operations = this.BinckPortfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name && p.IsOrder);
@@ -1059,7 +1059,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate))
             {
-                DateTime orderDate = serieName.StartsWith("INT_") || serieName.StartsWith("FUT_") ? operation.Date : operation.Date.Date;
+                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? operation.Date : operation.Date.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
@@ -2124,7 +2124,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var viewModel = new AddStockAlertViewModel()
             {
                 Group = StockAnalyzerForm.MainFrame.Group.ToString(),
-                StockName = this.serieName,
+                StockName = this.serie.StockName,
                 BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
             };
@@ -2153,7 +2153,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 EntryQty = 10,
                 EntryDate = this.dateSerie[lastMouseIndex],
                 StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
-                StockName = this.serieName,
+                StockName = this.serie.StockName,
                 Portfolio = this.BinckPortfolio,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
             };
@@ -2194,7 +2194,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
-            var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serieName && p.IsClosed == false);
+            var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
             if (pos == null || pos.IsShort)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2207,7 +2207,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 ExitValue = this.closeCurveType.DataSerie[lastMouseIndex],
                 ExitQty = pos.EntryQty,
                 ExitDate = this.dateSerie[lastMouseIndex],
-                StockName = this.serieName,
+                StockName = this.serie.StockName,
                 Portfolio = this.BinckPortfolio
             };
 
