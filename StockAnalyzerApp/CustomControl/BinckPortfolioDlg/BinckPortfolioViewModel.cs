@@ -12,6 +12,9 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         {
         }
 
+        [Property("StartBalance", 0)]
+        public float StartBalance { get => this.Portfolio.InitialBalance; set => this.Portfolio.InitialBalance = value; }
+
         public List<StockPortfolio> Portfolios => StockPortfolio.Portfolios;
 
         public StockPortfolio Portfolio

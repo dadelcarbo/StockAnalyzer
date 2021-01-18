@@ -3,12 +3,14 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System;
+using System.Linq;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using Telerik.Windows.Data;
+using System.Reflection;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
@@ -123,9 +125,9 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         private void SelectionChanged(string stockName, StockBarDuration duration = null, string indicator = null)
         {
             var mapping = StockPortfolio.GetMapping(stockName);
-            if (mapping != null) 
+            if (mapping != null)
                 stockName = mapping.StockName;
-            if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName) 
+            if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName)
                 return;
             if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
             {
@@ -147,6 +149,17 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         {
             var viewModel = (BinckPortfolioViewModel)this.DataContext;
             viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+        }
+
+        private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)
+        {
+            var viewModel = (BinckPortfolioViewModel)this.DataContext;
+
+            var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)];
+            if (attribute == null)
+                e.Cancel = true;
+            else
+                e.Cancel = false;
         }
     }
 }

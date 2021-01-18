@@ -42,7 +42,11 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         }
         #endregion
 
+
         public float Stop => position.Stop;
+
+        public float TradeRisk => position.Stop == 0 ? 1.0f : (position.EntryValue - position.Stop) / position.EntryValue;
+        public float PortfolioRisk => position.Stop == 0 ? 1.0f : PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
 
         public StockBarDuration BarDuration => position.BarDuration;
         public string Indicator => position.Indicator;
@@ -52,6 +56,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public float LastValue { get; set; }
         public string Type => position.IsShort ? "Short" : "Long";
         public float Variation => position.IsShort && Leverage == 1 ? (EntryValue - LastValue) / (EntryValue) : (LastValue - EntryValue) / (EntryValue);
-        public float PortfolioPercent => this.portfolio.Value > 0 ? ((LastValue * this.EntryQty) / this.portfolio.Value) : 0.0f;
+        public float PortfolioPercent => this.portfolio.Portfolio.InitialBalance > 0 ? ((LastValue * this.EntryQty) / this.portfolio.Portfolio.InitialBalance) : 0.0f;
     }
 }
