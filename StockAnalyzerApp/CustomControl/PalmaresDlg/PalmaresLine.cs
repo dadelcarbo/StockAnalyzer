@@ -2,6 +2,7 @@
 {
     public class PalmaresLine
     {
+        public string Group { get; set; }
         public string ShortName { get; set; }
         public string Name { get; set; }
         public float Variation { get; set; }

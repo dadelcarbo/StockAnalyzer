@@ -235,6 +235,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 Lines.Add(new PalmaresLine
                 {
+                    Group = stockSerie.StockGroup.ToString(),
                     ShortName = stockSerie.ShortName,
                     //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",
                     Name = stockSerie.StockName,
