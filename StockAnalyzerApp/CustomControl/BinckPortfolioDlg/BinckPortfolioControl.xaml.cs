@@ -147,14 +147,12 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         }
         private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = (BinckPortfolioViewModel)this.DataContext;
+            var viewModel = (ViewModel)this.DataContext;
             viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
         }
 
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)
         {
-            var viewModel = (BinckPortfolioViewModel)this.DataContext;
-
             var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)];
             if (attribute == null)
                 e.Cancel = true;

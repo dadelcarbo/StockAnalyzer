@@ -84,8 +84,6 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
-            this.exportFinancialsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -541,8 +539,6 @@ namespace StockAnalyzerApp
             this.agentTunningMenuItem,
             this.portfolioSimulationMenuItem,
             this.toolStripSeparator8,
-            this.exportFinancialsMenuItem,
-            this.toolStripSeparator22,
             this.bestTrendMenuItem,
             this.expectedValueMenuItem,
             this.statisticsMenuItem});
@@ -595,18 +591,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator20.Name = "toolStripSeparator20";
             this.toolStripSeparator20.Size = new System.Drawing.Size(237, 6);
-            // 
-            // exportFinancialsMenuItem
-            // 
-            this.exportFinancialsMenuItem.Name = "exportFinancialsMenuItem";
-            this.exportFinancialsMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.exportFinancialsMenuItem.Text = "Export Financials";
-            this.exportFinancialsMenuItem.Click += new System.EventHandler(this.exportFinancialsMenuItem_Click);
-            // 
-            // toolStripSeparator22
-            // 
-            this.toolStripSeparator22.Name = "toolStripSeparator22";
-            this.toolStripSeparator22.Size = new System.Drawing.Size(237, 6);
             // 
             // bestTrendMenuItem
             // 
@@ -1554,8 +1538,6 @@ namespace StockAnalyzerApp
         private ToolStripButton fastForwardBtn;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripSeparator toolStripSeparator20;
-        private ToolStripMenuItem exportFinancialsMenuItem;
-        private ToolStripSeparator toolStripSeparator22;
         private ToolStripMenuItem currentPortfolioMenuItem;
         private ToolStripMenuItem showPortfolioSerieMenuItem;
         private ToolStripMenuItem showHorseRaceViewMenuItem;

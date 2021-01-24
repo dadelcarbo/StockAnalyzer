@@ -77,6 +77,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 {
                     for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)
                     {
+                        if (i < 1)
+                            continue;
                         if (item.ContainsAbsciss(i) && item.ContainsAbsciss(i - 1))
                         {
                             float itemValue = item.ValueAtX(i);

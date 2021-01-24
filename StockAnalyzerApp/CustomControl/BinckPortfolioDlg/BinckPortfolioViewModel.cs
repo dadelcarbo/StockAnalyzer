@@ -8,36 +8,38 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
     public class BinckPortfolioViewModel : NotifyPropertyChangedBase
     {
-        public BinckPortfolioViewModel()
+        public StockPortfolio Portfolio { get; set; }
+        public BinckPortfolioViewModel(StockPortfolio p)
         {
+            Portfolio = p;
         }
 
-        [Property("StartBalance", 0)]
-        public float StartBalance { get => this.Portfolio.InitialBalance; set => this.Portfolio.InitialBalance = value; }
+        [Property]
+        public string Name { get => Portfolio.Name; set => Portfolio.Name = value; }
 
-        public List<StockPortfolio> Portfolios => StockPortfolio.Portfolios;
+        [Property]
+        public float StartBalance { get => Portfolio.InitialBalance; set => Portfolio.InitialBalance = value; }
 
-        public StockPortfolio Portfolio
-        {
-            get { return StockAnalyzerForm.MainFrame.BinckPortfolio; }
-            set
-            {
-                if (StockAnalyzerForm.MainFrame.BinckPortfolio != value)
-                {
-                    StockAnalyzerForm.MainFrame.BinckPortfolio = value;
+        [Property]
+        public int MaxNbPositions { get => Portfolio.MaxNbPositions; set => Portfolio.MaxNbPositions = value; }
 
-                    OnPropertyChanged(nameof(OpenedPositions));
-                    OnPropertyChanged(nameof(Portfolio));
-                }
-            }
-        }
+        [Property]
+        public float Balance { get => Portfolio.Balance; set => Portfolio.Balance = value; }
+
+        [Property]
+        public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
+
+        //[Property]
+        //public DateTime CreationDate { get => portfolio.CreationDate; set => portfolio.CreationDate = value; }
+
+        public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
         public IEnumerable<StockPositionViewModel> OpenedPositions
         {
             get
             {
                 var positions = Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this)).ToList();
-                float val = this.Portfolio.Balance;
+                float val = Portfolio.Balance;
                 foreach (var pos in positions)
                 {
                     float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);

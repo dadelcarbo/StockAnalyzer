@@ -4,6 +4,10 @@ namespace StockAnalyzerApp.CustomControl
 {
     public class PropertyAttribute : Attribute
     {
+        public PropertyAttribute()
+        {
+
+        }
         public PropertyAttribute(string propertyGroup, int order)
         {
             this.PropertyGroup = propertyGroup;

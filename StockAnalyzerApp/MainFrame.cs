@@ -19,7 +19,6 @@ using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
 using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
-using StockAnalyzerApp.CustomControl.FinancialDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
@@ -717,14 +716,21 @@ namespace StockAnalyzerApp
         }
         public void GenerateAlert_Thread(object param)
         {
-            var p = (StockAlertConfig)param;
-            if (p.TimeFrame == "UserDefined")
+            try
             {
-                this.GenerateUserDefinedAlert(p);
+                var p = (StockAlertConfig)param;
+                if (p.TimeFrame == "UserDefined")
+                {
+                    this.GenerateUserDefinedAlert(p);
+                }
+                else
+                {
+                    this.GenerateAlert(p);
+                }
             }
-            else
+            catch(Exception ex)
             {
-                this.GenerateAlert(p);
+                StockLog.Write(ex);
             }
         }
 
@@ -925,6 +931,11 @@ namespace StockAnalyzerApp
                         return;
 
                     var stockSerie = this.StockDictionary.Values.FirstOrDefault(s => !s.StockAnalysis.Excluded && s.StockName == alertDef.StockName);
+                    if (stockSerie == null)
+                    {
+                        StockLog.Write("Serie not found in alert: " + alertDef.StockName);
+                        continue;
+                    }
                     if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
                     {
                         StockDataProviderBase.DownloadSerieData(stockSerie);
@@ -1551,12 +1562,10 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
                     {
-                        //this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
                             try
                             {
-                                //ABCDataProvider.DownloadFinancial(this.currentStockSerie);
                                 ABCDataProvider.DownloadAgenda(this.currentStockSerie);
                             }
                             catch (Exception ex)
@@ -1644,7 +1653,7 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockDataProviderBase.DownloadSerieData(stockSerie);
+                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
                         StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
 
                         if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
@@ -1653,8 +1662,6 @@ namespace StockAnalyzerApp
                             {
                                 StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
                                 this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
-                                //ABCDataProvider.DownloadAgenda(stockSerie);
-                                //ABCDataProvider.DownloadFinancial(stockSerie);
                             }
                             catch (Exception ex)
                             {
@@ -2596,44 +2603,6 @@ namespace StockAnalyzerApp
                 portfolioSimulationDialog.Activate();
             }
         }
-
-        private void exportFinancialsMenuItem_Click(object sender, EventArgs e)
-        {
-            bool first = true;
-            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.CACALL) && s.Initialise() && s.Financial != null))
-            {
-                float yield = stockSerie.Financial.Dividend / stockSerie.Last().Value.CLOSE;
-                Console.WriteLine(stockSerie.StockGroup + "," + stockSerie.StockName + "," + stockSerie.Financial.Dividend + "," + stockSerie.Last().Value.CLOSE + "," + yield.ToString("P2") + "," + stockSerie.Financial.BookValuePerShare + "," + stockSerie.Financial.TangibleBookValuePerShare);
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            foreach (var stockSerie in this.StockDictionary.Values.Where(s => s.Financial != null && s.Initialise()))
-            {
-                stockSerie.Financial.Value = stockSerie.Values.Last().CLOSE;
-                stockSerie.Financial.CalculateRatios();
-                if (stockSerie.Financial.Ratios != null && stockSerie.Financial.Ratios.Count > 0)
-                {
-                    if (first)
-                    {
-                        first = false;
-                        Console.Write("StockName,");
-                        foreach (var ratio in stockSerie.Financial.Ratios)
-                        {
-                            Console.Write(ratio.First() + ",");
-                        }
-                        Console.WriteLine();
-                    }
-                    Console.Write(stockSerie.StockName + ",");
-                    foreach (var ratio in stockSerie.Financial.Ratios)
-                    {
-                        Console.Write(ratio.Last() + ",");
-                    }
-                    Console.WriteLine();
-                }
-            }
-        }
-
         #endregion
 
         #region REPORTING
@@ -4512,26 +4481,6 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(true);
         }
         #endregion
-        public void ShowFinancials()
-        {
-            if (this.currentStockSerie != null)
-            {
-                if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
-                {
-                    ABCDataProvider.DownloadFinancial(this.currentStockSerie);
-                }
-                if (this.currentStockSerie.Financial != null)
-                {
-                    this.currentStockSerie.Financial.Value = this.currentStockSerie.GetSerie(StockDataType.CLOSE).Last;
-                    StockFinancialForm financialForm = new StockFinancialForm(this.currentStockSerie);
-                    financialForm.ShowDialog();
-                }
-                else
-                {
-                    MessageBox.Show("No financial information for this stock");
-                }
-            }
-        }
         public void ShowAgenda()
         {
             if (this.currentStockSerie != null)
@@ -4547,16 +4496,16 @@ namespace StockAnalyzerApp
                 }
                 else
                 {
-                    MessageBox.Show("No financial information for this stock");
+                    MessageBox.Show("No agenda information for this stock", "Error");
                 }
             }
         }
 
         internal void OpenInABCMenu()
         {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ABCName))
                 return;
-            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={this.currentStockSerie.ShortName}p";
+            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={this.currentStockSerie.ABCName}";
             Process.Start(url);
         }
 

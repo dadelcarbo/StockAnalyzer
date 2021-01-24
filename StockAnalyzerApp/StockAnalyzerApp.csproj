@@ -211,6 +211,7 @@
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.Designer.cs">
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\BinckPortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockDateToStringConverter.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
@@ -258,15 +259,6 @@
     </Compile>
     <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueViewModel.cs" />
     <Compile Include="CustomControl\ExpectedValueDlg\TradeResult.cs" />
-    <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\FinancialDlg\StockFinancialForm.Designer.cs">
-      <DependentUpon>StockFinancialForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml.cs">
-      <DependentUpon>StockFinancialUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\FixedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -619,9 +611,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.resx">
       <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\FinancialDlg\StockFinancialForm.resx">
-      <DependentUpon>StockFinancialForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
@@ -994,10 +983,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\FinancialDlg\StockFinancialUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

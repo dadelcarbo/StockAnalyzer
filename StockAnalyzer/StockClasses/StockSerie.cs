@@ -28,16 +28,21 @@ namespace StockAnalyzer.StockClasses
         {
             NONE = 0,
             COUNTRY,
+            PEA,
             CAC40,
             CACALL,
-            SRD,
-            SRD_LO,
             EURO_A,
             EURO_A_B,
             EURO_B,
             EURO_A_B_C,
             EURO_C,
             ALTERNEXT,
+            BELGIUM,
+            HOLLAND,
+            GERMANY,
+            ITALIA,
+            SPAIN,
+            PORTUGAL,
             INDICES,
             INDICES_CALC,
             INDICATOR,
@@ -70,7 +75,32 @@ namespace StockAnalyzer.StockClasses
         #region public properties
         public string StockName { get; private set; }
         public string ShortName { get; private set; }
-        public string Exchange { get; set; }
+        public string ABCName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ISIN)) return null;
+                switch(this.ISIN.Substring(0,2))
+                {
+                    case "FR":
+                    case "QS":
+                        return this.ShortName + "p";
+                    case "BE":
+                        return this.ShortName + "g";
+                    case "NL":
+                        return this.ShortName + "n";
+                    case "DE":
+                        return this.ShortName + "f";
+                    case "IT":
+                        return this.ShortName + "i";
+                    case "ES":
+                        return this.ShortName + "m";
+                    case "PT":
+                        return this.ShortName + "I";
+                }
+                return null;
+            }
+        }
         public StockDataProvider DataProvider { get; private set; }
         public string ISIN { get; set; }
         /// <summary>
@@ -80,60 +110,6 @@ namespace StockAnalyzer.StockClasses
         public string SectorID { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
-
-        #region StockFinancial
-        private StockFinancial financial;
-        public StockFinancial Financial
-        {
-            get
-            {
-                if (financial == null)
-                {
-                    financial = LoadFinancial();
-                }
-                return financial;
-            }
-            set { financial = value; }
-        }
-
-        private static string FINANCIAL_SUBFOLDER = @"\data\financial";
-        private StockFinancial LoadFinancial()
-        {
-            StockFinancial stockFinancial = null;
-            if (this.BelongsToGroup(Groups.CACALL))
-            {
-                string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + FINANCIAL_SUBFOLDER;
-                string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
-                if (File.Exists(fileName))
-                {
-                    using (FileStream fs = new FileStream(fileName, FileMode.Open))
-                    {
-                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                        settings.IgnoreWhitespace = true;
-                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                        XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
-                        stockFinancial = (StockFinancial)serializer.Deserialize(xmlReader);
-                    }
-                }
-            }
-            return stockFinancial;
-        }
-        public void SaveFinancial()
-        {
-            if (this.Financial == null) return;
-            string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + FINANCIAL_SUBFOLDER;
-            string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
-            using (FileStream fs = new FileStream(fileName, FileMode.Create))
-            {
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-                settings.Indent = true;
-                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(StockFinancial));
-                serializer.Serialize(xmlWriter, this.Financial);
-            }
-        }
-
-        #endregion
 
         #region StockAgenda
         private StockAgenda agenda;
@@ -192,7 +168,6 @@ namespace StockAnalyzer.StockClasses
         }
 
         #endregion
-
 
         public bool IsPortofolioSerie { get; set; }
         public int LastIndex { get { return this.ValueArray.Length - 1; } }
@@ -4518,10 +4493,6 @@ namespace StockAnalyzer.StockClasses
                     return true;
                 case Groups.CAC40:
                     return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
-                case Groups.SRD:
-                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSRD(this);
-                case Groups.SRD_LO:
-                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSRD_LO(this);
                 case Groups.EURO_A:
                     return (this.StockGroup == Groups.EURO_A);
                 case Groups.EURO_B:
@@ -4536,6 +4507,8 @@ namespace StockAnalyzer.StockClasses
                     return (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.CACALL:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+                case Groups.PEA:
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || (this.StockGroup == Groups.PORTUGAL);
                 default:
                     return this.StockGroup == group;
             }

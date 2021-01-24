@@ -21,7 +21,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
-        static private string FINANCIAL_SUBFOLDER = @"\data\financial";
         static private string AGENDA_SUBFOLDER = @"\data\agenda";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         static private string CONFIG_FILE = @"\EuronextDownload.cfg";
@@ -156,7 +155,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         const string DOWNLOAD_LABEL_BODY =
             "cbox=$GROUP&" +
             "__RequestVerificationToken=$TOKEN&" +
-            "cbPlace =false";
+            "cbPlace=false";
         public bool DownloadLabels(string destFolder, string fileName, string group)
         {
             if (!this.Initialize()) return false;
@@ -241,13 +240,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
 
             // Init From LBL file
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdp", StockSerie.Groups.SRD);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "srdlop", StockSerie.Groups.SRD_LO);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurogp", StockSerie.Groups.ALTERNEXT);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "indicessecp", StockSerie.Groups.SECTORS_CAC);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "belg", StockSerie.Groups.BELGIUM);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "holln", StockSerie.Groups.HOLLAND);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "germanyf", StockSerie.Groups.GERMANY);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "spainm", StockSerie.Groups.SPAIN);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "italiai", StockSerie.Groups.ITALIA);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "lisboal", StockSerie.Groups.PORTUGAL);
+
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
 
             // Init from Libelles
@@ -264,11 +268,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public static void CreateDirectories()
         {
-            // Create data folder if not existing
-            if (!Directory.Exists(RootFolder + FINANCIAL_SUBFOLDER))
-            {
-                Directory.CreateDirectory(RootFolder + FINANCIAL_SUBFOLDER);
-            }
             if (!Directory.Exists(RootFolder + AGENDA_SUBFOLDER))
             {
                 Directory.CreateDirectory(RootFolder + AGENDA_SUBFOLDER);
@@ -323,6 +322,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (File.Exists(fileName))
             {
                 StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
+                var isinPrefix = IsinPrefixFrom(group);
                 using (StreamReader sr = new StreamReader(fileName, true))
                 {
                     string line;
@@ -330,13 +330,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && line.StartsWith(isinPrefix))
                         {
                             string[] row = line.Split(';');
                             if (!stockDictionary.ContainsKey(row[1].ToUpper()))
                             {
                                 StockSerie stockSerie = new StockSerie(row[1].ToUpper(), row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
-
                                 stockDictionary.Add(row[1].ToUpper(), stockSerie);
                             }
                             else
@@ -348,6 +347,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
+
+        private string IsinPrefixFrom(StockSerie.Groups group)
+        {
+            switch (group)
+            {
+                case StockSerie.Groups.EURO_A:
+                case StockSerie.Groups.EURO_B:
+                case StockSerie.Groups.EURO_C:
+                case StockSerie.Groups.ALTERNEXT:
+                    return "FR";
+                case StockSerie.Groups.BELGIUM:
+                    return "BE";
+                case StockSerie.Groups.HOLLAND:
+                    return "NL";
+                case StockSerie.Groups.GERMANY:
+                    return "DE";
+                case StockSerie.Groups.ITALIA:
+                    return "IT";
+                case StockSerie.Groups.SPAIN:
+                    return "ES";
+                case StockSerie.Groups.PORTUGAL:
+                    return "PT";
+                case StockSerie.Groups.SECTORS_CAC:
+                    return "QS";
+            }
+            throw new ArgumentException($"Group: {group} not supported in ABC");
+        }
+
         private void InitFromFile(bool download, string fileName)
         {
             StockLog.Write("InitFromFile " + fileName);
@@ -1090,142 +1117,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             return srdloList.Contains(stockSerie.StockName);
-        }
-
-        public static void DownloadFinancialSummary(StockFinancial financial, string shortName, StockSerie stockSerie)
-        {
-            string url = "http://www.boursorama.com/bourse/profil/resume_societe.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
-            StockWebHelper swh = new StockWebHelper();
-            string html = swh.DownloadHtml(url, null);
-
-            WebBrowser browser = new WebBrowser();
-            browser.ScriptErrorsSuppressed = true;
-            browser.DocumentText = html;
-            browser.Document.OpenNew(true);
-            browser.Document.Write(html);
-            browser.Refresh();
-
-            HtmlDocument doc = browser.Document;
-
-            var divs = doc.GetElementsByTagName("div").Cast<HtmlElement>();
-            foreach (var div in divs)
-            {
-                if (div.InnerText != null && div.InnerText.StartsWith("Nombre de titres"))
-                {
-                    var list = div.InnerText.Replace(Environment.NewLine, "|");
-                    var split = list.Split('|');
-                    var nbTitres = split[0].Split(':')[1].Replace(" ", "");
-                    financial.ShareNumber = long.Parse(nbTitres);
-                    financial.Coupon = split.First(l => l.StartsWith("Dern")).Split(':')[1].Trim();
-                    financial.Sector = split.First(l => l.StartsWith("Secteur")).Split(':')[1].Trim();
-                    financial.PEA = split.First(l => l.Contains("PEA")).Split(':')[1].Trim();
-                    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD))
-                    {
-                        financial.SRD = "Long Short";
-                    }
-                    if (stockSerie.BelongsToGroup(StockSerie.Groups.SRD_LO))
-                    {
-                        financial.SRD = "Long Only";
-                    }
-                    financial.Indices = split.First(l => l.StartsWith("Indice")).Split(':')[1].Trim();
-                    break;
-                }
-            }
-            foreach (var div in divs)
-            {
-                if (div.InnerText != null && div.InnerText.StartsWith("Prévisions des analystes"))
-                {
-
-                    var tables = div.GetElementsByTagName("table").Cast<HtmlElement>();
-                    var previsions = getTableData(tables.First());
-
-                    var dividendLine = previsions.FirstOrDefault(l => l[0] == "Dividende");
-                    if (dividendLine != null)
-                    {
-                        float dividend = 0;
-                        float.TryParse(dividendLine[1], out dividend);
-                        financial.Dividend = dividend;
-                    }
-
-                    break;
-                }
-            }
-            //foreach (var div in divs)
-            //{
-            //    if (div.InnerText != null && div.InnerText.StartsWith("Activité"))
-            //    {
-            //        Console.WriteLine(div.InnerText);
-            //        financial.Activity = div.InnerHtml;
-            //        break;
-            //    }
-            //}
-
-        }
-
-        public static void DownloadFinancial(StockSerie stockSerie)
-        {
-            if (stockSerie.Financial != null && stockSerie.Financial.DownloadDate.AddDays(7) > DateTime.Now) return;
-
-            StockFinancial financial = new StockFinancial();
-            try
-            {
-                string shortName = stockSerie.StockGroup == StockSerie.Groups.ALTERNEXT ? "P" : "P";
-                shortName += stockSerie.ShortName;
-                DownloadFinancialSummary(financial, shortName, stockSerie);
-
-                string url = "http://www.boursorama.com/bourse/profil/profil_finance.phtml?symbole=1r$ShortName".Replace("$ShortName", shortName);
-                StockWebHelper swh = new StockWebHelper();
-                string html = swh.DownloadHtml(url, null);
-
-                WebBrowser browser = new WebBrowser();
-                browser.ScriptErrorsSuppressed = true;
-                browser.DocumentText = html;
-                browser.Document.OpenNew(true);
-                browser.Document.Write(html);
-                browser.Refresh();
-
-                HtmlDocument doc = browser.Document;
-
-                var divs = doc.GetElementsByTagName("div").Cast<HtmlElement>();
-                foreach (var div in divs)
-                {
-                    if (div.InnerText != null && div.InnerText.StartsWith("Compte de"))
-                    {
-                        Console.WriteLine(div.InnerText);
-                        var tables = div.GetElementsByTagName("table").Cast<HtmlElement>();
-                        financial.IncomeStatement = getTableData(tables.First());
-                        break;
-                    }
-                }
-                foreach (var div in divs)
-                {
-                    if (div.InnerText != null && div.InnerText.StartsWith("Bilan"))
-                    {
-                        Console.WriteLine(div.InnerText);
-                        var tables = div.GetElementsByTagName("table").Cast<HtmlElement>();
-                        financial.BalanceSheet = getTableData(tables.First());
-                        break;
-                    }
-                }
-                foreach (var div in divs)
-                {
-                    if (div.InnerText != null && div.InnerText.StartsWith("Chiffres d'affaires"))
-                    {
-                        Console.WriteLine(div.InnerText);
-                        var tables = div.GetElementsByTagName("table").Cast<HtmlElement>();
-                        financial.Quaterly = getTableData(tables.First());
-                        break;
-                    }
-                }
-
-                financial.DownloadDate = DateTime.Now;
-                stockSerie.Financial = financial;
-                stockSerie.SaveFinancial();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
         }
 
         public static void DownloadAgenda(StockSerie stockSerie)
