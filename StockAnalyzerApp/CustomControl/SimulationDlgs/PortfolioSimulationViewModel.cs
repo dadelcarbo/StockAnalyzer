@@ -133,7 +133,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = 0;
                     if (e.Cancelled)
                     {
-                        this.Report = "Cancelled...";
+                        this.Report += Environment.NewLine + "Cancelled...";
                     }
                     this.worker = null;
                 };

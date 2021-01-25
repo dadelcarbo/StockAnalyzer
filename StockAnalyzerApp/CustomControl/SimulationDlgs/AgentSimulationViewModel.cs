@@ -141,7 +141,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = 0;
                     if (e.Cancelled)
                     {
-                        this.Report = "Cancelled...";
+                        this.Report += Environment.NewLine + "Cancelled...";
                     }
                     else
                     {
@@ -172,6 +172,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.CancelAsync();
             }
         }
+
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
         {
             Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
