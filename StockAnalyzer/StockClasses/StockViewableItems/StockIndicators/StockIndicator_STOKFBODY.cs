@@ -22,19 +22,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastKPeriod", "SlowKPeriod" }; }
+            get { return new string[] { "FastKPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 14, 3 }; }
+            get { return new Object[] { 14 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500)}; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "SlowK(" + this.Parameters[0].ToString() + ")", "SlowD(" + this.Parameters[1].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "FastK(" + this.Parameters[0].ToString() + ")" }; } }
 
 
         public override Pen[] SeriePens
@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
+                    seriePens = new Pen[] { new Pen(Color.Green) };
                 }
                 return seriePens;
             }
@@ -63,24 +63,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
             //  %D = MA3(%K)
-            FloatSerie fastOscillatorSerie = new FloatSerie(stockSerie.Values.Count);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie slowK = stockSerie.CalculateFastBodyOscillator((int)this.parameters[0]);
-            FloatSerie slowD = slowK.CalculateEMA((int)this.parameters[1]);
-            this.series[0] = slowK;
+            int period = (int)this.parameters[0];
+            FloatSerie fastK = stockSerie.CalculateFastBodyOscillator(period);
+            this.series[0] = fastK;
             this.series[0].Name = this.SerieNames[0];
-            this.series[1] = slowD;
-            this.series[1].Name = this.SerieNames[1];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            for (int i = 1; i < slowK.Count; i++)
+            for (int i = period + 1; i < fastK.Count; i++)
             {
-                this.eventSeries[0][i] = (slowD[i - 1] > slowK[i - 1] && slowD[i] < slowK[i]);
-                this.eventSeries[1][i] = (slowD[i - 1] < slowK[i - 1] && slowD[i] > slowK[i]);
-                this.eventSeries[2][i] = slowK[i] > slowD[i];
-                this.eventSeries[3][i] = slowK[i] < slowD[i];
+                this.eventSeries[0][i] = (fastK[i - 1] < 50f && fastK[i] > 50f);
+                this.eventSeries[1][i] = (fastK[i - 1] > 50f && fastK[i] < 50f);
+                this.eventSeries[2][i] = fastK[i] >= 50f;
+                this.eventSeries[3][i] = fastK[i] < 50f;
             }
         }
 

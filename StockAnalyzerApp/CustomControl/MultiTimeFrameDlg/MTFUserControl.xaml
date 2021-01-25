@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:l="clr-namespace:StockAnalyzerApp.CustomControl.MultiTimeFrameDlg"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=l:MTFViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="500" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

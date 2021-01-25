@@ -4817,12 +4817,6 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                     break;
-                case StockClasses.BarDuration.BiWeekly:
-                    {
-                        var weeklyValueList = GetSmoothedValues(StockClasses.BarDuration.Weekly);
-                        newBarList = GenerateMultipleBar(weeklyValueList, 2);
-                    }
-                    break;
                 case StockClasses.BarDuration.Monthly:
                     {
                         StockDailyValue newValue = null;

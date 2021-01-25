@@ -1158,7 +1158,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             foreach (float fibo in fibonacciRetracements)
                             {
                                 fiboY = y + height * fibo;
-                                string fiboString = fibo.ToString("P2");
+                                string fiboString = (1.0f - fibo).ToString("P2");
                                 this.DrawString(foregroundGraphic, fiboString, axisFont, Brushes.Green, this.backgroundBrush, x - 36, fiboY - 5, false);
                                 if (fibo == 0.5f)
                                 {
@@ -1183,7 +1183,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             foreach (float fibo in fibonacciRetracements)
                             {
                                 fiboY = y + height * (1.0f - fibo);
-                                this.foregroundGraphic.DrawString(fibo.ToString("P2"), axisFont, Brushes.Red, x - 36, fiboY - 5);
+                                string fiboString = (1.0f - fibo).ToString("P2");
+                                this.foregroundGraphic.DrawString(fiboString, axisFont, Brushes.Red, x - 36, fiboY - 5);
                                 if (fibo == 0.5f)
                                 {
                                     redPen.Width = 2;

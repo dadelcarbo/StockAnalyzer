@@ -7,7 +7,6 @@ namespace StockAnalyzer.StockClasses
     {
         Daily,
         Weekly,
-        BiWeekly,
         Monthly,
         Bar_2,
         Bar_3,
@@ -70,13 +69,11 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Bar_24 = new StockBarDuration(BarDuration.Bar_24);
         public static StockBarDuration Bar_48 = new StockBarDuration(BarDuration.Bar_48);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
-        public static StockBarDuration BiWeekly = new StockBarDuration(BarDuration.BiWeekly);
         public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
 
         public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
             StockBarDuration.Daily,
             StockBarDuration.Weekly,
-            StockBarDuration.BiWeekly,
             StockBarDuration.Monthly,
             StockBarDuration.TLB,
             StockBarDuration.TLB_3D,

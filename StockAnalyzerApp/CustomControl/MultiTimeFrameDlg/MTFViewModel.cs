@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockLogging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -80,9 +81,9 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
          }
       }
 
-      static public Array BarDurations
+      static public IEnumerable BarDurations
       {
-         get { return Enum.GetValues(typeof(BarDuration)); }
+         get { return StockBarDuration.Values; }
       }
       
       private StockBarDuration barDuration1;
@@ -123,16 +124,16 @@ namespace StockAnalyzerApp.CustomControl.MultiTimeFrameDlg
 
       public MTFViewModel()
       {
-         indicatorName = "TRAILHL(1)";
+         indicatorName = "TRAILHL(2)";
 
-         this.group = StockSerie.Groups.INTRADAY;
+         this.group = StockSerie.Groups.EURO_A;
          this.stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group)).ToList();
          this.NbStocks = stockSeries.Count();
 
          this.Trends = new ObservableCollection<MTFTrend>();
-         this.barDuration1 = StockBarDuration.TLB_9D;
-         this.BarDuration2 = StockBarDuration.TLB_3D;
-         this.barDuration3 = StockBarDuration.TLB;
+         this.barDuration1 = StockBarDuration.Daily;
+         this.BarDuration2 = StockBarDuration.Weekly;
+         this.barDuration3 = StockBarDuration.Monthly;
 
          dispatcher = Dispatcher.CurrentDispatcher;
       }

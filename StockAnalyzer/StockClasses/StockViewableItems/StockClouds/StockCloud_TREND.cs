@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             int i = 2;
             bool broken = false;
             bool bullish = false;
-            while (!broken) // Prepare trend
+            while (i < stockSerie.Count && !broken) // Prepare trend
             {
                 if (closeSerie[i] > high) // Broken up
                 {
