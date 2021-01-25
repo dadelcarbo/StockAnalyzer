@@ -124,7 +124,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 System.Diagnostics.Process.Start(exportFile);
 
-                Clipboard.SetText("=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/\"&B2&\"p\";C2)");
+                Clipboard.SetText("=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/\"&C2&\"p\";D2)");
             }
             catch (System.Exception ex)
             {
