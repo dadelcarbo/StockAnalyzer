@@ -1,4 +1,6 @@
 ﻿using StockAnalyzer;
+using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -99,10 +101,18 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         private void exportToExcel_Click(object sender, RoutedEventArgs e)
         {
-                this.Cursor = Cursors.Wait;
+            this.Cursor = Cursors.Wait;
             try
             {
-                string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, @"CommentReport\Palmares.xlsx");
+                var currentCulture = CultureInfo.CurrentCulture;
+                var weekNo = currentCulture.Calendar.GetWeekOfYear(
+                                ViewModel.ToDate,
+                                currentCulture.DateTimeFormat.CalendarWeekRule,
+                                currentCulture.DateTimeFormat.FirstDayOfWeek);
+
+                string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, 
+                    $@"CommentReport\Palmares_{ViewModel.Group}_{ViewModel.ToDate.Year}_{weekNo}.xlsx");
+
                 using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
                     var options = new GridViewDocumentExportOptions()
@@ -113,6 +123,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.gridView.ExportToXlsx(fileStream, options);
                 }
                 System.Diagnostics.Process.Start(exportFile);
+
+                Clipboard.SetText("=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/\"&B2&\"p\";C2)");
             }
             catch (System.Exception ex)
             {
