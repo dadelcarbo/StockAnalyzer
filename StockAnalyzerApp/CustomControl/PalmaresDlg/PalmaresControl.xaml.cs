@@ -146,7 +146,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 else
                 {
-                    var column = cellExportingArgs.Column as GridViewDataColumn;
                     var tryInt = int.TryParse(cellExportingArgs.Value.ToString(), out var i);
                     if (tryInt)
                     {

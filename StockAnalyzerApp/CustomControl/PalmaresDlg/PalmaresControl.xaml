@@ -29,9 +29,14 @@
             </GroupBox>
             <GroupBox Header="Stop" >
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Stop}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Stop}" Width="140" Margin="2" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Content="{Binding Items.Count, ElementName=gridView, Mode=OneWay}" VerticalContentAlignment="Center"/>
+                <Label Content="/" VerticalContentAlignment="Center"/>
+                <Label Content="{Binding Lines.Count}" VerticalContentAlignment="Center"/>
+            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">

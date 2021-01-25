@@ -728,7 +728,7 @@ namespace StockAnalyzerApp
                     this.GenerateAlert(p);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex);
             }
@@ -876,7 +876,7 @@ namespace StockAnalyzerApp
 
                 #region Detect alert from drawing
                 var drawingIndicator = StockViewableItemsManager.GetViewableItem("PAINTBAR|DRAWING()") as IStockPaintBar;
-                foreach (var stockSerie in StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockAnalysis.DrawingItems.Sum(di=>di.Value.Count) != 0))
+                foreach (var stockSerie in StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockAnalysis.DrawingItems.Sum(di => di.Value.Count) != 0))
                 {
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
                     foreach (var drawings in stockSerie.StockAnalysis.DrawingItems.Where(dr => dr.Value.Any(d => d.IsPersistent)))
@@ -893,7 +893,7 @@ namespace StockAnalyzerApp
                                 eventName = "PAINTBAR|DRAWING()=>ResistanceBroken";
                             else if (drawingIndicator.Events[1][i])
                                 eventName = "PAINTBAR|DRAWING()=>SupportBroken";
-                            if (eventName!=null)
+                            if (eventName != null)
                             {
                                 var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
                                 var stockAlert = new StockAlert(eventName,
@@ -1277,6 +1277,26 @@ namespace StockAnalyzerApp
                     this.Text = "Ultimate Chartist - " + "Failure Loading data selected from " + this.CurrentStockSerie.DataProvider;
                     return;
                 }
+                string id;
+                if (CurrentStockSerie.ShortName == CurrentStockSerie.StockName)
+                {
+                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName;
+                }
+                else
+                {
+                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName + " - " + CurrentStockSerie.StockName;
+                }
+                if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
+                {
+                    id += " - " + this.CurrentStockSerie.ISIN;
+                }
+                id += " - " + this.CurrentStockSerie.DataProvider;
+                this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
+                if (newSerie.Count < 20)
+                {
+                    DeactivateGraphControls("Not enough data to display");
+                    return;
+                }
 
                 var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem, this.barHeikinAshiCheckBox.CheckBox.Checked, (int)this.barLineBreakComboBox.SelectedItem);
                 this.currentStockSerie.BarDuration = bd;
@@ -1300,21 +1320,6 @@ namespace StockAnalyzerApp
                 {
                     ApplyTheme();
                 }
-                string id;
-                if (CurrentStockSerie.ShortName == CurrentStockSerie.StockName)
-                {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName;
-                }
-                else
-                {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName + " - " + CurrentStockSerie.StockName;
-                }
-                if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
-                {
-                    id += " - " + this.CurrentStockSerie.ISIN;
-                }
-                id += " - " + this.CurrentStockSerie.DataProvider;
-                this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
 
                 // Set the Check Box UpDownState
                 this.followUpCheckBox.CheckBox.Checked = CurrentStockSerie.StockAnalysis.FollowUp;
@@ -3235,6 +3240,11 @@ namespace StockAnalyzerApp
                             MTFDlg mtfDlg = new MTFDlg();
                             mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                             mtfDlg.Show();
+                        }
+                        break;
+                    case Keys.Control | Keys.X:
+                        {
+                            excludeButton_Click(null, null);
                         }
                         break;
                     default:
