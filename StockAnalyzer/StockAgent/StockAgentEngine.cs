@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockBinckPortfolio;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -155,7 +154,7 @@ namespace StockAnalyzer.StockAgent
                 }
 
                 // Select fittest
-                var fittest = results.OrderByDescending(a => a.TradeSummary.AvgGain).Take(nbSelected).ToList();
+                var fittest = results.OrderByDescending(a => a.TradeSummary.ExpectedReturn).Take(nbSelected).ToList();
                 Console.WriteLine("Fittest:");
                 Console.WriteLine(fittest.First().ToLog());
                 Console.WriteLine(fittest.First().TradeSummary.ToLog());
@@ -185,9 +184,8 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, StockPortfolio portfolio = null)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
-            this.Agent.TradeSummary.Portfolio = portfolio;
             foreach (var serie in series.Where(s => s.Count > minIndex))
             {
                 this.Agent.Initialize(serie, duration);

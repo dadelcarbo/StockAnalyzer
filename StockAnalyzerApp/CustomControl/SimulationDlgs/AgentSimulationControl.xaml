@@ -28,9 +28,7 @@
             <Label Margin="2">Accuracy</Label>
             <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
             <Label Margin="2">Selector</Label>
-            <telerik:RadComboBox Margin="2" Width="90" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
-            <Label Margin="2">Max Positions</Label>
-            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding MaxPosition}" NumberDecimalDigits="0" Width="40"/>
+            <telerik:RadComboBox Margin="2" Width="110" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
             <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">

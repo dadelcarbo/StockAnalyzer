@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             this.performText = "Perform";
             this.Accuracy = 20;
-            this.Selector = "Portfolio";
+            this.Selector = "ExpectedGain";
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
@@ -39,7 +39,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             get { return StockPortfolio.MaxPositions; }
             set { StockPortfolio.MaxPositions = value; }
         }
-        public List<string> Selectors => new List<string> { "Coumpound", "Average", "CumulGain", "WinRatio", "Portfolio" };
+        public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain" };
         public string Selector { get; set; }
 
         public void Cancel()
@@ -145,10 +145,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     }
                     else
                     {
-                        StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
-                        engine.BestAgent.TradeSummary.Portfolio = StockPortfolio.SimulationPortfolio;
                         var report = engine.Report;
-                        report += Environment.NewLine + engine.BestTradeSummary.GetOpenPositionLog() + Environment.NewLine;
                         this.Report = report;
                         string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
@@ -201,20 +198,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 Func<StockTradeSummary, float> selector;
                 switch (this.Selector)
                 {
-                    case "Coumpound":
-                        selector = t => t.CompoundGain;
+                    case "WinTradeRatio":
+                        selector = t => t.WinTradeRatio;
                         break;
-                    case "Average":
-                        selector = t => t.AvgGain;
-                        break;
-                    case "CumulGain":
+                    case "WinLossRatio":
                         selector = t => t.CumulGain;
                         break;
-                    case "WinRatio":
-                        selector = t => t.WinRatio;
-                        break;
-                    case "Portfolio":
-                        selector = t => t.Portfolio.TotalValue;
+                    case "ExpectedGain":
+                        selector = t => t.ExpectedReturn;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);

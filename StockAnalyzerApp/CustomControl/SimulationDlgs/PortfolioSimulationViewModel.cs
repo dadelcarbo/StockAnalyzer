@@ -135,10 +135,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     {
                         this.Report = "Cancelled...";
                     }
-                    else
-                    {
-                        StockAnalyzerForm.MainFrame.BinckPortfolio = engine.Agent.TradeSummary.Portfolio;
-                    }
                     this.worker = null;
                 };
 
@@ -175,26 +171,15 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 engine.Perform(stockSeries, 20, this.Duration);
 
-                engine.Agent.TradeSummary.Portfolio = StockPortfolio.SimulationPortfolio;
-
                 if (worker.CancellationPending)
                     return false;
 
                 var tradeSummary = engine.Agent.TradeSummary;
 
-                string openedPositions = tradeSummary.GetOpenPositionLog();
-
-                string msg = "Portfolio: " + Environment.NewLine;
-                msg += "Initial balance: " + StockPortfolio.SimulationPortfolio.InitialBalance + Environment.NewLine;
-                msg += "Cash: " + StockPortfolio.SimulationPortfolio.Balance + Environment.NewLine;
-                msg += "Total Value: " + StockPortfolio.SimulationPortfolio.TotalValue + Environment.NewLine;
-                msg += "Return: " + StockPortfolio.SimulationPortfolio.Return.ToString("P2") + Environment.NewLine;
-
-                msg += Environment.NewLine + tradeSummary.ToLog() + Environment.NewLine;
+                string msg = tradeSummary.ToLog() + Environment.NewLine;
                 msg += engine.Agent.ToLog() + Environment.NewLine;
                 msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
                 msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
-                msg += openedPositions + Environment.NewLine;
 
                 this.Report = msg;
             }
