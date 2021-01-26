@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private CustomControl.SimulationDlgs.AgentSimulationControl agentSimulationControl;
+        public CustomControl.SimulationDlgs.AgentSimulationControl agentSimulationControl;
     }
 }

@@ -2579,6 +2579,7 @@ namespace StockAnalyzerApp
             if (agentTunningDialog == null)
             {
                 agentTunningDialog = new AgentSimulationDlg();
+                agentTunningDialog.agentSimulationControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 agentTunningDialog.FormClosed += (a, b) =>
                 {
                     agentTunningDialog = null;

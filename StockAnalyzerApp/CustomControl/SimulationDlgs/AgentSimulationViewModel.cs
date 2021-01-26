@@ -84,6 +84,20 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
+        private StockTradeSummary tradeSummary;
+        public StockTradeSummary TradeSummary
+        {
+            get => tradeSummary;
+            set
+            {
+                if (tradeSummary != value)
+                {
+                    tradeSummary = value;
+                    OnPropertyChanged("TradeSummary");
+                }
+            }
+        }
+
         int progressValue;
         public int ProgressValue
         {
@@ -117,6 +131,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         BackgroundWorker worker = null;
 
         StockAgentEngine engine;
+
         public void Perform()
         {
             if (worker == null)
@@ -147,6 +162,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     {
                         var report = engine.Report;
                         this.Report = report;
+                        this.TradeSummary = engine.BestTradeSummary;
                         string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
