@@ -42,31 +42,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 try
                 {
-                    DrawingItem.CreatePersistent = false;
-                    viewModel.Serie.StockAnalysis.DeleteTransientDrawings();
-
-                    if (!viewModel.Serie.StockAnalysis.DrawingItems.ContainsKey(ViewModel.Duration))
-                    {
-                        viewModel.Serie.StockAnalysis.DrawingItems.Add(ViewModel.Duration, new StockDrawingItems());
-                    }
-
                     int exitIndex = viewModel.IsClosed ? viewModel.ExitIndex : viewModel.Serie.LastIndex;
-                    viewModel.Serie.StockAnalysis.DrawingItems[ViewModel.Duration].Add(
-                        new Rectangle2D(
-                            new PointF(viewModel.EntryIndex, viewModel.Serie.GetSerie(StockDataType.LOW)[viewModel.EntryIndex]),
-                            new PointF(exitIndex, viewModel.Serie.GetSerie(StockDataType.HIGH)[exitIndex])));
 
-                    DrawingItem.KeepTransient = true;
                     this.SelectedStockChanged(viewModel.Serie.StockName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.Serie.LastIndex, exitIndex + 100), ViewModel.Duration, true);
                     this.parent.TopMost = true;
                     this.parent.TopMost = false;
                 }
                 catch { }
-                finally
-                {
-                    DrawingItem.CreatePersistent = true;
-                    DrawingItem.KeepTransient = false;
-                }
             }
         }
     }

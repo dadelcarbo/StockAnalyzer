@@ -34,11 +34,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration Duration { get; set; }
 
         public int Accuracy { get; set; }
-        public int MaxPosition
-        {
-            get { return StockPortfolio.MaxPositions; }
-            set { StockPortfolio.MaxPositions = value; }
-        }
         public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain" };
         public string Selector { get; set; }
 
@@ -163,10 +158,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         var report = engine.Report;
                         this.Report = report;
                         this.TradeSummary = engine.BestTradeSummary;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t" + this.MaxPosition + "\t";
+                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
                         Clipboard.SetText(rpt);
+
+                        // Update Simu Portfolio
+                        StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
+                        StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
 
                         using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
                         {

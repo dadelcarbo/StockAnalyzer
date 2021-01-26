@@ -432,6 +432,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public void Clear()
         {
             this.Positions.Clear();
+            this.TradeOperations.Clear();
             this.Balance = this.InitialBalance;
             this.PositionValue = 0;
         }
