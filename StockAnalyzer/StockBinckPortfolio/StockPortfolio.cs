@@ -32,7 +32,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             this.TradeOperations = new List<StockTradeOperation>();
             this.Positions = new List<StockPosition>();
-            this.MaxNbPositions = 10;
             this.MaxRisk = 0.02f;
         }
 
@@ -44,7 +43,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string Name { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
-        public int MaxNbPositions { get; set; }
         public float MaxRisk { get; set; }
         [XmlIgnore]
         public float PositionValue { get; private set; }
@@ -94,7 +92,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         #endregion
 
-        public static int MaxPositions { get; set; } = 20;
+        public int MaxPositions { get; set; } = 10;
 
         #region OPERATION MANAGEMENT
         public int GetNextOperationId()

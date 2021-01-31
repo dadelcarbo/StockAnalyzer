@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public float StartBalance { get => Portfolio.InitialBalance; set => Portfolio.InitialBalance = value; }
 
         [Property]
-        public int MaxNbPositions { get => Portfolio.MaxNbPositions; set => Portfolio.MaxNbPositions = value; }
+        public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
 
         [Property]
         public float Balance { get => Portfolio.Balance; set => Portfolio.Balance = value; }

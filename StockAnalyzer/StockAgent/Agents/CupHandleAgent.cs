@@ -16,6 +16,8 @@ namespace StockAnalyzer.StockAgent.Agents
         public int Period { get; set; }
 
         public override string Description => "Buy with Cup and Handle signal";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILCUPHANDLE({Period})";
+
 
         IStockEvent eventSerie;
         BoolSerie bullEvents;

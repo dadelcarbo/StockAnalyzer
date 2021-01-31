@@ -23,6 +23,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public float DownBBWidth { get; set; }
 
         public override string Description => "Buy with BBStop";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILBB({MAPeriod},{UpBBWidth},{-DownBBWidth})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;

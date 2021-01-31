@@ -84,7 +84,6 @@
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
-    <Compile Include="StockAgent\Agents\MyOSC2Agent.cs" />
     <Compile Include="StockAgent\Agents\MyOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\RORRODAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMA2Agent.cs" />
@@ -106,7 +105,7 @@
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
-    <Compile Include="StockAgent\Agents\EMAAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
     <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>

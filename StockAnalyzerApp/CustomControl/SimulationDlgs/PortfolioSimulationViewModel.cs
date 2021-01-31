@@ -27,8 +27,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration Duration { get; set; }
         public int MaxPosition
         {
-            get { return StockPortfolio.MaxPositions; }
-            set { StockPortfolio.MaxPositions = value; }
+            get { return StockPortfolio.SimulationPortfolio.MaxPositions; }
+            set { StockPortfolio.SimulationPortfolio.MaxPositions = value; }
         }
 
         public void Cancel()

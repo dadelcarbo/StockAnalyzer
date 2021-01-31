@@ -13,6 +13,9 @@ namespace StockAnalyzer.StockAgent
         {
             this.TradeSummary = new StockTradeSummary();
         }
+
+        public virtual string DisplayIndicator => string.Empty;
+
         protected FloatSerie closeSerie;
 
         public StockTrade Trade { get; set; }
@@ -89,7 +92,7 @@ namespace StockAnalyzer.StockAgent
         protected abstract TradeAction TryToOpenPosition(int index);
         public void EvaluateOpenedPositions()
         {
-            foreach (var trade in this.TradeSummary.Trades.Where(t=>!t.IsClosed))
+            foreach (var trade in this.TradeSummary.Trades.Where(t => !t.IsClosed))
             {
                 trade.Evaluate();
             }

@@ -58,9 +58,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     agent = value;
                     OnPropertyChanged("Parameters");
+                    OnPropertyChanged("AgentDescription");
                 }
             }
         }
+
+        public string AgentDescription => StockAgentBase.CreateInstance(this.agentType).Description;
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
         public IEnumerable Parameters => ParameterRangeViewModel.GetParameters(this.agentType);
@@ -127,6 +130,20 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         StockAgentEngine engine;
 
+        private IStockAgent bestAgent;
+        public IStockAgent BestAgent
+        {
+            get => bestAgent;
+            set
+            {
+                if (bestAgent != value)
+                {
+                    bestAgent = value;
+                    OnPropertyChanged("BestAgent");
+                }
+            }
+        }
+
         public void Perform()
         {
             if (worker == null)
@@ -135,6 +152,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 engine = new StockAgentEngine(agentType);
                 engine.BestAgentDetected += (bestAgent) =>
                 {
+                    this.BestAgent = bestAgent;
                     string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
                     msg += bestAgent.ToLog() + Environment.NewLine;
                     this.Report = msg;
@@ -164,6 +182,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         Clipboard.SetText(rpt);
 
                         // Update Simu Portfolio
+                        StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
                         StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
                         StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
 

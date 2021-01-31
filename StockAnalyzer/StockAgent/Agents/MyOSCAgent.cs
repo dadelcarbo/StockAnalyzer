@@ -17,6 +17,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public int SignalPeriod { get; set; }
 
         public override string Description => "Buy when MyOSC crosses above zero line";
+        public override string DisplayIndicator => $"INDICATOR|MYOSC({Period},{SignalPeriod})";
 
         FloatSerie osc;
         protected override void Init(StockSerie stockSerie)

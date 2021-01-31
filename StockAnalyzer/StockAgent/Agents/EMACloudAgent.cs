@@ -23,12 +23,13 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string Description => "Buy when Open and close are above EMA";
 
-        IStockCloud cloud;
+        public override string DisplayIndicator => $"CLOUD|EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})";
+
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            cloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
+            var cloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
             bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenUp")];
             bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenDown")];
         }

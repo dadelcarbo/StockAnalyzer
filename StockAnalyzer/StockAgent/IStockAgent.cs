@@ -15,6 +15,7 @@ namespace StockAnalyzer.StockAgent
     public interface IStockAgent
     {
         string Description { get; }
+        string DisplayIndicator { get; }
         StockTradeSummary TradeSummary { get; }
 
         void Initialize(StockSerie stockSerie, StockBarDuration duration);

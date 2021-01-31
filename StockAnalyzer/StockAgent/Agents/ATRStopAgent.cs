@@ -23,12 +23,14 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string Description => "Buy according to TrailATRBand";
 
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILATRBAND({Period},{UpWidth},{-DownWidth},EMA)";
+
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{UpWidth},{-DownWidth},MA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{UpWidth},{-DownWidth},EMA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }

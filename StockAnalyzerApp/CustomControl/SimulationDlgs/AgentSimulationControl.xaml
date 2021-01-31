@@ -24,7 +24,7 @@
             <Label Margin="2">Duration</Label>
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
             <Label Margin="2">Agent</Label>
-            <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
+            <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
             <Label Margin="2">Accuracy</Label>
             <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
             <Label Margin="2">Selector</Label>

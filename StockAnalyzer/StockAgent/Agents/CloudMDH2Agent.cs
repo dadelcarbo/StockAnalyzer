@@ -20,6 +20,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public int SlowPeriod { get; set; }
 
         public override string Description => "Buy when full bar above bullish MDH cloud";
+        public override string DisplayIndicator => $"CLOUD|MDH({FastPeriod},{SlowPeriod})";
 
         IStockCloud cloud;
         BoolSerie bullishCloudEvent;

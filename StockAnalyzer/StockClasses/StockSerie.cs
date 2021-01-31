@@ -43,6 +43,7 @@ namespace StockAnalyzer.StockClasses
             ITALIA,
             SPAIN,
             PORTUGAL,
+            USA,
             INDICES,
             INDICES_CALC,
             INDICATOR,
