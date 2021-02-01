@@ -13,13 +13,12 @@ namespace StockAnalyzerApp.CustomControl
             InitializeComponent();
 
             this.downloadDataCheckBox.Checked = Settings.Default.DownloadData;
-            this.shortSellSupportCheckBox.Checked = Settings.Default.SupportShortSelling;
             this.generateBreadthCheckBox.Checked = Settings.Default.GenerateBreadth;
             this.enableLoggingCheckBox.Checked = Settings.Default.LoggingEnabled;
             this.barNumberUpDown.Value = Settings.Default.DefaultBarNumber;
             this.showVariationCheckBox.Checked = Settings.Default.ShowVariation;
             this.userIDTextBox.Text = Settings.Default.UserId;
-            this.dateTimePicker.Value = Settings.Default.StrategyStartDate;
+            this.startYearTextBox.Value = Settings.Default.LoadStartYear;
             this.smtpTextBox.Text = Settings.Default.UserSMTP;
             this.addressTextBox.Text = Settings.Default.UserEMail;
             this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
@@ -32,13 +31,12 @@ namespace StockAnalyzerApp.CustomControl
         {
             // Save to properties
             Settings.Default.DownloadData = this.downloadDataCheckBox.Checked;
-            Settings.Default.SupportShortSelling = this.shortSellSupportCheckBox.Checked;
             Settings.Default.GenerateBreadth = this.generateBreadthCheckBox.Checked;
             Settings.Default.LoggingEnabled = this.enableLoggingCheckBox.Checked;
             Settings.Default.DefaultBarNumber = (int)this.barNumberUpDown.Value;
             Settings.Default.ShowVariation = this.showVariationCheckBox.Checked;
             Settings.Default.UserId = this.userIDTextBox.Text;
-            Settings.Default.StrategyStartDate = this.dateTimePicker.Value;
+            Settings.Default.LoadStartYear = (int)this.startYearTextBox.Value;
             Settings.Default.UserSMTP = this.smtpTextBox.Text;
             Settings.Default.UserEMail = this.addressTextBox.Text;
 

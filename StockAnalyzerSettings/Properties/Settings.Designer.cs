@@ -415,25 +415,13 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SupportShortSelling {
+        [global::System.Configuration.DefaultSettingValueAttribute("2010")]
+        public int LoadStartYear {
             get {
-                return ((bool)(this["SupportShortSelling"]));
+                return ((int)(this["LoadStartYear"]));
             }
             set {
-                this["SupportShortSelling"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2011-01-03")]
-        public global::System.DateTime StrategyStartDate {
-            get {
-                return ((global::System.DateTime)(this["StrategyStartDate"]));
-            }
-            set {
-                this["StrategyStartDate"] = value;
+                this["LoadStartYear"] = value;
             }
         }
         

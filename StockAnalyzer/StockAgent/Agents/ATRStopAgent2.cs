@@ -5,31 +5,32 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class ATRStopAgent : StockAgentBase
+    public class ATRStopAgent2 : StockAgentBase
     {
-        public ATRStopAgent()
+        public ATRStopAgent2()
         {
             Period = 12;
-            Width = 2.0f;
+            UpWidth = 2.0f;
         }
 
         [StockAgentParam(5, 80)]
         public int Period { get; set; }
 
         [StockAgentParam(0.5f, 4.0f)]
-        public float Width { get; set; }
+        public float UpWidth { get; set; }
+        [StockAgentParam(0.5f, 4.0f)]
+        public float DownWidth { get; set; }
 
+        public override string Description => "Buy according to TrailATRBand with different up and down width";
 
-        public override string Description => "Buy according to TrailATRBand with same up and down width";
-
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILATRBAND({Period},{Width},{-Width},EMA)";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILATRBAND({Period},{UpWidth},{-DownWidth},EMA)";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{Width},{-Width},EMA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{UpWidth},{-DownWidth},EMA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
         }
