@@ -6,303 +6,282 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
-   public class StockDecorator_DIV : StockDecoratorBase, IStockDecorator
-   {
-      public override string Definition
-      {
-         get { return "Plots exhaustion points and divergences and provide signal events"; }
-      }
+    public class StockDecorator_DIV : StockDecoratorBase, IStockDecorator
+    {
+        public override string Definition => "Plots exhaustion points and divergences and provide signal events";
 
-      public StockDecorator_DIV()
-      {
-      }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-      public override IndicatorDisplayTarget DisplayTarget
-      {
-         get { return IndicatorDisplayTarget.NonRangedIndicator; }
-      }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-      public override IndicatorDisplayStyle DisplayStyle
-      {
-         get { return IndicatorDisplayStyle.DecoratorPlot; }
-      }
+        public override string[] ParameterNames => new string[] { "FadeOut", "Smoothing", "LookBack", "SignalSmoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { 1.5f, 1, 30, 6 };
 
-      public override string[] ParameterNames
-      {
-         get { return new string[] { "FadeOut", "Smoothing", "LookBack" , "SignalSmoothing"}; }
-      }
-      public override Object[] ParameterDefaultValues
-      {
-         get { return new Object[] { 1.5f, 1, 30, 6 }; }
-      }
-      public override ParamRange[] ParameterRanges
-      {
-         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500), new ParamRangeInt(1, 500) }; }
-      }
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500), new ParamRangeInt(1, 500) };
 
-      public override string[] SerieNames { get { return new string[] { "Data", "BuyExhaustion", "SellExhaustion", "Signal" }; } }
+        public override string[] SerieNames => new string[] { "Data", "BuyExhaustion", "SellExhaustion", "Signal" };
 
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkGray), new Pen(Color.DarkGray), new Pen(Color.DarkRed) };
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkGray), new Pen(Color.DarkGray), new Pen(Color.DarkRed) };
 
-               seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-               seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
+        }
 
-      public override void ApplyTo(StockSerie stockSerie)
-      {
-         using (MethodLogger ml = new MethodLogger(this))
-         {
-            CreateEventSeries(stockSerie.Count);
-
-            IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
-            if (indicator != null && indicator.Series[0].Count > 0)
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
             {
-               FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA((int)this.parameters[1]);
-               FloatSerie signalSerie = indicatorToDecorate.CalculateEMA((int)this.parameters[3]);
-               FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
-               FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
+                CreateEventSeries(stockSerie.Count);
 
-               if ((int)this.parameters[1] <= 1) { this.SerieVisibility[0] = false; }
-               this.Series[0] = indicatorToDecorate;
-               this.Series[0].Name = this.SerieNames[0];
-               this.Series[1] = upperLimit;
-               this.Series[1].Name = this.SerieNames[1];
-               this.Series[2] = lowerLimit;
-               this.Series[2].Name = this.SerieNames[2];
-               this.Series[3] = signalSerie;
-               this.Series[3].Name = this.SerieNames[3];
+                IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
+                if (indicator != null && indicator.Series[0].Count > 0)
+                {
+                    FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA((int)this.parameters[1]);
+                    FloatSerie signalSerie = indicatorToDecorate.CalculateEMA((int)this.parameters[3]);
+                    FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
+                    FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
 
-               int lookbackPeriod = (int) this.parameters[2];
+                    if ((int)this.parameters[1] <= 1) { this.SerieVisibility[0] = false; }
+                    this.Series[0] = indicatorToDecorate;
+                    this.Series[0].Name = this.SerieNames[0];
+                    this.Series[1] = upperLimit;
+                    this.Series[1].Name = this.SerieNames[1];
+                    this.Series[2] = lowerLimit;
+                    this.Series[2].Name = this.SerieNames[2];
+                    this.Series[3] = signalSerie;
+                    this.Series[3].Name = this.SerieNames[3];
 
-               if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
-               {
-                  IRange range = (IRange)indicator;
-                  indicatorToDecorate = indicatorToDecorate.Sub((range.Max + range.Min) / 2.0f);
-               }
-               FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-               FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+                    int lookbackPeriod = (int)this.parameters[2];
 
-               int lastExhaustionSellIndex = int.MinValue;
-               int lastExhaustionBuyIndex = int.MinValue;
-               float exhaustionSellLimit = indicatorToDecorate[0];
-               float exhaustionBuyLimit = indicatorToDecorate[0];
-               float exhaustionBuyPrice = highSerie[0];
-               float exhaustionSellPrice = lowSerie[0];
-               float exFadeOut = (100.0f - (float)this.parameters[0]) / 100.0f;
+                    if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
+                    {
+                        IRange range = (IRange)indicator;
+                        indicatorToDecorate = indicatorToDecorate.Sub((range.Max + range.Min) / 2.0f);
+                    }
+                    FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+                    FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-               float previousValue = indicatorToDecorate[0];
-               float currentValue;
-               int i = 0;
-               for (i = 1; i < indicatorToDecorate.Count - 1; i++)
-               {
-                  if (indicatorToDecorate[i] > 0)
-                  {
-                     this.Events[6][i] = true;
-                  }
-                  else
-                  {
-                     this.Events[7][i] = true;
-                  } 
-                  if (indicatorToDecorate[i] >signalSerie[i])
-                  {
-                     this.Events[8][i] = true;
-                  }
-                  else
-                  {
-                     this.Events[9][i] = true;
-                  }
-                  currentValue = indicatorToDecorate[i];
-                  if (currentValue == previousValue)
-                  {
-                     if (indicatorToDecorate.IsBottomIsh(i))
-                     {
-                        if (currentValue <= exhaustionSellLimit)
+                    int lastExhaustionSellIndex = int.MinValue;
+                    int lastExhaustionBuyIndex = int.MinValue;
+                    float exhaustionSellLimit = indicatorToDecorate[0];
+                    float exhaustionBuyLimit = indicatorToDecorate[0];
+                    float exhaustionBuyPrice = highSerie[0];
+                    float exhaustionSellPrice = lowSerie[0];
+                    float exFadeOut = (100.0f - (float)this.parameters[0]) / 100.0f;
+
+                    float previousValue = indicatorToDecorate[0];
+                    float currentValue;
+                    int i = 0;
+                    for (i = 1; i < indicatorToDecorate.Count - 1; i++)
+                    {
+                        if (indicatorToDecorate[i] > 0)
                         {
-                           // This is an exhaustion selling
-                           this.Events[1][i+1] = true;
-                           exhaustionSellPrice = lowSerie[i];
-                           exhaustionSellLimit = currentValue;
-                           lastExhaustionSellIndex = i + 1;
+                            this.Events[6][i] = true;
                         }
                         else
                         {
-                           // Check if divergence
-                           if (lowSerie[i] <= exhaustionSellPrice)
-                           {
-                              this.Events[3][i + 1] = true;
-                           }
-                           exhaustionSellLimit *= exFadeOut;
+                            this.Events[7][i] = true;
                         }
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                     else if (indicatorToDecorate.IsTopIsh(i))
-                     {
-                        if (currentValue >= exhaustionBuyLimit)
+                        if (indicatorToDecorate[i] > signalSerie[i])
                         {
-                           // This is an exhaustion buying
-                           this.Events[0][i + 1] = true;
-                           exhaustionBuyPrice = highSerie[i];
-                           exhaustionBuyLimit = currentValue;
-                           lastExhaustionBuyIndex = i + 1;
+                            this.Events[8][i] = true;
                         }
                         else
                         {
-                           // Check if divergence
-                           if (highSerie[i] >= exhaustionBuyPrice)
-                           {
-                              this.Events[2][i + 1] = true;
-                           }
-                           exhaustionSellLimit *= exFadeOut;
+                            this.Events[9][i] = true;
                         }
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                     else
-                     {
-                        exhaustionSellLimit *= exFadeOut;
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                  }
-                  else if (currentValue < previousValue)
-                  {
-                     if (indicatorToDecorate.IsBottom(i))
-                     {
-                        if (currentValue <= exhaustionSellLimit)
+                        currentValue = indicatorToDecorate[i];
+                        if (currentValue == previousValue)
                         {
-                           // This is an exhaustion selling
-                           this.Events[1][i + 1] = true;
-                           exhaustionSellPrice = lowSerie[i];
-                           exhaustionSellLimit = currentValue;
-                           lastExhaustionSellIndex = i + 1;
+                            if (indicatorToDecorate.IsBottomIsh(i))
+                            {
+                                if (currentValue <= exhaustionSellLimit)
+                                {
+                                    // This is an exhaustion selling
+                                    this.Events[1][i + 1] = true;
+                                    exhaustionSellPrice = lowSerie[i];
+                                    exhaustionSellLimit = currentValue;
+                                    lastExhaustionSellIndex = i + 1;
+                                }
+                                else
+                                {
+                                    // Check if divergence
+                                    if (lowSerie[i] <= exhaustionSellPrice)
+                                    {
+                                        this.Events[3][i + 1] = true;
+                                    }
+                                    exhaustionSellLimit *= exFadeOut;
+                                }
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                            else if (indicatorToDecorate.IsTopIsh(i))
+                            {
+                                if (currentValue >= exhaustionBuyLimit)
+                                {
+                                    // This is an exhaustion buying
+                                    this.Events[0][i + 1] = true;
+                                    exhaustionBuyPrice = highSerie[i];
+                                    exhaustionBuyLimit = currentValue;
+                                    lastExhaustionBuyIndex = i + 1;
+                                }
+                                else
+                                {
+                                    // Check if divergence
+                                    if (highSerie[i] >= exhaustionBuyPrice)
+                                    {
+                                        this.Events[2][i + 1] = true;
+                                    }
+                                    exhaustionSellLimit *= exFadeOut;
+                                }
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                            else
+                            {
+                                exhaustionSellLimit *= exFadeOut;
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                        }
+                        else if (currentValue < previousValue)
+                        {
+                            if (indicatorToDecorate.IsBottom(i))
+                            {
+                                if (currentValue <= exhaustionSellLimit)
+                                {
+                                    // This is an exhaustion selling
+                                    this.Events[1][i + 1] = true;
+                                    exhaustionSellPrice = lowSerie[i];
+                                    exhaustionSellLimit = currentValue;
+                                    lastExhaustionSellIndex = i + 1;
+                                }
+                                else
+                                {
+                                    // Check if divergence
+                                    if (lowSerie[i] <= exhaustionSellPrice)
+                                    {
+                                        this.Events[3][i + 1] = true;
+                                    }
+                                    exhaustionSellLimit *= exFadeOut;
+                                }
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                            else
+                            { // trail exhaustion limit down
+                                exhaustionSellLimit = Math.Min(currentValue, exhaustionSellLimit);
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                        }
+                        else if (currentValue > previousValue)
+                        {
+                            if (indicatorToDecorate.IsTop(i))
+                            {
+                                if (currentValue >= exhaustionBuyLimit)
+                                {
+                                    // This is an exhaustion selling
+                                    this.Events[0][i + 1] = true;
+                                    exhaustionBuyPrice = highSerie[i];
+                                    exhaustionBuyLimit = currentValue;
+                                    lastExhaustionBuyIndex = i + 1;
+                                }
+                                else
+                                {
+                                    // Check if divergence
+                                    if (highSerie[i] >= exhaustionBuyPrice)
+                                    {
+                                        this.Events[2][i + 1] = true;
+                                    }
+                                    exhaustionSellLimit *= exFadeOut;
+                                }
+                                exhaustionBuyLimit *= exFadeOut;
+                            }
+                            else
+                            { // trail exhaustion limit up
+                                exhaustionBuyLimit = Math.Max(currentValue, exhaustionBuyLimit);
+                                exhaustionSellLimit *= exFadeOut;
+                            }
                         }
                         else
                         {
-                           // Check if divergence
-                           if (lowSerie[i] <= exhaustionSellPrice)
-                           {
-                              this.Events[3][i + 1] = true;
-                           }
-                           exhaustionSellLimit *= exFadeOut;
+                            exhaustionSellLimit *= exFadeOut;
+                            exhaustionBuyLimit *= exFadeOut;
                         }
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                     else
-                     { // trail exhaustion limit down
-                        exhaustionSellLimit = Math.Min(currentValue, exhaustionSellLimit);
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                  }
-                  else if (currentValue > previousValue)
-                  {
-                     if (indicatorToDecorate.IsTop(i))
-                     {
-                        if (currentValue >= exhaustionBuyLimit)
+                        previousValue = currentValue;
+
+                        upperLimit[i] = exhaustionBuyLimit;
+                        lowerLimit[i] = exhaustionSellLimit;
+
+                        // Exhaustion occured events
+                        if (lookbackPeriod > 0)
                         {
-                           // This is an exhaustion selling
-                           this.Events[0][i + 1] = true;
-                           exhaustionBuyPrice = highSerie[i];
-                           exhaustionBuyLimit = currentValue;
-                           lastExhaustionBuyIndex = i + 1;
+                            if (i + 1 - lookbackPeriod < lastExhaustionBuyIndex)
+                            {
+                                this.Events[4][i + 1] = true;
+                            }
+                            if (i + 1 - lookbackPeriod < lastExhaustionSellIndex)
+                            {
+                                this.Events[5][i + 1] = true;
+                            }
                         }
-                        else
-                        {
-                           // Check if divergence
-                           if (highSerie[i] >= exhaustionBuyPrice)
-                           {
-                              this.Events[2][i + 1] = true;
-                           }
-                           exhaustionSellLimit *= exFadeOut;
-                        }
-                        exhaustionBuyLimit *= exFadeOut;
-                     }
-                     else
-                     { // trail exhaustion limit up
-                        exhaustionBuyLimit = Math.Max(currentValue, exhaustionBuyLimit);
-                        exhaustionSellLimit *= exFadeOut;
-                     }
-                  }
-                  else
-                  {
-                     exhaustionSellLimit *= exFadeOut;
-                     exhaustionBuyLimit *= exFadeOut;
-                  }
-                  previousValue = currentValue;
+                    }
+                    // Update last values
+                    exhaustionSellLimit *= exFadeOut;
+                    exhaustionBuyLimit *= exFadeOut;
 
-                  upperLimit[i] = exhaustionBuyLimit;
-                  lowerLimit[i] = exhaustionSellLimit;
+                    upperLimit[i] = exhaustionBuyLimit;
+                    lowerLimit[i] = exhaustionSellLimit;
 
-                  // Exhaustion occured events
-                  if (lookbackPeriod > 0)
-                  {
-                     if (i + 1 - lookbackPeriod < lastExhaustionBuyIndex)
-                     {
-                        this.Events[4][i + 1] = true;
-                     }
-                     if (i + 1 - lookbackPeriod < lastExhaustionSellIndex)
-                     {
-                        this.Events[5][i + 1] = true;
-                     }
-                  }
-               }
-               // Update last values
-               exhaustionSellLimit *= exFadeOut;
-               exhaustionBuyLimit *= exFadeOut;
-
-               upperLimit[i] = exhaustionBuyLimit;
-               lowerLimit[i] = exhaustionSellLimit;
-               
-               if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
-               {
-                  IRange range = (IRange)indicator;
-                  this.Series[1] = upperLimit.Add((range.Max + range.Min) / 2.0f); 
-                  this.Series[2] = lowerLimit.Add((range.Max + range.Min) / 2.0f);
-               }
+                    if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
+                    {
+                        IRange range = (IRange)indicator;
+                        this.Series[1] = upperLimit.Add((range.Max + range.Min) / 2.0f);
+                        this.Series[2] = lowerLimit.Add((range.Max + range.Min) / 2.0f);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < this.EventNames.Length; i++)
+                    {
+                        this.Events[i] = new BoolSerie(0, this.EventNames[i]);
+                    }
+                }
             }
-            else
+        }
+
+        public override System.Drawing.Pen[] EventPens
+        {
+            get
             {
-               for (int i = 0; i < this.EventNames.Length; i++)
-               {
-                  this.Events[i] = new BoolSerie(0, this.EventNames[i]);
-               }
+                if (eventPens == null)
+                {
+                    eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent) };
+                    eventPens[0].Width = 3;
+                    eventPens[1].Width = 3;
+                    eventPens[2].Width = 2;
+                    eventPens[3].Width = 2;
+                }
+                return eventPens;
             }
-         }
-      }
+        }
 
-      public override System.Drawing.Pen[] EventPens
-      {
-         get
-         {
-            if (eventPens == null)
-            {
-               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent), new Pen(Color.Transparent) };
-               eventPens[0].Width = 3;
-               eventPens[1].Width = 3;
-               eventPens[2].Width = 2;
-               eventPens[3].Width = 2;
-            }
-            return eventPens;
-         }
-      }
-
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative", "Bullish", "Bearish" };
-      public override string[] EventNames
-      {
-         get { return eventNames; }
-      }
-      static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false, false, false, false, false };
-      public override bool[] IsEvent
-      {
-         get { return isEvent; }
-      }
-   }
+        static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative", "Bullish", "Bearish" };
+        public override string[] EventNames
+        {
+            get { return eventNames; }
+        }
+        static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false, false, false, false, false };
+        public override bool[] IsEvent
+        {
+            get { return isEvent; }
+        }
+    }
 }
 /*
 {***** Copyright David Carbonel - All rights reserved *****}

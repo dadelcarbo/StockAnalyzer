@@ -148,7 +148,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 serie.BarDuration = currentBarDuration;
                 return res;
             }
-        } 
+        }
         public static bool ForceDownloadSerieData(StockSerie serie)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
