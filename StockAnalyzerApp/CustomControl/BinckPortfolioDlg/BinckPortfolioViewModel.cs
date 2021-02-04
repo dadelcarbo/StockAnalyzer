@@ -29,9 +29,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         [Property]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
 
-        //[Property]
-        //public DateTime CreationDate { get => portfolio.CreationDate; set => portfolio.CreationDate = value; }
-
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
         public IEnumerable<StockPositionViewModel> OpenedPositions

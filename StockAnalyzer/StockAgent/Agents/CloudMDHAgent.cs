@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(2, 100)]
         public int SlowPeriod { get; set; }
 
-        public override string Description => "Buy when Open above bullish MDH cloud";
+        public override string Description => "Buy when Close above bullish MDH cloud";
         public override string DisplayIndicator => $"CLOUD|MDH({FastPeriod},{SlowPeriod})";
 
         IStockCloud cloud;
@@ -28,7 +28,7 @@ namespace StockAnalyzer.StockAgent.Agents
         BoolSerie bearEvents;
         protected override void Init(StockSerie stockSerie)
         {
-            cloud = stockSerie.GetCloud($"MDH({FastPeriod},{SlowPeriod})");
+            cloud = stockSerie.GetCloud($"MDH({FastPeriod},{SlowPeriod})";
             bullishCloudEvent = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BullishCloud")];
             closeAboveCloudEvent = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloseAboveCloud")];
             bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloseBelowCloud")];
