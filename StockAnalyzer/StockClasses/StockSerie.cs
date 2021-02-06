@@ -3287,104 +3287,6 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        public void CalculateSAREX(float accelerationFactorInit, float accelerationFactorStep, out FloatSerie sarexFollowerSupport, out FloatSerie sarexFollowerResistance)
-        {
-            sarexFollowerSupport = new FloatSerie(this.Values.Count, "SAREX.S");
-            sarexFollowerResistance = new FloatSerie(this.Values.Count, "SAREX.R");
-            int i = 0;
-            float currentSarex = this.Values.First().CLOSE;
-            sarexFollowerResistance.Values[0] = currentSarex;
-            float previousExtremum = this.Values.First().CLOSE;
-            bool upTrend = true;
-
-            float accelerationFactor = accelerationFactorInit;
-
-            FloatSerie referenceEMASerie = this.GetIndicator("EMA(6)").Series[0];
-            FloatSerie referenceEMATrendSerie = referenceEMASerie.CalculateRelativeTrend().CalculateEMA(3);
-            float sarexToEMAGap = 0.0f;
-            float fastSwingAccelerationFactor = 0.0f;
-            float fastSwingFactor = accelerationFactorStep;
-
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
-
-            StockDailyValue yesterValue;
-            StockDailyValue yesterYesterValue = null;
-            while (++i <= this.Values.Count)
-            {
-                // Check if new extremum is reached
-                yesterValue = this.ValueArray[i - 1];
-                if (currentSarex >= yesterValue.HIGH)
-                {
-                    if (upTrend == true)
-                    {
-                        accelerationFactor = accelerationFactorInit;
-                        upTrend = false;
-                    }
-                    if (yesterValue.LOW < previousExtremum)
-                    {
-                        accelerationFactor = accelerationFactor + accelerationFactorStep;
-                        previousExtremum = yesterValue.LOW;
-                    }
-                }
-                if (currentSarex <= yesterValue.LOW)
-                {
-                    if (upTrend == false)
-                    {
-                        accelerationFactor = accelerationFactorInit;
-                        upTrend = true;
-                    }
-                    if (yesterValue.HIGH > previousExtremum)
-                    {
-                        accelerationFactor = accelerationFactor + accelerationFactorStep;
-                        previousExtremum = yesterValue.HIGH;
-                    }
-                }
-
-                // Gap management
-                if (yesterYesterValue != null)
-                {
-                    if (upTrend)
-                    {
-                        if (yesterYesterValue.HIGH < yesterValue.LOW)
-                        {
-                            currentSarex += yesterValue.LOW - yesterYesterValue.HIGH;
-                        }
-                    }
-                    else
-                    {
-                        if (yesterYesterValue.LOW > yesterValue.HIGH)
-                        {
-                            currentSarex -= yesterYesterValue.LOW - yesterValue.HIGH;
-                        }
-                    }
-                }
-
-                // Fast swing management
-                sarexToEMAGap = referenceEMASerie.Values[i - 1] - currentSarex;
-                fastSwingAccelerationFactor = Math.Max(Math.Abs(referenceEMATrendSerie.Values[i - 1] * fastSwingFactor), fastSwingAccelerationFactor);
-                currentSarex += accelerationFactor * (previousExtremum - currentSarex) + fastSwingAccelerationFactor * sarexToEMAGap;
-
-                if (currentSarex >= yesterValue.CLOSE)
-                {
-                    sarexFollowerResistance[i - 1] = currentSarex;
-                    sarexFollowerSupport[i - 1] = float.NaN;
-                }
-                else
-                {
-                    sarexFollowerResistance[i - 1] = float.NaN;
-                    sarexFollowerSupport[i - 1] = currentSarex;
-                }
-
-                // Check if the sarex has broken
-                if (i < this.Values.Count && (currentSarex < highSerie[i] && currentSarex > lowSerie[i]))
-                {   // The SAREX has broken
-                    previousExtremum = this.ValueArray[i].CLOSE;
-                }
-                yesterYesterValue = yesterValue;
-            }
-        }
-
         public FloatSerie CalculateCCI(int period)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
@@ -5322,6 +5224,51 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration currentBarDuration = this.barDuration;
             otherSerie.BarDuration = StockBarDuration.Daily;
             this.barDuration = StockBarDuration.Daily;
+
+            FloatSerie newSerie = new FloatSerie(this.Count);
+            newSerie.Name = otherSerie.StockName;
+
+            FloatSerie otherFloatSerie = otherSerie.GetSerie(StockDataType.CLOSE);
+            float previousValue = otherFloatSerie[0];
+            DateTime startDate = otherSerie.Keys.First();
+            DateTime lastDate = otherSerie.Keys.Last();
+
+            int i = 0;
+            foreach (StockDailyValue dailyValue in this.Values)
+            {
+                if (dailyValue.DATE > lastDate || dailyValue.DATE < startDate)
+                {
+                    newSerie[i] = float.NaN;
+                }
+                else
+                {
+                    if (otherSerie.ContainsKey(dailyValue.DATE))
+                    {
+                        newSerie[i] = otherSerie[dailyValue.DATE].GetStockData(StockDataType.CLOSE);
+                        previousValue = newSerie[i];
+                    }
+                    else
+                    {
+                        newSerie[i] = previousValue;
+                    }
+                }
+                i++;
+            }
+
+            otherSerie.BarDuration = currentBarDuration;
+            this.barDuration = currentBarDuration;
+
+            return newSerie;
+        }
+        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie, StockBarDuration barDuration)
+        {
+            if (!otherSerie.Initialise())
+            {
+                return null;
+            }
+            StockBarDuration currentBarDuration = this.barDuration;
+            otherSerie.BarDuration = barDuration;
+            this.barDuration = barDuration;
 
             FloatSerie newSerie = new FloatSerie(this.Count);
             newSerie.Name = otherSerie.StockName;

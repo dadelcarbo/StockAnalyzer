@@ -74,7 +74,6 @@ namespace StockAnalyzerApp
             this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indexRelativeStrengthMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -366,7 +365,6 @@ namespace StockAnalyzerApp
             this.showAlertDialogMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
-            this.indexRelativeStrengthMenuItem,
             this.logSerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -516,12 +514,6 @@ namespace StockAnalyzerApp
             this.secondarySerieMenuItem.Name = "secondarySerieMenuItem";
             this.secondarySerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.secondarySerieMenuItem.Text = "Secondary Serie";
-            // 
-            // indexRelativeStrengthMenuItem
-            // 
-            this.indexRelativeStrengthMenuItem.Name = "indexRelativeStrengthMenuItem";
-            this.indexRelativeStrengthMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.indexRelativeStrengthMenuItem.Text = "Index Relative Strength";
             // 
             // logSerieMenuItem
             // 
@@ -1546,7 +1538,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showAlertDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
-        private ToolStripMenuItem indexRelativeStrengthMenuItem;
         private ToolStripMenuItem logSerieMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;

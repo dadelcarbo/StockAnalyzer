@@ -2273,7 +2273,6 @@ namespace StockAnalyzerApp
                     int n = 0;
                     foreach (StockSerie stockSerie in groupSeries)
                     {
-                        // Create indexRelativeStrength menu items
                         secondarySerieSubMenuItem = new ToolStripMenuItem(stockSerie.StockName);
                         secondarySerieSubMenuItem.Click += new EventHandler(secondarySerieMenuItem_Click);
                         secondarySerieMenuItems[n++] = secondarySerieSubMenuItem;
@@ -3752,6 +3751,11 @@ namespace StockAnalyzerApp
                     if (!this.CurrentStockSerie.Initialise() || this.CurrentStockSerie.Count == 0)
                     {
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
+                        return;
+                    }
+                    if (this.CurrentStockSerie.Count < 50)
+                    {
+                        this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " is insufficient, need at least 50 bars");
                         return;
                     }
                     // Delete transient drawing created by alert Detection

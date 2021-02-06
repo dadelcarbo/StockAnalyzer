@@ -1102,7 +1102,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (mouseIndex != -1 && CurveList.Count != 0 && this.mainSerie != null)
                     {
                         // GetMarquee value
-                        float value = this.mainSerie[mouseIndex];
+                        float value = this.mainSerie[mouseIndex]; 
+                        if (float.IsNaN(value)) return;
                         PointF point = new PointF(mouseIndex, value);
                         PointF point2 = GetScreenPointFromValuePoint(point);
                         this.foregroundGraphic.DrawEllipse(mousePen, point2.X - MOUSE_MARQUEE_SIZE, point2.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);

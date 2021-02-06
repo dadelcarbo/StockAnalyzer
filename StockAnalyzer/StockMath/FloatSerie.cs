@@ -564,41 +564,6 @@ namespace StockAnalyzer.StockMath
             }
             return correlationSerie;
         }
-        public FloatSerie CalculateRelativeTrend()
-        {
-            float[] trend = new float[this.Values.Count()];
-            trend[0] = 0.0f;
-            for (int i = 1; i < this.Values.Count(); i++)
-            {
-                if (Math.Abs(this.Values[i]) <= 0.00001f)
-                { trend[i] = 0.0f; }
-                else
-                { trend[i] = (this.Values[i] - this.Values[i - 1]) / this.Values[i]; }
-                if (float.IsNaN(trend[i]))
-                {
-                    StockLog.Write("NaN");
-                }
-            }
-            return new FloatSerie(trend, "TREND");
-        }
-        public FloatSerie CalculateAbsoluteTrend()
-        {
-            float[] trend = new float[this.Values.Count()];
-            trend[0] = 0.0f;
-            for (int i = 1; i < this.Values.Count(); i++)
-            {
-                if (Math.Abs(this.Values[i]) <= 0.00001f)
-                { trend[i] = 0.0f; }
-                else
-                { trend[i] = (this.Values[i] - this.Values[i - 1]); }
-                if (float.IsNaN(trend[i]))
-                {
-                    StockLog.Write("NaN");
-                }
-            }
-            return new FloatSerie(trend, "TREND");
-        }
-
         public void CalculateBB(FloatSerie referenceAverage, int bbTimePeriod, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
         {
             float squareSum = 0.0f;
