@@ -24,13 +24,16 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie shortStopSerie;
 
         float stop, target;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Period)
+                return false;
             trailStop = stockSerie.GetTrailStop($"TRAILEMA({Period})");
             longStopSerie = trailStop.Series[0];
             shortStopSerie = trailStop.Series[1];
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

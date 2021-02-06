@@ -28,6 +28,7 @@ namespace StockAnalyzer.StockAgent
             string res = "Nb Trade: " + Trades.Count() + Environment.NewLine;
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade: " + NbLostTrade + Environment.NewLine;
+
             res += "Max Gain: " + MaxGain.ToString("P2") + Environment.NewLine;
             res += "Max Loss: " + MaxLoss.ToString("P2") + Environment.NewLine;
             res += "Max Drawdown: " + MaxDrawdown.ToString("P2") + Environment.NewLine;
@@ -41,15 +42,17 @@ namespace StockAnalyzer.StockAgent
 
         public string ToStats()
         {
-            string res = MaxDrawdown + "\t";
-            res += MaxGain + "\t";
-            res += MaxLoss + "\t";
-            res += ExpectedReturn + "\t";
-            res += CumulGain + "\t";
-            res += Trades.Count() + "\t";
+            string res = Trades.Count() + "\t";
             res += NbWinTrade + "\t";
             res += NbLostTrade + "\t";
+
+            res += MaxGain + "\t";
+            res += MaxLoss + "\t";
+            res += MaxDrawdown + "\t";
+
+            res += CumulGain + "\t";
             res += WinTradeRatio + "\t";
+            res += ExpectedReturn + "\t";
             return res;
         }
     }

@@ -26,12 +26,15 @@ namespace StockAnalyzer.StockAgent.Agents
         BoolSerie bullishCloudEvent;
         BoolSerie closeAboveCloudEvent;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+                return false;
             cloud = stockSerie.GetCloud($"MDH({FastPeriod},{SlowPeriod})");
             bullishCloudEvent = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BullishCloud")];
             closeAboveCloudEvent = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloseAboveCloud")];
             bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloseBelowCloud")];
+            return bullishCloudEvent != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockMath;
+using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
@@ -18,10 +19,13 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when Open and close are above EMA";
 
         FloatSerie ema, emaFilter;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+                return false;
             ema = stockSerie.GetIndicator($"EMA({FastPeriod})").Series[0];
             emaFilter = stockSerie.GetIndicator($"EMA({SlowPeriod})").Series[0];
+            return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

@@ -9,12 +9,12 @@ namespace StockAnalyzer.StockAgent.Agents
     {
         public BBStopAgent()
         {
-            MAPeriod = 13;
+            Period = 13;
             UpBBWidth = 2.0f;
         }
 
         [StockAgentParam(5, 60)]
-        public int MAPeriod { get; set; }
+        public int Period { get; set; }
 
         [StockAgentParam(0.75f, 3.0f)]
         public float UpBBWidth { get; set; }
@@ -23,16 +23,19 @@ namespace StockAnalyzer.StockAgent.Agents
         public float DownBBWidth { get; set; }
 
         public override string Description => "Buy with BBStop";
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILBB({MAPeriod},{UpBBWidth},{-DownBBWidth})";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILBB({Period},{UpBBWidth},{-DownBBWidth})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
-            trailStop = stockSerie.GetTrailStop($"TRAILBB({MAPeriod},{UpBBWidth},{-DownBBWidth})");
+            if (stockSerie.Count < Period)
+                return false;
+            trailStop = stockSerie.GetTrailStop($"TRAILBB({Period},{UpBBWidth},{-DownBBWidth})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

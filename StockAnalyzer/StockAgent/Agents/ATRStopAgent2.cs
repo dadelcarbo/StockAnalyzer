@@ -15,7 +15,6 @@ namespace StockAnalyzer.StockAgent.Agents
 
         [StockAgentParam(5, 80)]
         public int Period { get; set; }
-
         [StockAgentParam(0.5f, 4.0f)]
         public float UpWidth { get; set; }
         [StockAgentParam(0.5f, 4.0f)]
@@ -28,11 +27,14 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Period)
+                return false;
             trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{UpWidth},{-DownWidth},EMA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

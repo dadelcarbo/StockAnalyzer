@@ -20,9 +20,12 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when according to STOKSTREND signals";
 
         FloatSerie STOKSTREND;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Period)
+                return false;
             STOKSTREND = stockSerie.GetIndicator($"STOKSTREND({Period}, {Smoothing}, {Smoothing})").Series[0];
+            return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

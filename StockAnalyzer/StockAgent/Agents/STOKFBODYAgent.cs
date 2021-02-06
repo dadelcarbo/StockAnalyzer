@@ -24,9 +24,12 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when according to STOKFBODY signals";
 
         FloatSerie stockfBodySerie;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Period)
+                return false;
             stockfBodySerie = stockSerie.GetIndicator($"STOKFBODY({Period})").Series[0];
+            return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
@@ -40,7 +43,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (stockfBodySerie[index - 1] > 75 && stockfBodySerie[index] < 75) // 1st bar below bear trigger
+            if (stockfBodySerie[index - 1] > BearTrigger && stockfBodySerie[index] < BearTrigger) // 1st bar below bear trigger
             {
                 return TradeAction.Sell;
             }

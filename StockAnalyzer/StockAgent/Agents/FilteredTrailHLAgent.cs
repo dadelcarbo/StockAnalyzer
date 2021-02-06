@@ -24,12 +24,15 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie emaFilterSerie;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Math.Max(Period, FilterPeriod))
+                return false;
             emaFilterSerie = stockSerie.GetIndicator($"EMA({FilterPeriod})").Series[0];
             trailStop = stockSerie.GetTrailStop($"TRAILHL({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

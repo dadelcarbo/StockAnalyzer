@@ -27,11 +27,12 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie highest;
         FloatSerie close;
 
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
             bearLine = stockSerie.GetCloud($"TRENDBODY({Period})").Series[1];
             highest = stockSerie.GetIndicator($"HIGHEST({Trigger})").Series[0];
             close = stockSerie.GetSerie(StockDataType.CLOSE);
+            return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

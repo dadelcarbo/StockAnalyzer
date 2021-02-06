@@ -16,11 +16,12 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockEvent eventSerie;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
             eventSerie = stockSerie.GetIndicator($"HEIKINASHI()");
             bullEvents = eventSerie.Events[Array.IndexOf<string>(eventSerie.EventNames, "BrokenUp")];
             bearEvents = eventSerie.Events[Array.IndexOf<string>(eventSerie.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

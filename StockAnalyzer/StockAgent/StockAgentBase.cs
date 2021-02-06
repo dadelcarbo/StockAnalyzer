@@ -38,17 +38,25 @@ namespace StockAnalyzer.StockAgent
             return agentList;
         }
 
-        public void Initialize(StockSerie stockSerie, StockBarDuration duration)
+        public bool Initialize(StockSerie stockSerie, StockBarDuration duration)
         {
-            stockSerie.ResetIndicatorCache();
+            try
+            {
+                stockSerie.ResetIndicatorCache();
 
-            stockSerie.BarDuration = duration;
-            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            this.Trade = null;
+                stockSerie.BarDuration = duration;
+                closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                this.Trade = null;
 
-            Init(stockSerie);
+                return Init(stockSerie);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Agent: {this.GetType()} Exception: {ex.Message}");
+                return false;
+            }
         }
-        protected abstract void Init(StockSerie stockSerie);
+        protected abstract bool Init(StockSerie stockSerie);
 
         public virtual TradeAction Decide(int index)
         {

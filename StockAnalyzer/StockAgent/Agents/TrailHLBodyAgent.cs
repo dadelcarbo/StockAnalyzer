@@ -17,14 +17,19 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string Description => "Buy with TrailHLBodyAgent Stop";
 
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILHLBODY({Period})";
+
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override void Init(StockSerie stockSerie)
+        protected override bool Init(StockSerie stockSerie)
         {
+            if (stockSerie.Count < Period)
+                return false;
             trailStop = stockSerie.GetTrailStop($"TRAILHLBODY({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)

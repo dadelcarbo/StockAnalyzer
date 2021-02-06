@@ -16,15 +16,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames => new string[] { "TRAILHLBODY.LS", "TRAILHLBODY.SS" };
-        
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILHLBODY.LS");
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILHLBODY.SS");
 
-            int period = (int) this.parameters[0];
+            int period = (int)this.parameters[0];
 
-            if (stockSerie.ValueArray.Length < period) return;
+            if (stockSerie.ValueArray.Length < period)
+            {
+                // Generate events
+                this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);   
+                return;
+            }
 
             var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
             var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());

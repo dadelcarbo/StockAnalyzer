@@ -188,7 +188,10 @@ namespace StockAnalyzer.StockAgent
         {
             foreach (var serie in series.Where(s => s.Count > minIndex))
             {
-                this.Agent.Initialize(serie, duration);
+                if (!this.Agent.Initialize(serie, duration))
+                {
+                    continue;
+                }
 
                 var size = serie.Count - 1;
                 for (int i = minIndex; i < size; i++)
