@@ -10,11 +10,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public TFMidAgent()
         {
             Period = 13;
-            Trigger = 13;
         }
-
-        [StockAgentParam(20, 80)]
-        public int Trigger { get; set; }
 
         [StockAgentParam(2, 20)]
         public int Period { get; set; }
@@ -30,14 +26,14 @@ namespace StockAnalyzer.StockAgent.Agents
         protected override bool Init(StockSerie stockSerie)
         {
             midLine = stockSerie.GetCloud($"TRENDBODY({Period})").Series[2];
-            highest = stockSerie.GetIndicator($"HIGHEST({Trigger})").Series[0];
+            highest = stockSerie.GetIndicator($"HIGHEST({Period})").Series[0];
             close = stockSerie.GetSerie(StockDataType.CLOSE);
             return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (highest[index]>Trigger)
+            if (highest[index]> Period)
             {
                 return TradeAction.Buy;
             }

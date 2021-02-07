@@ -89,6 +89,7 @@
     <Compile Include="StockAgent\Agents\HIGHLOWBARSAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMidAgent.cs" />
     <Compile Include="StockAgent\Agents\TFLowAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHIGHESTMMAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />

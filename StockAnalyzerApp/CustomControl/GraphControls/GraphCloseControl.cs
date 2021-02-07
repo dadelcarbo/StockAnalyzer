@@ -998,15 +998,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
             }
             // Calculate Highest in bars.
-            if (this.lastMouseIndex > 0) { }
-            int highest = 0;
-            var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
+            if (this.lastMouseIndex > 0)
             {
-                if (closeValue < bodyHighSerie[i])
-                    break;
+                var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                int highest = 0;
+                for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
+                {
+                    if (closeValue < bodyHighSerie[i])
+                        break;
+                }
+                value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
+
+                var bodyLowSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                int lowest = 0;
+                for (int i = this.lastMouseIndex - 1; i > 0; i--, lowest++)
+                {
+                    if (closeValue > bodyLowSerie[i])
+                        break;
+                }
+                value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
             }
-            value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
 #if DEBUG
             value += BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12) + "\r\n";
 #endif

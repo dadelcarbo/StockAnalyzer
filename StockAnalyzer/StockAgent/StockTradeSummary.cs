@@ -12,6 +12,8 @@ namespace StockAnalyzer.StockAgent
         }
         public List<StockTrade> Trades { get; private set; }
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
+        public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain > 0).Average(t => t.Gain) : 0f; } }
+        public float AvgLoss { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
         public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
         public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
         public float ExpectedReturn { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
@@ -29,6 +31,9 @@ namespace StockAnalyzer.StockAgent
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade: " + NbLostTrade + Environment.NewLine;
 
+
+            res += "Avg Gain: " + AvgGain.ToString("P2") + Environment.NewLine;
+            res += "Avg Loss: " + AvgLoss.ToString("P2") + Environment.NewLine;
             res += "Max Gain: " + MaxGain.ToString("P2") + Environment.NewLine;
             res += "Max Loss: " + MaxLoss.ToString("P2") + Environment.NewLine;
             res += "Max Drawdown: " + MaxDrawdown.ToString("P2") + Environment.NewLine;

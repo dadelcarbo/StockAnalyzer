@@ -35,7 +35,48 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.ViewModel.Calculate();
 
             this.Cursor = Cursors.Arrow;
+
+            if (indicator1Col!=null)
+            {
+                indicator1Col.Header = ViewModel.Indicator1.Split('(')[0];
+                if (indicator1Col.Header.ToString() == "ROR")
+                {
+                    indicator1Col.DataFormatString = "P2";
+                }
+                else
+                {
+                    indicator1Col.DataFormatString =null;
+                }
+            }
+            if (indicator2Col != null)
+            {
+                indicator2Col.Header = ViewModel.Indicator2.Split('(')[0];
+                if (indicator2Col.Header.ToString() == "ROR")
+                {
+                    indicator2Col.DataFormatString = "P2";
+                }
+                else
+                {
+                    indicator2Col.DataFormatString = null;
+                }
+            }
+            if (indicator3Col != null)
+            {
+                indicator3Col.Header = ViewModel.Indicator3.Split('(')[0];
+                if (indicator3Col.Header.ToString() == "ROR")
+                {
+                    indicator3Col.DataFormatString = "P2";
+                }
+                else
+                {
+                    indicator3Col.DataFormatString = null;
+                }
+            }
         }
+
+        GridViewDataColumn indicator1Col;
+        GridViewDataColumn indicator2Col;
+        GridViewDataColumn indicator3Col;
 
         private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
         {
@@ -50,6 +91,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 case "Indicator1":
                     if (!string.IsNullOrEmpty(ViewModel.Indicator1))
                     {
+                        indicator1Col = col;
                         col.Header = ViewModel.Indicator1.Split('(')[0];
                         if (col.Header.ToString() == "ROR")
                         {
@@ -60,6 +102,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 case "Indicator2":
                     if (!string.IsNullOrEmpty(ViewModel.Indicator1))
                     {
+                        indicator2Col = col;
                         col.Header = ViewModel.Indicator2.Split('(')[0];
                         if (col.Header.ToString() == "ROR")
                         {
@@ -70,6 +113,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 case "Indicator3":
                     if (!string.IsNullOrEmpty(ViewModel.Indicator1))
                     {
+                        indicator3Col = col;
                         col.Header = ViewModel.Indicator3.Split('(')[0];
                         if (col.Header.ToString() == "ROR")
                         {
