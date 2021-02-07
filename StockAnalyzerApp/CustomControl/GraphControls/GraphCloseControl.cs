@@ -997,6 +997,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
             }
+            // Calculate Highest in bars.
+            if (this.lastMouseIndex > 0) { }
+            int highest = 0;
+            var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
+            {
+                if (closeValue < bodyHighSerie[i])
+                    break;
+            }
+            value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
 #if DEBUG
             value += BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12) + "\r\n";
 #endif

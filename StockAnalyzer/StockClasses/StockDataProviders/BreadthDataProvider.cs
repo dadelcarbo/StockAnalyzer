@@ -38,8 +38,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             string[] row = line.Split(',');
                             string longName = row[0];
-                            if (row[0] == "EQW.SRD") longName = "SRD";
-                            if (row[0] == "EQW.CACALL") longName = "CACALL";
                             
                             if (!stockDictionary.ContainsKey(longName))
                             {

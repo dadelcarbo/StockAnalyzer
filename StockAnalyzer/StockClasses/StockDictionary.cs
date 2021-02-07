@@ -829,21 +829,22 @@ namespace StockAnalyzer.StockClasses
         }
         public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
         {
-            StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
-            {
-                if (indexName == "SRD" || indexName == "CACALL") indiceSerie = this["CAC40"];
-                else indiceSerie = this[indexName];
+            StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
 
-                if (!indiceSerie.Initialise())
-                {
-                    return false;
-                }
-            }
-            else
+            //if (this.ContainsKey(indexName))
+            //{
+            //    if (indexName == "SRD" || indexName == "CACALL") indiceSerie = this["CAC40"];
+            //    else indiceSerie = this[indexName];
+
+            if (!indiceSerie.Initialise())
             {
                 return false;
             }
+            //}
+            //else
+            //{
+            //    return false;
+            //}
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
 

@@ -246,13 +246,11 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HEIKINASHI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMODIST.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBHL.cs" />
@@ -314,7 +312,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PIVOTS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA3Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicators.Designer.cs">
@@ -332,6 +329,7 @@
     <Compile Include="StockAnalyzerException.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BOX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_GUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ROR.cs" />
@@ -358,7 +356,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_SAFERANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLPROAM.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_WEDGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />

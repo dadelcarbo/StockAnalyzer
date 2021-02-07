@@ -1666,7 +1666,7 @@ namespace StockAnalyzerApp
                             try
                             {
                                 StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                                //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
                             }
                             catch (Exception ex)
                             {
@@ -3753,11 +3753,11 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
-                    if (this.CurrentStockSerie.Count < 50)
-                    {
-                        this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " is insufficient, need at least 50 bars");
-                        return;
-                    }
+                    //if (this.CurrentStockSerie.Count < 50)
+                    //{
+                    //    this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " is insufficient, need at least 50 bars");
+                    //    return;
+                    //}
                     // Delete transient drawing created by alert Detection
                     if (this.CurrentStockSerie.StockAnalysis.DeleteAlertDrawings() > 0 || this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {

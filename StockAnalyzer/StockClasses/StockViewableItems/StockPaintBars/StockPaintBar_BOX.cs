@@ -1,0 +1,132 @@
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
+using System.Linq;
+
+namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
+{
+    class StockPaintBar_BOX : StockPaintBarBase
+    {
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
+
+        public override string Definition => "Draws BOX patterns and initiate trailing stop";
+
+        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod" };
+
+        public override Object[] ParameterDefaultValues => new Object[] { 52, 20 };
+
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeInt(2, 500) };
+
+        static string[] eventNames = null;
+        public override string[] EventNames
+        {
+            get
+            {
+                if (eventNames == null)
+                {
+                    eventNames = new string[] { "BrokenUp", "BrokenDown", "InBox" };
+                }
+                return eventNames;
+            }
+        }
+        static readonly bool[] isEvent = new bool[] { true, true, true };
+        public override bool[] IsEvent
+        {
+            get { return isEvent; }
+        }
+
+        public override Pen[] SeriePens
+        {
+            get
+            {
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 }, new Pen(Color.DarkRed) { Width = 2 }, new Pen(Color.Black) { Width = 2 } };
+                }
+                return seriePens;
+            }
+        }
+
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            var highPeriod = (int)this.parameters[0];
+            var lowPeriod = (int)this.parameters[1];
+            var validationPeriod = lowPeriod / 2;
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+
+            var highestInSerie = stockSerie.GetIndicator($"HIGHEST({highPeriod})").Series[0];
+
+            // Detecting events
+            this.CreateEventSeries(stockSerie.Count);
+            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
+            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
+            var inBoxEvents = this.Events[Array.IndexOf<string>(this.EventNames, "InBox")];
+
+            try
+            {
+                if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+                {
+                    stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                }
+                DrawingItem.CreatePersistent = false;
+
+                var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+
+                bool inBox = false;
+                float boxHigh = 0f, boxLow = 0f, boxLowLimit = 0f;
+                PointF boxStartCorner = PointF.Empty;
+
+                for (int i = highPeriod; i < stockSerie.Count; i++)
+                {
+                    if (!inBox)
+                    {
+                        int startIndex = i - validationPeriod;
+                        if (highestInSerie[startIndex] > highPeriod && highestInSerie.FindMaxIndex(startIndex, i) == startIndex)
+                        {
+                            // Initiate new box
+                            inBox = true;
+                            boxHigh = bodyHighSerie[startIndex];
+                            boxLow = Math.Min(bodyLowSerie[startIndex], bodyLowSerie[startIndex]);
+                            boxLowLimit = bodyLowSerie.GetMin(startIndex - lowPeriod - 1, startIndex);
+                            boxStartCorner = new PointF(startIndex, closeSerie[startIndex]);
+                        }
+                        else { continue; }
+                    }
+                    else
+                    {
+                        if (closeSerie[i] > boxHigh)
+                        {
+                            // Box broken up
+                            brokenUpEvents[i] = true;
+                            inBox = false;
+                            Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
+                            stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, box);
+                        }
+                        else
+                        {
+                            // Wait for box break out.
+                            if (closeSerie[i] > boxLowLimit)
+                            {
+                                boxLow = Math.Min(boxLow, closeSerie[i]);
+                            }
+                            else
+                            {
+                                inBox = false;
+                                Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(i, boxLow)) { Pen = this.SeriePens[1], Fill = true };
+                                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, box);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                DrawingItem.CreatePersistent = true;
+            }
+        }
+    }
+}

@@ -8,26 +8,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_LOWEST : StockIndicatorBase
     {
         public override string Definition => "Calculate the number of bars the current bar is the lowest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
-
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Trigger" }; }
-        }
-
-        public override string[] SerieNames { get { return new string[] { "LOWEST(" + this.Parameters[0].ToString() + ")" }; } }
-
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
+        public override object[] ParameterDefaultValues => new Object[] { 20 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Trigger" };
+        public override string[] SerieNames => new string[] { "LOWEST(" + this.Parameters[0].ToString() + ")" };
         public override System.Drawing.Pen[] SeriePens
         {
             get
@@ -43,7 +28,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get { return null; }
         }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
