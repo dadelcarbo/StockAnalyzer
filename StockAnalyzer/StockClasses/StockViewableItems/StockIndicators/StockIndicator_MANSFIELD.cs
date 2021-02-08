@@ -33,7 +33,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var rpSerie = (closeSerie / indexCloseSerie) * 100f;
             var mrpSerie = (rpSerie / rpSerie.CalculateEMA(period) - 1f) * 100f;
 
-
             this.series[0] = mrpSerie;
             this.Series[0].Name = this.Name;
 
@@ -41,15 +40,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
             for (int i = 2; i < stockSerie.Count; i++)
             {
-                float roc = mansfieldSerie[i];
-                float previousRoc = mansfieldSerie[i - 1];
-                this.eventSeries[0][i] = (mansfieldSerie[i - 2] < previousRoc && previousRoc > roc);
-                this.eventSeries[1][i] = (mansfieldSerie[i - 2] > previousRoc && previousRoc < roc);
-                this.eventSeries[2][i] = roc == 0;
-                this.eventSeries[3][i] = (previousRoc == 0 && roc > 0);
+                this.eventSeries[0][i] = mansfieldSerie[i] > 0;
+                this.eventSeries[1][i] = mansfieldSerie[i] < 0;
             }
         }
-        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
+        static string[] eventNames = new string[] { "Positive", "Negative" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true, true };
         public override bool[] IsEvent => isEvent;

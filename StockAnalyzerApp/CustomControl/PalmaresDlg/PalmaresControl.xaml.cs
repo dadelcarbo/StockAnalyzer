@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             this.Cursor = Cursors.Arrow;
 
-            if (indicator1Col!=null)
+            if (indicator1Col != null)
             {
                 indicator1Col.Header = ViewModel.Indicator1.Split('(')[0];
                 if (indicator1Col.Header.ToString() == "ROR")
@@ -45,7 +45,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 else
                 {
-                    indicator1Col.DataFormatString =null;
+                    indicator1Col.DataFormatString = null;
                 }
             }
             if (indicator2Col != null)
@@ -154,7 +154,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                                 currentCulture.DateTimeFormat.CalendarWeekRule,
                                 currentCulture.DateTimeFormat.FirstDayOfWeek);
 
-                string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, 
+                string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder,
                     $@"CommentReport\Palmares_{ViewModel.Group}_{ViewModel.ToDate.Year}_{weekNo}.xlsx");
 
                 using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))

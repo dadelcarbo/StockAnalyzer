@@ -5,9 +5,9 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class TFLowAgent : StockAgentBase
+    public class TFMansfieldAgent : StockAgentBase
     {
-        public TFLowAgent()
+        public TFMansfieldAgent()
         {
             Period = 13;
         }
@@ -15,25 +15,21 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(2, 20)]
         public int Period { get; set; }
 
-        public override string Description => "Buy with highest bar in 'Trigger' periods, and hold until TRENDBODY bear line not broken";
+        public override string Description => "Buy when MANSFIELD turn positive";
 
-        public override string DisplayIndicator => $"CLOUD|TRENDBODY({Period})";
+        public override string DisplayIndicator => $"INDICATOR|MANSFIELD({Period})";
 
-        FloatSerie bearLine;
-        FloatSerie highest;
-        FloatSerie close;
+        FloatSerie mansfield;
 
         protected override bool Init(StockSerie stockSerie)
         {
-            bearLine = stockSerie.GetCloud($"TRENDBODY({Period})").Series[1];
-            highest = stockSerie.GetIndicator($"HIGHEST({Period})").Series[0];
-            close = stockSerie.GetSerie(StockDataType.CLOSE);
+            mansfield = stockSerie.GetIndicator($"MANSFIELD({Period})").Series[0];
             return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (highest[index] > Period)
+            if (mansfield[index] > 0)
             {
                 return TradeAction.Buy;
             }
@@ -42,7 +38,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (close[index] < bearLine[index]) // bar fast below slow EMA
+            if (mansfield[index] < 0)
             {
                 return TradeAction.Sell;
             }
