@@ -5,9 +5,9 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class TrailHLAgent : StockAgentBase
+    public class TrailTFAgent : StockAgentBase
     {
-        public TrailHLAgent()
+        public TrailTFAgent()
         {
             Period = 13;
         }
@@ -15,8 +15,9 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(2, 80)]
         public int Period { get; set; }
 
-        public override string Description => "Buy with TRAILHL Stop";
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILHL({Period})";
+        public override string Description => "Buy with TrailTF Stop";
+
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILTF({Period})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
@@ -25,7 +26,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILHL({Period})");
+            trailStop = stockSerie.GetTrailStop($"TRAILTF({Period})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

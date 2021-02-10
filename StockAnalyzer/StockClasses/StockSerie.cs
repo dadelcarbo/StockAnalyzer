@@ -81,7 +81,7 @@ namespace StockAnalyzer.StockClasses
             get
             {
                 if (string.IsNullOrEmpty(ISIN)) return null;
-                switch(this.ISIN.Substring(0,2))
+                switch (this.ISIN.Substring(0, 2))
                 {
                     case "FR":
                     case "QS":

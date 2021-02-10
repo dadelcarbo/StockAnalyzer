@@ -94,6 +94,7 @@
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailTF.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
@@ -395,6 +396,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />
