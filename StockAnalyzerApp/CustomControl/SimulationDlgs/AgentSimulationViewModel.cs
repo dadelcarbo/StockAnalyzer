@@ -34,7 +34,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration Duration { get; set; }
 
         public int Accuracy { get; set; }
-        public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain" };
+        public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain", "ExpectedGainPerDay" };
         public string Selector { get; set; }
 
         public void Cancel()
@@ -78,6 +78,19 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     report = value;
                     OnPropertyChanged("Report");
+                }
+            }
+        }
+        string stats;
+        public string Stats
+        {
+            get => stats;
+            set
+            {
+                if (stats != value)
+                {
+                    stats = value;
+                    OnPropertyChanged("Stats");
                 }
             }
         }
@@ -149,6 +162,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             if (worker == null)
             {
                 this.Report = "Performing";
+                this.Stats = string.Empty;
                 engine = new StockAgentEngine(agentType);
                 engine.BestAgentDetected += (bestAgent) =>
                 {
@@ -156,6 +170,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
                     msg += bestAgent.ToLog() + Environment.NewLine;
                     this.Report = msg;
+                };
+                engine.AgentPerformed += (agent) =>
+                {
+                    this.Stats += agent.ToString() + "\t" + agent.TradeSummary.ExpectedReturn.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerDay.ToString("P2") + Environment.NewLine;
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
@@ -241,6 +259,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         break;
                     case "ExpectedGain":
                         selector = t => t.ExpectedReturn;
+                        break;
+                    case "ExpectedGainPerDay":
+                        selector = t => t.ExpectedGainPerDay;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);

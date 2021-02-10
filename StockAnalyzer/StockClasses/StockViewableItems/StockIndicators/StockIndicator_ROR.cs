@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
-using System.Web.UI.WebControls.WebParts;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

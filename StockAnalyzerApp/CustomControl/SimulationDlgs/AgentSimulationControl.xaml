@@ -38,6 +38,9 @@
             <TabItem Header="Report">
                 <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
+            <TabItem Header="Log">
+                <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
+            </TabItem>
             <TabItem Header="Trades">
                 <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">

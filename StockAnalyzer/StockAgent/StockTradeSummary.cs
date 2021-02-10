@@ -17,6 +17,7 @@ namespace StockAnalyzer.StockAgent
         public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
         public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
         public float ExpectedReturn { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
+        public float ExpectedGainPerDay { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) / this.Trades.Average(t => (float)t.Duration) : 0f; } }
         public float CumulGain { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f; } }
 
         public int NbTrades => this.Trades.Count;

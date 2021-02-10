@@ -8,29 +8,28 @@ namespace StockAnalyzer.StockAgent.Agents
     {
         public EMAMMAgent()
         {
-            FastPeriod = 7;
-            SlowPeriod = 50;
+            Period = 7;
         }
 
-        public int FastPeriod { get; set; }
+        [StockAgentParam(2, 200)]
+        public int Period { get; set; }
 
-        public int SlowPeriod { get; set; }
 
-        public override string Description => "Buy when Open and close are above EMA";
+        public override string Description => "Buy when Closes above EMA with Money management";
+        public override string DisplayIndicator => $"INDICATOR|EMA({Period})";
 
-        FloatSerie ema, emaFilter;
+        FloatSerie ema;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (stockSerie.Count < Period)
                 return false;
-            ema = stockSerie.GetIndicator($"EMA({FastPeriod})").Series[0];
-            emaFilter = stockSerie.GetIndicator($"EMA({SlowPeriod})").Series[0];
+            ema = stockSerie.GetIndicator($"EMA({Period})").Series[0];
             return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (ema[index] >= emaFilter[index]) // bar fast above slow EMA
+            if (closeSerie[index] >= ema[index]) // bar fast above slow EMA
             {
                 return TradeAction.Buy;
             }
@@ -39,7 +38,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (ema[index] < emaFilter[index]) // bar fast below slow EMA
+            if (closeSerie[index] < ema[index]) // bar fast below slow EMA
             {
                 return TradeAction.Sell;
             }

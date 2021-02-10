@@ -322,7 +322,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (File.Exists(fileName))
             {
                 StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
-                var isinPrefix = IsinPrefixFrom(group);
                 using (StreamReader sr = new StreamReader(fileName, true))
                 {
                     string line;
@@ -330,7 +329,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && line.StartsWith(isinPrefix))
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                         {
                             string[] row = line.Split(';');
                             if (!stockDictionary.ContainsKey(row[1].ToUpper()))
@@ -348,7 +347,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private string IsinPrefixFrom(StockSerie.Groups group)
+        private bool IsinMatchGroup(StockSerie.Groups group, string line)
         {
             switch (group)
             {
@@ -356,21 +355,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.EURO_B:
                 case StockSerie.Groups.EURO_C:
                 case StockSerie.Groups.ALTERNEXT:
-                    return "FR";
+                    return true;
                 case StockSerie.Groups.BELGIUM:
-                    return "BE";
+                    return line.StartsWith("BE");
                 case StockSerie.Groups.HOLLAND:
-                    return "NL";
+                    return line.StartsWith("NL");
                 case StockSerie.Groups.GERMANY:
-                    return "DE";
+                    return line.StartsWith("DE");
                 case StockSerie.Groups.ITALIA:
-                    return "IT";
+                    return line.StartsWith("IT");
                 case StockSerie.Groups.SPAIN:
-                    return "ES";
+                    return line.StartsWith("ES");
                 case StockSerie.Groups.PORTUGAL:
-                    return "PT";
+                    return line.StartsWith("PT");
                 case StockSerie.Groups.SECTORS_CAC:
-                    return "QS";
+                    return line.StartsWith("QS");
             }
             throw new ArgumentException($"Group: {group} not supported in ABC");
         }

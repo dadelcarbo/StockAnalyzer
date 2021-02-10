@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace StockAnalyzer.StockAgent
 {
-    public delegate void BestAgentDetectedHandler(IStockAgent agent);
+    public delegate void AgentPerformedHandler(IStockAgent agent);
     public class StockAgentEngine
     {
         public IStockAgent Agent { get; set; }
@@ -18,7 +18,9 @@ namespace StockAnalyzer.StockAgent
 
         public event ProgressChangedEventHandler ProgressChanged;
 
-        public event BestAgentDetectedHandler BestAgentDetected;
+        public event AgentPerformedHandler BestAgentDetected;
+
+        public event AgentPerformedHandler AgentPerformed;
 
         public StockAgentEngine(Type agentType)
         {
@@ -87,6 +89,7 @@ namespace StockAnalyzer.StockAgent
 
                 // Select Best
                 var tradeSummary = this.Agent.TradeSummary;
+                this.AgentPerformed?.Invoke(this.Agent);
                 if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
                 {
                     bestAgent = this.Agent;
