@@ -108,7 +108,8 @@ namespace StockAnalyzer.StockClasses
         /// Investing.com ticker used for download
         /// </summary>
         public long Ticker { get; set; }
-        public string SectorID { get; set; }
+        public string SectorId { get; set; }
+        public string SectorIsin { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
 

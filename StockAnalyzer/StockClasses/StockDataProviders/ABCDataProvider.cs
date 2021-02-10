@@ -238,7 +238,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             stockDictionary = dictionary; // Save dictionary for future use in daily download
 
-
             // Init From LBL file
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
@@ -254,18 +253,67 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
 
+            // Load Config files
+            string fileName = RootFolder + CONFIG_FILE;
+            InitFromFile(download, fileName);
+            fileName = RootFolder + CONFIG_FILE_USER;
+            InitFromFile(download, fileName);
+
             // Init from Libelles
             foreach (string file in Directory.GetFiles(RootFolder + ABC_DAILY_CFG_FOLDER))
             {
                 InitFromLibelleFile(file);
             }
 
-            // Load Config files
-            string fileName = RootFolder + CONFIG_FILE;
-            InitFromFile(download, fileName);
-            fileName = RootFolder + CONFIG_FILE_USER;
-            InitFromFile(download, fileName);
+            // Download Sectors Composition
+            foreach (var sectorId in SectorCodes.Keys)
+            {
+                if (DownloadSectorFromABC(RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorId))
+                {
+                    InitFromSector(sectorId);
+                }
+            }
         }
+
+        private void InitFromSector(string sectorId)
+        {
+            var longName = SectorCodes[sectorId];
+            if (!stockDictionary.ContainsKey(longName))
+            {
+                // Create Sector serie
+                stockDictionary.Add(longName, new StockSerie(longName, sectorId, StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
+
+                // Set SectorId to stock
+                string fileName = RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sectorId + ".txt";
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName, true))
+                    {
+                        string line;
+                        sr.ReadLine(); // Skip first line
+                        while (!sr.EndOfStream)
+                        {
+                            line = sr.ReadLine();
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                            {
+                                string[] fields = line.Split(';');
+                                var stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == fields[0]);
+                                if (stockSerie != null)
+                                {
+                                    stockSerie.SectorId = sectorId;
+                                    stockSerie.SectorIsin = fields[2].StartsWith("QS") ? fields[2] : null;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Sector Serie not found in dictionnary {line}");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static void CreateDirectories()
         {
             if (!Directory.Exists(RootFolder + AGENDA_SUBFOLDER))
@@ -825,45 +873,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public static SortedDictionary<string, string> SectorCodes = new SortedDictionary<string, string>()
-      {
-         {"2710", "Aerospatiale et defense"},
-         {"3570", "Agro-alimentaire"},
-         {"3760", "Articles personnels"},
-         {"8530", "Assurance - Non vie"},
-         {"8570", "Assurance vie"},
-         {"3350", "Automobiles et equipementiers"},
-         {"8350", "Banques"},
-         {"2350", "Batiment et materiaux de construction"},
-         {"3530", "Boissons"},
-         {"1350", "Chimie"},
-         {"5370", "Distributeurs generalistes"},
-         {"5330", "Distribution - Alimentation, produits pharmaceutiques"},
-         {"7530", "Electricite"},
-         {"3740", "Equipements de loisirs"},
-         {"2730", "Equipements electroniques et electriques"},
-         {"4530", "Equipements et services de sante"},
-         {"7570", "Gaz, eau et services multiples aux collectivites"},
-         {"8670", "Immobiliers - foncieres"},
-         {"8630", "Investissements immobiliers et services"},
-         {"2720", "Industries generalistes"},
-         {"2750", "Ingenierie industrielle"},
-         {"8980", "Instruments de placement"},
-         {"8990", "Instruments de placement - hors actions"},
-         {"9530", "Logiciels et services informatiques"},
-         {"9570", "Materiel et equipements des technologies de l&#39;information"},
-         {"5550", "Medias"},
-         {"1750", "M&#233;taux industriels et mines"},
-         {"0570", "Petrole - Equipements, services et distribution"},
-         {"4570", "Pharmacie et biotechnologie"},
-         {"0530", "Producteurs de petrole et de gaz"},
-         {"3720", "Produits mnagers et bricolage"},
-         {"8770", "Services financiers"},
-         {"2790", "Services supports"},
-         {"1730", "Sylviculture et papiers"},
-         {"6530", "Telecommunications filaires"},
-         {"2770", "Transport industriel"},
-         {"5750", "Voyages et loisirs"}
-      };
+        {
+            {"3000", "_Biens de consommation"},
+            {"2000", "_Industries"},
+            {"1000", "_Materiaux de base"},
+            {"1", "_Petrole et gaz"},
+            {"4000", "_Sante"},
+            {"5000", "_Services aux consommateurs"},
+            {"7000", "_Services aux collectivites"},
+            {"8000", "_Societes financieres"},
+            {"6000", "_Telecommunications"},
+            {"9000", "_Technologie"}
+        };
         private bool DownloadSectorFromABC(string destFolder, string sectorID)
         {
             bool success = true;
@@ -879,20 +900,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     // Send POST request
-                    string url = "http://www.abcbourse.com/download/sectors.aspx?s=%SECTORCODE%&t=3";
-                    url = url.Replace("%SECTORCODE%", sectorID);
+                    string url = $"https://www.abcbourse.com/api/General/DownloadSector?type=g&sectorCode={sectorID}";
 
                     HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
 
-
                     success = SaveResponseToFile(fileName, req);
-
-                    if (success) MessageBox.Show("Download sector is now fixed");
                 }
                 catch (System.Exception ex)
                 {
                     StockLog.Write(ex);
-                    System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
                     success = false;
                 }
             }

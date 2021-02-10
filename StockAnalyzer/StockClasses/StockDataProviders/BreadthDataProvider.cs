@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string FOLDER = @"\data\daily\Breadth";
         static private string ARCHIVE_FOLDER = @"\data\archive\daily\Breadth";
 
-        private static StockDictionary stockDictionary = null;
-
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             string line;
@@ -24,7 +22,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
             }
 
-            BreadthDataProvider.stockDictionary = stockDictionary;
             if (File.Exists(fileName))
             {
                 // Parse GeneratedIndicator.txt file
@@ -38,7 +35,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             string[] row = line.Split(',');
                             string longName = row[0];
-                            
+
                             if (!stockDictionary.ContainsKey(longName))
                             {
                                 stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
@@ -64,6 +61,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private bool GenerateBreadthData(StockSerie stockSerie)
         {
+            var stockDictionary = StockDictionary.Instance;
+            if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CAC)
+            {
+                return stockDictionary.GenerateABCSectorEqualWeight(stockSerie, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+            }
             string[] row = stockSerie.ShortName.Split('.');
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
             switch (row[0].Split('_')[0])
@@ -74,7 +76,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
-               case "ER":
+                case "ER":
                     return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "EMA":
                     return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
@@ -101,21 +103,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
-            if (stockSerie.StockName.Contains("CAC40") || stockSerie.StockName.Contains("SBF120"))
-            {
-                StockDataProviderBase.DownloadSerieData(stockDictionary["CAC40"]);
-                StockDataProviderBase.DownloadSerieData(stockDictionary["ACCOR"]);
-                stockSerie.IsInitialised = false;
-
-                stockSerie.ClearBarDurationCache();
-
-                return stockSerie.Initialise();
-            }
             return true;
         }
         public override bool SupportsIntradayDownload
         {
-            get { return true; }
+            get { return false; }
         }
     }
 }
