@@ -67,7 +67,7 @@ namespace StockAnalyzer.StockDrawing
         public int GetNbVisible()
         {
             int count = this.Count(ct => ct.IsVisible == true);
-            if (this.TrailStop != null && this.TrailStop.Series[0].Count > 0) count += 2;
+            if (this.TrailStop?.Series[0] != null && this.TrailStop.Series[0].Count > 0) count += 2;
             foreach (IStockIndicator stockIndicator in this.Indicators)
             {
                 foreach (bool isVisible in stockIndicator.SerieVisibility)
