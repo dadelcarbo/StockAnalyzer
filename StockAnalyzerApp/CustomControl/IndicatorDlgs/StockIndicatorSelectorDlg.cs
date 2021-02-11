@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -454,6 +455,22 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                             curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
                                         }
                                         treeNode.Nodes.Add(treeNode1);
+                                    }
+                                    break;
+                                case "AUTODRAWING":
+                                    {
+                                        MessageBox.Show("AUTODRAWING not implement yet");
+                                        //IStockAutoDrawing stockAutoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line);
+                                        //treeNode1 = new AutoDrawingsNode(stockAutoDrawing.Name, this.indicatorMenuStrip, stockAutoDrawing);
+                                        //for (int i = 0; i < stockAutoDrawing.SeriesCount; i++)
+                                        //{
+                                        //    CurveNode curveNode = new CurveNode(stockAutoDrawing.SerieNames[i], null, stockAutoDrawing.SeriePens[i], true, stockAutoDrawing.SerieVisibility[i]);
+                                        //    treeNode1.Nodes.Add(curveNode);
+
+                                        //    curveNode.ImageKey = treeNode1.ImageKey;
+                                        //    curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
+                                        //}
+                                        //treeNode.Nodes.Add(treeNode1);
                                     }
                                     break;
                                 case "TRAILSTOP":

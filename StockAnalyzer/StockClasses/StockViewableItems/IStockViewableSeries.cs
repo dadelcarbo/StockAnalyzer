@@ -18,7 +18,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         PaintBar,                   /// Draw as a paint bar
         DecoratorPlot,              /// Draw as a plot
         DecoratorLine,              /// Draw a a vertical line
-        TrailCurve
+        TrailCurve,
+        AutoDrawing
     }
     public enum ViewableItemType
     {
@@ -27,7 +28,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         PaintBar,
         TrailStop,
         Trail,
-        Cloud
+        Cloud,
+        AutoDrawing
     }
 
     public interface IStockViewableSeries : IStockVisibility

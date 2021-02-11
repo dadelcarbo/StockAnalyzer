@@ -593,29 +593,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 if (this.ShowDrawings && this.drawingItems != null)
                 {
-                    foreach (DrawingItem item in this.drawingItems)
-                    {
-                        if (item.GetType() == typeof(CupHandle2D))
-                        {
-                            var cupHandle = (CupHandle2D)item;
-                            DrawTmpCupHandle(aGraphic, DrawingPen, cupHandle, true);
-                        }
-                        else
-                        {
-                            item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
-                            // Display support résistance value
-                            if (item.GetType() == typeof(Line2D))
-                            {
-                                Line2D line = (Line2D)item;
-                                if (line.IsHorizontal)
-                                {
-                                    PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
-                                    this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
-                                       new PointF(1, textLocation.Y - 8), true);
-                                }
-                            }
-                        }
-                    }
+                    PaintDrawings(aGraphic, this.drawingItems);
+                }
+                if (this.CurveList?.AutoDrawing?.DrawingItems != null)
+                {
+                    PaintDrawings(aGraphic, this.CurveList.AutoDrawing.DrawingItems);
                 }
 
                 #endregion
@@ -896,6 +878,34 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
+            }
+        }
+
+        private void PaintDrawings(Graphics aGraphic, StockDrawingItems di)
+        {
+            if (di == null) return;
+            foreach (DrawingItem item in di)
+            {
+                if (item.GetType() == typeof(CupHandle2D))
+                {
+                    var cupHandle = (CupHandle2D)item;
+                    DrawTmpCupHandle(aGraphic, DrawingPen, cupHandle, true);
+                }
+                else
+                {
+                    item.Draw(aGraphic, this.matrixValueToScreen, new Rectangle2D(this.GraphRectangle), this.IsLogScale);
+                    // Display support résistance value
+                    if (item.GetType() == typeof(Line2D))
+                    {
+                        Line2D line = (Line2D)item;
+                        if (line.IsHorizontal)
+                        {
+                            PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
+                            this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, textBrush, backgroundBrush,
+                               new PointF(1, textLocation.Y - 8), true);
+                        }
+                    }
+                }
             }
         }
 

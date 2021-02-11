@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -52,6 +53,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                     else
                     {
                         viewableSerie = stockSerie.GetPaintBar(fields[1]);
+                    }
+                    offset = 2;
+                    break;
+                case "AUTODRAWING":
+                    if (stockSerie == null)
+                    {
+                        viewableSerie = StockAutoDrawingManager.CreateAutoDrawing(fields[1]);
+                    }
+                    else
+                    {
+                        viewableSerie = stockSerie.GetAutoDrawing(fields[1]);
                     }
                     offset = 2;
                     break;

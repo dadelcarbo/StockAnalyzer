@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -80,6 +81,7 @@ namespace StockAnalyzer.StockDrawing
         }
 
         public IStockPaintBar PaintBar { get; set; }
+        public IStockAutoDrawing AutoDrawing { get; set; }
         public IStockDecorator Decorator { get; set; }
         public IStockTrailStop TrailStop { get; set; }
         public IStockCloud Cloud { get; set; }

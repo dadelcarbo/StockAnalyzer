@@ -14,6 +14,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
+using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -361,6 +362,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             {
                                                 IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
                                                 curveList.PaintBar = paintBar;
+                                            }
+                                            break;
+                                        case "AUTODRAWING":
+                                            {
+                                                IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                curveList.AutoDrawing = autoDrawing;
                                             }
                                             break;
                                         case "DECORATOR":

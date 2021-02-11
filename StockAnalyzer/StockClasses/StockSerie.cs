@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
+using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
@@ -215,6 +216,9 @@ namespace StockAnalyzer.StockClasses
         [XmlIgnore]
         public IStockPaintBar PaintBarCache { get; set; }
         [XmlIgnore]
+        public IStockAutoDrawing AutoDrawingCache { get; set; }
+        [XmlIgnore]
+
         protected Dictionary<string, IStockDecorator> DecoratorCache { get; set; }
         [XmlIgnore]
         protected IStockTrail TrailCache { get; set; }
@@ -440,6 +444,26 @@ namespace StockAnalyzer.StockClasses
                 return null;
             }
         }
+        public IStockAutoDrawing GetAutoDrawing(String autoDrawingName)
+        {
+            if (this.AutoDrawingCache != null && this.AutoDrawingCache.Name == autoDrawingName)
+            {
+                return this.AutoDrawingCache;
+            }
+            else
+            {
+                IStockAutoDrawing paintBar = StockAutoDrawingManager.CreateAutoDrawing(autoDrawingName);
+                if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
+                {
+                    StockLog.Write($"{autoDrawingName} to {this.StockName}-{this.BarDuration}");
+                    paintBar.ApplyTo(this);
+
+                    this.AutoDrawingCache = paintBar;
+                    return paintBar;
+                }
+                return null;
+            }
+        }
         public IStockDecorator GetDecorator(string decoratorName, string decoratedItem)
         {
             string fullDecoratorName = decoratorName + "|" + decoratedItem;
@@ -493,6 +517,8 @@ namespace StockAnalyzer.StockClasses
                     return this.GetTrail(nameFields[1], nameFields[2]);
                 case "PAINTBAR":
                     return this.GetPaintBar(nameFields[1]);
+                case "AUTODRAWING":
+                    return this.GetAutoDrawing(nameFields[1]);
                 case "DECORATOR":
                     return this.GetDecorator(nameFields[1], nameFields[2]);
             }
@@ -572,6 +598,7 @@ namespace StockAnalyzer.StockClasses
             this.DecoratorCache = new Dictionary<string, IStockDecorator>();
             this.CloudCache = new Dictionary<string, IStockCloud>();
             this.PaintBarCache = null;
+            this.AutoDrawingCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
             this.dateArray = null;
@@ -585,6 +612,7 @@ namespace StockAnalyzer.StockClasses
             this.DecoratorCache.Clear();
             this.CloudCache.Clear();
             this.PaintBarCache = null;
+            this.AutoDrawingCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
         }

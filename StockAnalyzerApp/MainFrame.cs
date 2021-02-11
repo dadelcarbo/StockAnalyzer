@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -3701,7 +3702,7 @@ namespace StockAnalyzerApp
             var indicatorNames = new List<string>();
             foreach (var section in this.GetCurrentTheme())
             {
-                foreach (var line in section.Value.Where(l => l.StartsWith("INDICATOR") || l.StartsWith("CLOUD") || l.StartsWith("PAINTBAR") || l.StartsWith("TRAILSTOP") || l.StartsWith("DECORATOR") || l.StartsWith("TRAIL")))
+                foreach (var line in section.Value.Where(l => l.StartsWith("INDICATOR") || l.StartsWith("CLOUD") || l.StartsWith("PAINTBAR") || l.StartsWith("AUTODRAWING") || l.StartsWith("TRAILSTOP") || l.StartsWith("DECORATOR") || l.StartsWith("TRAIL")))
                 {
                     var fields = line.Split('|');
                     indicatorNames.Add($"{fields[0]}|{fields[1]}");
@@ -3966,6 +3967,12 @@ namespace StockAnalyzerApp
                                             {
                                                 IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
                                                 curveList.PaintBar = paintBar;
+                                            }
+                                            break;
+                                        case "AUTODRAWING":
+                                            {
+                                                IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                curveList.AutoDrawing = autoDrawing;
                                             }
                                             break;
                                         case "DECORATOR":
