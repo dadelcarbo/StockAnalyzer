@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
@@ -23,7 +24,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILTF.LS", float.NaN);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILTF.SS", float.NaN);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             int trigger = (int)this.Parameters[0];
             int period = (int)this.Parameters[0];
@@ -33,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie highestSerie = stockSerie.GetIndicator($"HIGHEST({trigger})").Series[0];
             bool upTrend = false;
             float trailStop = float.NaN;
-            int previousHighIndex = 0;
+            float previousHigh = 0;
             for (int i = trigger; i < stockSerie.Count; i++)
             {
                 if (upTrend)
@@ -46,10 +49,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     else
                     {
                         this.Events[6][i] = true;
-                        if (highestSerie[i - 1] > trigger && highestSerie[i] == 0)
+                        if ( closeSerie[i] > previousHigh ) // Trail stop up
                         {
-                            trailStop = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(i - period, i));
-                            previousHighIndex = i - 1;
+                            trailStop = Math.Max(longStopSerie[i - 1], bodyLowSerie.GetMin(i - period, i));
+                            previousHigh = bodyHighSerie[i];
                         }
                         longStopSerie[i] = trailStop;
                     }
@@ -59,8 +62,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (highestSerie[i] > trigger) // Broken Up
                     {
                         upTrend = true;
-                        longStopSerie[i] = trailStop = lowSerie.GetMin(i - period, i);
-                        previousHighIndex = i - trigger;
+                        longStopSerie[i] = trailStop = bodyLowSerie.GetMin(i - period, i);
+                        previousHigh = bodyHighSerie[i];
                         this.Events[0][i] = true;
                         this.Events[6][i] = true;
                     }
