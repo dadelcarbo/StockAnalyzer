@@ -183,8 +183,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             public AutoDrawingsNode(string name, ContextMenuStrip menuStrip, IStockAutoDrawing stockAutoDrawing)
                 : base(name, NodeType.AutoDrawings, menuStrip, (IStockViewableSeries)stockAutoDrawing)
             {
-                this.ImageKey = "PB";
-                this.SelectedImageKey = "PB";
+                this.ImageKey = "AD";
+                this.SelectedImageKey = "AD";
             }
         }
         public class LineNode : StockNode
@@ -277,6 +277,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.treeView1.ImageList.Images.Add("LINE", Resources.Line);
             this.treeView1.ImageList.Images.Add("DECO", Resources.Decorator);
             this.treeView1.ImageList.Images.Add("CLOUD", Resources.Cloud);
+            this.treeView1.ImageList.Images.Add("AD", Resources.AD);
 
             this.groupBoxList.Add(indicatorConfigBox);
             this.groupBoxList.Add(curveConfigBox);

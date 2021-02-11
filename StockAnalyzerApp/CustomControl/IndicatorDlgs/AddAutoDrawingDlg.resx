@@ -118,26 +118,26 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="paintBarComboBox.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="autoDrawingComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>146, 12</value>
   </data>
-  <data name="paintBarComboBox.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="autoDrawingComboBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 21</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="paintBarComboBox.TabIndex" type="System.Int32, mscorlib">
+  <data name="autoDrawingComboBox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;paintBarComboBox.Name" xml:space="preserve">
-    <value>paintBarComboBox</value>
+  <data name="&gt;&gt;autoDrawingComboBox.Name" xml:space="preserve">
+    <value>autoDrawingComboBox</value>
   </data>
-  <data name="&gt;&gt;paintBarComboBox.Type" xml:space="preserve">
+  <data name="&gt;&gt;autoDrawingComboBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;paintBarComboBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;autoDrawingComboBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;paintBarComboBox.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;autoDrawingComboBox.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
   <data name="okButton.Location" type="System.Drawing.Point, System.Drawing">
@@ -256,7 +256,7 @@
     <value>7</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Paint bar</value>
+    <value>Auto Drawing</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -286,10 +286,10 @@
     <value>337, 225</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Choose paint bars</value>
+    <value>Choose auto drawing</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>AddPaintBarDlg</value>
+    <value>AddautoDrawingDlg</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

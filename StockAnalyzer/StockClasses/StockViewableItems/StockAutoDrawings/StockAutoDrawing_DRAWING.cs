@@ -48,21 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             get { return isEvent; }
         }
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
-                    foreach (Pen pen in seriePens)
-                    {
-                        pen.Width = 2;
-                    }
-                }
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => new Pen[] {  };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

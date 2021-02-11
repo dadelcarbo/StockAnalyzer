@@ -310,11 +310,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     #endregion
                     #region DISPLAY TRAIL STOPS
-
                     if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.Series[0].Count > 0)
                     {
                         FloatSerie longStopSerie = this.CurveList.TrailStop.Series[0];
                         FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];
+
                         Pen longPen = this.CurveList.TrailStop.SeriePens[0];
                         Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
 
@@ -416,9 +416,55 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
-
                     #endregion
+                    #region DISPLAY Auto Drawing curves
+                    if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.Series.Count() > 0 && this.CurveList.AutoDrawing.Series[0].Count > 0)
+                    {
+                        FloatSerie longStopSerie = this.CurveList.AutoDrawing.Series[0];
+                        FloatSerie shortStopSerie = this.CurveList.AutoDrawing.Series[1];
 
+                        Pen longPen = this.CurveList.AutoDrawing.SeriePens[0];
+                        Pen shortPen = this.CurveList.AutoDrawing.SeriePens[1];
+
+                        using (Brush longBrush = new SolidBrush(longPen.Color))
+                        {
+                            using (Brush shortBrush = new SolidBrush(shortPen.Color))
+                            {
+                                PointF srPoint1;
+                                PointF srPoint2;
+                                if (float.IsNaN(shortStopSerie[this.StartIndex]))
+                                {
+                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, longStopSerie[this.StartIndex]);
+                                }
+                                else
+                                {
+                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, shortStopSerie[this.StartIndex]);
+                                }
+                                for (int i = StartIndex + 1; i <= this.EndIndex; i++)
+                                {
+                                    bool isSupport = float.IsNaN(shortStopSerie[i]);
+                                    if (isSupport) // upTrend
+                                    {
+                                        srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
+                                        if (!float.IsNaN(srPoint1.Y))
+                                        {
+                                            aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                                        }
+                                    }
+                                    srPoint1 = srPoint2;
+                                }
+                            }
+                        }
+                    }
+                    #endregion
                     #region DISPLAY INDICATORS
 
                     foreach (var stockIndicator in CurveList.Indicators)
@@ -553,7 +599,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                     #endregion
-
                     #region DISPLAY DECORATORS
                     if (this.ShowIndicatorDiv && CurveList.ShowMes.Count > 0)
                     {
@@ -1065,6 +1110,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.CurveList.TrailStop != null)
             {
                 graphTitle += " " + (this.CurveList.TrailStop.Name);
+            }
+            if (this.CurveList.AutoDrawing != null)
+            {
+                graphTitle += " " + (this.CurveList.AutoDrawing.Name);
             }
             float right = this.DrawString(gr, graphTitle, this.axisFont, Brushes.Black, this.backgroundBrush, new PointF(1, 1), true);
             if (this.SecondaryFloatSerie != null)

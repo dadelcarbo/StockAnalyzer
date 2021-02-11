@@ -278,6 +278,12 @@
   <data name="addPaintBarsToolStripMenuItem.Text" xml:space="preserve">
     <value>Ajouter des barres colorées</value>
   </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>227, 22</value>
+  </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ajouter des dessins auto</value>
+  </data>
   <data name="addTrailStopsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 22</value>
   </data>

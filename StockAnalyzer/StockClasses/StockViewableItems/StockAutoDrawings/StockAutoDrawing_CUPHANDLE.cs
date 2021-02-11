@@ -4,9 +4,9 @@ using System.Linq;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 
-namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
+namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 {
-    public class StockTrailStop_TRAILCUPHANDLE : StockTrailStopBase
+    public class StockAutoDrawing_CUPHANDLE : StockAutoDrawingBase
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
@@ -20,7 +20,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool() };
 
         public override string[] SerieNames => new string[] { "TRAILCUPHANDLE.LS", "TRAILCUPHANDLE.SS" };
-
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
+            {
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
+                    seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                }
+                return seriePens;
+            }
+        }
         public override void ApplyTo(StockSerie stockSerie)
         {
             var period = (int)this.parameters[0];
@@ -72,19 +84,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             {
                                 trailStop = Math.Max(trailStop, (bodyLowSerie[i] + trailStop) / 2.0f);
                             }
-                            // Find previous body bottom
-                            //for (int k = i - 1; k > 1; k--)
-                            //{
-                            //    if (bodyLowSerie[k] < bodyLowSerie[k - 1])
-                            //    {
-                            //        if (!float.IsNaN(previousLow))
-                            //        {
-                            //            trailStop = (previousLow + trailStop) / 2.0f;
-                            //        }
-                            //        previousLow = lowSerie[k];
-                            //        break;
-                            //    }
-                            //}
                         }
                         this.series[0][i] = trailStop;
                         bullEvents[i] = true;
@@ -151,6 +150,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             {
                 DrawingItem.CreatePersistent = true;
             }
+        }
+
+        static string[] eventNames = null;
+        public override string[] EventNames
+        {
+            get
+            {
+                if (eventNames == null)
+                {
+                    eventNames = new string[] { "BrokenUp", "BrokenDown", "Bullish" };
+                }
+                return eventNames;
+            }
+        }
+        static readonly bool[] isEvent = new bool[] { true, true, false };
+        public override bool[] IsEvent
+        {
+            get { return isEvent; }
         }
     }
 }

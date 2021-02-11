@@ -920,6 +920,7 @@
     <Content Include="Resources\Camera-32.png" />
     <None Include="Resources\chart_curve.png" />
     <Content Include="Resources\Candle.bmp" />
+    <None Include="Resources\AD.png" />
     <Content Include="Resources\comment-icon.bmp" />
     <None Include="Resources\cut.png" />
     <Content Include="Resources\AddSemiLine.bmp" />

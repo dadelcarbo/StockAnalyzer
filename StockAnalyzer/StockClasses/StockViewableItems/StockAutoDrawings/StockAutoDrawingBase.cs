@@ -9,11 +9,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
     {
         public StockAutoDrawingBase()
         {
-            this.series = new FloatSerie[this.SeriesCount];
             if (EventCount != 0)
             {
                 this.eventSeries = new BoolSerie[this.EventCount];
             }
+            this.series = new FloatSerie[this.SeriesCount];
             this.serieVisibility = new bool[this.SeriesCount];
             for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
             this.DrawingItems = new StockDrawingItems();
@@ -41,20 +41,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         protected FloatSerie[] series;
         public FloatSerie[] Series { get { return series; } }
+        public override string[] SerieNames => new string[] { };
 
-        public virtual System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
-                    seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                    seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                }
-                return seriePens;
-            }
-        }
+        public virtual System.Drawing.Pen[] SeriePens => new Pen[] { };
+
         private bool[] serieVisibility;
         public bool[] SerieVisibility { get { return this.serieVisibility; } }
 
@@ -84,7 +74,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         }
 
         public abstract string[] EventNames { get; }
-        public override string[] SerieNames { get { return EventNames; } }
         abstract public bool[] IsEvent { get; }
 
         public BoolSerie[] Events

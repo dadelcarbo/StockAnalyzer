@@ -401,7 +401,7 @@
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBREAK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLEINV.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />

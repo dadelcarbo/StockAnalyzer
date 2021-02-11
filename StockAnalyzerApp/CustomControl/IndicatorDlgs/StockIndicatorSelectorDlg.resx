@@ -1055,6 +1055,12 @@
   <data name="addPaintBarsToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Paint Bars</value>
   </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 22</value>
+  </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add Auto Drawings</value>
+  </data>
   <data name="addTrailStopsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 22</value>
   </data>
@@ -1278,6 +1284,12 @@
     <value>addTrailStopsToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;addTrailStopsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;addAutoDrawingToolStripMenuItem.Name" xml:space="preserve">
+    <value>addAutoDrawingToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;addAutoDrawingToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;copyToolStripMenuItem.Name" xml:space="preserve">
