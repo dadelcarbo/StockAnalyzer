@@ -127,10 +127,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     if (inBox)
                     {
                         inBoxEvents[i] = true;
-
-                        Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(i, boxLowLimit)) { Pen = Pens.Gray, Fill = true };
-                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, box);
                     }
+                }
+                if (inBox)
+                {
+                    Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(stockSerie.LastIndex, boxLowLimit)) { Pen = Pens.Gray, Fill = true };
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Insert(0, box);
                 }
             }
             finally
