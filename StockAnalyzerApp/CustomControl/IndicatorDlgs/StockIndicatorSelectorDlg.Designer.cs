@@ -78,6 +78,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addHorizontalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPaintBarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addAutoDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailStopsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDecoratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -392,7 +393,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addCloudToolStripMenuItem,
             this.addHorizontalLineToolStripMenuItem,
             this.addPaintBarsToolStripMenuItem,
-            this.addTrailStopsToolStripMenuItem});
+            this.addTrailStopsToolStripMenuItem,
+            addAutoDrawingsToolStripMenuItem});
             this.graphMenuStrip.Name = "graphMenuStrip";
             resources.ApplyResources(this.graphMenuStrip, "graphMenuStrip");
             // 
@@ -419,6 +421,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addPaintBarsToolStripMenuItem.Name = "addPaintBarsToolStripMenuItem";
             resources.ApplyResources(this.addPaintBarsToolStripMenuItem, "addPaintBarsToolStripMenuItem");
             this.addPaintBarsToolStripMenuItem.Click += new System.EventHandler(this.addPaintBarsToolStripMenuItem_Click);
+            // 
+            // addAutoDrawingsToolStripMenuItem
+            // 
+            this.addAutoDrawingsToolStripMenuItem.Name = "addAutoDrawingsToolStripMenuItem";
+            resources.ApplyResources(this.addAutoDrawingsToolStripMenuItem, "addAutoDrawingsToolStripMenuItem");
+            this.addAutoDrawingsToolStripMenuItem.Click += new System.EventHandler(this.addAutoDrawingsToolStripMenuItem_Click);
             // 
             // addTrailStopsToolStripMenuItem
             // 
@@ -571,6 +579,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.Panel backgroundColorPanel;
         private System.Windows.Forms.Panel gridColorPanel;
         private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addAutoDrawingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTrailStopsToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader minColumnHeader;
         private System.Windows.Forms.ColumnHeader maxColumnHeader;

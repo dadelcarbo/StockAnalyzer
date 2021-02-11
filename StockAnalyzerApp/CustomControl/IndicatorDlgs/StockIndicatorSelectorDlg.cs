@@ -42,7 +42,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             PaintBars,
             TrailStops,
             Decorator,
-            Trail
+            Trail,
+            AutoDrawings
         }
         public abstract class StockNode : TreeNode
         {
@@ -172,6 +173,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         {
             public PaintBarsNode(string name, ContextMenuStrip menuStrip, IStockPaintBar stockPaintBar)
                 : base(name, NodeType.PaintBars, menuStrip, (IStockViewableSeries)stockPaintBar)
+            {
+                this.ImageKey = "PB";
+                this.SelectedImageKey = "PB";
+            }
+        }
+        public class AutoDrawingsNode : ViewableItemNode
+        {
+            public AutoDrawingsNode(string name, ContextMenuStrip menuStrip, IStockAutoDrawing stockAutoDrawing)
+                : base(name, NodeType.AutoDrawings, menuStrip, (IStockViewableSeries)stockAutoDrawing)
             {
                 this.ImageKey = "PB";
                 this.SelectedImageKey = "PB";
@@ -459,18 +469,17 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                     break;
                                 case "AUTODRAWING":
                                     {
-                                        MessageBox.Show("AUTODRAWING not implement yet");
-                                        //IStockAutoDrawing stockAutoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line);
-                                        //treeNode1 = new AutoDrawingsNode(stockAutoDrawing.Name, this.indicatorMenuStrip, stockAutoDrawing);
-                                        //for (int i = 0; i < stockAutoDrawing.SeriesCount; i++)
-                                        //{
-                                        //    CurveNode curveNode = new CurveNode(stockAutoDrawing.SerieNames[i], null, stockAutoDrawing.SeriePens[i], true, stockAutoDrawing.SerieVisibility[i]);
-                                        //    treeNode1.Nodes.Add(curveNode);
+                                        IStockAutoDrawing stockAutoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line);
+                                        treeNode1 = new AutoDrawingsNode(stockAutoDrawing.Name, this.indicatorMenuStrip, stockAutoDrawing);
+                                        for (int i = 0; i < stockAutoDrawing.SeriesCount; i++)
+                                        {
+                                            CurveNode curveNode = new CurveNode(stockAutoDrawing.SerieNames[i], null, stockAutoDrawing.SeriePens[i], true, stockAutoDrawing.SerieVisibility[i]);
+                                            treeNode1.Nodes.Add(curveNode);
 
-                                        //    curveNode.ImageKey = treeNode1.ImageKey;
-                                        //    curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
-                                        //}
-                                        //treeNode.Nodes.Add(treeNode1);
+                                            curveNode.ImageKey = treeNode1.ImageKey;
+                                            curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
+                                        }
+                                        treeNode.Nodes.Add(treeNode1);
                                     }
                                     break;
                                 case "TRAILSTOP":
@@ -574,6 +583,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     case NodeType.Cloud:
                     case NodeType.PaintBars:
+                    case NodeType.AutoDrawings:
                     case NodeType.TrailStops:
                     case NodeType.Line:
                     case NodeType.Curve:
@@ -867,6 +877,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             StockNode parentNode = (StockNode)this.treeView1.SelectedNode.Parent;
             this.lineTypeComboBox.Enabled = !(
                 (parentNode.Type == NodeType.PaintBars) ||
+                (parentNode.Type == NodeType.AutoDrawings) ||
                 (parentNode.Type == NodeType.Trail) ||
                 (parentNode.Type == NodeType.Indicator && ((IndicatorNode)parentNode).ViewableItem.DisplayStyle == IndicatorDisplayStyle.SupportResistance));
             this.lineTypeComboBox.Parent = curveConfigBox;
@@ -950,7 +961,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             StockNode curveNode = (StockNode)this.treeView1.SelectedNode;
 
 
-            if (parentNode.Type == NodeType.PaintBars || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
+            if (parentNode.Type == NodeType.PaintBars || parentNode.Type == NodeType.AutoDrawings || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
             {
                 PaintPreviewWithPaintBars(g, curveNode.CurvePen);
             }
@@ -1182,6 +1193,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (((StockNode)stockNode.Parent).Type)
             {
                 case NodeType.PaintBars:
+                case NodeType.AutoDrawings:
                 case NodeType.Indicator:
                 case NodeType.Trail:
                 case NodeType.Cloud:
@@ -1263,6 +1275,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 switch (((StockNode)stockNode.Parent).Type)
                 {
                     case NodeType.PaintBars:
+                    case NodeType.AutoDrawings:
                     case NodeType.Indicator:
                     case NodeType.Cloud:
                     case NodeType.Decorator:
@@ -1287,6 +1300,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 switch (((StockNode)stockNode.Parent).Type)
                 {
                     case NodeType.PaintBars:
+                    case NodeType.AutoDrawings:
                     case NodeType.Indicator:
                     case NodeType.Cloud:
                     case NodeType.Trail:
@@ -1331,6 +1345,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     switch (((StockNode)stockNode.Parent).Type)
                     {
                         case NodeType.PaintBars:
+                        case NodeType.AutoDrawings:
                         case NodeType.Indicator:
                         case NodeType.Cloud:
                         case NodeType.Trail:
@@ -1568,6 +1583,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         this.addIndicatorToolStripMenuItem.Visible = true;
                         this.addHorizontalLineToolStripMenuItem.Visible = true;
                         this.addPaintBarsToolStripMenuItem.Visible = true;
+                        this.addAutoDrawingsToolStripMenuItem.Visible = true;
                         this.addTrailStopsToolStripMenuItem.Visible = true;
                     }
                     else if (treeNode.Text.StartsWith("Indicator"))
@@ -1575,6 +1591,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         this.addIndicatorToolStripMenuItem.Visible = true;
                         this.addHorizontalLineToolStripMenuItem.Visible = true;
                         this.addPaintBarsToolStripMenuItem.Visible = false;
+                        this.addAutoDrawingsToolStripMenuItem.Visible = false;
                         this.addTrailStopsToolStripMenuItem.Visible = false;
                     }
                     else
@@ -1582,6 +1599,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         this.addIndicatorToolStripMenuItem.Visible = false;
                         this.addHorizontalLineToolStripMenuItem.Visible = false;
                         this.addPaintBarsToolStripMenuItem.Visible = false;
+                        this.addAutoDrawingsToolStripMenuItem.Visible = false;
                         this.addTrailStopsToolStripMenuItem.Visible = false;
                     }
                     break;
@@ -1641,6 +1659,16 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                             this.addDecoratorToolStripMenuItem.Visible = true;
                             this.addTrailToolStripMenuItem.Visible = true;
                         }
+                    }
+                    break;
+                case NodeType.AutoDrawings:
+                    {
+                        ActivateIndicatorConfigPanel("AutoDrawingParam");
+                        ViewableItemNode viewableItemNode = (ViewableItemNode)treeNode;
+                        this.removeStripMenuItem.Visible = true;
+                        this.copyStripMenuItem.Visible = true;
+                        this.addDecoratorToolStripMenuItem.Visible = false;
+                        this.addTrailToolStripMenuItem.Visible = false;
                     }
                     break;
                 case NodeType.TrailStops:
@@ -1997,6 +2025,52 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 this.treeView1.SelectedNode = paintBarNode;
                 paintBarNode.Expand();
+            }
+        }
+
+        private void addAutoDrawingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddAutoDrawingDlg addDlg;
+            StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
+            switch (stockNode.Text)
+            {
+                case "CloseGraph":
+                    addDlg = new AddAutoDrawingDlg();
+                    break;
+                default:
+                    return;
+            }
+            if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // Only one paint bar per graph
+                int index = 0;
+                bool found = false;
+                foreach (StockNode node in stockNode.Nodes)
+                {
+                    if (node.Type == NodeType.AutoDrawings)
+                    {
+                        found = true;
+                        break;
+                    }
+                    index++;
+                }
+                if (found)
+                {
+                    stockNode.Nodes.RemoveAt(index);
+                }
+
+                // Add new paint bar
+                IStockAutoDrawing stockAutoDrawing = StockAutoDrawingManager.CreateAutoDrawing(addDlg.AutoDrawingName);
+                StockNode autoDrawingNode = new AutoDrawingsNode(stockAutoDrawing.Name, this.indicatorMenuStrip, stockAutoDrawing);
+                stockNode.Nodes.Add(autoDrawingNode);
+                int i = 0;
+                foreach (string autoDrawingName in stockAutoDrawing.SerieNames)
+                {
+                    autoDrawingNode.Nodes.Add(new CurveNode(autoDrawingName, null, stockAutoDrawing.SeriePens[i], stockAutoDrawing.SerieVisibility[i]));
+                    i++;
+                }
+                this.treeView1.SelectedNode = autoDrawingNode;
+                autoDrawingNode.Expand();
             }
         }
         private void addTrailStopsToolStripMenuItem_Click(object sender, EventArgs e)

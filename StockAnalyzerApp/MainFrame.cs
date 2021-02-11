@@ -876,7 +876,7 @@ namespace StockAnalyzerApp
                 string alertString = string.Empty;
 
                 #region Detect alert from drawing
-                var drawingIndicator = StockViewableItemsManager.GetViewableItem("PAINTBAR|DRAWING()") as IStockPaintBar;
+                var drawingIndicator = StockViewableItemsManager.GetViewableItem("AUTODRAWING|DRAWING()") as IStockPaintBar;
                 foreach (var stockSerie in StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockAnalysis.DrawingItems.Sum(di => di.Value.Count) != 0))
                 {
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
@@ -891,9 +891,9 @@ namespace StockAnalyzerApp
                             var dailyValue = values.ElementAt(i);
                             string eventName = null;
                             if (drawingIndicator.Events[0][i])
-                                eventName = "PAINTBAR|DRAWING()=>ResistanceBroken";
+                                eventName = "AUTODRAWING|DRAWING()=>ResistanceBroken";
                             else if (drawingIndicator.Events[1][i])
-                                eventName = "PAINTBAR|DRAWING()=>SupportBroken";
+                                eventName = "AUTODRAWING|DRAWING()=>SupportBroken";
                             if (eventName != null)
                             {
                                 var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;

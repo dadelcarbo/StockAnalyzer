@@ -4,9 +4,9 @@ using System;
 using System.Drawing;
 using System.Linq;
 
-namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
+namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 {
-    public class StockPaintBar_DRAWING : StockPaintBarBase
+    public class StockAutoDrawing_DRAWING : StockAutoDrawingBase
     {
         public override string Definition => "Generate event in case on manual drawing is broken up or down";
         public override IndicatorDisplayTarget DisplayTarget
