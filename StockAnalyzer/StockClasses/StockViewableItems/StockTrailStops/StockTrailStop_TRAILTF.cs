@@ -10,11 +10,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override string Definition => "Start a trail when a new high is made and trail it when another new high is made. It's a long only trail suitable for trend following";
 
-        public override string[] ParameterNames => new string[] { "Trigger" };
+        public override string[] ParameterNames => new string[] { "Trigger", "LowPeriod" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 20 };
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 10 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames => new string[] { "TRAILTF.LS", "TRAILTF.SS" };
 
@@ -26,6 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             int trigger = (int)this.Parameters[0];
+            int period = (int)this.Parameters[0];
 
             this.CreateEventSeries(stockSerie.Count);
 
@@ -47,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         this.Events[6][i] = true;
                         if (highestSerie[i - 1] > trigger && highestSerie[i] == 0)
                         {
-                            trailStop = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(previousHighIndex, i));
+                            trailStop = Math.Max(longStopSerie[i - 1], lowSerie.GetMin(i - period, i));
                             previousHighIndex = i - 1;
                         }
                         longStopSerie[i] = trailStop;
@@ -58,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (highestSerie[i] > trigger) // Broken Up
                     {
                         upTrend = true;
-                        longStopSerie[i] = trailStop = lowSerie.GetMin(i - trigger, i);
+                        longStopSerie[i] = trailStop = lowSerie.GetMin(i - period, i);
                         previousHighIndex = i - trigger;
                         this.Events[0][i] = true;
                         this.Events[6][i] = true;
