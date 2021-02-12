@@ -25,7 +25,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
-            this.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
+            this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.BarDuration);
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
@@ -235,7 +235,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.ProgressValue = evt.ProgressPercentage;
             };
 
-            var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise());
+            var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
             if (this.RunAgentEngine(series))
             {
                 e.Cancel = false;
@@ -269,7 +269,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, this.BarDuration, 20, this.Accuracy, selector);
+                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, this.Accuracy, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }

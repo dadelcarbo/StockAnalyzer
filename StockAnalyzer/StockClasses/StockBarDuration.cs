@@ -57,6 +57,13 @@ namespace StockAnalyzer.StockClasses
             this.HeikinAshi = heikinAshi;
             this.LineBreak = lineBreak;
         }
+        public StockBarDuration(StockBarDuration duration)
+        {
+            this.Duration = duration.Duration;
+            this.Smoothing = duration.Smoothing;
+            this.HeikinAshi = duration.HeikinAshi;
+            this.LineBreak = duration.LineBreak;
+        }
 
         public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
         public static StockBarDuration TLB = new StockBarDuration(BarDuration.TLB);

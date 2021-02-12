@@ -58,18 +58,42 @@ namespace StockAnalyzer.StockAgent
             IStockAgent bestAgent = null;
             var parameters = StockAgentBase.GetParamRanges(this.AgentType, accuracy);
 
-            int dim = parameters.Count;
-            var sizes = parameters.Select(p => p.Value.Count).ToArray();
-            var indexes = parameters.Select(p => 0).ToArray();
-            int nbSteps = sizes.Aggregate(1, (i, j) => i * j);
+
+            var stockSeries = new List<StockSerie>();
+            if (ProgressChanged != null)
+            {
+                this.ProgressChanged(this, new ProgressChangedEventArgs(0, null));
+            }
+
+
+            int nbSteps = series.Count();
             int modulo = Math.Max(1, nbSteps / 100);
-            foreach(var serie in series)
+            int nb = 0;
+            foreach (var serie in series)
             {
                 if (Worker != null && Worker.CancellationPending)
                     return;
-                serie.BarDuration = duration;
+                if (serie.Initialise())
+                {
+                    serie.BarDuration = duration;
+                    if (serie.Count > minIndex)
+                    {
+                        stockSeries.Add(serie);
+                    }
+                    if (ProgressChanged != null && nb % modulo == 0)
+                    {
+                        int percent = (nb * 100) / nbSteps;
+                        this.ProgressChanged(this, new ProgressChangedEventArgs(percent, null));
+                    }
+                }
+                nb++;
             }
 
+            int dim = parameters.Count;
+            var sizes = parameters.Select(p => p.Value.Count).ToArray();
+            var indexes = parameters.Select(p => 0).ToArray();
+            nbSteps = sizes.Aggregate(1, (i, j) => i * j);
+            modulo = Math.Max(1, nbSteps / 100);
             for (int i = 0; i < nbSteps; i++)
             {
                 if (Worker != null && Worker.CancellationPending)
