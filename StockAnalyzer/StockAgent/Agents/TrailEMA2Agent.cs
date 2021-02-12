@@ -16,12 +16,12 @@ namespace StockAnalyzer.StockAgent.Agents
         public int Period { get; set; }
 
         public override string Description => "Buy with TRAILEMA securing half position when reaching stop limit";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILEMA({Period})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         FloatSerie longStopSerie;
-        FloatSerie shortStopSerie;
 
         float stop, target;
         protected override bool Init(StockSerie stockSerie)
@@ -30,7 +30,6 @@ namespace StockAnalyzer.StockAgent.Agents
                 return false;
             trailStop = stockSerie.GetTrailStop($"TRAILEMA({Period})");
             longStopSerie = trailStop.Series[0];
-            shortStopSerie = trailStop.Series[1];
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

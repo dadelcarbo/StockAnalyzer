@@ -516,21 +516,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 #endregion
 
                 string filePattern = abcGroup + "_*.csv";
+                bool dataLoaded = false;
                 foreach (string currentFile in Directory.GetFiles(RootFolder + ABC_TMP_FOLDER, filePattern).OrderByDescending(s => s))
                 {
                     ParseABCGroupCSVFile(currentFile, stockGroup);
                     File.Delete(Path.Combine(RootFolder + ABC_TMP_FOLDER, currentFile));
+                    dataLoaded = true;
                 }
                 var fileName = Path.Combine(RootFolder + ABC_INTRADAY_FOLDER, abcGroup + ".csv");
                 if (File.Exists(fileName))
                 {
                     ParseABCGroupCSVFile(fileName, stockGroup, true);
                     File.Delete(Path.Combine(RootFolder + ABC_TMP_FOLDER, fileName));
+                    dataLoaded = true;
                 }
                 // Save to CSV file
-                foreach (var serie in stockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(stockGroup) && s.Count > 0))
+                if (dataLoaded)
                 {
-                    this.SaveToCSV(serie);
+                    foreach (var serie in stockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(stockGroup) && s.Count > 0))
+                    {
+                        this.SaveToCSV(serie);
+                    }
                 }
             }
             catch (System.Exception ex)

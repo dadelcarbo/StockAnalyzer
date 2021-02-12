@@ -1549,6 +1549,7 @@ namespace StockAnalyzerApp
             }
             busy = false;
         }
+
         private void ForceDownloadStock(bool showSplash)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1599,6 +1600,65 @@ namespace StockAnalyzerApp
             }
 
         }
+        private void ForceDownloadStockGroup()
+        {
+            if (this.currentStockSerie != null)
+            {
+                try
+                {
+                    StockSplashScreen.FadeInOutSpeed = 0.25;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
+                                                     this.currentStockSerie.StockName;
+
+                    var stockSeries =
+                       this.StockDictionary.Values.Where(
+                          s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
+
+                    StockSplashScreen.ProgressVal = 0;
+                    StockSplashScreen.ProgressMax = stockSeries.Count();
+                    StockSplashScreen.ProgressMin = 0;
+                    StockSplashScreen.ShowSplashScreen();
+
+                    foreach (var stockSerie in stockSeries)
+                    {
+                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
+                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+
+                        if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                        {
+                            try
+                            {
+                                StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                                //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                            }
+                            catch (Exception ex)
+                            {
+                                StockLog.Write(ex);
+                            }
+                        }
+
+                        StockSplashScreen.ProgressVal++;
+                    }
+
+                    this.SaveAnalysis(Settings.Default.AnalysisFile);
+
+                    if (this.currentStockSerie.Initialise())
+                    {
+                        this.ApplyTheme();
+                    }
+                    else
+                    {
+                        this.DeactivateGraphControls("Unable to download selected stock data...");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
+                }
+
+                StockSplashScreen.CloseForm(true);
+            }
+        }
         private void DownloadStock(bool showSplash)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1637,7 +1697,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-
         private void DownloadStockGroup()
         {
             if (this.currentStockSerie != null)
@@ -1659,7 +1718,7 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
                         StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
 
                         if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
@@ -3230,9 +3289,14 @@ namespace StockAnalyzerApp
                             this.DownloadStockGroup();
                         }
                         break;
-                    case Keys.Control | Keys.Shift | Keys.F5:
+                    case Keys.Shift | Keys.F5:
                         {
                             this.ForceDownloadStock(true);
+                        }
+                        break;
+                    case Keys.Control | Keys.Shift | Keys.F5:
+                        {
+                            this.ForceDownloadStockGroup();
                         }
                         break;
                     case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.

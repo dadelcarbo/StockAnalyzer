@@ -5,9 +5,9 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class ATRStopAgent2 : StockAgentBase
+    public class ATRStop2Agent : StockAgentBase
     {
-        public ATRStopAgent2()
+        public ATRStop2Agent()
         {
             Period = 12;
             UpWidth = 2.0f;

@@ -105,7 +105,7 @@
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLMMAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLAgent.cs" />
-    <Compile Include="StockAgent\Agents\ATRStopAgent2.cs" />
+    <Compile Include="StockAgent\Agents\ATRStop2Agent.cs" />
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />

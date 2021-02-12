@@ -16,6 +16,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public int Period { get; set; }
 
         public override string Description => "Buy with TRAILEMA Stop";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILEMA({Period})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;

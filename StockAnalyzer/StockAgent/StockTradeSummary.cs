@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockAgent
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
         public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain > 0).Average(t => t.Gain) : 0f; } }
         public float AvgLoss { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
-        public float AvgDuration { get { return this.Trades.Count > 0 ? (float)this.Trades.Where(t => t.IsClosed).Average(t => t.Duration) : 0f; } }
+        public int AvgDuration { get { return this.Trades.Count > 0 ? (int)this.Trades.Average(t => t.Duration) : 0; } }
         public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
         public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
         public float ExpectedReturn { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockAgent
         public int NbWinTrade => Trades.Count(t => t.Gain >= 0);
         public int NbLostTrade => Trades.Count(t => t.Gain < 0);
 
-        public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbLostTrade : 0f;
+        public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbTrades : 0f;
 
         public string ToLog()
         {
@@ -41,8 +41,8 @@ namespace StockAnalyzer.StockAgent
             res += "Max Drawdown: " + MaxDrawdown.ToString("P2") + Environment.NewLine;
 
             res += "Cumul Gain: " + CumulGain.ToString("P2") + Environment.NewLine;
-            res += "AVG Duration: " + AvgDuration.ToString("P2") + Environment.NewLine;
-            res += "Win Ratio: " + WinTradeRatio + Environment.NewLine;
+            res += "Avg Duration: " + AvgDuration.ToString() + Environment.NewLine;
+            res += "Win Ratio: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
 
             return res;
