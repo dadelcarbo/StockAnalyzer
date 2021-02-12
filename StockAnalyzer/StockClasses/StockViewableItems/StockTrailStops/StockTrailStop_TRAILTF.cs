@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             int trigger = (int)this.Parameters[0];
-            int period = (int)this.Parameters[0];
+            int period = (int)this.Parameters[1];
 
             this.CreateEventSeries(stockSerie.Count);
 

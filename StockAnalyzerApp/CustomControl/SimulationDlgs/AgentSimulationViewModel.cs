@@ -25,13 +25,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
-            this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
+            this.BarDuration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
-        public IList<StockBarDuration> Durations => StockBarDuration.Values;
-        public StockBarDuration Duration { get; set; }
+
+        private StockBarDuration barDuration;
+        public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
         public int Accuracy { get; set; }
         public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain", "ExpectedGainPerDay" };
@@ -194,7 +195,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         var report = engine.Report;
                         this.Report = report;
                         this.TradeSummary = engine.BestTradeSummary;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.Duration + "\t" + this.Agent + "\t";
+                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.BarDuration + "\t" + this.Agent + "\t";
                         rpt += engine.BestTradeSummary.ToStats();
                         rpt += engine.BestAgent.GetParameterValues();
                         Clipboard.SetText(rpt);
@@ -234,7 +235,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.ProgressValue = evt.ProgressPercentage;
             };
 
-            if (this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise())))
+            var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise());
+            if (this.RunAgentEngine(series))
             {
                 e.Cancel = false;
             }
@@ -267,7 +269,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, this.Duration, 20, this.Accuracy, selector);
+                engine.GreedySelection(stockSeries, this.BarDuration, 20, this.Accuracy, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }

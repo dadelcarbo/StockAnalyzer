@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string Description => "Buy with TrailTF Stop";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILTF({Period})";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILTF({Period},{Period / 2})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILTF({Period})");
+            trailStop = stockSerie.GetTrailStop($"TRAILTF({Period},{Period / 2})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

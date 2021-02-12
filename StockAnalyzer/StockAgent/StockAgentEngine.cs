@@ -63,6 +63,13 @@ namespace StockAnalyzer.StockAgent
             var indexes = parameters.Select(p => 0).ToArray();
             int nbSteps = sizes.Aggregate(1, (i, j) => i * j);
             int modulo = Math.Max(1, nbSteps / 100);
+            foreach(var serie in series)
+            {
+                if (Worker != null && Worker.CancellationPending)
+                    return;
+                serie.BarDuration = duration;
+            }
+
             for (int i = 0; i < nbSteps; i++)
             {
                 if (Worker != null && Worker.CancellationPending)

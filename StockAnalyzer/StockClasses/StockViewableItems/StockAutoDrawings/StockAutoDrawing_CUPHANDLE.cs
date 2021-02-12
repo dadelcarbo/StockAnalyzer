@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool() };
 
-        public override string[] SerieNames => new string[] { "TRAILCUPHANDLE.LS", "TRAILCUPHANDLE.SS" };
+        public override string[] SerieNames => new string[] { "CUPHANDLE.LS", "CUPHANDLE.SS" };
         public override System.Drawing.Pen[] SeriePens
         {
             get

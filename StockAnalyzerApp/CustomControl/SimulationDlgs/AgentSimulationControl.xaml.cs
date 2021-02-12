@@ -44,7 +44,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     int exitIndex = viewModel.IsClosed ? viewModel.ExitIndex : viewModel.Serie.LastIndex;
 
-                    this.SelectedStockChanged(viewModel.Serie.StockName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.Serie.LastIndex, exitIndex + 100), ViewModel.Duration, true);
+                    this.SelectedStockChanged(viewModel.Serie.StockName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.Serie.LastIndex, exitIndex + 100), ViewModel.BarDuration, true);
 
                     if (!string.IsNullOrEmpty(this.ViewModel.BestAgent?.DisplayIndicator))
                     {

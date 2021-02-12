@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs" 
-             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="900"
              Height="450" Width="1000">
@@ -21,8 +21,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Margin="2">Group</Label>
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
-            <Label Margin="2">Duration</Label>
-            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
+            <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
             <Label Margin="2">Agent</Label>
             <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
             <Label Margin="2">Accuracy</Label>

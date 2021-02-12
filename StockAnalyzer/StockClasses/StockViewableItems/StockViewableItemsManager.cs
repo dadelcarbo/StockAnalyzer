@@ -6,6 +6,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
+using System;
 using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
@@ -165,8 +166,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                 case ViewableItemType.Cloud:
                     viewableSerie = stockSerie.GetCloud(aViewableSerie.Name);
                     break;
-                default:
+                case ViewableItemType.AutoDrawing:
+                    viewableSerie = stockSerie.GetAutoDrawing(aViewableSerie.Name);
                     break;
+                default:
+                    throw new NotImplementedException($"ItemType not Implemented {aViewableSerie.Type}");
             }
             return viewableSerie;
         }
