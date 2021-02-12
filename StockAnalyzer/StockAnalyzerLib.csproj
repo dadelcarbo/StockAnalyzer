@@ -240,6 +240,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBANDWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DURATIONEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA3.cs" />

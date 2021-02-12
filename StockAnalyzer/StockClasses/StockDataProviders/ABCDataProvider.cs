@@ -253,17 +253,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
 
-            // Load Config files
-            string fileName = RootFolder + CONFIG_FILE;
-            InitFromFile(download, fileName);
-            fileName = RootFolder + CONFIG_FILE_USER;
-            InitFromFile(download, fileName);
-
             // Init from Libelles
             foreach (string file in Directory.GetFiles(RootFolder + ABC_DAILY_CFG_FOLDER))
             {
                 InitFromLibelleFile(file);
             }
+
+            // Load Config files
+            string fileName = RootFolder + CONFIG_FILE;
+            InitFromFile(download, fileName);
+            fileName = RootFolder + CONFIG_FILE_USER;
+            InitFromFile(download, fileName);
 
             // Download Sectors Composition
             foreach (var sectorId in SectorCodes.Keys)
@@ -457,7 +457,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static string loadingGroup = null;
-        static List<string> loadedGroups = new List<string>();
+
         public override bool LoadData(StockSerie stockSerie)
         {
             bool res = false;
@@ -487,11 +487,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private void LoadGroupData(string abcGroup, StockSerie.Groups stockGroup)
         {
             StockLog.Write("Group: " + abcGroup);
-            if (loadedGroups.Contains(abcGroup))
-            {
-                StockLog.Write("Group already loaded: ");
-                return;
-            }
             try
             {
                 #region Multi thread synchro
@@ -532,8 +527,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     ParseABCGroupCSVFile(fileName, stockGroup, true);
                     File.Delete(Path.Combine(RootFolder + ABC_TMP_FOLDER, fileName));
                 }
-                loadedGroups.Add(abcGroup);
-
                 // Save to CSV file
                 foreach (var serie in stockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(stockGroup) && s.Count > 0))
                 {
@@ -945,17 +938,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             bool success = true;
             try
             {
-                //while (endDate - startDate > new TimeSpan(30, 0, 0, 0))
-                //{
-
-                //}
-                //string fileName = destFolder + @"\" + abcGroup + "_" + month.Year + "_" + month.Month + ".csv";
-
-                //if (month.Month > 1 && DateTime.Today.Month == month.Month)
-                //{
-                //    // Force loading previous month in order to avoid missing some days
-                //    DownloadMonthlyFileFromABC(destFolder, new DateTime(month.Year, month.Month - 1, 1), abcGroup);
-                //}
+                while (endDate - startDate > new TimeSpan(30, 0, 0, 0))
+                {
+                    DownloadMonthlyFileFromABC(destFolder, startDate, startDate.AddDays(30), stockGroup);
+                    startDate = startDate.AddDays(30);
+                }
 
                 string abcGroup = GetABCGroup(stockGroup);
                 string fileName = destFolder + @"\" + abcGroup + "_" + endDate.Year + "_" + endDate.Month + ".csv";

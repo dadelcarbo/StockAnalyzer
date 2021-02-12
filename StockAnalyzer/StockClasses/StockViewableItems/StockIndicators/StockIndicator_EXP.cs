@@ -6,32 +6,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_EXP : StockIndicatorBase
     {
-        public override string Definition => base.Definition + Environment.NewLine + "Draws an exponential trail stop";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get
-            {
-                return IndicatorDisplayStyle.SimpleCurve;
-            }
-        }
-
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "Rate1", "Rate2", "Rate3" }; }
-        }
-
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 0.001f, 0.002f, 0.004f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.0001f, 1.0f), new ParamRangeFloat(0.0001f, 1.0f), new ParamRangeFloat(0.0001f, 1.0f) }; }
-        }
+        public override string Definition => base.Definition + Environment.NewLine + "Draws an exponential trail stop that starts";
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
+        public override string[] ParameterNames => new string[] { "Period", "Rate1" };
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 0.1f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.0001f, 1.0f) };
 
         public override string[] SerieNames { get { return new string[] { "EXP1", "EXP2", "EXP3" }; } }
 
@@ -50,9 +30,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            float rate1 = 1f + (float)this.parameters[1];
-            float rate2 = 1f + (float)this.parameters[2];
-            float rate3 = 1f + (float)this.parameters[3];
+            float rate1 = 1f + (float)this.parameters[1] * 0.01f;
+            float rate2 = 1f + (float)this.parameters[1] * 0.02f;
+            float rate3 = 1f + (float)this.parameters[1] * 0.04f;
 
             var expSerie1 = new FloatSerie(stockSerie.Count, "EXP1", float.NaN);
             var expSerie2 = new FloatSerie(stockSerie.Count, "EXP2", float.NaN);
