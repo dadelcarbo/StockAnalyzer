@@ -123,10 +123,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public PalmaresViewModel()
         {
-            this.Indicator1 = "MANSFIELD(100)";
+            this.Indicator1 = "MANSFIELD(100,CAC40)";
             this.Indicator2 = "HIGHEST(20)";
-            this.Indicator3 = "STOKFBODY(20,3)";
-            this.Stop = "TRAILHLBODY(12)";
+            this.Indicator3 = "STOKFBODY(20)";
+            this.Stop = "TRAILHLBODY(20)";
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;

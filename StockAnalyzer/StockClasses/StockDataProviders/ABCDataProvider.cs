@@ -535,7 +535,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     foreach (var serie in stockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(stockGroup) && s.Count > 0))
                     {
-                        this.SaveToCSV(serie);
+                        this.SaveToCSV(serie, false);
                     }
                 }
             }

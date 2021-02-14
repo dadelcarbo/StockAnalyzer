@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockDrawing
                     }
                 }
             }
-            if (this.TrailStop != null && this.TrailStop.Series[0].Count > 0)
+            if (this.TrailStop?.Series[0] != null && this.TrailStop.Series[0].Count > 0)
             {
                 maxValue = Math.Max(maxValue, this.TrailStop.Series[1].GetMax(startIndex, endIndex));
                 minValue = Math.Min(minValue, this.TrailStop.Series[0].GetMin(startIndex, endIndex));

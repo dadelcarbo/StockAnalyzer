@@ -5098,8 +5098,8 @@ namespace StockAnalyzer.StockClasses
             FloatSerie newSerie = new FloatSerie(this.Count);
             newSerie.Name = otherSerie.StockName;
 
-            FloatSerie otherFloatSerie = otherSerie.GetSerie(StockDataType.CLOSE);
-            float previousValue = otherFloatSerie[0];
+            FloatSerie otherCloseSerie = otherSerie.GetSerie(StockDataType.CLOSE);
+            float previousValue = otherCloseSerie[0];
             DateTime startDate = otherSerie.Keys.First();
             DateTime lastDate = otherSerie.Keys.Last();
 
@@ -5108,7 +5108,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (dailyValue.DATE > lastDate || dailyValue.DATE < startDate)
                 {
-                    newSerie[i] = float.NaN;
+                    newSerie[i] = otherCloseSerie[0];
                 }
                 else
                 {

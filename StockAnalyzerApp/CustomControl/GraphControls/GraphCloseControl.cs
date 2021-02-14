@@ -310,7 +310,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     #endregion
                     #region DISPLAY TRAIL STOPS
-                    if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.Series[0].Count > 0)
+                    if (this.CurveList.TrailStop?.Series[0] != null && this.CurveList.TrailStop.Series[0].Count > 0)
                     {
                         FloatSerie longStopSerie = this.CurveList.TrailStop.Series[0];
                         FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];

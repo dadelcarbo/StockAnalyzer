@@ -746,7 +746,6 @@ namespace StockAnalyzerApp
 
             try
             {
-                DrawingItem.CreatedByAlert = true;
                 string alertString = string.Empty;
 
                 List<StockSerie> stockList;
@@ -855,7 +854,6 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                DrawingItem.CreatedByAlert = false;
                 busy = false;
                 alertThreadEvent.Set();
             }
@@ -872,7 +870,6 @@ namespace StockAnalyzerApp
             {
                 int lookbackPeriod = 10;
 
-                DrawingItem.CreatedByAlert = true;
                 string alertString = string.Empty;
 
                 #region Detect alert from drawing
@@ -998,7 +995,6 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                DrawingItem.CreatedByAlert = false;
                 busy = false;
                 alertThreadEvent.Set();
                 StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame + "alertThreadEvent.Set()");
@@ -1606,13 +1602,15 @@ namespace StockAnalyzerApp
             {
                 try
                 {
+                    if (MessageBox.Show($"Are you sure you want to foce downloading the full group {currentStockSerie.StockGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    {
+                        return;
+                    }
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                     this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
 
                     var stockSeries =
-                       this.StockDictionary.Values.Where(
-                          s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
+                       this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
 
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1621,15 +1619,15 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
                         StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
 
                         if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
                             try
                             {
                                 StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
                             }
                             catch (Exception ex)
                             {
@@ -3818,13 +3816,8 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
-                    //if (this.CurrentStockSerie.Count < 50)
-                    //{
-                    //    this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " is insufficient, need at least 50 bars");
-                    //    return;
-                    //}
                     // Delete transient drawing created by alert Detection
-                    if (this.CurrentStockSerie.StockAnalysis.DeleteAlertDrawings() > 0 || this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
+                    if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
                         this.CurrentStockSerie.ResetIndicatorCache();
                     }
