@@ -2483,21 +2483,31 @@ namespace StockAnalyzerApp
             palmaresDlg.palmaresControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
             this.palmaresDlg = null;
         }
+        public bool changingGroup = false;
         private void OnSelectedStockGroupChanged(string stockGroup)
         {
-            StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
-            if (this.selectedGroup != newGroup)
+            try
             {
-                SetDurationForStockGroup(newGroup);
-
-                this.selectedGroup = newGroup;
-
-                foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                changingGroup = true;
+                StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
+                if (this.selectedGroup != newGroup)
                 {
-                    groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
-                }
+                    this.selectedGroup = newGroup;
 
-                InitialiseStockCombo(true);
+                    foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                    {
+                        groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
+                    }
+                    InitialiseStockCombo(true);
+                    SetDurationForStockGroup(newGroup);
+
+                    changingGroup = false;
+                    ApplyTheme();
+                }
+            }
+            finally
+            {
+                changingGroup = false;
             }
         }
 
@@ -3805,6 +3815,8 @@ namespace StockAnalyzerApp
             {
                 try
                 {
+                    StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.BarDuration}-{this.CurrentTheme}");
+                    if (changingGroup) return;
                     if (this.CurrentTheme == null || this.CurrentStockSerie == null) return;
                     if (!this.CurrentStockSerie.IsInitialised)
                     {

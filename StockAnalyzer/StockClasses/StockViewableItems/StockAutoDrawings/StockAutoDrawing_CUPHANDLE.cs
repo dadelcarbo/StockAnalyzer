@@ -125,7 +125,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                     }
                     if (!rightHigherLow || (rightHigherLow && rightLow.Y > leftLow.Y))
                     {
-                        this.series[0][i] = trailStop = bodyLowSerie.GetMin(i - trailPeriod, i);
+                        this.series[0][i] = trailStop = Math.Min(Math.Max(rightLow.Y, leftLow.Y), bodyLowSerie.GetMin(i - trailPeriod, i));
                         highestInBars = highestInSerie[i];
                         isBull = true;
                         brokenUpEvents[i] = bullEvents[i] = true;

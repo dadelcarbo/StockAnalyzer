@@ -133,7 +133,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                     {
-                        StockLog.Write("Background Bitmap is null");
+                        //StockLog.Write("Background Bitmap is null");
                     }
                 }
             }
@@ -293,7 +293,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                StockLog.Write(msg);
+                //StockLog.Write(msg);
                 this.alternateString = msg;
                 this.graphic = null;
                 this.IsInitialized = setInitialisedTo;
