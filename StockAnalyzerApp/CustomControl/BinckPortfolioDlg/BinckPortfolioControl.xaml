@@ -24,8 +24,6 @@
             <TextBlock Text="{Binding Portfolio.Balance}" VerticalAlignment="Center"/>
             <Label>Value:</Label>
             <TextBlock Text="{Binding Value}" VerticalAlignment="Center"/>
-            <Label>Max Positions:</Label>
-            <TextBox Text="{Binding Portfolio.MaxNbPositions, Mode=TwoWay}" VerticalAlignment="Center" Width="30"/>
             <Label>Max Risk:</Label>
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
         </StackPanel>

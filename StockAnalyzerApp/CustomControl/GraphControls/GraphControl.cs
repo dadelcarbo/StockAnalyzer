@@ -1102,7 +1102,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (mouseIndex != -1 && CurveList.Count != 0 && this.mainSerie != null)
                     {
                         // GetMarquee value
-                        float value = this.mainSerie[mouseIndex]; 
+                        float value = this.mainSerie[mouseIndex];
                         if (float.IsNaN(value)) return;
                         PointF point = new PointF(mouseIndex, value);
                         PointF point2 = GetScreenPointFromValuePoint(point);
@@ -1210,7 +1210,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    int stop, entry, target1, target2;
+                    int stop, entry, target1, target2, target5;
                     if (e.Location.Y < mouseDownPos.Y)
                     {
                         // Draw selection zone
@@ -1218,22 +1218,27 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         entry = y + height;
                         target1 = y;
                         target2 = y - height;
+                        target5 = y - 4 * height;
 
                         this.DrawString(foregroundGraphic, "Stop", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, stop - 5, false);
                         this.DrawString(foregroundGraphic, "Entry", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, entry - 5, false);
                         this.DrawString(foregroundGraphic, "T1", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target1 - 5, false);
                         this.DrawString(foregroundGraphic, "T2", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target2 - 5, false);
+                        this.DrawString(foregroundGraphic, "T5", axisFont, Brushes.Black, this.backgroundBrush, x - width - 24, target5 - 5, false);
 
                         this.foregroundGraphic.DrawLine(stopPen, x - width, stop, x + width, stop); // Stop
                         this.foregroundGraphic.DrawLine(entryPen, x - width, entry, x + width, entry); // Entry
                         this.foregroundGraphic.DrawLine(target1Pen, x - width, target1, x + width, target1); // Target1
                         this.foregroundGraphic.DrawLine(target2Pen, x - width, target2, x + width, target2); // Target2
+                        this.foregroundGraphic.DrawLine(target2Pen, x - width, target5, x + width, target5); // Target5
 
                         this.foregroundGraphic.FillRectangle(redBrush, x - width, entry, width * 2, height);
                         this.foregroundGraphic.FillRectangle(greenBrush, x - width, target1, width * 2, height);
                         this.foregroundGraphic.FillRectangle(greenBrush, x - width, target2, width * 2, height * 2);
+                        this.foregroundGraphic.FillRectangle(greenBrush, x - width, target5, width * 2, height * 2);
 
                         this.DrawString(foregroundGraphic,
+                            "T5:\t" + this.GetValuePointFromScreenPoint(0, target5).Y.ToString("#.###") + Environment.NewLine +
                             "T2:\t" + this.GetValuePointFromScreenPoint(0, target2).Y.ToString("#.###") + Environment.NewLine +
                             "T1:\t" + this.GetValuePointFromScreenPoint(0, target1).Y.ToString("#.###") + Environment.NewLine +
                             "Entry:\t" + this.GetValuePointFromScreenPoint(0, entry).Y.ToString("#.###") + Environment.NewLine +

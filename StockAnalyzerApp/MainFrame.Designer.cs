@@ -130,9 +130,7 @@ namespace StockAnalyzerApp
             this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
             this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.followUpCheckBox = new CustomControl.ToolStripCheckedBox();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
-            this.commentBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.drawToolStrip = new System.Windows.Forms.ToolStrip();
             this.magnetStripBtn = new System.Windows.Forms.ToolStripButton();
@@ -890,9 +888,7 @@ namespace StockAnalyzerApp
             this.zoomInBtn,
             this.logScaleBtn,
             this.toolStripSeparator2,
-            this.followUpCheckBox,
             this.excludeButton,
-            this.commentBtn,
             this.toolStripSeparator5});
             this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
             this.browseToolStrip.Name = "browseToolStrip";
@@ -1033,13 +1029,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
-            // followUpCheckBox
-            // 
-            this.followUpCheckBox.Name = "followUpCheckBox";
-            this.followUpCheckBox.Size = new System.Drawing.Size(80, 19);
-            this.followUpCheckBox.Text = "Follow-up";
-            this.followUpCheckBox.Click += new System.EventHandler(this.followUpCheckBox_CheckedChanged);
-            // 
             // excludeButton
             // 
             this.excludeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1049,17 +1038,6 @@ namespace StockAnalyzerApp
             this.excludeButton.Text = "Exclude";
             this.excludeButton.ToolTipText = "Exclude value from list";
             this.excludeButton.Click += new System.EventHandler(this.excludeButton_Click);
-            // 
-            // commentBtn
-            // 
-            this.commentBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.commentBtn.Image = global::StockAnalyzerApp.Properties.Resources.Comment;
-            this.commentBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.commentBtn.Name = "commentBtn";
-            this.commentBtn.Size = new System.Drawing.Size(23, 20);
-            this.commentBtn.Text = "Comment";
-            this.commentBtn.ToolTipText = "Edit a comment";
-            this.commentBtn.Click += new System.EventHandler(this.commentBtn_Click);
             // 
             // toolStripSeparator5
             // 
@@ -1267,7 +1245,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Agenda = null;
             this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
             this.graphCloseControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
-            this.graphCloseControl.Comments = null;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1512,10 +1489,8 @@ namespace StockAnalyzerApp
         private ToolStripButton saveAnalysisToolStripButton;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton excludeButton;
-        private CustomControl.ToolStripCheckedBox followUpCheckBox;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem viewMenuItem;
-        private ToolStripButton commentBtn;
         private ToolStripMenuItem portofolioMenuItem;
         private ToolStripButton magnetStripBtn;
         private ToolStripMenuItem palmaresMenuItem;

@@ -114,6 +114,48 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
             //return DownloadIntradayData(stockSerie);
         }
+        public override bool ForceDownloadData(StockSerie stockSerie)
+        {
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                NotifyProgress("ForceDownload intraday for " + stockSerie.StockName); 
+                var fileName = RootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                using (var wc = new WebClient())
+                {
+                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                    var url =  FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
+
+                    int nbTries = 2;
+                    while (nbTries > 0)
+                    {
+                        try
+                        {
+                            HttpClient client = new HttpClient();
+                            var response = client.GetAsync(url).Result;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var content = response.Content.ReadAsStringAsync().Result;
+                                if (content.StartsWith("{"))
+                                {
+                                    File.WriteAllText(fileName, content);
+                                    stockSerie.IsInitialised = false;
+                                    return true;
+                                }
+                                return false;
+                            }
+                            nbTries--;
+                        }
+                        catch (Exception e)
+                        {
+                            nbTries--;
+                        }
+                    }
+                }
+
+            }
+            return true;
+        }
         static bool first = true;
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {

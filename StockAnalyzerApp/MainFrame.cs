@@ -1318,19 +1318,6 @@ namespace StockAnalyzerApp
                     ApplyTheme();
                 }
 
-                // Set the Check Box UpDownState
-                this.followUpCheckBox.CheckBox.Checked = CurrentStockSerie.StockAnalysis.FollowUp;
-
-                // Set the comment button color
-                if (CurrentStockSerie.StockAnalysis.Comments.Count == 0)
-                {
-                    this.commentBtn.BackColor = System.Drawing.SystemColors.Control;
-                }
-                else
-                {
-                    this.commentBtn.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-                }
-
                 // Set the default theme checkstate
                 if (this.currentStockSerie.StockAnalysis != null && this.currentStockSerie.StockAnalysis.Theme == currentTheme)
                 {
@@ -2155,46 +2142,6 @@ namespace StockAnalyzerApp
             else
             {
                 this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
-            }
-        }
-
-        private void followUpCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (stockNameComboBox.SelectedItem != null && stockNameComboBox.SelectedItem.ToString() != string.Empty)
-            {
-                CurrentStockSerie.StockAnalysis.FollowUp = this.followUpCheckBox.CheckBox.Checked;
-                var watchlist = this.WatchLists.FirstOrDefault(wl => wl.Name == "FollowUp");
-                if (watchlist == null)
-                    return;
-                if (CurrentStockSerie.StockAnalysis.FollowUp && !watchlist.StockList.Contains(CurrentStockSerie.StockName))
-                {
-                    watchlist.StockList.Add(CurrentStockSerie.StockName);
-                    SaveWatchList();
-                }
-                else if (!CurrentStockSerie.StockAnalysis.FollowUp && watchlist.StockList.Contains(CurrentStockSerie.StockName))
-                {
-                    watchlist.StockList.Remove(CurrentStockSerie.StockName);
-                    SaveWatchList();
-                }
-            }
-        }
-
-        private void commentBtn_Click(object sender, EventArgs e)
-        {
-            if (this.CurrentStockSerie != null && stockNameComboBox.SelectedItem != null &&
-                stockNameComboBox.SelectedItem.ToString() != string.Empty)
-            {
-                CommentDialog commentDlg = new CommentDialog(this.CurrentStockSerie);
-                if (commentDlg.ShowDialog() == DialogResult.OK)
-                {
-                    CurrentStockSerie.StockAnalysis.Comments.Clear();
-                    foreach (var c in commentDlg.CommentList)
-                    {
-                        CurrentStockSerie.StockAnalysis.Comments.Add(c.Date, c.Comment);
-                    }
-                    SaveAnalysis(Settings.Default.AnalysisFile);
-                    OnNeedReinitialise(true);
-                }
             }
         }
         #endregion
@@ -3868,7 +3815,6 @@ namespace StockAnalyzerApp
                                 case "CLOSEGRAPH":
                                     graphControl = this.graphCloseControl;
                                     this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
-                                    this.graphCloseControl.Comments = this.CurrentStockSerie.StockAnalysis.Comments;
                                     this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
                                     this.graphCloseControl.Dividends = this.CurrentStockSerie.Dividend;
                                     break;

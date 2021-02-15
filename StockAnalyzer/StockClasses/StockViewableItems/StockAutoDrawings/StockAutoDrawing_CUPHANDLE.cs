@@ -44,9 +44,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
-            this.series[0].Name = this.Name;
+            this.series[0].Name = this.SerieNames[0];
             this.series[1] = new FloatSerie(stockSerie.Count, SerieNames[1], float.NaN);
-            this.series[1].Name = this.Name;
+            this.series[1].Name = this.SerieNames[1];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);

@@ -15,7 +15,6 @@ using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System.IO;
-using StockAnalyzerApp.CustomControl.CommentDlg;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
@@ -85,7 +84,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        public Dictionary<DateTime, String> Comments { get; set; }
         public StockAgenda Agenda { get; set; }
         public StockDividend Dividends { get; set; }
 
@@ -878,23 +876,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 #endregion
 
                 #region Display comment marquee
-
-                if (this.ShowCommentMarquee)
-                {
-                    for (int i = StartIndex; i <= EndIndex; i++)
-                    {
-                        DateTime commentDate = this.dateSerie[i];
-                        if (this.Comments.ContainsKey(commentDate))
-                        {
-                            string comment = this.Comments[commentDate];
-                            if (!string.IsNullOrWhiteSpace(comment))
-                            {
-                                PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(i);
-                                aGraphic.FillPolygon(Brushes.DarkBlue, marqueePoints);
-                            }
-                        }
-                    }
-                }
                 if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
                 {
                     var startDate = this.dateSerie[StartIndex];
@@ -1019,6 +1000,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         trailName = CurveList.TrailStop.Series[i].Name;
                         trailValue = CurveList.TrailStop.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
+                    }
+                }
+                if (!float.IsNaN(trailValue))
+                {
+                    value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                }
+            }
+            if (CurveList.AutoDrawing != null)
+            {
+                for (int i = 0; i < CurveList.AutoDrawing.SeriesCount; i++)
+                {
+                    if (CurveList.AutoDrawing.Series[i] != null && CurveList.AutoDrawing.Series[i].Count > 0 && !float.IsNaN(CurveList.AutoDrawing.Series[i][this.lastMouseIndex]))
+                    {
+                        trailName = CurveList.AutoDrawing.Series[i].Name;
+                        trailValue = CurveList.AutoDrawing.Series[i][this.lastMouseIndex];
                         value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
                     }
                 }
@@ -1360,26 +1357,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             mousePoint.X -= 100.0f;
                         }
                         this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, backgroundBrush, mousePoint.X, mousePoint.Y, true);
-                    }
-                    #endregion
-                    #region Display comment text box
-                    if (mouseOverThis && this.ShowCommentMarquee && this.Comments != null &&
-                        (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                        (mousePoint.Y >= this.GraphRectangle.Bottom - EVENT_MARQUEE_SIZE * 2))
-                    {
-
-                        int i = this.RoundToIndex(mousePoint);
-                        DateTime commentDate = this.dateSerie[i];
-                        if (this.Comments.ContainsKey(commentDate))
-                        {
-                            string comment = this.Comments[commentDate];
-                            if (!string.IsNullOrWhiteSpace(comment))
-                            {
-                                Size size = TextRenderer.MeasureText(comment, axisFont);
-
-                                this.DrawString(this.foregroundGraphic, comment, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                            }
-                        }
                     }
                     #endregion
                     #region Display Agenda Text
@@ -2385,21 +2362,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             //        PaintGraph();
             //    }
             //}
-        }
-        void commentMenu_Click(object sender, System.EventArgs e)
-        {
-            var date = this.dateSerie[lastMouseIndex];
-
-            var commentDlg = new AddCommentDialog(date);
-            var res = commentDlg.ShowDialog();
-            if (res == DialogResult.OK)
-            {
-                StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.Comments.Add(date, commentDlg.Comment);
-                StockAnalyzerForm.MainFrame.SaveAnalysis(Settings.Default.AnalysisFile);
-
-                this.BackgroundDirty = true;
-                PaintGraph();
-            }
         }
         void agendaMenu_Click(object sender, System.EventArgs e)
         {

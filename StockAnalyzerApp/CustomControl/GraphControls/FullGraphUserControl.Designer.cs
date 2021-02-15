@@ -44,7 +44,6 @@
             this.graphCloseControl.Agenda = null;
             this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
             this.graphCloseControl.ChartMode = GraphChartMode.Line;
-            this.graphCloseControl.Comments = null;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
