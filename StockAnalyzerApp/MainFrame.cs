@@ -1602,7 +1602,7 @@ namespace StockAnalyzerApp
             {
                 try
                 {
-                    if (MessageBox.Show($"Are you sure you want to foce downloading the full group {currentStockSerie.StockGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {currentStockSerie.StockGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
                         return;
                     }
@@ -4565,9 +4565,21 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(true);
         }
 
-        private void eraseAllDrawingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void eraseDrawingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.graphCloseControl.EraseAllDrawingItems();
+            OnNeedReinitialise(true);
+        }
+        private void eraseAllDrawingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show($"Are you sure you want erase all drawings on all stocks ?\r\nChanges will apply when saving analysis file.", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+            foreach(var serie in this.StockDictionary.Values)
+            {
+                serie.StockAnalysis.DrawingItems.Clear();
+            }
             OnNeedReinitialise(true);
         }
         #endregion
@@ -4607,8 +4619,8 @@ namespace StockAnalyzerApp
             if (!File.Exists(PEAPerfTemplatePath))
                 return;
 
-            // Find name from PEA Performance
-            StockWebHelper wh = new StockWebHelper();
+             // Find name from PEA Performance
+             StockWebHelper wh = new StockWebHelper();
             var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(suggestXML);
@@ -4617,6 +4629,10 @@ namespace StockAnalyzerApp
                 return;
             var symbol = parentNode.Item(0).InnerText.Split('|')[1];
 
+            string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
+            Process.Start(url);
+
+            return;
             var htmlReport = File.ReadAllText(PEAPerfTemplatePath)
                 .Replace("%ISIN%", this.currentStockSerie.ISIN)
                 .Replace("%STOCKNAME%", this.currentStockSerie.StockName)

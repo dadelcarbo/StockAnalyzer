@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override string[] ParameterNames => new string[] { "Period", "Right HL", "TrailPeriod" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 3, true, 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 3, true, 12 };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(2, 500) };
 
@@ -60,7 +60,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             bool isBull = false;
             float trailStop = float.NaN;
             float highestInBars = float.MaxValue; // Reference for trailing stop
-            for (int i = period * 2; i < stockSerie.Count; i++)
+            for (int i = Math.Max(period * 2, trailPeriod * 2); i < stockSerie.Count; i++)
             {
                 if (isBull) // Trail Stop
                 {

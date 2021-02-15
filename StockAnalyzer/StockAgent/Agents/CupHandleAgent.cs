@@ -10,13 +10,16 @@ namespace StockAnalyzer.StockAgent.Agents
         public CupHandleAgent()
         {
             Period = 13;
+            TrailPeriod = 13;
         }
 
         [StockAgentParam(2, 80)]
         public int Period { get; set; }
+        [StockAgentParam(2, 80)]
+        public int TrailPeriod { get; set; }
 
         public override string Description => "Buy with Cup and Handle signal";
-        public override string DisplayIndicator => $"AUTODRAWING|CUPHANDLE({Period})";
+        public override string DisplayIndicator => $"AUTODRAWING|CUPHANDLE({Period},true, {TrailPeriod})";
 
 
         IStockEvent eventSerie;
@@ -26,7 +29,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            eventSerie = stockSerie.GetAutoDrawing($"CUPHANDLE({Period})");
+            eventSerie = stockSerie.GetAutoDrawing($"CUPHANDLE({Period},true, {TrailPeriod})");
             bullEvents = eventSerie.Events[Array.IndexOf<string>(eventSerie.EventNames, "BrokenUp")];
             bearEvents = eventSerie.Events[Array.IndexOf<string>(eventSerie.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

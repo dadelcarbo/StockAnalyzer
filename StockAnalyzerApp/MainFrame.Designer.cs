@@ -53,6 +53,7 @@ namespace StockAnalyzerApp
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+            this.eraseDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eraseAllDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -300,6 +301,7 @@ namespace StockAnalyzerApp
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
             this.toolStripSeparator17,
+            this.eraseDrawingsToolStripMenuItem,
             this.eraseAllDrawingsToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
@@ -329,11 +331,20 @@ namespace StockAnalyzerApp
             this.toolStripSeparator17.Name = "toolStripSeparator17";
             this.toolStripSeparator17.Size = new System.Drawing.Size(204, 6);
             // 
+            // eraseDrawingsToolStripMenuItem
+            // 
+            this.eraseDrawingsToolStripMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.trashcan;
+            this.eraseDrawingsToolStripMenuItem.Name = "eraseDrawingsToolStripMenuItem";
+            this.eraseDrawingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.eraseDrawingsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.eraseDrawingsToolStripMenuItem.Text = "Erase graph drawings";
+            this.eraseDrawingsToolStripMenuItem.Click += new System.EventHandler(this.eraseDrawingsToolStripMenuItem_Click);
+            // 
             // eraseAllDrawingsToolStripMenuItem
             // 
             this.eraseAllDrawingsToolStripMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.trashcan;
             this.eraseAllDrawingsToolStripMenuItem.Name = "eraseAllDrawingsToolStripMenuItem";
-            this.eraseAllDrawingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.eraseAllDrawingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.E)));
             this.eraseAllDrawingsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.eraseAllDrawingsToolStripMenuItem.Text = "Erase all drawings";
             this.eraseAllDrawingsToolStripMenuItem.Click += new System.EventHandler(this.eraseAllDrawingsToolStripMenuItem_Click);
@@ -1586,6 +1597,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem undoToolStripMenuItem;
         private ToolStripMenuItem redoToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator17;
+        private ToolStripMenuItem eraseDrawingsToolStripMenuItem;
         private ToolStripMenuItem eraseAllDrawingsToolStripMenuItem;
         private ToolStripMenuItem stockScannerMenuItem;
         private ToolStripSeparator toolStripSeparator18;
