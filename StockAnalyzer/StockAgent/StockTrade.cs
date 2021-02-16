@@ -125,13 +125,13 @@ namespace StockAnalyzer.StockAgent
             if (this.IsLong)
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
-                float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex - 1);
+                float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex);
                 this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
-                float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex - 1);
+                float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex);
                 this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
             }
         }
