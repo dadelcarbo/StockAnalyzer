@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockAgent
             {
                 return IsClosed ?
                     ExitIndex - EntryIndex :
-                    -1;
+                    Serie.LastIndex - EntryIndex;
             }
         }
 
