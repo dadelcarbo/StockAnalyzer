@@ -384,7 +384,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MOMENTUM.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ZIGZAGLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DOWLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HOSC.cs" />

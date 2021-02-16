@@ -115,7 +115,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                 Qty = qty,
                 StockName = stockName,
                 Value = value,
-                Fee = fee,
+                Fee = fee
             };
             this.TradeOperations.Add(operation);
 
