@@ -116,6 +116,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return $"http://tvc4.forexpros.com/0f8a29a810801b55700d8d096869fe1f/1567000256/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
+        public override bool ForceDownloadData(StockSerie stockSerie)
+        {
+            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            if (File.Exists(archiveFileName))
+            {
+                File.Delete(archiveFileName);
+            }
+            var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            stockSerie.IsInitialised = false;
+            first = true;
+            return this.DownloadDailyData(stockSerie);
+        }
+
         static bool first = true;
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
@@ -159,7 +176,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        url = FormatURL(stockSerie.Ticker, DateTime.Today.AddYears(-5), DateTime.Today);
+                        url = FormatURL(stockSerie.Ticker, new DateTime(ARCHIVE_START_YEAR, 1, 1), DateTime.Today);
                     }
 
                     int nbTries = 3;
