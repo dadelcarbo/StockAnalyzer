@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (int i = (int)this.parameters.Last(); i < stockSerie.Count; i++)
             {
                 // BullStart
-                this.eventSeries[0][i] = fastSerie2[i] > slowSerie2[i] && fastSerie1[i] > slowSerie1[i] && fastSerie1[i - 1] < slowSerie1[i - 1];
+                this.eventSeries[0][i] = fastSerie2[i] > slowSerie2[i] && fastSerie1[i] > slowSerie1[i] && fastSerie2[i - 1] < slowSerie2[i - 1];
                 // BearStart
                 this.eventSeries[1][i] = fastSerie2[i] < slowSerie2[i] && fastSerie1[i] < slowSerie1[i] && fastSerie1[i - 1] > slowSerie1[i - 1];
                 // BullCrossing

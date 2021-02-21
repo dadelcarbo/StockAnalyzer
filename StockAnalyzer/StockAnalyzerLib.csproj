@@ -399,7 +399,7 @@
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBREAK.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHANDLEINV.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -551,10 +552,43 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Bitmap snapshot = (Bitmap)this.backgroundBitmap.Clone();
                 Graphics g = Graphics.FromImage(snapshot);
                 g.DrawRectangle(Pens.Black, 0, 0, snapshot.Width - 1, snapshot.Height - 1);
+
+
+
+                using (var stream = new MemoryStream())
+                {
+                    snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+
+                    Byte[] imageArray = stream.ToArray();
+                    if (imageArray != null && imageArray.Length > 0)
+                    {
+                        string img = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                        Console.WriteLine("data:image/png;base64," + img);
+                    }
+                }
+
+
                 return snapshot;
             }
             else
                 return null;
+        }
+
+        public string GetSnapshotAsHTML()
+        {
+            if (this.IsInitialized && this.backgroundBitmap != null)
+            {
+                Bitmap snapshot = (Bitmap)this.backgroundBitmap.Clone();
+                Graphics g = Graphics.FromImage(snapshot);
+                g.DrawRectangle(Pens.Black, 0, 0, snapshot.Width - 1, snapshot.Height - 1);
+
+                using (var stream = new MemoryStream())
+                {
+                    snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    return "data:image/png;base64," + Convert.ToBase64String(stream.ToArray());
+                }
+            }
+            return null;
         }
 
         protected virtual void PaintTmpGraph(Graphics aGraphic)

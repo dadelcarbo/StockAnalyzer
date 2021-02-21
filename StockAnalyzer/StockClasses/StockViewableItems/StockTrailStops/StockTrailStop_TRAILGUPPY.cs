@@ -5,7 +5,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILGUPPY : StockTrailStopBase
     {
-        public override string Definition => base.Definition + Environment.NewLine + 
+        public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that is calculated with the guppy ema bands.";
 
         public override IndicatorDisplayTarget DisplayTarget
@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 1000), new ParamRangeInt(1, 1000), new ParamRangeInt(1, 1000), new ParamRangeInt(1, 1000) };
 
         public override string[] SerieNames { get { return new string[] { "TRAILGUPPY.LS", "TRAILGUPPY.SS" }; } }
-        
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
@@ -42,12 +42,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var osc2 = fastEMA2 - slowEMA2;
 
             bool bullish = false;
-            bool bearish= false;
+            bool bearish = false;
             for (int i = slowPeriod2; i < stockSerie.Count; i++)
             {
                 if (bullish)
                 {
-                    if (closeSerie[i] < longStopSerie[i-1])
+                    if (closeSerie[i] < longStopSerie[i - 1])
                     {
                         bullish = false;
                     }
@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else
                 {
-                    if (osc2[i] > 0 && osc1[i - 1] < 0 && osc1[i] > 0)
+                    if (osc2[i] > 0 && osc2[i - 1] < 0)
                     {
                         bullish = true;
                         longStopSerie[i] = slowEMA2[i];
