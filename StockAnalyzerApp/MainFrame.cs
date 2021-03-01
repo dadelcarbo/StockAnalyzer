@@ -2608,6 +2608,8 @@ namespace StockAnalyzerApp
             if (portfolioSimulationDialog == null)
             {
                 portfolioSimulationDialog = new PortfolioSimulationDlg();
+                portfolioSimulationDialog.portfolioSimulationControl1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+
                 portfolioSimulationDialog.FormClosed += (a, b) =>
                 {
                     portfolioSimulationDialog = null;

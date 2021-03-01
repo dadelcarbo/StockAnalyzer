@@ -30,7 +30,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             get { return StockPortfolio.SimulationPortfolio.MaxPositions; }
             set { StockPortfolio.SimulationPortfolio.MaxPositions = value; }
         }
-
         public void Cancel()
         {
             if (worker != null)
@@ -39,7 +38,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker = null;
             }
         }
-
         public List<string> Agents => StockAgentBase.GetAgentNames();
 
         private string agent;
@@ -70,6 +68,34 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     report = value;
                     OnPropertyChanged("Report");
+                }
+            }
+        }
+
+        string log;
+        public string Log
+        {
+            get => log;
+            set
+            {
+                if (log != value)
+                {
+                    log = value;
+                    OnPropertyChanged("Log");
+                }
+            }
+        }
+
+        private StockTradeSummary tradeSummary;
+        public StockTradeSummary TradeSummary
+        {
+            get => tradeSummary;
+            set
+            {
+                if (tradeSummary != value)
+                {
+                    tradeSummary = value;
+                    OnPropertyChanged("TradeSummary");
                 }
             }
         }
@@ -174,7 +200,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (worker.CancellationPending)
                     return false;
 
-                var tradeSummary = engine.Agent.TradeSummary;
+                this.TradeSummary = engine.Agent.TradeSummary;
 
                 string msg = tradeSummary.ToLog() + Environment.NewLine;
                 msg += engine.Agent.ToLog() + Environment.NewLine;
@@ -182,6 +208,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
 
                 this.Report = msg;
+
             }
             catch (Exception ex)
             {

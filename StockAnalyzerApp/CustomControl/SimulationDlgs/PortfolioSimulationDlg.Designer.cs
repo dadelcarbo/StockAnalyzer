@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private CustomControl.SimulationDlgs.PortfolioSimulationControl portfolioSimulationControl1;
+        public CustomControl.SimulationDlgs.PortfolioSimulationControl portfolioSimulationControl1;
     }
 }
