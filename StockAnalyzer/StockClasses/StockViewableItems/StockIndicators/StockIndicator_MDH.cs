@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -48,17 +49,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            upLine[0] = closeSerie[0];
-            downLine[0] = closeSerie[0];
+            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+
+            upLine[0] = bodyHighSerie[0];
+            downLine[0] = bodyLowSerie[0];
             midLine[0] = closeSerie[0];
 
-            for (int i = 1; i < stockSerie.Count; i++)
+            for (int i = 1; i <= period; i++)
             {
-                upLine[i] = highSerie.GetMax(Math.Max(0, i - period - 1), i - 1);
-                downLine[i] = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
+                upLine[i] = bodyHighSerie.GetMax(0, i - 1);
+                downLine[i] = bodyLowSerie.GetMin(0, i - 1);
+                midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
+            }
+            for (int i = period + 1; i < stockSerie.Count; i++)
+            {
+                upLine[i] = bodyHighSerie.GetMax(i - period - 1, i - 1);
+                downLine[i] = bodyLowSerie.GetMin(i - period - 1, i - 1);
                 midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
             }
 
@@ -83,29 +92,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
                 if (upTrend)
                 {
-                    upTrend = midLine[i] >= midLine[i - 1];
+                    upTrend = bodyHighSerie[i] > midLine[i];
                 }
                 else
                 {
-                    upTrend = midLine[i] > midLine[i - 1];
+                    upTrend = bodyLowSerie[i] > midLine[i];
                 }
 
                 this.Events[count++][i] = upTrend;
                 this.Events[count++][i] = !upTrend;
                 this.Events[count++][i] = (!this.Events[0][i - 1]) && (this.Events[0][i]);
                 this.Events[count++][i] = (this.Events[0][i - 1]) && (!this.Events[0][i]);
-
-                this.Events[count++][i] = closeSerie[i] > upLine[i] && closeSerie[i - 1] <= upLine[i - 1];
-                this.Events[count++][i] = closeSerie[i] > midLine[i] && closeSerie[i - 1] <= midLine[i - 1];
-                this.Events[count++][i] = closeSerie[i] < midLine[i] && closeSerie[i - 1] >= midLine[i - 1];
-                this.Events[count++][i] = closeSerie[i] < downLine[i] && closeSerie[i - 1] >= downLine[i - 1];
             }
         }
 
         static string[] eventNames = new string[]
           {
-            "Uptrend", "DownTrend", "BrokenUp","BrokenDown",
-            "CloseAboveUpLine", "CloseAboveMidLine", "CloseBelowMidLine", "CloseBelowLowLine"
+            "Uptrend", "DownTrend", "BrokenUp","BrokenDown"
           };
         public override string[] EventNames
         {
@@ -113,8 +116,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         static readonly bool[] isEvent = new bool[]
           {
-            false, false, true, true,
-            true, true, true, true
+            false, false, true, true
           };
         public override bool[] IsEvent
         {

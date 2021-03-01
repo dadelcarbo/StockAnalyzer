@@ -5,28 +5,31 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class TrailTFAgent : StockAgentBase
+    public class TrailHLBody2Agent : StockAgentBase
     {
-        public TrailTFAgent()
+        public TrailHLBody2Agent()
         {
-            Period = 13;
+            PeriodUp = 13;
+            PeriodDown = 13;
         }
 
         [StockAgentParam(2, 80)]
-        public int Period { get; set; }
+        public int PeriodUp { get; set; }
+        [StockAgentParam(2, 80)]
+        public int PeriodDown { get; set; }
 
-        public override string Description => "Buy with TrailTF Stop";
+        public override string Description => "Buy with TrailHLBodyAgent Stop";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILTF({Period},{Period / 2})";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILHLBODY2({PeriodUp},{PeriodDown})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Period)
+            if (stockSerie.Count < Math.Max(PeriodUp, PeriodDown))
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILTF({Period},{Period / 2})");
+            trailStop = stockSerie.GetTrailStop($"TRAILHLBODY2({PeriodUp},{PeriodDown})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

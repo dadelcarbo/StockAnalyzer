@@ -752,7 +752,8 @@ namespace StockAnalyzerApp
                 if (alertConfig.TimeFrame == "Intraday")
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
-                    (s.BelongsToGroup(StockSerie.Groups.INTRADAY))).ToList();
+                    !s.StockName.StartsWith("INT_") &&
+                    s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
                 }
                 else
                 {
@@ -2395,11 +2396,6 @@ namespace StockAnalyzerApp
         }
         private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
 
-        struct stat
-        {
-            public int nbr;
-            public float var;
-        }
         private void logSerieMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
@@ -2682,18 +2678,18 @@ namespace StockAnalyzerApp
             string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY, imgFolderName);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY, imgFolderName);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND, imgFolderName);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);

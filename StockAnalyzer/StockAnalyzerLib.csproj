@@ -83,8 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
-    <Compile Include="StockAgent\Agents\CloudMDH2Agent.cs" />
-    <Compile Include="StockAgent\Agents\CloudMDHAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
@@ -98,7 +97,8 @@
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
-    <Compile Include="StockAgent\Agents\TrailTF.cs" />
+    <Compile Include="StockAgent\Agents\TrailHLBody2Agent.cs" />
+    <Compile Include="StockAgent\Agents\TrailTFAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
@@ -207,15 +207,16 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MA2Lines.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMATRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TREND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2Lines.cs" />
@@ -403,9 +404,9 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPEMA.cs" />

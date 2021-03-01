@@ -4367,6 +4367,11 @@ namespace StockAnalyzer.StockClasses
                         }
                         if (newValue != null)
                         {
+                            // Check if bar complete
+                            var currentMonth = newValue.DATE.Month;
+                            var lastDailyValue = dailyValueList.Last().DATE;
+                            if (lastDailyValue.DayOfWeek == DayOfWeek.Friday && lastDailyValue.AddDays(3).Month != currentMonth)
+                                newValue.IsComplete = true;
                             newBarList.Add(newValue);
                         }
                     }

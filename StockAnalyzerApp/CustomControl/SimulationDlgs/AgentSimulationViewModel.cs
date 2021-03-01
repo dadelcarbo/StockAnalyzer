@@ -174,7 +174,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
                 engine.AgentPerformed += (agent) =>
                 {
-                    this.Stats += agent.ToString() + "\t" + agent.TradeSummary.ExpectedReturn.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerDay.ToString("P2") + Environment.NewLine;
+                    this.Stats += agent.ToString() + "\t" + agent.TradeSummary.ExpectedReturn.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerDay.ToString("P3") + Environment.NewLine;
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;

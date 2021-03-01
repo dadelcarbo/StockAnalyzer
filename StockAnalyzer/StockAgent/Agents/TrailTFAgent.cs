@@ -5,31 +5,32 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class BBStopAgent : StockAgentBase
+    public class TrailTFAgent : StockAgentBase
     {
-        public BBStopAgent()
+        public TrailTFAgent()
         {
-            Period = 13;
-            BBWidth = 2.0f;
+            TrailPeriod = 13;
+            Trigger = 20;
         }
 
-        [StockAgentParam(5, 60)]
-        public int Period { get; set; }
+        [StockAgentParam(2, 80)]
+        public int Trigger { get; set; }
 
-        [StockAgentParam(0.75f, 3.0f)]
-        public float BBWidth { get; set; }
+        [StockAgentParam(2, 80)]
+        public int TrailPeriod { get; set; }
 
-        public override string Description => "Buy with BBStop";
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILBB({Period},{BBWidth},{-BBWidth})";
+        public override string Description => "Buy with TrailTF Stop";
+
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILTF({Trigger},{TrailPeriod / 2})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Period)
+            if (stockSerie.Count < TrailPeriod)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILBB({Period},{BBWidth},{-BBWidth})");
+            trailStop = stockSerie.GetTrailStop($"TRAILTF({TrailPeriod},{TrailPeriod / 2})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

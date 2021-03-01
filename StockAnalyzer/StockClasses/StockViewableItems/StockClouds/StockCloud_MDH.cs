@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
@@ -10,19 +11,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Definition => "Paint a cloud base on two EMA lines";
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "SlowPeriod" }; }
+            get { return new string[] { "Period" }; }
         }
+        public override string Definition => "Paint cloud based on MDH";
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 50 }; }
+            get { return new Object[] { 50 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
         public override Pen[] SeriePens
         {
@@ -30,40 +31,40 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
+                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1), new Pen(Color.DarkBlue, 2) };
                 }
                 return seriePens;
             }
         }
+        public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Mid" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            int slowPeriod = (int)this.parameters[1];
-            int fastPeriod = (int)this.parameters[0];
+            var period = (int)this.parameters[0];
 
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            var mdhIndicator = stockSerie.GetIndicator($"MDH({period})");
+            var isBullSerie = mdhIndicator.Events[0];
 
-            // Calculate MID line 
-            FloatSerie fastLine = new FloatSerie(stockSerie.Count);
-            FloatSerie slowLine = new FloatSerie(stockSerie.Count);
+            var bullSerie = new FloatSerie(stockSerie.Count);
+            var bearSerie = new FloatSerie(stockSerie.Count);
+            var midSerie = mdhIndicator.Series[1];
 
-            float upLine = highSerie[0];
-            float downLine = lowSerie[0];
-            slowLine[0] = fastLine[0] = (upLine + downLine) / 2.0f;
-
-            for (int i = 1; i < stockSerie.Count; i++)
+            for (int i = 0; i < stockSerie.Count; i++)
             {
-                upLine = highSerie.GetMax(Math.Max(0, i - fastPeriod - 1), i - 1);
-                downLine = lowSerie.GetMin(Math.Max(0, i - fastPeriod - 1), i - 1);
-                fastLine[i] = (upLine + downLine) / 2.0f;
-
-                upLine = highSerie.GetMax(Math.Max(0, i - slowPeriod - 1), i - 1);
-                downLine = lowSerie.GetMin(Math.Max(0, i - slowPeriod - 1), i - 1);
-                slowLine[i] = (upLine + downLine) / 2.0f;
+                if (isBullSerie[i])
+                {
+                    bullSerie[i] = mdhIndicator.Series[0][i];
+                    bearSerie[i] = mdhIndicator.Series[2][i];
+                }
+                else
+                {
+                    bullSerie[i] = mdhIndicator.Series[2][i];
+                    bearSerie[i] = mdhIndicator.Series[0][i];
+                }
             }
 
-            this.Series[0] = fastLine;
-            this.Series[1] = slowLine;
+            this.Series[0] = bullSerie;
+            this.Series[1] = bearSerie;
+            this.Series[2] = midSerie;
 
             // Detecting events
             this.GenerateEvents(stockSerie);
