@@ -132,20 +132,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         BackgroundWorker worker = null;
 
-        StockAgentEngine engine;
+        StockPortfolioAgentEngine engine;
         public void Perform()
         {
             if (worker == null)
             {
                 this.Report = "Performing";
-                engine = new StockAgentEngine(agentType);
-                engine.Agent = StockAgentBase.CreateInstance(this.agentType);
-
-                // Set agent properties
-                foreach (var parameter in this.Parameters)
-                {
-                    engine.Agent.SetParam(parameter.GetProperty(), parameter.GetAttribute(), parameter.Value);
-                }
+                engine = new StockPortfolioAgentEngine(agentType, this.Parameters.Select(p => new StockAgentParam(p.GetProperty(), p.Value)));
 
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
@@ -200,15 +193,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (worker.CancellationPending)
                     return false;
 
-                this.TradeSummary = engine.Agent.TradeSummary;
+                this.TradeSummary = engine.TradeSummary;
 
                 string msg = tradeSummary.ToLog() + Environment.NewLine;
-                msg += engine.Agent.ToLog() + Environment.NewLine;
+                msg += engine.ToLog() + Environment.NewLine;
                 msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
                 msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
 
                 this.Report = msg;
-
             }
             catch (Exception ex)
             {

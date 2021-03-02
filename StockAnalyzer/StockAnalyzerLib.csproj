@@ -110,6 +110,8 @@
     <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
+    <Compile Include="StockAgent\StockAgentParam.cs" />
+    <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
     <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>

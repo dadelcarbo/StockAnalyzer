@@ -21,6 +21,9 @@ namespace StockAnalyzer.StockAgent
         bool Initialize(StockSerie stockSerie, StockBarDuration duration);
         TradeAction Decide(int index);
 
+        bool CanOpen(int index);
+        bool CanClose(int index);
+
         void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true);
 
         void CloseTrade(int exitIndex);
@@ -36,7 +39,7 @@ namespace StockAnalyzer.StockAgent
         string ToLog();
 
         string GetParameterValues();
-        void SetParam(PropertyInfo property, StockAgentParamAttribute attribute, float newValue);
+        void SetParam(PropertyInfo property, float newValue);
         bool AreSameParams(IStockAgent other);
     }
 }

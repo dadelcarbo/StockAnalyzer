@@ -95,6 +95,8 @@ namespace StockAnalyzer.StockAgent
         }
         public void CloseAtOpen(int exitIndex)
         {
+            if (exitIndex >= openSerie.Count)
+                throw new InvalidOperationException("Cannot close trade at next open because its latest bar");
             this.ExitIndex = exitIndex;
 
             this.ExitValue = openSerie[exitIndex];

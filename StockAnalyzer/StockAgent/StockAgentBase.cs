@@ -70,6 +70,15 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
+        public bool CanOpen(int index)
+        {
+            return TryToOpenPosition(index) == TradeAction.Buy;
+        }
+        public bool CanClose(int index)
+        {
+            return TryToClosePosition(index) == TradeAction.Sell;
+        }
+
         public void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true)
         {
             if (entryIndex >= serie.Count) return;
@@ -279,7 +288,7 @@ namespace StockAnalyzer.StockAgent
             }
             return res;
         }
-        public void SetParam(PropertyInfo property, StockAgentParamAttribute attribute, float newValue)
+        public void SetParam(PropertyInfo property, float newValue)
         {
             if (property.PropertyType == typeof(int))
             {
