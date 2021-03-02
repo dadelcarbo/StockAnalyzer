@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        table.reportTable {
+            background-color: #ffffe0;
+            width: 100%;
+            text-align: left;
+        }
+        table.reportTable tbody td {
+            font-size: 12px;
+        }
+        table.reportTable thead {
+            background: #948473;
+            background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+            background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
+            background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
+        }
+        table.reportTable thead th {
+            font-size: 14px;
+            font-weight: bold;
+            color: #F0F0F0;
+            text-align: center;
+        }
+        .tooltip {
+            text-decoration: none;
+            position: relative;
+        }
+        .tooltip span {
+            display: none;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            color: black;
+            background: white;
+        }
+        .tooltip span img {
+            float: right;
+            margin: 0px 8px 8px 0;
+        }
+
+        .tooltip:hover span {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            width: auto;
+            border: 1px solid black;
+            margin-top: 12px;
+            margin-left: 32px;
+            overflow: hidden;
+            padding: 8px;
+        }
+    </style>
+    <meta charset="utf-8" />
+    <title>%HTML_TILE%</title>
+</head>
+<body>
+    %HTML_BODY%
+    <h1 style="text-align: center;">Sentiment Indicators</h1>
+    <h2>CBOE Put/Call Ratio</h2>
+    <a target="_blank" href="https://stockcharts.com/h-sc/ui?s=%24VIX&p=D&yr=1&mn=6&dy=0&id=p08792855239">
+        <img alt="CBOE Put/Call Ratio" src="https://stockcharts.com/c-sc/sc?s=%24VIX&p=D&yr=1&mn=6&dy=0&i=p08792855239&r=1610715824988">
+    </a>
+    <h2>CBOE Put/Call Ratio</h2>
+    <a target="_blank" href="https://stockcharts.com/h-sc/ui?s=%24CPCE&p=D&yr=1&mn=6&dy=0&id=p75995460814">
+        <img alt="CBOE Put/Call Ratio" src="https://stockcharts.com/c-sc/sc?s=%24CPCE&p=D&yr=1&mn=6&dy=0&i=p37198211353&r=1589698765720">
+    </a>
+    <h2>SPX McClellan Summation Index</h2>
+    <a target="_blank" href="https://stockcharts.com/h-sc/ui?s=%21MCSUMRSPX&p=D&yr=3&mn=0&dy=0&id=p03904847921">
+        <img alt="SPX McClellan Summation Index	" src="https://stockcharts.com/c-sc/sc?s=%21MCSUMRSPX&p=D&yr=3&mn=0&dy=0&i=p03904847921&r=1589709964858">
+    </a>
+    <h2>NDX McClellan Summation Index</h2>
+    <a target="_blank" href="https://stockcharts.com/h-sc/ui?s=%21MCSUMRNAS&p=D&yr=3&mn=0&dy=0&id=p02002017148">
+        <img alt="NDX McClellan Summation Index	" src="https://stockcharts.com/c-sc/sc?s=%21MCSUMRNAS&p=D&yr=3&mn=0&dy=0&i=p02002017148&r=1589710567497">
+    </a>
+    <h2>Rydex Nova Ursa ratio - Short Term</h2>
+    <a target="_blank" href="http://www.market-harmonics.com/free-charts/sentiment/nu.htm">
+        <img src="http://www.market-harmonics.com/images/tech/sentiment/nu.gif" />
+    </a>
+    <h2>Rydex Nova Ursa ratio - Medium Term</h2>
+    <a target="_blank" href="http://www.market-harmonics.com/free-charts/sentiment/nu.htm">
+        <img src="http://www.market-harmonics.com/images/tech/sentiment/nulong.gif" />
+    </a>
+    <h2>NASDAQ sentiment index</h2>
+    <a target="_blank" href="http://www.market-harmonics.com/free-charts/sentiment/ndsi.htm">
+        <img src="http://www.market-harmonics.com/images/tech/sentiment/ndsi.gif" />
+    </a>
+    <h2>CNN Fear &amp; Greed Index Over Time</h2>
+    <a target="_blank" href="https://money.cnn.com/data/fear-and-greed/">
+        <img border="0" alt="CNN Fear &amp; Greed Index Over Time" src="https://markets.money.cnn.com/Marketsdata/Api/Chart/FearGreedHistoricalImage?chartType=AvgPtileModel">
+    </a>
+    <h2>AAII Bull Bear ratio</h2>
+    <a target="_blank" href="https://stockcharts.com/h-sc/ui?s=%21AAIIBULL%3A%21AAIIBEAR&p=W&yr=3&mn=0&dy=0&id=p69944014261">
+        <img border="0" alt="AAII Bull Bear Ratio" src="https://stockcharts.com/c-sc/sc?s=%21AAIIBULL%3A%21AAIIBEAR&p=W&yr=3&mn=0&dy=0&i=p69944014261&r=1589700832103">
+    </a>
+</body>
+</html>

@@ -1,0 +1,53 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:system="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog"
+             x:Class="StockAnalyzerApp.CustomControl.AlertDialog.AlertControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" Width="750">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <x:StaticExtension Member="l:StockAlertConfig.AlertConfigs" x:Key="AlertConfigs"/>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding SelectedItem, ElementName=TimeFrameComboBox, Mode=OneWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
+            <Label Content="Time Frame:"/>
+            <ComboBox x:Name="TimeFrameComboBox" Width="100" DisplayMemberPath="TimeFrame"
+                      ItemsSource="{Binding Source={StaticResource AlertConfigs}}"/>
+            <Button Content="Refresh" x:Name="RefreshBtn" Click="RefreshBtn_OnClick" Margin="1,1,5,1"/>
+            <Button Content="Clear" x:Name="ClearBtn" Click="ClearBtn_OnClick" Margin="1,1,5,1"/>
+            <Label Content="Alert date:"/>
+            <Label Content="{Binding AlertLog.LastRefreshDate, StringFormat=\{0:F\}}"/>
+        </StackPanel>
+        <ProgressBar Grid.Row="0" HorizontalAlignment="Right" Width="300" Height="16" Margin="0,0,5,0"
+                     Value="{Binding AlertLog.ProgressValue}"
+                     Maximum="{Binding AlertLog.ProgressMax}"
+                     Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Label Content="{Binding AlertLog.ProgressName}" HorizontalAlignment="Right" Width="300" Margin="2" Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <telerik:RadGridView Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" 
+                             AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
+                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date, ConverterCulture=en-GB}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding StockGroup}" Header="Group" DataMemberBinding="{Binding StockGroup}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Duration, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.LineBreak}" Header="LineBreak" DataMemberBinding="{Binding BarDuration.LineBreak, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Indicator}" Header="Indicator" DataMemberBinding="{Binding Indicator, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Event}" Header="Event" DataMemberBinding="{Binding Event, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertClose}" Header="Alert&#xA;Close" DataMemberBinding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Speed}" Header="Speed" DataMemberBinding="{Binding Speed, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding ExchangedMoney}" Header="Exchanged&#xA;Money (K€)" DataMemberBinding="{Binding ExchangedMoney, Mode=OneWay}" IsReadOnly="True"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+    </Grid>
+</UserControl>

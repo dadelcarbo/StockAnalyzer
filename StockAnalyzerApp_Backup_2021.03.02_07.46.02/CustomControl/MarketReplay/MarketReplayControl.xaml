@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.MarketReplay.MarketReplayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.MarketReplay" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:MarketReplayViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800" Background="#FFFFFFE0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Height="38" Margin="5">
+            <Button Name="stopButton" Margin="2" ToolTip="Stop" IsEnabled="{Binding StopEnabled}" Command="{Binding StopCommand}">
+                <Image Source="../../Resources/ButtonStop.png"/>
+            </Button>
+            <Button Name="forwardButton" Margin="2" IsEnabled="{Binding ForwardEnabled}" Command="{Binding ForwardCommand}">
+                <Image Source="../../Resources/ButtonPlay.png"/>
+            </Button>
+            <Button Name="fastForwardButton" Margin="2" IsEnabled="{Binding FastForwardEnabled}" Command="{Binding FastForwardCommand}">
+                <Image Source="../../Resources/ButtonFastForward.png"/>
+            </Button>
+            <Button Name="buyButton" Margin="2" Background="LightGreen" Content="  Buy  " Command="{Binding BuyCommand}">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Label Margin="2" VerticalAlignment="Center">Stop</Label>
+            <TextBox Margin="2" Text="{Binding Stop}" VerticalAlignment="Center" Width="40"></TextBox>
+            <Label Margin="2" VerticalAlignment="Center">Target1</Label>
+            <TextBox Margin="2" Text="{Binding Target1}" VerticalAlignment="Center" Width="40"></TextBox>
+            <Button Name="sellButton" Margin="2" Background="Red" Content="  Sell  " Command="{Binding SellCommand}">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Label Margin="2" VerticalAlignment="Center">Close</Label>
+            <TextBox Margin="2" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Width="40"></TextBox>
+        </StackPanel>
+        <GroupBox  Grid.Row="1" Header="Current Position">
+            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding Positions}" IsFilteringAllowed="False" Height="54" IsReadOnly="True"></telerik:RadGridView>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="Position History" VerticalAlignment="Stretch">
+            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding PositionHistory}" IsFilteringAllowed="False" IsReadOnly="True"></telerik:RadGridView>
+        </GroupBox>
+    </Grid>
+</UserControl>
