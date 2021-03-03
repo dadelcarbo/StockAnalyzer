@@ -10,7 +10,7 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
     /// </summary>
     public partial class ConditionalStatisticsControl : UserControl
     {
-        CondStatisticsViewModel viewModel = new CondStatisticsViewModel("PaintBar", "TRUE(3)", "HigherClose", "TRAILSTOP", "TrailHL(3)", "HigherLow");
+        CondStatisticsViewModel viewModel = new CondStatisticsViewModel("PaintBar", "TRUE(3)", "HigherClose", "TrailStop", "TRAILHL(3)", "HigherLow");
 
         public ConditionalStatisticsControl()
         {
