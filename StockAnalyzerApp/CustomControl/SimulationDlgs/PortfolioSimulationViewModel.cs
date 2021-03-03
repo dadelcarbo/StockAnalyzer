@@ -128,7 +128,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
-        public Action Completed { get; internal set; }
+        public string DisplayIndicator { get; internal set; }
 
         BackgroundWorker worker = null;
 
@@ -138,7 +138,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             if (worker == null)
             {
                 this.Report = "Performing";
-                engine = new StockPortfolioAgentEngine(agentType, this.Parameters.Select(p => new StockAgentParam(p.GetProperty(), p.Value)));
+                var paramList = this.Parameters.Select(p => new StockAgentParam(p.GetProperty(), p.Value));
+                engine = new StockPortfolioAgentEngine(agentType, paramList);
+
+                var agent = StockAgentBase.CreateInstance(agentType);
+                agent.SetParams(paramList);
+                this.DisplayIndicator = agent.DisplayIndicator;
+
 
                 worker = new BackgroundWorker();
                 engine.Worker = worker;

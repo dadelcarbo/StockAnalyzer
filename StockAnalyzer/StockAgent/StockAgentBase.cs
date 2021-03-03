@@ -288,19 +288,22 @@ namespace StockAnalyzer.StockAgent
             }
             return res;
         }
-        public void SetParam(PropertyInfo property, float newValue)
+        public void SetParams(IEnumerable<StockAgentParam> paramList)
         {
-            if (property.PropertyType == typeof(int))
+            foreach (var param in paramList)
             {
-                property.SetValue(this, (int)Math.Round(newValue), null);
-            }
-            else if (property.PropertyType == typeof(float))
-            {
-                property.SetValue(this, newValue, null);
-            }
-            else
-            {
-                throw new NotSupportedException("Type " + property.PropertyType + " is not supported as a parameter in Agent");
+                if (param.Property.PropertyType == typeof(int))
+                {
+                    param.Property.SetValue(this, (int)Math.Round(param.Value), null);
+                }
+                else if (param.Property.PropertyType == typeof(float))
+                {
+                    param.Property.SetValue(this, param.Value, null);
+                }
+                else
+                {
+                    throw new NotSupportedException("Type " + param.Property.PropertyType + " is not supported as a parameter in Agent");
+                }
             }
         }
 

@@ -36,10 +36,7 @@ namespace StockAnalyzer.StockAgent
                 var agent = StockAgentBase.CreateInstance(this.AgentType);
                 if (agent.Initialize(serie, duration))
                 {
-                    foreach (var param in this.Parameters)
-                    {
-                        agent.SetParam(param.Property, param.Value);
-                    }
+                    agent.SetParams(this.Parameters);
                     agentTuples.Add(Tuple.Create(serie, agent));
                 }
             }

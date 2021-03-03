@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockAgent;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using Telerik.Windows.Controls;
@@ -15,7 +16,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
 
         public PortfolioSimulationViewModel ViewModel { get; set; }
- 
+
         public PortfolioSimulationControl(Form parentForm)
         {
             this.parent = parentForm;
@@ -44,10 +45,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                     this.SelectedStockChanged(viewModel.Serie.StockName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.Serie.LastIndex, exitIndex + 100), ViewModel.Duration, true);
 
-                    //if (!string.IsNullOrEmpty(this.ViewModel.BestAgent?.DisplayIndicator))
-                    //{
-                    //    StockAnalyzerForm.MainFrame.SetThemeFromIndicator(this.ViewModel.BestAgent?.DisplayIndicator);
-                    //}
+                    if (!string.IsNullOrEmpty(this.ViewModel?.DisplayIndicator))
+                    {
+                        StockAnalyzerForm.MainFrame.SetThemeFromIndicator(this.ViewModel?.DisplayIndicator);
+                    }
 
                     this.parent.TopMost = true;
                     this.parent.TopMost = false;

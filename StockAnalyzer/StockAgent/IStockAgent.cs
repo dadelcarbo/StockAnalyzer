@@ -39,7 +39,7 @@ namespace StockAnalyzer.StockAgent
         string ToLog();
 
         string GetParameterValues();
-        void SetParam(PropertyInfo property, float newValue);
+        void SetParams(IEnumerable<StockAgentParam> paramList);
         bool AreSameParams(IStockAgent other);
     }
 }
