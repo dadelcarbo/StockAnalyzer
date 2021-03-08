@@ -208,6 +208,11 @@ namespace StockAnalyzer.StockAgent
             }
             return res;
         }
+        public string ToParamValueString()
+        {
+            var parameters = StockAgentBase.GetParams(this.GetType());
+            return parameters.Select(p => p.Key.GetValue(this, null).ToString()).Aggregate((i, j) => i + "\t" + j);
+        }
         public string ToLog()
         {
             string res = this.GetType().Name + Environment.NewLine;

@@ -962,7 +962,128 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
+        public bool GenerateIndiceBBTF(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        {
+            int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+            int nbStocks = 20;
+            StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
 
+            if (!indiceSerie.Initialise())
+            {
+                return false;
+            }
+
+            DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
+            DateTime lastBreadthDate = DateTime.MinValue;
+
+            float val = 1000, var;
+
+            // Check if serie has been already generated
+            if (breadthSerie.Count > 0)
+            {
+                lastBreadthDate = breadthSerie.Keys.Last();
+                val = breadthSerie.Values.Last().CLOSE;
+                if (lastIndiceDate <= lastBreadthDate)
+                {
+                    // The breadth serie is up to date
+                    return true;
+                }
+                // Check if latest value is intraday data
+                if (lastIndiceDate.TimeOfDay > TimeSpan.Zero)
+                {
+                    // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
+                    if (lastIndiceDate.Date == lastBreadthDate.Date)
+                    {
+                        breadthSerie.Remove(lastBreadthDate);
+                        lastBreadthDate = breadthSerie.Keys.Last();
+                    }
+                }
+            }
+
+            StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName) && s.Initialise() && s.Count > 50).ToArray();
+            #region Load component series
+            foreach (StockSerie serie in indexComponents)
+            {
+                if (this.ReportProgress != null)
+                {
+                    this.ReportProgress("Loading data for " + serie.StockName);
+                }
+                serie.Initialise();
+                serie.BarDuration = barDuration;
+                serie.GetTrailStop($"TRAILBBTF({period},1,-1,MA)");
+            }
+            #endregion
+            long vol;
+
+            int index;
+            List<StockSerie> bestSeries = new List<StockSerie>();
+            DateTime lastDayOfMonth = new DateTime(1999, 12, 31);
+            foreach (StockDailyValue value in indiceSerie.Values)
+            {
+                if (value.DATE <= lastBreadthDate)
+                {
+                    continue;
+                }
+                vol = 0; var = 0;
+                if (this.ReportProgress != null)
+                {
+                    this.ReportProgress(value.DATE.ToShortDateString());
+                }
+                if (value.DATE.Month != lastDayOfMonth.Month)
+                {
+                    bestSeries.Clear();
+                    List<Tuple<StockSerie, float>> tuples = new List<Tuple<StockSerie, float>>();
+                    // Reselect list of stock at the beging of the month
+                    foreach (StockSerie serie in indexComponents.Where(s => s.Keys.First() <= value.DATE))
+                    {
+                        index = serie.IndexOf(value.DATE);
+                        if (index != -1)
+                        {
+                            bool bullish = serie.GetTrailStop($"TRAILBBTF({period},1,-1,MA)").Events[6][index];
+
+                            float ROC = serie.GetIndicator($"ROC({period})").Series[0][index];
+                            if (bullish && ROC > 0)
+                            {
+                                tuples.Add(new Tuple<StockSerie, float>(serie, ROC));
+                            }
+                        }
+                    }
+                    bestSeries = tuples.OrderByDescending(t => t.Item2).Select(t => t.Item1).Take(nbStocks).ToList();
+                }
+                foreach (StockSerie serie in bestSeries)
+                {
+                    index = serie.IndexOf(value.DATE);
+                    if (index != -1)
+                    {
+                        float dailyVar = serie.GetValue(StockDataType.VARIATION, index);
+                        var += dailyVar;
+                        vol++;
+                    }
+                }
+                if (vol != 0)
+                {
+                    val *= (1 + var / nbStocks);
+                }
+                breadthSerie.Add(value.DATE, new StockDailyValue(val, val, val, val, vol, value.DATE));
+                lastDayOfMonth = value.DATE;
+            }
+            if (breadthSerie.Count == 0)
+            {
+                this.Remove(breadthSerie.StockName);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(destinationFolder))
+                {
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                }
+                if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
+                {
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                }
+            }
+            return true;
+        }
         public bool GenerateABCSectorEqualWeight(StockSerie breadthSerie, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie

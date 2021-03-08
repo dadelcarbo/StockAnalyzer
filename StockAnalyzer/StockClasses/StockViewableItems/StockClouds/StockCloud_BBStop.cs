@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 new ParamRangeInt(1, 500),
                 new ParamRangeFloat(0f, 20.0f),
                 new ParamRangeFloat(-20.0f, 0.0f),
-                new ParamRangeStringList( emaTypes)
+                new ParamRangeMA()
                 };
             }
         }

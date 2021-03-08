@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
-                new ParamRangeStringList( new List<string>() {"EMA", "HMA", "MA", "EA"})
+                new ParamRangeMA()
                 };
             }
         }

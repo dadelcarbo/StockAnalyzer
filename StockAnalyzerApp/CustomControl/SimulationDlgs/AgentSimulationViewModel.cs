@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             this.performText = "Perform";
             this.Accuracy = 20;
-            this.Selector = "ExpectedGain";
+            this.Selector = "ExpectedGainPerDay";
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
@@ -67,7 +67,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public string AgentDescription => StockAgentBase.CreateInstance(this.agentType).Description;
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
-        public IEnumerable Parameters => ParameterRangeViewModel.GetParameters(this.agentType);
+        public IEnumerable<ParameterRangeViewModel> Parameters => ParameterRangeViewModel.GetParameters(this.agentType);
 
         string report;
         public string Report
@@ -163,7 +163,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             if (worker == null)
             {
                 this.Report = "Performing";
-                this.Stats = string.Empty;
+
+                this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent + Environment.NewLine + Environment.NewLine;
+                this.Stats += "WinRatio\tExpectedGainPerBar\t" + this.Parameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
                 engine = new StockAgentEngine(agentType);
                 engine.BestAgentDetected += (bestAgent) =>
                 {
@@ -174,7 +176,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
                 engine.AgentPerformed += (agent) =>
                 {
-                    this.Stats += agent.ToString() + "\t" + agent.TradeSummary.ExpectedReturn.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerDay.ToString("P3") + Environment.NewLine;
+                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
+                    .Replace(".", ",");
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
@@ -263,7 +266,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         selector = t => t.ExpectedReturn;
                         break;
                     case "ExpectedGainPerDay":
-                        selector = t => t.ExpectedGainPerDay;
+                        selector = t => t.ExpectedGainPerBar;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);

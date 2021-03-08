@@ -26,7 +26,7 @@
             <Label Margin="2">Agent</Label>
             <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
             <Label Margin="2">Accuracy</Label>
-            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
+            <telerik:RadNumericUpDown Minimum="3" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
             <Label Margin="2">Selector</Label>
             <telerik:RadComboBox Margin="2" Width="110" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
             <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>

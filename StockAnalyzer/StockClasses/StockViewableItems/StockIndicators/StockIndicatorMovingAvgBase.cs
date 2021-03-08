@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using StockAnalyzer.StockMath;
 
@@ -6,11 +7,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public abstract class StockIndicatorMovingAvgBase : StockIndicatorBase
     {
+        public static List<string> MaTypes => new List<string> { "EMA", "HMA", "MA", "EA", "MID" };
+
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-
         public override object[] ParameterDefaultValues
         {
             get { return new Object[] { 20 }; }

@@ -36,10 +36,12 @@ namespace StockAnalyzer.StockAgent
         void Randomize();
         IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren);
 
-        string ToLog();
 
         string GetParameterValues();
         void SetParams(IEnumerable<StockAgentParam> paramList);
         bool AreSameParams(IStockAgent other);
+
+        string ToParamValueString();
+        string ToLog();
     }
 }

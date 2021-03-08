@@ -83,6 +83,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\BBAgent.cs" />
+    <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
     <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBody2Agent.cs" />
+    <Compile Include="StockAgent\Agents\TrailPercentAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailTFAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBodyAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
@@ -271,7 +274,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BREADTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
@@ -401,10 +403,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBTF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBREAK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILGUPPY.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />
