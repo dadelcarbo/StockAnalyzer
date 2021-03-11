@@ -79,11 +79,11 @@ namespace StockAnalyzer.StockAgent
             return TryToClosePosition(index) == TradeAction.Sell;
         }
 
-        public void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true)
+        public void OpenTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true)
         {
             if (entryIndex >= serie.Count) return;
 
-            this.Trade = new StockTrade(serie, entryIndex, isLong);
+            this.Trade = new StockTrade(serie, entryIndex, qty, isLong);
             this.TradeSummary.Trades.Add(this.Trade);
         }
 

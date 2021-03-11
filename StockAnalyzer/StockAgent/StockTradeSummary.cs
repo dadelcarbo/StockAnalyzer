@@ -12,8 +12,8 @@ namespace StockAnalyzer.StockAgent
         }
         public List<StockTrade> Trades { get; private set; }
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
-        public float AvgGain { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain > 0).Average(t => t.Gain) : 0f; } }
-        public float AvgLoss { get { return this.Trades.Count > 0 ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
+        public float AvgGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f; } }
+        public float AvgLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
         public int AvgDuration { get { return this.Trades.Count > 0 ? (int)this.Trades.Average(t => t.Duration) : 0; } }
         public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
         public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }

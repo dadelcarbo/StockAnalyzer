@@ -7,16 +7,19 @@ namespace StockAnalyzer.StockAgent
 {
     public class StockTrade
     {
+        public int Qty { get; set; }
         public StockSerie Serie { get; private set; }
         public int EntryIndex { get; private set; }
         public DateTime EntryDate { get; private set; }
         public float EntryValue { get; private set; }
+        public float EntryAmount => EntryValue * Qty;
         public int ExitIndex { get; private set; }
         public DateTime ExitDate { get; private set; }
         public float PartialExitValue { get; private set; }
         public int PartialExitIndex { get; private set; }
         public DateTime PartialExitDate { get; private set; }
         public float ExitValue { get; private set; }
+        public float ExitAmount => ExitValue * Qty;
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
         public bool IsPartlyClosed { get; private set; }
@@ -38,7 +41,7 @@ namespace StockAnalyzer.StockAgent
         FloatSerie highSerie;
         FloatSerie lowSerie;
 
-        public StockTrade(StockSerie serie, int entryIndex, bool isLong = true)
+        public StockTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true)
         {
             this.Serie = serie;
             this.EntryIndex = entryIndex;
@@ -46,6 +49,7 @@ namespace StockAnalyzer.StockAgent
             this.ExitIndex = -1;
             this.PartialExitIndex = -1;
             this.IsLong = isLong;
+            this.Qty = qty;
 
             openSerie = this.Serie.GetSerie(StockDataType.OPEN);
             highSerie = this.Serie.GetSerie(StockDataType.HIGH);
@@ -155,6 +159,19 @@ namespace StockAnalyzer.StockAgent
             return this.IsLong ?
                 (indexValue - this.EntryValue) / this.EntryValue :
                 (this.EntryValue - indexValue) / this.EntryValue;
+        }
+        public float AmountAt(int index)
+        {
+            if (index < this.EntryIndex)
+            {
+                throw new ArgumentOutOfRangeException("Cannot evaluate before trade is opened");
+            }
+            if (this.IsClosed && index > this.EntryIndex)
+            {
+                throw new ArgumentOutOfRangeException("Cannot evaluate after trade is closed");
+            }
+            FloatSerie closeSerie = this.Serie.GetSerie(StockDataType.CLOSE);
+            return Qty * closeSerie[index];
         }
 
         public static string ToHeaderLog()

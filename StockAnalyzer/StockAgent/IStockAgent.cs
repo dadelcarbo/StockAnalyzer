@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockAgent
         bool CanOpen(int index);
         bool CanClose(int index);
 
-        void OpenTrade(StockSerie serie, int entryIndex, bool isLong = true);
+        void OpenTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true);
 
         void CloseTrade(int exitIndex);
 

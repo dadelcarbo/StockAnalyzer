@@ -87,6 +87,7 @@
     <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
     <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
+    <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMansfield.cs" />

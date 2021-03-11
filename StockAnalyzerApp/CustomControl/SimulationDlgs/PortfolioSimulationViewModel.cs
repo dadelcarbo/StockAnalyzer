@@ -86,6 +86,20 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
+        EquityValue[] equityCurve;
+        public EquityValue[] EquityCurve
+        {
+            get => equityCurve;
+            set
+            {
+                if (equityCurve != value)
+                {
+                    equityCurve = value;
+                    OnPropertyChanged("EquityCurve");
+                }
+            }
+        }
+
         private StockTradeSummary tradeSummary;
         public StockTradeSummary TradeSummary
         {
@@ -145,7 +159,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 agent.SetParams(paramList);
                 this.DisplayIndicator = agent.DisplayIndicator;
 
-
                 worker = new BackgroundWorker();
                 engine.Worker = worker;
                 worker.WorkerSupportsCancellation = true;
@@ -161,6 +174,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         this.Report += Environment.NewLine + "Cancelled...";
                     }
                     this.worker = null;
+                    this.EquityCurve = engine.EquityCurve;
                 };
 
                 this.PerformText = "Cancel";

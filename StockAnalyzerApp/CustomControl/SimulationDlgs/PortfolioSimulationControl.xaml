@@ -37,7 +37,7 @@
                 <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
             <TabItem Header="Log">
-                <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
+                <TextBox Margin="2" Text="{Binding Log}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
             <TabItem Header="Trades">
                 <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
@@ -55,6 +55,86 @@
                         <telerik:GridViewDataColumn Header="PartialExitValue" DataMemberBinding="{Binding PartialExitValue}"/>
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Equity Curve">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="0.25*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <telerik:RadCartesianChart x:Name="chart1" Palette="Windows8" ClipToBounds="False" Grid.Row="0">
+                        <telerik:RadCartesianChart.TooltipTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Path Data="M-1236,-441 L-1208,-441 L-1208,-424 L-1228,-424 L-1230.5,-420 L-1233,-424 L-1236,-424 z"
+                                        Stretch="Fill" Fill="#FFFFFFFF" Stroke="#FF767676" StrokeThickness="1" />
+                                    <TextBlock Margin="6,4,6,10" FontSize="11" Text="{Binding Value, StringFormat=\{0:N2\}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </telerik:RadCartesianChart.TooltipTemplate>
+                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding EquityCurve}"/>
+
+                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Ref" ItemsSource="{Binding EquityCurve}"/>
+
+                        <telerik:RadCartesianChart.VerticalAxis>
+                            <telerik:LinearAxis Title="Equity Curve"
+                                              ElementBrush="{Binding ElementName=chart, Path=Palette.GlobalEntries[1].Fill}" 
+                                              HorizontalLocation="Right" />
+                        </telerik:RadCartesianChart.VerticalAxis>
+
+                        <telerik:RadCartesianChart.HorizontalAxis>
+                            <telerik:CategoricalAxis LabelInterval="20" />
+                        </telerik:RadCartesianChart.HorizontalAxis>
+
+                        <telerik:RadCartesianChart.Grid>
+                            <telerik:CartesianChartGrid MajorLinesVisibility="Y" />
+                        </telerik:RadCartesianChart.Grid>
+                    </telerik:RadCartesianChart>
+                    <telerik:RadCartesianChart x:Name="chart2" Palette="Windows8" ClipToBounds="False" Grid.Row="1">
+                        <telerik:RadCartesianChart.TooltipTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Path Data="M-1236,-441 L-1208,-441 L-1208,-424 L-1228,-424 L-1230.5,-420 L-1233,-424 L-1236,-424 z"
+                                        Stretch="Fill" Fill="#FFFFFFFF" Stroke="#FF767676" StrokeThickness="1" />
+                                    <TextBlock Margin="6,4,6,10" FontSize="11" Text="{Binding Value, StringFormat=\{0:N2\}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </telerik:RadCartesianChart.TooltipTemplate>
+                        <telerik:BarSeries CategoryBinding="X" ValueBinding="NbPos" ItemsSource="{Binding EquityCurve}" >
+                            <telerik:BarSeries.VerticalAxis>
+                                <telerik:LinearAxis Title="Nb Pos"
+                                          ElementBrush="{Binding ElementName=chart2, Path=Palette.GlobalEntries[0].Fill}" 
+                                              HorizontalLocation="Right"/>
+                            </telerik:BarSeries.VerticalAxis>
+                        </telerik:BarSeries>
+                        <telerik:RadCartesianChart.HorizontalAxis>
+                            <telerik:CategoricalAxis LabelInterval="20" />
+                        </telerik:RadCartesianChart.HorizontalAxis>
+
+                        <telerik:RadCartesianChart.Grid>
+                            <telerik:CartesianChartGrid MajorLinesVisibility="Y" />
+                        </telerik:RadCartesianChart.Grid>
+                    </telerik:RadCartesianChart>
+
+                </Grid>
+
+
+                <!--<telerik:RadCartesianChart Grid.Row="1" Name="Chart" Palette="Office2019" >
+                    <telerik:RadCartesianChart.HorizontalAxis>
+                        <telerik:LinearAxis Minimum="0" Maximum="{Binding EquityCurve.Length}"/>
+                    </telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:RadCartesianChart.VerticalAxis>
+                        <telerik:LinearAxis />
+                    </telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:RadCartesianChart.Grid>
+                        <telerik:CartesianChartGrid />
+                    </telerik:RadCartesianChart.Grid>
+                        <telerik:BarSeries CategoryBinding="X" ValueBinding="NbPos" ItemsSource="{Binding EquityCurve}"/>
+                    <telerik:RadCartesianChart.Series>
+                        <telerik:ScatterLineSeries XValueBinding="X" YValueBinding="Y" ItemsSource="{Binding EquityCurve}"/>
+                        <telerik:ScatterLineSeries XValueBinding="X" YValueBinding="Ref" ItemsSource="{Binding EquityCurve}"/>
+                    </telerik:RadCartesianChart.Series>
+                </telerik:RadCartesianChart>-->
             </TabItem>
         </TabControl>
         <ProgressBar Grid.Row="3" Value="{Binding ProgressValue, Mode=OneWay}" Minimum="0" Maximum="100" Margin="2" Height="16" HorizontalAlignment="Stretch" />
