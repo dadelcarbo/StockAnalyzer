@@ -114,6 +114,9 @@
     <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
+    <Compile Include="StockAgent\Filters\IStockFilter.cs" />
+    <Compile Include="StockAgent\Filters\NoFilter.cs" />
+    <Compile Include="StockAgent\Filters\ROCFilter.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
