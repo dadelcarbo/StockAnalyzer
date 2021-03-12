@@ -117,13 +117,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                NotifyProgress("ForceDownload intraday for " + stockSerie.StockName); 
+                NotifyProgress("ForceDownload intraday for " + stockSerie.StockName);
                 var fileName = RootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                    var url =  FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
+                    var url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
 
                     int nbTries = 2;
                     while (nbTries > 0)
@@ -279,6 +279,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
                     if (barchartJson == null || barchartJson.C == null)
                         return false;
+                    StockDailyValue previousValue = null;
+                    var minute5 = new TimeSpan(0, 5, 0);
                     for (var i = 0; i < barchartJson.C.Length; i++)
                     {
                         if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
@@ -297,8 +299,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                    barchartJson.C[i],
                                    vol,
                                    openDate);
-
+                            #region Add Missing 5 Minutes bars
+                            if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
+                            {
+                                var date = previousValue.DATE.Add(minute5);
+                                while (date < openDate)
+                                {
+                                    // Create missing bars
+                                    var missingValue = new StockDailyValue(
+                                           previousValue.CLOSE,
+                                           previousValue.CLOSE,
+                                           previousValue.CLOSE,
+                                           previousValue.CLOSE,
+                                           0,
+                                           date);
+                                    stockSerie.Add(date, missingValue);
+                                    date = date.Add(minute5);
+                                }
+                            }
+                            #endregion
                             stockSerie.Add(dailyValue.DATE, dailyValue);
+                            previousValue = dailyValue;
                         }
                     }
                     stockSerie.ClearBarDurationCache();
