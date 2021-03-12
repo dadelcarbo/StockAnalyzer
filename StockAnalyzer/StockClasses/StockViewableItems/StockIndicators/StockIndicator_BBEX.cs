@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -74,61 +75,37 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            //FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            //FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            //bool waitingForBearSignal = false;
-            //bool waitingForBullSignal = false;
+            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             // Detecting events
-            bool bullish = false;
-            bool bearish = false;
-
             for (int i = (int)this.parameters[0]; i < closeSerie.Count; i++)
             {
-                if (bullish)
+                if (closeSerie[i - 1] < upperBB[i - 1] && closeSerie[i] > upperBB[i])
                 {
-                    // Check if uptrend broken
-                    if (closeSerie[i] < emaSerie[i])
-                    {
-                        this.eventSeries[4][i] = true; // EndOfBull
-                        bullish = false;
-                    }
+                    this.eventSeries[0][i] = true;
                 }
-                else if (bearish)
+                else if (bodyLowSerie[i] > upperBB[i])
                 {
-                    // Check if downtrend broken
-                    if (closeSerie[i] > emaSerie[i])
-                    {
-                        this.eventSeries[5][i] = true; // EndOfBear
-                        bearish = false;
-                    }
+                    this.eventSeries[2][i] = true;
                 }
-                else
+                else if (closeSerie[i - 1] > lowerBB[i - 1] && closeSerie[i] < lowerBB[i])
                 {
-                    // Check if new trend starting
-                    if (closeSerie[i] > upperBB[i])
-                    {
-                        this.eventSeries[0][i] = bullish = true;
-                        bearish = false;
-                    }
-                    else if (closeSerie[i] < lowerBB[i])
-                    {
-                        this.eventSeries[1][i] = bearish = true;
-                        bullish = false;
-                    }
+                    this.eventSeries[1][i] = true;
                 }
-
-                this.eventSeries[2][i] = bullish;
-                this.eventSeries[3][i] = bearish;
+                else if (bodyHighSerie[i] < lowerBB[i])
+                {
+                    this.eventSeries[3][i] = true;
+                }
             }
         }
 
-        static string[] eventNames = new string[] { "NewHigh", "NewLow", "Bullish", "Bearish", "EndOfBull", "EndOfBear" };
+        static string[] eventNames = new string[] { "NewHigh", "NewLow", "AboveBand", "BelowBand" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
