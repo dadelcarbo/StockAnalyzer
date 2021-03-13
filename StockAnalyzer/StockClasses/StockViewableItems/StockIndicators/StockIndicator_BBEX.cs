@@ -79,6 +79,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             // Detecting events
+            bool bullish = false;
+            bool bearish = false;
             for (int i = (int)this.parameters[0]; i < closeSerie.Count; i++)
             {
                 if (closeSerie[i - 1] < upperBB[i - 1] && closeSerie[i] > upperBB[i])
@@ -87,25 +89,44 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else if (bodyLowSerie[i] > upperBB[i])
                 {
-                    this.eventSeries[2][i] = true;
+                    if (!bullish)
+                    {
+                        this.eventSeries[2][i] = true;
+                        bullish = true;
+                    }
+                }
+                else if (bullish && closeSerie[i] < upperBB[i])
+                {
+                    bullish = false;
                 }
                 else if (closeSerie[i - 1] > lowerBB[i - 1] && closeSerie[i] < lowerBB[i])
                 {
-                    this.eventSeries[1][i] = true;
+                    if (!bearish)
+                    {
+                        this.eventSeries[1][i] = true;
+                        bearish = true;
+                    }
                 }
                 else if (bodyHighSerie[i] < lowerBB[i])
                 {
                     this.eventSeries[3][i] = true;
                 }
+                else if (bearish && closeSerie[i] > lowerBB[i])
+                {
+                    bearish = false;
+                }
+
+                this.eventSeries[4][i] = bullish;
+                this.eventSeries[5][i] = bearish;
             }
         }
 
-        static string[] eventNames = new string[] { "NewHigh", "NewLow", "AboveBand", "BelowBand" };
+        static string[] eventNames = new string[] { "NewHigh", "NewLow", "FirstBodyAboveBand", "FirstBodyBelowBand", "Bullish", "Bearish" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

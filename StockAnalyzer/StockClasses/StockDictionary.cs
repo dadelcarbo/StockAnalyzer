@@ -1164,7 +1164,8 @@ namespace StockAnalyzer.StockClasses
             }
             if (breadthSerie.Count == 0)
             {
-                this.Remove(breadthSerie.StockName);
+                return false;
+                //this.Remove(breadthSerie.StockName);
             }
             else
             {

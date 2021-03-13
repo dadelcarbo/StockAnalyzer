@@ -15,11 +15,10 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(10, 40)]
         public int Period { get; set; }
 
-        public override string Description => "Buy when BODY is above EMA and closes when BODY is below EMA";
+        public override string Description => "Buy when BODY is above EMA and closes when CLOSE is below EMA";
 
-        public override string DisplayIndicator => $"CLOUD|EMA({Period})";
+        public override string DisplayIndicator => $"INDICATOR|EMA({Period})";
 
-        FloatSerie bodyHighSerie;
         FloatSerie bodyLowSerie;
         FloatSerie emaSerie;
         protected override bool Init(StockSerie stockSerie)
@@ -28,7 +27,6 @@ namespace StockAnalyzer.StockAgent.Agents
                 return false;
 
             emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
             bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
 
             return true;
@@ -45,7 +43,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (bodyLowSerie[index] < emaSerie[index])
+            if (closeSerie[index] < emaSerie[index])
             {
                 return TradeAction.Sell;
             }

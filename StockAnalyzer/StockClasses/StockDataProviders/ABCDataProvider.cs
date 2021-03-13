@@ -35,6 +35,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private bool Initialize()
         {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                return false;
             if (this.client == null)
             {
                 try
@@ -871,46 +873,57 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockValue;
         }
 
+
+
+
         public static SortedDictionary<string, string> SectorCodes = new SortedDictionary<string, string>()
         {
-            {"3000", "_Biens de consommation"},
-            {"2000", "_Industries"},
-            {"1000", "_Materiaux de base"},
-            {"1", "_Petrole et gaz"},
-            {"4000", "_Sante"},
-            {"5000", "_Services aux consommateurs"},
-            {"7000", "_Services aux collectivites"},
-            {"8000", "_Societes financieres"},
-            {"6000", "_Telecommunications"},
-            {"9000", "_Technologie"}
+                {"45","_Biens de consommation"},
+                {"50","_Industries"},
+                {"35","_Immobilier"},
+                {"55","_Materiaux de base"},
+                {"60","_Petrole et gaz"},
+                {"20","_Sante"},
+                {"40","_Services aux consommateurs"},
+                {"65","_Services aux collectivites"},
+                {"30","_Societes financieres"},
+                {"15","_Telecommunications"},
+                {"10","_Technologie"}
         };
         private bool DownloadSectorFromABC(string destFolder, string sectorID)
         {
+            if (!this.Initialize())
+                return false;
             bool success = true;
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+
+            string fileName = destFolder + @"\" + sectorID + ".txt";
+            if (File.Exists(fileName))
             {
-                string fileName = destFolder + @"\" + sectorID + ".txt";
-                if (File.Exists(fileName))
-                {
-                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
-                        return true;
-                }
+                if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
+                    return true;
+            }
 
-                try
-                {
-                    // Send POST request
-                    string url = $"https://www.abcbourse.com/api/General/DownloadSector?type=g&sectorCode={sectorID}";
+            try
+            {
+                // Send POST request
+                string url = $"/api/General/DownloadSector?sectorCode={sectorID}";
 
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-
-                    success = SaveResponseToFile(fileName, req);
-                }
-                catch (System.Exception ex)
+                var resp = client.GetAsync(url).Result;
+                if (!resp.IsSuccessStatusCode)
+                    return false;
+                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
                 {
-                    StockLog.Write(ex);
-                    System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
-                    success = false;
+                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
+                    {
+                        respStream.CopyTo(fileStream);
+                    }
                 }
+            }
+            catch (System.Exception ex)
+            {
+                StockLog.Write(ex);
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
+                success = false;
             }
             return success;
         }
