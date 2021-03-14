@@ -85,6 +85,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sectorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -540,6 +541,7 @@ namespace StockAnalyzerApp
             this.agentTunningMenuItem,
             this.portfolioSimulationMenuItem,
             this.toolStripSeparator8,
+            this.sectorMenuItem,
             this.bestTrendMenuItem,
             this.expectedValueMenuItem,
             this.statisticsMenuItem});
@@ -599,6 +601,13 @@ namespace StockAnalyzerApp
             this.bestTrendMenuItem.Size = new System.Drawing.Size(240, 22);
             this.bestTrendMenuItem.Text = "Best Trends";
             this.bestTrendMenuItem.Click += new System.EventHandler(this.bestTrendViewMenuItem_Click);
+            // 
+            // sectorMenuItem
+            // 
+            this.sectorMenuItem.Name = "sectorMenuItem";
+            this.sectorMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.sectorMenuItem.Text = "Sector View";
+            this.sectorMenuItem.Click += new System.EventHandler(this.sectorViewMenuItem_Click);
             // 
             // expectedValueMenuItem
             // 
@@ -1541,6 +1550,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
+        private ToolStripMenuItem sectorMenuItem;
         private ToolStripMenuItem expectedValueMenuItem;
         private ToolStripMenuItem statisticsMenuItem;
         private ToolStripButton snapshotToolStripButton;

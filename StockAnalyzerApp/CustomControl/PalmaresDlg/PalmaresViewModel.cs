@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
@@ -126,7 +127,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Indicator1 = "MANSFIELD(100,CAC40)";
             this.Indicator2 = "HIGHEST(20)";
             this.Indicator3 = "STOKFBODY(20)";
-            this.Stop = "TrailHIGHEST(70,12)";
+            this.Stop = "TRAILHIGHEST(70,12)";
             this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
@@ -235,6 +236,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 Lines.Add(new PalmaresLine
                 {
+                    Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
                     Group = stockSerie.StockGroup.ToString(),
                     ShortName = stockSerie.ShortName,
                     //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",

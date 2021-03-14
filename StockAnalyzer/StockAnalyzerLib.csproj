@@ -132,6 +132,7 @@
     <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
     <Compile Include="StockBinckPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
     <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
     <Compile Include="StockClasses\StockDividend.cs" />

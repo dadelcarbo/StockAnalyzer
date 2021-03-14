@@ -268,25 +268,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             InitFromFile(download, fileName);
 
             // Download Sectors Composition
-            foreach (var sectorId in SectorCodes.Keys)
+            foreach (var sector in SectorCodes)
             {
-                if (DownloadSectorFromABC(RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sectorId))
+                if (DownloadSectorFromABC(RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sector.Code))
                 {
-                    InitFromSector(sectorId);
+                    InitFromSector(sector);
                 }
             }
         }
 
-        private void InitFromSector(string sectorId)
+        private void InitFromSector(SectorCode sector)
         {
-            var longName = SectorCodes[sectorId];
+            var longName = "_" + sector.Sector;
             if (!stockDictionary.ContainsKey(longName))
             {
                 // Create Sector serie
-                stockDictionary.Add(longName, new StockSerie(longName, sectorId, StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
+                stockDictionary.Add(longName, new StockSerie(longName, sector.Code.ToString(), StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
 
                 // Set SectorId to stock
-                string fileName = RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sectorId + ".txt";
+                string fileName = RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sector.Code.ToString() + ".txt";
                 if (File.Exists(fileName))
                 {
                     using (StreamReader sr = new StreamReader(fileName, true))
@@ -302,8 +302,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 var stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == fields[0]);
                                 if (stockSerie != null)
                                 {
-                                    stockSerie.SectorId = sectorId;
-                                    stockSerie.SectorIsin = fields[2].StartsWith("QS") ? fields[2] : null;
+                                    stockSerie.SectorId = sector.Code;
+                                    //stockSerie.SectorIsin = fields[2].StartsWith("QS") ? fields[2] : null;
                                 }
                                 else
                                 {
@@ -876,27 +876,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
 
 
-        public static SortedDictionary<string, string> SectorCodes = new SortedDictionary<string, string>()
+        public static List<SectorCode> SectorCodes = new List<SectorCode>
         {
-                {"45","_Biens de consommation"},
-                {"50","_Industries"},
-                {"35","_Immobilier"},
-                {"55","_Materiaux de base"},
-                {"60","_Petrole et gaz"},
-                {"20","_Sante"},
-                {"40","_Services aux consommateurs"},
-                {"65","_Services aux collectivites"},
-                {"30","_Societes financieres"},
-                {"15","_Telecommunications"},
-                {"10","_Technologie"}
+                new SectorCode(45,"Biens de consommation"),
+                new SectorCode(50,"Industries"),
+                new SectorCode(35,"Immobilier"),
+                new SectorCode(55,"Materiaux de base"),
+                new SectorCode(60,"Petrole et gaz"),
+                new SectorCode(20,"Sante"),
+                new SectorCode(40,"Services aux consommateurs"),
+                new SectorCode(65,"Services aux collectivites"),
+                new SectorCode(30,"Societes financieres"),
+                new SectorCode(15,"Telecommunications"),
+                new SectorCode(10,"Technologie")
         };
-        private bool DownloadSectorFromABC(string destFolder, string sectorID)
+        private bool DownloadSectorFromABC(string destFolder, int sector)
         {
             if (!this.Initialize())
                 return false;
             bool success = true;
 
-            string fileName = destFolder + @"\" + sectorID + ".txt";
+            string fileName = destFolder + @"\" + sector + ".txt";
             if (File.Exists(fileName))
             {
                 if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
@@ -906,7 +906,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             try
             {
                 // Send POST request
-                string url = $"/api/General/DownloadSector?sectorCode={sectorID}";
+                string url = $"/api/General/DownloadSector?sectorCode={sector}";
 
                 var resp = client.GetAsync(url).Result;
                 if (!resp.IsSuccessStatusCode)

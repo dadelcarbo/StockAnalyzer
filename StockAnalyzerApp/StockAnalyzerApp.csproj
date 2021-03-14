@@ -538,6 +538,16 @@
     <Compile Include="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorDlg.Designer.cs">
+      <DependentUpon>SectorDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorUserControl.xaml.cs">
+      <DependentUpon>SectorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorViewModel.cs" />
     <Compile Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml.cs">
       <DependentUpon>BestTrendUserControl.xaml</DependentUpon>
     </Compile>
@@ -769,6 +779,9 @@
     <EmbeddedResource Include="CustomControl\StockScannerDlg.resx">
       <DependentUpon>StockScannerDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SectorDlg\SectorDlg.resx">
+      <DependentUpon>SectorDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
       <DependentUpon>BestTrendDlg.cs</DependentUpon>
@@ -1035,6 +1048,10 @@
     <Page Include="CustomControl\StatisticsDlg\StatisticsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\SectorDlg\SectorUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
       <SubType>Designer</SubType>

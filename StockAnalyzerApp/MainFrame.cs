@@ -26,6 +26,7 @@ using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PalmaresControl;
+using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
@@ -3528,6 +3529,28 @@ namespace StockAnalyzerApp
         void bestrendDialog_Disposed(object sender, EventArgs e)
         {
             this.bestrendDlg = null;
+        }
+        #endregion
+        #region Sector Dialog
+        SectorDlg sectorDlg = null;
+        void sectorViewMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sectorDlg == null)
+            {
+                sectorDlg = new SectorDlg(this.selectedGroup.ToString(), this.BarDuration);
+                sectorDlg.Disposed += sectorDialog_Disposed;
+                sectorDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                sectorDlg.Show();
+            }
+            else
+            {
+                sectorDlg.Activate();
+            }
+        }
+
+        void sectorDialog_Disposed(object sender, EventArgs e)
+        {
+            this.sectorDlg = null;
         }
         #endregion
         #region Conditional Statistics

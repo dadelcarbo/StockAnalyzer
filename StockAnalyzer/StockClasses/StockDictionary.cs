@@ -1091,8 +1091,8 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-
-            StockSerie[] indexComponents = this.Values.Where(s => s.SectorId == breadthSerie.ShortName).ToArray();
+            int sectorId = int.Parse(breadthSerie.ShortName);
+            StockSerie[] indexComponents = this.Values.Where(s => s.SectorId == sectorId).ToArray();
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
