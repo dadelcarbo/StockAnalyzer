@@ -8,9 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_BBEX : StockIndicatorBase
     {
-        public StockIndicator_BBEX()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -95,7 +92,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         bullish = true;
                     }
                 }
-                else if (bullish && closeSerie[i] < upperBB[i])
+                else if (bullish && closeSerie[i] < emaSerie[i])
                 {
                     bullish = false;
                 }
@@ -111,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     this.eventSeries[3][i] = true;
                 }
-                else if (bearish && closeSerie[i] > lowerBB[i])
+                else if (bearish && closeSerie[i] > emaSerie[i])
                 {
                     bearish = false;
                 }
