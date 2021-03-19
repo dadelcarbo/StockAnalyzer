@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockFundamentals", "StockFundamentals.csproj", "{420BE1AC-2762-4E5B-B1E2-D5D71AE78EA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{420BE1AC-2762-4E5B-B1E2-D5D71AE78EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{420BE1AC-2762-4E5B-B1E2-D5D71AE78EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{420BE1AC-2762-4E5B-B1E2-D5D71AE78EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{420BE1AC-2762-4E5B-B1E2-D5D71AE78EA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CA7EED0-168F-4D39-931D-0D6B9B6A50E1}
+	EndGlobalSection
+EndGlobal

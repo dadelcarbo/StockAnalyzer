@@ -12,12 +12,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public float Max
         {
-            get { return 100.0f; }
+            get { return 105.0f; }
         }
 
         public float Min
         {
-            get { return 0.0f; }
+            get { return -5.0f; }
         }
 
         public override string[] ParameterNames
