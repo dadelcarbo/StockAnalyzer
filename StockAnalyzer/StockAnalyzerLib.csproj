@@ -218,7 +218,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MDH2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
