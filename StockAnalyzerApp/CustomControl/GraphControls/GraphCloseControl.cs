@@ -823,7 +823,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void FillArea(Graphics aGraphic, FloatSerie dataSerie, Pen pen, Brush brush)
         {
-            PointF[] tmpPoints;
             List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
             int start = -1;
             int end = -1;
@@ -836,9 +835,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (start != end) // Draw only if there are at least two points
                         {
                             tuples.Add(new Tuple<int, int>(start, end));
-                            start = -1;
                             end = -1;
                         }
+                        start = -1;
                     }
                 }
                 else
@@ -856,7 +855,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             foreach (var tuple in tuples)
             {
-                tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie);
+                var tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie);
                 if (tmpPoints != null)
                 {
                     var closePoints = GetScreenPoints(tuple.Item1, tuple.Item2, closeCurveType.DataSerie);
