@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[0] = varSerie;
             this.Series[0].Name = this.SerieNames[0];
 
-            if (period > 1)
+            if (period > 1 && period < stockSerie.Count)
             {
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 for(int i = 0; i<=period;i++)

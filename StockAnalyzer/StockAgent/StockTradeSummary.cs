@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace StockAnalyzer.StockAgent
@@ -8,9 +9,9 @@ namespace StockAnalyzer.StockAgent
     {
         public StockTradeSummary()
         {
-            this.Trades = new List<StockTrade>();
+            this.Trades = new ObservableCollection<StockTrade>();
         }
-        public List<StockTrade> Trades { get; private set; }
+        public IList<StockTrade> Trades { get; private set; }
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
         public float AvgGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f; } }
         public float AvgLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }

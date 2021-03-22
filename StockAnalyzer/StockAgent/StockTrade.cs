@@ -37,9 +37,9 @@ namespace StockAnalyzer.StockAgent
         public float Gain { get; private set; }
         public float DrawDown { get; private set; }
 
-        FloatSerie openSerie;
-        FloatSerie highSerie;
-        FloatSerie lowSerie;
+        FloatSerie openSerie => this.Serie.GetSerie(StockDataType.OPEN);
+        FloatSerie highSerie => this.Serie.GetSerie(StockDataType.HIGH);
+        FloatSerie lowSerie => this.Serie.GetSerie(StockDataType.LOW);
 
         public StockTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true)
         {
@@ -51,11 +51,24 @@ namespace StockAnalyzer.StockAgent
             this.IsLong = isLong;
             this.Qty = qty;
 
-            openSerie = this.Serie.GetSerie(StockDataType.OPEN);
-            highSerie = this.Serie.GetSerie(StockDataType.HIGH);
-            lowSerie = this.Serie.GetSerie(StockDataType.LOW);
-
             this.EntryValue = openSerie[entryIndex];
+
+            this.Gain = 0;
+            this.DrawDown = 0;
+
+            this.IsClosed = false;
+        }
+        public StockTrade(StockSerie serie, int entryIndex, float entryValue, int qty = 1, bool isLong = true)
+        {
+            this.Serie = serie;
+            this.EntryIndex = entryIndex;
+            this.EntryDate = serie.Keys.ElementAt(entryIndex);
+            this.ExitIndex = -1;
+            this.PartialExitIndex = -1;
+            this.IsLong = isLong;
+            this.Qty = qty;
+
+            this.EntryValue = entryValue;
 
             this.Gain = 0;
             this.DrawDown = 0;

@@ -92,7 +92,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     }
                     sectorValues.Add(values);
                 }
-                this.SectorValues = sectorValues;
+                this.SectorValues = sectorValues.OrderByDescending(v => v.Last().Y).ToList();
                 this.MinVal = ((int)min / 10) * 10f;
                 this.MaxVal = (1 + ((int)max / 10)) * 10f;
             }

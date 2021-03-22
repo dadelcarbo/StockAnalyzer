@@ -48,7 +48,18 @@
             <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding Positions}" IsFilteringAllowed="False" Height="54" IsReadOnly="True"></telerik:RadGridView>
         </GroupBox>
         <GroupBox Grid.Row="2" Header="Position History" VerticalAlignment="Stretch">
-            <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding PositionHistory}" IsFilteringAllowed="False" IsReadOnly="True"></telerik:RadGridView>
+            <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed" SelectionMode="Single" SelectionUnit="FullRow" ShowGroupPanel="False">
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}"/>
+                    <telerik:GridViewDataColumn Header="EntryDate" DataMemberBinding="{Binding EntryDate, StringFormat=d}"/>
+                    <telerik:GridViewDataColumn Header="EntryValue" DataMemberBinding="{Binding EntryValue}"/>
+                    <telerik:GridViewDataColumn Header="ExitDate" DataMemberBinding="{Binding ExitDate, StringFormat=d}"/>
+                    <telerik:GridViewDataColumn Header="ExitValue" DataMemberBinding="{Binding ExitValue}"/>
+                    <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Gain, StringFormat=P2}"/>
+                    <telerik:GridViewDataColumn Header="Drawdown" DataMemberBinding="{Binding Drawdown, StringFormat=P2}"/>
+                    <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Duration}"/>
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
         </GroupBox>
     </Grid>
 </UserControl>

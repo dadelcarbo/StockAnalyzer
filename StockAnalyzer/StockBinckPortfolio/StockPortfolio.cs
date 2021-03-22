@@ -357,7 +357,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         /// Converts from Trade list to portfolio operations. This function is limited to the MaxPosition variable
         /// </summary>
         /// <param name="tradeSummary"></param>
-        public void InitFromTradeSummary(List<StockTrade> trades)
+        public void InitFromTradeSummary(IList<StockTrade> trades)
         {
             this.Clear();
             var dates = trades.Select(t => t.EntryDate).

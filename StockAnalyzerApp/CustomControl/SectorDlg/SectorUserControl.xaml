@@ -12,211 +12,187 @@
     <UserControl.DataContext>
         <local:SectorViewModel></local:SectorViewModel>
     </UserControl.DataContext>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
-            <Label Margin="2">Sector</Label>
-            <telerik:RadComboBox Margin="2" Width="180" ItemsSource="{Binding Source={x:Static abc:ABCDataProvider.SectorCodes}}" SelectedItem="{Binding Sector}" DisplayMemberPath="Sector"/>
-            <Label Margin="2">Duration</Label>
-            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding BarDurations}" SelectedItem="{Binding BarDuration}"/>
-            <Label Content="Period" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding Period}"/>
-            <Label Margin="2">Indicator</Label>
+            <Label Content="Period" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="5"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding Period}" Padding="5"/>
+            <Button Padding="5">Go</Button>
         </StackPanel>
-        <TabControl Grid.Row="1" >
-            <TabItem Header="Graph">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <telerik:RadCartesianChart x:Name="sectorChart" Palette="Windows8" ClipToBounds="False">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <telerik:RadCartesianChart x:Name="sectorChart" Palette="Windows8" ClipToBounds="False">
 
-                        <telerik:RadCartesianChart.Behaviors>
-                            <telerik:ChartSelectionBehavior />
-                            <telerik:ChartTrackBallBehavior />
-                        </telerik:RadCartesianChart.Behaviors>
+                <telerik:RadCartesianChart.Behaviors>
+                    <telerik:ChartSelectionBehavior />
+                    <telerik:ChartTrackBallBehavior />
+                </telerik:RadCartesianChart.Behaviors>
 
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[0]}" IsHitTestVisible="True">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[0].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[0].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[1]}" IsHitTestVisible="True">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[1].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[1].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[2]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[2].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"  />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[2].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[3]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[3].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[3].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[4]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[4].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[4].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[5]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[5].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[5].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[6]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[6].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[6].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[7]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[7].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[7].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[8]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[8].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[8].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[9]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[9].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[9].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
-                        <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[10]}">
-                            <telerik:LineSeries.LegendSettings>
-                                <telerik:SeriesLegendSettings Title="{Binding Path=[10].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
-                            </telerik:LineSeries.LegendSettings>
-                            <telerik:LineSeries.TrackBallInfoTemplate>
-                                <DataTemplate>
-                                    <StackPanel Background="Transparent" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=[10].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
-                                        <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </telerik:LineSeries.TrackBallInfoTemplate>
-                        </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[0]}" IsHitTestVisible="True">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[0].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[0].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[1]}" IsHitTestVisible="True">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[1].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[1].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[2]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[2].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"  />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[2].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[3]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[3].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[3].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[4]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[4].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[4].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[5]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[5].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[5].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[6]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[6].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[6].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[7]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[7].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[7].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[8]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[8].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[8].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[9]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[9].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[9].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding SectorValues[10]}">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="{Binding Path=[10].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=[10].Sector ,Source={x:Static abc:ABCDataProvider.SectorCodes}}"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
 
-                        <telerik:RadCartesianChart.VerticalAxis>
-                            <telerik:LinearAxis Title="Sectors" 
+                <telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:LinearAxis Title="Sectors" 
                                               ElementBrush="{Binding ElementName=sectorChart, Path=Palette.GlobalEntries[1].Fill}" 
                                               HorizontalLocation="Right" Minimum="{Binding MinVal}" Maximum="{Binding MaxVal}"/>
-                        </telerik:RadCartesianChart.VerticalAxis>
-                        <telerik:RadCartesianChart.HorizontalAxis>
-                            <telerik:CategoricalAxis LabelInterval="10" SmartLabelsMode="SmartStep"/>
-                        </telerik:RadCartesianChart.HorizontalAxis>
-                        <telerik:RadCartesianChart.Grid>
-                            <telerik:CartesianChartGrid MajorLinesVisibility="Y" />
-                        </telerik:RadCartesianChart.Grid>
-                    </telerik:RadCartesianChart>
-                    <telerik:RadLegend Grid.Column="1" Margin="4,12" MinWidth="76" Items="{Binding LegendItems, ElementName=sectorChart}">
-                    </telerik:RadLegend>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Components">
-                <telerik:RadGridView ItemsSource="{Binding SectorComponents}" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
-                             AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
-                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
-                    <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockGroup}"/>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>
-                        <!--
-                        <telerik:GridViewDataColumn Header="Start" DataMemberBinding="{Binding StartDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
-                        <telerik:GridViewDataColumn Header="End" DataMemberBinding="{Binding EndDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
-                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}"/>
--->
-                    </telerik:RadGridView.Columns>
-                </telerik:RadGridView>
-            </TabItem>
-        </TabControl>
+                </telerik:RadCartesianChart.VerticalAxis>
+                <telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:CategoricalAxis LabelInterval="10" SmartLabelsMode="SmartStep"/>
+                </telerik:RadCartesianChart.HorizontalAxis>
+                <telerik:RadCartesianChart.Grid>
+                    <telerik:CartesianChartGrid MajorLinesVisibility="Y" />
+                </telerik:RadCartesianChart.Grid>
+            </telerik:RadCartesianChart>
+            <telerik:RadLegend Grid.Column="1" Margin="4,12" MinWidth="76" Items="{Binding LegendItems, ElementName=sectorChart}">
+            </telerik:RadLegend>
+        </Grid>
     </Grid>
 
 </UserControl>

@@ -333,7 +333,6 @@
     <Compile Include="CustomControl\MarketReplay\MarketReplayDlg.Designer.cs">
       <DependentUpon>MarketReplayDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\MarketReplay\MarketReplayTradeViewModel.cs" />
     <Compile Include="CustomControl\MarketReplay\MarketReplayViewModel.cs" />
     <Compile Include="CustomControl\MarketReplay\MarketReplayPositionViewModel.cs" />
     <Compile Include="CustomControl\MultiTimeFrameDlg\MTFDlg.cs">
