@@ -835,9 +835,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (start != end) // Draw only if there are at least two points
                         {
                             tuples.Add(new Tuple<int, int>(start, end));
-                            end = -1;
                         }
                         start = -1;
+                        end = -1;
                     }
                 }
                 else
