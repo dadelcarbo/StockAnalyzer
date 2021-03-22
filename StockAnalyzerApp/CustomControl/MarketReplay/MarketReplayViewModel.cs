@@ -213,6 +213,20 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         sell(lastValue, 1, this.target1);
                     }
                 }
+                else
+                {
+                    var lastValue = replaySerie.Values.Last();
+                    if (this.stop != 0 && lastValue.CLOSE > this.stop) // Stop Loss
+                    {
+                        Buy(false);
+                        this.Stop = 0;
+                    }
+                    else if (this.target1 != 0 && lastValue.HIGH < this.target1) // Target  reached
+                    {
+                        Buy(false);
+                        this.Target1 = 0;
+                    }
+                }
             }
             else
             {
@@ -235,8 +249,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 this.SellEnabled = false;
             }
         }
-
         private void Buy()
+        {
+            this.Buy(true);
+        }
+        private void Buy(bool forward)
         {
             this.BuyEnabled = false;
             this.SellEnabled = true;
@@ -254,7 +271,10 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 Qty = qty
             });
             openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, this.Value);
-            this.Forward();
+            if (forward)
+            {
+                this.Forward();
+            }
         }
         private void Sell()
         {
