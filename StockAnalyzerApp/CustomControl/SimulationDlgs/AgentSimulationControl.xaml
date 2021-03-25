@@ -43,16 +43,33 @@
             </TabItem>
             <TabItem Header="Trades">
                 <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
-                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
+                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged" 
+                     ShowColumnFooters="True">
                     <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}"/>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:CountFunction Caption="Nb trades: " />
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="EntryDate" DataMemberBinding="{Binding EntryDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="EntryValue" DataMemberBinding="{Binding EntryValue}"/>
                         <telerik:GridViewDataColumn Header="ExitDate" DataMemberBinding="{Binding ExitDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="ExitValue" DataMemberBinding="{Binding ExitValue}"/>
-                        <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Gain, StringFormat=P2}"/>
-                        <telerik:GridViewDataColumn Header="Drawdown" DataMemberBinding="{Binding Drawdown, StringFormat=P2}"/>
-                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Duration}"/>
+                        <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Gain, StringFormat=P4}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Gain: " ResultFormatString="{}{0:P4}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Drawdown" DataMemberBinding="{Binding Drawdown, StringFormat=P4}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:MinFunction Caption="Maw Drawdown: " ResultFormatString="{}{0:P4}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Duration}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Duration: " ResultFormatString="{}{0:F2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>                            
+                        </telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="PartialExitDate" DataMemberBinding="{Binding PartialExitDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="PartialExitValue" DataMemberBinding="{Binding PartialExitValue}"/>
                     </telerik:RadGridView.Columns>
