@@ -2641,6 +2641,7 @@ namespace StockAnalyzerApp
             public int previousRank;
             public float rankIndicatorValue;
             public float previousRankIndicatorValue;
+            public float Indicator2Value;
             public StockSerie stockSerie;
         }
 
@@ -2771,8 +2772,9 @@ namespace StockAnalyzerApp
              <td>%COL2%</td>
              %RANK_DIR_IMG%
              <td>%COL3%</td>
-             %CLOSE_DIR_IMG%
              <td>%COL4%</td>
+             %CLOSE_DIR_IMG%
+             <td>%COL5%</td>
          </tr>";
 
             string html = @"
@@ -2796,10 +2798,12 @@ namespace StockAnalyzerApp
                     {
                         stockSerie.BarDuration = duration;
                         var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
+                        var indicator2Serie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
                         leadersDico.Add(new RankedSerie()
                         {
                             rankIndicatorValue = indicatorSerie.Last,
                             previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
+                            Indicator2Value = indicator2Serie.Last,
                             stockSerie = stockSerie
                         });
                     }
@@ -2828,6 +2832,7 @@ namespace StockAnalyzerApp
                     <th>Stock Name</th>
                     <th>{rankLeaderIndicatorName}</th>
                     <th>Rank Trend</th>
+                    <th>{rankLoserIndicatorName}</th>
                     <th>Daily %</th>
                     <th>Daily Trend</th>
                     <th>Value</th>
@@ -2842,8 +2847,9 @@ namespace StockAnalyzerApp
                     html += rowTemplate.
                         Replace("%COL1%", pair.stockSerie.StockName).
                         Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
-                        Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
-                        Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
+                        Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
+                        Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
+                        Replace("%COL5%", (lastValue.CLOSE).ToString("#.##"));
 
                     if (pair.previousRank < pair.rank)
                     {
@@ -2888,10 +2894,12 @@ namespace StockAnalyzerApp
                     {
                         stockSerie.BarDuration = duration;
                         var indicatorSerie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
+                        var indicator2Serie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
                         leadersDico.Add(new RankedSerie()
                         {
                             rankIndicatorValue = indicatorSerie.Last,
                             previousRankIndicatorValue = indicatorSerie[indicatorSerie.Count - 2],
+                            Indicator2Value = indicator2Serie.Last,
                             stockSerie = stockSerie
                         });
                     }
@@ -2920,6 +2928,7 @@ namespace StockAnalyzerApp
                     <th>Stock Name</th>
                     <th>{rankLoserIndicatorName}</th>
                     <th>Rank Trend</th>
+                    <th>{rankLeaderIndicatorName}</th>
                     <th>Daily %</th>
                     <th>Daily Trend</th>
                     <th>Value</th>
@@ -2934,8 +2943,9 @@ namespace StockAnalyzerApp
                     html += rowTemplate.
                         Replace("%COL1%", pair.stockSerie.StockName).
                         Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
-                        Replace("%COL3%", (lastValue.VARIATION).ToString("P2")).
-                        Replace("%COL4%", (lastValue.CLOSE).ToString("#.##"));
+                        Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
+                        Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
+                        Replace("%COL5%", (lastValue.CLOSE).ToString("#.##"));
 
                     if (pair.previousRank > pair.rank)
                     {
