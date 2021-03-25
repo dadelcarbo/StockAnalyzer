@@ -24,6 +24,8 @@ namespace StockAnalyzer.StockAgent
         public bool IsClosed { get; private set; }
         public bool IsPartlyClosed { get; private set; }
 
+        public bool IsStopped { get; private set; }
+
         public int Duration
         {
             get
@@ -87,7 +89,7 @@ namespace StockAnalyzer.StockAgent
 
             this.IsPartlyClosed = true;
         }
-        public void Close(int exitIndex, float exitValue)
+        public void Close(int exitIndex, float exitValue, bool stopped = false)
         {
             this.ExitIndex = exitIndex;
 
@@ -97,18 +99,19 @@ namespace StockAnalyzer.StockAgent
             if (this.IsLong)
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
-                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
+                float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
                 this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
-                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
+                float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
                 this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
             }
 
             this.IsClosed = true;
             this.IsPartlyClosed = false;
+            this.IsStopped = stopped;
         }
         public void CloseAtOpen(int exitIndex)
         {

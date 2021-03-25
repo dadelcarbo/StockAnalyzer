@@ -17,6 +17,8 @@ namespace StockAnalyzer.StockAgent
         public virtual string DisplayIndicator => string.Empty;
 
         protected FloatSerie closeSerie;
+        protected FloatSerie openSerie;
+        protected FloatSerie lowSerie;
 
         public StockTrade Trade { get; set; }
 
@@ -38,7 +40,9 @@ namespace StockAnalyzer.StockAgent
             return agentList;
         }
 
-        public bool Initialize(StockSerie stockSerie, StockBarDuration duration)
+        protected float StopPercent;
+        public float StopValue { get; protected set; }
+        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stop)
         {
             try
             {
@@ -46,7 +50,10 @@ namespace StockAnalyzer.StockAgent
 
                 stockSerie.BarDuration = duration;
                 closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+                lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 this.Trade = null;
+                this.StopPercent = stop;
 
                 return Init(stockSerie);
             }
@@ -62,10 +69,22 @@ namespace StockAnalyzer.StockAgent
         {
             if (this.Trade == null)
             {
-                return this.TryToOpenPosition(index);
+                var action = this.TryToOpenPosition(index);
+                if (action == TradeAction.Buy && this.StopPercent != 0.0f)
+                {
+                    this.StopValue = openSerie[index + 1] * (1f - this.StopPercent);
+                }
+                return action;
             }
             else
             {
+                if (lowSerie[index] < this.StopValue)
+                {
+                    this.Trade.Close(index, Math.Min(this.StopValue, this.openSerie[index]), true);
+                    this.Trade = null;
+
+                    return TradeAction.Nothing;
+                }
                 return this.TryToClosePosition(index);
             }
         }

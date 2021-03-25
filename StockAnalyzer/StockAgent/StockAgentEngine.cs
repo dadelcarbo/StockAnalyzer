@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockAgent
             return newList;
         }
 
-        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, float stop, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -116,7 +116,7 @@ namespace StockAnalyzer.StockAgent
                 }
 
                 // Perform calculation
-                this.Perform(series, minIndex, duration);
+                this.Perform(series, minIndex, duration, stop);
 
                 // Select Best
                 var tradeSummary = this.Agent.TradeSummary;
@@ -158,71 +158,11 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void GeneticSelection(int nbIteration, int nbAgents, IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex)
-        {
-            List<IStockAgent> agents = new List<IStockAgent>();
-
-            // Create Agents
-            for (int i = 0; i < nbAgents; i++)
-            {
-                IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType);
-                agent.Randomize();
-                agents.Add(agent);
-            }
-
-            StockAgentBase.GetParamRanges(this.AgentType, 20);
-
-            List<IStockAgent> bestResults = new List<IStockAgent>();
-            int nbSelected = 10;
-            for (int i = 0; i < nbIteration; i++)
-            {
-                List<IStockAgent> results = new List<IStockAgent>();
-                agents = RemoveDuplicates(agents);
-
-                // Perform action
-                foreach (var agent in agents)
-                {
-                    this.Agent = agent;
-                    this.Perform(series, minIndex, duration);
-                    results.Add(agent);
-                }
-
-                // Select fittest
-                var fittest = results.OrderByDescending(a => a.TradeSummary.ExpectedReturn).Take(nbSelected).ToList();
-                Console.WriteLine("Fittest:");
-                Console.WriteLine(fittest.First().ToLog());
-                Console.WriteLine(fittest.First().TradeSummary.ToLog());
-
-                agents.Clear();
-                agents.AddRange(fittest);
-                int nb = agents.Count;
-                for (int k = 0; k < nb; k++)
-                {
-                    var agent1 = fittest.ElementAt(k);
-                    for (int j = k + 1; j < nb; j++)
-                    {
-                        var agent2 = fittest.ElementAt(j);
-
-                        var newAgents = RemoveDuplicates(agent1.Reproduce(agent2, nbSelected / 2));
-                        agents.AddRange(newAgents);
-                    }
-                }
-
-                // Create Agents
-                for (int j = 0; j < nbSelected; j++)
-                {
-                    IStockAgent agent = StockAgentBase.CreateInstance(this.AgentType);
-                    agent.Randomize();
-                    agents.Add(agent);
-                }
-            }
-        }
-
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, float stop)
         {
             foreach (var serie in series.Where(s => s.Count > minIndex))
             {
-                if (!this.Agent.Initialize(serie, duration))
+                if (!this.Agent.Initialize(serie, duration, stop))
                 {
                     continue;
                 }

@@ -15,7 +15,7 @@
     <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="0.70*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -27,6 +27,8 @@
             <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
             <Label Margin="2">Accuracy</Label>
             <telerik:RadNumericUpDown Minimum="3" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
+            <Label Margin="2">Stop</Label>
+            <TextBox Text="{Binding Stop,StringFormat=P}" Width="60" Height="20" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             <Label Margin="2">Selector</Label>
             <telerik:RadComboBox Margin="2" Width="110" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
             <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
@@ -43,14 +45,14 @@
             </TabItem>
             <TabItem Header="Trades">
                 <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
-                             SelectionMode="Multiple" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All">
-                     ShowColumnFooters="True">
+                             SelectionMode="Multiple" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All" ShowColumnFooters="True">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
                             <telerik:GridViewDataColumn.AggregateFunctions>
                                 <telerik:CountFunction Caption="Nb trades: " />
                             </telerik:GridViewDataColumn.AggregateFunctions>
                         </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Stopped" DataMemberBinding="{Binding IsStopped}"/>
                         <telerik:GridViewDataColumn Header="EntryDate" DataMemberBinding="{Binding EntryDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="EntryValue" DataMemberBinding="{Binding EntryValue}"/>
                         <telerik:GridViewDataColumn Header="ExitDate" DataMemberBinding="{Binding ExitDate, StringFormat=d}"/>
@@ -68,7 +70,7 @@
                         <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Duration}">
                             <telerik:GridViewDataColumn.AggregateFunctions>
                                 <telerik:AverageFunction Caption="Average Duration: " ResultFormatString="{}{0:F2}"/>
-                            </telerik:GridViewDataColumn.AggregateFunctions>                            
+                            </telerik:GridViewDataColumn.AggregateFunctions>
                         </telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="PartialExitDate" DataMemberBinding="{Binding PartialExitDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="PartialExitValue" DataMemberBinding="{Binding PartialExitValue}"/>

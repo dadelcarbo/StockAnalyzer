@@ -62,7 +62,6 @@
     <Compile Include="StockYahooJasonTest.cs" />
     <Compile Include="StockSerieTest.cs" />
     <Compile Include="StockAlertTest.cs" />
-    <Compile Include="StockAgentTest.cs" />
     <Compile Include="StockWebTest.cs" />
     <Compile Include="StockTradeLogTest.cs" />
     <Compile Include="Utility\StockTestUtility.cs" />

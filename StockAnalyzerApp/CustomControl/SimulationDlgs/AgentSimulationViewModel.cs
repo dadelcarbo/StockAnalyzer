@@ -20,7 +20,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public AgentSimulationViewModel()
         {
             this.performText = "Perform";
-            this.Accuracy = 20;
+            this.Accuracy = 10;
+            this.Stop = 0.1f;
             this.Selector = "ExpectedGainPerDay";
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
@@ -35,6 +36,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
         public int Accuracy { get; set; }
+        public float Stop { get; set; }
         public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain", "ExpectedGainPerDay" };
         public string Selector { get; set; }
 
@@ -239,7 +241,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             };
 
             var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
-            if (this.RunAgentEngine(series))
+            if (this.RunAgentEngine(series, this.Stop))
             {
                 e.Cancel = false;
             }
@@ -249,7 +251,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
-        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
+        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries, float stop)
         {
             try
             {
@@ -272,7 +274,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, this.Accuracy, selector);
+                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, this.Accuracy, stop, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }
