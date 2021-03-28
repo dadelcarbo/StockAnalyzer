@@ -4,7 +4,10 @@ using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockMath;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -150,6 +153,48 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
 
+
+        #region INDICATOR
+
+        string indicatorName;
+        public string IndicatorName
+        {
+            get => indicatorName;
+            set
+            {
+                if (indicatorName != value)
+                {
+                    indicatorName = value;
+                    var viewableSeries = StockViewableItemsManager.GetViewableItem(this.indicatorName);
+
+                    this.Events = (viewableSeries as IStockEvent).EventNames;
+                    this.Event = this.Events?[0];
+
+                    OnPropertyChanged("Events");
+                    OnPropertyChanged("IndicatorName");
+                }
+            }
+        }
+        public IList<string> IndicatorNames { get; set; }
+
+        public string[] Events { get; set; }
+
+        private string eventName;
+
+        public string Event
+        {
+            get { return eventName; }
+            set
+            {
+                if (value != eventName)
+                {
+                    eventName = value;
+                    OnPropertyChanged("Event");
+                }
+            }
+        }
+        #endregion
+
         public MarketReplayViewModel(StockSerie.Groups selectedGroup, StockBarDuration barDuration)
         {
             this.selectedGroup = selectedGroup;
@@ -178,6 +223,9 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private ICommand fastForwardCommand;
         public ICommand FastForwardCommand => fastForwardCommand ?? (fastForwardCommand = new CommandBase(FastForward));
 
+        private ICommand skipForwardCommand;
+        public ICommand SkipForwardCommand => skipForwardCommand ?? (skipForwardCommand = new CommandBase(SkipForward));
+
         private ICommand buyCommand;
         public ICommand BuyCommand => buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled"));
 
@@ -189,6 +237,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             // Generate statistics
             var log = this.TradeSummary.ToLog();
             MessageBox.Show(referenceSerie.StockName + Environment.NewLine + log, "Trade Summary", MessageBoxButton.OK);
+
+            this.continueSkipForward = false;
 
             this.Start();
         }
@@ -203,13 +253,13 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 if (openPosition != null)
                 {
                     var lastValue = replaySerie.Values.Last();
-                    if (this.stop != 0 && lastValue.CLOSE < this.stop) // Stop Loss
+                    if (this.stop != 0 && lastValue.LOW < this.stop) // Stop Loss
                     {
-                        sell(lastValue, openPosition.Qty, lastValue.CLOSE);
+                        sell(lastValue, openPosition.Qty, Math.Min(stop, lastValue.OPEN));
                     }
                     else if (this.target1 != 0 && lastValue.HIGH > this.target1) // Target  reached
                     {
-                        sell(lastValue, 1, this.target1);
+                        sell(lastValue, 1, Math.Max(this.target1, lastValue.OPEN));
                     }
                 }
                 else
@@ -281,6 +331,33 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 }
                 Forward();
             }
+        }
+
+        bool continueSkipForward = false;
+        private void SkipForward()
+        {
+            if (string.IsNullOrEmpty(indicatorName) || string.IsNullOrEmpty(eventName))
+                return;
+
+            try
+            {
+                continueSkipForward = true;
+                while (continueSkipForward && referenceSerieIndex < replaySerie.Count())
+                {
+                    this.Forward();
+
+                    var events = replaySerie.GetViewableItem(indicatorName) as IStockEvent;
+                    if (events == null)
+                        return;
+                    var boolSerie = events.Events[Array.IndexOf<string>(events.EventNames, eventName)];
+
+                    if (boolSerie[referenceSerieIndex])
+                    {
+                        break;
+                    }
+                }
+            }
+            catch { }
         }
         private void Buy()
         {

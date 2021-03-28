@@ -1265,7 +1265,7 @@ namespace StockAnalyzerApp
                 if (!newSerie.IsInitialised)
                 {
                     this.statusLabel.Text = ("Loading data...");
-                    this.Refresh();
+                    //this.Refresh();
                     this.Cursor = Cursors.WaitCursor;
                 }
 

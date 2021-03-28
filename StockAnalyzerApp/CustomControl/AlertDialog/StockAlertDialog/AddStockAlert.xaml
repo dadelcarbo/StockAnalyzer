@@ -20,9 +20,9 @@
             <TabItem Header="Graph Indicators">
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
                     <Label Width="60">Indicator</Label>
-                    <telerik:RadComboBox SelectedItem="{Binding IndicatorName}"  ItemsSource="{Binding IndicatorNames}"  Width="200"/>
+                    <telerik:RadComboBox SelectedItem="{Binding IndicatorName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
                     <Label Content="Event"/>
-                    <telerik:RadComboBox SelectedItem="{Binding Event, Mode=TwoWay}" ItemsSource="{Binding Events}" Width="200"/>
+                    <telerik:RadComboBox SelectedItem="{Binding Event, Mode=TwoWay}" ItemsSource="{Binding Events}" Width="250"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Price Trigger">

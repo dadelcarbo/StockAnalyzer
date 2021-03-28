@@ -10,6 +10,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             InitializeComponent();
 
             marketReplayControl1.DataContext = marketReplayControl1.ViewModel = new MarketReplayViewModel(selectedGroup, barDuration);
+            marketReplayControl1.ViewModel.IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme();
         }
     }
 }

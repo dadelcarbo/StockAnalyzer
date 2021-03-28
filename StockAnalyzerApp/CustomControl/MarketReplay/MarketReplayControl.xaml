@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Height="38" Margin="5">
@@ -22,6 +23,9 @@
             </Button>
             <Button Name="fastForwardButton" Margin="2" IsEnabled="{Binding FastForwardEnabled}" Command="{Binding FastForwardCommand}">
                 <Image Source="../../Resources/ButtonFastForward.png"/>
+            </Button>
+            <Button Name="skipForwardButton" Margin="2" IsEnabled="{Binding ForwardEnabled}" Command="{Binding SkipForwardCommand}">
+                <Image Source="../../Resources/ButtonSkipForward.png"/>
             </Button>
             <Button Name="buyButton" Margin="2" Background="LightGreen" Content="  Buy  " Command="{Binding BuyCommand}">
                 <Button.Resources>
@@ -44,10 +48,17 @@
             <Label Margin="2" VerticalAlignment="Center">Close</Label>
             <TextBox Margin="2" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Width="40"></TextBox>
         </StackPanel>
-        <GroupBox  Grid.Row="1" Header="Current Position">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
+            <Label Width="60">Indicator</Label>
+            <telerik:RadComboBox SelectedItem="{Binding IndicatorName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
+            <Label Content="Event"/>
+            <telerik:RadComboBox SelectedItem="{Binding Event, Mode=TwoWay}" ItemsSource="{Binding Events}" Width="250"/>
+        </StackPanel>
+
+        <GroupBox  Grid.Row="2" Header="Current Position">
             <telerik:RadGridView ShowGroupPanel="False" RowIndicatorVisibility="Collapsed" ItemsSource="{Binding Positions}" IsFilteringAllowed="False" Height="54" IsReadOnly="True"></telerik:RadGridView>
         </GroupBox>
-        <GroupBox Grid.Row="2" Header="Position History" VerticalAlignment="Stretch">
+        <GroupBox Grid.Row="3" Header="Position History" VerticalAlignment="Stretch">
             <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed" SelectionMode="Single" SelectionUnit="FullRow" ShowGroupPanel="False">
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}"/>
