@@ -312,8 +312,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         this.Target1 = 0;
                     }
                 }
-
-                this.SelectedStockChanged(replaySerie.StockName, true);
+                if (!this.continueSkipForward)
+                    this.SelectedStockChanged(replaySerie.StockName, true);
             }
             else
             {
@@ -342,6 +342,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             try
             {
                 continueSkipForward = true;
+                int count = 0;
                 while (continueSkipForward && referenceSerieIndex < replaySerie.Count())
                 {
                     this.Forward();
@@ -353,7 +354,14 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
                     if (boolSerie[referenceSerieIndex])
                     {
+                        this.continueSkipForward = false;
+                        this.SelectedStockChanged(replaySerie.StockName, true);
                         break;
+                    }
+                    if (++count == 5)
+                    {
+                        count = 0;
+                        this.SelectedStockChanged(replaySerie.StockName, true);
                     }
                 }
             }
@@ -447,7 +455,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             referenceSerieIndex = 100;
             if (referenceSerie.Count < referenceSerieIndex)
             {
-                MessageBox.Show("Serie to small for simulation: " + referenceSerie.StockName);
+                MessageBox.Show("Serie too small for simulation: " + referenceSerie.StockName);
                 Start();
             }
 
@@ -475,6 +483,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 this.replaySerie.Add(currentDate, new StockDailyValue(currentDate, dailyValue.Value));
                 currentDate = currentDate.AddDays(1);
             }
+            replaySerie.Initialise();
             this.Value = replaySerie.ValueArray.Last().CLOSE;
         }
     }
