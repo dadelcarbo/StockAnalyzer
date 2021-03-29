@@ -21,7 +21,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            FloatSerie mansfieldSerie = new FloatSerie(stockSerie.Count);
 
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
@@ -39,13 +38,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
             for (int i = 2; i < stockSerie.Count; i++)
             {
-                this.eventSeries[0][i] = mansfieldSerie[i] > 0;
-                this.eventSeries[1][i] = mansfieldSerie[i] < 0;
+                this.eventSeries[0][i] = mrpSerie[i] > 0;
+                this.eventSeries[1][i] = mrpSerie[i] < 0;
             }
         }
         static string[] eventNames = new string[] { "Positive", "Negative" };
         public override string[] EventNames => eventNames;
-        static readonly bool[] isEvent = new bool[] { true, true, true, true };
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;
     }
 }
