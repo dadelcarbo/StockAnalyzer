@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public class MarketReplayViewModel : NotifyPropertyChangedBase
     {
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+
         private StockSerie.Groups selectedGroup;
         private StockBarDuration barDuration;
 
@@ -151,9 +155,6 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         }
         #endregion
 
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-
-
         #region INDICATOR
 
         string indicatorName;
@@ -195,6 +196,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         }
         #endregion
 
+        DispatcherTimer replayTimer;
         public MarketReplayViewModel(StockSerie.Groups selectedGroup, StockBarDuration barDuration)
         {
             this.selectedGroup = selectedGroup;
@@ -211,6 +213,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             this.Positions = new ObservableCollection<MarketReplayPositionViewModel>();
             Start();
+
+            replayTimer = new DispatcherTimer();
+            replayTimer.Tick += fastForwardTimer_Tick;
+            replayTimer.Interval = new TimeSpan(0, 0, 0, 0, 25); // 100 ms
+            replayTimer.Start();
         }
 
 
@@ -232,13 +239,25 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private ICommand sellCommand;
         public ICommand SellCommand => sellCommand ?? (sellCommand = new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled"));
 
+        public void Closing()
+        {
+            this.isFastForwarding = false;
+            this.isSkipForwarding = false;
+
+            // Generate statistics
+            if (replayTimer.IsEnabled)
+            {
+                replayTimer.Stop();
+            }
+        }
+
         private void StopReplay()
         {
+            this.isFastForwarding = false;
+            this.isSkipForwarding = false;
             // Generate statistics
             var log = this.TradeSummary.ToLog();
             MessageBox.Show(referenceSerie.StockName + Environment.NewLine + log, "Trade Summary", MessageBoxButton.OK);
-
-            this.continueSkipForward = false;
 
             this.Start();
         }
@@ -312,41 +331,57 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         this.Target1 = 0;
                     }
                 }
-                if (!this.continueSkipForward)
-                    this.SelectedStockChanged(replaySerie.StockName, true);
+                if (!this.isSkipForwarding)
+                    this.SelectedStockChanged(replaySerie.StockName, false);
             }
             else
             {
                 StopReplay();
             }
         }
+
+
+        bool isFastForwarding = false;
         private void FastForward()
         {
-            for (int i = 0; i < 5; i++)
+            if (isSkipForwarding) return;
+            isFastForwarding = !isFastForwarding;
+        }
+
+        bool isSkipForwarding = false;
+        int count = 0;
+        private void SkipForward()
+        {
+            if (isFastForwarding) return;
+            if (string.IsNullOrEmpty(indicatorName) || string.IsNullOrEmpty(eventName))
+                return;
+            isSkipForwarding = !isSkipForwarding;
+        }
+
+        private void fastForwardTimer_Tick(object sender, EventArgs e)
+        {
+            if (isFastForwarding)
             {
                 if (referenceSerieIndex >= referenceSerie.Count())
                 {
+                    isFastForwarding = false;
                     StopReplay();
-                    break;
                 }
-                Forward();
-            }
-        }
-
-        bool continueSkipForward = false;
-        private void SkipForward()
-        {
-            if (string.IsNullOrEmpty(indicatorName) || string.IsNullOrEmpty(eventName))
-                return;
-
-            try
-            {
-                continueSkipForward = true;
-                int count = 0;
-                while (continueSkipForward && referenceSerieIndex < replaySerie.Count())
+                else
                 {
-                    this.Forward();
-
+                    Forward();
+                }
+            }
+            else if (isSkipForwarding)
+            {
+                if (referenceSerieIndex >= referenceSerie.Count())
+                {
+                    isSkipForwarding = false;
+                    StopReplay();
+                }
+                else
+                {
+                    Forward();
                     var events = replaySerie.GetViewableItem(indicatorName) as IStockEvent;
                     if (events == null)
                         return;
@@ -354,9 +389,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
                     if (boolSerie[referenceSerieIndex])
                     {
-                        this.continueSkipForward = false;
+                        isSkipForwarding = false;
                         this.SelectedStockChanged(replaySerie.StockName, true);
-                        break;
                     }
                     if (++count == 5)
                     {
@@ -365,8 +399,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     }
                 }
             }
-            catch { }
         }
+
         private void Buy()
         {
             this.BuyEnabled = false;

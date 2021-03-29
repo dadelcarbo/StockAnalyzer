@@ -299,8 +299,6 @@ namespace StockAnalyzer.StockClasses
         }
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
-            //    if (this.StockName == "ADVICENNE")
-            //        StockLog.Write($"Serie {this.StockName} {this.BarDuration} => {newBarDuration}");
             if (!this.Initialise() || (newBarDuration == this.barDuration))
             {
                 this.barDuration = newBarDuration;

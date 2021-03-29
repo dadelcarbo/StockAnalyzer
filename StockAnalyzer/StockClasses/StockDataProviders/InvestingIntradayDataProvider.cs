@@ -303,7 +303,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
                             {
                                 var date = previousValue.DATE.Add(minute5);
-                                while (date < openDate)
+                                while (date < openDate && !stockSerie.ContainsKey(date))
                                 {
                                     // Create missing bars
                                     var missingValue = new StockDailyValue(
