@@ -2,6 +2,8 @@
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +17,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public const string REPLAY_P = "Replay_P";
 
         const string PORTFOLIO_FILE_EXT = ".ucptf";
+        const string SAXOPORTFOLIO_FILE_EXT = ".xlsx";
 
         #region STATIC METHODS/PROPERTIES
         static int instanceCount = 0;
@@ -41,6 +44,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public List<StockPosition> Positions { get; }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
+        public string SaxoAccountId { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
@@ -83,12 +87,71 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
             }
+            foreach (var file in Directory.EnumerateFiles(folder, "*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
+            {
+                LoadFromSAXO(file, folder);
+            }
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
             ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(ReplayPortfolio);
             return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
+        }
+
+        private static void LoadFromSAXO(string fileName, string folder)
+        {
+            try
+            {
+                var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0; data source={fileName};Extended Properties=""Excel 12.0"";";
+
+                var adapter = new OleDbDataAdapter("SELECT * FROM [Transactions$]", connectionString);
+                var ds = new DataSet();
+
+                adapter.Fill(ds, "Transations");
+
+                var data = ds.Tables["Transations"].AsEnumerable();
+                foreach (var tradeGroup in data.Where(r => r.Field<string>("Transaction Type") == "Trade").Select(r => new
+                {
+                    TradeDate = r.Field<DateTime>("Trade Date"),
+                    AccountId = r.Field<string>("Account ID"),
+                    Instrument = r.Field<string>("Instrument"),
+                    InstrumentId = r.Field<double>("Instrument Id"),
+                    Event = r.Field<string>("Event"),
+                    Type = r.Field<string>("Transaction Type"),
+                    TradeId = (int)r.Field<double>("Trade Id"),
+                    Qty = (int)r.Field<double>("Amount"),
+                    Price = r.Field<double>("Price"),
+                    Amount = r.Field<double>("Booked Amount Account Currency")
+                }).GroupBy(r => r.AccountId))
+                {
+                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                    if (portofolio == null)
+                        continue;
+                    foreach (var row in tradeGroup)
+                    {
+                        if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
+                            continue;
+
+                        // Find stockNamefrom mapping
+                        var stockName = row.Instrument;
+
+                        if (row.Event == "Buy")
+                        {
+                            portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null);
+                        }
+                        else if (row.Event == "Sell")
+                        {
+                            portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null);
+                        }
+                    }
+                    portofolio.Serialize(folder);
+                }
+            }
+            catch (Exception e)
+            {
+                StockLogging.StockLog.Write(e);
+            }
         }
         #endregion
 
