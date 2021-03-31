@@ -59,6 +59,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             return res;
         }
+
+        public override bool ForceDownloadData(StockSerie stockSerie)
+        {
+            stockSerie.IsInitialised = false;
+            return this.GenerateBreadthData(stockSerie);
+        }
+
         private bool GenerateBreadthData(StockSerie stockSerie)
         {
             var stockDictionary = StockDictionary.Instance;
