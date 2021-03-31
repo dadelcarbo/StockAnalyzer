@@ -47,12 +47,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                     }
                     else
                     {
-                        if (pos.Leverage != 1) // if underlying price is found manage leverage
-                        {
-                            var underlyingOpenValue = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, pos.ExitDate.Value, StockAnalyzer.StockClasses.BarDuration.Daily);
-                            var variation = pos.Leverage * (value - underlyingOpenValue) / underlyingOpenValue;
-                            value = pos.EntryValue * (1 + variation);
-                        }
                         val += pos.EntryQty * value;
                         pos.LastValue = value;
                     }

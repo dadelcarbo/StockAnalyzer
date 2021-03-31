@@ -34,7 +34,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public int EntryQty => position.EntryQty;
         public float EntryValue => Math.Abs(position.EntryValue);
         public float EntryCost => position.EntryCost;
-        public float Leverage => position.Leverage;
         public string EntryComment
         {
             get => position.EntryComment;
@@ -54,8 +53,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public DateTime? ExitDate => position.ExitDate;
 
         public float LastValue { get; set; }
-        public string Type => position.IsShort ? "Short" : "Long";
-        public float Variation => position.IsShort && Leverage == 1 ? (EntryValue - LastValue) / (EntryValue) : (LastValue - EntryValue) / (EntryValue);
+        public float Variation => (EntryValue - LastValue) / (EntryValue);
         public float PortfolioPercent => this.portfolio.Portfolio.InitialBalance > 0 ? ((LastValue * this.EntryQty) / this.portfolio.Portfolio.InitialBalance) : 0.0f;
     }
 }

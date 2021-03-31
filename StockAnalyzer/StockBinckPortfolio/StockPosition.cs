@@ -7,7 +7,6 @@ namespace StockAnalyzer.StockBinckPortfolio
     {
         public StockPosition()
         {
-            this.Leverage = 1;
         }
         public int Id { get; set; }
         public string StockName { get; set; }
@@ -25,9 +24,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string Indicator { get; set; }
         public DateTime? ExitDate { get; set; }
         public bool IsClosed => ExitDate != null;
-
-        public bool IsShort { get; set; }
-        public float Leverage { get; set; }
 
         internal void Dump()
         {

@@ -90,38 +90,6 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 e.Cancel = true;
             }
         }
-        private void positionGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
-        {
-            var viewModel = this.positionGridView.SelectedItem as StockPositionViewModel;
-            if (viewModel == null || !viewModel.IsValidName) return;
-
-            if (SelectedStockChanged != null)
-            {
-                StockAnalyzerForm.MainFrame.Activate();
-                this.SelectedStockChanged(viewModel.StockName, true);
-            }
-
-            this.Form.TopMost = true;
-            this.Form.TopMost = false;
-        }
-        private void operationGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
-        {
-            if (this.operationGridView.SelectedItem == null)
-                return;
-            var viewModel = this.operationGridView.SelectedItem as StockTradeOperation;
-
-            var stockName = viewModel.StockName;
-            var mapping = StockPortfolio.GetMapping(viewModel.StockName);
-            if (mapping != null)
-            {
-                stockName = mapping.StockName;
-            }
-            if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
-            {
-                this.SelectedStockChanged(viewModel.StockName, true);
-                StockAnalyzerForm.MainFrame.Activate();
-            }
-        }
         private void SelectionChanged(string stockName, StockBarDuration duration = null, string indicator = null)
         {
             var mapping = StockPortfolio.GetMapping(stockName);

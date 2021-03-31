@@ -2200,7 +2200,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
             var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
-            if (pos == null || pos.IsShort)
+            if (pos == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

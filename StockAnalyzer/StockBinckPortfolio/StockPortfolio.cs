@@ -112,18 +112,18 @@ namespace StockAnalyzer.StockBinckPortfolio
 
                 var data = ds.Tables["Transations"].AsEnumerable();
                 foreach (var tradeGroup in data.Where(r => r.Field<string>("Transaction Type") == "Trade").Select(r => new
-                {
-                    TradeDate = r.Field<DateTime>("Trade Date"),
-                    AccountId = r.Field<string>("Account ID"),
-                    Instrument = r.Field<string>("Instrument"),
-                    InstrumentId = r.Field<double>("Instrument Id"),
-                    Event = r.Field<string>("Event"),
-                    Type = r.Field<string>("Transaction Type"),
-                    TradeId = (int)r.Field<double>("Trade Id"),
-                    Qty = (int)r.Field<double>("Amount"),
-                    Price = r.Field<double>("Price"),
-                    Amount = r.Field<double>("Booked Amount Account Currency")
-                }).GroupBy(r => r.AccountId))
+                                            {
+                                                TradeDate = r.Field<DateTime>("Trade Date"),
+                                                AccountId = r.Field<string>("Account ID"),
+                                                Instrument = r.Field<string>("Instrument"),
+                                                InstrumentId = r.Field<double>("Instrument Id"),
+                                                Event = r.Field<string>("Event"),
+                                                Type = r.Field<string>("Transaction Type"),
+                                                TradeId = (int)r.Field<double>("Trade Id"),
+                                                Qty = (int)r.Field<double>("Amount"),
+                                                Price = r.Field<double>("Price"),
+                                                Amount = r.Field<double>("Booked Amount Account Currency")
+                                            }).GroupBy(r => r.AccountId))
                 {
                     var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
                     if (portofolio == null)
@@ -134,15 +134,18 @@ namespace StockAnalyzer.StockBinckPortfolio
                             continue;
 
                         // Find stockNamefrom mapping
-                        var stockName = row.Instrument;
+                        var stockName = row.Instrument.ToUpper()
+                            .Replace(" SA", "")
+                            .Replace(" UCITS ETF", "")
+                            .Replace(" DAILY", "");
 
                         if (row.Event == "Buy")
                         {
-                            portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null);
+                            portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
                         }
                         else if (row.Event == "Sell")
                         {
-                            portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null);
+                            portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
                         }
                     }
                     portofolio.Serialize(folder);
@@ -162,7 +165,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
         }
-        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator)
+        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator, int id = -1)
         {
             var amount = value * qty + fee;
             if (this.Balance < amount)
@@ -172,7 +175,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.Balance -= amount;
             var operation = new StockTradeOperation()
             {
-                Id = GetNextOperationId(),
+                Id = id == -1 ? GetNextOperationId(): id,
                 Date = date,
                 OperationType = TradeOperationType.Buy,
                 Qty = qty,
@@ -186,11 +189,11 @@ namespace StockAnalyzer.StockBinckPortfolio
             if (position != null) // Position on this stock already exists, add new values
             {
                 position.ExitDate = operation.Date;
-                var logEntry = this.Positions.Find(l => l.Id == operation.Id);
 
                 var openValue = (position.EntryValue * position.EntryQty - amount) / (position.EntryQty + operation.Qty);
                 position = new StockPosition
                 {
+                    Id = operation.Id,
                     EntryDate = operation.Date,
                     EntryQty = position.EntryQty + operation.Qty,
                     StockName = operation.StockName,
@@ -215,7 +218,7 @@ namespace StockAnalyzer.StockBinckPortfolio
 
             this.Positions.Add(position);
         }
-        public void SellTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, string exitComment)
+        public void SellTradeOperation(string stockName, DateTime date, int qty, float Value, float fee, string exitComment, int id = -1)
         {
             var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
             if (position == null)
@@ -224,7 +227,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             var operation = new StockTradeOperation()
             {
-                Id = GetNextOperationId(),
+                Id = id == -1 ? GetNextOperationId() : id,
                 Date = date,
                 OperationType = TradeOperationType.Sell,
                 Qty = qty,
@@ -242,6 +245,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 this.Positions.Add(new StockPosition
                 {
+                    Id = operation.Id,
                     EntryDate = operation.Date,
                     EntryQty = position.EntryQty - qty,
                     StockName = operation.StockName,
@@ -279,11 +283,6 @@ namespace StockAnalyzer.StockBinckPortfolio
         }
         public void AddOperation(StockOperation operation)
         {
-            //if (this.Operations.Any(op => op.Id == operation.Id))
-            //    throw new InvalidOperationException($"Operation {operation.Id} already in portfolio");
-
-            //this.Operations.Add(operation);
-
             this.Balance = operation.Balance;
             if (operation.StockName.StartsWith("SRD "))
                 return;
@@ -297,8 +296,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                             {
                                 EntryDate = operation.Date,
                                 EntryQty = operation.Qty,
-                                StockName = operation.StockName,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                StockName = operation.StockName
                             });
                         }
                     }
@@ -320,8 +318,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                         EntryDate = operation.Date,
                                         EntryQty = position.EntryQty - qty,
                                         StockName = operation.StockName,
-                                        EntryValue = position.EntryValue,
-                                        Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                        EntryValue = position.EntryValue
                                     });
                                 }
                             }
@@ -357,9 +354,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                 EntryDate = operation.Date,
                                 EntryQty = position.EntryQty + qty,
                                 StockName = stockName,
-                                EntryValue = openValue,
-                                IsShort = operation.IsShort,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                EntryValue = openValue
                             });
                         }
                         else // Position on this stock doen't exists, create a new one
@@ -369,9 +364,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                 EntryDate = operation.Date,
                                 EntryQty = qty,
                                 StockName = stockName,
-                                EntryValue = -operation.Amount / qty,
-                                IsShort = operation.IsShort,
-                                Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                EntryValue = -operation.Amount / qty
                             });
                         }
                     }
@@ -400,9 +393,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                     EntryDate = operation.Date,
                                     EntryQty = position.EntryQty - qty,
                                     StockName = operation.StockName,
-                                    EntryValue = position.EntryValue,
-                                    IsShort = operation.IsShort,
-                                    Leverage = operation.NameMapping == null ? 1 : operation.NameMapping.Leverage
+                                    EntryValue = position.EntryValue
                                 });
                             }
                         }

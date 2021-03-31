@@ -7,59 +7,6 @@ namespace StockAnalyzer.StockBinckPortfolio
     public class StockOperation
     {
         public StockOperation() { }
-        static public StockOperation FromBinckLine(string line)
-        {
-            var operation = new StockOperation();
-            CultureInfo ci = CultureInfo.GetCultureInfo("fr-FR");
-            var fields = line.Split('\t');
-
-            operation.Id = int.Parse(fields[0]);
-            operation.Date = DateTime.Parse(fields[1], ci);
-            operation.OperationType = fields[3].ToLower();
-
-            operation.Description = fields[4];
-            operation.BinckName = new string(operation.Description.SkipWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" SA", "").ToUpper();
-            operation.NameMapping = StockPortfolio.GetMapping(operation.BinckName);
-            operation.IsShort = operation.NameMapping == null ? false : operation.NameMapping.Leverage < 0;
-            operation.StockName = operation.NameMapping == null ? operation.BinckName : operation.NameMapping.StockName;
-
-            float amount;
-            float.TryParse(fields[5].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out amount);
-            operation.Amount = amount;
-
-            float balance;
-            float.TryParse(fields[6].Replace(" ", "").Replace("€", ""), NumberStyles.Float, ci, out balance);
-            operation.Balance = balance;
-
-            return operation;
-        }
-
-        static public StockOperation FromSimuLine(bool hasId, int id, string line)
-        {
-            // DATE TYPE NAME SHORT QTY AMOUNT
-            var operation = new StockOperation();
-            var fields = line.Split('\t');
-
-            int idOffset = hasId ? 1: 0;
-
-            operation.Id = hasId ? int.Parse(fields[0]) : id;
-            operation.Date = DateTime.Parse(fields[0 + idOffset]);
-            operation.OperationType = fields[1 + idOffset].ToLower();
-
-            operation.Description = fields[4 + idOffset] + " " + fields[2 + idOffset];
-            operation.BinckName = fields[2 + idOffset];
-            operation.StockName = fields[2 + idOffset];
-            operation.IsShort = bool.Parse(fields[3 + idOffset]);
-
-            float amount;
-            float.TryParse(fields[5 + idOffset], out amount);
-            operation.Amount = amount;
-
-            float balance = 0;
-            operation.Balance = balance;
-
-            return operation;
-        }
 
         static public StockOperation FromSimu(int id, DateTime date, string name, string type, int qty, float amount, bool isShort = false)
         {
