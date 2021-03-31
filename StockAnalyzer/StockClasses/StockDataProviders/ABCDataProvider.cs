@@ -303,12 +303,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 if (stockSerie != null)
                                 {
                                     stockSerie.SectorId = sector.Code;
-                                    //stockSerie.SectorIsin = fields[2].StartsWith("QS") ? fields[2] : null;
                                 }
-                                else
-                                {
-                                    Console.WriteLine($"Sector Serie not found in dictionnary {line}");
-                                }
+                                //else
+                                //{
+                                //    Console.WriteLine($"Sector Serie not found in dictionnary {line}");
+                                //}
                             }
                         }
                     }

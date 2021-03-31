@@ -1090,47 +1090,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var name = this.serie.StockName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var positions = this.BinckPortfolio.Positions.Where(p => p.StockName.ToUpper() == name);
+            var operations = this.BinckPortfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name);
             var startDate = this.dateSerie[this.StartIndex];
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
-            foreach (var position in positions.Where(p => p.EntryDate >= startDate && p.EntryDate < endDate))
+            foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate && p.IsOrder))
             {
-                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? position.EntryDate : position.EntryDate.Date;
+                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? operation.Date : operation.Date.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
                 {
-                    StockLog.Write("Order date not found: " + position.EntryDate);
+                    StockLog.Write("Order date not found: " + operation.Date);
+                    continue;
                 }
-                else
-                {
-                    valuePoint2D.Y = position.IsShort ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
-                    screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                    this.DrawArrow(graphic, screenPoint2D, true, position.IsShort);
-
-                    if (position.Stop != 0.0f)
-                    {
-                        PointF stopPoint1 = this.GetScreenPointFromValuePoint(new PointF(index, position.Stop));
-                        PointF stopPoint2 = this.GetScreenPointFromValuePoint(new PointF(index + 20, position.Stop));
-                        this.DrawTmpItem(graphic, this.DrawingPen, new Segment2D(stopPoint1, stopPoint2) { Pen = this.DrawingPen }, false);
-                    }
-                }
-            }
-            foreach (var position in positions.Where(p => p.ExitDate != null && p.ExitDate >= startDate && p.ExitDate < endDate))
-            {
-                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? position.ExitDate.Value : position.ExitDate.Value.Date;
-                int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
-                valuePoint2D.X = index;
-                if (valuePoint2D.X < 0)
-                {
-                    StockLog.Write("Order date not found: " + position.ExitDate);
-                }
-                else
-                {
-                    valuePoint2D.Y = position.IsShort ? this.lowCurveType.DataSerie[index] : this.highCurveType.DataSerie[index];
-                    screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                    this.DrawArrow(graphic, screenPoint2D, false, position.IsShort);
-                }
+                valuePoint2D.Y = operation.OperationType == TradeOperationType.Sell ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
+                screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+                this.DrawArrow(graphic, screenPoint2D, operation.OperationType == TradeOperationType.Buy, operation.IsShort);
             }
         }
 
