@@ -7,6 +7,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockBinckPortfolio
@@ -153,6 +154,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             catch (Exception e)
             {
+                MessageBox.Show(e.Message);
                 StockLogging.StockLog.Write(e);
             }
         }
