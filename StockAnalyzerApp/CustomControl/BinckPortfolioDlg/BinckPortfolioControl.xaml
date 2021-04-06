@@ -35,14 +35,13 @@
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Positions">
                 <telerik:RadGridView Name="positionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
-                                     SelectionMode="Multiple" SelectionUnit="Mixed" ClipboardCopyMode="Cells, Header"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True"
-                                     CanUserSelectColumns="True">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
-                        <telerik:GridViewColumnGroup Name="Risk" Header="Risk" />
+                        <telerik:GridViewColumnGroup Name="Risk" Header="Risk Management" />
                         <telerik:GridViewColumnGroup Name="Current" Header="Current"/>
                         <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
                         <telerik:GridViewColumnGroup Name="Trade Exit" Header="Exit" />
@@ -59,6 +58,7 @@
                         <telerik:GridViewDataColumn Header="Trade&#x0a;Risk" DataMemberBinding="{Binding TradeRisk, StringFormat=P2}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="Portfolio&#x0a;Risk" DataMemberBinding="{Binding PortfolioRisk, StringFormat=P2}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current"/>
+                        <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Variation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" ColumnGroupName="Technical" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Line&#x0a;Break" DataMemberBinding="{Binding BarDuration.LineBreak}" ColumnGroupName="Technical" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>

@@ -252,6 +252,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 StockDataProvider.InvestingIntraday, BarDuration.MIN_5);
                             stockSerie.Ticker = long.Parse(row[0]);
 
+                            var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
+                            if (dailySerie!= null)
+                            {
+                                stockSerie.ISIN = dailySerie.ISIN;
+                            }
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {
@@ -261,7 +266,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         else
                         {
                             Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
-                            //MessageBox.Show("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
                         }
                     }
                 }

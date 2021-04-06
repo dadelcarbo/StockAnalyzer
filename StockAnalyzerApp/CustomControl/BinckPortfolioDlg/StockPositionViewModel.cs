@@ -1,10 +1,11 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockBinckPortfolio;
 using System;
+using StockAnalyzer;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {
-    public class StockPositionViewModel
+    public class StockPositionViewModel : NotifyPropertyChangedBase
     {
         BinckPortfolioViewModel portfolio;
         StockPosition position;
@@ -42,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         #endregion
 
 
-        public float Stop => position.Stop;
+        public float Stop { get { return position.Stop; } set { if (position.Stop != value) { position.Stop = value; OnPropertyChanged("Stop"); OnPropertyChanged("TradeRisk"); OnPropertyChanged("PortfolioRisk"); } } }
 
         public float TradeRisk => position.Stop == 0 ? 1.0f : (position.EntryValue - position.Stop) / position.EntryValue;
         public float PortfolioRisk => position.Stop == 0 ? 1.0f : PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;

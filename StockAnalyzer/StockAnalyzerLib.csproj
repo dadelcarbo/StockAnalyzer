@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>UltimateChartist.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip">
       <HintPath>..\lib\Ionic.Zip.dll</HintPath>
@@ -569,6 +575,7 @@
     </None>
     <None Include="StockAgent\StockAgentEngine.cd" />
     <None Include="StockBinckPortfolio\PortfolioDiagram.cd" />
+    <None Include="UltimateChartist.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">

@@ -82,6 +82,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
             LoadMappings();
+
             // Load Binck Portfolio from Operations(mouvements)
             StockPortfolio.Portfolios = new List<StockPortfolio>();
             foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
@@ -92,6 +93,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 LoadFromSAXO(file, folder);
             }
+
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
@@ -192,7 +194,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             {
                 position.ExitDate = operation.Date;
 
-                var openValue = (position.EntryValue * position.EntryQty - amount) / (position.EntryQty + operation.Qty);
+                var openValue = (position.EntryValue * position.EntryQty + amount) / (position.EntryQty + operation.Qty);
                 position = new StockPosition
                 {
                     Id = operation.Id,

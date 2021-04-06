@@ -15,8 +15,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public string StockName { get; set; }
         public string Group { get; set; }
 
-        //public event PropertyChangedEventHandler PropertyChanged;
-
         public static List<InvestingConfigEntry> LoadFromFile(string fileName)
         {
             string line;
