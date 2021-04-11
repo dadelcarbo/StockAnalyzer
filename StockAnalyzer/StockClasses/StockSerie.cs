@@ -4992,42 +4992,16 @@ namespace StockAnalyzer.StockClasses
 
         public void SaveToCSVFromDateToDate(string fileName, DateTime startDate, DateTime endDate)
         {
-            var values = this.Values.Where(v => v.DATE >= startDate && v.DATE <= endDate);
+            var values = this.Values.Where(v => v.DATE >= startDate && v.DATE <= endDate).ToList();
             if (values.Count() > 0)
             {
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
-                    DateTime lastDate = this.Keys.Last();
                     sw.WriteLine(StockDailyValue.StringFormat());
                     foreach (StockDailyValue value in values)
                     {
                         sw.WriteLine(value.ToString());
                     }
-                }
-            }
-        }
-
-        public void SaveToCSVFromDate(string fileName, DateTime startDate)
-        {
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                DateTime lastDate = this.Keys.Last();
-                sw.WriteLine(StockDailyValue.StringFormat());
-                foreach (StockDailyValue value in this.Values.Where(v => v.DATE >= startDate))
-                {
-                    sw.WriteLine(value.ToString());
-                }
-            }
-        }
-        public void SaveToCSV(string fileName)
-        {
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                DateTime lastDate = this.Keys.Last();
-                sw.WriteLine(StockDailyValue.StringFormat());
-                foreach (StockDailyValue value in this.Values)
-                {
-                    sw.WriteLine(value.ToString());
                 }
             }
         }

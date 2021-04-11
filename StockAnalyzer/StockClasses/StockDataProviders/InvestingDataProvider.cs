@@ -74,6 +74,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(StockSerie stockSerie)
         {
+            StockLog.Write("LoadData for " + stockSerie.StockName);
             bool res = false;
             var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
@@ -91,12 +92,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     stockSerie.Values.Last().IsComplete = false;
                     var lastDate = stockSerie.Keys.Last();
 
-                    var task = new Task(() =>
-                    {
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
-                        File.Delete(fileName);
-                    });
-                    task.Start();
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
+                    File.Delete(fileName);
                 }
                 else
                 {
@@ -118,6 +115,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool ForceDownloadData(StockSerie stockSerie)
         {
+            StockLog.Write("ForceDownloadData for " + stockSerie.StockName);
             var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
@@ -136,6 +134,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static bool first = true;
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
+            StockLog.Write("DownloadDailyData for " + stockSerie.StockName);
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 NotifyProgress("Downloading daily data for " + stockSerie.StockName);
@@ -193,6 +192,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 {
                                     File.WriteAllText(fileName, content);
                                     stockSerie.IsInitialised = false;
+
                                     return true;
                                 }
                                 else
