@@ -249,7 +249,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             var stockSerie = new StockSerie(row[2], row[1],
                                 (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
-                                StockDataProvider.InvestingIntraday, BarDuration.MIN_5);
+                                StockDataProvider.InvestingIntraday, BarDuration.M_5);
                             stockSerie.Ticker = long.Parse(row[0]);
 
                             var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);

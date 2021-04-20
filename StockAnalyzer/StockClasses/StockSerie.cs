@@ -69,10 +69,6 @@ namespace StockAnalyzer.StockClasses
             DownTrend
         };
 
-
-        public static SortedDictionary<StockBarDuration, StockBarDuration> ExactDataDurationMapping;
-
-
         #endregion
         #region public properties
         public string StockName { get; private set; }
@@ -4395,6 +4391,18 @@ namespace StockAnalyzer.StockClasses
                                     }
                                 }
                                 break;
+                            case "H":
+                                if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
+                                {
+                                    newBarList = GenerateHourBar(dailyValueList, period);
+                                }
+                                break;
+                            case "M":
+                                if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
+                                {
+                                    newBarList = GenerateMinuteBar(dailyValueList, period);
+                                }
+                                break;
                             default:
                                 throw new System.NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
                         }
@@ -4490,6 +4498,95 @@ namespace StockAnalyzer.StockClasses
                 float open = tmpBarList.Last().CLOSE;
                 newValue = new StockDailyValue(open, Math.Max(high, lastValue.HIGH), Math.Min(low, lastValue.LOW), lastValue.CLOSE, lastValue.VOLUME + volume, date == DateTime.MaxValue ? lastValue.DATE : date);
                 newValue.IsComplete = false;
+                newBarList.Add(newValue);
+            }
+            return newBarList;
+        }
+        private List<StockDailyValue> GenerateMinuteBar(List<StockDailyValue> stockDailyValueList, int nbMinutes)
+        {
+            if (nbMinutes <= 5)
+                return stockDailyValueList;
+            List<StockDailyValue> newBarList = new List<StockDailyValue>();
+            StockDailyValue newValue = null;
+            DateTime closeDate = DateTime.Now;
+            foreach (StockDailyValue dailyValue in stockDailyValueList)
+            {
+                if (newValue == null)
+                {
+                    // New bar
+                    int min = (dailyValue.DATE.Minute / nbMinutes) * nbMinutes;
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, min, 0);
+                    closeDate = openDate.AddMinutes(nbMinutes);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else if (dailyValue.DATE.Date != newValue.DATE.Date || dailyValue.DATE >= closeDate)
+                {
+                    // Force bar end at the end of a day
+                    newValue.IsComplete = true;
+                    newBarList.Add(newValue);
+
+                    // New bar
+                    int min = (dailyValue.DATE.Minute / nbMinutes) * nbMinutes;
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, min, 0);
+                    closeDate = openDate.AddMinutes(nbMinutes);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else
+                {
+                    // Need to extend current bar
+                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                    newValue.VOLUME += dailyValue.VOLUME;
+                    newValue.CLOSE = dailyValue.CLOSE;
+                }
+            }
+            if (newValue != null)
+            {
+                newBarList.Add(newValue);
+            }
+            return newBarList;
+        }
+        private List<StockDailyValue> GenerateHourBar(List<StockDailyValue> stockDailyValueList, int nbHours)
+        {
+            List<StockDailyValue> newBarList = new List<StockDailyValue>();
+            StockDailyValue newValue = null;
+            DateTime closeDate = DateTime.Now;
+            foreach (StockDailyValue dailyValue in stockDailyValueList)
+            {
+                if (newValue == null)
+                {
+                    // New bar
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, 0, 0);
+                    closeDate = openDate.AddHours(nbHours);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else if (dailyValue.DATE.Date != newValue.DATE.Date || dailyValue.DATE >= closeDate)
+                {
+                    // Force bar end at the end of a day
+                    newValue.IsComplete = true;
+                    newBarList.Add(newValue);
+
+                    // New bar
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, 0, 0);
+                    closeDate = openDate.AddHours(nbHours);
+
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else
+                {
+                    // Need to extend current bar
+                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                    newValue.VOLUME += dailyValue.VOLUME;
+                    newValue.CLOSE = dailyValue.CLOSE;
+                }
+            }
+            if (newValue != null)
+            {
                 newBarList.Add(newValue);
             }
             return newBarList;
@@ -4594,50 +4691,6 @@ namespace StockAnalyzer.StockClasses
             }
             return newBarList;
         }
-        private List<StockDailyValue> GenerateHighLowBreakBarFromDaily(List<StockDailyValue> stockDailyValueList)
-        {
-            List<StockDailyValue> newBarList = new List<StockDailyValue>();
-            StockDailyValue dailyValue = stockDailyValueList[0];
-            StockDailyValue lastNewValue = null;
-            StockDailyValue previousNewValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-            newBarList.Add(previousNewValue);
-
-            for (int i = 1; i < stockDailyValueList.Count; i++)
-            {
-                dailyValue = stockDailyValueList[i];
-                if (lastNewValue == null) // A new bar was completed in previous iteration
-                {
-                    // New bar
-                    lastNewValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                    lastNewValue.IsComplete = false;
-
-                    newBarList.Add(lastNewValue);
-
-                    if (dailyValue.CLOSE > previousNewValue.HIGH || dailyValue.CLOSE < previousNewValue.LOW) // Out of previous bar range ==> Create new bar
-                    {
-                        previousNewValue = lastNewValue;
-                        lastNewValue = null;
-                    }
-                }
-                else
-                {
-                    lastNewValue.HIGH = Math.Max(lastNewValue.HIGH, dailyValue.HIGH);
-                    lastNewValue.LOW = Math.Min(lastNewValue.LOW, dailyValue.LOW);
-                    lastNewValue.VOLUME += dailyValue.VOLUME;
-                    lastNewValue.CLOSE = dailyValue.CLOSE;
-                    lastNewValue.DATE = dailyValue.DATE;
-
-                    if (dailyValue.CLOSE > previousNewValue.HIGH || dailyValue.CLOSE < previousNewValue.LOW) // Out of previous bar range ==> Create new bar
-                    {
-                        // Mark bar as completed
-                        previousNewValue = lastNewValue;
-                        lastNewValue.IsComplete = true;
-                        lastNewValue = null;
-                    }
-                }
-            }
-            return newBarList;
-        }
         private List<StockDailyValue> GenerateRenkoBarFromDaily(List<StockDailyValue> stockDailyValueList, float variation)
         {
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
@@ -4710,7 +4763,6 @@ namespace StockAnalyzer.StockClasses
             }
             return newBarList;
         }
-
         public List<StockDailyValue> GenerateDailyFromIntraday()
         {
             if (!this.BelongsToGroup(Groups.INTRADAY))
@@ -4752,7 +4804,6 @@ namespace StockAnalyzer.StockClasses
 
             return newBarList;
         }
-
         private List<StockDailyValue> GenerateNbLineBreakBarFromDaily(List<StockDailyValue> stockDailyValueList, int nbBar)
         {
             bool isIntraday = this.StockName.StartsWith("INT_");
