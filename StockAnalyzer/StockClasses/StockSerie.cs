@@ -4248,28 +4248,6 @@ namespace StockAnalyzer.StockClasses
                 case StockClasses.BarDuration.Daily:
                     newBarList = dailyValueList;
                     break;
-                case StockClasses.BarDuration.TLB:
-                    newBarList = GenerateNbLineBreakBarFromDaily(dailyValueList, 2);
-                    break;
-                case StockClasses.BarDuration.TLB_3D:
-                    newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2);
-                    break;
-                case StockClasses.BarDuration.TLB_6D:
-                    newBarList = GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 6), 2);
-                    break;
-                case StockClasses.BarDuration.TLB_9D:
-                    newBarList =
-                       GenerateNbLineBreakBarFromDaily(
-                          GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2), 3),
-                          2);
-                    break;
-                case StockClasses.BarDuration.TLB_27D:
-                    newBarList =
-                       GenerateNbLineBreakBarFromDaily(
-                          GenerateNbLineBreakBarFromDaily(
-                             GenerateMultipleBar(GenerateNbLineBreakBarFromDaily(GenerateMultipleBar(dailyValueList, 3), 2),
-                                3), 2), 3);
-                    break;
                 case StockClasses.BarDuration.Weekly:
                     {
                         StockDailyValue newValue = null;
@@ -4802,67 +4780,6 @@ namespace StockAnalyzer.StockClasses
             newBarList.Add(newValue = new StockDailyValue(open, high, low, close, volume, newDay));
             newValue.IsComplete = false;
 
-            return newBarList;
-        }
-        private List<StockDailyValue> GenerateNbLineBreakBarFromDaily(List<StockDailyValue> stockDailyValueList, int nbBar)
-        {
-            bool isIntraday = this.StockName.StartsWith("INT_");
-            Queue<StockDailyValue> previousValues = new Queue<StockDailyValue>(nbBar);
-            List<StockDailyValue> newBarList = new List<StockDailyValue>();
-            StockDailyValue newValue = null;
-
-            if (stockDailyValueList.Count == 0) return newBarList;
-
-            previousValues.Enqueue(stockDailyValueList[0]);
-
-            int i = 0;
-            foreach (StockDailyValue dailyValue in stockDailyValueList)
-            {
-                if (newValue == null || (isIntraday && dailyValue.DATE.Date != newValue.DATE.Date))
-                {
-                    // Need to create a new bar
-                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-                    newValue.IsComplete = false;
-                    newBarList.Add(newValue);
-                }
-                else
-                {
-                    // Need to extend current bar
-                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
-                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
-                    newValue.VOLUME += dailyValue.VOLUME;
-                    newValue.CLOSE = dailyValue.CLOSE;
-                }
-
-                // Check if current Bar is complete or not
-                float highest = previousValues.Max(v => v.HIGH);
-                if ((dailyValue.CLOSE > highest && dailyValue.IsComplete))
-                {
-                    newValue.IsComplete = true;
-                    newValue = null;
-                }
-                else
-                {
-                    float lowest = previousValues.Min(v => v.LOW);
-                    if (dailyValue.CLOSE < lowest && dailyValue.IsComplete)
-                    {
-                        newValue.IsComplete = true;
-                        newValue = null;
-                    }
-                }
-
-                if (i < nbBar)
-                {
-                    previousValues.Enqueue(dailyValue);
-                    i++;
-                    if (i == nbBar) previousValues.Dequeue();
-                }
-                else
-                {
-                    previousValues.Dequeue();
-                    previousValues.Enqueue(dailyValue);
-                }
-            }
             return newBarList;
         }
 

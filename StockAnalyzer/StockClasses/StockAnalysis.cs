@@ -27,9 +27,9 @@ namespace StockAnalyzer.StockClasses
         }
         public bool IsEmpty()
         {
-            return ((this.DrawingItems.Count == 0 || (!this.DrawingItems.Values.Any(dis => dis.Any(d => d.IsPersistent)))) &&
-                this.Excluded == false &&
-                this.Theme == string.Empty);
+            return this.Excluded == false 
+                && this.Theme == string.Empty 
+                && this.DrawingItems.Values.SelectMany(d => d, (d, dd) => dd).Where(dd => dd.IsPersistent).Count() == 0;
         }
 
         public System.Xml.Schema.XmlSchema GetSchema()

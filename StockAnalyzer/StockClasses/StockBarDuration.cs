@@ -22,11 +22,6 @@ namespace StockAnalyzer.StockClasses
         Bar_24,
         Bar_27,
         Bar_48,
-        TLB,
-        TLB_3D,
-        TLB_6D,
-        TLB_9D,
-        TLB_27D,
         RENKO_2
     }
 
@@ -69,10 +64,8 @@ namespace StockAnalyzer.StockClasses
 
         public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
         public static StockBarDuration H_1 = new StockBarDuration(BarDuration.H_1);
-        public static StockBarDuration TLB = new StockBarDuration(BarDuration.TLB);
-        public static StockBarDuration TLB_3D = new StockBarDuration(BarDuration.TLB_3D);
-        public static StockBarDuration TLB_6D = new StockBarDuration(BarDuration.TLB_6D);
-        public static StockBarDuration TLB_9D = new StockBarDuration(BarDuration.TLB_9D);
+        public static StockBarDuration H_2 = new StockBarDuration(BarDuration.H_2);
+        public static StockBarDuration H_4 = new StockBarDuration(BarDuration.H_4);
         public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
         public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
@@ -86,10 +79,8 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Weekly,
             StockBarDuration.Monthly,
             StockBarDuration.H_1,
-            StockBarDuration.TLB,
-            StockBarDuration.TLB_3D,
-            StockBarDuration.TLB_6D,
-            StockBarDuration.TLB_9D,
+            StockBarDuration.H_2,
+            StockBarDuration.H_4,
             StockBarDuration.Bar_3,
             StockBarDuration.Bar_6,
             StockBarDuration.Bar_12,

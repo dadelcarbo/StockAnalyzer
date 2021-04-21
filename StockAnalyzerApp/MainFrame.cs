@@ -2465,7 +2465,7 @@ namespace StockAnalyzerApp
                     {
                         this.logScaleBtn_Click(null, null);
                     }
-                    this.ForceBarDuration(StockBarDuration.Bar_12, true);
+                    this.ForceBarDuration(StockBarDuration.H_1, true);
                     break;
                 default:
                     if (this.barDurationComboBox.SelectedItem != null && this.BarDuration.Duration > StockAnalyzer.StockClasses.BarDuration.Monthly)
