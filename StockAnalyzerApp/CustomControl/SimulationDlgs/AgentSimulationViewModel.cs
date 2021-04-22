@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         public int Accuracy { get; set; }
         public float Stop { get; set; }
-        public List<string> Selectors => new List<string> { "WinTradeRatio", "WinLossRatio", "ExpectedGain", "ExpectedGainPerDay" };
+        public List<string> Selectors => new List<string> { "ExpectedGainPerDay", "ExpectedGain", "Kelly %", "WinTradeRatio", "WinLossRatio", "TotalGain"};
         public string Selector { get; set; }
 
         public void Cancel()
@@ -262,12 +262,18 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         selector = t => t.WinTradeRatio;
                         break;
                     case "WinLossRatio":
+                        selector = t => t.WinLossRatio;
+                        break;
+                    case "TotalGain":
                         selector = t => t.CumulGain;
                         break;
                     case "ExpectedGain":
                         selector = t => t.ExpectedReturn;
                         break;
                     case "ExpectedGainPerDay":
+                        selector = t => t.ExpectedGainPerBar;
+                        break;
+                    case "Kelly %":
                         selector = t => t.ExpectedGainPerBar;
                         break;
                     default:

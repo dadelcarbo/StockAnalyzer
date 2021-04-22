@@ -13,6 +13,8 @@ namespace StockAnalyzer.StockAgent
         }
         public IList<StockTrade> Trades { get; private set; }
         public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
+        public float TotalGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Sum(t => t.Gain) : 0f; } }
+        public float TotalLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Sum(t => t.Gain) : 0f; } }
         public float AvgGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f; } }
         public float AvgLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
         public int AvgDuration { get { return this.Trades.Count > 0 ? (int)this.Trades.Average(t => t.Duration) : 0; } }
@@ -28,13 +30,17 @@ namespace StockAnalyzer.StockAgent
 
         public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbTrades : 0f;
 
+        public float WinLossRatio => NbLostTrade != 0 ? this.TotalGain / -TotalLoss : 0f;
+        public float Kelly => WinTradeRatio - (1.0f - WinTradeRatio) / WinLossRatio;
+
         public string ToLog()
         {
             string res = "Nb Trade: " + Trades.Count() + Environment.NewLine;
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade: " + NbLostTrade + Environment.NewLine;
 
-
+            res += "Total Gain: " + TotalGain.ToString("P2") + Environment.NewLine;
+            res += "Total Loss: " + TotalLoss.ToString("P2") + Environment.NewLine;
             res += "Avg Gain: " + AvgGain.ToString("P2") + Environment.NewLine;
             res += "Avg Loss: " + AvgLoss.ToString("P2") + Environment.NewLine;
             res += "Max Gain: " + MaxGain.ToString("P2") + Environment.NewLine;
@@ -46,6 +52,8 @@ namespace StockAnalyzer.StockAgent
             res += "Win Ratio: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
             res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P3") + Environment.NewLine;
+
+            res += "Kelly: " + Kelly.ToString("P3") + Environment.NewLine;
 
             return res;
         }
