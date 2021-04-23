@@ -14,13 +14,19 @@ namespace StockFundamentals
 
         const string PARAMS = "{\"filter\":[{\"left\":\"price_book_ratio\",\"operation\":\"nempty\"},{\"left\":\"type\",\"operation\":\"equal\",\"right\":\"stock\"},{ \"left\":\"subtype\",\"operation\":\"equal\",\"right\":\"common\"},{ \"left\":\"SMA50\",\"operation\":\"less\",\"right\":\"close\"}],\"options\":{ \"active_symbols_only\":true,\"lang\":\"en\"},\"symbols\":{ \"query\":{ \"types\":[]},\"tickers\":[]},\"columns\":[\"logoid\",\"name\",\"close\",\"market_cap_basic\",\"price_earnings_ttm\",\"earnings_per_share_basic_ttm\",\"sector\",\"price_book_ratio\",\"dividend_yield_recent\",\"enterprise_value_fq\",\"enterprise_value_ebitda_ttm\",\"gross_margin\",\"description\",\"name\",\"type\",\"subtype\",\"update_mode\",\"pricescale\",\"minmov\",\"fractional\",\"minmove2\"],\"sort\":{ \"sortBy\":\"price_book_ratio\",\"sortOrder\":\"asc\"},\"range\":[0,150]}";
 
+        //     logoid	name	close	market_cap_basic	price_earnings_ttm	earnings_per_share_basic_ttm	sector	price_book_ratio	dividend_yield_recent	enterprise_value_fq	enterprise_value_ebitda_ttm	gross_margin	description	name	type	subtype	update_mode	pricescale	minmov	fractional	minmove2
 
-        logoid	name	close	market_cap_basic	price_earnings_ttm	earnings_per_share_basic_ttm	sector	price_book_ratio	dividend_yield_recent	enterprise_value_fq	enterprise_value_ebitda_ttm	gross_margin	description	name	type	subtype	update_mode	pricescale	minmov	fractional	minmove2
-
-            
+        [STAThread]
         static void Main(string[] args)
         {
-            HttpClient client = new HttpClient();
+
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("https://www.boursorama.com");
+
+            var response = client.GetAsync("bourse/action/graph/ws/GetTicksEOD?symbol=1rPCA&length=5&period=-1&guid=").GetAwaiter().GetResult();
+            var data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+            client = new HttpClient();
             client.BaseAddress = new Uri("https://scanner.tradingview.com");
 
             var content = new StringContent(PARAMS);

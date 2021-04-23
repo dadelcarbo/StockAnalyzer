@@ -232,7 +232,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool SupportsIntradayDownload
         {
-            get { return false; }
+            get { return true; }
         }
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
@@ -783,27 +783,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
 
-                string folder = RootFolder + ABC_INTRADAY_FOLDER;
-                string abcGroup = GetABCGroup(stockSerie.StockGroup);
-                if (abcGroup == null)
+                var resp = client.GetAsync($"api/general/GetQuote2?shortID={stockSerie.ShortName}p").GetAwaiter().GetResult();
+
+                if (!resp.IsSuccessStatusCode)
                     return false;
-                string fileName = abcGroup + ".csv";
+                var respStream = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                
 
-                if (File.Exists(folder + "\\" + fileName))
-                {
-                    if (File.GetLastWriteTime(folder + "\\" + fileName) > DateTime.Now.AddMinutes(-5))
-                        return false;
-                }
+                //string folder = RootFolder + ABC_INTRADAY_FOLDER;
+                //string abcGroup = GetABCGroup(stockSerie.StockGroup);
+                //if (abcGroup == null)
+                //    return false;
+                //string fileName = abcGroup + ".csv";
 
-                if (this.DownloadGroupIntraday(folder, fileName, abcGroup))
-                {
-                    // Deinitialise all the stocks belonging to group
-                    foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
-                    {
-                        serie.IsInitialised = false;
-                        stockSerie.ClearBarDurationCache();
-                    }
-                }
+                //if (File.Exists(folder + "\\" + fileName))
+                //{
+                //    if (File.GetLastWriteTime(folder + "\\" + fileName) > DateTime.Now.AddMinutes(-5))
+                //        return false;
+                //}
+
+                //if (this.DownloadGroupIntraday(folder, fileName, abcGroup))
+                //{
+                //    // Deinitialise all the stocks belonging to group
+                //    foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
+                //    {
+                //        serie.IsInitialised = false;
+                //        stockSerie.ClearBarDurationCache();
+                //    }
+                //}
             }
             return true;
         }
