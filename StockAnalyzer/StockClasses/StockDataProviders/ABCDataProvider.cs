@@ -154,6 +154,41 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
+        const string DOWNLOAD_INTRADAY_GROUP_BODY =
+            "splace=$GROUP&" +
+            "sformat=w&" +
+            "__RequestVerificationToken=$TOKEN";
+        public bool DownloadIntradayGroup(string destFolder, string fileName, string group)
+        {
+            if (!this.Initialize()) return false;
+
+            try
+            {
+                var postData = DOWNLOAD_INTRADAY_GROUP_BODY;
+
+                postData = postData.Replace("$GROUP", group);
+                postData = postData.Replace("$TOKEN", verifToken);
+
+                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                var resp = client.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
+                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
+                    return false;
+                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                {
+                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
+                    {
+                        respStream.CopyTo(fileStream);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
+
         const string DOWNLOAD_LABEL_BODY =
             "cbox=$GROUP&" +
             "__RequestVerificationToken=$TOKEN&" +
@@ -779,16 +814,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
 
-                if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || stockSerie.Keys.Last() == DateTime.Today)
+                if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || stockSerie.Keys.Last().Date == DateTime.Today)
                 {
                     return false;
                 }
 
-                var resp = client.GetAsync($"api/general/GetQuote2?shortID={stockSerie.ShortName}p").GetAwaiter().GetResult();
+                string abcGroup = GetABCGroup(stockSerie.StockGroup);
+                if (abcGroup != null)
+                {
+                    var destFolder = RootFolder + ABC_INTRADAY_FOLDER;
+                    string fileName = abcGroup + ".csv";
+                    if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+                    {
+                        this.LoadGroupData(abcGroup, stockSerie.StockGroup);
+                    }
+                }
 
-                if (!resp.IsSuccessStatusCode)
-                    return false;
-                var respStream = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                //var resp = client.GetAsync($"api/general/GetQuote2?shortID={stockSerie.ShortName}p").GetAwaiter().GetResult();
+
+                //if (!resp.IsSuccessStatusCode)
+                //    return false;
+                //var respStream = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
 
                 //string folder = RootFolder + ABC_INTRADAY_FOLDER;
