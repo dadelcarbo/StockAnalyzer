@@ -4097,7 +4097,10 @@ namespace StockAnalyzerApp
                         if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
-                            this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                            if (this.StockDictionary.ContainsKey(fields[1]))
+                            {
+                                this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                            }
                         }
                     }
 

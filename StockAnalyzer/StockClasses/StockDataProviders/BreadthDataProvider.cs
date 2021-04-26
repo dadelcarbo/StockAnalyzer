@@ -71,7 +71,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var stockDictionary = StockDictionary.Instance;
             if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CAC)
             {
-                return stockDictionary.GenerateABCSectorEqualWeight(stockSerie, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+                if (stockSerie.StockName.EndsWith("_SI"))
+                {
+
+                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, stockSerie.StockName, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+                }
+                else
+                {
+                    return stockDictionary.GenerateABCSectorEqualWeight(stockSerie, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+                }
             }
             string[] row = stockSerie.ShortName.Split('.');
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);

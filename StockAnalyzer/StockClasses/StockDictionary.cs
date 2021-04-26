@@ -117,9 +117,9 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateAdvDeclSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -224,9 +224,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -326,9 +326,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -428,9 +428,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -536,9 +536,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -643,9 +643,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -1184,9 +1184,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Replace("MYOSC_", ""));
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -1287,9 +1287,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Replace("BBWIDTH_", ""));
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -1389,9 +1389,9 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateMcClellanSumSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -1401,9 +1401,16 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-
-            StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
-
+            StockSerie[] indexComponents;
+            if (indexName.EndsWith("_SI"))
+            {
+                int sectorId = int.Parse(breadthSerie.ShortName);
+                indexComponents = this.Values.Where(s => s.SectorId == sectorId).ToArray();
+            }
+            else
+            {
+                indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            }
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
 
@@ -1499,9 +1506,9 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateMcClellanSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -1608,9 +1615,9 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Replace("MM", ""));
             StockSerie indiceSerie = null;
-            if (this.ContainsKey(indexName))
+            if (this.ContainsKey("CAC40"))
             {
-                indiceSerie = this[indexName];
+                indiceSerie = this["CAC40"];
                 if (!indiceSerie.Initialise())
                 {
                     return false;

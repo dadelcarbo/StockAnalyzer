@@ -284,6 +284,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 // Create Sector serie
                 stockDictionary.Add(longName, new StockSerie(longName, sector.Code.ToString(), StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
+                stockDictionary.Add(longName + "_SI", new StockSerie(longName + "_SI", sector.Code.ToString(), StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
 
                 // Set SectorId to stock
                 string fileName = RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sector.Code.ToString() + ".txt";
@@ -788,7 +789,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (!resp.IsSuccessStatusCode)
                     return false;
                 var respStream = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                
+
 
                 //string folder = RootFolder + ABC_INTRADAY_FOLDER;
                 //string abcGroup = GetABCGroup(stockSerie.StockGroup);
