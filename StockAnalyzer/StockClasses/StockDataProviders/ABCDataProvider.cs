@@ -619,7 +619,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (StreamReader sr = new StreamReader(fileName, true))
                 {
                     string previousISIN = string.Empty;
-                    DateTime date = File.GetLastWriteTime(fileName); ;
+                    DateTime date = File.GetLastWriteTime(fileName);
                     while (!sr.EndOfStream)
                     {
                         string line = sr.ReadLine().Replace(",", ".");
@@ -629,7 +629,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0] && s.StockGroup == group);
                             previousISIN = row[0];
                             if (stockSerie?.Count == 0)
-                                this.LoadFromCSV(stockSerie);
+                            {
+                                if (!this.LoadFromCSV(stockSerie))
+                                {
+                                    continue;
+                                }
+                            }
                         }
                         if (stockSerie != null)
                         {
@@ -826,38 +831,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     string fileName = abcGroup + ".csv";
                     if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
                     {
-                        this.LoadGroupData(abcGroup, stockSerie.StockGroup);
+                        // Deinitialise all the stocks belonging to group
+                        foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
+                        {
+                            serie.IsInitialised = false;
+                            stockSerie.ClearBarDurationCache();
+                        }
                     }
                 }
-
-                //var resp = client.GetAsync($"api/general/GetQuote2?shortID={stockSerie.ShortName}p").GetAwaiter().GetResult();
-
-                //if (!resp.IsSuccessStatusCode)
-                //    return false;
-                //var respStream = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-
-                //string folder = RootFolder + ABC_INTRADAY_FOLDER;
-                //string abcGroup = GetABCGroup(stockSerie.StockGroup);
-                //if (abcGroup == null)
-                //    return false;
-                //string fileName = abcGroup + ".csv";
-
-                //if (File.Exists(folder + "\\" + fileName))
-                //{
-                //    if (File.GetLastWriteTime(folder + "\\" + fileName) > DateTime.Now.AddMinutes(-5))
-                //        return false;
-                //}
-
-                //if (this.DownloadGroupIntraday(folder, fileName, abcGroup))
-                //{
-                //    // Deinitialise all the stocks belonging to group
-                //    foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
-                //    {
-                //        serie.IsInitialised = false;
-                //        stockSerie.ClearBarDurationCache();
-                //    }
-                //}
             }
             return true;
         }
