@@ -12,13 +12,13 @@ namespace TweetApp
     public class TweeterAPI
     {
 
-        private string oAuthConsumerKey = "";
-        private string oAuthConsumerSecret = "";
-        private string accessToken = "";
-        private string accessTokenSecret = "";
+        private string oAuthConsumerKey = "dadelcarbo";
+        private string oAuthConsumerSecret = "Ter12Net";
+        private string accessToken = "vTMGphEDjwBCflVYANUt5sbMP";
+        private string accessTokenSecret = "8h40YUVy4RhcHtB2H4289sdStoZTXLRXe9zOPQpxqf3kpAdyOi";
         string oAuthUrl = "https://api.twitter.com/1.1/statuses/update.json";
 
-        private void SendTweet(string message)
+        public void SendTweet(string message)
         {
             string authHeader = GenerateAuthorizationHeader(message);
             string postBody = "status=" + Uri.EscapeDataString(message);

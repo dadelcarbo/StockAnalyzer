@@ -20,6 +20,9 @@ namespace TweetApp
 
         public void Connect()
         {
+            var api = new TweeterAPI();
+            api.SendTweet("Test message");
+
             this.Status = this.status == CONNECTED ? NOT_CONNECTED : CONNECTED;
         }
         #region INotifyPropertyChanged implementation
