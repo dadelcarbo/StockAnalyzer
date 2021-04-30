@@ -5,13 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TweetApp
 {
     public class TweeterAPI
     {
-
         private string oAuthConsumerKey = "";
         private string oAuthConsumerSecret = "";
         private string accessToken = "";
