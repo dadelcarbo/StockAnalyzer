@@ -13,23 +13,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TweetApp
+namespace StockAnalyzerApp.CustomControl.TweetDlg
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TweetControl.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TweetControl : UserControl
     {
-        ViewModel vm;
-        public MainWindow()
+        public TweetViewModel ViewModel { get; }
+        public TweetControl()
         {
             InitializeComponent();
-            vm = this.Resources["ViewModel"] as ViewModel;
+            this.ViewModel = (TweetViewModel)this.Resources["ViewModel"];
+            this.DataContext = this.ViewModel;
         }
 
-        private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
+        private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            await vm.SendTweetAsync("Api Works", @"C: \Users\David\Pictures\TamilNadu.png");
+            await this.ViewModel.SendTweetAsync();
         }
     }
 }

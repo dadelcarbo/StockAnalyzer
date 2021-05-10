@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -7,6 +8,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         static private string FOLDER = @"\data\daily\Breadth";
         static private string ARCHIVE_FOLDER = @"\data\archive\daily\Breadth";
+
+        public static bool NeedGenerate { get; set; }
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -55,8 +58,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             fullFileName = RootFolder + FOLDER + "\\" + fileName;
             res = ParseCSVFile(stockSerie, fullFileName) || res;
 
-            res |= GenerateBreadthData(stockSerie);
-
+            var cac40 = StockDictionary.Instance["CAC40"];
+            cac40.Initialise();
+            if (cac40.Keys.Count != stockSerie.Count)
+            {
+                res |= GenerateBreadthData(stockSerie);
+                NeedGenerate = true;
+            }
             return res;
         }
 
@@ -73,7 +81,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (stockSerie.StockName.EndsWith("_SI"))
                 {
-
                     return stockDictionary.GenerateMcClellanSumSerie(stockSerie, stockSerie.StockName, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 }
                 else

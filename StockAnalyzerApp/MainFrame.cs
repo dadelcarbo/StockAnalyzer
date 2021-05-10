@@ -29,6 +29,7 @@ using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
+using StockAnalyzerApp.CustomControl.TweetDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
@@ -96,7 +97,6 @@ namespace StockAnalyzerApp
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
         public StockDictionary StockDictionary { get; private set; }
-        public SortedDictionary<StockSerie.Groups, StockSerie> GroupReference { get; private set; }
 
         public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
 
@@ -314,10 +314,19 @@ namespace StockAnalyzerApp
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 Environment.Exit(0);
             }
+
+            string folderName = Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER;
             if (!Directory.Exists(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER))
             {
                 Directory.CreateDirectory(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER);
             }
+            folderName = Path.Combine(Settings.Default.RootFolder, "Tweets");
+            if (Directory.Exists(folderName))
+            {
+                Directory.Delete(folderName, true);
+            }
+            Directory.CreateDirectory(folderName);
+
 
             // Validate preferences and local repository
             if (string.IsNullOrWhiteSpace(Settings.Default.UserId) || !CheckLicense())
@@ -357,6 +366,9 @@ namespace StockAnalyzerApp
 #endif
             if (!fastStart)
             {
+                var cac40 = this.StockDictionary["CAC40"];
+                cac40.Initialise();
+
                 // Generate breadth 
                 if (Settings.Default.GenerateBreadth)
                 {
@@ -364,11 +376,10 @@ namespace StockAnalyzerApp
                     {
                         StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
                         stockserie.Initialise();
+                        if (!BreadthDataProvider.NeedGenerate)
+                            break;
                     }
                 }
-
-                this.GroupReference = new SortedDictionary<StockSerie.Groups, StockSerie>();
-                this.GroupReference.Add(StockSerie.Groups.CAC40, this.StockDictionary["CAC40"]);
             }
 
             // Deserialize saved orders
@@ -1713,7 +1724,7 @@ namespace StockAnalyzerApp
                             try
                             {
                                 StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
                             }
                             catch (Exception ex)
                             {
@@ -2661,7 +2672,6 @@ namespace StockAnalyzerApp
 
             string timeFrame = duration.ToString();
             string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
-            string imgFolderName = folderName + @"\Img";
             CleanReportFolder(folderName);
 
             string fileName = folderName + @"\Report.html";
@@ -2681,19 +2691,19 @@ namespace StockAnalyzerApp
 
             string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND, imgFolderName);
+            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -2716,7 +2726,7 @@ namespace StockAnalyzerApp
             this.barLineBreakComboBox.SelectedItem = previousBarDuration.LineBreak;
         }
 
-        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup, string imgFolder)
+        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup)
         {
             string htmlBody = string.Empty;
 
@@ -3492,7 +3502,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-
         public void SetThemeFromIndicator(string fullName)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -3519,26 +3528,55 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        #region BEST TRENDS
-        BestTrendDlg bestrendDlg = null;
-        void bestTrendViewMenuItem_Click(object sender, EventArgs e)
+        #region TWEET
+        TweetDlg2 tweetDlg = null;
+        static int tweetCount = 0;
+        void tweetMenuItem_Click(object sender, EventArgs e)
         {
-            if (bestrendDlg == null)
+            if (tweetDlg == null)
             {
-                bestrendDlg = new BestTrendDlg(this.selectedGroup.ToString(), this.BarDuration);
-                bestrendDlg.Disposed += bestrendDialog_Disposed;
-                bestrendDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
-                bestrendDlg.Show();
+                string fileName = Path.Combine(Settings.Default.RootFolder + @"\Tweets\", $"tweet{++tweetCount}.png");
+                var bitmap = this.graphCloseControl.GetSnapshot();
+                if (bitmap != null)
+                    bitmap.Save(fileName, ImageFormat.Png);
+
+                tweetDlg = new TweetDlg2();
+                tweetDlg.Disposed += tweetDialog_Disposed;
+                tweetDlg.Show();
+
+                tweetDlg.ViewModel.Text = $"${this.currentStockSerie.ShortName}" + Environment.NewLine;
+                tweetDlg.ViewModel.FileName = fileName;
             }
             else
             {
-                bestrendDlg.Activate();
+                tweetDlg.Activate();
             }
         }
 
+        void tweetDialog_Disposed(object sender, EventArgs e)
+        {
+            this.tweetDlg = null;
+        }
+        #endregion
+        #region BEST TRENDS
+        BestTrendDlg bestTrendDlg = null;
+        void bestTrendViewMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bestTrendDlg == null)
+            {
+                bestTrendDlg = new BestTrendDlg(this.selectedGroup.ToString(), this.BarDuration);
+                bestTrendDlg.Disposed += bestrendDialog_Disposed;
+                bestTrendDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                bestTrendDlg.Show();
+            }
+            else
+            {
+                bestTrendDlg.Activate();
+            }
+        }
         void bestrendDialog_Disposed(object sender, EventArgs e)
         {
-            this.bestrendDlg = null;
+            this.bestTrendDlg = null;
         }
         #endregion
         #region Sector Dialog

@@ -84,6 +84,7 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
+            this.tweetMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -541,6 +542,7 @@ namespace StockAnalyzerApp
             this.agentTunningMenuItem,
             this.portfolioSimulationMenuItem,
             this.toolStripSeparator8,
+            this.tweetMenuItem,
             this.sectorMenuItem,
             this.bestTrendMenuItem,
             this.expectedValueMenuItem,
@@ -594,6 +596,14 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator20.Name = "toolStripSeparator20";
             this.toolStripSeparator20.Size = new System.Drawing.Size(237, 6);
+            // 
+            // tweetMenuItem
+            // 
+            this.tweetMenuItem.Name = "tweetMenuItem";
+            this.tweetMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.tweetMenuItem.Text = "Send a tweet";
+            this.tweetMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+            this.tweetMenuItem.Click += new System.EventHandler(this.tweetMenuItem_Click);
             // 
             // bestTrendMenuItem
             // 
@@ -1550,6 +1560,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
+        private ToolStripMenuItem tweetMenuItem;
         private ToolStripMenuItem sectorMenuItem;
         private ToolStripMenuItem expectedValueMenuItem;
         private ToolStripMenuItem statisticsMenuItem;

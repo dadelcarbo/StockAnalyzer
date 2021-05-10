@@ -553,20 +553,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Graphics g = Graphics.FromImage(snapshot);
                 g.DrawRectangle(Pens.Black, 0, 0, snapshot.Width - 1, snapshot.Height - 1);
 
-
-
                 using (var stream = new MemoryStream())
                 {
                     snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-
-                    Byte[] imageArray = stream.ToArray();
-                    if (imageArray != null && imageArray.Length > 0)
-                    {
-                        string img = Convert.ToBase64String(imageArray, 0, imageArray.Length);
-                        Console.WriteLine("data:image/png;base64," + img);
-                    }
                 }
-
 
                 return snapshot;
             }

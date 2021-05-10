@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StockAnalyzerApp</RootNamespace>
     <AssemblyName>Ultimate Chartist</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>chart_line.ico</ApplicationIcon>
@@ -82,10 +82,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>UltimateChartist.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>StockAnalyzerApp_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -95,6 +95,12 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -102,6 +108,7 @@
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,8 +116,46 @@
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reflection.TypeExtensions, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.TypeExtensions.4.5.1\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xaml" />
@@ -189,6 +234,30 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\RCWPF\2021.1.325.45\Telerik.Windows.Zip.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Tweetinvi, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Controllers, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Controllers.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Core, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Credentials, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Credentials.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Logic, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Security, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Streams, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.WebLogic, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.WebLogic.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
@@ -561,6 +630,22 @@
     </Compile>
     <Compile Include="CustomControl\TrendDlgs\BestTrendViewModel.cs" />
     <Compile Include="CustomControl\TrendDlgs\MomentumViewModel.cs" />
+    <Compile Include="CustomControl\TweetDlg\TweetDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\TweetDlg\TweetDlg.Designer.cs">
+      <DependentUpon>TweetDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TweetDlg\TweetControl.xaml.cs">
+      <DependentUpon>TweetControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TweetDlg\TweetDlg2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\TweetDlg\TweetDlg2.Designer.cs">
+      <DependentUpon>TweetDlg2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TweetDlg\TweetViewModel.cs" />
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -788,6 +873,12 @@
     <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
       <DependentUpon>BestTrendDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\TweetDlg\TweetDlg.resx">
+      <DependentUpon>TweetDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\TweetDlg\TweetDlg2.resx">
+      <DependentUpon>TweetDlg2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -815,6 +906,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\StockAnalyzer.StockClasses.StockSerie.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortfolioStrategy.StockPortfolioStrategyBase.datasource" />
@@ -822,7 +914,6 @@
     <None Include="Properties\DataSources\StockAnalyzerApp.CustomControl.SimulationDlgs.StockMarketReplay.datasource" />
     <None Include="Properties\DataSources\StockAnalyzerApp.Properties.Settings.datasource" />
     <None Include="StockAnalyzerApp_TemporaryKey.pfx" />
-    <None Include="UltimateChartist.pfx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -1052,6 +1143,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\TweetDlg\TweetControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

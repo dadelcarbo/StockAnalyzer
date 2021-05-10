@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TweetApp
@@ -20,11 +17,26 @@ namespace TweetApp
 
         public void Connect()
         {
-            var api = new TweeterAPI();
+            var api = new TweeterAPIOld();
             api.SendTweet("Test message");
 
             this.Status = this.status == CONNECTED ? NOT_CONNECTED : CONNECTED;
         }
+        public async Task SendTweetAsync(string text, string filePath)
+        {
+            var api = new TweeterAPI();
+            try
+            {
+                var tweet = await api.SendTweetAsync(text, filePath);
+
+                this.Status = "Publish successful: Id " + tweet.Id;
+            }
+            catch (Exception e)
+            {
+                this.Status = e.Message;
+            }
+        }
+
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 
