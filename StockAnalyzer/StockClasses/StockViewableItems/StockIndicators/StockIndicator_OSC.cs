@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 12, 20, true }; }
+            get { return new Object[] { 12, 26, true }; }
         }
         public override ParamRange[] ParameterRanges
         {
@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie oscSerie = fastSerie.Series[0].Sub(slowSerie.Series[0]);
             if (relative)
             {
-                oscSerie = 100 * (oscSerie / closeSerie);
+                oscSerie = 100.0f * (oscSerie / slowSerie.Series[0]);
             }
             this.series[0] = oscSerie;
             this.Series[0].Name = this.Name;

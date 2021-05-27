@@ -156,7 +156,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                //MessageBox.Show(e.Message);
                 StockLogging.StockLog.Write(e);
             }
         }

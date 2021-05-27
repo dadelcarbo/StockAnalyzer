@@ -4,9 +4,9 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_MACD : StockIndicatorBase
+    public class StockIndicator_EMACD : StockIndicatorBase
     {
-        public StockIndicator_MACD()
+        public StockIndicator_EMACD()
         {
         }
         public override IndicatorDisplayTarget DisplayTarget
@@ -16,11 +16,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string Name
         {
-            get { return "MACD(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")"; }
+            get { return "EMACD(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")"; }
         }
         public override string Definition
         {
-            get { return "MACD(int SlowPeriod, int FastPeriod, int SignalPeriod)"; }
+            get { return "EMACD(int SlowPeriod, int FastPeriod, int SignalPeriod)"; }
         }
 
         public override string[] ParameterNames
@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "Histogram", "MACD", "Signal" }; } }
+        public override string[] SerieNames { get { return new string[] { "Histogram", "EMACD", "Signal" }; } }
 
 
         public override System.Drawing.Pen[] SeriePens
@@ -65,31 +65,31 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var fastMA = stockSerie.GetIndicator($"MA({this.parameters[1]})").Series[0];
-            var slowMA = stockSerie.GetIndicator($"MA({this.parameters[0]})").Series[0];
+            var fastMA = stockSerie.GetIndicator($"EMA({this.parameters[1]})").Series[0];
+            var slowMA = stockSerie.GetIndicator($"EMA({this.parameters[0]})").Series[0];
 
-            FloatSerie MACDSerie = fastMA - slowMA;
-            FloatSerie signalSerie = MACDSerie.CalculateMA((int)this.parameters[2]);
-            this.series[0] = MACDSerie;
+            FloatSerie EMACDSerie = fastMA - slowMA;
+            FloatSerie signalSerie = EMACDSerie.CalculateEMA((int)this.parameters[2]);
+            this.series[0] = EMACDSerie;
             this.series[0].Name = this.SerieNames[0];
             this.series[1] = signalSerie;
             this.series[1].Name = this.SerieNames[1];
-            this.series[2] = MACDSerie - signalSerie;
+            this.series[2] = EMACDSerie - signalSerie;
             this.series[2].Name = this.SerieNames[1];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            for (int i = 1; i < MACDSerie.Count; i++)
+            for (int i = 1; i < EMACDSerie.Count; i++)
             {
-                this.eventSeries[0][i] = MACDSerie[i] >= 0;
-                this.eventSeries[1][i] = MACDSerie[i] < 0;
-                this.eventSeries[2][i] = signalSerie[i] < MACDSerie[i];
-                this.eventSeries[3][i] = signalSerie[i] > MACDSerie[i];
+                this.eventSeries[0][i] = EMACDSerie[i] >= 0;
+                this.eventSeries[1][i] = EMACDSerie[i] < 0;
+                this.eventSeries[2][i] = signalSerie[i] < EMACDSerie[i];
+                this.eventSeries[3][i] = signalSerie[i] > EMACDSerie[i];
             }
         }
 
-        static string[] eventNames = new string[] { "MACDPositive", "MACDNegative", "MACDAboveSignal", "MACDBelowSignal" };
+        static string[] eventNames = new string[] { "EMACDPositive", "EMACDNegative", "EMACDAboveSignal", "EMACDBelowSignal" };
         public override string[] EventNames
         {
             get { return eventNames; }
