@@ -72,9 +72,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie signalSerie = EMACDSerie.CalculateEMA((int)this.parameters[2]);
             this.series[0] = EMACDSerie - signalSerie;
             this.series[0].Name = this.SerieNames[0];
-            this.series[1] = signalSerie;
+            this.series[1] = EMACDSerie;
             this.series[1].Name = this.SerieNames[1];
-            this.series[2] = EMACDSerie;
+            this.series[2] = signalSerie;
             this.series[2].Name = this.SerieNames[2];
 
             // Detecting events
