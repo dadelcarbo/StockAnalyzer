@@ -70,12 +70,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             FloatSerie MACDSerie = fastMA - slowMA;
             FloatSerie signalSerie = MACDSerie.CalculateMA((int)this.parameters[2]);
-            this.series[0] = MACDSerie;
+            this.series[0] = MACDSerie - signalSerie;
             this.series[0].Name = this.SerieNames[0];
             this.series[1] = signalSerie;
             this.series[1].Name = this.SerieNames[1];
-            this.series[2] = MACDSerie - signalSerie;
-            this.series[2].Name = this.SerieNames[1];
+            this.series[2] = MACDSerie;
+            this.series[2].Name = this.SerieNames[2];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
