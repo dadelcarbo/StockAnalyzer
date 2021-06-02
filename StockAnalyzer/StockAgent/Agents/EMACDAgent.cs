@@ -15,10 +15,10 @@ namespace StockAnalyzer.StockAgent.Agents
             SignalPeriod = 9;
         }
 
-        [StockAgentParam(15, 25)]
+        [StockAgentParam(5, 35)]
         public int FastPeriod { get; set; }
 
-        [StockAgentParam(40, 60)]
+        [StockAgentParam(5, 35)]
         public int SlowPeriod { get; set; }
 
         //[StockAgentParam(6, 12)]
@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie signalSerie;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (SlowPeriod <= FastPeriod || stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
 
             var emacd = stockSerie.GetIndicator($"EMACD({SlowPeriod},{FastPeriod},{SignalPeriod})");
@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockAgent.Agents
         float stop;
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (histogramSerie[index] > 0 && emacdSerie[index] > signalSerie[index])
+            if ((emacdSerie[index - 1] <= 0 && emacdSerie[index] > 0) || (emacdSerie[index] > 0 && emacdSerie[index - 1] <= signalSerie[index - 1] && emacdSerie[index] > signalSerie[index]))
             {
                 waitSell = false;
                 return TradeAction.Buy;
@@ -63,6 +63,10 @@ namespace StockAnalyzer.StockAgent.Agents
                 {
                     waitSell = false;
                     return TradeAction.Sell;
+                }
+                if (histogramSerie[index] > 0 && emacdSerie[index] > signalSerie[index])
+                {
+                    waitSell = false;
                 }
             }
             else if (emacdSerie[index] < signalSerie[index])
