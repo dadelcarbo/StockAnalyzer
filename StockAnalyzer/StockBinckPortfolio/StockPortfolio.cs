@@ -113,25 +113,58 @@ namespace StockAnalyzer.StockBinckPortfolio
 
                 adapter.Fill(ds, "Transactions");
 
-                var data = ds.Tables["Transations"].AsEnumerable();
-                foreach (var tradeGroup in data.Where(r => r.Field<string>("Transaction Type") == "Trade").Select(r => new
-                                            {
-                                                TradeDate = r.Field<DateTime>("Trade Date"),
-                                                AccountId = r.Field<string>("Account ID"),
-                                                Instrument = r.Field<string>("Instrument"),
-                                                InstrumentId = r.Field<double>("Instrument Id"),
-                                                Event = r.Field<string>("Event"),
-                                                Type = r.Field<string>("Transaction Type"),
-                                                TradeId = (int)r.Field<double>("Trade Id"),
-                                                Qty = (int)r.Field<double>("Amount"),
-                                                Price = r.Field<double>("Price"),
-                                                Amount = r.Field<double>("Booked Amount Account Currency")
-                                            }).GroupBy(r => r.AccountId))
+                var data = ds.Tables["Transactions"].AsEnumerable();
+
+                foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération sur titres").Select(r => new
+                {
+                    TradeDate = r.Field<DateTime>(0),
+                    AccountId = r.Field<string>(1),
+                    Instrument = r.Field<string>(3),
+                    InstrumentId = r.Field<double>(4),
+                    Event = r.Field<string>(6),
+                    Type = r.Field<string>(5),
+                    TradeId = long.Parse(r.Field<string>(7)),
+                    Amount = r.Field<double>(13)
+                }).GroupBy(r => r.AccountId))
                 {
                     var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
                     if (portofolio == null)
                         continue;
-                    foreach (var row in tradeGroup.OrderBy(t=>t.TradeId))
+                    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
+                    {
+                        if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
+                            continue;
+
+                        // Find stockNamefrom mapping
+                        var stockName = row.Instrument.ToUpper()
+                            .Replace(" SA", "")
+                            .Replace(" UCITS ETF", "")
+                            .Replace(" DAILY", "");
+
+                        if (row.Event == "Dividende en espèces")
+                        {
+                            portofolio.DividendOperation(stockName, row.TradeDate, (float)row.Amount, row.TradeId);
+                        }
+                    }
+                }
+                foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération").Select(r => new
+                {
+                    TradeDate = r.Field<DateTime>(0),
+                    AccountId = r.Field<string>(1),
+                    Instrument = r.Field<string>(3),
+                    InstrumentId = r.Field<double>(4),
+                    Event = r.Field<string>(6),
+                    Type = r.Field<string>(5),
+                    TradeId = (int)r.Field<double>(8),
+                    Qty = (int)r.Field<double>(9),
+                    Price = r.Field<double?>(10),
+                    Amount = r.Field<double>(13)
+                }).GroupBy(r => r.AccountId))
+                {
+                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                    if (portofolio == null)
+                        continue;
+                    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
                     {
                         if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
                             continue;
