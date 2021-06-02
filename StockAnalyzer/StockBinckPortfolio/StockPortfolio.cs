@@ -111,9 +111,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                 var adapter = new OleDbDataAdapter("SELECT * FROM [Transactions$]", connectionString);
                 var ds = new DataSet();
 
-                adapter.Fill(ds, "Transations");
+                adapter.Fill(ds, "Transactions");
 
-                var data = ds.Tables["Transations"].AsEnumerable();
+                var data = ds.Tables["Transactions"].AsEnumerable();
                 foreach (var tradeGroup in data.Where(r => r.Field<string>("Transaction Type") == "Trade").Select(r => new
                                             {
                                                 TradeDate = r.Field<DateTime>("Trade Date"),

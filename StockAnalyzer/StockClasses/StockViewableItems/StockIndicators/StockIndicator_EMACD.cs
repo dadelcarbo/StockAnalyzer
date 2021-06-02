@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_EMACD : StockIndicatorBase
     {
-        public StockIndicator_EMACD()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
