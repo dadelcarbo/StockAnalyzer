@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public StockPosition()
         {
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string StockName { get; set; }
 
         public int EntryQty { get; set; }

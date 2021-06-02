@@ -27,7 +27,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
             }
         }
 
-        public int Id => position.Id;
+        public long Id => position.Id;
         public string StockName => position.StockName;
 
         #region TRADE ENTRY

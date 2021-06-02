@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockBinckPortfolio
     {
         public StockOperation() { }
 
-        static public StockOperation FromSimu(int id, DateTime date, string name, string type, int qty, float amount, bool isShort = false)
+        static public StockOperation FromSimu(long id, DateTime date, string name, string type, int qty, float amount, bool isShort = false)
         {
             var operation = new StockOperation();
 
@@ -28,7 +28,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             return operation;
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime Date { get; set; }
         public string OperationType { get; set; }
 

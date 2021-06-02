@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             this.portfolio = portfolio;
             this.Id = this.portfolio.TradeOperations.Count;
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime Date { get; set; }
         public TradeOperationType OperationType { get; set; }
         public string StockName { get; set; }
