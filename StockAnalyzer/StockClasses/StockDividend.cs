@@ -71,7 +71,7 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-        public bool DownloadFromYahoo(StockSerie stockSerie)
+        public bool DownloadFromYahoo(StockSerie stockSerie, bool force = false)
         {
             var shortName = stockSerie.ShortName;
             if (stockSerie.DataProvider == StockDataProvider.ABC)
@@ -86,7 +86,7 @@ namespace StockAnalyzer.StockClasses
                 return false;
             }
             var filePath = Path.Combine(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
-            if (File.Exists(filePath) && File.GetLastWriteTimeUtc(filePath) > DateTime.Today.AddMonths(-1))
+            if (!force && File.Exists(filePath) && File.GetLastWriteTimeUtc(filePath) > DateTime.Today.AddMonths(-1))
                 return false;
 
             var startDate = new DateTime(2000, 1, 1);

@@ -60,7 +60,6 @@
                         <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Variation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" ColumnGroupName="Technical" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Line&#x0a;Break" DataMemberBinding="{Binding BarDuration.LineBreak}" ColumnGroupName="Technical" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Exit&#x0a;Date" DataMemberBinding="{Binding ExitDate}" ColumnGroupName="Exit" IsReadOnly="True"/>
 
@@ -80,7 +79,7 @@
             </TabItem>
             <TabItem Header="Operations">
                 <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding PortfolioViewModel.TradeOperations}" 
-                                     SelectionMode="Multiple" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" 
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"
                                      AutoGeneratingColumn="OperationGridView_AutoGeneratingColumn">

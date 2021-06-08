@@ -1627,7 +1627,7 @@ namespace StockAnalyzerApp
                             try
                             {
                                 StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
                             }
                             catch (Exception ex)
                             {
