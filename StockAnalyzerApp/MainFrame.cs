@@ -19,6 +19,7 @@ using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
 using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
+using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
@@ -3195,10 +3196,6 @@ namespace StockAnalyzerApp
                     case Keys.Control | Keys.I:
                         selectDisplayedIndicatorMenuItem_Click(null, null);
                         break;
-                    case Keys.Control | Keys.D:
-                        this.showDrawingsMenuItem.Checked = !this.showDrawingsMenuItem.Checked;
-                        showDrawingsMenuItem_Click(null, null);
-                        break;
                     case Keys.Control | Keys.M:
                         this.showEventMarqueeMenuItem.Checked = !this.showEventMarqueeMenuItem.Checked;
                         showEventMarqueeMenuItem_Click(null, null);
@@ -3703,6 +3700,27 @@ namespace StockAnalyzerApp
             else
             {
                 alertDlg.Activate();
+            }
+        }
+        #endregion
+        #region DRAWING DIALOG
+        DrawingDlg drawingDlg = null;
+        void drawingDialogMenuItem_Click(object sender, EventArgs e)
+        {
+            if (drawingDlg == null)
+            {
+                drawingDlg = new DrawingDlg();
+                drawingDlg.drawingControl1.SelectedStockAndDurationChanged += OnSelectedStockAndDurationChanged;
+                drawingDlg.Disposed += delegate
+                {
+                    drawingDlg.drawingControl1.SelectedStockAndDurationChanged -= OnSelectedStockAndDurationChanged;
+                    this.drawingDlg = null;
+                };
+                drawingDlg.Show();
+            }
+            else
+            {
+                drawingDlg.Activate();
             }
         }
         #endregion

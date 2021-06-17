@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockBinckPortfolio;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {

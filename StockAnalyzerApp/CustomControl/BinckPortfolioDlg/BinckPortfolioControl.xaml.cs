@@ -3,14 +3,11 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System;
-using System.Linq;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
-using Telerik.Windows.Data;
-using System.Reflection;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 {

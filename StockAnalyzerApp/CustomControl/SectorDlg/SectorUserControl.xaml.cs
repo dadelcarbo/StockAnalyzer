@@ -1,7 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockDrawing;
-using System;
-using System.Drawing;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

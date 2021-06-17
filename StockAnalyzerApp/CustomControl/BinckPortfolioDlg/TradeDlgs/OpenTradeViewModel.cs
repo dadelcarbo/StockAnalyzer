@@ -3,7 +3,6 @@ using StockAnalyzer.StockBinckPortfolio;
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
 {

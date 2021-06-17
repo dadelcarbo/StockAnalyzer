@@ -5,8 +5,6 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

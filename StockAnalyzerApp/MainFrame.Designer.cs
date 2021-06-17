@@ -73,6 +73,7 @@ namespace StockAnalyzerApp
             this.marketReplayViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.multipleTimeFrameViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.drawingDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -374,6 +375,7 @@ namespace StockAnalyzerApp
             this.showHorseRaceViewMenuItem,
             this.multipleTimeFrameViewMenuItem,
             this.showAlertDialogMenuItem,
+            this.drawingDialogMenuItem,
             this.toolStripSeparator15,
             this.secondarySerieMenuItem,
             this.logSerieMenuItem});
@@ -514,6 +516,14 @@ namespace StockAnalyzerApp
             this.showAlertDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAlertDialogMenuItem.Text = "Alert View";
             this.showAlertDialogMenuItem.Click += showAlertDialogMenuItem_Click;
+            // 
+            // drawingDialogMenuItem
+            // 
+            this.drawingDialogMenuItem.Name = "drawingDialogMenuItem";
+            this.drawingDialogMenuItem.ShortcutKeys = Keys.Shift | Keys.D;
+            this.drawingDialogMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.drawingDialogMenuItem.Text = "Drawing View";
+            this.drawingDialogMenuItem.Click += drawingDialogMenuItem_Click;
             // 
             // toolStripSeparator15
             // 
@@ -1541,6 +1551,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;
         private ToolStripMenuItem showAlertDialogMenuItem;
+        private ToolStripMenuItem drawingDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
         private ToolStripMenuItem logSerieMenuItem;

@@ -1,9 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using System;
-using System.Data;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.TweetDlg

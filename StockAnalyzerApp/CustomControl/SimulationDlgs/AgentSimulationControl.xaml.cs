@@ -1,8 +1,5 @@
 ﻿using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockDrawing;
 using System;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
 using Telerik.Windows.Controls;

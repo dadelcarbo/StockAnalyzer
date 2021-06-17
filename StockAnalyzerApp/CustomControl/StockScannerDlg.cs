@@ -4,7 +4,6 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;

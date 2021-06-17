@@ -1,6 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog
