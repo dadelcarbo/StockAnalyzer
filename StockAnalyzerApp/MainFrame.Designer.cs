@@ -520,7 +520,7 @@ namespace StockAnalyzerApp
             // drawingDialogMenuItem
             // 
             this.drawingDialogMenuItem.Name = "drawingDialogMenuItem";
-            this.drawingDialogMenuItem.ShortcutKeys = Keys.Shift | Keys.D;
+            this.drawingDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
             this.drawingDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.drawingDialogMenuItem.Text = "Drawing View";
             this.drawingDialogMenuItem.Click += drawingDialogMenuItem_Click;

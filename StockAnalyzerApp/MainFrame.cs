@@ -3186,7 +3186,7 @@ namespace StockAnalyzerApp
                     case Keys.Escape:
                         // Interupt current drawings
                         this.ResetDrawingButtons();
-                        this.Refresh();
+                        this.Refresh(); 
                         break;
                     case Keys.Control | Keys.H:
                         this.graphCloseControl.Focus();
@@ -3195,6 +3195,10 @@ namespace StockAnalyzerApp
                         break;
                     case Keys.Control | Keys.I:
                         selectDisplayedIndicatorMenuItem_Click(null, null);
+                        break;
+                    case Keys.Control | Keys.D:
+                        this.showDrawingsMenuItem.Checked = !this.showDrawingsMenuItem.Checked;
+                        showDrawingsMenuItem_Click(null, null);
                         break;
                     case Keys.Control | Keys.M:
                         this.showEventMarqueeMenuItem.Checked = !this.showEventMarqueeMenuItem.Checked;
