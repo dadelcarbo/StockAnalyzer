@@ -56,6 +56,7 @@ namespace StockAnalyzer.StockClasses
             FUND,
             RATIO,
             BREADTH,
+            PTF,
             BOND,
             INTRADAY,
             Portfolio,

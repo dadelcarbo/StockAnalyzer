@@ -175,7 +175,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                             .Replace(" UCITS ETF", "")
                             .Replace(" DAILY", "");
 
-                        if (row.Event == "Buy" || row.Event == "Achat")
+                        if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
                         {
                             portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
                         }
@@ -200,7 +200,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.Message);
+                //MessageBox.Show(e.Message);&
                 StockLogging.StockLog.Write(e);
             }
         }

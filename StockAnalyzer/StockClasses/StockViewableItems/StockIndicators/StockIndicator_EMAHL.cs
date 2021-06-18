@@ -5,10 +5,7 @@ using StockAnalyzer.StockMath;
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_EMAHL : StockIndicatorBase
-    {
-        public StockIndicator_EMAHL()
-        {
-        }
+    {        
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
@@ -41,12 +38,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie lowEMASerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0];
-            FloatSerie highEMASerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0];
-
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+            int period = (int)this.parameters[0];
+
+            FloatSerie lowEMASerie = lowSerie.CalculateEMA(period);
+            FloatSerie highEMASerie = highSerie.CalculateEMA(period);
 
             this.Series[0] = lowEMASerie;
             this.Series[1] = highEMASerie;
