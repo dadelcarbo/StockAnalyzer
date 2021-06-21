@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return this.isInRange(floatValue);
         }
     }
-    public class ParamRangeDateTime: ParamRange
+    public class ParamRangeDateTime : ParamRange
     {
         public ParamRangeDateTime()
            : base(DateTime.MinValue, DateTime.MaxValue)
@@ -223,6 +223,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         public override bool isValidString(string valueString)
         {
             return StockDictionary.Instance.ContainsKey(valueString);
+        }
+
+        override public Type GetParamType()
+        {
+            return typeof(string);
+        }
+    }
+
+    public class ParamRangeString : ParamRange
+    {
+        public ParamRangeString()
+        {
+            this.MinValue = string.Empty;
+            this.MaxValue = string.Empty;
+        }
+
+        public override bool isInRange(Object value)
+        {
+            return value != null && !string.IsNullOrWhiteSpace(value.ToString());
+        }
+
+        public override bool isValidString(string valueString)
+        {
+            return !string.IsNullOrWhiteSpace(valueString);
         }
 
         override public Type GetParamType()

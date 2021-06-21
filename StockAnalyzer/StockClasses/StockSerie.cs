@@ -505,6 +505,8 @@ namespace StockAnalyzer.StockClasses
             {
                 case "INDICATOR":
                     return this.GetIndicator(nameFields[1]);
+                case "CLOUD":
+                    return this.GetCloud(nameFields[1]);
                 case "TRAILSTOP":
                     return this.GetTrailStop(nameFields[1]);
                 case "TRAIL":
