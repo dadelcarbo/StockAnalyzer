@@ -11,15 +11,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
         }
 
-        public override string Name
-        {
-            get { return "EMACD(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + "," + this.Parameters[2].ToString() + ")"; }
-        }
-        public override string Definition
-        {
-            get { return "EMACD(int SlowPeriod, int FastPeriod, int SignalPeriod)"; }
-        }
-
         public override string[] ParameterNames
         {
             get { return new string[] { "SlowPeriod", "FastPeriod", "SignalPeriod" }; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -12,16 +13,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "SlowPeriod", "Percent" }; }
+            get { return new string[] { "FastPeriod", "SlowPeriod", "Percent", "MAType" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 12, 26, true }; }
+            get { return new Object[] { 12, 26, true, "EMA" }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeBool() }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeBool(), new ParamRangeMA() }; }
         }
         public override string[] SerieNames { get { return new string[] { "OSC(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" }; } }
 
@@ -32,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Black) };
+                    seriePens = new Pen[] { new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Custom } };
                 }
                 return seriePens;
             }
@@ -51,9 +52,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            IStockIndicator fastSerie = stockSerie.GetIndicator("EMA(" + this.parameters[0] + ")");
-            IStockIndicator slowSerie = stockSerie.GetIndicator("EMA(" + this.parameters[1] + ")");
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            IStockIndicator fastSerie = stockSerie.GetIndicator($"{this.parameters[3]}({this.parameters[0]})");
+            IStockIndicator slowSerie = stockSerie.GetIndicator($"{this.parameters[3]}({this.parameters[1]})");
             bool relative = (bool)this.parameters[2];
 
             FloatSerie oscSerie = fastSerie.Series[0].Sub(slowSerie.Series[0]);
@@ -67,6 +67,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
+            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+
+            bool waitForFirstHighInBull = false;
+            bool waitFirstLowInBear = false;
+            float previousHigh = float.MinValue, previousLow = float.MaxValue;
             for (int i = 2; i < stockSerie.Count; i++)
             {
                 this.eventSeries[0][i] = (oscSerie[i - 2] < oscSerie[i - 1] && oscSerie[i - 1] > oscSerie[i]);
@@ -75,10 +82,40 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[3][i] = (oscSerie[i - 1] > 0 && oscSerie[i] <= 0);
                 this.eventSeries[4][i] = oscSerie[i] >= 0;
                 this.eventSeries[5][i] = oscSerie[i] < 0;
+
+                if (this.eventSeries[2][i]) // Turned positive
+                {
+                    waitForFirstHighInBull = true;
+                    waitFirstLowInBear = false;
+                    previousHigh = bodyHighSerie[i];
+                }
+                else if (waitForFirstHighInBull)
+                {
+                    if (closeSerie[i]> previousHigh)
+                    {
+                        this.eventSeries[6][i] = true;
+                        waitForFirstHighInBull = false;
+                    }
+                }
+
+                if (this.eventSeries[3][i]) // Turned negative
+                {
+                    waitFirstLowInBear = true;
+                    waitForFirstHighInBull = false;
+                    previousLow = bodyLowSerie[i];
+                }
+                else if (waitFirstLowInBear)
+                {
+                    if (closeSerie[i] < previousLow)
+                    {
+                        this.eventSeries[7][i] = true;
+                        waitFirstLowInBear = false;
+                    }
+                }
             }
         }
 
-        static string[] eventNames = new string[] { "Top", "Bottom", "TurnedPositive", "TurnedNegative", "Bullish", "Bearish" };
+        static string[] eventNames = new string[] { "Top", "Bottom", "TurnedPositive", "TurnedNegative", "Bullish", "Bearish", "FirstHighInBull", "FirstLowInBear" };
         public override string[] EventNames
         {
             get { return eventNames; }
