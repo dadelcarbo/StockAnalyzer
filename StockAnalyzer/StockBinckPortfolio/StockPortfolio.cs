@@ -118,6 +118,93 @@ namespace StockAnalyzer.StockBinckPortfolio
 
                 var data = ds.Tables["Transactions"].AsEnumerable();
 
+                foreach (var tradeGroup in data.Select(r => new
+                {
+                    TradeDate = r.Field<DateTime>(0),
+                    AccountId = r.Field<string>(1),
+                    Instrument = r.Field<string>(3),
+                    Type = r.Field<string>(5),
+                    Event = r.Field<string>(6),
+                    OpId = r.Field<object>(7),
+                    TradeId = r.Field<object>(8),
+                    Row = r
+                }).GroupBy(r => r.AccountId))
+                {
+                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                    if (portofolio == null)
+                        continue;
+                    StockLog.Write($" ----------------------------- Processing Portfolio {portofolio.Name}");
+                    foreach (var row in tradeGroup)
+                    {
+                        StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                        switch (row.Type)
+                        {
+                            case "Liquidités":
+                                {
+                                    if (!long.TryParse(row.TradeId?.ToString(), out long tradeId))
+                                    {
+                                        tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                                    }
+                                    if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                        continue;
+
+                                    portofolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
+                                }
+                                break;
+                            case "Opération":
+                                {
+                                    // Find stockNamefrom mapping
+                                    var stockName = row.Instrument.ToUpper()
+                                        .Replace(" SA", "")
+                                        .Replace(" UCITS ETF", "")
+                                        .Replace(" DAILY", "");
+
+                                    if (stockName.EndsWith(" Assented Rights"))
+                                        continue;
+
+                                    if (!long.TryParse(row.TradeId.ToString(), out long tradeId))
+                                    {
+                                        tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                                    }
+                                    if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                        continue;
+
+                                    var priceLong = row.Row.Field<double?>(10);
+                                    if (!priceLong.HasValue)
+                                        continue;
+                                    float price = (float)priceLong.Value;
+                                    var qty = (int)row.Row.Field<double>(9);
+                                    var amount = (float)row.Row.Field<double>(13);
+                                    switch (row.Event)
+                                    {
+                                        case "Achat":
+                                            if (amount == 0)
+                                                continue;
+                                            portofolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
+                                            break;
+                                        case "Vente":
+                                            portofolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
+                                            break;
+                                        case "Transfert entrant":
+                                            portofolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                }
+                                break;
+                            //case "Opération sur titres":
+                            //    break;
+                            default:
+                                StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                                break;
+                        }
+
+                        StockLog.Write($"Portfolio balance : {portofolio.Balance}");
+                    }
+                }
+                return;
                 foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération sur titres").Select(r => new
                 {
                     TradeDate = r.Field<DateTime>(0),
@@ -151,6 +238,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                         }
                     }
                 }
+
                 foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération").Select(r => new
                 {
                     TradeDate = r.Field<DateTime>(0),
@@ -158,7 +246,6 @@ namespace StockAnalyzer.StockBinckPortfolio
                     Instrument = r.Field<string>(3),
                     InstrumentId = r.Field<double>(4),
                     Event = r.Field<string>(6),
-                    Type = r.Field<string>(5),
                     TradeId = (int)r.Field<double>(8),
                     Qty = (int)r.Field<double>(9),
                     Price = r.Field<double?>(10),
@@ -244,7 +331,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                 Qty = qty,
                 StockName = stockName,
                 Value = value,
-                Fee = fee
+                Fee = fee,
+                Movement = -amount
             };
             this.TradeOperations.Add(operation);
 
@@ -286,10 +374,11 @@ namespace StockAnalyzer.StockBinckPortfolio
             var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
             if (position == null)
             {
-                if (value == 0) 
+                if (value == 0)
                     return;
                 throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
             }
+            var amount = value * qty - fee;
             var operation = new StockTradeOperation()
             {
                 Id = id == -1 ? GetNextOperationId() : id,
@@ -299,9 +388,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                 StockName = stockName,
                 Value = value,
                 Fee = fee,
+                Movement = amount
             };
             this.TradeOperations.Add(operation);
-            var amount = operation.Value * operation.Qty - operation.Fee;
             this.Balance += amount;
             var logEntry = this.Positions.Find(l => l.Id == position.Id);
             logEntry.ExitDate = date;
@@ -329,33 +418,53 @@ namespace StockAnalyzer.StockBinckPortfolio
                 OperationType = TradeOperationType.Transfer,
                 Qty = qty,
                 StockName = stockName,
-                Value = value
+                Value = value,
+                Movement = 0
             };
             this.TradeOperations.Add(operation);
 
-            var position = new StockPosition
+            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == operation.StockName);
+            if (position != null) // Position on this stock already exists, add new values
             {
-                Id = operation.Id,
-                EntryDate = operation.Date,
-                EntryQty = operation.Qty,
-                StockName = operation.StockName,
-                EntryValue = value
-            };
+                position.ExitDate = operation.Date;
+
+                var openValue = (position.EntryValue * position.EntryQty + qty * value) / (position.EntryQty + operation.Qty);
+                position = new StockPosition
+                {
+                    Id = operation.Id,
+                    EntryDate = operation.Date,
+                    EntryQty = position.EntryQty + operation.Qty,
+                    StockName = operation.StockName,
+                    EntryValue = openValue
+                };
+            }
+            else // Position on this stock doen't exists, create a new one
+            {
+                position = new StockPosition
+                {
+                    Id = operation.Id,
+                    EntryDate = operation.Date,
+                    EntryQty = operation.Qty,
+                    StockName = operation.StockName,
+                    EntryValue = value
+                };
+            }
             this.Positions.Add(position);
         }
-        public void DepositOperation(DateTime date, float value)
+        public void CashOperation(DateTime date, float amount, long operationId)
         {
             var operation = new StockTradeOperation()
             {
-                Id = GetNextOperationId(),
+                StockName = string.Empty,
+                Id = operationId,
                 Date = date,
-                OperationType = TradeOperationType.Transfer,
+                OperationType = TradeOperationType.Cash,
                 Qty = 1,
-                StockName = value > 0 ? "Deposit" : "Withdraw",
-                Value = value
+                Value = amount,
+                Movement = amount
             };
             this.TradeOperations.Add(operation);
-            this.Balance += value;
+            this.Balance += amount;
         }
         public void DividendOperation(string stockName, DateTime date, float amount, long operationId)
         {
@@ -366,7 +475,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                 OperationType = TradeOperationType.Dividend,
                 Qty = 1,
                 StockName = stockName,
-                Value = amount
+                Value = amount,
+                Movement = -amount
             };
             this.TradeOperations.Add(operation);
             this.Balance += amount;

@@ -9,7 +9,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         Short,
         Cover,
         Dividend,
-        Transfer
+        Transfer,
+        Cash
     }
     public class StockTradeOperation
     {
@@ -26,8 +27,9 @@ namespace StockAnalyzer.StockBinckPortfolio
         public TradeOperationType OperationType { get; set; }
         public string StockName { get; set; }
         public int Qty { get; set; }
-        public float Value { get; set; }
+        public float Value { get; set; } // Unit Value
         public float Fee { get; set; }
+        public float Movement { get; set; }
         public bool IsOrder => this.OperationType == TradeOperationType.Buy || this.OperationType == TradeOperationType.Sell || this.IsShort;
 
         public bool IsShort => this.OperationType == TradeOperationType.Short || this.OperationType == TradeOperationType.Cover;
