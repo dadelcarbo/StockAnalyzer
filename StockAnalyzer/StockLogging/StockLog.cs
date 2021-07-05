@@ -42,6 +42,8 @@ namespace StockAnalyzer.StockLogging
         public bool isEnabled = false;
         public bool isMethodLoggingEnabled = false;
 
+        public bool isConsoleLogging = false;
+
         static private StockLog logger = null;
         static public StockLog Logger { get { if (logger == null) { logger = new StockLog(); } return logger; } }
 

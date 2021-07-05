@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -106,6 +107,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             try
             {
+                StockLog.Write("----------------------------------------------------------------------------");
+                StockLog.Write($"Loading saxo report {fileName}");
                 var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0; data source={fileName};Extended Properties=""Excel 12.0"";";
 
                 var adapter = new OleDbDataAdapter("SELECT * FROM [Transactions$]", connectionString);
@@ -130,6 +133,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                     var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
                     if (portofolio == null)
                         continue;
+
                     foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
                     {
                         if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
@@ -164,6 +168,8 @@ namespace StockAnalyzer.StockBinckPortfolio
                     var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
                     if (portofolio == null)
                         continue;
+
+                    StockLog.Write($" ----------------------------- Processing Portfolio {portofolio.Name}");
                     foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
                     {
                         if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
@@ -175,24 +181,33 @@ namespace StockAnalyzer.StockBinckPortfolio
                             .Replace(" UCITS ETF", "")
                             .Replace(" DAILY", "");
 
-                        if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
+                        StockLog.Write($"Processing {row.Event} {stockName}");
+                        try
                         {
-                            portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
-                        }
-                        else if (row.Event == "Transfert entrant")
-                        {
-                            portofolio.TransferOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, row.TradeId);
-                        }
-                        else if (row.Event == "Sell" || row.Event == "Vente")
-                        {
-                            if (row.Price == null)
+                            if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
                             {
-                                portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, 0f, 0f, null, row.TradeId);
+                                portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
                             }
-                            else
+                            else if (row.Event == "Transfert entrant")
                             {
-                                portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
+                                portofolio.TransferOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, row.TradeId);
                             }
+                            else if (row.Event == "Sell" || row.Event == "Vente")
+                            {
+                                if (row.Price == null)
+                                {
+                                    portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, 0f, 0f, null, row.TradeId);
+                                }
+                                else
+                                {
+                                    portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            //MessageBox.Show(e.Message);&
+                            StockLog.Write(e);
                         }
                     }
                     portofolio.Serialize(folder);
@@ -201,7 +216,7 @@ namespace StockAnalyzer.StockBinckPortfolio
             catch (Exception e)
             {
                 //MessageBox.Show(e.Message);&
-                StockLogging.StockLog.Write(e);
+                StockLog.Write(e);
             }
         }
         #endregion
@@ -271,6 +286,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
             if (position == null)
             {
+                if (value == 0) 
+                    return;
                 throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
             }
             var operation = new StockTradeOperation()
