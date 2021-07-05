@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public int SlowPeriod { get; set; }
 
         public override string Description => "Buy when OSC crosses above 0 and sell after lower close";
-        public override string DisplayIndicator => $"INDICATOR|OSC({FastPeriod},{SlowPeriod}, True, EMA)";
+        public override string DisplayIndicator => $"INDICATOR|OSC({FastPeriod},{SlowPeriod},True,EMA)";
 
         FloatSerie closeSerie, lowSerie, oscSerie;
         float stop = float.NaN;
@@ -28,7 +28,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
-            oscSerie = stockSerie.GetIndicator($"EMA2Lines({FastPeriod},{SlowPeriod}, True, EMA)").Series[0];
+            oscSerie = stockSerie.GetIndicator($"OSC({FastPeriod},{SlowPeriod},True,EMA)").Series[0];
             closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             return oscSerie != null;
