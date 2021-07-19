@@ -255,6 +255,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BARSINEVENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHESTVOL.cs" />
@@ -312,7 +313,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ER.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VIXFIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLPROAM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMONEY.cs" />

@@ -1,19 +1,14 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_VIXFIX : StockIndicatorBase
+    public class StockIndicator_NATR : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
-
-        public override string Definition
-        {
-            get { return "VIXFIX(int Period)"; }
         }
         public override object[] ParameterDefaultValues
         {
@@ -28,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new string[] { "Period" }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "VIXFIX(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "NATR(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -41,27 +36,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+        public override HLine[] HorizontalLines
+        {
+            get { return null; }
+        }
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            int period = (int)this.parameters[0];
-            FloatSerie vixFix = new FloatSerie(stockSerie.Count, this.SerieNames[0]);
-            this.series[0] = vixFix;
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie atrSerie = stockSerie.GetIndicator($"ATR({(int)this.Parameters[0]})").Series[0];
 
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-
-            for (int i = 1; i < period; i++)
-            {
-                float highest = highSerie.GetMax(0, i);
-                float close = lowSerie[i];
-                vixFix[i] = 100f * (highest - close) / highest;
-            }
-            for (int i = period; i < stockSerie.Count; i++)
-            {
-                float highest = highSerie.GetMax(i - period, i);
-                vixFix[i] = 100f * (highest - lowSerie[i]) / highest;
-            }
+            this.series[0] = 100f * atrSerie / closeSerie;
+            this.Series[0].Name = this.Name;
         }
 
         static string[] eventNames = new string[] { };
