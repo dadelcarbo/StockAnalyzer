@@ -2685,12 +2685,12 @@ namespace StockAnalyzerApp
 
             string rankLeaderIndicatorName = "ROR(100)";
             string rankLoserIndicatorName = "ROD(100)";
-            int nbLeaders = 12;
+            int nbLeaders = 15;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
-            string htmlLeaders = GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
+            string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
@@ -2854,9 +2854,16 @@ namespace StockAnalyzerApp
                 var leaders = leadersDico.OrderByDescending(l => l.rank).Take(nbLeaders);
                 foreach (RankedSerie pair in leaders)
                 {
+                    // Generate Snapshot
+                    this.OnSelectedStockAndDurationChanged(pair.stockSerie.StockName, duration, false);
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICOR|BB(20,2,-2,EMA)");
+
+                    var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
+
+                    var stockName = AlertLineTemplate.Replace("%MSG%", pair.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
-                        Replace("%COL1%", pair.stockSerie.StockName).
+                        Replace("%COL1%", stockName).
                         Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
                         Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
                         Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
@@ -2950,9 +2957,16 @@ namespace StockAnalyzerApp
                 leaders = leadersDico.OrderBy(l => l.rank).Take(nbLeaders);
                 foreach (RankedSerie pair in leaders)
                 {
+                    // Generate Snapshot
+                    this.OnSelectedStockAndDurationChanged(pair.stockSerie.StockName, duration, false);
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICOR|BB(20,2,-2,EMA)");
+
+                    var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
+
+                    var stockName = AlertLineTemplate.Replace("%MSG%", pair.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
-                        Replace("%COL1%", pair.stockSerie.StockName).
+                        Replace("%COL1%", stockName).
                         Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
                         Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
                         Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
@@ -3186,7 +3200,7 @@ namespace StockAnalyzerApp
                     case Keys.Escape:
                         // Interupt current drawings
                         this.ResetDrawingButtons();
-                        this.Refresh(); 
+                        this.Refresh();
                         break;
                     case Keys.Control | Keys.H:
                         this.graphCloseControl.Focus();
