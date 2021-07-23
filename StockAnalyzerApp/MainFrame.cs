@@ -2683,28 +2683,36 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
+            this.Width = 600;
+
             string rankLeaderIndicatorName = "ROR(100)";
             string rankLoserIndicatorName = "ROD(100)";
+            //string rankLeaderIndicatorName = "HIGHEST(5)";
+            //string rankLoserIndicatorName = "LOWEST(5)";
             int nbLeaders = 15;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "P2");
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.ALTERNEXT, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.ALTERNEXT);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
+            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -2775,7 +2783,7 @@ namespace StockAnalyzerApp
 
         const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
 
-        private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders)
+        private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders, string indicatorFormat)
         {
             const string rowTemplate = @"
          <tr>
@@ -2856,7 +2864,7 @@ namespace StockAnalyzerApp
                 {
                     // Generate Snapshot
                     this.OnSelectedStockAndDurationChanged(pair.stockSerie.StockName, duration, false);
-                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICOR|BB(20,2,-2,EMA)");
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICATOR|BB(20,2,-2,EMA)");
 
                     var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
 
@@ -2864,7 +2872,7 @@ namespace StockAnalyzerApp
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
                         Replace("%COL1%", stockName).
-                        Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
+                        Replace("%COL2%", (pair.rankIndicatorValue).ToString(indicatorFormat)).
                         Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
                         Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
                         Replace("%COL5%", (lastValue.CLOSE).ToString("#.##"));
@@ -2959,7 +2967,7 @@ namespace StockAnalyzerApp
                 {
                     // Generate Snapshot
                     this.OnSelectedStockAndDurationChanged(pair.stockSerie.StockName, duration, false);
-                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICOR|BB(20,2,-2,EMA)");
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator("INDICATOR|BB(20,2,-2,EMA)");
 
                     var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
 
@@ -2967,7 +2975,7 @@ namespace StockAnalyzerApp
                     var lastValue = pair.stockSerie.ValueArray.Last();
                     html += rowTemplate.
                         Replace("%COL1%", stockName).
-                        Replace("%COL2%", (pair.rankIndicatorValue).ToString("P2")).
+                        Replace("%COL2%", (pair.rankIndicatorValue).ToString(indicatorFormat)).
                         Replace("%COL3%", (pair.Indicator2Value).ToString("P2")).
                         Replace("%COL4%", (lastValue.VARIATION).ToString("#.##")).
                         Replace("%COL5%", (lastValue.CLOSE).ToString("#.##"));
