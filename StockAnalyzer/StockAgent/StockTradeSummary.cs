@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockAgent
             this.Trades = new ObservableCollection<StockTrade>();
         }
         public IList<StockTrade> Trades { get; private set; }
-        public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.DrawDown) : 0f; } }
+        public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Drawdown) : 0f; } }
         public float TotalGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Sum(t => t.Gain) : 0f; } }
         public float TotalLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Sum(t => t.Gain) : 0f; } }
         public float AvgGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f; } }

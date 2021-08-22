@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockAgent
         }
 
         public float Gain { get; private set; }
-        public float DrawDown { get; private set; }
+        public float Drawdown { get; private set; }
 
         FloatSerie openSerie => this.Serie.GetSerie(StockDataType.OPEN);
         FloatSerie highSerie => this.Serie.GetSerie(StockDataType.HIGH);
@@ -56,7 +56,7 @@ namespace StockAnalyzer.StockAgent
             this.EntryValue = openSerie[entryIndex];
 
             this.Gain = 0;
-            this.DrawDown = 0;
+            this.Drawdown = 0;
 
             this.IsClosed = false;
         }
@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockAgent
             this.EntryValue = entryValue;
 
             this.Gain = 0;
-            this.DrawDown = 0;
+            this.Drawdown = 0;
 
             this.IsClosed = false;
         }
@@ -100,13 +100,13 @@ namespace StockAnalyzer.StockAgent
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
-                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+                this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
-                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
             }
 
             this.IsClosed = true;
@@ -126,13 +126,13 @@ namespace StockAnalyzer.StockAgent
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
-                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+                this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
-                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
             }
 
             this.IsClosed = true;
@@ -148,13 +148,13 @@ namespace StockAnalyzer.StockAgent
             {
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex);
-                this.DrawDown = (minValue - this.EntryValue) / this.EntryValue;
+                this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex);
-                this.DrawDown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
             }
         }
 
@@ -196,7 +196,7 @@ namespace StockAnalyzer.StockAgent
         }
         public string ToLog()
         {
-            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.DrawDown.ToString("P2") + ";";
+            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.Drawdown.ToString("P2") + ";";
         }
     }
 }

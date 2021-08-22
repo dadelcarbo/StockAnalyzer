@@ -19,6 +19,8 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie closeSerie;
         protected FloatSerie openSerie;
         protected FloatSerie lowSerie;
+        protected FloatSerie highSerie;
+        protected FloatSerie volumeSerie;
 
         public StockTrade Trade { get; set; }
 
@@ -52,6 +54,8 @@ namespace StockAnalyzer.StockAgent
                 closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 openSerie = stockSerie.GetSerie(StockDataType.OPEN);
                 lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+                highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+                volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
                 this.Trade = null;
                 this.StopPercent = stop;
 

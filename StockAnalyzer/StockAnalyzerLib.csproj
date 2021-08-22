@@ -87,6 +87,7 @@
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
     <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
+    <Compile Include="StockAgent\Agents\FWAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACDAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAOSCAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAMonthlyAgent.cs" />
