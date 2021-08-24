@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
         public float NetExitValue => ExitAmount / ExitQty;
         public float Fee => (ExitQty * ExitValue) < 1000f ? 2.5f : 5.0f;
 
-        public float Return => (this.ExitAmount - this.Position.EntryCost);
+        public float Return => this.ExitAmount - this.Position.EntryCost;
         public float ReturnPercent => (this.ExitAmount - this.Position.EntryCost) / this.Position.EntryCost;
         public float PortfolioReturnPercent => this.Return / this.Portfolio.TotalValue;
 
