@@ -7,8 +7,7 @@
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs"
        xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
        mc:Ignorable="d" Background="LightYellow"
-       d:DesignHeight="381" d:DesignWidth="630"
-       Height="381" Width="630" Language="fr-FR"
+       d:DesignHeight="381" d:DesignWidth="630" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}">
     <StackPanel>
         <StackPanel Orientation="Horizontal">

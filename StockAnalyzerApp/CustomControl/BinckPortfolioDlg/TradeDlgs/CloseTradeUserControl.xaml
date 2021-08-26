@@ -5,7 +5,7 @@
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs"
        mc:Ignorable="d" Background="LightYellow"
-       d:DesignHeight="300" d:DesignWidth="450"
+       d:DesignHeight="300" d:DesignWidth="450" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:CloseTradeViewModel, IsDesignTimeCreatable=False}">
     <StackPanel>
         <StackPanel Orientation="Horizontal">

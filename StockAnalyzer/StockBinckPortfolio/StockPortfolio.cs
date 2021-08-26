@@ -50,7 +50,8 @@ namespace StockAnalyzer.StockBinckPortfolio
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
-        [XmlIgnore]
+        public DateTime CreationDate { get; set; }
+[XmlIgnore]
         public float PositionValue { get; private set; }
         public float TotalValue => this.Balance + this.PositionValue;
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
@@ -136,72 +137,79 @@ namespace StockAnalyzer.StockBinckPortfolio
                     StockLog.Write($" ----------------------------- Processing Portfolio {portofolio.Name}");
                     foreach (var row in tradeGroup)
                     {
-                        StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
-                        switch (row.Type)
+                        try
                         {
-                            case "Liquidités":
-                                {
-                                    if (!long.TryParse(row.TradeId?.ToString(), out long tradeId))
+                            StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                            switch (row.Type)
+                            {
+                                case "Liquidités":
                                     {
-                                        tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                                        if (!long.TryParse(row.TradeId?.ToString(), out long tradeId))
+                                        {
+                                            tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                                        }
+                                        if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                            continue;
+
+                                        portofolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
                                     }
-                                    if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
-                                        continue;
-
-                                    portofolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
-                                }
-                                break;
-                            case "Opération":
-                                {
-                                    // Find stockNamefrom mapping
-                                    var stockName = row.Instrument.ToUpper()
-                                        .Replace(" SA", "")
-                                        .Replace(" UCITS ETF", "")
-                                        .Replace(" DAILY", "");
-
-                                    if (stockName.EndsWith(" Assented Rights"))
-                                        continue;
-
-                                    if (!long.TryParse(row.TradeId.ToString(), out long tradeId))
+                                    break;
+                                case "Opération":
                                     {
-                                        tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
-                                    }
-                                    if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
-                                        continue;
+                                        // Find stockNamefrom mapping
+                                        var stockName = row.Instrument.ToUpper()
+                                            .Replace(" SA", "")
+                                            .Replace(" UCITS ETF", "")
+                                            .Replace(" DAILY", "");
 
-                                    var priceLong = row.Row.Field<double?>(10);
-                                    if (!priceLong.HasValue)
-                                        continue;
-                                    float price = (float)priceLong.Value;
-                                    var qty = (int)row.Row.Field<double>(9);
-                                    var amount = (float)row.Row.Field<double>(13);
-                                    switch (row.Event)
-                                    {
-                                        case "Achat":
-                                            if (amount == 0)
-                                                continue;
-                                            portofolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
-                                            break;
-                                        case "Vente":
-                                            portofolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
-                                            break;
-                                        case "Transfert entrant":
-                                            portofolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                        if (stockName.EndsWith(" Assented Rights"))
+                                            continue;
 
-                                }
-                                break;
-                            //case "Opération sur titres":
-                            //    break;
-                            default:
-                                StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
-                                break;
+                                        if (!long.TryParse(row.TradeId.ToString(), out long tradeId))
+                                        {
+                                            tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                                        }
+                                        if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                            continue;
+
+                                        var priceLong = row.Row.Field<double?>(10);
+                                        if (!priceLong.HasValue)
+                                            continue;
+                                        float price = (float)priceLong.Value;
+                                        var qty = (int)row.Row.Field<double>(9);
+                                        var amount = (float)row.Row.Field<double>(13);
+                                        switch (row.Event)
+                                        {
+                                            case "Achat":
+                                                if (amount == 0)
+                                                    continue;
+                                                portofolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
+                                                break;
+                                            case "Vente":
+                                                portofolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
+                                                break;
+                                            case "Transfert entrant":
+                                                portofolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                    }
+                                    break;
+                                //case "Opération sur titres":
+                                //    break;
+                                default:
+                                    StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                                    break;
+                            }
+
+                            StockLog.Write($"Portfolio balance : {portofolio.Balance}");
                         }
-
-                        StockLog.Write($"Portfolio balance : {portofolio.Balance}");
+                        catch(Exception ex)
+                        {
+                            StockLog.Write(ex);
+                        }
                     }
                 }
                 return;
