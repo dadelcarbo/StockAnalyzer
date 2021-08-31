@@ -1776,6 +1776,18 @@ namespace StockAnalyzer.StockClasses
             }
             return 0f;
         }
+        public float GetLastPrice(string stockName)
+        {
+            if (this.ContainsKey(stockName))
+            {
+                var stockSerie = this[stockName];
+                if (stockSerie.Initialise())
+                {
+                    return stockSerie.Last().Value.CLOSE;
+                }
+            }
+            return 0f;
+        }
 
         public StockSerie GeneratePortfolioSerie(StockPortfolio binckPortfolio)
         {
@@ -1787,7 +1799,7 @@ namespace StockAnalyzer.StockClasses
             var startDate = binckPortfolio.TradeOperations.OrderBy(op => op.Id).First().Date;
 
             StockSerie portfolioSerie = new StockSerie(binckPortfolio.Name, binckPortfolio.Name, refStock.StockGroup, StockDataProvider.BinckPortfolio, refStock.DataSource.Duration);
-            portfolioSerie.IsPortofolioSerie = true;
+            portfolioSerie.IsPortfolioSerie = true;
 
             float value;
             foreach (var date in refStock.Keys.Where(d => d >= startDate))

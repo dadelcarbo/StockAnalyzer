@@ -90,7 +90,7 @@ namespace StockAnalyzerApp
             this.sectorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.portofolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -180,7 +180,7 @@ namespace StockAnalyzerApp
             this.stockFilterMenuItem,
             this.viewMenuItem,
             this.analysisMenuItem,
-            this.portofolioMenuItem,
+            this.portfolioMenuItem,
             this.watchlistsMenuItem,
             this.helpMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
@@ -593,7 +593,7 @@ namespace StockAnalyzerApp
             // 
             this.portfolioSimulationMenuItem.Name = "portfolioSimulationMenuItem";
             this.portfolioSimulationMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.portfolioSimulationMenuItem.Text = "Portofolio Simulation";
+            this.portfolioSimulationMenuItem.Text = "Portfolio Simulation";
             this.portfolioSimulationMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F9;
             this.portfolioSimulationMenuItem.Click += new System.EventHandler(this.portfolioSimulationMenuItem_Click);
             // 
@@ -645,15 +645,15 @@ namespace StockAnalyzerApp
             this.statisticsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F12)));
             this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
             // 
-            // portofolioMenuItem
+            // portfolioMenuItem
             // 
-            this.portofolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.portfolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.currentPortfolioMenuItem,
             this.showPortfolioSerieMenuItem,
             this.nameMappingMenuItem});
-            this.portofolioMenuItem.Name = "portofolioMenuItem";
-            this.portofolioMenuItem.Size = new System.Drawing.Size(77, 20);
-            this.portofolioMenuItem.Text = "Portofolios";
+            this.portfolioMenuItem.Name = "portfolioMenuItem";
+            this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.portfolioMenuItem.Text = "Portfolios";
             // 
             // currentPortfolioMenuItem
             // 
@@ -1520,7 +1520,7 @@ namespace StockAnalyzerApp
         private ToolStripButton excludeButton;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem viewMenuItem;
-        private ToolStripMenuItem portofolioMenuItem;
+        private ToolStripMenuItem portfolioMenuItem;
         private ToolStripButton magnetStripBtn;
         private ToolStripMenuItem palmaresMenuItem;
         private StatusStrip statusStrip1;

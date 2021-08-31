@@ -46,15 +46,18 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         public float Stop { get { return position.Stop; } set { if (position.Stop != value) { position.Stop = value; OnPropertyChanged("Stop"); OnPropertyChanged("TradeRisk"); OnPropertyChanged("PortfolioRisk"); } } }
 
         public float TradeRisk => position.Stop == 0 ? 1.0f : (position.EntryValue - position.Stop) / position.EntryValue;
-        public float PortfolioRisk => position.Stop == 0 ? 1.0f : PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
+        public float PortfolioRisk => PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
 
         public StockBarDuration BarDuration => position.BarDuration;
         public string Indicator => position.Indicator;
 
         public DateTime? ExitDate => position.ExitDate;
+        public float? ExitValue => position.ExitValue;
 
         public float LastValue { get; set; }
-        public float Variation => (EntryValue - LastValue) / (EntryValue);
-        public float PortfolioPercent => this.portfolio.Portfolio.InitialBalance > 0 ? ((LastValue * this.EntryQty) / this.portfolio.Portfolio.InitialBalance) : 0.0f;
+        public float Variation => (LastValue - EntryValue) / (EntryValue);
+        public float PortfolioVariation => PortfolioPercent * Variation;
+        // @@@@ Need to use the most accurate portfolio value (Position value or Risk free value ?
+        public float PortfolioPercent => this.portfolio.Portfolio.TotalValue > 0 ? ((EntryValue * this.EntryQty) / this.portfolio.Portfolio.InitialBalance) : 0.0f;
     }
 }

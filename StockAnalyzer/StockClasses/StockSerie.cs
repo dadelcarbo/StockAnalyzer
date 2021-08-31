@@ -168,7 +168,7 @@ namespace StockAnalyzer.StockClasses
 
         #endregion
 
-        public bool IsPortofolioSerie { get; set; }
+        public bool IsPortfolioSerie { get; set; }
         public int LastIndex { get { return this.ValueArray.Length - 1; } }
         public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }
 
@@ -559,7 +559,7 @@ namespace StockAnalyzer.StockClasses
             this.ShortName = shortName;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();
-            this.IsPortofolioSerie = false;
+            this.IsPortfolioSerie = false;
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
@@ -576,7 +576,7 @@ namespace StockAnalyzer.StockClasses
             this.ISIN = isin;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();
-            this.IsPortofolioSerie = false;
+            this.IsPortfolioSerie = false;
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
@@ -3797,10 +3797,6 @@ namespace StockAnalyzer.StockClasses
             UpTrend,
             DownTrend,
             Ranging,
-            //StartUpTrend, // @@@@ Not Implemented yet.
-            //StartDownTrend,
-            //StartRanging
-
         }
         public void generateDowTrendLines(int startIndex, int endIndex, int hlPeriod, ref BoolSerie[] events)
         {
@@ -4217,7 +4213,7 @@ namespace StockAnalyzer.StockClasses
         {
             string stockName = this.StockName + "_LOG";
             StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated, this.DataSource.Duration);
-            stockSerie.IsPortofolioSerie = this.IsPortofolioSerie;
+            stockSerie.IsPortfolioSerie = this.IsPortfolioSerie;
 
             float scaleFactor = 1.0f;
             if (this.GetSerie(StockDataType.LOW).Min() < 1.0f)

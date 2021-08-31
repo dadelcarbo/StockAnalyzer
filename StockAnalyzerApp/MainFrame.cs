@@ -85,7 +85,7 @@ namespace StockAnalyzerApp
 
         public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
-        public delegate void SavePortofolio();
+        public delegate void SavePortfolio();
 
         public static StockAnalyzerForm MainFrame { get; private set; }
         public bool IsClosing { get; set; }
@@ -99,7 +99,7 @@ namespace StockAnalyzerApp
 
         public StockDictionary StockDictionary { get; private set; }
 
-        public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portofolios;
+        public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portfolios;
 
         public ToolStripProgressBar ProgressBar
         {
@@ -384,10 +384,10 @@ namespace StockAnalyzerApp
             }
 
             // Deserialize saved orders
-            StockSplashScreen.ProgressText = "Reading portofolio data...";
+            StockSplashScreen.ProgressText = "Reading portfolio data...";
 
             InitialisePortfolioCombo();
-            BinckPortfolio = BinckPortfolioDataProvider.Portofolios.First();
+            BinckPortfolio = BinckPortfolioDataProvider.Portfolios.First();
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -1515,7 +1515,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        #region STOCK and PORTOFOLIO selection tool bar
+        #region STOCK and PORTFOLIO selection tool bar
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -2559,7 +2559,7 @@ namespace StockAnalyzerApp
 
         #endregion VIEW MENU HANDLERS
 
-        #region PORTOFOLIO MENU HANDERS
+        #region PORTFOLIO MENU HANDERS
 
         BinckPortfolioDlg portfolioDlg = null;
         private void currentPortfolioMenuItem_Click(object sender, EventArgs e)
@@ -4172,7 +4172,7 @@ namespace StockAnalyzerApp
 
                     // Apply Strategy
 
-                    // Create new simulation portofolio
+                    // Create new simulation portfolio
                     if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.INDICATOR) ||
                         this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
@@ -4233,7 +4233,7 @@ namespace StockAnalyzerApp
         private void InitialisePortfolioCombo()
         {
             // Initialise Combo values
-            portfolioComboBox.ComboBox.DataSource = BinckPortfolioDataProvider.Portofolios;
+            portfolioComboBox.ComboBox.DataSource = BinckPortfolioDataProvider.Portfolios;
             portfolioComboBox.ComboBox.DisplayMember = "Name";
             portfolioComboBox.ComboBox.ValueMember = "Name";
         }

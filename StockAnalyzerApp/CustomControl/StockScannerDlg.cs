@@ -255,7 +255,7 @@ namespace StockAnalyzerApp.CustomControl
             //    DumpCheckNodes();
             eventTreeView.Refresh();
 
-            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortfolioSerie);
 
             selectedStockListBox.Items.Clear();
             selectedStockListBox.Refresh();
@@ -494,7 +494,7 @@ namespace StockAnalyzerApp.CustomControl
             Cursor cursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
-            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+            var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortfolioSerie);
             try
             {
                 selectedStockListBox.Items.Clear();
@@ -664,7 +664,7 @@ namespace StockAnalyzerApp.CustomControl
                 StockSplashScreen.ProgressMin = 0;
                 StockSplashScreen.ShowSplashScreen();
 
-                var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortofolioSerie);
+                var stockInGroupList = stockDictionary.Values.Where(s => s.BelongsToGroup(groupComboBox.SelectedItem.ToString()) && !s.IsPortfolioSerie);
                 foreach (StockSerie stockSerie in stockInGroupList)
                 {
                     stockSerie.IsInitialised = false;

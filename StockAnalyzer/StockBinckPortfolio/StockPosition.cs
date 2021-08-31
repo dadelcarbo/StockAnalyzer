@@ -23,6 +23,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public string EntryComment { get; set; }
         public string Indicator { get; set; }
         public DateTime? ExitDate { get; set; }
+        public float? ExitValue { get; set; }
         public bool IsClosed => ExitDate != null;
 
         internal void Dump()

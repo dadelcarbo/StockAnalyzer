@@ -59,6 +59,14 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
                 return positions;
             }
         }
+        public IEnumerable<StockPositionViewModel> ClosedPositions
+        {
+            get
+            {
+                var positions = Portfolio.Positions.Where(p => p.IsClosed).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
+                return positions;
+            }
+        }
 
         public float Value { get; set; }
     }

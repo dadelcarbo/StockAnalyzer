@@ -7,8 +7,6 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockBinckPortfolio
@@ -51,7 +49,7 @@ namespace StockAnalyzer.StockBinckPortfolio
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
         public DateTime CreationDate { get; set; }
-[XmlIgnore]
+        [XmlIgnore]
         public float PositionValue { get; private set; }
         public float TotalValue => this.Balance + this.PositionValue;
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
@@ -96,6 +94,9 @@ namespace StockAnalyzer.StockBinckPortfolio
                 LoadFromSAXO(file, folder);
             }
 
+
+
+
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
             StockPortfolio.Portfolios.Add(SimulationPortfolio);
@@ -131,10 +132,10 @@ namespace StockAnalyzer.StockBinckPortfolio
                     Row = r
                 }).GroupBy(r => r.AccountId))
                 {
-                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
-                    if (portofolio == null)
+                    var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                    if (portfolio == null)
                         continue;
-                    StockLog.Write($" ----------------------------- Processing Portfolio {portofolio.Name}");
+                    StockLog.Write($" ----------------------------- Processing Portfolio {portfolio.Name}");
                     foreach (var row in tradeGroup)
                     {
                         try
@@ -148,10 +149,10 @@ namespace StockAnalyzer.StockBinckPortfolio
                                         {
                                             tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
                                         }
-                                        if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                        if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
                                             continue;
 
-                                        portofolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
+                                        portfolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
                                     }
                                     break;
                                 case "Opération":
@@ -169,7 +170,7 @@ namespace StockAnalyzer.StockBinckPortfolio
                                         {
                                             tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
                                         }
-                                        if (portofolio.TradeOperations.Any(t => t.Id == tradeId))
+                                        if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
                                             continue;
 
                                         var priceLong = row.Row.Field<double?>(10);
@@ -183,13 +184,13 @@ namespace StockAnalyzer.StockBinckPortfolio
                                             case "Achat":
                                                 if (amount == 0)
                                                     continue;
-                                                portofolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
+                                                portfolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
                                                 break;
                                             case "Vente":
-                                                portofolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
+                                                portfolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
                                                 break;
                                             case "Transfert entrant":
-                                                portofolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
+                                                portfolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
                                                 break;
                                             default:
                                                 break;
@@ -204,109 +205,109 @@ namespace StockAnalyzer.StockBinckPortfolio
                                     break;
                             }
 
-                            StockLog.Write($"Portfolio balance : {portofolio.Balance}");
+                            StockLog.Write($"Portfolio balance : {portfolio.Balance}");
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             StockLog.Write(ex);
                         }
                     }
                 }
                 return;
-                foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération sur titres").Select(r => new
-                {
-                    TradeDate = r.Field<DateTime>(0),
-                    AccountId = r.Field<string>(1),
-                    Instrument = r.Field<string>(3),
-                    InstrumentId = r.Field<double>(4),
-                    Event = r.Field<string>(6),
-                    Type = r.Field<string>(5),
-                    TradeId = long.Parse(r.Field<string>(7)),
-                    Amount = r.Field<double>(13)
-                }).GroupBy(r => r.AccountId))
-                {
-                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
-                    if (portofolio == null)
-                        continue;
+                //foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération sur titres").Select(r => new
+                //{
+                //    TradeDate = r.Field<DateTime>(0),
+                //    AccountId = r.Field<string>(1),
+                //    Instrument = r.Field<string>(3),
+                //    InstrumentId = r.Field<double>(4),
+                //    Event = r.Field<string>(6),
+                //    Type = r.Field<string>(5),
+                //    TradeId = long.Parse(r.Field<string>(7)),
+                //    Amount = r.Field<double>(13)
+                //}).GroupBy(r => r.AccountId))
+                //{
+                //    var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                //    if (portfolio == null)
+                //        continue;
 
-                    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
-                    {
-                        if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
-                            continue;
+                //    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
+                //    {
+                //        if (portfolio.TradeOperations.Any(t => t.Id == row.TradeId))
+                //            continue;
 
-                        // Find stockNamefrom mapping
-                        var stockName = row.Instrument.ToUpper()
-                            .Replace(" SA", "")
-                            .Replace(" UCITS ETF", "")
-                            .Replace(" DAILY", "");
+                //        // Find stockNamefrom mapping
+                //        var stockName = row.Instrument.ToUpper()
+                //            .Replace(" SA", "")
+                //            .Replace(" UCITS ETF", "")
+                //            .Replace(" DAILY", "");
 
-                        if (row.Event == "Dividende en espèces")
-                        {
-                            portofolio.DividendOperation(stockName, row.TradeDate, (float)row.Amount, row.TradeId);
-                        }
-                    }
-                }
+                //        if (row.Event == "Dividende en espèces")
+                //        {
+                //            portfolio.DividendOperation(stockName, row.TradeDate, (float)row.Amount, row.TradeId);
+                //        }
+                //    }
+                //}
 
-                foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération").Select(r => new
-                {
-                    TradeDate = r.Field<DateTime>(0),
-                    AccountId = r.Field<string>(1),
-                    Instrument = r.Field<string>(3),
-                    InstrumentId = r.Field<double>(4),
-                    Event = r.Field<string>(6),
-                    TradeId = (int)r.Field<double>(8),
-                    Qty = (int)r.Field<double>(9),
-                    Price = r.Field<double?>(10),
-                    Amount = r.Field<double>(13)
-                }).GroupBy(r => r.AccountId))
-                {
-                    var portofolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
-                    if (portofolio == null)
-                        continue;
+                //foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération").Select(r => new
+                //{
+                //    TradeDate = r.Field<DateTime>(0),
+                //    AccountId = r.Field<string>(1),
+                //    Instrument = r.Field<string>(3),
+                //    InstrumentId = r.Field<double>(4),
+                //    Event = r.Field<string>(6),
+                //    TradeId = (int)r.Field<double>(8),
+                //    Qty = (int)r.Field<double>(9),
+                //    Price = r.Field<double?>(10),
+                //    Amount = r.Field<double>(13)
+                //}).GroupBy(r => r.AccountId))
+                //{
+                //    var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
+                //    if (portfolio == null)
+                //        continue;
 
-                    StockLog.Write($" ----------------------------- Processing Portfolio {portofolio.Name}");
-                    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
-                    {
-                        if (portofolio.TradeOperations.Any(t => t.Id == row.TradeId))
-                            continue;
+                //    StockLog.Write($" ----------------------------- Processing Portfolio {portfolio.Name}");
+                //    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
+                //    {
+                //        if (portfolio.TradeOperations.Any(t => t.Id == row.TradeId))
+                //            continue;
 
-                        // Find stockNamefrom mapping
-                        var stockName = row.Instrument.ToUpper()
-                            .Replace(" SA", "")
-                            .Replace(" UCITS ETF", "")
-                            .Replace(" DAILY", "");
+                //        // Find stockNamefrom mapping
+                //        var stockName = row.Instrument.ToUpper()
+                //            .Replace(" SA", "")
+                //            .Replace(" UCITS ETF", "")
+                //            .Replace(" DAILY", "");
 
-                        StockLog.Write($"Processing {row.Event} {stockName}");
-                        try
-                        {
-                            if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
-                            {
-                                portofolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
-                            }
-                            else if (row.Event == "Transfert entrant")
-                            {
-                                portofolio.TransferOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, row.TradeId);
-                            }
-                            else if (row.Event == "Sell" || row.Event == "Vente")
-                            {
-                                if (row.Price == null)
-                                {
-                                    portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, 0f, 0f, null, row.TradeId);
-                                }
-                                else
-                                {
-                                    portofolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            //MessageBox.Show(e.Message);&
-                            StockLog.Write(e);
-                        }
-                    }
-                    portofolio.Serialize(folder);
-                }
+                //        StockLog.Write($"Processing {row.Event} {stockName}");
+                //        try
+                //        {
+                //            if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
+                //            {
+                //                portfolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
+                //            }
+                //            else if (row.Event == "Transfert entrant")
+                //            {
+                //                portfolio.TransferOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, row.TradeId);
+                //            }
+                //            else if (row.Event == "Sell" || row.Event == "Vente")
+                //            {
+                //                if (row.Price == null)
+                //                {
+                //                    portfolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, 0f, 0f, null, row.TradeId);
+                //                }
+                //                else
+                //                {
+                //                    portfolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
+                //                }
+                //            }
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            //MessageBox.Show(e.Message);&
+                //            StockLog.Write(e);
+                //        }
+                //    }
+                //    portfolio.Serialize(folder);
+                //}
             }
             catch (Exception e)
             {
@@ -400,9 +401,8 @@ namespace StockAnalyzer.StockBinckPortfolio
             };
             this.TradeOperations.Add(operation);
             this.Balance += amount;
-            var logEntry = this.Positions.Find(l => l.Id == position.Id);
-            logEntry.ExitDate = date;
             position.ExitDate = operation.Date;
+            position.ExitValue = operation.Value;
             if (position.EntryQty != qty)
             {
                 this.Positions.Add(new StockPosition

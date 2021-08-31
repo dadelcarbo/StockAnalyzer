@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             try
             {
                 NotifyProgress("Loading portfolio");
-                Portofolios = StockPortfolio.LoadPortfolios(folder);
+                Portfolios = StockPortfolio.LoadPortfolios(folder);
             }
             catch (Exception)
             {
@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public static List<StockPortfolio> Portofolios { get; set; }
+        public static List<StockPortfolio> Portfolios { get; set; }
 
     }
 }

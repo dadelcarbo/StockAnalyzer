@@ -130,27 +130,35 @@ namespace StockAnalyzer.StockLogging
         {
             if (StockLog.Logger.isEnabled)
             {
-                string strException = string.Empty;
+                string strException = objException.Message;
+                var innerException = objException.InnerException;
+                var padding = string.Empty;
+                while(innerException != null)
+                {
+                    strException += Environment.NewLine + padding + innerException.Message;
+                    padding += "  ";
+                    innerException = innerException.InnerException;
+                }
                 StreamWriter sw = StockLog.Logger.sw;
                 if (objException.Source != null)
                 {
-                    sw.WriteLine("Source        : " +
+                    sw.WriteLine("Source      : " +
                             objException.Source.ToString().Trim());
                 }
                 if (objException.TargetSite != null)
                 {
-                    sw.WriteLine("Method        : " +
+                    sw.WriteLine("Method      : " +
                             objException.TargetSite.Name.ToString());
                 }
                 sw.WriteLine("Date        : " +
                         DateTime.Now.ToLongTimeString());
                 sw.WriteLine("Time        : " +
                         DateTime.Now.ToShortDateString());
-                sw.WriteLine("Error        : " +
-                        objException.Message.ToString().Trim());
+                sw.WriteLine("Error       : " +
+                        strException.Trim());
                 if (objException.StackTrace != null)
                 {
-                    sw.WriteLine("Stack Trace    : " +
+                    sw.WriteLine("Stack Trace : " +
                             objException.StackTrace.ToString().Trim());
                 }
                 sw.WriteLine("^^-------------------------------------------------------------------^^");
