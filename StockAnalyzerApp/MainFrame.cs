@@ -2698,7 +2698,14 @@ namespace StockAnalyzerApp
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
             htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "P2");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+
             //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
             //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
