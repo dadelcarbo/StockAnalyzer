@@ -2683,7 +2683,8 @@ namespace StockAnalyzerApp
 
             this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
-            this.Width = 600;
+            var previousSize = this.Size;
+            this.Size = new Size(600, 600);
 
             string rankLeaderIndicatorName = "ROR(100)";
             string rankLoserIndicatorName = "ROD(100)";
@@ -2725,6 +2726,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.CloseForm(true);
             #endregion
 
+            this.Size = previousSize;
 
             var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", title).Replace("%HTML_BODY%", htmlBody);
             using (StreamWriter sw = new StreamWriter(fileName))
@@ -2792,8 +2794,7 @@ namespace StockAnalyzerApp
 
         private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders, string indicatorFormat)
         {
-            const string rowTemplate = @"
-         <tr>
+            const string rowTemplate = @"<tr>
              <td>%COL1%</td>
              <td>%COL2%</td>
              %RANK_DIR_IMG%
