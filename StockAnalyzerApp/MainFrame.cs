@@ -2698,7 +2698,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, 20, "TRAILHLBODY(20)", nbLeaders); 
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, 20, "TRAILHLBODY(20)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, 20, "TRAILHLBODY(20)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, 20, "TRAILHLBODY(20)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, 20, "TRAILHLBODY(20)", nbLeaders);
@@ -2708,6 +2708,10 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, 20, "TRAILHLBODY(20)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, 20, "TRAILHLBODY(20)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, 20, "TRAILHLBODY(20)", nbLeaders);
+
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
@@ -2814,10 +2818,7 @@ namespace StockAnalyzerApp
              <td>%COL6%</td>
          </tr>";
 
-            string html = @"
-        <table>
-            <tr>
-            <td>";
+            string html = string.Empty;
             try
             {
                 StockSplashScreen.ProgressText = "Breakouts " + duration + " for " + reportGroup;
@@ -2871,7 +2872,7 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <td rowspan=""1"">&nbsp;</td>
-                    <th colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                    <th style=""font-size:24px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
