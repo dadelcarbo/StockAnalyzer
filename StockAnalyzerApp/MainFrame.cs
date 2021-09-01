@@ -2824,6 +2824,14 @@ namespace StockAnalyzerApp
                     if (stockSerie.Initialise() && stockSerie.Count > 100)
                     {
                         stockSerie.BarDuration = duration;
+                        if (stockSerie.HasVolume) {
+                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
+                            if (badLiquiditySerie.Values.Last())
+                            {
+                                continue;
+                            }
+                        }
+
                         var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
                         var indicator2Serie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
                         leadersDico.Add(new RankedSerie()

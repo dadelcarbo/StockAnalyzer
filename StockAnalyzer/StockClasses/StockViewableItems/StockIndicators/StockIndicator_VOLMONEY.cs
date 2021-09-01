@@ -6,9 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_VOLMONEY : StockIndicatorBase
     {
-        public StockIndicator_VOLMONEY()
-        {
-        }
+        public override string Definition => "Calculate the excahnged volume money, Price*Volume in K€";
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }

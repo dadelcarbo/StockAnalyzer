@@ -1,5 +1,5 @@
-﻿using StockAnalyzer.StockMath;
-using System;
+﻿using System;
+using System.Linq;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -20,12 +20,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
+            this.CreateEventSeries(stockSerie.Count);
             int period = (int)this.parameters[0];
-
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             // Get index close serie.
             var indexSerie = StockDictionary.Instance[this.parameters[1] as string];
+            this.eventSeries[2][this.eventSeries[2].Count - 1] = (stockSerie.BarDuration == BarDuration.Daily && indexSerie.Keys.Last() != stockSerie.Keys.Last());
             var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(indexSerie, stockSerie.BarDuration);
 
             var rpSerie = (closeSerie / indexCloseSerie) * 100f;
@@ -35,14 +36,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[0].Name = this.Name;
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
             for (int i = 2; i < stockSerie.Count; i++)
             {
                 this.eventSeries[0][i] = mrpSerie[i] > 0;
                 this.eventSeries[1][i] = mrpSerie[i] < 0;
             }
         }
-        static string[] eventNames = new string[] { "Positive", "Negative" };
+        static string[] eventNames = new string[] { "Positive", "Negative", "Obsolete" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;
