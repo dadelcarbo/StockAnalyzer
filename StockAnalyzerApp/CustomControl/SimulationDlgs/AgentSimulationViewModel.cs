@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
 using StockAnalyzerSettings.Properties;
@@ -207,7 +207,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         // Update Simu Portfolio
                         StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
                         StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
-                        StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.SimulationPortfolio;
+                        StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
 
                         using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
                         {

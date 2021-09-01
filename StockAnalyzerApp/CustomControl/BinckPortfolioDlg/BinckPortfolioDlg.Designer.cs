@@ -1,4 +1,4 @@
-﻿namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+﻿namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     partial class BinckPortfolioDlg
     {

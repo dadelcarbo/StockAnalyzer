@@ -1,4 +1,4 @@
-﻿namespace StockAnalyzer.StockBinckPortfolio
+﻿namespace StockAnalyzer.StockPortfolio
 {
     public class StockNameMapping
     {

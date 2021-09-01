@@ -1,11 +1,11 @@
-﻿using StockAnalyzer.StockBinckPortfolio;
+﻿using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class BinckPortfolioDataProvider : StockDataProviderBase
+    public class PortfolioDataProvider : StockDataProviderBase
     {
         public const string PORTFOLIO_FOLDER = "portfolio";
 
@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             try
             {
                 NotifyProgress("Loading portfolio");
-                Portfolios = StockPortfolio.LoadPortfolios(folder);
+                Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(folder);
             }
             catch (Exception)
             {
@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public static List<StockPortfolio> Portfolios { get; set; }
+        public static List<StockPortfolio.StockPortfolio> Portfolios { get; set; }
 
     }
 }

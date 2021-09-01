@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace StockAnalyzer.StockBinckPortfolio
+namespace StockAnalyzer.StockPortfolio
 {
     public class StockPortfolio
     {
@@ -83,19 +83,17 @@ namespace StockAnalyzer.StockBinckPortfolio
         {
             LoadMappings();
 
-            // Load Binck Portfolio from Operations(mouvements)
+            // Load saved portfolio
             StockPortfolio.Portfolios = new List<StockPortfolio>();
             foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
             {
                 StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
             }
+            // Load from SAXO export
             foreach (var file in Directory.EnumerateFiles(folder, "*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
             {
                 LoadFromSAXO(file, folder);
             }
-
-
-
 
             // Add simulation portfolio
             SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };

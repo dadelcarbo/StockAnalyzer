@@ -1,7 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using System;
 
-namespace StockAnalyzer.StockBinckPortfolio
+namespace StockAnalyzer.StockPortfolio
 {
     public class StockPosition
     {

@@ -5,7 +5,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,7 +16,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
 using System.IO;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs;
+using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
-        public StockPortfolio BinckPortfolio => StockAnalyzerForm.MainFrame.BinckPortfolio;
+        public StockPortfolio BinckPortfolio => StockAnalyzerForm.MainFrame.Portfolio;
 
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
@@ -2143,7 +2143,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void buyMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null)
+            if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -2168,12 +2168,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (openPositionDlg.ShowDialog() == DialogResult.OK)
             {
                 var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
-                if (StockAnalyzerForm.MainFrame.BinckPortfolio.Balance < amount)
+                if (StockAnalyzerForm.MainFrame.Portfolio.Balance < amount)
                 {
                     MessageBox.Show("You have insufficient cash to make this trade", "Invalid Operation", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                StockAnalyzerForm.MainFrame.BinckPortfolio.BuyTradeOperation(openTradeViewModel.StockName,
+                StockAnalyzerForm.MainFrame.Portfolio.BuyTradeOperation(openTradeViewModel.StockName,
                 openTradeViewModel.EntryDate,
                 openTradeViewModel.EntryQty,
                 openTradeViewModel.EntryValue,
@@ -2183,7 +2183,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 openTradeViewModel.BarDuration,
                 openTradeViewModel.IndicatorName
                 );
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
             }
 
             this.BackgroundDirty = true;
@@ -2192,14 +2192,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void sellMenu_Click(object sender, System.EventArgs e)
         {
-            if (StockAnalyzerForm.MainFrame.BinckPortfolio == null)
+            if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
                 MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
-            var pos = StockAnalyzerForm.MainFrame.BinckPortfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
+            var pos = StockAnalyzerForm.MainFrame.Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
             if (pos == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2219,14 +2219,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var positionDlg = new ClosePositionDlg(tradeViewModel);
             if (positionDlg.ShowDialog() == DialogResult.OK)
             {
-                StockAnalyzerForm.MainFrame.BinckPortfolio.SellTradeOperation(tradeViewModel.StockName,
+                StockAnalyzerForm.MainFrame.Portfolio.SellTradeOperation(tradeViewModel.StockName,
                     tradeViewModel.ExitDate,
                     tradeViewModel.ExitQty,
                     tradeViewModel.ExitValue,
                     tradeViewModel.Fee,
                     tradeViewModel.ExitComment
                     );
-                StockAnalyzerForm.MainFrame.BinckPortfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+                StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
             }
             this.BackgroundDirty = true;
             PaintGraph();

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     class StockDateToStringConverter : IValueConverter
     {

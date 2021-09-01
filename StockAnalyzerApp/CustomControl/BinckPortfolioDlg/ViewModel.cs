@@ -1,8 +1,8 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using System.Collections.Generic;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     public class ViewModel : NotifyPropertyChangedBase
     {
@@ -15,17 +15,17 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
 
         public StockPortfolio Portfolio
         {
-            get { return StockAnalyzerForm.MainFrame.BinckPortfolio; }
+            get { return StockAnalyzerForm.MainFrame.Portfolio; }
             set
             {
-                if (StockAnalyzerForm.MainFrame.BinckPortfolio != value)
+                if (StockAnalyzerForm.MainFrame.Portfolio != value)
                 {
-                    StockAnalyzerForm.MainFrame.BinckPortfolio = value;
+                    StockAnalyzerForm.MainFrame.Portfolio = value;
                     OnPropertyChanged(nameof(Portfolio));
                     OnPropertyChanged(nameof(PortfolioViewModel));
                 }
             }
         }
-        public BinckPortfolioViewModel PortfolioViewModel => new BinckPortfolioViewModel(Portfolio);
+        public PortfolioViewModel PortfolioViewModel => new PortfolioViewModel(Portfolio);
     }
 }

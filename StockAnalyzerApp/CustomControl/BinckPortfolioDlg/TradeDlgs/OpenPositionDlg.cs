@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public partial class OpenPositionDlg : Form
     {

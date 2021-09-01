@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
 using System;

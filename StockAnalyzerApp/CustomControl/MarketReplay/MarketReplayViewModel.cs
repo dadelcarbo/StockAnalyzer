@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -207,7 +207,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.sellEnabled = false;
 
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
-            StockAnalyzerForm.MainFrame.BinckPortfolio = StockPortfolio.ReplayPortfolio;
+            StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.ReplayPortfolio;
 
             this.Positions = new ObservableCollection<MarketReplayPositionViewModel>();
             Start();

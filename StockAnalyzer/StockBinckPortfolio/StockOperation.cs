@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace StockAnalyzer.StockBinckPortfolio
+namespace StockAnalyzer.StockPortfolio
 {
     public class StockOperation
     {

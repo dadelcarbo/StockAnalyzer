@@ -1,10 +1,10 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public class OpenTradeViewModel : NotifyPropertyChangedBase
     {

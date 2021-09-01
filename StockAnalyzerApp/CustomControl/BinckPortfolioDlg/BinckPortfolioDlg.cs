@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     public partial class BinckPortfolioDlg : Form
     {

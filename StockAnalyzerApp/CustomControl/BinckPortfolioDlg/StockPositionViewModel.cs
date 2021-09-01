@@ -1,15 +1,15 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using System;
 using StockAnalyzer;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     public class StockPositionViewModel : NotifyPropertyChangedBase
     {
-        BinckPortfolioViewModel portfolio;
+        PortfolioViewModel portfolio;
         StockPosition position;
-        public StockPositionViewModel(StockPosition p, BinckPortfolioViewModel portfolio)
+        public StockPositionViewModel(StockPosition p, PortfolioViewModel portfolio)
         {
             this.position = p;
             this.portfolio = portfolio;

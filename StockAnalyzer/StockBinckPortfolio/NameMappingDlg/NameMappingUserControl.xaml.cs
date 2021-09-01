@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace StockAnalyzer.StockBinckPortfolio.NameMappingDlg
+namespace StockAnalyzer.StockPortfolio.NameMappingDlg
 {
     /// <summary>
     /// Interaction logic for NameMappingUserControl.xaml

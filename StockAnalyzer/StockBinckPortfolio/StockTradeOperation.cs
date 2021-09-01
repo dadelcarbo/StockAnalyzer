@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StockAnalyzer.StockBinckPortfolio
+namespace StockAnalyzer.StockPortfolio
 {
     public enum TradeOperationType
     {

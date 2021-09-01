@@ -143,7 +143,7 @@
     <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
     <Compile Include="StockClasses\StockDividend.cs" />
-    <Compile Include="StockClasses\StockDataProviders\BinckPortfolioDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -516,7 +516,6 @@
     <Compile Include="StockSecurity\StockLicense.cs" />
     <Compile Include="StockSecurity\StockToolKit.cs" />
     <Compile Include="StockSecurity\StockUser.cs" />
-    <Compile Include="StockBinckPortfolio\StockTradeLogEntry.cs" />
     <Compile Include="StockWeb\StockDetails.cs" />
     <Compile Include="StockWeb\StockMail.cs" />
     <Compile Include="StockWeb\StockFTP.cs" />

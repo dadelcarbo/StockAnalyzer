@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -17,7 +17,7 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
-using StockAnalyzerApp.CustomControl.BinckPortfolioDlg;
+using StockAnalyzerApp.CustomControl.PortfolioDlg;
 using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
@@ -99,7 +99,7 @@ namespace StockAnalyzerApp
 
         public StockDictionary StockDictionary { get; private set; }
 
-        public List<StockPortfolio> Portfolios => BinckPortfolioDataProvider.Portfolios;
+        public List<StockPortfolio> Portfolios => PortfolioDataProvider.Portfolios;
 
         public ToolStripProgressBar ProgressBar
         {
@@ -139,13 +139,13 @@ namespace StockAnalyzerApp
             }
         }
 
-        private StockPortfolio binckPortfolio;
-        public StockPortfolio BinckPortfolio
+        private StockPortfolio portfolio;
+        public StockPortfolio Portfolio
         {
-            get => binckPortfolio;
+            get => portfolio;
             set
             {
-                if (binckPortfolio != value)
+                if (portfolio != value)
                 {
                     if (portfolioComboBox.SelectedItem != value)
                     {
@@ -153,7 +153,7 @@ namespace StockAnalyzerApp
                     }
                     else
                     {
-                        binckPortfolio = value;
+                        portfolio = value;
                     }
                 }
             }
@@ -387,7 +387,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
             InitialisePortfolioCombo();
-            BinckPortfolio = BinckPortfolioDataProvider.Portfolios.First();
+            Portfolio = PortfolioDataProvider.Portfolios.First();
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -2564,7 +2564,7 @@ namespace StockAnalyzerApp
         BinckPortfolioDlg portfolioDlg = null;
         private void currentPortfolioMenuItem_Click(object sender, EventArgs e)
         {
-            if (BinckPortfolio == null)
+            if (Portfolio == null)
                 return;
 
             if (portfolioDlg == null)
@@ -2581,15 +2581,15 @@ namespace StockAnalyzerApp
 
         private void showPortfolioSerieMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.BinckPortfolio == null || this.BinckPortfolio.TradeOperations.Count == 0)
+            if (this.Portfolio == null || this.Portfolio.TradeOperations.Count == 0)
                 return;
 
-            this.AddNewSerie(this.StockDictionary.GeneratePortfolioSerie(this.BinckPortfolio));
+            this.AddNewSerie(this.StockDictionary.GeneratePortfolioSerie(this.Portfolio));
         }
 
         private void nameMappingMenuItem_Click(object sender, EventArgs e)
         {
-            var dlg = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingDlg();
+            var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg();
             dlg.Show();
         }
         #endregion
@@ -4208,9 +4208,9 @@ namespace StockAnalyzerApp
 
         void portfolioComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.binckPortfolio != portfolioComboBox.SelectedItem)
+            if (this.portfolio != portfolioComboBox.SelectedItem)
             {
-                this.binckPortfolio = portfolioComboBox.SelectedItem as StockPortfolio;
+                this.portfolio = portfolioComboBox.SelectedItem as StockPortfolio;
                 this.graphCloseControl.ForceRefresh();
             }
         }
@@ -4240,7 +4240,7 @@ namespace StockAnalyzerApp
         private void InitialisePortfolioCombo()
         {
             // Initialise Combo values
-            portfolioComboBox.ComboBox.DataSource = BinckPortfolioDataProvider.Portfolios;
+            portfolioComboBox.ComboBox.DataSource = PortfolioDataProvider.Portfolios;
             portfolioComboBox.ComboBox.DisplayMember = "Name";
             portfolioComboBox.ComboBox.ValueMember = "Name";
         }

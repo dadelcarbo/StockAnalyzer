@@ -1,4 +1,4 @@
-﻿using StockAnalyzer.StockBinckPortfolio;
+﻿using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     /// <summary>
     /// Interaction logic for BinckPortfolioControl.xaml
@@ -114,7 +114,7 @@ namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
         private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
         {
             var viewModel = (ViewModel)this.DataContext;
-            viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
         }
 
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)

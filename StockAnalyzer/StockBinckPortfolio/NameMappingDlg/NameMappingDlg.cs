@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace StockAnalyzer.StockBinckPortfolio.NameMappingDlg
+namespace StockAnalyzer.StockPortfolio.NameMappingDlg
 {
     public partial class NameMappingDlg : Form
     {

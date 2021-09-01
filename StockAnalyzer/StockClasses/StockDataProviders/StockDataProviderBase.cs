@@ -103,8 +103,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
-                case StockDataProvider.BinckPortfolio:
-                    dataProvider = new BinckPortfolioDataProvider();
+                case StockDataProvider.Portfolio:
+                    dataProvider = new PortfolioDataProvider();
                     break;
                 case StockDataProvider.Breadth:
                     dataProvider = new BreadthDataProvider();

@@ -1,4 +1,4 @@
-﻿namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg.TradeDlgs
+﻿namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     partial class ClosePositionDlg
     {

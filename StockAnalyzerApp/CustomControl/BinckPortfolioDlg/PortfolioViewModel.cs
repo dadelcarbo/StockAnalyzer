@@ -1,15 +1,15 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StockAnalyzerApp.CustomControl.BinckPortfolioDlg
+namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
-    public class BinckPortfolioViewModel : NotifyPropertyChangedBase
+    public class PortfolioViewModel : NotifyPropertyChangedBase
     {
         public StockPortfolio Portfolio { get; set; }
-        public BinckPortfolioViewModel(StockPortfolio p)
+        public PortfolioViewModel(StockPortfolio p)
         {
             Portfolio = p;
         }

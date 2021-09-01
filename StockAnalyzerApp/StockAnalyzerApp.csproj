@@ -301,7 +301,7 @@
       <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\BinckPortfolioDlg\ViewModel.cs" />
-    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioViewModel.cs" />
+    <Compile Include="CustomControl\BinckPortfolioDlg\PortfolioViewModel.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockDateToStringConverter.cs" />
     <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
     <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
@@ -1046,6 +1046,9 @@
     <Content Include="Resources\Reload.png" />
     <None Include="Resources\undo.ico" />
     <None Include="Resources\undo.png" />
+    <Content Include="Resources\PortfolioTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\SaveAnalysis.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

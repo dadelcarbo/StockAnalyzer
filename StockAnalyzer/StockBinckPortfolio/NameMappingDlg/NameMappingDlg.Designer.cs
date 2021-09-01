@@ -1,4 +1,4 @@
-﻿namespace StockAnalyzer.StockBinckPortfolio.NameMappingDlg
+﻿namespace StockAnalyzer.StockPortfolio.NameMappingDlg
 {
     partial class NameMappingDlg
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.nameMappingUserControl1 = new StockAnalyzer.StockBinckPortfolio.NameMappingDlg.NameMappingUserControl(this);
+            this.nameMappingUserControl1 = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingUserControl(this);
             this.SuspendLayout();
             // 
             // elementHost1

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using StockAnalyzer.StockBinckPortfolio;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses
             Instance = this;
             this.ArchiveEndDate = archiveEndDate;
 
-            StockPortfolio.PriceProvider = this;
+            StockPortfolio.StockPortfolio.PriceProvider = this;
         }
 
         private static List<string> validGroups = null;
@@ -1789,23 +1789,23 @@ namespace StockAnalyzer.StockClasses
             return 0f;
         }
 
-        public StockSerie GeneratePortfolioSerie(StockPortfolio binckPortfolio)
+        public StockSerie GeneratePortfolioSerie(StockPortfolio.StockPortfolio portfolio)
         {
             var refStock = this["CAC40"];
             if (!refStock.Initialise())
                 return null;
 
             refStock.BarDuration = BarDuration.Daily;
-            var startDate = binckPortfolio.TradeOperations.OrderBy(op => op.Id).First().Date;
+            var startDate = portfolio.TradeOperations.OrderBy(op => op.Id).First().Date;
 
-            StockSerie portfolioSerie = new StockSerie(binckPortfolio.Name, binckPortfolio.Name, refStock.StockGroup, StockDataProvider.BinckPortfolio, refStock.DataSource.Duration);
+            StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, refStock.StockGroup, StockDataProvider.Portfolio, refStock.DataSource.Duration);
             portfolioSerie.IsPortfolioSerie = true;
 
             float value;
             foreach (var date in refStock.Keys.Where(d => d >= startDate))
             {
                 long volume;
-                value = binckPortfolio.EvaluateAt(date, BarDuration.Daily, out volume);
+                value = portfolio.EvaluateAt(date, BarDuration.Daily, out volume);
                 portfolioSerie.Add(date, new StockDailyValue(value, value, value, value, volume, date));
             }
 
