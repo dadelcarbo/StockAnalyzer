@@ -2656,6 +2656,12 @@ namespace StockAnalyzerApp
             public float Indicator2Value;
             public StockSerie stockSerie;
         }
+        class BreakoutSerie
+        {
+            public int highestIn;
+            public float trailStop;
+            public StockSerie stockSerie;
+        }
 
         string CELL_DIR_IMG_TEMPLATE =
            @"<td><img alt=""%DIR%"" src=""../../img/%DIR%.png"" height=""16"" width=""16""/></td>" +
@@ -2686,25 +2692,31 @@ namespace StockAnalyzerApp
             var previousSize = this.Size;
             this.Size = new Size(600, 600);
 
-            string rankLeaderIndicatorName = "ROR(100)";
-            string rankLoserIndicatorName = "ROD(100)";
-            //string rankLeaderIndicatorName = "HIGHEST(5)";
-            //string rankLoserIndicatorName = "LOWEST(5)";
             int nbLeaders = 15;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, 20, "TRAILHLBODY(20)", nbLeaders); 
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, 20, "TRAILHLBODY(20)", nbLeaders);
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "ROR(100)", "ROD(100)", nbLeaders, "P2");
+            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
 
             //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
@@ -2791,7 +2803,116 @@ namespace StockAnalyzerApp
         }
 
         const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+        private string GenerateBreakOutTable(StockBarDuration duration, StockSerie.Groups reportGroup, int highestTrigger, string trailStopIndicatorName, int nbStocks)
+        {
+            const string rowTemplate = @"<tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+             <td>%COL3%</td>
+             <td>%COL4%</td>
+             <td>%COL5%</td>
+             <td>%COL6%</td>
+         </tr>";
 
+            string html = @"
+        <table>
+            <tr>
+            <td>";
+            try
+            {
+                StockSplashScreen.ProgressText = "Breakouts " + duration + " for " + reportGroup;
+                var breakoutSeries = new List<BreakoutSerie>();
+                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup)).ToList();
+
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ProgressMax = stockList.Count();
+                StockSplashScreen.ProgressMin = 0;
+
+                var indexSerie = this.StockDictionary["CAC40"];
+                indexSerie.BarDuration = duration;
+                DateTime lastDate = indexSerie.Keys.Last();
+                indexSerie.BarDuration = StockBarDuration.Daily;
+
+                foreach (StockSerie stockSerie in stockList)
+                {
+                    StockSplashScreen.ProgressVal++;
+                    if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
+                    {
+                        if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
+                        {
+                            indexSerie.BarDuration = StockBarDuration.Daily;
+                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
+                            if (badLiquiditySerie.Values.Last())
+                            {
+                                continue;
+                            }
+                        }
+                        stockSerie.BarDuration = duration;
+                        if (stockSerie.Keys.Last() != lastDate)
+                            continue;
+
+                        var highestInSerie = stockSerie.GetIndicator($"HIGHEST({highestTrigger})").Series[0];
+                        var index = highestInSerie.Count - 1;
+                        if (highestInSerie[index] > highestTrigger && (highestInSerie[index] - 1) > highestInSerie[index - 1])
+                        {
+                            var trailStopSerie = stockSerie.GetTrailStop(trailStopIndicatorName).Series[0];
+                            breakoutSeries.Add(new BreakoutSerie()
+                            {
+                                highestIn = (int)highestInSerie[index],
+                                trailStop = trailStopSerie.Last,
+                                stockSerie = stockSerie
+                            });
+                        }
+                    }
+                }
+                var tableHeader = "Breakouts for " + reportGroup;
+                html += $@"
+            <table  class=""reportTable"">
+                <thead>
+                <tr>
+                    <td rowspan=""1"">&nbsp;</td>
+                    <th colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                </tr>
+                <tr>
+                    <th>Stock Name</th>
+                    <th>HIGHEST()</th>
+                    <th>Trail Stop %</th>
+                    <th>Trail Stop</th>
+                    <th>Daily %</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>";
+
+                foreach (var breakoutSerie in breakoutSeries.OrderByDescending(l => l.highestIn).Take(nbStocks))
+                {
+                    // Generate Snapshot
+                    this.OnSelectedStockAndDurationChanged(breakoutSerie.stockSerie.StockName, duration, false);
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
+
+                    var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
+
+                    var stockName = AlertLineTemplate.Replace("%MSG%", breakoutSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var lastValue = breakoutSerie.stockSerie.ValueArray.Last();
+                    html += rowTemplate.
+                        Replace("%COL1%", stockName).
+                        Replace("%COL2%", breakoutSerie.highestIn.ToString()).
+                        Replace("%COL3%", ((lastValue.CLOSE - breakoutSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
+                        Replace("%COL4%", breakoutSerie.trailStop.ToString("#.##")).
+                        Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
+                        Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                }
+
+                html += @" 
+</tbody>
+</table>";
+                return html;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
         private string GenerateLeaderLoserTable(StockBarDuration duration, StockSerie.Groups reportGroup, string rankLeaderIndicatorName, string rankLoserIndicatorName, int nbLeaders, string indicatorFormat)
         {
             const string rowTemplate = @"<tr>
@@ -2817,20 +2938,29 @@ namespace StockAnalyzerApp
                 StockSplashScreen.ProgressMax = stockList.Count();
                 StockSplashScreen.ProgressMin = 0;
 
+                var indexSerie = this.StockDictionary["CAC40"];
+                indexSerie.BarDuration = duration;
+                DateTime lastDate = indexSerie.Keys.Last();
+                indexSerie.BarDuration = StockBarDuration.Daily;
+
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
                     StockSplashScreen.ProgressText = "Initializing " + reportGroup + " - " + stockSerie.StockName;
-                    if (stockSerie.Initialise() && stockSerie.Count > 100)
+                    if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
                     {
-                        stockSerie.BarDuration = duration;
-                        if (stockSerie.HasVolume) {
+                        if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
+                        {
+                            indexSerie.BarDuration = StockBarDuration.Daily;
                             var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
                             if (badLiquiditySerie.Values.Last())
                             {
                                 continue;
                             }
                         }
+                        stockSerie.BarDuration = duration;
+                        if (stockSerie.Keys.Last() != lastDate)
+                            continue;
 
                         var indicatorSerie = stockSerie.GetIndicator(rankLeaderIndicatorName).Series[0];
                         var indicator2Serie = stockSerie.GetIndicator(rankLoserIndicatorName).Series[0];
