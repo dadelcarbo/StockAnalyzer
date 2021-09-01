@@ -276,19 +276,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockDictionary = dictionary; // Save dictionary for future use in daily download
 
             // Init From LBL file
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistAp", StockSerie.Groups.EURO_A);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistBp", StockSerie.Groups.EURO_B);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurolistCp", StockSerie.Groups.EURO_C);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "eurogp", StockSerie.Groups.ALTERNEXT);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "indicessecp", StockSerie.Groups.SECTORS_CAC);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "belg", StockSerie.Groups.BELGIUM);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "holln", StockSerie.Groups.HOLLAND);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "germanyf", StockSerie.Groups.GERMANY);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "spainm", StockSerie.Groups.SPAIN);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "italiai", StockSerie.Groups.ITALIA);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, "lisboal", StockSerie.Groups.PORTUGAL);
-
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, "xcac40p", StockSerie.Groups.CAC40);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.GERMANY);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40);
 
             // Init from Libelles
             foreach (string file in Directory.GetFiles(RootFolder + ABC_DAILY_CFG_FOLDER))
@@ -605,6 +604,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.SECTORS_CAC:
                     abcGroup = "indicessecp";
                     break;
+                case StockSerie.Groups.BELGIUM:
+                    abcGroup = "belg";
+                    break;
+                case StockSerie.Groups.HOLLAND:
+                    abcGroup = "holln";
+                    break;
+                case StockSerie.Groups.GERMANY:
+                    abcGroup = "germanyf";
+                    break;
+                case StockSerie.Groups.SPAIN:
+                    abcGroup = "spainm";
+                    break;
+                case StockSerie.Groups.ITALIA:
+                    abcGroup = "italiai";
+                    break;
+                case StockSerie.Groups.PORTUGAL:
+                    abcGroup = "lisboal";
+                    break;
+                case StockSerie.Groups.CAC40:
+                    abcGroup = "xcac40p";
+                    break;
             }
             return abcGroup;
         }
@@ -784,6 +804,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.EURO_C);
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.ALTERNEXT);
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.SECTORS_CAC);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.BELGIUM);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.HOLLAND);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.GERMANY);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.SPAIN);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.ITALIA);
+                                DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.PORTUGAL);
+
                             }
                         }
 
@@ -961,8 +988,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-        private bool DownloadLibelleFromABC(string destFolder, string groupName, StockSerie.Groups group)
+        private bool DownloadLibelleFromABC(string destFolder, StockSerie.Groups group)
         {
+            string groupName = GetABCGroup(group);
+            if (groupName == null)
+                return false;
             bool success = true;
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
@@ -989,6 +1019,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup)
         {
             bool success = true;
+
+            NotifyProgress($"Downloading ABC daily for {stockGroup} from {startDate.ToShortDateString()}");
             try
             {
                 while (endDate - startDate > new TimeSpan(30, 0, 0, 0))
