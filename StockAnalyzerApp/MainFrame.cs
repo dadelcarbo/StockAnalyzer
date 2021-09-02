@@ -2809,7 +2809,8 @@ namespace StockAnalyzerApp
         const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         private string GenerateBreakOutTable(StockBarDuration duration, StockSerie.Groups reportGroup, int highestTrigger, string trailStopIndicatorName, int nbStocks)
         {
-            const string rowTemplate = @"<tr>
+            const string rowTemplate = @"
+         <tr>
              <td>%COL1%</td>
              <td>%COL2%</td>
              <td>%COL3%</td>
@@ -2818,7 +2819,9 @@ namespace StockAnalyzerApp
              <td>%COL6%</td>
          </tr>";
 
-            string html = "<br/>" +Environment.NewLine;
+            string html = @"
+<br/>
+";
             try
             {
                 StockSplashScreen.ProgressText = "Breakouts " + duration + " for " + reportGroup;
