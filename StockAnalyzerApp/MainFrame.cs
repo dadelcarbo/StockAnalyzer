@@ -2818,7 +2818,7 @@ namespace StockAnalyzerApp
              <td>%COL6%</td>
          </tr>";
 
-            string html = string.Empty;
+            string html = "<br/>" +Environment.NewLine;
             try
             {
                 StockSplashScreen.ProgressText = "Breakouts " + duration + " for " + reportGroup;
@@ -2875,11 +2875,11 @@ namespace StockAnalyzerApp
                     <th style=""font-size:24px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
-                    <th>Stock Name</th>
+                    <th style=""width: 200px;"">Stock Name</th>
                     <th>HIGHEST()</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
-                    <th>Daily %</th>
+                    <th>{duration} %</th>
                     <th>Value</th>
                 </tr>
                 </thead>
