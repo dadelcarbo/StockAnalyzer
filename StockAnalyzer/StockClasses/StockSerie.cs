@@ -4349,9 +4349,6 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                     break;
-                case StockClasses.BarDuration.RENKO_2:
-                    newBarList = GenerateRenkoBarFromDaily(dailyValueList, 0.02f);
-                    break;
                 default:
                     {
                         int period;
@@ -4668,78 +4665,6 @@ namespace StockAnalyzer.StockClasses
                 newValue = new StockDailyValue(open, high, low, close, dailyValue.VOLUME, dailyValue.DATE);
                 newValue.IsComplete = dailyValue.IsComplete;
                 newBarList.Add(newValue);
-            }
-            return newBarList;
-        }
-        private List<StockDailyValue> GenerateRenkoBarFromDaily(List<StockDailyValue> stockDailyValueList, float variation)
-        {
-            List<StockDailyValue> newBarList = new List<StockDailyValue>();
-            StockDailyValue dailyValue = stockDailyValueList[0];
-            float upVar = 1f + variation;
-            float downVar = 1 - variation;
-
-            StockDailyValue newValue = dailyValue.OPEN <= dailyValue.CLOSE
-               ? new StockDailyValue(dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.CLOSE * downVar, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE)
-               : new StockDailyValue(dailyValue.CLOSE * upVar, dailyValue.CLOSE * upVar, dailyValue.CLOSE, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
-            newBarList.Add(newValue);
-            newValue.IsComplete = false;
-
-            StockDailyValue previousBar = newValue;
-
-            for (int i = 1; i < stockDailyValueList.Count; i++)
-            {
-                dailyValue = stockDailyValueList[i];
-
-                if (dailyValue.CLOSE > newValue.HIGH && dailyValue.CLOSE > previousBar.HIGH)
-                {
-                    // New upbars
-                    newValue.IsComplete = true;
-                    float previousHigh = newValue.HIGH;
-                    float newHigh = newValue.HIGH * upVar;
-                    TimeSpan uniqueTimeSpan = new TimeSpan();
-                    do
-                    {
-                        previousBar = newValue;
-                        newValue.IsComplete = true;
-                        newValue = new StockDailyValue(previousHigh, newHigh, previousHigh, newHigh, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
-                        newValue.IsComplete = false;
-
-                        newBarList.Add(newValue);
-
-                        previousHigh = newValue.HIGH;
-                        newHigh = newValue.HIGH * upVar;
-
-                        uniqueTimeSpan += TimeSpan.FromTicks(1);
-
-                    } while (dailyValue.CLOSE > newValue.HIGH);
-                }
-                else if (dailyValue.CLOSE < newValue.LOW && dailyValue.CLOSE < previousBar.LOW)
-                {
-                    // new downbars
-                    newValue.IsComplete = true;
-                    float previousLow = newValue.LOW;
-                    float newLow = newValue.LOW * downVar;
-                    TimeSpan uniqueTimeSpan = new TimeSpan();
-                    do
-                    {
-                        previousBar = newValue;
-                        newValue.IsComplete = true;
-                        newValue = new StockDailyValue(previousLow, previousLow, newLow, newLow, dailyValue.VOLUME, dailyValue.DATE + uniqueTimeSpan);
-                        newValue.IsComplete = false;
-
-                        newBarList.Add(newValue);
-
-                        previousLow = newValue.LOW;
-                        newLow = newValue.LOW * downVar;
-                        uniqueTimeSpan += TimeSpan.FromTicks(1);
-
-                    } while (dailyValue.CLOSE < newValue.LOW);
-                }
-                else
-                {
-                    // Stay in same bar
-                    newValue.VOLUME += dailyValue.VOLUME;
-                }
             }
             return newBarList;
         }

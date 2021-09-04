@@ -21,8 +21,7 @@ namespace StockAnalyzer.StockClasses
         Bar_12,
         Bar_24,
         Bar_27,
-        Bar_48,
-        RENKO_2
+        Bar_48
     }
 
     public class StockBarDuration : IComparable

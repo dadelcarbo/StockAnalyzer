@@ -138,18 +138,18 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         try
                         {
+                            if (!long.TryParse(row.TradeId?.ToString(), out long tradeId))
+                            {
+                                tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
+                            }
+                            if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
+                                continue;
                             StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+
                             switch (row.Type)
                             {
                                 case "Liquidités":
                                     {
-                                        if (!long.TryParse(row.TradeId?.ToString(), out long tradeId))
-                                        {
-                                            tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
-                                        }
-                                        if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
-                                            continue;
-
                                         portfolio.CashOperation(row.TradeDate, (float)row.Row.Field<double>(13), tradeId);
                                     }
                                     break;
@@ -163,18 +163,9 @@ namespace StockAnalyzer.StockPortfolio
 
                                         if (stockName.EndsWith(" Assented Rights"))
                                             continue;
-
-                                        if (!long.TryParse(row.TradeId.ToString(), out long tradeId))
-                                        {
-                                            tradeId = row.TradeDate.Year * 10000 + row.TradeDate.Month * 100 + row.TradeDate.Day;
-                                        }
-                                        if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
+                                        if (row.Row.ItemArray[10].GetType() == typeof(DBNull))
                                             continue;
-                                        var price = float.Parse(row.Row.ItemArray[10].ToString().Replace(",","."));
-                                        //var priceLong = row.Row.Field<double?>(10);
-                                        //if (!priceLong.HasValue)
-                                        //    continue;
-                                        //float price = (float)priceLong.Value;
+                                        var price = float.Parse(row.Row.ItemArray[10].ToString().Replace(",", "."));
                                         var qty = (int)row.Row.Field<double>(9);
                                         var amount = (float)row.Row.Field<double>(13);
                                         switch (row.Event)
@@ -471,6 +462,7 @@ namespace StockAnalyzer.StockPortfolio
             };
             this.TradeOperations.Add(operation);
             this.Balance += amount;
+            this.InitialBalance += amount;
         }
         public void DividendOperation(string stockName, DateTime date, float amount, long operationId)
         {
