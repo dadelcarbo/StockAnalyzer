@@ -170,11 +170,11 @@ namespace StockAnalyzer.StockPortfolio
                                         }
                                         if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
                                             continue;
-
-                                        var priceLong = row.Row.Field<double?>(10);
-                                        if (!priceLong.HasValue)
-                                            continue;
-                                        float price = (float)priceLong.Value;
+                                        var price = float.Parse(row.Row.ItemArray[10].ToString().Replace(",","."));
+                                        //var priceLong = row.Row.Field<double?>(10);
+                                        //if (!priceLong.HasValue)
+                                        //    continue;
+                                        //float price = (float)priceLong.Value;
                                         var qty = (int)row.Row.Field<double>(9);
                                         var amount = (float)row.Row.Field<double>(13);
                                         switch (row.Event)

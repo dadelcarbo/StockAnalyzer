@@ -288,6 +288,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120);
 
             // Init from Libelles
             foreach (string file in Directory.GetFiles(RootFolder + ABC_DAILY_CFG_FOLDER))
@@ -624,6 +625,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockSerie.Groups.CAC40:
                     abcGroup = "xcac40p";
+                    break;
+                case StockSerie.Groups.SBF120:
+                    abcGroup = "xsbf120p";
                     break;
             }
             return abcGroup;
@@ -1128,6 +1132,37 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             return cac40List.Contains(stockSerie.StockName);
+        }
+        private static List<string> sbf120List = null;
+        public static bool BelongsToSBF120(StockSerie stockSerie)
+        {
+            if (sbf120List == null)
+            {
+                sbf120List = new List<string>();
+
+                // parse SBF120 list
+                string fileName = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + @"\" +
+                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\SBF120.txt";
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName, true))
+                    {
+                        string line;
+                        sr.ReadLine(); // Skip first line
+                        while (!sr.EndOfStream)
+                        {
+                            line = sr.ReadLine();
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                            {
+                                string[] row = line.Split(';');
+                                sbf120List.Add(row[1].ToUpper());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return sbf120List.Contains(stockSerie.StockName);
         }
         private static List<string> srdList = null;
         public static bool BelongsToSRD(StockSerie stockSerie)
