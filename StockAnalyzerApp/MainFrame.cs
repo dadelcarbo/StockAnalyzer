@@ -4881,21 +4881,6 @@ namespace StockAnalyzerApp
 
             string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
             Process.Start(url);
-
-            return;
-            var htmlReport = File.ReadAllText(PEAPerfTemplatePath)
-                .Replace("%ISIN%", this.currentStockSerie.ISIN)
-                .Replace("%STOCKNAME%", this.currentStockSerie.StockName)
-                .Replace("%SYMBOL%", symbol);
-
-            string folderName = Settings.Default.RootFolder + @"\CommentReport\";
-
-            string fileName = folderName + @"\PEAPerfReport.html";
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                sw.Write(htmlReport);
-            }
-            Process.Start(fileName);
         }
         internal void OpenInZBMenu()
         {

@@ -198,7 +198,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                             nbTries--;
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             nbTries--;
                         }

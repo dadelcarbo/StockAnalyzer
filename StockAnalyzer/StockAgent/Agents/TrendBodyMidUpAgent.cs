@@ -24,7 +24,6 @@ namespace StockAnalyzer.StockAgent.Agents
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         FloatSerie midUpSerie;
-        FloatSerie closeSerie;
         protected override bool Init(StockSerie stockSerie)
         {
             if (stockSerie.Count < Period)

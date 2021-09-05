@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when OSC crosses above 0 and sell after lower close";
         public override string DisplayIndicator => $"INDICATOR|OSC({FastPeriod},{SlowPeriod},True,EMA)";
 
-        FloatSerie closeSerie, lowSerie, oscSerie;
+        FloatSerie oscSerie;
         float stop = float.NaN;
         protected override bool Init(StockSerie stockSerie)
         {

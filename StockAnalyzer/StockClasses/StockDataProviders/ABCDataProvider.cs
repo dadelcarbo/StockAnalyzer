@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -105,7 +105,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -147,7 +147,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -182,7 +182,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -217,7 +217,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -253,7 +253,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

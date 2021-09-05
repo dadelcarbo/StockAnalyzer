@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockWeb
 
                         //smtp.Send(message);
                     }
-                    catch (System.Exception exp)
+                    catch (System.Exception)
                     {
                         //System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
                     }
