@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -89,7 +88,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (ParseDailyData(stockSerie, fileName))
                 {
-                    stockSerie.Values.Last().IsComplete = false;
                     var lastDate = stockSerie.Keys.Last();
 
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
@@ -144,11 +142,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (File.Exists(fileName))
                 {
                     var lastWriteTime = File.GetLastWriteTime(fileName);
-                    if (first && lastWriteTime > DateTime.Now.AddHours(-2)
+                    if (first && (lastWriteTime > DateTime.Now.AddHours(-2)
                        || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today)))
                     {
-                        if (!stockSerie.StockName.Contains("CC_"))
+                        if (!stockSerie.StockName.StartsWith("CC_"))
                         {
                             first = false;
                             return false;
@@ -165,17 +163,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
                     var url = string.Empty;
+                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
                     if (stockSerie.Initialise() && stockSerie.Count > 0)
                     {
-                        var startDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        if (startDate >= DateTime.Today)
+                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                        if (lastDate >= DateTime.Today)
                             return false;
-                        startDate = startDate.AddMonths(-2);
-                        url = FormatURL(stockSerie.Ticker, startDate, DateTime.Now);
+                        url = FormatURL(stockSerie.Ticker, lastDate.AddMonths(-2), DateTime.Today);
                     }
                     else
                     {
-                        url = FormatURL(stockSerie.Ticker, new DateTime(ARCHIVE_START_YEAR, 1, 1), DateTime.Today);
+                        url = FormatURL(stockSerie.Ticker, lastDate, DateTime.Today);
                     }
 
                     int nbTries = 3;
@@ -192,6 +190,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 {
                                     File.WriteAllText(fileName, content);
                                     stockSerie.IsInitialised = false;
+                                    if (first)
+                                    {
+                                        first = false;
+                                        stockSerie.Initialise();
+                                        if (lastDate == stockSerie.Keys.Last())
+                                        {
+                                            return false;
+                                        }
+                                    }
 
                                     return true;
                                 }

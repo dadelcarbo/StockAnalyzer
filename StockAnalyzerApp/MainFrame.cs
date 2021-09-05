@@ -2904,14 +2904,14 @@ namespace StockAnalyzerApp
                             continue;
 
                         var highestInSerie = stockSerie.GetIndicator($"HIGHEST({highestTrigger})").Series[0];
-                        var index = highestInSerie.Count - 1;
+                        var index = stockSerie.LastCompleteIndex;
                         if (highestInSerie[index] > highestTrigger && (highestInSerie[index] - 1) > highestInSerie[index - 1])
                         {
                             var trailStopSerie = stockSerie.GetTrailStop(trailStopIndicatorName).Series[0];
                             breakoutSeries.Add(new BreakoutSerie()
                             {
                                 highestIn = (int)highestInSerie[index],
-                                trailStop = trailStopSerie.Last,
+                                trailStop = trailStopSerie[index],
                                 stockSerie = stockSerie
                             });
                         }
@@ -2945,7 +2945,7 @@ namespace StockAnalyzerApp
                     var bitmapString = this.SnapshotAsHtml();
 
                     var stockName = AlertLineTemplate.Replace("%MSG%", breakoutSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var lastValue = breakoutSerie.stockSerie.ValueArray.Last();
+                    var lastValue = breakoutSerie.stockSerie.ValueArray[breakoutSerie.stockSerie.LastCompleteIndex];
                     html += rowTemplate.
                         Replace("%COL1%", stockName).
                         Replace("%COL2%", breakoutSerie.highestIn.ToString()).
