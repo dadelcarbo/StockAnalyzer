@@ -2094,8 +2094,43 @@ namespace StockAnalyzerApp
                 File.Move(tmpFileName, analysisFileName);
             }
         }
+        private Bitmap Snapshot()
+        {
+            List<Bitmap> bitmaps = new List<Bitmap>();
+            int width = 0;
+            int height = -2;
+            foreach (GraphControl graphCtrl in this.graphList.Where(g => !(g is GraphScrollerControl)))
+            {
+                Bitmap bmp = graphCtrl.GetSnapshot();
+                if (bmp != null)
+                {
+                    bitmaps.Add(bmp);
+                    width = bmp.Width;
+                    height += bmp.Height + 2;
+                }
+            }
+            Bitmap snapshot = null;
+            if (bitmaps.Count > 0)
+            {
+                snapshot = new Bitmap(width, height);
+                Graphics g = Graphics.FromImage(snapshot);
+                using (Brush bb = new SolidBrush(this.graphCloseControl.BackgroundColor))
+                {
+                    g.FillRectangle(bb, g.VisibleClipBounds);
+                }
 
-        private void snapshotToolStripButton_Click(object sender, EventArgs e)
+                height = 0;
+                foreach (Bitmap bmp in bitmaps)
+                {
+                    g.DrawImage(bmp, 0, height);
+                    height += bmp.Height + 2;
+                    bmp.Dispose();
+                }
+                g.Flush();
+            }
+            return snapshot;
+        }
+        private string SnapshotAsHtml()
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
             int width = 0;
@@ -2127,8 +2162,21 @@ namespace StockAnalyzerApp
                     bmp.Dispose();
                 }
                 g.Flush();
-                Clipboard.SetImage(snapshot);
+
+                using (var stream = new MemoryStream())
+                {
+                    snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    return "data:image/png;base64," + Convert.ToBase64String(stream.ToArray());
+                }
             }
+            return string.Empty;
+        }
+
+        private void snapshotToolStripButton_Click(object sender, EventArgs e)
+        {
+            var snapshot = this.Snapshot();
+            if (snapshot != null)
+                Clipboard.SetImage(snapshot);
         }
 
         private void magnetStripBtn_Click(object sender, EventArgs e)
@@ -2894,7 +2942,7 @@ namespace StockAnalyzerApp
                     this.OnSelectedStockAndDurationChanged(breakoutSerie.stockSerie.StockName, duration, false);
                     StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
 
-                    var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
+                    var bitmapString = this.SnapshotAsHtml();
 
                     var stockName = AlertLineTemplate.Replace("%MSG%", breakoutSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = breakoutSerie.stockSerie.ValueArray.Last();
