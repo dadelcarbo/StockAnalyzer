@@ -2740,25 +2740,26 @@ namespace StockAnalyzerApp
             var previousSize = this.Size;
             this.Size = new Size(600, 600);
 
-            int nbLeaders = 15;
+            int nbLeaders = 25;
+            int breakoutBars = 15;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, 20, "TRAILHLBODY(20)", nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, 20, "TRAILHLBODY(20)", nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, breakoutBars, nbLeaders);
 
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
@@ -2855,8 +2856,9 @@ namespace StockAnalyzerApp
         }
 
         const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
-        private string GenerateBreakOutTable(StockBarDuration duration, StockSerie.Groups reportGroup, int highestTrigger, string trailStopIndicatorName, int nbStocks)
+        private string GenerateBreakOutTable(StockBarDuration duration, StockSerie.Groups reportGroup, int breakoutBars, int nbStocks)
         {
+            string trailStopIndicatorName = $"TRAILHLBODY({breakoutBars})";
             const string rowTemplate = @"
          <tr>
              <td>%COL1%</td>
@@ -2903,9 +2905,9 @@ namespace StockAnalyzerApp
                         if (stockSerie.Keys.Last() != lastDate)
                             continue;
 
-                        var highestInSerie = stockSerie.GetIndicator($"HIGHEST({highestTrigger})").Series[0];
+                        var highestInSerie = stockSerie.GetIndicator($"HIGHEST({breakoutBars})").Series[0];
                         var index = stockSerie.LastCompleteIndex;
-                        if (highestInSerie[index] > highestTrigger && (highestInSerie[index] - 1) > highestInSerie[index - 1])
+                        if (highestInSerie[index] > breakoutBars && (highestInSerie[index] - 1) > highestInSerie[index - 1])
                         {
                             var trailStopSerie = stockSerie.GetTrailStop(trailStopIndicatorName).Series[0];
                             breakoutSeries.Add(new BreakoutSerie()
