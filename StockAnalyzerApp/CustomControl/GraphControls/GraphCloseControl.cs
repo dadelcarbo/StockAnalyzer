@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         public bool Magnetism { get; set; }
         public bool HideIndicators { get; set; }
-        public StockPortfolio BinckPortfolio => StockAnalyzerForm.MainFrame.Portfolio;
+        public StockPortfolio Portfolio => StockAnalyzerForm.MainFrame.Portfolio;
 
         private FloatSerie secondaryFloatSerie;
         public FloatSerie SecondaryFloatSerie
@@ -228,7 +228,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #region Draw orders
 
-                if (ShowOrders && this.BinckPortfolio != null)
+                if (ShowOrders && this.Portfolio != null)
                 {
                     PaintOrders(aGraphic);
                 }
@@ -1083,14 +1083,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         private void PaintOrders(Graphics graphic)
         {
-            if (this.BinckPortfolio == null)
+            if (this.Portfolio == null)
             {
                 return;
             }
             var name = this.serie.StockName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var operations = this.BinckPortfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name);
+            var operations = this.Portfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name);
             var startDate = this.dateSerie[this.StartIndex];
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate && p.IsOrder))
@@ -2159,7 +2159,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 EntryDate = this.dateSerie[lastMouseIndex],
                 StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
                 StockName = this.serie.StockName,
-                Portfolio = this.BinckPortfolio,
+                Portfolio = this.Portfolio,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
             };
             openTradeViewModel.IndicatorName = openTradeViewModel.IndicatorNames?.FirstOrDefault();
@@ -2213,7 +2213,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 ExitQty = pos.EntryQty,
                 ExitDate = this.dateSerie[lastMouseIndex],
                 StockName = this.serie.StockName,
-                Portfolio = this.BinckPortfolio
+                Portfolio = this.Portfolio
             };
 
             var positionDlg = new ClosePositionDlg(tradeViewModel);

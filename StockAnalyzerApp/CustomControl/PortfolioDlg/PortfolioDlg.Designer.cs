@@ -1,6 +1,6 @@
 ﻿namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
-    partial class BinckPortfolioDlg
+    partial class PortfolioDlg
     {
         /// <summary> 
         /// Required designer variable.

@@ -2,9 +2,9 @@
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
-    public partial class BinckPortfolioDlg : Form
+    public partial class PortfolioDlg : Form
     {
-        public BinckPortfolioDlg()
+        public PortfolioDlg()
         {
             InitializeComponent();
 

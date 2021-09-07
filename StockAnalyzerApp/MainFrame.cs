@@ -2609,7 +2609,7 @@ namespace StockAnalyzerApp
 
         #region PORTFOLIO MENU HANDERS
 
-        BinckPortfolioDlg portfolioDlg = null;
+        PortfolioDlg portfolioDlg = null;
         private void currentPortfolioMenuItem_Click(object sender, EventArgs e)
         {
             if (Portfolio == null)
@@ -2617,7 +2617,7 @@ namespace StockAnalyzerApp
 
             if (portfolioDlg == null)
             {
-                portfolioDlg = new BinckPortfolioDlg();
+                portfolioDlg = new PortfolioDlg();
                 portfolioDlg.FormClosing += (a, b) => { this.portfolioDlg = null; };
                 portfolioDlg.Show();
             }

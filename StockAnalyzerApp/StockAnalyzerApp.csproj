@@ -291,19 +291,19 @@
     <Compile Include="CustomControl\BarDurationCtrl\BarDurationControl.xaml.cs">
       <DependentUpon>BarDurationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml.cs">
-      <DependentUpon>BinckPortfolioControl.xaml</DependentUpon>
+    <Compile Include="CustomControl\PortfolioDlg\PortfolioControl.xaml.cs">
+      <DependentUpon>PortfolioControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.cs">
+    <Compile Include="CustomControl\PortfolioDlg\PortfolioDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.Designer.cs">
-      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    <Compile Include="CustomControl\PortfolioDlg\PortfolioDlg.Designer.cs">
+      <DependentUpon>PortfolioDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\ViewModel.cs" />
-    <Compile Include="CustomControl\BinckPortfolioDlg\PortfolioViewModel.cs" />
-    <Compile Include="CustomControl\BinckPortfolioDlg\StockDateToStringConverter.cs" />
-    <Compile Include="CustomControl\BinckPortfolioDlg\StockPositionViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\ViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\PortfolioViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\StockDateToStringConverter.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\StockPositionViewModel.cs" />
     <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
       <DependentUpon>ConditionalStatisticsControl.xaml</DependentUpon>
     </Compile>
@@ -352,26 +352,26 @@
     <Compile Include="CustomControl\GraphControls\GraphMutiTimeFrameControl.Designer.cs">
       <DependentUpon>GraphMutiTimeFrameControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\ClosePositionDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.Designer.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\ClosePositionDlg.Designer.cs">
       <DependentUpon>ClosePositionDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\OpenPositionDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.Designer.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\OpenPositionDlg.Designer.cs">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml.cs">
       <DependentUpon>CloseTradeUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml.cs">
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml.cs">
       <DependentUpon>OpenTradeUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeViewModel.cs" />
-    <Compile Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\CloseTradeViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\OpenTradeViewModel.cs" />
     <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
       <DependentUpon>HorseRaceControl.xaml</DependentUpon>
     </Compile>
@@ -703,8 +703,8 @@
     <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.resx">
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\BinckPortfolioDlg.resx">
-      <DependentUpon>BinckPortfolioDlg.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\PortfolioDlg.resx">
+      <DependentUpon>PortfolioDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.resx">
       <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
@@ -718,10 +718,10 @@
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\TradeDlgs\ClosePositionDlg.resx">
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\ClosePositionDlg.resx">
       <DependentUpon>ClosePositionDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenPositionDlg.resx">
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\OpenPositionDlg.resx">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
@@ -1090,7 +1090,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\BinckPortfolioDlg\BinckPortfolioControl.xaml">
+    <Page Include="CustomControl\PortfolioDlg\PortfolioControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1106,11 +1106,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\BinckPortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml">
+    <Page Include="CustomControl\PortfolioDlg\TradeDlgs\CloseTradeUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControl\BinckPortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml">
+    <Page Include="CustomControl\PortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
