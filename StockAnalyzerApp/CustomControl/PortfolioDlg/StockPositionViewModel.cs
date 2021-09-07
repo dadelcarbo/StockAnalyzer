@@ -54,10 +54,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public DateTime? ExitDate => position.ExitDate;
         public float? ExitValue => position.ExitValue;
 
+        public float? Return => ExitValue == null ? null : (ExitValue - EntryValue) / ExitValue;
+        public float? RiskRewardRatio => ExitValue != null && Stop > 0.0f ? (ExitValue - EntryValue) / (EntryValue - Stop) : null;
+
+
         public float LastValue { get; set; }
         public float Variation => (LastValue - EntryValue) / (EntryValue);
         public float PortfolioVariation => PortfolioPercent * Variation;
         // @@@@ Need to use the most accurate portfolio value (Position value or Risk free value ?
-        public float PortfolioPercent => this.portfolio.Portfolio.TotalValue > 0 ? ((EntryValue * this.EntryQty) / this.portfolio.Portfolio.InitialBalance) : 0.0f;
+        public float PortfolioPercent => this.portfolio.Portfolio.TotalValue > 0 ? EntryValue * this.EntryQty / this.portfolio.Portfolio.InitialBalance : 0.0f;
     }
 }

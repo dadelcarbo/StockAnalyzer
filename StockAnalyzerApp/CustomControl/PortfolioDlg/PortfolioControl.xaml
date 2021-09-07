@@ -94,10 +94,14 @@
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=C3}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
                         
                         <telerik:GridViewDataColumn Header="Exit&#x0a;Date" DataMemberBinding="{Binding ExitDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Exit" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue, StringFormat=C3}" ColumnGroupName="Exit" IsReadOnly="True"/>
+
+                        <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Return, StringFormat=P2}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio}" ColumnGroupName="Exit" IsReadOnly="True"/>
 
                         <!--
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
