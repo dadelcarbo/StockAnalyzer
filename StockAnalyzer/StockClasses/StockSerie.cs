@@ -1673,84 +1673,10 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
-        public void CalculateEMABBTrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
-        {
-            longStopSerie = new FloatSerie(this.Count, "TRAILEMABB.LS");
-            shortStopSerie = new FloatSerie(this.Count, "TRAILEMABB.SS");
-
-            FloatSerie lowSmoothSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
-            FloatSerie highSmoothSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
-            FloatSerie closeSmoothSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
-            FloatSerie closeEMASerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(period);
-
-            StockDailyValue previousValue = this.Values.First();
-            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
-            int i = 1;
-            float extremum;
-            if (upTrend)
-            {
-                longStopSerie[0] = previousValue.LOW;
-                shortStopSerie[0] = float.NaN;
-                extremum = previousValue.HIGH;
-            }
-            else
-            {
-                longStopSerie[0] = float.NaN;
-                shortStopSerie[0] = previousValue.HIGH;
-                extremum = previousValue.LOW;
-            }
-
-            foreach (StockDailyValue currentValue in this.Values.Skip(1))
-            {
-                if (upTrend)
-                {
-                    if (closeSmoothSerie[i] < longStopSerie[i - 1])
-                    {
-                        // Trailing stop has been broken => reverse trend
-                        upTrend = false;
-                        longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = extremum;
-                        extremum = lowSmoothSerie[i];
-                    }
-                    else
-                    {
-                        // Trail the stop
-                        float longStop = longStopSerie[i - 1];
-                        longStopSerie[i] = Math.Max(longStop, longStop + closeEMASerie[i] - closeEMASerie[i - 1]);
-                        shortStopSerie[i] = float.NaN;
-                        extremum = Math.Max(extremum, highSmoothSerie[i]);
-                    }
-                }
-                else
-                {
-                    if (closeSmoothSerie[i] > shortStopSerie[i - 1])
-                    {
-                        // Trailing stop has been broken => reverse trend
-                        upTrend = true;
-                        longStopSerie[i] = extremum;
-                        shortStopSerie[i] = float.NaN;
-                        extremum = highSmoothSerie[i];
-                    }
-                    else
-                    {
-                        // Trail the stop  
-                        longStopSerie[i] = float.NaN;
-                        float shortStop = shortStopSerie[i - 1];
-                        shortStopSerie[i] = Math.Min(shortStop, shortStop + closeEMASerie[i] - closeEMASerie[i - 1]);
-                        extremum = Math.Min(extremum, lowSmoothSerie[i]);
-                    }
-                }
-                previousValue = currentValue;
-                i++;
-            }
-        }
 
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float alpha = 2.0f / (float)(period + 1);
-
-            // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
-            // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
 
             longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
             shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
@@ -1897,19 +1823,10 @@ namespace StockAnalyzer.StockClasses
         }
         public void CalculateHMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
-
-            //FloatSerie EMASerie1 = this.CalculateEMA(period / 2);
-            //FloatSerie EMASerie2 = this.CalculateEMA(period);
-
-            //return ((EMASerie1 * 2.0f) - EMASerie2).CalculateEMA((int)Math.Sqrt(period));
-
             float alpha1 = 2.0f / (float)(period + 1);
             float alpha2 = 2.0f / (float)(period * 2 + 1);
             float alpha3 = 2.0f / (float)(Math.Sqrt(period) + 1);
             float ema1, ema2, ema3;
-
-            // shortStopSerie[i] = shortStopSerie[i - 1] + alpha * (closeEMASerie[i] - shortStopSerie[i - 1]);
-            // longStopSerie[i] = longStopSerie[i - 1] + alpha * (closeEMASerie[i] - longStopSerie[i - 1]);
 
             longStopSerie = new FloatSerie(this.Count, "TRAILEMA.LS");
             shortStopSerie = new FloatSerie(this.Count, "TRAILEMA.SS");
@@ -1996,8 +1913,7 @@ namespace StockAnalyzer.StockClasses
         /// <param name="inputSmoothing"></param>
         /// <param name="longStopSerie"></param>
         /// <param name="shortStopSerie"></param>
-        public void CalculateHLAVGTrailStop(int fadePeriod, int inputSmoothing, out FloatSerie longStopSerie,
-           out FloatSerie shortStopSerie)
+        public void CalculateHLAVGTrailStop(int fadePeriod, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float ratio = 1.0f;
             float fadeOut = 1f - 1f / fadePeriod;
@@ -2077,70 +1993,6 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
-
-        public void CalculatePercentTrailStop(float percent, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
-        {
-            longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
-            shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-
-            StockDailyValue previousValue = this.Values.First();
-            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
-
-            float upPercent = 1.0f + percent;
-            float downPercent = 1.0f - percent;
-
-            if (upTrend)
-            {
-                longStopSerie[0] = previousValue.HIGH * downPercent;
-                shortStopSerie[0] = float.NaN;
-            }
-            else
-            {
-                longStopSerie[0] = float.NaN;
-                shortStopSerie[0] = previousValue.LOW * upPercent;
-            }
-            int i = 1;
-            foreach (StockDailyValue currentValue in this.Values.Skip(1))
-            {
-                if (upTrend)
-                {
-                    if (currentValue.CLOSE < longStopSerie[i - 1])
-                    { // Trailing stop has been broken => reverse trend
-                        upTrend = false;
-                        longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = lowSerie[i] * upPercent;
-                    }
-                    else
-                    {
-                        // Trail the stop  
-                        longStopSerie[i] = Math.Max(longStopSerie[i - 1], highSerie[i] * downPercent);
-                        shortStopSerie[i] = float.NaN;
-                    }
-                }
-                else
-                {
-                    if (currentValue.CLOSE > shortStopSerie[i - 1])
-                    {  // Trailing stop has been broken => reverse trend
-                        upTrend = true;
-                        longStopSerie[i] = highSerie[i] * downPercent;
-                        shortStopSerie[i] = float.NaN;
-                    }
-                    else
-                    {
-                        // Trail the stop  
-                        longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], lowSerie[i] * upPercent);
-                    }
-                }
-                previousValue = currentValue;
-                i++;
-            }
-        }
-
         public void CalculateHighLowSmoothedTrailStop(int period, int smoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
@@ -2228,109 +2080,6 @@ namespace StockAnalyzer.StockClasses
                             // Trail the stop  
                             longStopSerie[i] = float.NaN;
                             shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], highSerie.GetMax(0, i));
-                        }
-                    }
-                }
-                previousValue = currentValue;
-                i++;
-            }
-        }
-        /// <summary>
-        /// Calculate trail stop trailing using the daily variation (adding daily variation only when positive for uptrend)
-        /// </summary>
-        /// <param name="period"></param>
-        /// <param name="longStopSerie"></param>
-        /// <param name="shortStopSerie"></param>
-        public void CalculateVarTrailStop(int period, string indicatorName, float indicatorMax, float indicatorCenter, float indicatorWeight, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
-        {
-            longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
-            shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-
-            FloatSerie ERSerie = this.GetIndicator(indicatorName).Series[0].Abs() - indicatorCenter;
-            ERSerie = ERSerie * (indicatorWeight / (indicatorMax - indicatorCenter));
-
-            StockDailyValue previousValue = this.Values.First();
-            bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
-            if (upTrend)
-            {
-                longStopSerie[0] = previousValue.LOW;
-                shortStopSerie[0] = float.NaN;
-            }
-            else
-            {
-                longStopSerie[0] = float.NaN;
-                shortStopSerie[0] = previousValue.HIGH;
-            }
-            int i = 1;
-            foreach (StockDailyValue currentValue in this.Values.Skip(1))
-            {
-                if (i > period)
-                {
-                    if (upTrend)
-                    {
-                        if (currentValue.CLOSE < longStopSerie[i - 1])
-                        { // Trailing stop has been broken => reverse trend
-                            upTrend = false;
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = highSerie.GetMax(i - period, i);
-                        }
-                        else
-                        {
-                            // Trail the stop 
-                            longStopSerie[i] = currentValue.VARIATION > 0 ? longStopSerie[i - 1] * (1f + currentValue.VARIATION * ERSerie[i]) : longStopSerie[i - 1];
-                            shortStopSerie[i] = float.NaN;
-                        }
-                    }
-                    else
-                    {
-                        if (currentValue.CLOSE > shortStopSerie[i - 1])
-                        {  // Trailing stop has been broken => reverse trend
-                            upTrend = true;
-                            longStopSerie[i] = lowSerie.GetMin(i - period, i);
-                            shortStopSerie[i] = float.NaN;
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = currentValue.VARIATION < 0 ? shortStopSerie[i - 1] * (1f + currentValue.VARIATION * ERSerie[i]) : shortStopSerie[i - 1];
-                        }
-                    }
-                }
-                else
-                {
-                    if (upTrend)
-                    {
-                        if (currentValue.CLOSE < longStopSerie[i - 1])
-                        { // Trailing stop has been broken => reverse trend
-                            upTrend = false;
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = highSerie.GetMax(0, i);
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = currentValue.VARIATION > 0 ? longStopSerie[i - 1] * (1f + currentValue.VARIATION * ERSerie[i]) : longStopSerie[i - 1];
-                            shortStopSerie[i] = float.NaN;
-                        }
-                    }
-                    else
-                    {
-                        if (currentValue.CLOSE > shortStopSerie[i - 1])
-                        {  // Trailing stop has been broken => reverse trend
-                            upTrend = true;
-                            longStopSerie[i] = lowSerie.GetMin(0, i);
-                            shortStopSerie[i] = float.NaN;
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = currentValue.VARIATION < 0 ? shortStopSerie[i - 1] * (1f + currentValue.VARIATION * ERSerie[i]) : shortStopSerie[i - 1];
                         }
                     }
                 }
@@ -2510,110 +2259,6 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
-        /// <summary>
-        /// Calculate trail stop trailing using the minimum low in period for up trend and maximum high in period for down trend
-        /// </summary>
-        /// <param name="period"></param>
-        /// <param name="longStopSerie"></param>
-        /// <param name="shortStopSerie"></param>
-        public void CalculateHighLowBodyTrailStop(int period, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
-        {
-            longStopSerie = new FloatSerie(this.Count, "TRAILHL.LS");
-            shortStopSerie = new FloatSerie(this.Count, "TRAILHL.SS");
-
-            if (this.ValueArray.Length < period) return;
-
-            var bodyHighSerie = new FloatSerie(this.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            var bodyLowSerie = new FloatSerie(this.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
-
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-
-            StockDailyValue previousValue = this.Values.First();
-            bool upTrend = previousValue.CLOSE > this.ValueArray[1].CLOSE;
-            int i = 1;
-            if (upTrend)
-            {
-                longStopSerie[0] = previousValue.LOW;
-                shortStopSerie[0] = float.NaN;
-            }
-            else
-            {
-                longStopSerie[0] = float.NaN;
-                shortStopSerie[0] = previousValue.HIGH;
-            }
-            foreach (StockDailyValue currentValue in this.Values.Skip(1))
-            {
-                if (i > period)
-                {
-                    if (upTrend)
-                    {
-                        if (currentValue.CLOSE < longStopSerie[i - 1])
-                        { // Trailing stop has been broken => reverse trend
-                            upTrend = false;
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = bodyHighSerie.GetMax(i - period - 1, i);
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = Math.Max(longStopSerie[i - 1], bodyLowSerie.GetMin(i - period, i));
-                            shortStopSerie[i] = float.NaN;
-                        }
-                    }
-                    else
-                    {
-                        if (currentValue.CLOSE > shortStopSerie[i - 1])
-                        {  // Trailing stop has been broken => reverse trend
-                            upTrend = true;
-                            longStopSerie[i] = bodyLowSerie.GetMin(i - period - 1, i);
-                            shortStopSerie[i] = float.NaN;
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], bodyHighSerie.GetMax(i - period, i));
-                        }
-                    }
-                }
-                else
-                {
-                    if (upTrend)
-                    {
-                        if (currentValue.CLOSE < longStopSerie[i - 1])
-                        { // Trailing stop has been broken => reverse trend
-                            upTrend = false;
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = bodyHighSerie.GetMax(0, i);
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = Math.Max(longStopSerie[i - 1], bodyLowSerie.GetMin(0, i));
-                            shortStopSerie[i] = float.NaN;
-                        }
-                    }
-                    else
-                    {
-                        if (currentValue.CLOSE > shortStopSerie[i - 1])
-                        {  // Trailing stop has been broken => reverse trend
-                            upTrend = true;
-                            longStopSerie[i] = bodyLowSerie.GetMin(0, i);
-                            shortStopSerie[i] = float.NaN;
-                        }
-                        else
-                        {
-                            // Trail the stop  
-                            longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], bodyHighSerie.GetMax(0, i));
-                        }
-                    }
-                }
-                previousValue = currentValue;
-                i++;
-            }
-        }
-
         /// <summary>
         /// Calculate trail stop trailing using the minimum low in period for up trend and maximum high in period for down trend
         /// </summary>
