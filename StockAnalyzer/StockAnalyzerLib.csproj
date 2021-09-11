@@ -93,6 +93,7 @@
     <Compile Include="StockAgent\Agents\EMAMonthlyAgent.cs" />
     <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
@@ -424,6 +425,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMAHL.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHIGHESTATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY2.cs" />
