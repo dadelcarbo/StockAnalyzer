@@ -64,14 +64,11 @@ namespace StockAnalyzer.StockAgent
             res += NbWinTrade + "\t";
             res += NbLostTrade + "\t";
 
-            res += MaxGain + "\t";
-            res += MaxLoss + "\t";
-            res += MaxDrawdown + "\t";
-
-            res += CumulGain + "\t";
             res += AvgDuration + "\t";
+            res += WinLossRatio + "\t";
             res += WinTradeRatio + "\t";
             res += ExpectedReturn + "\t";
+            res += ExpectedGainPerBar + "\t";
             return res;
         }
     }
