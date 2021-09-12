@@ -7,7 +7,8 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="900"
-             Height="450" Width="900">
+             Height="600" Width="1000"
+             d:DataContext="{d:DesignInstance Type=local:PortfolioSimulationViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <local:PortfolioSimulationViewModel x:Key="ViewModel"></local:PortfolioSimulationViewModel>
     </UserControl.Resources>
@@ -25,13 +26,20 @@
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
             <Label Margin="2">Agent</Label>
             <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
-            <Label Margin="2">Max Positions</Label>
-            <telerik:RadNumericUpDown Minimum="5" Maximum="200" Value="{Binding MaxPosition}" NumberDecimalDigits="0" Width="40"/>
-            <Button Margin="20,2,2,2" x:Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
+            <Button Margin="200,2,2,2" x:Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
-        <GroupBox Header="Parameters" Grid.Row="1">
-            <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
-        </GroupBox>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Entry Strategy" Grid.Column="0">
+                <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+            </GroupBox>
+            <GroupBox Header="Position Management" Grid.Column="1">
+                <telerik:RadPropertyGrid Item="{Binding PositionManagement}" SortAndGroupButtonsVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed"/>
+            </GroupBox>
+        </Grid>
         <TabControl Grid.Row="2">
             <TabItem Header="Report">
                 <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto"/>

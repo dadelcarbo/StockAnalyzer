@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockAgent
         private EquityValue[] equityCurve;
         public EquityValue[] EquityCurve => equityCurve;
 
-        public void PerformPortfolio(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, int maxPositions)
+        public void PerformPortfolio(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, PositionManagement positionManagement)
         {
             IStockFilter filter = new ROCFilter();
 
@@ -89,13 +89,13 @@ namespace StockAnalyzer.StockAgent
                 openTrades.RemoveAll(t => t.IsClosed);
 
                 // Identify buy list
-                int nbBuys = maxPositions - openTrades.Count;
+                int nbBuys = positionManagement.MaxPositions - openTrades.Count;
                 if (nbBuys > 0)
                 {
                     var buyOpportunities = new List<Tuple<int, StockSerie>>();
                     foreach (var tuple in agentTuples)
                     {
-                        if (openTrades.Count >= maxPositions)
+                        if (openTrades.Count >= positionManagement.MaxPositions)
                             break;
                         if (openTrades.Any(t => t.Serie == tuple.Item1))
                             continue;
@@ -113,7 +113,7 @@ namespace StockAnalyzer.StockAgent
                     {
                         Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockName}");
                         var trade = new StockTrade(tuple.Item2, tuple.Item1 + 1);
-                        trade.Qty = (int)(cash / (maxPositions - openTrades.Count) / trade.EntryValue);
+                        trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
                         cash -= trade.EntryAmount;
                         this.TradeSummary.Trades.Add(trade);
                         openTrades.Add(trade);

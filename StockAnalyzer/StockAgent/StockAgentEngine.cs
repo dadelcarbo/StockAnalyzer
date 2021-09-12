@@ -27,29 +27,8 @@ namespace StockAnalyzer.StockAgent
             this.AgentType = agentType;
         }
 
-        private List<IStockAgent> RemoveDuplicates(IList<IStockAgent> agents)
-        {
-            var newList = new List<IStockAgent>();
-            if (agents.Count == 0) return newList;
-            newList.Add(agents[0]);
-            for (int i = agents.Count - 1; i >= 1; i--)
-            {
-                bool same = false;
-                foreach (var agent in newList)
-                {
-                    if (agent.AreSameParams(agents[i]))
-                    {
-                        same = true;
-                        break;
-                    }
-                }
-                if (!same)
-                    newList.Insert(0, agents[i]);
-            }
-            return newList;
-        }
 
-        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, float stop, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, float stopATR, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -116,7 +95,7 @@ namespace StockAnalyzer.StockAgent
                 }
 
                 // Perform calculation
-                this.Perform(series, minIndex, duration, stop);
+                this.Perform(series, minIndex, duration, stopATR);
 
                 // Select Best
                 var tradeSummary = this.Agent.TradeSummary;
@@ -158,11 +137,11 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, float stop)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, float stopATR)
         {
             foreach (var serie in series.Where(s => s.Count > minIndex))
             {
-                if (!this.Agent.Initialize(serie, duration, stop))
+                if (!this.Agent.Initialize(serie, duration, stopATR))
                 {
                     continue;
                 }

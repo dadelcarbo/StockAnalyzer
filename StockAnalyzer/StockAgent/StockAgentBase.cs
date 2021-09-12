@@ -20,6 +20,7 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie openSerie;
         protected FloatSerie lowSerie;
         protected FloatSerie highSerie;
+        protected FloatSerie atrSerie;
         protected FloatSerie volumeSerie;
 
         public StockTrade Trade { get; set; }
@@ -42,7 +43,7 @@ namespace StockAnalyzer.StockAgent
             return agentList;
         }
 
-        protected float StopPercent;
+        protected float StopATR;
         public float StopValue { get; protected set; }
         public bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stop)
         {
@@ -56,8 +57,12 @@ namespace StockAnalyzer.StockAgent
                 lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                 volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
+                if (stop != 0.0f)
+                {
+                    atrSerie = stockSerie.GetIndicator("ATR(20").Series[0];
+                }
                 this.Trade = null;
-                this.StopPercent = stop;
+                this.StopATR = stop;
 
                 return Init(stockSerie);
             }
@@ -74,9 +79,9 @@ namespace StockAnalyzer.StockAgent
             if (this.Trade == null)
             {
                 var action = this.TryToOpenPosition(index);
-                if (action == TradeAction.Buy && this.StopPercent != 0.0f)
+                if (action == TradeAction.Buy && this.StopATR != 0.0f)
                 {
-                    this.StopValue = openSerie[index + 1] * (1f - this.StopPercent);
+                    this.StopValue = closeSerie[index] - (this.StopATR * atrSerie[index]);
                 }
                 return action;
             }

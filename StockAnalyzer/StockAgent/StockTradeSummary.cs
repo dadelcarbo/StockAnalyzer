@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockAgent
 
         public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbTrades : 0f;
 
-        public float WinLossRatio => NbLostTrade != 0 ? this.TotalGain / -TotalLoss : 0f;
+        public float WinLossRatio => NbLostTrade != 0 ? this.AvgGain / -AvgLoss : 0f;
         public float Kelly => WinTradeRatio - (1.0f - WinTradeRatio) / WinLossRatio;
 
         public string ToLog()
@@ -38,7 +38,6 @@ namespace StockAnalyzer.StockAgent
             string res = "Nb Trade: " + Trades.Count() + Environment.NewLine;
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
             res += "Nb Lost Trade: " + NbLostTrade + Environment.NewLine;
-
             res += "Total Gain: " + TotalGain.ToString("P2") + Environment.NewLine;
             res += "Total Loss: " + TotalLoss.ToString("P2") + Environment.NewLine;
             res += "Avg Gain: " + AvgGain.ToString("P2") + Environment.NewLine;
@@ -46,10 +45,11 @@ namespace StockAnalyzer.StockAgent
             res += "Max Gain: " + MaxGain.ToString("P2") + Environment.NewLine;
             res += "Max Loss: " + MaxLoss.ToString("P2") + Environment.NewLine;
             res += "Max Drawdown: " + MaxDrawdown.ToString("P2") + Environment.NewLine;
-
             res += "Cumul Gain: " + CumulGain.ToString("P2") + Environment.NewLine;
-            res += "Avg Duration: " + AvgDuration.ToString() + Environment.NewLine;
-            res += "Win Ratio: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
+            res += Environment.NewLine;
+            res += "Avg Duration: " + AvgDuration + Environment.NewLine;
+            res += "Win/Loss Ratio: " + this.WinLossRatio.ToString("#.##") + Environment.NewLine;
+            res += "Win Rate: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
             res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P3") + Environment.NewLine;
 

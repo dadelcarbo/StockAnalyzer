@@ -20,16 +20,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.Agent = Agents.FirstOrDefault();
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
+            this.PositionManagement = new PositionManagement() { MaxPositions = 10, PortfolioInitialBalance = 10000, PortfolioRisk = 1, StopATR = 2 };
         }
+
+        public PositionManagement PositionManagement { get; set; }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
         public IList<StockBarDuration> Durations => StockBarDuration.Values;
         public StockBarDuration Duration { get; set; }
-        public int MaxPosition
-        {
-            get { return StockPortfolio.SimulationPortfolio.MaxPositions; }
-            set { StockPortfolio.SimulationPortfolio.MaxPositions = value; }
-        }
         public void Cancel()
         {
             if (worker != null)
@@ -208,7 +206,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             try
             {
-                engine.PerformPortfolio(stockSeries, 20, this.Duration, this.MaxPosition);
+                engine.PerformPortfolio(stockSeries, 20, this.Duration, this.PositionManagement);
 
                 if (worker.CancellationPending)
                     return false;

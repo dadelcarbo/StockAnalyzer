@@ -19,26 +19,30 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
-            <Label Margin="2">Group</Label>
-            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
-            <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
-            <Label Margin="2">Agent</Label>
-            <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
-            <Label Margin="2">Accuracy</Label>
-            <telerik:RadNumericUpDown Minimum="3" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="40"/>
-            <Label Margin="2">Stop</Label>
-            <TextBox Text="{Binding Stop,StringFormat=P}" Width="60" Height="20" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-            <Label Margin="2">Selector</Label>
-            <telerik:RadComboBox Margin="2" Width="110" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
-            <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
+        <StackPanel Grid.Row="0" >
+            <StackPanel Orientation="Horizontal" Margin="1">
+                <Label Margin="2">Group</Label>
+                <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
+                <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
+                <Label Margin="2">Accuracy</Label>
+                <telerik:RadNumericUpDown Minimum="2" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="30"/>
+                <Label Margin="2">Stop ATR</Label>
+                <telerik:RadNumericUpDown Minimum="0" Maximum="20" SmallChange="0.1" LargeChange="1" Value="{Binding StopATR}" NumberDecimalDigits="1" Width="30"/>
+                <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Margin="2">Agent</Label>
+                <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
+                <Label Margin="2">Selector</Label>
+                <telerik:RadComboBox Margin="1" Width="150" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
+            </StackPanel>
         </StackPanel>
         <GroupBox Header="Parameters" Grid.Row="1">
             <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
         </GroupBox>
         <TabControl Grid.Row="2">
             <TabItem Header="Report">
-                <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto"/>
+                <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
             </TabItem>
             <TabItem Header="Log">
                 <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
@@ -72,10 +76,10 @@
                                 <telerik:AverageFunction Caption="Average Duration: " ResultFormatString="{}{0:F2}"/>
                             </telerik:GridViewDataColumn.AggregateFunctions>
                         </telerik:GridViewDataColumn>
-                        
+
                         <!--<telerik:GridViewDataColumn Header="PartialExitDate" DataMemberBinding="{Binding PartialExitDate, StringFormat=d}"/>
                         <telerik:GridViewDataColumn Header="PartialExitValue" DataMemberBinding="{Binding PartialExitValue}"/>-->
-                        
+
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>

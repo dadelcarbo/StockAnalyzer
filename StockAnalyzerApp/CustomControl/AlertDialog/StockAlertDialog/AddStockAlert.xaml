@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog"
              xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             mc:Ignorable="d" Background="AntiqueWhite"
+             mc:Ignorable="d"
              d:DesignHeight="150" d:DesignWidth="700" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=local:AddStockAlertViewModel, IsDesignTimeCreatable=False}">
     <StackPanel>
