@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -187,35 +188,41 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.DoWork += RunAgentEngineOnGroup;
                 worker.RunWorkerCompleted += (a, e) =>
                 {
-                    StockAnalyzerForm.TimerSuspended = false;
-                    this.PerformText = "Perform";
-                    this.ProgressValue = 0;
-                    if (e.Cancelled)
+                    try
                     {
-                        this.Report += Environment.NewLine + "Cancelled...";
-                    }
-                    else
-                    {
-                        var report = engine.Report;
-                        this.Report = report;
-                        this.TradeSummary = engine.BestTradeSummary;
-                        string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.BarDuration + "\t" + this.Agent + "\t";
-                        rpt += engine.BestTradeSummary.ToStats();
-                        rpt += StopATR + "\t";
-                        rpt += engine.BestAgent.GetParameterValues();
-                        Clipboard.SetText(rpt);
-
-                        // Update Simu Portfolio
-                        StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
-                        StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
-                        StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
-
-                        using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
+                        StockAnalyzerForm.TimerSuspended = false;
+                        this.PerformText = "Perform";
+                        this.ProgressValue = 0;
+                        if (e.Cancelled)
                         {
-                            sr.WriteLine(rpt);
+                            this.Report += Environment.NewLine + "Cancelled...";
                         }
+                        else
+                        {
+                            var report = engine.Report;
+                            this.Report = report;
+                            this.TradeSummary = engine.BestTradeSummary;
+                            string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.BarDuration + "\t" + this.Agent + "\t";
+                            rpt += engine.BestTradeSummary.ToStats();
+                            rpt += StopATR + "\t";
+                            rpt += engine.BestAgent.GetParameterValues();
 
-                        this?.Completed();
+                            // Update Simu Portfolio
+                            StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
+                            StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
+                            StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
+
+                            using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
+                            {
+                                sr.WriteLine(rpt);
+                            }
+
+                            this?.Completed();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        StockLog.Write(ex);
                     }
                     this.worker = null;
                 };

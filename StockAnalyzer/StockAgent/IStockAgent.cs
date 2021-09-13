@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockAgent
         string DisplayIndicator { get; }
         StockTradeSummary TradeSummary { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stop);
+        bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stopATR);
         TradeAction Decide(int index);
 
         bool CanOpen(int index);
