@@ -18,15 +18,15 @@ namespace StockAnalyzer.StockAgent.Agents
         public int Trigger { get; set; }
 
         [StockAgentParam(0.5f, 10f)]
-        public float StopATR { get; set; }
+        public float StopATR2 { get; set; }
 
        // [StockAgentParam(0.5f, 10f)]
-        public float TrailATR => StopATR * 3.0f;
+        public float TrailATR => StopATR2 * 3.0f;
         //public float TrailATR { get; set; }
 
         public override string Description => "Buy with TrailHIGHESTATRAgent Stop";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILHIGHESTATR({Trigger},{StopATR},{TrailATR})";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILHIGHESTATR({Trigger},{StopATR2},{TrailATR})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Trigger)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILHIGHESTATR({Trigger},{StopATR},{TrailATR})");
+            trailStop = stockSerie.GetTrailStop($"TRAILHIGHESTATR({Trigger},{StopATR2},{TrailATR})");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (bearEvents[index]) // bar fast below slow EMA
+            if (bearEvents[index]) 
             {
                 return TradeAction.Sell;
             }

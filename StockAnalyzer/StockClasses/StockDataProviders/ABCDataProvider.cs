@@ -276,31 +276,30 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockDictionary = dictionary; // Save dictionary for future use in daily download
 
             // Init From LBL file
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.GERMANY);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120);
-
-            // Init from Libelles
-            foreach (string file in Directory.GetFiles(RootFolder + ABC_DAILY_CFG_FOLDER))
-            {
-                InitFromLibelleFile(file);
-            }
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
 
             // Load Config files
             string fileName = RootFolder + CONFIG_FILE;
             InitFromFile(download, fileName);
             fileName = RootFolder + CONFIG_FILE_USER;
             InitFromFile(download, fileName);
+
+            foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
+            {
+                StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
+            }
 
             // Download Sectors Composition
             foreach (var sector in SectorCodes)
@@ -404,6 +403,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private void InitFromLibelleFile(string fileName)
         {
+            StockLog.Write(fileName);
             if (File.Exists(fileName))
             {
                 StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
@@ -424,11 +424,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                             else
                             {
-                                StockLog.Write("ABC Entry: " + row[1] + " already in stockDictionary");
+                                StockLog.Write(line + " already in group " + stockDictionary[row[1].ToUpper()].StockGroup);
                             }
                         }
                     }
                 }
+            }
+            else
+            {
+                StockLog.Write("File does not exist");
             }
         }
 
@@ -628,6 +632,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockSerie.Groups.SBF120:
                     abcGroup = "xsbf120p";
+                    break;
+                default:
+                    StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
                     break;
             }
             return abcGroup;
@@ -992,21 +999,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-        private bool DownloadLibelleFromABC(string destFolder, StockSerie.Groups group)
+        private bool DownloadLibelleFromABC(string destFolder, StockSerie.Groups group, bool initLibelle = true)
         {
             string groupName = GetABCGroup(group);
             if (groupName == null)
                 return false;
-            bool success = true;
+            string fileName = destFolder + @"\" + group.ToString() + ".txt";
+            bool success = false;
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                string fileName = destFolder + @"\" + group.ToString() + ".txt";
-                if (File.Exists(fileName))
-                {
-                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
-                        return true;
-                }
-
+                if (File.Exists(fileName) && File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
+                    success = true;
+            }
+            else
+            {
                 try
                 {
                     success = this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
@@ -1017,6 +1023,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
                     success = false;
                 }
+            }
+            if (success && initLibelle)
+            {
+                InitFromLibelleFile(fileName);
             }
             return success;
         }
