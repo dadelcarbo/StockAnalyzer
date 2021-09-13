@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerApp;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -65,10 +66,10 @@ namespace StockAnalyzer.StockAgent
             res += NbLostTrade + "\t";
 
             res += AvgDuration + "\t";
-            res += WinLossRatio + "\t";
-            res += WinTradeRatio + "\t";
-            res += ExpectedReturn + "\t";
-            res += ExpectedGainPerBar + "\t";
+            res += WinLossRatio.ToString("#.##") + "\t";
+            res += WinTradeRatio.ToString("P2", Global.USCulture) + "\t";
+            res += ExpectedReturn.ToString("P2", Global.USCulture) + "\t";
+            res += ExpectedGainPerBar.ToString("P2", Global.USCulture) + "\t";
             return res;
         }
     }
