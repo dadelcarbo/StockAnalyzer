@@ -45,12 +45,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     client.BaseAddress = new Uri("https://www.abcbourse.com/");
                     var resp = client.GetAsync("download/historiques").Result;
                     if (!resp.IsSuccessStatusCode)
+                    {
+                        StockLog.Write("Failed initializing ABC Provider: " + resp.Content.ReadAsStringAsync().Result);
                         return false;
+                    }
 
                     verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    StockLog.Write(ex);
                     return false;
                 }
             }
@@ -122,7 +126,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             + "cbYes=false";
         public bool DownloadGroup(string destFolder, string fileName, DateTime startDate, DateTime endDate, string group)
         {
-            if (!this.Initialize()) return false;
+            if (!this.Initialize())
+                return false;
 
             try
             {
@@ -133,11 +138,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 postData = postData.Replace("$GROUP", group);
                 postData = postData.Replace("$TOKEN", verifToken);
 
+                StockLog.Write("Downloading group: " + postData);
+
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 var resp = client.PostAsync("download/historiques", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
+                {
+                    StockLog.Write("Failed downloading group: " + resp.Content.ReadAsStringAsync().Result);
                     return false;
+                }
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
                 {
                     using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
@@ -146,8 +156,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                StockLog.Write(ex);
                 return false;
             }
             return true;

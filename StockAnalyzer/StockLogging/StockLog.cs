@@ -64,7 +64,10 @@ namespace StockAnalyzer.StockLogging
                         {
                             foreach (string file in Directory.GetFiles(logFolder))
                             {
-                                File.Delete(file);
+                                if (File.GetLastWriteTime(file).Date != DateTime.Today)
+                                {
+                                    File.Delete(file);
+                                }
                             }
                         }
                         catch
@@ -133,7 +136,7 @@ namespace StockAnalyzer.StockLogging
                 string strException = objException.Message;
                 var innerException = objException.InnerException;
                 var padding = string.Empty;
-                while(innerException != null)
+                while (innerException != null)
                 {
                     strException += Environment.NewLine + padding + innerException.Message;
                     padding += "  ";
