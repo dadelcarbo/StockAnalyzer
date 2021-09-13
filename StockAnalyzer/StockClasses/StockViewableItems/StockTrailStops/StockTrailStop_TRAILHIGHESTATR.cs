@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             this.CreateEventSeries(stockSerie.Count);
 
             FloatSerie highestSerie = stockSerie.GetIndicator($"HIGHEST({trigger})").Series[0];
-            FloatSerie atrSerie = stockSerie.GetIndicator($"ATR({trigger})").Series[0];
+            FloatSerie atrSerie = stockSerie.GetIndicator($"ATR(20)").Series[0];
             bool upTrend = false;
             float trailStop = float.NaN;
             float hardStop = float.NaN;
