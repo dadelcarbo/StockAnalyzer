@@ -94,6 +94,7 @@
     <Compile Include="StockAgent\Agents\EMAMonthlyAgent.cs" />
     <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
+    <Compile Include="StockAgent\Agents\RSIAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
@@ -313,8 +314,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR2.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VOLMOMEX.cs" />
@@ -344,7 +343,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBUPBARS.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CCI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FISHER.cs" />
@@ -360,7 +358,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OBV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\IRange.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockVisibility.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VLTY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />

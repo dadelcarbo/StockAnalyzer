@@ -7,9 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_RSI : StockIndicatorBase, IRange
     {
-        public StockIndicator_RSI()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.RangedIndicator; }
@@ -73,8 +70,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = 2; i < rsiSerie.Count; i++)
             {
-                this.eventSeries[0][i] = (rsiSerie[i - 2] < rsiSerie[i - 1] && rsiSerie[i - 1] > rsiSerie[i]);
-                this.eventSeries[1][i] = (rsiSerie[i - 2] > rsiSerie[i - 1] && rsiSerie[i - 1] < rsiSerie[i]);
+                this.eventSeries[0][i] = rsiSerie[i - 2] < rsiSerie[i - 1] && rsiSerie[i - 1] > rsiSerie[i];
+                this.eventSeries[1][i] = rsiSerie[i - 2] > rsiSerie[i - 1] && rsiSerie[i - 1] < rsiSerie[i];
             }
         }
 
