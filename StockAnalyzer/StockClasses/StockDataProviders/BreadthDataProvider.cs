@@ -51,6 +51,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             NeedGenerate = true;
         }
+
         public override bool LoadData(StockSerie stockSerie)
         {
             // Read archive first
@@ -63,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             var cac40 = StockDictionary.Instance["CAC40"];
             cac40.Initialise();
-            if (cac40.Keys.Last() != stockSerie.Keys.Last())
+            if (stockSerie.Count == 0 || cac40.Keys.Last() != stockSerie.Keys.Last())
             {
                 res |= GenerateBreadthData(stockSerie);
             }
@@ -127,6 +128,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "MYOSC":
                     return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+                default:
+                    StockLog.Write($"BREADTH Not Found: {stockSerie.StockName}");
+                    break;
             }
             return false;
         }

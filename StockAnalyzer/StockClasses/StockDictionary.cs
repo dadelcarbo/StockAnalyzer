@@ -1493,11 +1493,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_SECTORS_CAC.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_SECTORS_CAC.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, true);
                 }
             }
             return true;

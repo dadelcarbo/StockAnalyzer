@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockLogging
                         {
                             foreach (string file in Directory.GetFiles(logFolder))
                             {
-                                if (File.GetLastWriteTime(file).Date != DateTime.Today)
+                                if (File.GetLastWriteTime(file).Date < DateTime.Today)
                                 {
                                     File.Delete(file);
                                 }
