@@ -144,7 +144,8 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
                                 continue;
-                            StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+
+                            //StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
 
                             switch (row.Type)
                             {
@@ -194,7 +195,7 @@ namespace StockAnalyzer.StockPortfolio
                                     break;
                             }
 
-                            StockLog.Write($"Portfolio balance : {portfolio.Balance}");
+                            //StockLog.Write($"Portfolio balance : {portfolio.Balance}");
                         }
                         catch (Exception ex)
                         {
@@ -203,104 +204,9 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
                 return;
-                //foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération sur titres").Select(r => new
-                //{
-                //    TradeDate = r.Field<DateTime>(0),
-                //    AccountId = r.Field<string>(1),
-                //    Instrument = r.Field<string>(3),
-                //    InstrumentId = r.Field<double>(4),
-                //    Event = r.Field<string>(6),
-                //    Type = r.Field<string>(5),
-                //    TradeId = long.Parse(r.Field<string>(7)),
-                //    Amount = r.Field<double>(13)
-                //}).GroupBy(r => r.AccountId))
-                //{
-                //    var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
-                //    if (portfolio == null)
-                //        continue;
-
-                //    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
-                //    {
-                //        if (portfolio.TradeOperations.Any(t => t.Id == row.TradeId))
-                //            continue;
-
-                //        // Find stockNamefrom mapping
-                //        var stockName = row.Instrument.ToUpper()
-                //            .Replace(" SA", "")
-                //            .Replace(" UCITS ETF", "")
-                //            .Replace(" DAILY", "");
-
-                //        if (row.Event == "Dividende en espèces")
-                //        {
-                //            portfolio.DividendOperation(stockName, row.TradeDate, (float)row.Amount, row.TradeId);
-                //        }
-                //    }
-                //}
-
-                //foreach (var tradeGroup in data.Where(r => r.Field<string>(5) == "Opération").Select(r => new
-                //{
-                //    TradeDate = r.Field<DateTime>(0),
-                //    AccountId = r.Field<string>(1),
-                //    Instrument = r.Field<string>(3),
-                //    InstrumentId = r.Field<double>(4),
-                //    Event = r.Field<string>(6),
-                //    TradeId = (int)r.Field<double>(8),
-                //    Qty = (int)r.Field<double>(9),
-                //    Price = r.Field<double?>(10),
-                //    Amount = r.Field<double>(13)
-                //}).GroupBy(r => r.AccountId))
-                //{
-                //    var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
-                //    if (portfolio == null)
-                //        continue;
-
-                //    StockLog.Write($" ----------------------------- Processing Portfolio {portfolio.Name}");
-                //    foreach (var row in tradeGroup.OrderBy(t => t.TradeId))
-                //    {
-                //        if (portfolio.TradeOperations.Any(t => t.Id == row.TradeId))
-                //            continue;
-
-                //        // Find stockNamefrom mapping
-                //        var stockName = row.Instrument.ToUpper()
-                //            .Replace(" SA", "")
-                //            .Replace(" UCITS ETF", "")
-                //            .Replace(" DAILY", "");
-
-                //        StockLog.Write($"Processing {row.Event} {stockName}");
-                //        try
-                //        {
-                //            if ((row.Event == "Buy" || row.Event == "Achat") && row.Price != null)
-                //            {
-                //                portfolio.BuyTradeOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, (float)(-row.Amount - (row.Qty * row.Price)), 0, null, BarDuration.Daily, null, row.TradeId);
-                //            }
-                //            else if (row.Event == "Transfert entrant")
-                //            {
-                //                portfolio.TransferOperation(stockName, row.TradeDate, row.Qty, (float)row.Price, row.TradeId);
-                //            }
-                //            else if (row.Event == "Sell" || row.Event == "Vente")
-                //            {
-                //                if (row.Price == null)
-                //                {
-                //                    portfolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, 0f, 0f, null, row.TradeId);
-                //                }
-                //                else
-                //                {
-                //                    portfolio.SellTradeOperation(stockName, row.TradeDate, -row.Qty, (float)row.Price, (float)((-row.Qty * row.Price) - row.Amount), null, row.TradeId);
-                //                }
-                //            }
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            //MessageBox.Show(e.Message);&
-                //            StockLog.Write(e);
-                //        }
-                //    }
-                //    portfolio.Serialize(folder);
-                //}
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.Message);&
                 StockLog.Write(e);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -47,6 +48,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
+
+            NeedGenerate = true;
         }
         public override bool LoadData(StockSerie stockSerie)
         {
@@ -60,10 +63,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             var cac40 = StockDictionary.Instance["CAC40"];
             cac40.Initialise();
-            if (cac40.Keys.Count != stockSerie.Count)
+            if (cac40.Keys.Last() != stockSerie.Keys.Last())
             {
                 res |= GenerateBreadthData(stockSerie);
-                NeedGenerate = true;
+            }
+            else
+            {
+                NeedGenerate = false;
             }
             return res;
         }
@@ -76,6 +82,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private bool GenerateBreadthData(StockSerie stockSerie)
         {
+            StockLog.Write(stockSerie.StockName);
             var stockDictionary = StockDictionary.Instance;
             if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CAC)
             {
