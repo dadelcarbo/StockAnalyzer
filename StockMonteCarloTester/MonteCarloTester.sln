@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonteCarloTester", "MonteCarloTester.csproj", "{15D27EE8-55F7-418A-A405-2E2AC3543F1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15D27EE8-55F7-418A-A405-2E2AC3543F1C}.Debug|x86.ActiveCfg = Debug|x86
+		{15D27EE8-55F7-418A-A405-2E2AC3543F1C}.Debug|x86.Build.0 = Debug|x86
+		{15D27EE8-55F7-418A-A405-2E2AC3543F1C}.Release|x86.ActiveCfg = Release|x86
+		{15D27EE8-55F7-418A-A405-2E2AC3543F1C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F02F77D2-5343-4188-91AE-467E09B30CEB}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,124 @@
+﻿<Window x:Class="MonteCarloTester.MainWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                mc:Ignorable="d" 
+                xmlns:local="clr-namespace:MonteCarloTester" xmlns:global="clr-namespace:System.Globalization;assembly=mscorlib"
+        Title="MainWindow" Height="800" Width="1200"
+                d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <local:ViewModel x:Key="ViewModel"/>
+    </Window.Resources>
+    <Grid DataContext="{DynamicResource ViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition  Width="0.25*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Win Rate" Width="60"/>
+                <telerik:RadNumericUpDown Value="{Binding WinRate}" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1"/>
+                <Button Content="Perform" Command="{Binding PerformCommand}" Margin="2"></Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Win/Loss Ratio" Width="60"/>
+                <telerik:RadNumericUpDown Value="{Binding WinLossRatio}" ValueFormat="Numeric" SmallChange="0.01" LargeChange="0.1"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Nb Iter" Width="60"/>
+                <telerik:RadNumericUpDown Value="{Binding NbIter}" Minimum="1" Maximum="10000" SmallChange="1" LargeChange="100" >
+                    <telerik:RadNumericUpDown.NumberFormatInfo>
+                        <global:NumberFormatInfo NumberDecimalDigits="0"/>
+                    </telerik:RadNumericUpDown.NumberFormatInfo>
+                </telerik:RadNumericUpDown>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Nb Values" Width="60"/>
+                <telerik:RadNumericUpDown Value="{Binding NbValues}" Minimum="100" Maximum="10000" SmallChange="100" LargeChange="1000" >
+                    <telerik:RadNumericUpDown.NumberFormatInfo>
+                        <global:NumberFormatInfo NumberDecimalDigits="0"/>
+                    </telerik:RadNumericUpDown.NumberFormatInfo>
+                </telerik:RadNumericUpDown>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Binding Kelly, StringFormat=Nb Values {P2}}" Width="60"/>
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <telerik:RadCartesianChart x:Name="sectorChart" Palette="Windows8" ClipToBounds="False">
+
+                <telerik:RadCartesianChart.Behaviors>
+                    <telerik:ChartSelectionBehavior />
+                    <telerik:ChartTrackBallBehavior />
+                </telerik:RadCartesianChart.Behaviors>
+
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding BestReturn}" IsHitTestVisible="True">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="Best" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="Best"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding AvgReturn}" IsHitTestVisible="True">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="Avg" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="Avg"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+                <telerik:LineSeries CategoryBinding="X" ValueBinding="Y" ItemsSource="{Binding WorstReturn}" IsHitTestVisible="True">
+                    <telerik:LineSeries.LegendSettings>
+                        <telerik:SeriesLegendSettings Title="Worst" />
+                    </telerik:LineSeries.LegendSettings>
+                    <telerik:LineSeries.TrackBallInfoTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Transparent" Orientation="Horizontal">
+                                <TextBlock Text="Worst"/>
+                                <TextBlock Text="{Binding Path=DataPoint.Value, StringFormat=F2}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </telerik:LineSeries.TrackBallInfoTemplate>
+                </telerik:LineSeries>
+
+                <telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:LinearAxis Title="Sectors" 
+                                              ElementBrush="{Binding ElementName=sectorChart, Path=Palette.GlobalEntries[1].Fill}" 
+                                              HorizontalLocation="Right" Minimum="{Binding MinVal}" Maximum="{Binding MaxVal}"/>
+                </telerik:RadCartesianChart.VerticalAxis>
+                <telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:CategoricalAxis LabelInterval="10" SmartLabelsMode="SmartStep"/>
+                </telerik:RadCartesianChart.HorizontalAxis>
+                <telerik:RadCartesianChart.Grid>
+                    <telerik:CartesianChartGrid MajorLinesVisibility="Y" />
+                </telerik:RadCartesianChart.Grid>
+            </telerik:RadCartesianChart>
+            <telerik:RadLegend Grid.Column="1" Margin="4,12" MinWidth="76" Items="{Binding LegendItems, ElementName=sectorChart}">
+            </telerik:RadLegend>
+        </Grid>
+
+
+
+    </Grid>
+</Window>
