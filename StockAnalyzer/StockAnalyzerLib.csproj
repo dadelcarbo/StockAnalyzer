@@ -85,9 +85,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
     <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMAFWAgent.cs" />
     <Compile Include="StockAgent\Agents\FWAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACDAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAOSCAgent.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="StockAgent\Filters\IStockFilter.cs" />
     <Compile Include="StockAgent\Filters\NoFilter.cs" />
     <Compile Include="StockAgent\Filters\ROCFilter.cs" />
+    <Compile Include="StockAgent\IStopStrategy.cs" />
     <Compile Include="StockAgent\PositionManagement.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
@@ -260,6 +263,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BARSINEVENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMACD.cs" />

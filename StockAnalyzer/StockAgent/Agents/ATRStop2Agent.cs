@@ -11,6 +11,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             Period = 12;
             UpWidth = 2.0f;
+            DownWidth = 2.0f;
         }
 
         [StockAgentParam(5, 80)]

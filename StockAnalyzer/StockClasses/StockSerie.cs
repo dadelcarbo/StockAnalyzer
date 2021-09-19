@@ -630,7 +630,6 @@ namespace StockAnalyzer.StockClasses
                         Thread.Sleep(50);
                     this.initialisingThread = Thread.CurrentThread;
 
-
                     if (this.Count == 0)
                     {
                         if (!StockDataProviderBase.LoadSerieData(this) || this.Count == 0)
