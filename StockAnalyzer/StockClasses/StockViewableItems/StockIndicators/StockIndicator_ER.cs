@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f,1f)  };
+                return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f) };
             }
         }
 
@@ -77,7 +77,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             int period = Math.Min((int)this.parameters[0], stockSerie.Count - 1);
             int inputSmoothing = (int)this.parameters[1];
             int smoothing = (int)this.parameters[2];
-            FloatSerie erSerie = stockSerie.CalculateER(period, inputSmoothing).CalculateEMA(smoothing);
+
+            FloatSerie erSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing).CalculateER(period);
+
             this.series[0] = erSerie;
             this.Series[0].Name = this.Name;
 

@@ -1131,10 +1131,6 @@ namespace StockAnalyzer.StockClasses
 
             return OBVEX;
         }
-        public FloatSerie CalculateER(int period, int inputSmoothing)
-        {
-            return this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing).CalculateER(period);
-        }
         public FloatSerie CalculateFastOscillator(int period)
         {
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
