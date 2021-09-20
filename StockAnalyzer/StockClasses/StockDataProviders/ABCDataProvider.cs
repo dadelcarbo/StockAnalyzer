@@ -1020,9 +1020,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (File.Exists(fileName) && File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
                     success = true;
-            }
-            else
-            {
+
                 try
                 {
                     success = this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
@@ -1030,7 +1028,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 catch (System.Exception ex)
                 {
                     StockLog.Write(ex);
-                    System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
                     success = false;
                 }
             }
