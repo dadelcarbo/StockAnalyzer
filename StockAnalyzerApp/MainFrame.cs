@@ -2753,10 +2753,10 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, breakoutBars, nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, breakoutBars, nbLeaders);
