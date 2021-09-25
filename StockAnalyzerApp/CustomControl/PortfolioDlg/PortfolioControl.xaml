@@ -23,7 +23,7 @@
             <Label>Cash:</Label>
             <TextBlock Text="{Binding Portfolio.Balance}" VerticalAlignment="Center"/>
             <Label>Value:</Label>
-            <TextBlock Text="{Binding Portfolio.TotalValue}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding PortfolioViewModel.Value}" VerticalAlignment="Center"/>
             <Label>Max Risk:</Label>
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
         </StackPanel>

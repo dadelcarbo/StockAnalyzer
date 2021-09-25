@@ -21,11 +21,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 if (StockAnalyzerForm.MainFrame.Portfolio != value)
                 {
                     StockAnalyzerForm.MainFrame.Portfolio = value;
+                    portfolioViewModel = null;
                     OnPropertyChanged(nameof(Portfolio));
                     OnPropertyChanged(nameof(PortfolioViewModel));
                 }
             }
         }
-        public PortfolioViewModel PortfolioViewModel => new PortfolioViewModel(Portfolio);
+        private PortfolioViewModel portfolioViewModel;
+        public PortfolioViewModel PortfolioViewModel => portfolioViewModel == null ? portfolioViewModel = new PortfolioViewModel(Portfolio) : portfolioViewModel;
     }
 }
