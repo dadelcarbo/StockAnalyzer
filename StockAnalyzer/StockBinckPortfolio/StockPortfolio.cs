@@ -160,7 +160,14 @@ namespace StockAnalyzer.StockPortfolio
                                         var stockName = row.Instrument.ToUpper()
                                             .Replace(" SA", "")
                                             .Replace(" UCITS ETF", "")
+                                            .Replace(" SE", "")
                                             .Replace(" DAILY", "");
+
+                                        var mapping = StockPortfolio.GetMapping(stockName);
+                                        if (mapping != null)
+                                        {
+                                            stockName = mapping.StockName;
+                                        }
 
                                         if (stockName.EndsWith(" Assented Rights"))
                                             continue;
@@ -704,7 +711,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public static StockNameMapping GetMapping(string binckName)
         {
-            return Mappings.FirstOrDefault(m => binckName.Contains(m.BinckName.ToUpper()));
+            return Mappings.FirstOrDefault(m => binckName.Contains(m.SaxoName.ToUpper()));
         }
         #endregion
 
