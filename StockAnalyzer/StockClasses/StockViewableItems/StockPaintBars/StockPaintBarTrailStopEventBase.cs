@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -150,6 +151,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 else
                 { return baseIndicator.Events; }
             }
+        }
+        public BoolSerie GetEvents(string eventName)
+        {
+            int index = Array.IndexOf(this.EventNames, eventName);
+            return index != -1 ? this.Events[index] : null;
         }
 
         public bool[] IsEvent { get; set; }

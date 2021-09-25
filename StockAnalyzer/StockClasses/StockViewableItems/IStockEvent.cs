@@ -2,11 +2,12 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {
-   public interface IStockEvent
-   {
-      int EventCount { get; }
-      string[] EventNames { get; }
-      bool[] IsEvent { get; }
-      BoolSerie[] Events { get; }
-   }
+    public interface IStockEvent
+    {
+        int EventCount { get; }
+        string[] EventNames { get; }
+        bool[] IsEvent { get; }
+        BoolSerie[] Events { get; }
+        BoolSerie GetEvents(string eventName);
+    }
 }

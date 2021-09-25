@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockDrawing;
@@ -86,8 +87,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
       public BoolSerie[] Events
       {
          get { return eventSeries; }
-      }
-      virtual protected void CreateEventSeries(int count)
+        }
+        public BoolSerie GetEvents(string eventName)
+        {
+            int index = Array.IndexOf(this.EventNames, eventName);
+            return index != -1 ? this.Events[index] : null;
+        }
+        virtual protected void CreateEventSeries(int count)
       {
          for (int i = 0; i < this.EventCount; i++)
          {

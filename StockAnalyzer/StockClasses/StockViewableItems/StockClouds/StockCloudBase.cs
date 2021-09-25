@@ -85,6 +85,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public FloatSerie BullSerie => this.Series[0];
 
         public FloatSerie BearSerie => this.Series[1];
+        public BoolSerie GetEvents(string eventName)
+        {
+            int index = Array.IndexOf(this.EventNames, eventName);
+            return index != -1 ? this.Events[index] : null;
+        }
 
         virtual protected void CreateEventSeries(int count)
         {

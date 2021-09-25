@@ -53,8 +53,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var fastMA = stockSerie.GetIndicator($"EMA({this.parameters[1]})").Series[0];
-            var slowMA = stockSerie.GetIndicator($"EMA({this.parameters[0]})").Series[0];
+            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var fastMA = closeSerie.CalculateEMA((int)this.parameters[1]);
+            var slowMA = closeSerie.CalculateEMA((int)this.parameters[0]);
 
             FloatSerie EMACDSerie = fastMA - slowMA;
             FloatSerie signalSerie = EMACDSerie.CalculateEMA((int)this.parameters[2]);
@@ -74,15 +75,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[1][i] = EMACDSerie[i] < 0;
                 this.eventSeries[2][i] = signalSerie[i] < EMACDSerie[i];
                 this.eventSeries[3][i] = signalSerie[i] > EMACDSerie[i];
+                this.eventSeries[4][i] = EMACDSerie[i] >= 0 && EMACDSerie[i - 1] < 0;
+                this.eventSeries[5][i] = EMACDSerie[i] < 0 && EMACDSerie[i - 1] >= 0; ;
+                this.eventSeries[6][i] = signalSerie[i] < EMACDSerie[i] && !this.eventSeries[2][i - 1];
+                this.eventSeries[7][i] = signalSerie[i] > EMACDSerie[i] && this.eventSeries[2][i - 1];
             }
         }
 
-        static string[] eventNames = new string[] { "EMACDPositive", "EMACDNegative", "EMACDAboveSignal", "EMACDBelowSignal" };
+        static string[] eventNames = new string[] { "Positive", "Negative", "AboveSignal", "BelowSignal", "FirstPositive", "FirstNegative", "FirstAboveSignal", "FirstBelowSignal" };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { false, false, false, false };
+        static readonly bool[] isEvent = new bool[] { false, false, false, false, true, true, true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }

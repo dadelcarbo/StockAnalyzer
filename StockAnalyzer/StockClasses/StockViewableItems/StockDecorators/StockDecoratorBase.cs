@@ -1,94 +1,100 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
-   public abstract class StockDecoratorBase : Parameterizable, IStockDecorator, IStockEvent
-   {
-      public StockDecoratorBase()
-      {
-         this.series = new FloatSerie[this.SeriesCount];
-         this.serieVisibility = new bool[this.SeriesCount];
-         for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
-         
-         this.eventSeries = new BoolSerie[this.EventCount];
-         this.eventVisibility = new bool[this.EventCount];
-         for (int i = 0; i < this.EventCount; this.eventVisibility[i++] = true) ;
-      }
-      public abstract IndicatorDisplayTarget DisplayTarget { get; }
-      public virtual IndicatorDisplayStyle DisplayStyle
-      {
-         get { return IndicatorDisplayStyle.DecoratorPlot; }
-      }
+    public abstract class StockDecoratorBase : Parameterizable, IStockDecorator, IStockEvent
+    {
+        public StockDecoratorBase()
+        {
+            this.series = new FloatSerie[this.SeriesCount];
+            this.serieVisibility = new bool[this.SeriesCount];
+            for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
 
-      public ViewableItemType Type { get { return ViewableItemType.Decorator; } }
+            this.eventSeries = new BoolSerie[this.EventCount];
+            this.eventVisibility = new bool[this.EventCount];
+            for (int i = 0; i < this.EventCount; this.eventVisibility[i++] = true) ;
+        }
+        public abstract IndicatorDisplayTarget DisplayTarget { get; }
+        public virtual IndicatorDisplayStyle DisplayStyle
+        {
+            get { return IndicatorDisplayStyle.DecoratorPlot; }
+        }
 
-      public virtual bool RequiresVolumeData { get { return false; } }
+        public ViewableItemType Type { get { return ViewableItemType.Decorator; } }
 
-      public string DecoratedItem { get; set; }
+        public virtual bool RequiresVolumeData { get { return false; } }
 
-      public string ToThemeString()
-      {
-         if (DecoratedItem == null)
-         {
-            throw new System.NullReferenceException("Decorated Item is null, please Initialise");
-         }
-         string themeString = "DECORATOR|" + this.Name + "|" + this.DecoratedItem;
-         for (int i = 0; i < this.SeriesCount; i++)
-         {
-            themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
-         }
-         for (int i = 0; i < this.EventCount; i++)
-         {
-            themeString += "|" + GraphCurveType.PenToString(this.EventPens[i]) + "|" + this.EventVisibility[i].ToString();
-         }
-         return themeString;
-      }
+        public string DecoratedItem { get; set; }
 
-      protected FloatSerie[] series;
-      public FloatSerie[] Series { get { return series; } }
+        public string ToThemeString()
+        {
+            if (DecoratedItem == null)
+            {
+                throw new System.NullReferenceException("Decorated Item is null, please Initialise");
+            }
+            string themeString = "DECORATOR|" + this.Name + "|" + this.DecoratedItem;
+            for (int i = 0; i < this.SeriesCount; i++)
+            {
+                themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
+            }
+            for (int i = 0; i < this.EventCount; i++)
+            {
+                themeString += "|" + GraphCurveType.PenToString(this.EventPens[i]) + "|" + this.EventVisibility[i].ToString();
+            }
+            return themeString;
+        }
 
-      abstract public Pen[] SeriePens { get; }
+        protected FloatSerie[] series;
+        public FloatSerie[] Series { get { return series; } }
 
-      private bool[] serieVisibility;
-      public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        abstract public Pen[] SeriePens { get; }
 
-      public void Initialise(string[] parameters)
-      {
-         this.ParseInputParameters(parameters);
-      }
+        private bool[] serieVisibility;
+        public bool[] SerieVisibility { get { return this.serieVisibility; } }
 
-      abstract public void ApplyTo(StockSerie stockSerie);
+        public void Initialise(string[] parameters)
+        {
+            this.ParseInputParameters(parameters);
+        }
 
-      protected BoolSerie[] eventSeries;
-      public int EventCount
-      {
-         get { return EventNames.Length; }
-      }
+        abstract public void ApplyTo(StockSerie stockSerie);
 
-      abstract public string[] EventNames { get; }
+        protected BoolSerie[] eventSeries;
+        public int EventCount
+        {
+            get { return EventNames.Length; }
+        }
 
-      public BoolSerie[] Events
-      {
-         get { return eventSeries; }
-      }
+        abstract public string[] EventNames { get; }
 
-      virtual protected void CreateEventSeries(int count)
-      {
-         for (int i = 0; i < this.EventCount; i++)
-         {
-            this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
-         }
-      }
+        public BoolSerie[] Events
+        {
+            get { return eventSeries; }
+        }
 
-      abstract public bool[] IsEvent { get; }
+        virtual protected void CreateEventSeries(int count)
+        {
+            for (int i = 0; i < this.EventCount; i++)
+            {
+                this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
+            }
+        }
+
+        abstract public bool[] IsEvent { get; }
 
 
-      private bool[] eventVisibility;
-      public bool[] EventVisibility { get { return this.eventVisibility; } }
+        private bool[] eventVisibility;
+        public bool[] EventVisibility { get { return this.eventVisibility; } }
 
-      protected Pen[] eventPens = null;
-      abstract public Pen[] EventPens { get; }
-   }
+        protected Pen[] eventPens = null;
+        abstract public Pen[] EventPens { get; }
+        public BoolSerie GetEvents(string eventName)
+        {
+            int index = Array.IndexOf(this.EventNames, eventName);
+            return index != -1 ? this.Events[index] : null;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
@@ -81,6 +82,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public BoolSerie[] Events
         {
             get { return eventSeries; }
+        }
+        public BoolSerie GetEvents(string eventName)
+        {
+            int index = Array.IndexOf(this.EventNames, eventName);
+            return index != -1 ? this.Events[index] : null;
         }
         virtual protected void CreateEventSeries(int count)
         {

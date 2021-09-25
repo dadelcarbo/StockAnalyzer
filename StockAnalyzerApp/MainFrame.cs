@@ -2710,6 +2710,12 @@ namespace StockAnalyzerApp
             public float trailStop;
             public StockSerie stockSerie;
         }
+        class ReportSerie
+        {
+            public float rank;
+            public float trailStop;
+            public StockSerie stockSerie;
+        }
 
         string CELL_DIR_IMG_TEMPLATE =
            @"<td><img alt=""%DIR%"" src=""../../img/%DIR%.png"" height=""16"" width=""16""/></td>" +
@@ -2748,18 +2754,39 @@ namespace StockAnalyzerApp
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, breakoutBars, nbLeaders);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
+
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
+            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
+            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
+            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, breakoutBars, nbLeaders);
+            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, breakoutBars, nbLeaders);
 
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
             //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
@@ -2856,6 +2883,118 @@ namespace StockAnalyzerApp
         }
 
         const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+        private string GenerateAlertTable(StockBarDuration duration, StockSerie.Groups reportGroup, string title, string viewableItemName, string eventName, string trailStopIndicatorName, string rankIndicator, int nbStocks)
+        {
+            const string rowTemplate = @"
+         <tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+             <td>%COL3%</td>
+             <td>%COL4%</td>
+             <td>%COL5%</td>
+             <td>%COL6%</td>
+         </tr>";
+
+            string html = @"
+<br/>
+";
+            try
+            {
+                StockSplashScreen.ProgressText = title + " " + duration + " for " + reportGroup;
+                var reportSeries = new List<ReportSerie>();
+                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(reportGroup));
+
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ProgressMax = stockList.Count();
+                StockSplashScreen.ProgressMin = 0;
+
+                var indexSerie = this.StockDictionary["CAC40"];
+                indexSerie.BarDuration = duration;
+                DateTime lastDate = indexSerie.Keys.Last();
+                indexSerie.BarDuration = StockBarDuration.Daily;
+
+                foreach (StockSerie stockSerie in stockList)
+                {
+                    StockSplashScreen.ProgressVal++;
+                    if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
+                    {
+                        if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
+                        {
+                            indexSerie.BarDuration = StockBarDuration.Daily;
+                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
+                            if (badLiquiditySerie.Values.Last())
+                            {
+                                continue;
+                            }
+                        }
+                        stockSerie.BarDuration = duration;
+                        if (stockSerie.Keys.Last() != lastDate)
+                            continue;
+
+                        var eventSerie = (stockSerie.GetViewableItem(viewableItemName) as IStockEvent).GetEvents(eventName);
+                        var index = stockSerie.LastCompleteIndex;
+                        if (eventSerie[index])
+                        {
+                            var trailStopSerie = stockSerie.GetTrailStop(trailStopIndicatorName).Series[0];
+                            var rankSerie = stockSerie.GetIndicator(rankIndicator).Series[0];
+                            reportSeries.Add(new ReportSerie()
+                            {
+                                rank = rankSerie[index],
+                                trailStop = trailStopSerie[index],
+                                stockSerie = stockSerie
+                            });
+                        }
+                    }
+                }
+                var tableHeader = $"{title} for " + reportGroup;
+                html += $@"
+            <table  class=""reportTable"">
+                <thead>
+                <tr>
+                    <td rowspan=""1"">&nbsp;</td>
+                    <th style=""font-size:24px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                </tr>
+                <tr>
+                    <th style=""width: 200px;"">Stock Name</th>
+                    <th>{rankIndicator}</th>
+                    <th>Trail Stop %</th>
+                    <th>Trail Stop</th>
+                    <th>{duration} %</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>";
+
+                foreach (var reportSerie in reportSeries.OrderByDescending(l => l.rank).Take(nbStocks))
+                {
+                    // Generate Snapshot
+                    this.OnSelectedStockAndDurationChanged(reportSerie.stockSerie.StockName, duration, false);
+                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
+
+                    var bitmapString = this.SnapshotAsHtml();
+
+                    var stockName = AlertLineTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastCompleteIndex];
+                    html += rowTemplate.
+                        Replace("%COL1%", stockName).
+                        Replace("%COL2%", reportSerie.rank.ToString()).
+                        Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
+                        Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
+                        Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
+                        Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                }
+
+                html += @" 
+</tbody>
+</table>";
+                return html;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         private string GenerateBreakOutTable(StockBarDuration duration, StockSerie.Groups reportGroup, int breakoutBars, int nbStocks)
         {
             string trailStopIndicatorName = $"TRAILHLBODY({breakoutBars})";
@@ -2929,7 +3068,6 @@ namespace StockAnalyzerApp
                 </tr>
                 <tr>
                     <th style=""width: 200px;"">Stock Name</th>
-                    <th>HIGHEST()</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
                     <th>{duration} %</th>
