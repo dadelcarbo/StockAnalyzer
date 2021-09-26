@@ -124,13 +124,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
         }
 
-        public static StockSerie.Trend BoolToTrend(bool? upTrend)
-        {
-            if (upTrend == null) return StockSerie.Trend.NoTrend;
-            if (upTrend.Value) return StockSerie.Trend.UpTrend;
-            return StockSerie.Trend.DownTrend;
-        }
-
         private static string[] eventNames = new string[]
           {
              "BrokenUp", "BrokenDown",           // 0,1
@@ -193,7 +186,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     previousLow2 = previousLow;
                     previousLow = longStopSerie[i];
                 }
-                if (!float.IsNaN(shortStopSerie[i]) && float.IsNaN(shortStopSerie[i - 1]))
+                if ((float.IsNaN(longStopSerie[i]) && !float.IsNaN(longStopSerie[i - 1])) || (!float.IsNaN(shortStopSerie[i]) && float.IsNaN(shortStopSerie[i - 1])))
                 {
                     this.Events[1][i] = true; // ResistanceDetected
 
