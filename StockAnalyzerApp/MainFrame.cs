@@ -3068,6 +3068,7 @@ namespace StockAnalyzerApp
                 </tr>
                 <tr>
                     <th style=""width: 200px;"">Stock Name</th>
+                    <th>Highest</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
                     <th>{duration} %</th>
