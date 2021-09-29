@@ -12,9 +12,11 @@ namespace StockAnalyzerApp.CustomControl
         {
             InitializeComponent();
 
+            this.startYearTextBox.Maximum = DateTime.Today.Year - 2;
             this.downloadDataCheckBox.Checked = Settings.Default.DownloadData;
             this.generateBreadthCheckBox.Checked = Settings.Default.GenerateBreadth;
             this.enableLoggingCheckBox.Checked = Settings.Default.LoggingEnabled;
+            this.showBarSmoothingCheckBox.Checked = Settings.Default.ShowBarSmoothing;
             this.barNumberUpDown.Value = Settings.Default.DefaultBarNumber;
             this.showVariationCheckBox.Checked = Settings.Default.ShowVariation;
             this.userIDTextBox.Text = Settings.Default.UserId;
@@ -33,6 +35,7 @@ namespace StockAnalyzerApp.CustomControl
             Settings.Default.DownloadData = this.downloadDataCheckBox.Checked;
             Settings.Default.GenerateBreadth = this.generateBreadthCheckBox.Checked;
             Settings.Default.LoggingEnabled = this.enableLoggingCheckBox.Checked;
+            Settings.Default.ShowBarSmoothing = this.showBarSmoothingCheckBox.Checked;
             Settings.Default.DefaultBarNumber = (int)this.barNumberUpDown.Value;
             Settings.Default.ShowVariation = this.showVariationCheckBox.Checked;
             Settings.Default.UserId = this.userIDTextBox.Text;
@@ -86,6 +89,10 @@ namespace StockAnalyzerApp.CustomControl
         private void generateBreadthCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             needRestart |= this.generateBreadthCheckBox.Checked;
+        }
+        private void showBarSmoothingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            needRestart = true;
         }
 
         private void downloadDataCheckBox_CheckedChanged(object sender, EventArgs e)
