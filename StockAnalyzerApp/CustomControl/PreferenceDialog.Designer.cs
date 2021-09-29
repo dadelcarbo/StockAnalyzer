@@ -2,34 +2,34 @@
 
 namespace StockAnalyzerApp.CustomControl
 {
-   partial class PreferenceDialog
-   {
-      /// <summary>
-      /// Required designer variable.
-      /// </summary>
-      private System.ComponentModel.IContainer components = null;
+    partial class PreferenceDialog
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-      /// <summary>
-      /// Clean up any resources being used.
-      /// </summary>
-      /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-      protected override void Dispose(bool disposing)
-      {
-         if (disposing && (components != null))
-         {
-            components.Dispose();
-         }
-         base.Dispose(disposing);
-      }
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-      #region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-      /// <summary>
-      /// Required method for Designer support - do not modify
-      /// the contents of this method with the code editor.
-      /// </summary>
-      private void InitializeComponent()
-      {
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferenceDialog));
             this.openFileDlg = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDlg = new System.Windows.Forms.FolderBrowserDialog();
@@ -62,10 +62,12 @@ namespace StockAnalyzerApp.CustomControl
             this.alertActiveCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
+            this.showBarSmoothingCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.chartParamGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.startYearTextBox)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.alertGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).BeginInit();
@@ -111,6 +113,13 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.enableLoggingCheckBox, "enableLoggingCheckBox");
             this.enableLoggingCheckBox.Name = "enableLoggingCheckBox";
             this.enableLoggingCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // showBarSmoothingCheckBox
+            // 
+            resources.ApplyResources(this.showBarSmoothingCheckBox, "showBarSmoothingCheckBox");
+            this.showBarSmoothingCheckBox.Name = "showBarSmoothingCheckBox";
+            this.showBarSmoothingCheckBox.UseVisualStyleBackColor = true;
+            this.showBarSmoothingCheckBox.CheckedChanged += new System.EventHandler(this.showBarSmoothingCheckBox_CheckedChanged);
             // 
             // label2
             // 
@@ -196,12 +205,25 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
-            // dateTimePicker
+            // startYearTextBox
             // 
-            resources.ApplyResources(this.startYearTextBox, "dateTimePicker");
-            this.startYearTextBox.Minimum = 2000;
-            this.startYearTextBox.Maximum = DateTime.Today.Year - 2;
-            this.startYearTextBox.Name = "dateTimePicker";
+            resources.ApplyResources(this.startYearTextBox, "startYearTextBox");
+            this.startYearTextBox.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.startYearTextBox.Minimum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.startYearTextBox.Name = "startYearTextBox";
+            this.startYearTextBox.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
             // 
             // label1
             // 
@@ -318,6 +340,7 @@ namespace StockAnalyzerApp.CustomControl
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.userIDTextBox);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.showBarSmoothingCheckBox);
             this.Controls.Add(this.enableLoggingCheckBox);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
@@ -332,6 +355,7 @@ namespace StockAnalyzerApp.CustomControl
             ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.startYearTextBox)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.alertGroupBox.ResumeLayout(false);
@@ -342,39 +366,40 @@ namespace StockAnalyzerApp.CustomControl
             this.ResumeLayout(false);
             this.PerformLayout();
 
-      }
-      #endregion
+        }
+        #endregion
 
-      private System.Windows.Forms.OpenFileDialog openFileDlg;
-      private System.Windows.Forms.FolderBrowserDialog folderBrowserDlg;
-      private System.Windows.Forms.Button okBtn;
-      private System.Windows.Forms.Button cancelBtn;
-      private System.Windows.Forms.CheckBox downloadDataCheckBox;
-      private System.Windows.Forms.CheckBox generateBreadthCheckBox;
-      private System.Windows.Forms.CheckBox enableLoggingCheckBox;
-      private System.Windows.Forms.Label label2;
-      private System.Windows.Forms.TextBox userIDTextBox;
-      private System.Windows.Forms.GroupBox groupBox1;
-      private System.Windows.Forms.Button getLicenseButton;
-      private System.Windows.Forms.Label msg1;
-      private System.Windows.Forms.GroupBox chartParamGroupBox;
-      private System.Windows.Forms.NumericUpDown barNumberUpDown;
-      private System.Windows.Forms.CheckBox showVariationCheckBox;
-      private System.Windows.Forms.Label barNumberLabel;
-      private System.Windows.Forms.GroupBox groupBox2;
-      private System.Windows.Forms.NumericUpDown startYearTextBox;
-      private System.Windows.Forms.Label label1;
-      private System.Windows.Forms.GroupBox groupBox3;
-      private System.Windows.Forms.TextBox smtpTextBox;
-      private System.Windows.Forms.Label label3;
-      private System.Windows.Forms.Button testButton;
-      private System.Windows.Forms.TextBox addressTextBox;
-      private System.Windows.Forms.Label label4;
-      private System.Windows.Forms.GroupBox alertGroupBox;
-      private System.Windows.Forms.NumericUpDown alertFrequencyUpDown;
-      private System.Windows.Forms.Label label5;
-      private System.Windows.Forms.CheckBox alertActiveCheckBox;
-      private System.Windows.Forms.GroupBox groupBox4;
-      private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
-   }
+        private System.Windows.Forms.OpenFileDialog openFileDlg;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDlg;
+        private System.Windows.Forms.Button okBtn;
+        private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.CheckBox downloadDataCheckBox;
+        private System.Windows.Forms.CheckBox generateBreadthCheckBox;
+        private System.Windows.Forms.CheckBox enableLoggingCheckBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox userIDTextBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button getLicenseButton;
+        private System.Windows.Forms.Label msg1;
+        private System.Windows.Forms.GroupBox chartParamGroupBox;
+        private System.Windows.Forms.NumericUpDown barNumberUpDown;
+        private System.Windows.Forms.CheckBox showVariationCheckBox;
+        private System.Windows.Forms.Label barNumberLabel;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.NumericUpDown startYearTextBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox smtpTextBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button testButton;
+        private System.Windows.Forms.TextBox addressTextBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox alertGroupBox;
+        private System.Windows.Forms.NumericUpDown alertFrequencyUpDown;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox alertActiveCheckBox;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
+        private System.Windows.Forms.CheckBox showBarSmoothingCheckBox;
+    }
 }

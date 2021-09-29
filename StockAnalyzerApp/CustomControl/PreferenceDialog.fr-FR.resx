@@ -173,6 +173,9 @@
   <data name="enableLoggingCheckBox.Text" xml:space="preserve">
     <value>Activer le logging</value>
   </data>
+  <data name="showBarSmoothingCheckBox.Text" xml:space="preserve">
+    <value>Lissage des barres</value>
+  </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>8, 17</value>
   </data>

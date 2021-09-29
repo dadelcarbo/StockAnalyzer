@@ -154,7 +154,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;okBtn.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <data name="cancelBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -184,7 +184,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cancelBtn.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="downloadDataCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -274,7 +274,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;enableLoggingCheckBox.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -517,25 +517,25 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;chartParamGroupBox.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="dateTimePicker.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="startYearTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 33</value>
   </data>
-  <data name="dateTimePicker.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="startYearTextBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 20</value>
   </data>
-  <data name="dateTimePicker.TabIndex" type="System.Int32, mscorlib">
+  <data name="startYearTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;dateTimePicker.Name" xml:space="preserve">
-    <value>dateTimePicker</value>
+  <data name="&gt;&gt;startYearTextBox.Name" xml:space="preserve">
+    <value>startYearTextBox</value>
   </data>
-  <data name="&gt;&gt;dateTimePicker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DateTimePicker, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;startYearTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;dateTimePicker.Parent" xml:space="preserve">
+  <data name="&gt;&gt;startYearTextBox.Parent" xml:space="preserve">
     <value>groupBox2</value>
   </data>
-  <data name="&gt;&gt;dateTimePicker.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;startYearTextBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
@@ -894,6 +894,36 @@ Do you want to restart now ?</value>
   </data>
   <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>193, 79</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 17</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="showBarSmoothingCheckBox.Text" xml:space="preserve">
+    <value>Show bar smoothing</value>
+  </data>
+  <data name="&gt;&gt;showBarSmoothingCheckBox.Name" xml:space="preserve">
+    <value>showBarSmoothingCheckBox</value>
+  </data>
+  <data name="&gt;&gt;showBarSmoothingCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;showBarSmoothingCheckBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;showBarSmoothingCheckBox.ZOrder" xml:space="preserve">
+    <value>10</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
