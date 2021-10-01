@@ -2956,7 +2956,7 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                var tableHeader = $"{title} for " + reportGroup;
+                var tableHeader = $"{title} for {reportGroup} {trailStopIndicatorName}";
                 html += $@"
             <table  class=""reportTable"">
                 <thead>
@@ -3068,7 +3068,7 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                var tableHeader = "Breakouts for " + reportGroup;
+                var tableHeader = $"Breakouts for {reportGroup} {trailStopIndicatorName}";
                 html += $@"
             <table  class=""reportTable"">
                 <thead>
