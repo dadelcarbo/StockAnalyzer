@@ -943,7 +943,6 @@ namespace StockAnalyzerApp
             // 
             this.smoothingLabel.Name = "smoothingLabel";
             this.smoothingLabel.Text = "Smooth:";
-            this.smoothingLabel.Visible = Settings.Default.ShowBarSmoothing;
             // 
             // barSmoothingComboBox
             // 
@@ -951,13 +950,11 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox.Name = "barSmoothingComboBox";
             this.barSmoothingComboBox.Size = new System.Drawing.Size(25, 23);
             this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
-            this.barSmoothingComboBox.Visible = Settings.Default.ShowBarSmoothing;
             // 
             // lineBreakLabel
             // 
             this.lineBreakLabel.Name = "lineBreakLabel";
             this.lineBreakLabel.Text = "LineBreak:";
-            this.lineBreakLabel.Visible = Settings.Default.ShowBarSmoothing;
             // 
             // barLineBreakComboBox
             // 
@@ -966,7 +963,6 @@ namespace StockAnalyzerApp
             this.barLineBreakComboBox.DropDownWidth = 25;
             this.barLineBreakComboBox.Size = new System.Drawing.Size(25, 20);
             this.barLineBreakComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
-            this.barLineBreakComboBox.Visible = Settings.Default.ShowBarSmoothing;
             // 
             // barHeikinAshiCheckBox
             // 
@@ -975,7 +971,6 @@ namespace StockAnalyzerApp
             this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(50, 23);
             this.barHeikinAshiCheckBox.ToolTipText = "Heikin Ashi";
             this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
-            this.barHeikinAshiCheckBox.CheckBox.Visible = Settings.Default.ShowBarSmoothing;
 
             // 
             // downloadBtn

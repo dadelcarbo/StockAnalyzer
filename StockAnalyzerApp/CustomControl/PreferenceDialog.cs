@@ -92,7 +92,8 @@ namespace StockAnalyzerApp.CustomControl
         }
         private void showBarSmoothingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            needRestart = true;
+            Settings.Default.ShowBarSmoothing = this.showBarSmoothingCheckBox.Checked;
+            StockAnalyzerForm.MainFrame.UpdateBarSmoothingVisibility();
         }
 
         private void downloadDataCheckBox_CheckedChanged(object sender, EventArgs e)

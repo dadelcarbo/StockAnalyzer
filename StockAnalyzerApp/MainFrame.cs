@@ -85,6 +85,15 @@ namespace StockAnalyzerApp
 
         public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
+        public void UpdateBarSmoothingVisibility()
+        {
+            this.barLineBreakComboBox.Visible = Settings.Default.ShowBarSmoothing;
+            this.lineBreakLabel.Visible = Settings.Default.ShowBarSmoothing;
+            this.barHeikinAshiCheckBox.CheckBox.Visible = Settings.Default.ShowBarSmoothing;
+            this.barSmoothingComboBox.Visible = Settings.Default.ShowBarSmoothing;
+            this.smoothingLabel.Visible = Settings.Default.ShowBarSmoothing;
+        }
+
         public delegate void SavePortfolio();
 
         public static StockAnalyzerForm MainFrame { get; private set; }
@@ -272,6 +281,7 @@ namespace StockAnalyzerApp
                     Environment.Exit(0);
                 }
             }
+            this.UpdateBarSmoothingVisibility();
 
             base.OnActivated(e);
 
@@ -4900,15 +4910,27 @@ namespace StockAnalyzerApp
                 this.themeComboBox.SelectedItem = saveThemeForm.Theme;
             }
         }
+
+        PreferenceDialog prefDlg;
         private void folderPrefMenuItem_Click(object sender, EventArgs e)
         {
-            PreferenceDialog prefDlg = new PreferenceDialog();
-            prefDlg.ShowDialog();
+            if (prefDlg == null)
+            {
+                prefDlg = new PreferenceDialog();
+                prefDlg.FormClosed += PrefDlg_FormClosed;
+            }
+            prefDlg.Show();
 
             this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
 
             OnNeedReinitialise(true);
         }
+
+        private void PrefDlg_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.prefDlg = null;
+        }
+
         private void InitDataProviderMenuItem()
         {
             // Clean existing menus
