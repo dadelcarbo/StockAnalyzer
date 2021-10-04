@@ -89,7 +89,6 @@
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
     <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
-    <Compile Include="StockAgent\Agents\EMAFWAgent.cs" />
     <Compile Include="StockAgent\Agents\FWAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACDAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAOSCAgent.cs" />
@@ -370,6 +369,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BOX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_GUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ROR.cs" />
