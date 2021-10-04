@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -895,8 +896,11 @@ namespace StockAnalyzer.StockClasses
             long vol;
 
             int index;
+            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+            Calendar cal = dfi.Calendar;
+
             List<StockSerie> bestSeries = new List<StockSerie>();
-            DateTime lastDayOfMonth = new DateTime(1999, 12, 31);
+            int previousWeekNumber = 52;
             foreach (StockDailyValue value in indiceSerie.Values)
             {
                 if (value.DATE <= lastBreadthDate)
@@ -908,7 +912,8 @@ namespace StockAnalyzer.StockClasses
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
                 }
-                if (value.DATE.Month != lastDayOfMonth.Month)
+                int weekNumber = cal.GetWeekOfYear(value.DATE, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+                if (weekNumber != previousWeekNumber)
                 {
                     bestSeries.Clear();
                     List<Tuple<StockSerie, float>> tuples = new List<Tuple<StockSerie, float>>();
@@ -916,9 +921,9 @@ namespace StockAnalyzer.StockClasses
                     foreach (StockSerie serie in indexComponents.Where(s => s.Keys.First() <= value.DATE))
                     {
                         index = serie.IndexOf(value.DATE);
-                        if (index != -1)
+                        if (index >= 1)
                         {
-                            float ROC = serie.GetIndicator($"ROC({period})").Series[0][index];
+                            float ROC = serie.GetIndicator($"ROC({period})").Series[0][index - 1];
                             if (ROC > 0)
                             {
                                 tuples.Add(new Tuple<StockSerie, float>(serie, ROC));
@@ -926,6 +931,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                     bestSeries = tuples.OrderByDescending(t => t.Item2).Select(t => t.Item1).Take(nbStocks).ToList();
+                    previousWeekNumber = weekNumber;
                 }
                 foreach (StockSerie serie in bestSeries)
                 {
@@ -942,7 +948,6 @@ namespace StockAnalyzer.StockClasses
                     val *= (1 + var / nbStocks);
                 }
                 breadthSerie.Add(value.DATE, new StockDailyValue(val, val, val, val, vol, value.DATE));
-                lastDayOfMonth = value.DATE;
             }
             if (breadthSerie.Count == 0)
             {
@@ -1016,7 +1021,6 @@ namespace StockAnalyzer.StockClasses
 
             int index;
             List<StockSerie> bestSeries = new List<StockSerie>();
-            DateTime lastDayOfMonth = new DateTime(1999, 12, 31);
             foreach (StockDailyValue value in indiceSerie.Values)
             {
                 if (value.DATE <= lastBreadthDate)
@@ -1028,27 +1032,24 @@ namespace StockAnalyzer.StockClasses
                 {
                     this.ReportProgress(value.DATE.ToShortDateString());
                 }
-                if (value.DATE.Month != lastDayOfMonth.Month)
+                bestSeries.Clear();
+                List<Tuple<StockSerie, float>> tuples = new List<Tuple<StockSerie, float>>();
+                // Reselect list of stock at the beging of the month
+                foreach (StockSerie serie in indexComponents.Where(s => s.Keys.First() <= value.DATE))
                 {
-                    bestSeries.Clear();
-                    List<Tuple<StockSerie, float>> tuples = new List<Tuple<StockSerie, float>>();
-                    // Reselect list of stock at the beging of the month
-                    foreach (StockSerie serie in indexComponents.Where(s => s.Keys.First() <= value.DATE))
+                    index = serie.IndexOf(value.DATE);
+                    if (index > 1)
                     {
-                        index = serie.IndexOf(value.DATE);
-                        if (index != -1)
-                        {
-                            bool bullish = serie.GetTrailStop($"TRAILBBTF({period},1,-1,MA)").Events[6][index];
+                        bool bullish = serie.GetTrailStop($"TRAILBBTF({period},1,-1,MA)").Events[6][index - 1];
 
-                            float ROC = serie.GetIndicator($"ROC({period})").Series[0][index];
-                            if (bullish && ROC > 0)
-                            {
-                                tuples.Add(new Tuple<StockSerie, float>(serie, ROC));
-                            }
+                        float ROC = serie.GetIndicator($"ROC({period})").Series[0][index - 1];
+                        if (bullish && ROC > 0)
+                        {
+                            tuples.Add(new Tuple<StockSerie, float>(serie, ROC));
                         }
                     }
-                    bestSeries = tuples.OrderByDescending(t => t.Item2).Select(t => t.Item1).Take(nbStocks).ToList();
                 }
+                bestSeries = tuples.OrderByDescending(t => t.Item2).Select(t => t.Item1).Take(nbStocks).ToList();
                 foreach (StockSerie serie in bestSeries)
                 {
                     index = serie.IndexOf(value.DATE);
@@ -1064,7 +1065,6 @@ namespace StockAnalyzer.StockClasses
                     val *= (1 + var / nbStocks);
                 }
                 breadthSerie.Add(value.DATE, new StockDailyValue(val, val, val, val, vol, value.DATE));
-                lastDayOfMonth = value.DATE;
             }
             if (breadthSerie.Count == 0)
             {
