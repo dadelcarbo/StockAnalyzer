@@ -7,12 +7,15 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {
     public class StockViewableItemsManager
     {
+        public static List<string> IndicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
+
         static public IStockViewableSeries GetViewableItem(string fullString)
         {
             return GetViewableItem(fullString, null);

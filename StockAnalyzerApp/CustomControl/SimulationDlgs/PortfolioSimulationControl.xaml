@@ -24,17 +24,34 @@
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
             <Label Margin="2">Duration</Label>
             <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Durations}" SelectedItem="{Binding Duration}"/>
-            <Label Margin="2">Agent</Label>
-            <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}"/>
             <Button Margin="200,2,2,2" x:Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <GroupBox Header="Entry Strategy" Grid.Column="0">
-                <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                <StackPanel Background="White">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label Margin="2" Width="40">Entry</Label>
+                        <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding IndicatorTypes}" SelectedItem="{Binding EntryType}"/>
+                        <TextBox Text="{Binding EntryIndicator}" Width="250" Margin="2"  VerticalContentAlignment="Center"/>
+                        <Label Content="Event"/>
+                        <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding EntryEvents}" SelectedItem="{Binding EntryEvent}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label Margin="2" Width="40">Exit</Label>
+                        <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding IndicatorTypes}" SelectedItem="{Binding ExitType}"/>
+                        <TextBox Text="{Binding ExitIndicator}" Width="250" Margin="2"  VerticalContentAlignment="Center"/>
+                        <Label Content="Event"/>
+                        <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding ExitEvents}" SelectedItem="{Binding ExitEvent}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label Margin="2" Width="40">Stop</Label>
+                    </StackPanel>
+                </StackPanel>
+                <!--<telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>-->
             </GroupBox>
             <GroupBox Header="Position Management" Grid.Column="1">
                 <telerik:RadPropertyGrid Item="{Binding PositionManagement}" SortAndGroupButtonsVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed"/>

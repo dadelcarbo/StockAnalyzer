@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using StockAnalyzer.StockClasses.StockViewableItems;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -22,12 +23,29 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.Group = StockAnalyzerForm.MainFrame.Group;
             this.PositionManagement = new PositionManagement() { MaxPositions = 10, PortfolioInitialBalance = 10000, PortfolioRisk = 1, StopATR = 2 };
         }
-
         public PositionManagement PositionManagement { get; set; }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
         public IList<StockBarDuration> Durations => StockBarDuration.Values;
         public StockBarDuration Duration { get; set; }
+
+        public static List<string> IndicatorTypes => StockViewableItemsManager.IndicatorTypes;
+
+        private string entryType;
+        public string EntryType { get { return entryType; } set { if (value != entryType) { entryType = value; OnPropertyChanged("EntryType"); } } }
+        private string entryIndicator;
+        public string EntryIndicator { get { return entryIndicator; } set { if (value != entryIndicator) { entryIndicator = value; OnPropertyChanged("EntryIndicator"); } } }
+        private string entryEvent;
+        public string EntryEvent { get { return entryEvent; } set { if (value != entryEvent) { entryEvent = value; OnPropertyChanged("EntryEvent"); } } }
+
+
+        private string exitType;
+        public string ExitType { get { return exitType; } set { if (value != exitType) { exitType = value; OnPropertyChanged("ExitType"); } } }
+        private string exitIndicator;
+        public string ExitIndicator { get { return exitIndicator; } set { if (value != exitIndicator) { exitIndicator = value; OnPropertyChanged("ExitIndicator"); } } }
+        private string exitEvent;
+        public string ExitEvent { get { return exitEvent; } set { if (value != exitEvent) { exitEvent = value; OnPropertyChanged("ExitEvent"); } } }
+
         public void Cancel()
         {
             if (worker != null)
