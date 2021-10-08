@@ -393,6 +393,27 @@ namespace StockAnalyzerApp
                 }
             }
 
+#if DEBUG
+            // Testing best breadth
+            var str = "NbStock\tFilter\tValue" + Environment.NewLine;
+            Console.WriteLine(str);
+            foreach (int nbStocks in new int[] { 10, 15, 20 })
+            {
+                foreach (int i in new int[] { 50, 75, 100, 125, 150 })
+                {
+                    var filter = $"OSC({i},{i * 2},True,EMA)";
+
+                    StockSplashScreen.ProgressText = $"Generating PTF {nbStocks}-{filter}";
+
+                    var value = StockDictionary.GeneratePTFBestFilter(StockSerie.Groups.EURO_A, StockBarDuration.Daily, filter, nbStocks);
+                    var line = $"{nbStocks}\t{filter}\t{value}";
+                    Console.WriteLine(line);
+                    str += line + Environment.NewLine;
+                }
+            }
+            Clipboard.SetText(str);
+#endif
+
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
@@ -2763,27 +2784,22 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders);
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders); 
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
+
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "EMACD", "INDICATOR|EMACD(26,12,9)", "FirstAboveSignal", "TRAILEMA(26)", "ROC(50)", nbLeaders);
 
             //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
             //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);

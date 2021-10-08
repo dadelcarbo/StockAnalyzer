@@ -1,75 +1,43 @@
 ﻿using System;
-using System.Drawing;
 using StockAnalyzer.StockMath;
 
-namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
+namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockPaintBar_FW : StockPaintBarBase
+    public class StockTrailStop_TRAILFW : StockTrailStopBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override bool RequiresVolumeData { get { return false; } }
-
+        public override bool RequiresVolumeData { get { return true; } }
         public override string[] ParameterNames
         {
-            get { return new string[] { }; }
+            get { return new string[] { "Period", "NbATRStop" }; }
         }
+
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { }; }
+            get { return new Object[] { 20, 5f }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { }; }
+            get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeFloat(0f, 20f) }; }
         }
 
-        static string[] eventNames = null;
-        public override string[] EventNames
-        {
-            get
-            {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "Buy", "Sell", "Hold" };
-                }
-                return eventNames;
-            }
-        }
-
-        static readonly bool[] isEvent = new bool[] { true, true, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
-
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green) };
-                    foreach (Pen pen in seriePens)
-                    {
-                        pen.Width = 2;
-                    }
-                }
-                return seriePens;
-            }
-        }
+        public override string[] SerieNames { get { return new string[] { "TRAILFW.LS", "TRAILFW.SS" }; } }
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
+            var period = (int)this.Parameters[0];
+            var nbAtr = (float)this.Parameters[1];
+            FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+            FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1], float.NaN);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
             FloatSerie volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
-            FloatSerie highestSerie = stockSerie.GetIndicator("HIGHEST(21)").Series[0];
-            FloatSerie emaSerie = stockSerie.GetIndicator("EMA(20)").Series[0];
+            FloatSerie highestSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
+            FloatSerie emaSerie = stockSerie.GetIndicator($"EMA({period})").Series[0];
             FloatSerie natrSerie = stockSerie.GetIndicator("NATR(14)").Series[0];
 
             bool holding = false;
@@ -81,18 +49,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     if (closeSerie[i] < trail)
                     {
                         holding = false;
-                        this.eventSeries[1][i] = true;
+                        trail = float.NaN;
                     }
                     else
                     {
-                        trail = Math.Max(trail, closeSerie[i] * 0.8f);
+                        trail = Math.Max(trail, closeSerie[i] * (1.0f - 0.01f * nbAtr * natrSerie[i]));
                     }
                 }
                 else
                 {
                     if (closeSerie[i] < 2.0f)
                         continue;
-                    if (highestSerie[i] < 21)
+                    if (highestSerie[i] < period)
                         continue;
                     if (closeSerie[i] * volumeSerie[i] < 1000000)
                         continue;
@@ -106,13 +74,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                     if (natrSerie[i] > 8.0f)
                         continue;
 
-                    trail = closeSerie[i] * 0.8f;
+                    trail = closeSerie[i] * (1.0f - 0.01f * nbAtr * natrSerie[i]);
 
                     holding = true;
-                    this.eventSeries[0][i] = holding;
                 }
-                this.eventSeries[2][i] = holding;
+                longStopSerie[i] = trail;
             }
+
+            this.Series[0] = longStopSerie;
+            this.Series[0].Name = longStopSerie.Name;
+            this.Series[1] = shortStopSerie;
+            this.Series[1].Name = shortStopSerie.Name;
+
+            // Generate events
+            this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
         }
+
     }
 }

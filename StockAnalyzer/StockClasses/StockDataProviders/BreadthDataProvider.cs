@@ -106,6 +106,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "ROC":
                     return stockDictionary.GenerateIndiceBestROC(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
+                case "OSC":
+                    return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "BBTF":
                     return stockDictionary.GenerateIndiceBBTF(stockSerie, row[1], StockBarDuration.Daily, RootFolder + FOLDER, RootFolder + ARCHIVE_FOLDER);
                 case "HL":
