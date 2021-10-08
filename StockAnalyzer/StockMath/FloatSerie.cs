@@ -1369,42 +1369,6 @@ namespace StockAnalyzer.StockMath
             return ((EMASerie1 * 2.0f) - EMASerie2).CalculateEMA((int)Math.Sqrt(period));
         }
 
-        public FloatSerie CalculateEA(int period)
-        {
-            FloatSerie serie = new FloatSerie(Values.Count());
-            if (period <= 1)
-            {
-                for (int i = 0; i < this.Count; i++)
-                {
-                    serie[i] = this[i];
-                }
-            }
-            else
-            {
-                float α = 2.0f / (float)(period + 1);
-                float α2 = α * α;
-                float c1 = α - (α / 2) * (α / 2);
-                float c2 = α2 / 2;
-                float c3 = α - 3 * α2 / 4;
-                float c4 = 2 * (1 - α);
-                float c5 = (1 - α) * (1 - α);
-
-                serie[0] = Values[0];
-                serie[1] = (Values[1] + Values[0]) / 2.0f;
-
-                // InstTrend = (α - (α/2)2) * Price + (α2/2) * Price[1] - (α - 3α2/4) * Price[2]) 
-                //           + 2 * (1 - α) * InstTrend[1] - (1 - α)2 * InstTrend[2];
-
-                for (int i = 2; i < Values.Count(); i++)
-                {
-                    serie[i] = c1 * Values[i] + c2 * Values[i - 1] - c3 * Values[i - 2] + c4 * serie[i - 1] - c5 * serie[i - 2];
-                }
-            }
-            serie.Name = "EA_" + period.ToString();
-            return serie;
-        }
-
-
         internal FloatSerie CalculateSARTrail(float accelerationFactorInit, float accelerationFactorStep)
         {
             FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILHL");

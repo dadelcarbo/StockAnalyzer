@@ -184,7 +184,6 @@ namespace StockAnalyzerApp
         private static string WORK_THEME = "__NewTheme*";
 
         #endregion
-
         #region STARTUP methods
 
         public StockAnalyzerForm()
@@ -395,23 +394,23 @@ namespace StockAnalyzerApp
 
 #if DEBUG
             // Testing best breadth
-            var str = "NbStock\tFilter\tValue" + Environment.NewLine;
-            Console.WriteLine(str);
-            foreach (int nbStocks in new int[] { 10, 15, 20 })
-            {
-                foreach (int i in new int[] { 50, 75, 100, 125, 150 })
-                {
-                    var filter = $"OSC({i},{i * 2},True,EMA)";
+            //var str = "NbStock\tFilter\tValue" + Environment.NewLine;
+            //Console.WriteLine(str);
+            //foreach (int nbStocks in new int[] { 10, 15, 20 })
+            //{
+            //    foreach (int i in new int[] { 50, 75, 100, 125, 150 })
+            //    {
+            //        var filter = $"OSC({i},{i * 2},True,EMA)";
 
-                    StockSplashScreen.ProgressText = $"Generating PTF {nbStocks}-{filter}";
+            //        StockSplashScreen.ProgressText = $"Generating PTF {nbStocks}-{filter}";
 
-                    var value = StockDictionary.GeneratePTFBestFilter(StockSerie.Groups.EURO_A, StockBarDuration.Daily, filter, nbStocks);
-                    var line = $"{nbStocks}\t{filter}\t{value}";
-                    Console.WriteLine(line);
-                    str += line + Environment.NewLine;
-                }
-            }
-            Clipboard.SetText(str);
+            //        var value = StockDictionary.GeneratePTFBestFilter(StockSerie.Groups.EURO_A, StockBarDuration.Daily, filter, nbStocks);
+            //        var line = $"{nbStocks}\t{filter}\t{value}";
+            //        Console.WriteLine(line);
+            //        str += line + Environment.NewLine;
+            //    }
+            //}
+            //Clipboard.SetText(str);
 #endif
 
             // Deserialize saved orders
