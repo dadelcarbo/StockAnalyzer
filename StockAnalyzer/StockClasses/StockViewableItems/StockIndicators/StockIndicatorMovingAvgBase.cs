@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -42,8 +43,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         protected void CalculateEvents(StockSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+
             FloatSerie maSerie = this.series[0];
 
             // Detecting events
@@ -62,10 +67,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[9][i] = highSerie[i] < maSerie[i];                                         // BarBelow
                 this.eventSeries[10][i] = maSerie[i - 1] < maSerie[i];                                      // Rising
                 this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i];                                      // Falling
+                this.eventSeries[10][i] = maSerie[i - 1] < maSerie[i];                                      // Rising
+                this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i];                                      // Falling
+                this.eventSeries[12][i] = closeSerie[i] > openSerie[i] && bodyLowSerie[i] > maSerie[i] && bodyLowSerie[i - 1] < maSerie[i - 1];      // FirstBarAbove
+                this.eventSeries[13][i] = closeSerie[i] < openSerie[i] && bodyHighSerie[i] < maSerie[i] && bodyHighSerie[i - 1] > maSerie[i - 1];    // FirstBarBelow
             }
         }
 
-        static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "PriceAbove", "PriceBelow", "BarAbove", "BarBelow", "Rising", "Falling" };
+        static string[] eventNames = new string[] { "Bottom", "Top", "CrossAbove", "CrossBelow", "FirstBarAbove", "FirstBarBelow", "PriceAbove", "PriceBelow", "BarAbove", "BarBelow", "Rising", "Falling", "FirstUpBodyAbove", "FirstDownBodyBelow" };
         public override string[] EventNames
         {
             get { return eventNames; }

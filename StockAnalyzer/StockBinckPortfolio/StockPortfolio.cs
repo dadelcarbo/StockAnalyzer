@@ -159,6 +159,7 @@ namespace StockAnalyzer.StockPortfolio
                                         // Find stockNamefrom mapping
                                         var stockName = row.Instrument.ToUpper()
                                             .Replace(" SA", "")
+                                            .Replace(" S A", "")
                                             .Replace(" UCITS ETF", "")
                                             .Replace(" SE", "")
                                             .Replace(" DAILY", "");

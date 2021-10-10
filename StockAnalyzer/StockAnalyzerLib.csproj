@@ -96,6 +96,7 @@
     <Compile Include="StockAgent\Agents\EMABODYAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudMTFAgent.cs" />
     <Compile Include="StockAgent\Agents\RSIAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailEMAATFgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMACDAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
