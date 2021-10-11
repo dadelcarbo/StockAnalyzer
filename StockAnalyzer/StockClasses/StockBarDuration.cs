@@ -65,6 +65,9 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration H_1 = new StockBarDuration(BarDuration.H_1);
         public static StockBarDuration H_2 = new StockBarDuration(BarDuration.H_2);
         public static StockBarDuration H_4 = new StockBarDuration(BarDuration.H_4);
+        public static StockBarDuration M_5 = new StockBarDuration(BarDuration.M_5);
+        public static StockBarDuration M_15 = new StockBarDuration(BarDuration.M_15);
+        public static StockBarDuration M_30 = new StockBarDuration(BarDuration.M_30);
         public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
         public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
         public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
@@ -80,11 +83,9 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.H_1,
             StockBarDuration.H_2,
             StockBarDuration.H_4,
-            StockBarDuration.Bar_3,
-            StockBarDuration.Bar_6,
-            StockBarDuration.Bar_12,
-            StockBarDuration.Bar_24,
-            StockBarDuration.Bar_48,
+            StockBarDuration.M_5,
+            StockBarDuration.M_15,
+            StockBarDuration.M_30
         };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)
