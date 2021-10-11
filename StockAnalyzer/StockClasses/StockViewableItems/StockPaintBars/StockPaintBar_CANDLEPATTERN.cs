@@ -35,13 +35,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "Doji" };
+                    eventNames = new string[] { "ThreeLineStrike" };
                 }
                 return eventNames;
             }
         }
 
-        static readonly bool[] isEvent = new bool[] { true, true, true };
+        static readonly bool[] isEvent = new bool[] { true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
@@ -53,7 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Purple) };
+                    seriePens = new Pen[] { new Pen(Color.Green) };
                     foreach (Pen pen in seriePens)
                     {
                         pen.Width = 2;
@@ -74,34 +74,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             float accuracy = 0.1f; // 10%
-            for (int i = 1; i < stockSerie.Count; i++)
+            for (int i = 4; i < stockSerie.Count; i++)
             {
-                // Check Gaps
-                this.eventSeries[0][i] = highSerie[i - 1] < lowSerie[i];
-                this.eventSeries[1][i] = lowSerie[i - 1] > highSerie[i];
-
-                float range = highSerie[i] - lowSerie[i];
-                float rangeMiddle = lowSerie[i] + range/2.0f;
-                float body = closeSerie[i] - openSerie[i];
-                float bodyRatio = body/range;
-                float bodyMiddle = openSerie[i] + body/2.0f;
-                float bodyLow = Math.Min(closeSerie[i], openSerie[i]);
-                float bodyHigh = Math.Max(closeSerie[i], openSerie[i]);
-
-                if (range > 0.0)
-                { 
-                    if (Math.Abs(bodyRatio) < accuracy)
-                    {
-                        if (Math.Abs(rangeMiddle-bodyMiddle) < accuracy)
-                        {
-                            // Dojis
-                            this.eventSeries[2][i] = true;
-                        }
-                    }
-                }
-                else
+                // Thee line strike
+                if (closeSerie[i - 3] < openSerie[i - 3] && closeSerie[i - 2] < openSerie[i - 2] && closeSerie[i - 1] < openSerie[i - 1] && lowSerie[i] < closeSerie[i - 1] && closeSerie[i] > openSerie[i - 3])
                 {
-                    // Flat bars not taken into account.
+                    this.eventSeries[0][i] = true;
                 }
             }
         }
