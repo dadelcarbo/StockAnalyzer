@@ -13,16 +13,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string Definition => "Paint a cloud base on two MA lines";
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod" }; }
+            get { return new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod", "MAType" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 50, 3 }; }
+            get { return new Object[] { 20, 50, 3, "MA" }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeMA() }; }
         }
         public override Pen[] SeriePens
         {
@@ -38,8 +38,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Signal" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie bullSerie = stockSerie.GetIndicator($"MA({(int)this.parameters[0]})").Series[0];
-            FloatSerie bearSerie = stockSerie.GetIndicator($"MA({(int)this.parameters[1]})").Series[0];
+            FloatSerie bullSerie = stockSerie.GetIndicator($"{this.parameters[3]}({(int)this.parameters[0]})").Series[0];
+            FloatSerie bearSerie = stockSerie.GetIndicator($"{this.parameters[3]}({(int)this.parameters[1]})").Series[0];
 
             var signalName = $"MA({(int)this.parameters[2]})";
             FloatSerie signalSerie = stockSerie.GetIndicator(signalName).Series[0];

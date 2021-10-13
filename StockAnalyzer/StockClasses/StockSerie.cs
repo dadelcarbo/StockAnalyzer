@@ -721,24 +721,39 @@ namespace StockAnalyzer.StockClasses
                         if (!stockEvent.Events[eventIndex][index]) return false;
                     }
                 }
-                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
-                if (this.HasVolume || !indicator.RequiresVolumeData)
+                if (!string.IsNullOrEmpty(stockAlert.IndicatorName))
                 {
-                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                    indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+                    if (this.HasVolume || !indicator.RequiresVolumeData)
+                    {
+                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+                    if (eventIndex == -1)
+                    {
+                        StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                        return false;
+                    }
+                    else
+                    {
+                        if (stockEvent.Events[eventIndex][index]) return true;
+                    }
                 }
-                else
+                else if (stockAlert.PriceTrigger != 0 && index > 1)
                 {
-                    return false;
-                }
-                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
-                if (eventIndex == -1)
-                {
-                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
-                    return false;
-                }
-                else
-                {
-                    if (stockEvent.Events[eventIndex][index]) return true;
+                    var closeSerie = this.GetSerie(StockDataType.CLOSE);
+                    if (stockAlert.TriggerBrokenUp)
+                    {
+                        return closeSerie[index - 1] < stockAlert.PriceTrigger && closeSerie[index] > stockAlert.PriceTrigger;
+                    }
+                    else
+                    {
+                        return closeSerie[index - 1] > stockAlert.PriceTrigger && closeSerie[index] < stockAlert.PriceTrigger;
+                    }
                 }
             }
             finally

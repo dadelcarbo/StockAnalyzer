@@ -3,7 +3,7 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_XEMA : StockIndicatorMovingAvgBase
+    public class StockIndicator_XMA : StockIndicatorMovingAvgBase
     {
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             else
             {
-                var atrSerie = stockSerie.GetIndicator("ATR(14)").Series[0]*2.0f;
+                var atrSerie = stockSerie.GetIndicator("ATR(14)").Series[0] * 1.5f;
                 maSerie[0] = closeSerie[0];
                 float previousMa = closeSerie[0];
                 for (int i = 1; i < closeSerie.Count; i++)

@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public abstract class StockIndicatorMovingAvgBase : StockIndicatorBase
     {
-        public static List<string> MaTypes => new List<string> { "EMA", "HMA", "MA", "EA", "MID" };
+        public static List<string> MaTypes => new List<string> { "EMA", "HMA", "MA", "XMA", "MID" };
 
         public override IndicatorDisplayTarget DisplayTarget
         {

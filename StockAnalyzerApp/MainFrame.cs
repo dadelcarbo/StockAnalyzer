@@ -917,7 +917,7 @@ namespace StockAnalyzerApp
                 string alertString = string.Empty;
 
                 #region Detect alert from drawing
-                var drawingIndicator = StockViewableItemsManager.GetViewableItem("AUTODRAWING|DRAWING()") as IStockPaintBar;
+                var drawingIndicator = StockViewableItemsManager.GetViewableItem("AUTODRAWING|DRAWING()") as IStockAutoDrawing;
                 foreach (var stockSerie in StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockAnalysis.DrawingItems.Sum(di => di.Value.Count) != 0))
                 {
                     StockBarDuration previouBarDuration = stockSerie.BarDuration;
