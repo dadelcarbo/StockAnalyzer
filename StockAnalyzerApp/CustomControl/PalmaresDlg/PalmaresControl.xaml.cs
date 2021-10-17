@@ -1,9 +1,13 @@
-﻿using StockAnalyzer;
+﻿using Microsoft.Win32;
+using StockAnalyzer;
+using StockAnalyzerSettings.Properties;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using Telerik.Windows.Documents.Spreadsheet.Model;
@@ -24,6 +28,18 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             InitializeComponent();
             this.Form = form;
             this.DataContext = this.ViewModel = this.Resources["ViewModel"] as PalmaresViewModel;
+            this.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            this.LoadSettings();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Setting":
+                    LoadSettings();
+                    break;
+            }
         }
 
         private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
@@ -224,6 +240,162 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         cellExportingArgs.Value = d;
                         return;
                     }
+                }
+            }
+        }
+
+        #region Filter Persistency
+        public static List<FilterSetting> SaveColumnFilters(Telerik.Windows.Controls.GridView.GridViewDataControl grid)
+        {
+            var settings = new List<FilterSetting>();
+
+            foreach (Telerik.Windows.Data.IFilterDescriptor filter in grid.FilterDescriptors)
+            {
+                Telerik.Windows.Controls.GridView.IColumnFilterDescriptor columnFilter = filter as Telerik.Windows.Controls.GridView.IColumnFilterDescriptor;
+                if (columnFilter != null)
+                {
+                    FilterSetting setting = new FilterSetting();
+
+                    setting.ColumnUniqueName = columnFilter.Column.UniqueName;
+
+                    setting.SelectedDistinctValues.AddRange(columnFilter.DistinctFilter.DistinctValues);
+
+                    if (columnFilter.FieldFilter.Filter1.IsActive)
+                    {
+                        setting.Filter1 = new FilterDescriptorProxy();
+                        setting.Filter1.Operator = columnFilter.FieldFilter.Filter1.Operator;
+                        setting.Filter1.Value = columnFilter.FieldFilter.Filter1.Value;
+                        setting.Filter1.IsCaseSensitive = columnFilter.FieldFilter.Filter1.IsCaseSensitive;
+                    }
+
+                    setting.FieldFilterLogicalOperator = columnFilter.FieldFilter.LogicalOperator;
+
+                    if (columnFilter.FieldFilter.Filter2.IsActive)
+                    {
+                        setting.Filter2 = new FilterDescriptorProxy();
+                        setting.Filter2.Operator = columnFilter.FieldFilter.Filter2.Operator;
+                        setting.Filter2.Value = columnFilter.FieldFilter.Filter2.Value;
+                        setting.Filter2.IsCaseSensitive = columnFilter.FieldFilter.Filter2.IsCaseSensitive;
+                    }
+
+                    settings.Add(setting);
+                }
+            }
+
+            return settings;
+        }
+
+        public static void LoadColumnFilters(Telerik.Windows.Controls.GridView.GridViewDataControl grid
+            , IEnumerable<FilterSetting> savedSettings)
+        {
+            grid.FilterDescriptors.SuspendNotifications();
+
+            foreach (FilterSetting setting in savedSettings)
+            {
+                Telerik.Windows.Controls.GridViewColumn column = grid.Columns[setting.ColumnUniqueName];
+
+                Telerik.Windows.Controls.GridView.IColumnFilterDescriptor columnFilter = column.ColumnFilterDescriptor;
+
+                foreach (object distinctValue in setting.SelectedDistinctValues)
+                {
+                    columnFilter.DistinctFilter.AddDistinctValue(distinctValue);
+                }
+
+                if (setting.Filter1 != null)
+                {
+                    columnFilter.FieldFilter.Filter1.Operator = setting.Filter1.Operator;
+                    columnFilter.FieldFilter.Filter1.Value = setting.Filter1.Value;
+                    columnFilter.FieldFilter.Filter1.IsCaseSensitive = setting.Filter1.IsCaseSensitive;
+                }
+
+                columnFilter.FieldFilter.LogicalOperator = setting.FieldFilterLogicalOperator;
+
+                if (setting.Filter2 != null)
+                {
+                    columnFilter.FieldFilter.Filter2.Operator = setting.Filter2.Operator;
+                    columnFilter.FieldFilter.Filter2.Value = setting.Filter2.Value;
+                    columnFilter.FieldFilter.Filter2.IsCaseSensitive = setting.Filter2.IsCaseSensitive;
+                }
+            }
+
+            grid.FilterDescriptors.ResumeNotifications();
+        }
+        #endregion
+
+        private void saveFilters_Click(object sender, RoutedEventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = "ulc";
+            saveFileDialog.Filter = "Ultimate Chartist Palmares settings (*.xml)|*.xml";
+            saveFileDialog.CheckFileExists = false;
+            saveFileDialog.CheckPathExists = true;
+            saveFileDialog.InitialDirectory = Path.Combine(Settings.Default.RootFolder, "Palmares");
+            if (saveFileDialog.ShowDialog() != true)
+                return;
+
+            var filters = SaveColumnFilters(this.gridView);
+            var palmaresSettings = new PalmaresSettings()
+            {
+                FilterSettings = filters,
+                BarDuration = this.ViewModel.BarDuration,
+                Indicator1 = this.ViewModel.Indicator1,
+                Indicator2 = this.ViewModel.Indicator2,
+                Indicator3 = this.ViewModel.Indicator3,
+                Stop = this.ViewModel.Stop
+            };
+
+            using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
+            {
+                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+                settings.Indent = true;
+                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                serializer.Serialize(xmlWriter, palmaresSettings);
+            }
+        }
+        private void LoadSettings()
+        {
+            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
+            string fileName = Path.Combine(path, this.ViewModel.Setting + ".xml");
+            if (File.Exists(fileName))
+            {
+                using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    settings.IgnoreWhitespace = true;
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                    var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
+
+                    this.ViewModel.BarDuration = palmaresSettings.BarDuration;
+                    this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
+                    this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
+                    this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+                    this.ViewModel.Stop = palmaresSettings.Stop;
+                    LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
+                }
+            }
+        }
+        private void openFilters_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
+            string fileName = path + @"\Palmares.xml";
+            if (File.Exists(fileName))
+            {
+                using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                {
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    settings.IgnoreWhitespace = true;
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                    var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
+
+                    this.ViewModel.BarDuration = palmaresSettings.BarDuration;
+                    this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
+                    this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
+                    this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+                    this.ViewModel.Stop = palmaresSettings.Stop;
+                    LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
                 }
             }
         }

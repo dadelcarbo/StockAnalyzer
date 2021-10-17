@@ -291,6 +291,7 @@
     <Compile Include="CustomControl\BarDurationCtrl\BarDurationControl.xaml.cs">
       <DependentUpon>BarDurationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PalmaresDlg\FilterSettings.cs" />
     <Compile Include="CustomControl\PortfolioDlg\PortfolioControl.xaml.cs">
       <DependentUpon>PortfolioControl.xaml</DependentUpon>
     </Compile>

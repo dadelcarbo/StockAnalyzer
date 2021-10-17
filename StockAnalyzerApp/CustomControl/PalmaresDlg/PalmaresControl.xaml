@@ -29,7 +29,15 @@
             </GroupBox>
             <GroupBox Header="Stop" >
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Stop}" Width="140" Margin="2" VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Stop}" Width="160" Margin="2" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Settings">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <ComboBox ItemsSource="{Binding Settings}" SelectedValue="{Binding Setting}" Width="140" Margin="2" VerticalAlignment="Center"/>
+                    <Button x:Name="saveFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="2" Click="saveFilters_Click">
+                        <Image Source="../../Resources/SaveAnalysis.png" />
+                    </Button>
                 </StackPanel>
             </GroupBox>
             <StackPanel Orientation="Horizontal" Margin="2">

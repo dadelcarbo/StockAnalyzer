@@ -6,6 +6,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
@@ -118,20 +119,39 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        public List<string> Settings { get; set; }
+        private string setting;
+        public string Setting
+        {
+            get { return setting; }
+            set
+            {
+                if (value != setting)
+                {
+                    setting = value;
+                    OnPropertyChanged("Setting");
+                }
+            }
+        }
+
         public bool ExportEnabled => this.Lines != null && this.Lines.Count > 0;
 
         public List<PalmaresLine> Lines { get; set; }
 
         public PalmaresViewModel()
         {
-            this.Indicator1 = "MANSFIELD(100,CAC40)";
-            this.Indicator2 = "HIGHEST(20)";
-            this.Indicator3 = "STOKFBODY(20)";
-            this.Stop = "TRAILEMATF(20,1,False)";
-            this.Group = StockSerie.Groups.COUNTRY;
+            //this.Indicator1 = "MANSFIELD(100,CAC40)";
+            //this.Indicator2 = "HIGHEST(20)";
+            //this.Indicator3 = "STOKFBODY(20)";
+            //this.Stop = "TRAILEMATF(20,1,False)";
+            //this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
             this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
+
+            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
+            this.Settings = Directory.EnumerateFiles(path).Select(s => Path.GetFileName(s).Replace(".xml", "")).OrderBy(s => s).ToList();
+            this.Setting = this.Settings.FirstOrDefault();
         }
         public bool Calculate()
         {

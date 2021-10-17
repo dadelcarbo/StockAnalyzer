@@ -326,9 +326,14 @@ namespace StockAnalyzerApp
             }
 
             string folderName = Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER;
-            if (!Directory.Exists(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER))
+            if (!Directory.Exists(folderName))
             {
-                Directory.CreateDirectory(Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER);
+                Directory.CreateDirectory(folderName);
+            }
+            folderName = Path.Combine(Settings.Default.RootFolder, "Palmares");
+            if (!Directory.Exists(folderName))
+            {
+                Directory.CreateDirectory(folderName);
             }
             folderName = Path.Combine(Settings.Default.RootFolder, "Tweets");
             if (Directory.Exists(folderName))
