@@ -800,9 +800,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (curveType.IsVisible && !float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                     {
-                        if (curveType.DataSerie.Name.Length > 6)
+                        if (curveType.DataSerie.Name == "VOLUME")
                         {
-                            value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
+                            var volume = curveType.DataSerie[this.lastMouseIndex];
+                            var close = this.CurveList[0].DataSerie[this.lastMouseIndex];
+                            value += BuildTabbedString(curveType.DataSerie.Name, volume, 12) + "\r\n";
+                            value += BuildTabbedString(curveType.DataSerie.Name + " €", volume * close, 12) + "\r\n";
                         }
                         else
                         {
@@ -1722,12 +1725,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected string BuildTabbedString(string type, float value, int tabLocation)
         {
             string valueString;
-            if (value > 100000000)
+            if (value > 10000000)
             {
                 valueString = (value / 1000000).ToString("0.###") + "M";
             }
             else
-                if (value > 1000000)
+                if (value > 100000)
             {
                 valueString = (value / 1000).ToString("0.###") + "K";
             }

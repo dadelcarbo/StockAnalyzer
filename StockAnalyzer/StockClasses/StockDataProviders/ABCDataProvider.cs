@@ -459,16 +459,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return line.StartsWith("BE");
                 case StockSerie.Groups.HOLLAND:
                     return line.StartsWith("NL");
-                case StockSerie.Groups.GERMANY:
-                    return line.StartsWith("DE");
-                case StockSerie.Groups.ITALIA:
-                    return line.StartsWith("IT");
-                case StockSerie.Groups.SPAIN:
-                    return line.StartsWith("ES");
                 case StockSerie.Groups.PORTUGAL:
                     return line.StartsWith("PT");
                 case StockSerie.Groups.SECTORS_CAC:
                     return line.StartsWith("QS");
+                //case StockSerie.Groups.GERMANY:
+                //    return line.StartsWith("DE");
+                //case StockSerie.Groups.ITALIA:
+                //    return line.StartsWith("IT");
+                //case StockSerie.Groups.SPAIN:
+                //    return line.StartsWith("ES");
             }
             throw new ArgumentException($"Group: {group} not supported in ABC");
         }
@@ -625,15 +625,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.HOLLAND:
                     abcGroup = "holln";
                     break;
-                case StockSerie.Groups.GERMANY:
-                    abcGroup = "germanyf";
-                    break;
-                case StockSerie.Groups.SPAIN:
-                    abcGroup = "spainm";
-                    break;
-                case StockSerie.Groups.ITALIA:
-                    abcGroup = "italiai";
-                    break;
                 case StockSerie.Groups.PORTUGAL:
                     abcGroup = "lisboal";
                     break;
@@ -643,6 +634,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.SBF120:
                     abcGroup = "xsbf120p";
                     break;
+                //case StockSerie.Groups.GERMANY:
+                //    abcGroup = "germanyf";
+                //    break;
+                //case StockSerie.Groups.SPAIN:
+                //    abcGroup = "spainm";
+                //    break;
+                //case StockSerie.Groups.ITALIA:
+                //    abcGroup = "italiai";
+                //    break;
                 default:
                     StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
                     break;

@@ -2503,6 +2503,12 @@ namespace StockAnalyzerApp
                 palmaresDlg = new PalmaresDlg();
                 palmaresDlg.palmaresControl1.ViewModel.BarDuration = this.BarDuration;
                 palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
+
+                var refSerie = this.StockDictionary["CAC40"];
+                refSerie.BarDuration = this.BarDuration;
+                var index = refSerie.LastCompleteIndex;
+                if (index == refSerie.LastIndex) { index--; }
+                palmaresDlg.palmaresControl1.ViewModel.FromDate = refSerie.Keys.ElementAt(index);
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
                 palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 palmaresDlg.Show();
@@ -2783,7 +2789,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders); 
+            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_A, breakoutBars, nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
 
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);

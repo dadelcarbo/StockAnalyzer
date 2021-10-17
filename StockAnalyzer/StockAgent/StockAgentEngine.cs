@@ -97,7 +97,8 @@ namespace StockAnalyzer.StockAgent
                 // Perform calculation
                 this.Perform(series, minIndex, duration, stopATR);
 
-                // Select Best
+                // Select Best (after cleaning outliers)
+                this.Agent.TradeSummary.CleanOutliers();
                 var tradeSummary = this.Agent.TradeSummary;
                 this.AgentPerformed?.Invoke(this.Agent);
                 if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
