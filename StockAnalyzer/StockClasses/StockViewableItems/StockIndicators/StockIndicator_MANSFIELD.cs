@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period", "Index" };
         public override Object[] ParameterDefaultValues => new Object[] { 100, "CAC40" };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeStockName() };
-        public override string[] SerieNames => new string[] { $"MANSFIELD({this.Parameters[0]},{this.Parameters[0]})" };
+        public override string[] SerieNames => new string[] { $"MANSFIELD({this.Parameters[0]},{this.Parameters[1]})" };
 
         public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] { new Pen(Color.Black) });
 

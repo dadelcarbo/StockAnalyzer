@@ -232,6 +232,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOX.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATRStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
@@ -265,6 +266,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_XMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BARSINEVENT.cs" />

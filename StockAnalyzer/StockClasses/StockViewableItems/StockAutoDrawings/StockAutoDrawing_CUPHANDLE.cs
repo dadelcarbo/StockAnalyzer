@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override Object[] ParameterDefaultValues => new Object[] { 3, true, 12 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(2, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames => new string[] { "CUPHANDLE.LS", "CUPHANDLE.SS" };
         public override System.Drawing.Pen[] SeriePens
@@ -127,7 +127,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                     {
                         this.series[0][i] = trailStop = Math.Min(Math.Max(rightLow.Y, leftLow.Y), bodyLowSerie.GetMin(i - trailPeriod, i));
                         highestInBars = highestInSerie[i];
-                        isBull = true;
+                        isBull = trailPeriod > 0;
                         brokenUpEvents[i] = bullEvents[i] = true;
 
                         // Draw open cup and handle
