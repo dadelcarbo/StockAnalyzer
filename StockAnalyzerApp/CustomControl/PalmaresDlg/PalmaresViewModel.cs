@@ -6,6 +6,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -36,7 +37,17 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         }
 
         private StockBarDuration barDuration;
-        public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
+        public StockBarDuration BarDuration
+        {
+            get { return barDuration; }
+            set
+            {
+                if (value != barDuration)
+                {
+                    barDuration = value; OnPropertyChanged("BarDuration");
+                }
+            }
+        }
 
         private string indicator1;
         public string Indicator1
@@ -119,7 +130,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
-        public List<string> Settings { get; set; }
+        public ObservableCollection<string> Settings { get; set; }
         private string setting;
         public string Setting
         {
@@ -150,7 +161,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
 
             string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
-            this.Settings = Directory.EnumerateFiles(path).Select(s => Path.GetFileName(s).Replace(".xml", "")).OrderBy(s => s).ToList();
+            this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
         }
         public bool Calculate()

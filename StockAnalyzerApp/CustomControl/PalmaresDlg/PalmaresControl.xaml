@@ -73,9 +73,6 @@
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGeneratingColumn="RadGridView_AutoGeneratingColumn"
                              SelectionChanged="RadGridView_SelectionChanged"
                              ElementExportingToDocument="gridView_ElementExportingToDocument">
-            <!--<telerik:RadGridView.Columns>
-                <telerik:GridViewHyperlinkColumn Header="Name" DataMemberBinding="{Binding Link}" ContentBinding="{Binding Name}" />
-            </telerik:RadGridView.Columns>-->
         </telerik:RadGridView>
     </Grid>
 </UserControl>

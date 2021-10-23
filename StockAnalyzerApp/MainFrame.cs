@@ -2509,11 +2509,6 @@ namespace StockAnalyzerApp
                 palmaresDlg.palmaresControl1.ViewModel.BarDuration = this.BarDuration;
                 palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
 
-                var refSerie = this.StockDictionary["CAC40"];
-                refSerie.BarDuration = this.BarDuration;
-                var index = refSerie.LastCompleteIndex;
-                if (index == refSerie.LastIndex) { index--; }
-                palmaresDlg.palmaresControl1.ViewModel.FromDate = refSerie.Keys.ElementAt(index);
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
                 palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 palmaresDlg.Show();

@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\SARAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
     <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
     <Compile Include="StockAgent\Agents\FWAgent.cs" />
@@ -315,7 +316,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />

@@ -11,7 +11,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     {
         public List<FilterSetting> FilterSettings { get; set; }
         public StockBarDuration BarDuration { get; set; }
-        StockSerie.Groups Group { get; set; }
+        public StockSerie.Groups Group { get; set; }
         public string Indicator1 { get; set; }
         public string Indicator2 { get; set; }
         public string Indicator3 { get; set; }

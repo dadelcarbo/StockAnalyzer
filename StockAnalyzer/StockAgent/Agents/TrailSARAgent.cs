@@ -15,7 +15,8 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(0.1f, 1f)]
         public float Percent { get; set; }
 
-        public override string Description => "Buy with TRAILSAR Stop";
+        public override string Description => "Buy with TRAILSAR Stop"; 
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILSAR({Percent})";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;

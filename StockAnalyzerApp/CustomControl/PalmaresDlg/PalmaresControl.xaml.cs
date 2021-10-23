@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
 using StockAnalyzerSettings.Properties;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -277,7 +278,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         setting.Filter2.Value = columnFilter.FieldFilter.Filter2.Value;
                         setting.Filter2.IsCaseSensitive = columnFilter.FieldFilter.Filter2.IsCaseSensitive;
                     }
-
                     settings.Add(setting);
                 }
             }
@@ -333,24 +333,37 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             if (saveFileDialog.ShowDialog() != true)
                 return;
 
-            var filters = SaveColumnFilters(this.gridView);
-            var palmaresSettings = new PalmaresSettings()
+            try
             {
-                FilterSettings = filters,
-                BarDuration = this.ViewModel.BarDuration,
-                Indicator1 = this.ViewModel.Indicator1,
-                Indicator2 = this.ViewModel.Indicator2,
-                Indicator3 = this.ViewModel.Indicator3,
-                Stop = this.ViewModel.Stop
-            };
+                var filters = SaveColumnFilters(this.gridView);
+                var palmaresSettings = new PalmaresSettings()
+                {
+                    FilterSettings = filters,
+                    Group = this.ViewModel.Group,
+                    BarDuration = this.ViewModel.BarDuration,
+                    Indicator1 = this.ViewModel.Indicator1,
+                    Indicator2 = this.ViewModel.Indicator2,
+                    Indicator3 = this.ViewModel.Indicator3,
+                    Stop = this.ViewModel.Stop
+                };
 
-            using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                {
+                    System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+                    settings.Indent = true;
+                    System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                    serializer.Serialize(xmlWriter, palmaresSettings);
+                }
+                var name = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
+                if (!this.ViewModel.Settings.Contains(name))
+                {
+                    this.ViewModel.Settings.Insert(0, name);
+                }
+            }
+            catch (Exception ex)
             {
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-                settings.Indent = true;
-                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
-                serializer.Serialize(xmlWriter, palmaresSettings);
+                MessageBox.Show(ex.Message, "File saving Error !!!");
             }
         }
         private void LoadSettings()
@@ -367,29 +380,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
                     var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
 
-                    this.ViewModel.BarDuration = palmaresSettings.BarDuration;
-                    this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
-                    this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
-                    this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
-                    this.ViewModel.Stop = palmaresSettings.Stop;
-                    LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
-                }
-            }
-        }
-        private void openFilters_Click(object sender, RoutedEventArgs e)
-        {
-            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
-            string fileName = path + @"\Palmares.xml";
-            if (File.Exists(fileName))
-            {
-                using (FileStream fs = new FileStream(fileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                    settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
-                    var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
-
+                    this.ViewModel.Group = palmaresSettings.Group;
                     this.ViewModel.BarDuration = palmaresSettings.BarDuration;
                     this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
                     this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
