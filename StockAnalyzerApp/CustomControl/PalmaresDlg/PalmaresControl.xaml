@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PalmaresDlg" 
              xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800" Background="AntiqueWhite"
+             d:DesignHeight="450" d:DesignWidth="1000" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:PalmaresViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -29,7 +29,7 @@
             </GroupBox>
             <GroupBox Header="Stop" >
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Stop}" Width="160" Margin="2" VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Stop}" Width="200" Margin="2" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Settings">

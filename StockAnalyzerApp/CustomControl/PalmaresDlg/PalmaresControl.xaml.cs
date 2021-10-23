@@ -99,7 +99,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             var col = e.Column as GridViewDataColumn;
             switch (columnName)
             {
-                case "Variation":
                 case "Stop":
                     col.DataFormatString = "P2";
                     break;
@@ -108,7 +107,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     {
                         indicator1Col = col;
                         col.Header = ViewModel.Indicator1.Split('(')[0];
-                        if (col.Header.ToString() == "ROR")
+                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
                         {
                             col.DataFormatString = "P2";
                         }
@@ -119,7 +118,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     {
                         indicator2Col = col;
                         col.Header = ViewModel.Indicator2.Split('(')[0];
-                        if (col.Header.ToString() == "ROR")
+                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
                         {
                             col.DataFormatString = "P2";
                         }
@@ -130,11 +129,15 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     {
                         indicator3Col = col;
                         col.Header = ViewModel.Indicator3.Split('(')[0];
-                        if (col.Header.ToString() == "ROR")
+                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
                         {
                             col.DataFormatString = "P2";
                         }
                     }
+                    break;
+                default:
+                    if (columnName.Contains("%"))
+                        col.DataFormatString = "P2";
                     break;
             }
         }

@@ -235,6 +235,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 firstValue = closeSerie[endIndex-1];
                 float barVariation = (lastValue - firstValue) / firstValue;
 
+                int highest = 0;
+                for (int i  = endIndex - 1; i> 0; i++)
+                {
+                    if (lastValue > closeSerie[i])
+                    {
+                        highest++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
                 #endregion
                 #region Calculate Indicators
                 float stockIndicator1 = float.NaN;
@@ -275,6 +288,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",
                     Name = stockSerie.StockName,
                     Value = lastValue,
+                    Highest = highest,
                     Indicator1 = stockIndicator1,
                     Indicator2 = stockIndicator2,
                     Indicator3 = stockIndicator3,
