@@ -38,6 +38,9 @@
                     <Button x:Name="saveFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="2" Click="saveFilters_Click">
                         <Image Source="../../Resources/SaveAnalysis.png" />
                     </Button>
+                    <Button x:Name="clearFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="2" Click="clearFilters_Click">
+                        <Image Source="../../Resources/ClearFilters.png" />
+                    </Button>
                 </StackPanel>
             </GroupBox>
             <StackPanel Orientation="Horizontal" Margin="2">

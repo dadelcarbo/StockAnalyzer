@@ -1018,6 +1018,9 @@
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
     <None Include="Resources\NewAnalysis.png" />
+    <Content Include="Resources\ClearFilters.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\LineChart.bmp" />
     <Content Include="Resources\Log.png" />
     <Content Include="Resources\Notepad.ico" />

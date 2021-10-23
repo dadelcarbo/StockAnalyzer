@@ -321,6 +321,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             grid.FilterDescriptors.ResumeNotifications();
         }
         #endregion
+        private void clearFilters_Click(object sender, RoutedEventArgs e)
+        {
+            this.gridView.FilterDescriptors.Clear();
+        }
 
         private void saveFilters_Click(object sender, RoutedEventArgs e)
         {

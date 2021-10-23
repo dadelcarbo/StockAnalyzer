@@ -231,7 +231,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 float lastValue = closeSerie[endIndex];
                 float firstValue = closeSerie[startIndex];
-                float variation = (lastValue - firstValue) / firstValue;
+                float periodVariation = (lastValue - firstValue) / firstValue;
+                firstValue = closeSerie[endIndex-1];
+                float barVariation = (lastValue - firstValue) / firstValue;
 
                 #endregion
                 #region Calculate Indicators
@@ -277,7 +279,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator2 = stockIndicator2,
                     Indicator3 = stockIndicator3,
                     Stop = stopValue,
-                    Variation = variation
+                    PeriodVariation = periodVariation,
+                    BarVariation = barVariation
                     // Link = stockSerie.DataProvider == StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC ? $"https://www.abcbourse.com/graphes/eod/{stockSerie.ShortName}p" : null
                 });
 
