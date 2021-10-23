@@ -27,6 +27,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     public class FilterSetting
     {
         public string ColumnUniqueName { get; set; }
+        public string DisplayName { get; set; }
         public List<object> SelectedDistinctValues = new List<object>();
         public FilterDescriptorProxy Filter1 { get; set; }
         public Telerik.Windows.Data.FilterCompositionLogicalOperator FieldFilterLogicalOperator { get; set; }

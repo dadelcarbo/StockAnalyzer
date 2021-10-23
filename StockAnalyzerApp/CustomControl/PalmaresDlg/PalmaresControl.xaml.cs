@@ -92,6 +92,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         GridViewDataColumn indicator1Col;
         GridViewDataColumn indicator2Col;
         GridViewDataColumn indicator3Col;
+        GridViewDataColumn stopCol;
 
         private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
         {
@@ -100,6 +101,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             switch (columnName)
             {
                 case "Stop":
+                    stopCol = col;
                     col.DataFormatString = "P2";
                     break;
                 case "Indicator1":
@@ -249,18 +251,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         }
 
         #region Filter Persistency
-        public static List<FilterSetting> SaveColumnFilters(Telerik.Windows.Controls.GridView.GridViewDataControl grid)
+        public static List<FilterSetting> SaveColumnFilters(GridViewDataControl grid)
         {
             var settings = new List<FilterSetting>();
 
             foreach (Telerik.Windows.Data.IFilterDescriptor filter in grid.FilterDescriptors)
             {
-                Telerik.Windows.Controls.GridView.IColumnFilterDescriptor columnFilter = filter as Telerik.Windows.Controls.GridView.IColumnFilterDescriptor;
+                IColumnFilterDescriptor columnFilter = filter as IColumnFilterDescriptor;
                 if (columnFilter != null)
                 {
                     FilterSetting setting = new FilterSetting();
 
                     setting.ColumnUniqueName = columnFilter.Column.UniqueName;
+                    setting.DisplayName = columnFilter.Column.Header.ToString();
 
                     setting.SelectedDistinctValues.AddRange(columnFilter.DistinctFilter.DistinctValues);
 
@@ -288,40 +291,56 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             return settings;
         }
 
-        public static void LoadColumnFilters(Telerik.Windows.Controls.GridView.GridViewDataControl grid
-            , IEnumerable<FilterSetting> savedSettings)
+        public void LoadColumnFilters(GridViewDataControl grid, IEnumerable<FilterSetting> savedSettings)
         {
+            if (grid.Columns.Count == 0)
+                return;
             grid.FilterDescriptors.SuspendNotifications();
-
-            foreach (FilterSetting setting in savedSettings)
+            try
             {
-                Telerik.Windows.Controls.GridViewColumn column = grid.Columns[setting.ColumnUniqueName];
-
-                Telerik.Windows.Controls.GridView.IColumnFilterDescriptor columnFilter = column.ColumnFilterDescriptor;
-
-                foreach (object distinctValue in setting.SelectedDistinctValues)
+                stopCol.ColumnFilterDescriptor.Clear();
+                indicator1Col.ColumnFilterDescriptor.Clear();
+                indicator1Col.IsVisible = false;
+                indicator2Col.ColumnFilterDescriptor.Clear();
+                indicator2Col.IsVisible = false;
+                indicator3Col.ColumnFilterDescriptor.Clear();
+                indicator3Col.IsVisible = false;
+                foreach (FilterSetting setting in savedSettings)
                 {
-                    columnFilter.DistinctFilter.AddDistinctValue(distinctValue);
-                }
+                    Telerik.Windows.Controls.GridViewColumn column = grid.Columns[setting.ColumnUniqueName];
+                    column.IsVisible = true;
+                    column.Header = setting.DisplayName;
 
-                if (setting.Filter1 != null)
-                {
-                    columnFilter.FieldFilter.Filter1.Operator = setting.Filter1.Operator;
-                    columnFilter.FieldFilter.Filter1.Value = setting.Filter1.Value;
-                    columnFilter.FieldFilter.Filter1.IsCaseSensitive = setting.Filter1.IsCaseSensitive;
-                }
+                    IColumnFilterDescriptor columnFilter = column.ColumnFilterDescriptor;
+                    foreach (object distinctValue in setting.SelectedDistinctValues)
+                    {
+                        columnFilter.DistinctFilter.AddDistinctValue(distinctValue);
+                    }
 
-                columnFilter.FieldFilter.LogicalOperator = setting.FieldFilterLogicalOperator;
+                    if (setting.Filter1 != null)
+                    {
+                        columnFilter.FieldFilter.Filter1.Operator = setting.Filter1.Operator;
+                        columnFilter.FieldFilter.Filter1.Value = setting.Filter1.Value;
+                        columnFilter.FieldFilter.Filter1.IsCaseSensitive = setting.Filter1.IsCaseSensitive;
+                    }
 
-                if (setting.Filter2 != null)
-                {
-                    columnFilter.FieldFilter.Filter2.Operator = setting.Filter2.Operator;
-                    columnFilter.FieldFilter.Filter2.Value = setting.Filter2.Value;
-                    columnFilter.FieldFilter.Filter2.IsCaseSensitive = setting.Filter2.IsCaseSensitive;
+                    columnFilter.FieldFilter.LogicalOperator = setting.FieldFilterLogicalOperator;
+
+                    if (setting.Filter2 != null)
+                    {
+                        columnFilter.FieldFilter.Filter2.Operator = setting.Filter2.Operator;
+                        columnFilter.FieldFilter.Filter2.Value = setting.Filter2.Value;
+                        columnFilter.FieldFilter.Filter2.IsCaseSensitive = setting.Filter2.IsCaseSensitive;
+                    }
                 }
             }
-
-            grid.FilterDescriptors.ResumeNotifications();
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                grid.FilterDescriptors.ResumeNotifications();
+            }
         }
         #endregion
         private void clearFilters_Click(object sender, RoutedEventArgs e)
