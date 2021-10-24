@@ -2807,7 +2807,7 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "TrailATR", "TRAILSTOP|TRAILATRBAND(50,3,-3,EMA)", "BrokenUp", "TRAILATRBAND(50,3,-3,EMA)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-//            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
+            //            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
 
             //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
             //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
@@ -2954,9 +2954,7 @@ namespace StockAnalyzerApp
                     {
                         if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
                         {
-                            indexSerie.BarDuration = StockBarDuration.Daily;
-                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
-                            if (badLiquiditySerie.Values.Last())
+                            if (!stockSerie.HasLiquidity(0.1f))
                             {
                                 continue;
                             }
@@ -3067,9 +3065,7 @@ namespace StockAnalyzerApp
                     {
                         if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
                         {
-                            indexSerie.BarDuration = StockBarDuration.Daily;
-                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
-                            if (badLiquiditySerie.Values.Last())
+                            if (!stockSerie.HasLiquidity(0.1f))
                             {
                                 continue;
                             }
@@ -3178,9 +3174,7 @@ namespace StockAnalyzerApp
                     {
                         if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
                         {
-                            indexSerie.BarDuration = StockBarDuration.Daily;
-                            var badLiquiditySerie = stockSerie.GetIndicator("VOLMONEY(20,100)").Events[1];
-                            if (badLiquiditySerie.Values.Last())
+                            if (!stockSerie.HasLiquidity(0.1f))
                             {
                                 continue;
                             }

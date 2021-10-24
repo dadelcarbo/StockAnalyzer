@@ -175,6 +175,18 @@ namespace StockAnalyzer.StockClasses
 
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
+        /// <summary>
+        /// Indicates if a stock has good liquitiy by on the last 10 days by average a exchange in million of Euro.
+        /// </summary>
+        /// <param name="trigger">0.1 indicates 100K€</param>
+        /// <returns></returns>
+        public bool HasLiquidity(float trigger)
+        {
+            var dailyValues = this.StockDailyValuesAsArray().Reverse().Take(10).ToList();
+            float price = dailyValues.Average(v => v.CLOSE);
+            float vol = (float)dailyValues.Average(v => v.VOLUME);
+            return (price * vol > trigger);
+        }
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
@@ -2996,8 +3008,8 @@ namespace StockAnalyzer.StockClasses
                 case Groups.CACALL:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.PEA:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL); 
-                    // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL);
+                // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
                 default:
                     return this.StockGroup == group;
             }

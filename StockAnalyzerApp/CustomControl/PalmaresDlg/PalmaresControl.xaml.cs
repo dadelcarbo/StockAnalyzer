@@ -30,6 +30,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Form = form;
             this.DataContext = this.ViewModel = this.Resources["ViewModel"] as PalmaresViewModel;
             this.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            this.Loaded += PalmaresControl_Loaded;
+        }
+
+        private void PalmaresControl_Loaded(object sender, RoutedEventArgs e)
+        {
             this.LoadSettings();
         }
 
@@ -43,105 +48,85 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        private void GenerateColumns()
+        {
+            if (gridView.Columns.Count == 0)
+                return;
+            var column = gridView.Columns["Indicator1"] as GridViewDataColumn;
+            if (string.IsNullOrEmpty(ViewModel.Indicator1))
+            {
+                column.IsVisible = false;
+            }
+            else
+            {
+                column.IsVisible = true;
+                column.Header = ViewModel.Indicator1.Split('(')[0];
+                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                {
+                    column.DataFormatString = "P2";
+                }
+                else
+                {
+                    column.DataFormatString = null;
+                }
+            }
+            column = gridView.Columns["Indicator2"] as GridViewDataColumn;
+            if (string.IsNullOrEmpty(ViewModel.Indicator2))
+            {
+                column.IsVisible = false;
+            }
+            else
+            {
+                column.IsVisible = true;
+                column.Header = ViewModel.Indicator2.Split('(')[0];
+                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                {
+                    column.DataFormatString = "P2";
+                }
+                else
+                {
+                    column.DataFormatString = null;
+                }
+            }
+            column = gridView.Columns["Indicator3"] as GridViewDataColumn;
+            if (string.IsNullOrEmpty(ViewModel.Indicator3))
+            {
+                column.IsVisible = false;
+            }
+            else
+            {
+                column.IsVisible = true;
+                column.Header = ViewModel.Indicator3.Split('(')[0];
+                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                {
+                    column.DataFormatString = "P2";
+                }
+                else
+                {
+                    column.DataFormatString = null;
+                }
+            }
+            column = gridView.Columns["Stop"] as GridViewDataColumn;
+            if (string.IsNullOrEmpty(ViewModel.Stop))
+            {
+                column.IsVisible = false;
+            }
+            else
+            {
+                column.IsVisible = true;
+                column.DataFormatString = "P2";
+            }
+        }
+
         private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
 
+            GenerateColumns();
+
             this.ViewModel.Calculate();
 
             this.Cursor = Cursors.Arrow;
-
-            if (indicator1Col != null)
-            {
-                indicator1Col.Header = ViewModel.Indicator1.Split('(')[0];
-                if (indicator1Col.Header.ToString() == "ROR")
-                {
-                    indicator1Col.DataFormatString = "P2";
-                }
-                else
-                {
-                    indicator1Col.DataFormatString = null;
-                }
-            }
-            if (indicator2Col != null)
-            {
-                indicator2Col.Header = ViewModel.Indicator2.Split('(')[0];
-                if (indicator2Col.Header.ToString() == "ROR")
-                {
-                    indicator2Col.DataFormatString = "P2";
-                }
-                else
-                {
-                    indicator2Col.DataFormatString = null;
-                }
-            }
-            if (indicator3Col != null)
-            {
-                indicator3Col.Header = ViewModel.Indicator3.Split('(')[0];
-                if (indicator3Col.Header.ToString() == "ROR")
-                {
-                    indicator3Col.DataFormatString = "P2";
-                }
-                else
-                {
-                    indicator3Col.DataFormatString = null;
-                }
-            }
-        }
-
-        GridViewDataColumn indicator1Col;
-        GridViewDataColumn indicator2Col;
-        GridViewDataColumn indicator3Col;
-        GridViewDataColumn stopCol;
-
-        private void RadGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
-        {
-            var columnName = e.Column.Header.ToString();
-            var col = e.Column as GridViewDataColumn;
-            switch (columnName)
-            {
-                case "Stop":
-                    stopCol = col;
-                    col.DataFormatString = "P2";
-                    break;
-                case "Indicator1":
-                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
-                    {
-                        indicator1Col = col;
-                        col.Header = ViewModel.Indicator1.Split('(')[0];
-                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
-                        {
-                            col.DataFormatString = "P2";
-                        }
-                    }
-                    break;
-                case "Indicator2":
-                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
-                    {
-                        indicator2Col = col;
-                        col.Header = ViewModel.Indicator2.Split('(')[0];
-                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
-                        {
-                            col.DataFormatString = "P2";
-                        }
-                    }
-                    break;
-                case "Indicator3":
-                    if (!string.IsNullOrEmpty(ViewModel.Indicator1))
-                    {
-                        indicator3Col = col;
-                        col.Header = ViewModel.Indicator3.Split('(')[0];
-                        if (col.Header.ToString() == "ROR" || col.Header.ToString() == "ROD" || col.Header.ToString() == "ROC")
-                        {
-                            col.DataFormatString = "P2";
-                        }
-                    }
-                    break;
-                default:
-                    if (columnName.Contains("%"))
-                        col.DataFormatString = "P2";
-                    break;
-            }
         }
         private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
@@ -298,13 +283,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             grid.FilterDescriptors.SuspendNotifications();
             try
             {
-                stopCol.ColumnFilterDescriptor.Clear();
-                indicator1Col.ColumnFilterDescriptor.Clear();
-                indicator1Col.IsVisible = false;
-                indicator2Col.ColumnFilterDescriptor.Clear();
-                indicator2Col.IsVisible = false;
-                indicator3Col.ColumnFilterDescriptor.Clear();
-                indicator3Col.IsVisible = false;
+                this.clearFilters_Click(null, null);
                 foreach (FilterSetting setting in savedSettings)
                 {
                     Telerik.Windows.Controls.GridViewColumn column = grid.Columns[setting.ColumnUniqueName];
@@ -412,9 +391,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                     this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
                     this.ViewModel.Stop = palmaresSettings.Stop;
+                    this.GenerateColumns();
                     LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
                 }
             }
         }
+
     }
 }

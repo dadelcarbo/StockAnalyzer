@@ -73,7 +73,7 @@
             </Button>
         </StackPanel>
         <telerik:RadGridView Name="gridView" Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
-                             ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGeneratingColumn="RadGridView_AutoGeneratingColumn"
+                             ItemsSource="{Binding Lines}" IsReadOnly="True"
                              SelectionChanged="RadGridView_SelectionChanged"
                              ElementExportingToDocument="gridView_ElementExportingToDocument">
         </telerik:RadGridView>

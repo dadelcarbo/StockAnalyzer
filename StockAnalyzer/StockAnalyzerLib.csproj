@@ -267,6 +267,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_XMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
@@ -320,7 +321,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTHLS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRUE.cs" />
