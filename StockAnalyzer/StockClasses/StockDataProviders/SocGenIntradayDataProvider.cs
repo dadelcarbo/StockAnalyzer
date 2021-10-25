@@ -179,9 +179,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         return true;
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        return false;
+                        StockLog.Write(e);
                     }
                 }
             }

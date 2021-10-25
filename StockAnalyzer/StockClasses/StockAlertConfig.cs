@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 using StockAnalyzerSettings.Properties;
@@ -81,21 +82,29 @@ namespace StockAnalyzer.StockClasses
                     // Parse alert lists
                     if (File.Exists(alertFileName))
                     {
-                        using (var fs = new FileStream(alertFileName, FileMode.Open))
+                        try
                         {
-                            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                            using (var fs = new FileStream(alertFileName, FileMode.Open))
                             {
-                                IgnoreWhitespace = true
-                            };
-                            System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                            var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                            alertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
+                                {
+                                    IgnoreWhitespace = true
+                                };
+                                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                                var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                                alertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message + Environment.NewLine + alertFileName, "Alert File Error");
                         }
                     }
                     else
                     {
                         alertDefs = new List<StockAlertDef>();
                     }
+
                 }
                 return alertDefs;
             }
