@@ -151,11 +151,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public PalmaresViewModel()
         {
-            //this.Indicator1 = "MANSFIELD(100,CAC40)";
-            //this.Indicator2 = "HIGHEST(20)";
-            //this.Indicator3 = "STOKFBODY(20)";
-            //this.Stop = "TRAILEMATF(20,1,False)";
-            //this.Group = StockSerie.Groups.COUNTRY;
             this.Lines = new List<PalmaresLine>();
             this.ToDate = DateTime.Now;
             this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
@@ -232,11 +227,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 float lastValue = closeSerie[endIndex];
                 float firstValue = closeSerie[startIndex];
                 float periodVariation = (lastValue - firstValue) / firstValue;
-                firstValue = closeSerie[endIndex-1];
+                firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
 
                 int highest = 0;
-                for (int i  = endIndex - 1; i> 0; i++)
+                for (int i = endIndex - 1; i > 0; i--)
                 {
                     if (lastValue > closeSerie[i])
                     {
