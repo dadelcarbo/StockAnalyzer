@@ -66,6 +66,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
             var bullSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0]);
             var bearSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1]);
+            bullSerie[0] = bearSerie[0] = maSerie[0];
 
             for (int i = 1; i < stockSerie.Count; i++)
             {
