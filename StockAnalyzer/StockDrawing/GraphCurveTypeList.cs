@@ -56,7 +56,7 @@ namespace StockAnalyzer.StockDrawing
             {
                 for (int i = 0; i < Cloud.SeriesCount; i++)
                 {
-                    if (Cloud.SerieVisibility[i] && Cloud.Series[i].Count > 0)
+                    if (Cloud.SerieVisibility[i] && Cloud.Series[i]?.Count > 0)
                     {
                         Cloud.Series[i].GetMinMax(startIndex, endIndex, ref tmpMin, ref tmpMax);
                         minValue = Math.Min(minValue, tmpMin);

@@ -5,7 +5,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILATRBAND : StockTrailStopBase
+    public class StockTrailStop_TRAILATR : StockTrailStopBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -19,9 +19,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 3.0f, -3.0f, "MA" }; }
+            get { return new Object[] { 30, 2f, -2f, "MA" }; }
         }
-        static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA" };
         public override ParamRange[] ParameterRanges
         {
             get
@@ -35,14 +34,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 };
             }
         }
-        public override string[] SerieNames { get { return new string[] { "TRAILATRBAND.S", "TRAILATRBAND.R" }; } }
+        public override string[] SerieNames { get { return new string[] { "TRAILATR.S", "TRAILATR.R" }; } }
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
 
-            IStockIndicator bbIndicator = stockSerie.GetIndicator(this.Name.Replace("TRAIL", ""));
+            IStockIndicator bbIndicator = stockSerie.GetIndicator($"ATRBAND({parameters[0]},{parameters[1]},{parameters[2]},{parameters[3]})");
             stockSerie.CalculateBBTrailStop(bbIndicator.Series[1], bbIndicator.Series[0], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;
             this.Series[1] = shortStopSerie;

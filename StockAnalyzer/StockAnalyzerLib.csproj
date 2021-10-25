@@ -236,7 +236,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATRStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MTFMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />
@@ -291,7 +291,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKFBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
@@ -442,7 +441,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSSAR.cs" />

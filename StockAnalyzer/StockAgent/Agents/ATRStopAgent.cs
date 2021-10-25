@@ -20,9 +20,9 @@ namespace StockAnalyzer.StockAgent.Agents
         public float Width { get; set; }
 
 
-        public override string Description => "Buy according to TrailATRBand with same up and down width";
+        public override string Description => "Buy according to TrailATRwith same up and down width";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILATRBAND({Period},{Width},{-Width},EMA)";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILATR({Period},{Width},{-Width},EMA)";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILATRBAND({Period},{Width},{-Width},EMA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILATR({Period},{Width},{-Width},EMA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

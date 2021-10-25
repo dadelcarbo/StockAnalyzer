@@ -454,44 +454,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 }
                                 else
                                 {
-                                    List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
-                                    int start = -1;
-                                    int end = -1;
-                                    for (int k = StartIndex; k <= EndIndex; k++)
-                                    {
-                                        if (float.IsNaN(stockIndicator.Series[i][k]))
-                                        {
-                                            if (start != -1)
-                                            {
-                                                if (start != end) // Draw only if there are at least two points
-                                                {
-                                                    tuples.Add(new Tuple<int, int>(start, end));
-                                                    start = -1;
-                                                    end = -1;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (start == -1)
-                                            {
-                                                start = k;
-                                            }
-                                            end = k;
-                                        }
-                                    }
-                                    if (start != end) // Draw only if there are at least two points
-                                    {
-                                        tuples.Add(new Tuple<int, int>(start, end));
-                                    }
-                                    foreach (var tuple in tuples)
-                                    {
-                                        tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, stockIndicator.Series[i]);
-                                        if (tmpPoints != null)
-                                        {
-                                            aGraphic.DrawLines(stockIndicator.SeriePens[i], tmpPoints);
-                                        }
-                                    }
+                                    DrawSeriePoints(aGraphic, tmpPoints, stockIndicator.Series[i], stockIndicator.SeriePens[i]);
                                 }
                             }
                         }
@@ -500,13 +463,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
                         {
-                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i].Count > 0)
+                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i]?.Count > 0)
                             {
-                                tmpPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[i]);
-                                if (tmpPoints != null)
-                                {
-                                    aGraphic.DrawLines(this.CurveList.Cloud.SeriePens[i], tmpPoints);
-                                }
+                                DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.Cloud.Series[i], this.CurveList.Cloud.SeriePens[i]);
                             }
                         }
                     }
@@ -818,6 +777,48 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
+            }
+        }
+
+        private void DrawSeriePoints(Graphics aGraphic, PointF[] tmpPoints, FloatSerie pointSerie, Pen pen)
+        {
+            List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
+            int start = -1;
+            int end = -1;
+            for (int k = StartIndex; k <= EndIndex; k++)
+            {
+                if (float.IsNaN(pointSerie[k]))
+                {
+                    if (start != -1)
+                    {
+                        if (start != end) // Draw only if there are at least two points
+                        {
+                            tuples.Add(new Tuple<int, int>(start, end));
+                        }
+                        start = -1;
+                        end = -1;
+                    }
+                }
+                else
+                {
+                    if (start == -1)
+                    {
+                        start = k;
+                    }
+                    end = k;
+                }
+            }
+            if (start != end) // Draw only if there are at least two points
+            {
+                tuples.Add(new Tuple<int, int>(start, end));
+            }
+            foreach (var tuple in tuples)
+            {
+                tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, pointSerie);
+                if (tmpPoints != null)
+                {
+                    aGraphic.DrawLines(pen, tmpPoints);
+                }
             }
         }
 
