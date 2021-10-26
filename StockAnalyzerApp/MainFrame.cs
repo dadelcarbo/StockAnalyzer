@@ -2789,28 +2789,30 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty; // GenerateLeaderLoserTable(duration, StockSerie.Groups.CACALL, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders * 2);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "TrailATR Reentry ", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "TrailATR Reentry ", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "HIGHEST", "INDICATOR|HIGHEST(21)", "NewHigh", "TRAILHIGHESTATR(21,2.5,5)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "TrailATR Reentry ", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
+            
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "TrailATR", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
@@ -2989,13 +2991,14 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                var tableHeader = $"{title} for {reportGroup} {trailStopIndicatorName}";
+
+                var tableHeader = $"{viewableItemName.Split('|')[1]}.{eventName}<br/>{trailStopIndicatorName}";
                 html += $@"
             <table  class=""reportTable"">
                 <thead>
                 <tr>
-                    <td rowspan=""1"">&nbsp;</td>
-                    <th style=""font-size:24px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                    <th style=""font-size:20px;"" rowspan=""1"">{reportGroup}</th>
+                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
                     <th style=""width: 200px;"">Stock Name</th>
@@ -3099,12 +3102,12 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                var tableHeader = $"Breakouts for {reportGroup} {trailStopIndicatorName}";
+                var tableHeader = $"HIGHEST<br/>{trailStopIndicatorName}";
                 html += $@"
             <table  class=""reportTable"">
                 <thead>
                 <tr>
-                    <td rowspan=""1"">&nbsp;</td>
+                    <th style=""font-size:24px;"" rowspan=""1"">{reportGroup}</th>
                     <th style=""font-size:24px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>

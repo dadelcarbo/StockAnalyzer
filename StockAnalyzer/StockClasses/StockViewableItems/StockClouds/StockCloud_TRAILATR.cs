@@ -113,9 +113,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
             // Detecting events
             base.GenerateEvents(stockSerie);
-            for (int i = 5; i < stockSerie.LastCompleteIndex; i++)
+            for (int i = 5; i < stockSerie.Count; i++)
             {
-                this.Events[7][i] = !float.IsNaN(resistanceSerie[i]) && float.IsNaN(resistanceSerie[i + 1]); // Offset by 1 as keep broken resistance on break bar for nice display.
+                this.Events[7][i] = !float.IsNaN(resistanceSerie[i]) && closeSerie[i] > resistanceSerie[i];
                 this.Events[8][i] = false;// not implemented
             }
         }
