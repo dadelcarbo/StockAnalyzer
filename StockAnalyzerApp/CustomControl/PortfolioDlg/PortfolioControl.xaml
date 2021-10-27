@@ -27,7 +27,10 @@
             <Label>Max Risk:</Label>
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Right">
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button x:Name="reportButton" Height="24" Width="24" Click="reportButton_Click" Margin="0,4,4,0" VerticalAlignment="Top">
+                <Image Source="../../Resources/email.png"/>
+            </Button>
             <Button x:Name="savePortfolioButton" Height="24" Width="24" Click="savePortfolioButton_Click" Margin="0,4,4,0" VerticalAlignment="Top" >
                 <Image Source="../../Resources/SaveAnalysis.png"/>
             </Button>

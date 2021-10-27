@@ -991,7 +991,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Camera-32.png" />
-    <None Include="Resources\chart_curve.png" />
+    <Content Include="Resources\chart_curve.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Candle.bmp" />
     <None Include="Resources\AD.png" />
     <Content Include="Resources\comment-icon.bmp" />
@@ -1010,7 +1012,9 @@
     <Content Include="Resources\Down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\email.png" />
+    <Content Include="Resources\email.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Forward-icon.png" />
     <Content Include="Resources\gear.png" />
     <None Include="Resources\Misc-Zoom-In-icon.png" />

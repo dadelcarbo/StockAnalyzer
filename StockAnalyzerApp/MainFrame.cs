@@ -2165,6 +2165,15 @@ namespace StockAnalyzerApp
             }
             return snapshot;
         }
+
+        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme)
+        {
+            this.CurrentStockSerie = stockSerie;
+            this.CurrentTheme = theme;
+
+            return SnapshotAsHtml();
+        }
+
         private string SnapshotAsHtml()
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
@@ -2787,7 +2796,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
-            string htmlLeaders = string.Empty; 
+            string htmlLeaders = string.Empty;
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);

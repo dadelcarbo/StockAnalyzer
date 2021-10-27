@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
+using System.Linq;
+using System.Diagnostics;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -124,6 +126,48 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 e.Cancel = true;
             else
                 e.Cancel = false;
+        }
+        const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+
+        private void reportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as ViewModel;
+            var positions = viewModel.Portfolio?.OpenedPositions.ToList();
+            if (positions == null || positions.Count == 0)
+            {
+                return;
+            }
+            var previousSize = StockAnalyzerForm.MainFrame.Size;
+            StockAnalyzerForm.MainFrame.Size = new System.Drawing.Size(600, 600);
+            var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
+
+            string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html");
+            string reportBody = reportTemplate.Replace("%HTML_TILE%", viewModel.Portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
+            foreach (var position in positions)
+            {
+                if (StockDictionary.Instance.ContainsKey(position.StockName))
+                {
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(StockDictionary.Instance[position.StockName], "___TRAILATR");
+                    reportBody += AlertLineTemplate.Replace("%MSG%", position.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                }
+                else
+                {
+                    reportBody += "Portfolio report: " + position.StockName + " not found!";
+                }
+                reportBody += "<br/>";
+            }
+            StockAnalyzerForm.MainFrame.Size = previousSize; 
+            StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
+
+            var htmlReport = reportTemplate.Replace("%HTML_BODY%", reportBody);
+            string fileName = Path.Combine(Settings.Default.RootFolder, $@"Portfolio\{ viewModel.Portfolio.Name }.html");
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                sw.Write(htmlReport);
+            }
+
+            Process.Start(fileName);
+
         }
     }
 }

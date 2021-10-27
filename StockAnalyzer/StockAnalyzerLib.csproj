@@ -136,17 +136,17 @@
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
-    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.cs">
+    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.Designer.cs">
+    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.Designer.cs">
       <DependentUpon>NameMappingDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
+    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
       <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StockBinckPortfolio\StockNameMapping.cs" />
-    <Compile Include="StockBinckPortfolio\StockTradeOperation.cs" />
+    <Compile Include="StockPortfolio\StockNameMapping.cs" />
+    <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
     <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
@@ -515,9 +515,9 @@
     <Compile Include="StockMath\FloatSerie.cs" />
     <Compile Include="StockMath\Histogram.cs" />
     <Compile Include="StockMath\StockMathToolkit.cs" />
-    <Compile Include="StockBinckPortfolio\StockOperation.cs" />
-    <Compile Include="StockBinckPortfolio\StockPortfolio.cs" />
-    <Compile Include="StockBinckPortfolio\StockPosition.cs" />
+    <Compile Include="StockPortfolio\StockOperation.cs" />
+    <Compile Include="StockPortfolio\StockPortfolio.cs" />
+    <Compile Include="StockPortfolio\StockPosition.cs" />
     <Compile Include="StockScripting\ScriptDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -538,7 +538,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockBinckPortfolio\NameMappingDlg\NameMappingDlg.resx">
+    <EmbeddedResource Include="StockPortfolio\NameMappingDlg\NameMappingDlg.resx">
       <DependentUpon>NameMappingDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
@@ -588,7 +588,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="StockAgent\StockAgentEngine.cd" />
-    <None Include="StockBinckPortfolio\PortfolioDiagram.cd" />
+    <None Include="StockPortfolio\PortfolioDiagram.cd" />
     <None Include="UltimateChartist.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -601,7 +601,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="StockBinckPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
+    <Page Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
