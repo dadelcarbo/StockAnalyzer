@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
@@ -68,6 +66,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var bearSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1]);
             bullSerie[0] = bearSerie[0] = maSerie[0];
 
+            float previousResistance = float.MinValue;
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 bullSerie[i] = closeSerie[i];
@@ -87,7 +86,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                     {
                         if (closeSerie[i] > resistance)
                         {
+                            bool higherBreakOut = resistance > previousResistance;
+                            this.stockTexts.Add(new StockText
+                            {
+                                AbovePrice = false,
+                                Index = i,
+                                Text = resistance > previousResistance ? "HBO" : "LBO"
+                            });
                             resistanceSerie[i] = resistance;
+                            previousResistance = resistance;
                             resistance = float.NaN;
                         }
                         else
@@ -99,7 +106,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 }
                 else // Bearish
                 {
-                    bearSerie[i] = shortStop[i];
+                    previousResistance = bearSerie[i] = shortStop[i];
                     resistance = float.NaN;
                 }
             }
@@ -118,6 +125,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 this.Events[7][i] = !float.IsNaN(resistanceSerie[i]) && closeSerie[i] > resistanceSerie[i];
                 this.Events[8][i] = false;// not implemented
             }
+            foreach (var text in this.StockTexts)
+            {
+                if (text.Text == "HBO")
+                {
+                    this.Events[9][text.Index] = true;
+                }
+                else
+                {
+                    this.Events[10][text.Index] = true;
+                }
+            }
         }
         public override string[] EventNames => eventNames;
 
@@ -126,7 +144,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                      "AboveCloud", "BelowCloud", "InCloud",         // 0,1,2
                      "BullishCloud", "BearishCloud",                // 3,4
                      "CloudUp", "CloudDown",                        // 5,6
-                     "Long Reentry", "Short Reentry"                // 7,8
+                     "Long Reentry", "Short Reentry",               // 7,8
+                     "HigherBreakOut", "LowerBreakOut"              // 9,10
           };
         public override bool[] IsEvent => isEvent;
 
@@ -134,7 +153,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             false, false, false,            // 0,1,2
             false, false,                   // 3,4
             true, true,                     // 5,6
-            true, true                      // 7,8
+            true, true,                     // 7,8
+            true, true                      // 9,10
         };
 
     }
