@@ -1318,6 +1318,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 //}
             }
             stockSerie.Agenda.DownloadDate = DateTime.Today;
+            stockSerie.Agenda.SortDescending();
             stockSerie.SaveAgenda();
         }
 

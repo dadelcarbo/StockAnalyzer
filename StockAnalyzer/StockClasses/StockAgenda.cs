@@ -65,12 +65,16 @@ namespace StockAnalyzer.StockClasses
         {
             Entries.Add(new StockAgendaEntry { Date = date, Event = text });
         }
-        public StockAgendaEntry this[DateTime date]
+        public void SortDescending()
         {
-            get
-            {
-                return this.Entries.First(e => e.Date == date);
-            }
+            this.Entries = this.Entries.OrderByDescending(e => e.Date).ToList();
         }
+        //public StockAgendaEntry this[DateTime date]
+        //{
+        //    get
+        //    {
+        //        return this.Entries.FirstOrDefault(e => e.Date == date);
+        //    }
+        //}
     }
 }
