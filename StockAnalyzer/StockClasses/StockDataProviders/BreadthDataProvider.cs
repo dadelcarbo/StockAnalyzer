@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             StockLog.Write(stockSerie.StockName);
             var stockDictionary = StockDictionary.Instance;
-            if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CAC)
+            if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CALC)
             {
                 if (stockSerie.StockName.EndsWith("_SI"))
                 {

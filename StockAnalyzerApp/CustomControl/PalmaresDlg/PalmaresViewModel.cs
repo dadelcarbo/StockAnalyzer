@@ -229,6 +229,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 float periodVariation = (lastValue - firstValue) / firstValue;
                 firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
+                float volume = 0.5f * (lastValue + openSerie[endIndex]) * stockSerie.GetSerie(StockDataType.VOLUME)[endIndex] / 1000000f;
 
                 int highest = 0;
                 for (int i = endIndex - 1; i > 0; i--)
@@ -284,6 +285,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Name = stockSerie.StockName,
                     Value = lastValue,
                     Highest = highest,
+                    Volume = volume,
                     Indicator1 = stockIndicator1,
                     Indicator2 = stockIndicator2,
                     Indicator3 = stockIndicator3,

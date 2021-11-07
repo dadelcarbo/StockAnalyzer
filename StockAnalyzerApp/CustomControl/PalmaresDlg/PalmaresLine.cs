@@ -13,6 +13,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public float PeriodVariation { get; set; }
         [DisplayName("Bar %")]
         public float BarVariation { get; set; }
+        [DisplayName("Volume M€")]
+        public float Volume { get; set; }
         public int Highest { get; set; }
         public float Indicator1 { get; set; }
         public float Indicator2 { get; set; }

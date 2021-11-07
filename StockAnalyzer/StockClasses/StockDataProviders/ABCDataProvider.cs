@@ -327,8 +327,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (!stockDictionary.ContainsKey(longName))
             {
                 // Create Sector serie
-                stockDictionary.Add(longName, new StockSerie(longName, sector.Code.ToString(), StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
-                stockDictionary.Add(longName + "_SI", new StockSerie(longName + "_SI", sector.Code.ToString(), StockSerie.Groups.SECTORS_CAC, StockDataProvider.Breadth, BarDuration.Daily));
+                stockDictionary.Add(longName, new StockSerie(longName, sector.Code.ToString(), StockSerie.Groups.SECTORS_CALC, StockDataProvider.Breadth, BarDuration.Daily));
+                stockDictionary.Add(longName + "_SI", new StockSerie(longName + "_SI", sector.Code.ToString(), StockSerie.Groups.SECTORS_CALC, StockDataProvider.Breadth, BarDuration.Daily));
 
                 // Set SectorId to stock
                 string fileName = RootFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sector.Code.ToString() + ".txt";

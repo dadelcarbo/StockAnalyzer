@@ -36,13 +36,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "ResistanceBroken", "SupportBroken", "InCupHandle" };
+                    eventNames = new string[] { "ResistanceBroken", "SupportBroken" };
                 }
                 return eventNames;
             }
         }
 
-        static readonly bool[] isEvent = new bool[] { true, true, false };
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
@@ -58,15 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is CupHandle2D);
-                if (drawingItems.Count() > 0)
-                {
-                    foreach (CupHandle2D cupHandle in drawingItems)
-                    {
-                        this.Events[2][stockSerie.LastIndex] = true;
-                    }
-                }
-                drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase);
+                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase);
                 foreach (Line2DBase item in drawingItems)
                 {
                     for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)

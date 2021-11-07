@@ -116,6 +116,18 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 column.IsVisible = true;
                 column.DataFormatString = "P2";
             }
+
+            column = gridView.Columns["Volume"] as GridViewDataColumn;
+            column.IsVisible = true;
+            column.DataFormatString = "F2";
+
+            column = gridView.Columns["PeriodVariation"] as GridViewDataColumn;
+            column.IsVisible = true;
+            column.DataFormatString = "P2";
+
+            column = gridView.Columns["BarVariation"] as GridViewDataColumn;
+            column.IsVisible = true;
+            column.DataFormatString = "P2";
         }
 
         private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
