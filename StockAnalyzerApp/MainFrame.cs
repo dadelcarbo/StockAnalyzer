@@ -504,12 +504,21 @@ namespace StockAnalyzerApp
             if (Settings.Default.GenerateDailyReport)
             {
                 // Daily report
-                string fileName = Settings.Default.RootFolder + @"\CommentReport\Daily\Report.html";
-                if (!File.Exists(fileName) || File.GetLastWriteTime(fileName).Date != DateTime.Today)
+                var fileName = Settings.Default.RootFolder + @"\CommentReport\LastGeneration.txt";
+                DateTime reportDate = DateTime.MinValue;
+                if (File.Exists(fileName))
+                {
+                    reportDate = DateTime.Parse(File.ReadAllText(fileName));
+                }
+                var cac40 = this.StockDictionary["CAC40"];
+                cac40.Initialise();
+                cac40.BarDuration = StockBarDuration.Daily;
+                if (reportDate < cac40.Keys.Last())
                 {
                     GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
                     GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
-                    GenerateReport("Montly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
+                    File.WriteAllText(fileName, cac40.Keys.Last().ToString());
+                    //GenerateReport("Montly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                 }
                 /*
                 fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
@@ -3134,7 +3143,6 @@ namespace StockAnalyzerApp
             {
                 Directory.CreateDirectory(folderName);
             }
-            Directory.CreateDirectory(folderName + "\\Img");
         }
 
         void addToReportStripBtn_Click(object sender, EventArgs e)
