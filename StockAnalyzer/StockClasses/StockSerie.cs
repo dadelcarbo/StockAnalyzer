@@ -184,7 +184,7 @@ namespace StockAnalyzer.StockClasses
         {
             var dailyValues = this.StockDailyValuesAsArray().Reverse().Take(10).ToList();
             float price = dailyValues.Average(v => v.CLOSE);
-            float vol = (float)dailyValues.Average(v => v.VOLUME);
+            float vol = (float)dailyValues.Average(v => v.VOLUME) / 1000000f;
             return (price * vol > trigger);
         }
         #endregion

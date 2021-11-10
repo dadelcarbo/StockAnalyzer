@@ -2986,7 +2986,7 @@ namespace StockAnalyzerApp
                     {
                         if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
                         {
-                            if (!stockSerie.HasLiquidity(0.1f))
+                            if (!stockSerie.HasLiquidity(0.05f))
                             {
                                 continue;
                             }
