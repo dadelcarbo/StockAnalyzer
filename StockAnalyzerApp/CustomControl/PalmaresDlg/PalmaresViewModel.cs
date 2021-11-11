@@ -205,6 +205,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 if (!stockSerie.Initialise())
                     continue;
+                
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
 
@@ -278,7 +279,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 Lines.Add(new PalmaresLine
                 {
-                    //Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
+                    Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
                     Group = stockSerie.StockGroup.ToString(),
                     ShortName = stockSerie.ShortName,
                     //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",

@@ -1604,7 +1604,7 @@ namespace StockAnalyzer.StockClasses
             if (indexName.EndsWith("_SI"))
             {
                 int sectorId = int.Parse(breadthSerie.ShortName);
-                indexComponents = this.Values.Where(s => s.SectorId == sectorId).ToArray();
+                indexComponents = this.Values.Where(s => !s.StockAnalysis.Excluded &&  s.SectorId == sectorId ).ToArray();
             }
             else
             {
