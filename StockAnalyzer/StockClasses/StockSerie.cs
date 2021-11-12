@@ -1966,13 +1966,13 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        public void CalculateTOPEMA(int period, float initGap, out FloatSerie emaSerieSupport, out FloatSerie emaSerieResistance, int inputSmoothing)
+        public void CalculateTOPEMA(int period, out FloatSerie emaSerieSupport, out FloatSerie emaSerieResistance)
         {
             float alpha = 2.0f / (float)(period + 1);
             bool isUpTrend = false;
             bool isDownTrend = false;
-            emaSerieSupport = new FloatSerie(this.Values.Count(), "TOPEMA.S");
-            emaSerieResistance = new FloatSerie(this.Values.Count(), "TOPEMA.R");
+            emaSerieSupport = new FloatSerie(this.Values.Count(), "TOPEMA.Sup");
+            emaSerieResistance = new FloatSerie(this.Values.Count(), "TOPEMA.Res");
             float previousLow = float.NaN;
             float previousHigh = float.NaN;
             float previousEMAUp = float.NaN;
@@ -1980,9 +1980,9 @@ namespace StockAnalyzer.StockClasses
             emaSerieResistance[0] = emaSerieResistance[1] = float.NaN;
             emaSerieSupport[0] = emaSerieSupport[1] = float.NaN;
 
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing);
-            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW).CalculateEMA(inputSmoothing);
-            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH).CalculateEMA(inputSmoothing);
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
+            FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
 
             for (int i = 2; i < this.Values.Count(); i++)
             {
@@ -2005,7 +2005,7 @@ namespace StockAnalyzer.StockClasses
                     if (lowSerie.IsBottom(i - 1)) // Uptrend starts
                     {
                         isUpTrend = true;
-                        emaSerieSupport[i] = previousLow = previousEMAUp = lowSerie[i - 1] * (1.0f - initGap);
+                        emaSerieSupport[i] = previousLow = previousEMAUp = lowSerie[i - 1];
                     }
                     else
                     {
@@ -2031,7 +2031,7 @@ namespace StockAnalyzer.StockClasses
                     if (highSerie.IsTop(i - 1)) // Downtrend starts
                     {
                         isDownTrend = true;
-                        emaSerieResistance[i] = previousHigh = previousEMADown = highSerie[i - 1] * (1.0f + initGap);
+                        emaSerieResistance[i] = previousHigh = previousEMADown = highSerie[i - 1];
                     }
                     else
                     {

@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             int period = (int)this.parameters[0];
 
-            var topEMA = stockSerie.GetIndicator("TOPEMA(0," + period + ",1)");
+            var topEMA = stockSerie.GetIndicator("TOPEMA(" + period + ")");
             FloatSerie longStop = topEMA.Series[0];
             FloatSerie shortStop = topEMA.Series[1];
 

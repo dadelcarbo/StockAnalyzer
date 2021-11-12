@@ -14,27 +14,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override IndicatorDisplayStyle DisplayStyle
         {
-            get { return IndicatorDisplayStyle.SupportResistance; }
+            get { return IndicatorDisplayStyle.SimpleCurve; }
         }
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Init", "Period", "InputSmooting" }; }
+            get { return new string[] {"Period"}; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 0.0f, 12, 1 }; }
+            get { return new Object[] { 30 }; }
         }
 
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 50.0f), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
 
         public override string[] SerieNames
         {
-            get { return new string[] { "TOPEMA.S", "TOPEMA.R" }; }
+            get { return new string[] { "TOPEMA.Sup", "TOPEMA.Res" }; }
         }
 
         public override System.Drawing.Pen[] SeriePens
@@ -51,9 +51,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            float initGap = (float)this.parameters[0];
-            int period = (int)this.parameters[1];
-            int inputSmooting = (int)this.parameters[2];
+            int period = (int)this.parameters[0];
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
@@ -61,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie sarSupport;
             FloatSerie sarResistance;
 
-            stockSerie.CalculateTOPEMA(period, initGap, out sarSupport, out sarResistance, inputSmooting);
+            stockSerie.CalculateTOPEMA(period, out sarSupport, out sarResistance);
 
             this.Series[0] = sarSupport;
             this.Series[0].Name = this.SerieNames[0];

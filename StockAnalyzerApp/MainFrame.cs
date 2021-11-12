@@ -478,10 +478,13 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
             // Refresh intraday every 2 minutes.
-            refreshTimer = new System.Windows.Forms.Timer();
-            refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-            refreshTimer.Interval = 120 * 1000;
-            refreshTimer.Start();
+            if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
+            {
+                refreshTimer = new System.Windows.Forms.Timer();
+                refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
+                refreshTimer.Interval = 120 * 1000;
+                refreshTimer.Start();
+            }
 
             #region DailyAlerts
 
@@ -711,6 +714,7 @@ namespace StockAnalyzerApp
         #region TIMER MANAGEMENT
         public static bool busy = false;
 
+        int lastDownloadHour = 8;
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
             if (TimerSuspended)
@@ -718,6 +722,15 @@ namespace StockAnalyzerApp
             if (busy) return;
             busy = true;
 
+            // Download ABC intraday data
+            var now = DateTime.Now.TimeOfDay;
+            if (now.Hours > lastDownloadHour && now < new TimeSpan(18, 0, 0))
+            {
+                (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                lastDownloadHour = now.Hours;
+            }
+
+            // Download INTRADAY current serie
             try
             {
                 if (this.currentStockSerie != null && this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY)
@@ -865,6 +878,7 @@ namespace StockAnalyzerApp
                             var values = stockSerie.GetValues(alertDef.BarDuration);
 
                             int stopIndex = Math.Max(10, stockSerie.LastCompleteIndex - 10);
+                            int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
                             for (int i = stockSerie.LastCompleteIndex; i > stopIndex; i--)
                             {
                                 var dailyValue = values.ElementAt(i);

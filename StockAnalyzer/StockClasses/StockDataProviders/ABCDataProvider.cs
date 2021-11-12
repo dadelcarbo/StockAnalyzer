@@ -463,12 +463,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return line.StartsWith("PT");
                 case StockSerie.Groups.SECTORS_CAC:
                     return line.StartsWith("QS");
-                //case StockSerie.Groups.GERMANY:
-                //    return line.StartsWith("DE");
-                //case StockSerie.Groups.ITALIA:
-                //    return line.StartsWith("IT");
-                //case StockSerie.Groups.SPAIN:
-                //    return line.StartsWith("ES");
+                    //case StockSerie.Groups.GERMANY:
+                    //    return line.StartsWith("DE");
+                    //case StockSerie.Groups.ITALIA:
+                    //    return line.StartsWith("IT");
+                    //case StockSerie.Groups.SPAIN:
+                    //    return line.StartsWith("ES");
             }
             throw new ArgumentException($"Group: {group} not supported in ABC");
         }
@@ -883,12 +883,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
                         {
                             serie.IsInitialised = false;
-                            stockSerie.ClearBarDurationCache();
+                            serie.ClearBarDurationCache();
                         }
                     }
                 }
             }
             return true;
+        }
+
+        public void DownloadAllGroupsIntraday()
+        {
+            var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
+            foreach (var group in groups)
+            {
+                string abcGroup = GetABCGroup(group);
+                if (abcGroup != null)
+                {
+                    var destFolder = RootFolder + ABC_INTRADAY_FOLDER;
+                    string fileName = abcGroup + ".csv";
+                    if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+                    {
+                        // Deinitialise all the stocks belonging to group
+                        foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
+                        {
+                            serie.IsInitialised = false;
+                        }
+                    }
+                }
+            }
+
         }
 
         /// <summary>

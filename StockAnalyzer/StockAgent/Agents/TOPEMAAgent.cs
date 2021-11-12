@@ -19,22 +19,22 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string DisplayIndicator => $"INDICATOR|TOPEMA({Period})";
 
-        FloatSerie bodyLowSerie;
-        FloatSerie emaSerie;
+        FloatSerie supportSerie;
+        FloatSerie resistanceSerie;
         protected override bool Init(StockSerie stockSerie)
         {
             if (stockSerie.Count < Period)
                 return false;
 
-            emaSerie = stockSerie.GetIndicator($"TOPEMA({Period})").Series[0];
-            bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            supportSerie = stockSerie.GetIndicator($"TOPEMA({Period})").Series[0];
+            resistanceSerie = stockSerie.GetIndicator($"TOPEMA({Period})").Series[1];
 
             return true;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (bodyLowSerie[index] > emaSerie[index])
+            if (closeSerie[index] > resistanceSerie[index - 1])
             {
                 return TradeAction.Buy;
             }
@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (closeSerie[index] < emaSerie[index])
+            if (closeSerie[index] < supportSerie[index - 1])
             {
                 return TradeAction.Sell;
             }
