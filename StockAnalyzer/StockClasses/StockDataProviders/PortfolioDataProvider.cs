@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockPortfolio;
+﻿using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,8 +23,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 NotifyProgress("Loading portfolio");
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(folder);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                StockLog.Write(ex);
                 throw;
             }
         }

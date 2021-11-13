@@ -62,7 +62,7 @@
                         <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Variation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Equity&#x0a;Return" DataMemberBinding="{Binding PortfolioVariation, StringFormat=P2}" ColumnGroupName="Current"/>
-                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" ColumnGroupName="Technical" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>
 
                         <!--

@@ -2,6 +2,7 @@
 using StockAnalyzer.StockPortfolio;
 using System;
 using StockAnalyzer;
+using System.Collections.Generic;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -48,8 +49,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float TradeRisk => position.Stop == 0 ? 1.0f : (position.EntryValue - position.Stop) / position.EntryValue;
         public float PortfolioRisk => PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
 
-        public StockBarDuration BarDuration => position.BarDuration;
-        public string Indicator => position.Indicator;
+        public StockBarDuration BarDuration { get { return position.BarDuration; } set { if (position.BarDuration != value) { position.BarDuration = value; OnPropertyChanged("BarDuration"); } } }
+        public string Indicator { get { return position.Indicator; } set { if (position.Indicator != value) { position.Indicator = value; OnPropertyChanged("Indicator"); } } }
 
         public DateTime? ExitDate => position.ExitDate;
         public float? ExitValue => position.ExitValue;

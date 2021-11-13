@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using System.Collections.Generic;
 
@@ -29,5 +30,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
         private PortfolioViewModel portfolioViewModel;
         public PortfolioViewModel PortfolioViewModel => portfolioViewModel == null ? portfolioViewModel = new PortfolioViewModel(Portfolio) : portfolioViewModel;
+        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
+
     }
 }

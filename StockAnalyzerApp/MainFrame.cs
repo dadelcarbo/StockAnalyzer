@@ -2788,10 +2788,97 @@ namespace StockAnalyzerApp
             public StockSerie stockSerie;
         }
 
-        string CELL_DIR_IMG_TEMPLATE =
-           @"<td><img alt=""%DIR%"" src=""../../img/%DIR%.png"" height=""16"" width=""16""/></td>" +
-           Environment.NewLine;
 
+        public void GeneratePortfolioReport(StockPortfolio portfolio)
+        {
+            const string rowTemplate = @"
+         <tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+             <td>%COL3%</td>
+             <td>%COL4%</td>
+             <td>%COL5%</td>
+             <td>%COL6%</td>
+         </tr>";
+            string html = $@"<table  class=""reportTable"">
+                <thead>
+                <tr>
+                    <th style=""font-size:20px;"" rowspan=""1""></th>
+                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name} </th>
+                </tr>
+                <tr>
+                    <th style=""width: 200px;"">Stock Name</th>
+                    <th>Trail Stop %</th>
+                    <th>Trail Stop</th>
+                    <th>Weekly %</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>";
+
+            var positions = portfolio?.OpenedPositions.ToList();
+            if (positions == null || positions.Count == 0)
+            {
+                return;
+            }
+            var previousSize = StockAnalyzerForm.MainFrame.Size;
+            StockAnalyzerForm.MainFrame.Size = new System.Drawing.Size(600, 600);
+            var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
+
+            string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
+            string reportBody = html;
+            foreach (var position in positions)
+            {
+                var stockName = position.StockName;
+                var mapping = StockPortfolio.GetMapping(stockName);
+                if (mapping != null)
+                    stockName = mapping.StockName;
+                if (StockDictionary.Instance.ContainsKey(stockName))
+                {
+                    var stockSerie = StockDictionary.Instance[stockName];
+                    this.ForceBarDuration(position.BarDuration, false);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, "___TRAILATR");
+                    var stockNameHtml = stockNameTemplate.Replace("%MSG%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var lastValue = stockSerie.ValueArray.Last();
+                    reportBody += rowTemplate.
+                        Replace("%COL1%", stockNameHtml).
+                        Replace("%COL2%", position.BarDuration.ToString()).
+                        Replace("%COL3%", ((position.Stop - lastValue.CLOSE) / lastValue.CLOSE).ToString("P2")).
+                        Replace("%COL4%", position.Stop.ToString("#.##")).
+                        Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
+                        Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                }
+                else
+                {
+                    reportBody += rowTemplate.
+                        Replace("%COL1%", stockName).
+                        Replace("%COL2%", position.BarDuration.ToString()).
+                        Replace("%COL3%", "???").
+                        Replace("%COL4%", position.Stop.ToString("#.##")).
+                        Replace("%COL5%", "???").
+                        Replace("%COL6%", "???");
+                }
+            }
+
+            reportBody += @" 
+</tbody>
+</table>
+</body>
+</html>
+";
+
+            StockAnalyzerForm.MainFrame.Size = previousSize;
+            StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
+
+            var htmlReport = reportTemplate.Replace("%HTML_BODY%", reportBody);
+            string fileName = Path.Combine(Settings.Default.RootFolder, $@"Portfolio\{ portfolio.Name }.html");
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                sw.Write(htmlReport);
+            }
+
+            Process.Start(fileName);
+        }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {
             if (!File.Exists(ReportTemplatePath))
@@ -2952,7 +3039,7 @@ namespace StockAnalyzerApp
                         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
 
                         var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
-                        alertMsg += AlertLineTemplate.Replace("%MSG%", alert.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                        alertMsg += stockNameTemplate.Replace("%MSG%", alert.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     }
                     stockSerie.BarDuration = currentBarDuration;
                 }
@@ -2962,7 +3049,7 @@ namespace StockAnalyzerApp
             return htmlBody;
         }
 
-        const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+        const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         private string GenerateAlertTable(StockBarDuration duration, StockSerie.Groups reportGroup, string reportTheme, string title, string viewableItemName, string eventName, string trailStopIndicatorName, string rankIndicator, int nbStocks)
         {
             const string rowTemplate = @"
@@ -3057,7 +3144,7 @@ namespace StockAnalyzerApp
 
                     var bitmapString = this.SnapshotAsHtml();
 
-                    var stockName = AlertLineTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var stockName = stockNameTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastCompleteIndex];
                     html += rowTemplate.
                         Replace("%COL1%", stockName).
@@ -3079,67 +3166,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private string ExtractEventsForReport()
-        {
-            string eventTypeString = string.Empty;
-            #region Extract Event
-            foreach (GraphControl gc in this.graphList)
-            {
-                GraphCurveTypeList curveList = gc.CurveList;
-                for (int i = this.CurrentStockSerie.Count - 2; i < this.CurrentStockSerie.Count; i++)
-                {
-                    foreach (IStockIndicator indicator in curveList.Indicators.Where(indic => indic.Events != null))
-                    {
-                        foreach (BoolSerie eventSerie in indicator.Events.Where(ev => ev != null && ev.Count > 0))
-                        {
-                            if (eventSerie[i])
-                            {
-                                eventTypeString += htmlEventTemplate.Replace(eventTemplate, indicator.Name + " - " + eventSerie.Name);
-                            }
-                        }
-                    }
-                    // Trail Stops
-                    if (curveList.TrailStop != null && curveList.TrailStop.EventCount > 0)
-                    {
-                        foreach (BoolSerie eventSerie in curveList.TrailStop.Events.Where(ev => ev != null && ev.Count > 0))
-                        {
-                            if (eventSerie[i])
-                            {
-                                eventTypeString += htmlEventTemplate.Replace(eventTemplate, curveList.TrailStop.Name + " - " + eventSerie.Name);
-                            }
-                        }
-                    }
-                    // Paint Bars
-                    if (curveList.PaintBar != null && curveList.PaintBar.EventCount > 0)
-                    {
-                        int j = 0;
-                        foreach (BoolSerie eventSerie in curveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
-                        {
-                            if (curveList.PaintBar.SerieVisibility[j] && eventSerie[i])
-                            {
-                                eventTypeString += htmlEventTemplate.Replace(eventTemplate, curveList.PaintBar.Name + " - " + eventSerie.Name);
-                            }
-                            j++;
-                        }
-                    }
-                    // Decorator
-                    if (curveList.Decorator != null && curveList.Decorator.EventCount > 0)
-                    {
-                        int j = 0;
-                        foreach (BoolSerie eventSerie in curveList.Decorator.Events.Where(ev => ev != null && ev.Count > 0))
-                        {
-                            if (curveList.Decorator.EventVisibility[j] && eventSerie[i])
-                            {
-                                eventTypeString += htmlEventTemplate.Replace(eventTemplate, curveList.Decorator.Name + " - " + eventSerie.Name);
-                            }
-                            j++;
-                        }
-                    }
-                }
-            }
-            #endregion Extract Events
-            return eventTypeString;
-        }
         private static void CleanReportFolder(string folderName)
         {
             if (Directory.Exists(folderName))

@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockPortfolio
         public float MaxRisk { get; set; }
         public DateTime CreationDate { get; set; }
         [XmlIgnore]
-        public float PositionValue { get;  set; }
+        public float PositionValue { get; set; }
         public float TotalValue => this.Balance + this.PositionValue;
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
         public bool IsSimu { get; set; }
@@ -260,7 +260,10 @@ namespace StockAnalyzer.StockPortfolio
                     EntryDate = operation.Date,
                     EntryQty = position.EntryQty + operation.Qty,
                     StockName = operation.StockName,
-                    EntryValue = openValue
+                    EntryValue = openValue,
+                    Stop = position.Stop,
+                    Indicator = position.Indicator,
+                    BarDuration = position.BarDuration
                 };
             }
             else // Position on this stock doen't exists, create a new one
@@ -314,7 +317,10 @@ namespace StockAnalyzer.StockPortfolio
                     EntryDate = operation.Date,
                     EntryQty = position.EntryQty - qty,
                     StockName = operation.StockName,
-                    EntryValue = position.EntryValue
+                    EntryValue = position.EntryValue,
+                    Stop = position.Stop,
+                    Indicator = position.Indicator,
+                    BarDuration = position.BarDuration
                 });
             }
         }
