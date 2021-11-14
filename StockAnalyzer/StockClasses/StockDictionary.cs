@@ -7,6 +7,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses
@@ -1160,7 +1161,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 if (vol != 0)
                 {
-                    val *= (1.0f + var / (float) nbStocks);
+                    val *= (1.0f + var / (float)nbStocks);
                 }
             }
             return val;
@@ -1604,7 +1605,7 @@ namespace StockAnalyzer.StockClasses
             if (indexName.EndsWith("_SI"))
             {
                 int sectorId = int.Parse(breadthSerie.ShortName);
-                indexComponents = this.Values.Where(s => !s.StockAnalysis.Excluded &&  s.SectorId == sectorId ).ToArray();
+                indexComponents = this.Values.Where(s => !s.StockAnalysis.Excluded && s.SectorId == sectorId).ToArray();
             }
             else
             {
@@ -1991,23 +1992,32 @@ namespace StockAnalyzer.StockClasses
         public StockSerie GeneratePortfolioSerie(StockPortfolio.StockPortfolio portfolio)
         {
             var refStock = this["CAC40"];
-            if (!refStock.Initialise())
-                return null;
-
-            refStock.BarDuration = BarDuration.Daily;
-            var startDate = portfolio.TradeOperations.OrderBy(op => op.Id).First().Date;
-
             StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, refStock.StockGroup, StockDataProvider.Portfolio, refStock.DataSource.Duration);
             portfolioSerie.IsPortfolioSerie = true;
-
-            float value;
-            foreach (var date in refStock.Keys.Where(d => d >= startDate))
+            try
             {
-                long volume;
-                value = portfolio.EvaluateAt(date, BarDuration.Daily, out volume);
-                portfolioSerie.Add(date, new StockDailyValue(value, value, value, value, volume, date));
-            }
+                refStock.BarDuration = BarDuration.Daily;
+                var operations = portfolio.TradeOperations.OrderBy(op => op.Date);
+                var startDate = operations.First().Date;
 
+                float balance = portfolio.InitialBalance;
+                foreach (var date in refStock.Keys.Where(d => d >= startDate))
+                {
+                    float value = balance;
+                    var dayOperations = operations.Where(o => o.Date == date).ToList();
+                    balance += dayOperations.Sum(o => o.Movement);
+
+                    // Evaluate opened positions
+                    long volume;
+                    value = balance + portfolio.EvaluateOpenedPositionsAt(date, BarDuration.Daily, out volume);
+                    portfolioSerie.Add(date, new StockDailyValue(value, value, value, value, volume, date));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
             // Preinitialise the serie
             portfolioSerie.PreInitialise();
             portfolioSerie.IsInitialised = true;

@@ -254,6 +254,7 @@ namespace StockAnalyzer.StockPortfolio
                 position.ExitDate = operation.Date;
 
                 var openValue = (position.EntryValue * position.EntryQty + amount) / (position.EntryQty + operation.Qty);
+                position.ExitValue = openValue;
                 position = new StockPosition
                 {
                     Id = operation.Id,
@@ -314,9 +315,9 @@ namespace StockAnalyzer.StockPortfolio
                 this.Positions.Add(new StockPosition
                 {
                     Id = operation.Id,
+                    StockName = operation.StockName,
                     EntryDate = operation.Date,
                     EntryQty = position.EntryQty - qty,
-                    StockName = operation.StockName,
                     EntryValue = position.EntryValue,
                     Stop = position.Stop,
                     Indicator = position.Indicator,
@@ -382,7 +383,6 @@ namespace StockAnalyzer.StockPortfolio
             };
             this.TradeOperations.Add(operation);
             this.Balance += amount;
-            this.InitialBalance += amount;
         }
         public void DividendOperation(string stockName, DateTime date, float amount, long operationId)
         {
@@ -628,10 +628,10 @@ namespace StockAnalyzer.StockPortfolio
                 p.Dump();
             }
         }
-        public float EvaluateAt(DateTime date, StockClasses.BarDuration duration, out long volume)
+        public float EvaluateOpenedPositionsAt(DateTime date, StockClasses.BarDuration duration, out long volume)
         {
             // Calculate value for opened positions
-            var positions = this.Positions.Where(p => p.ExitDate > date && p.EntryDate <= date);
+            var positions = this.Positions.Where(p => (p.ExitDate == null || p.ExitDate > date) && p.EntryDate <= date);
             float positionValue = 0f;
             volume = 0;
             foreach (var pos in positions)
@@ -647,22 +647,6 @@ namespace StockAnalyzer.StockPortfolio
                     positionValue += pos.EntryQty * value;
                 }
             }
-
-            // Calculate cash balance
-            StockOperation lastOperation = null;
-            //foreach (var op in this.Operations)
-            //{
-            //    if (op.Date <= date)
-            //    {
-            //        lastOperation = op;
-            //    }
-            //    else
-            //    {
-            //        break;
-            //    }
-            //}
-            positionValue += lastOperation == null ? this.InitialBalance : lastOperation.Balance;
-
             return positionValue;
         }
 
