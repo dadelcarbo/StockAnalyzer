@@ -34,7 +34,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1], float.NaN);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie variationSerie = stockSerie.GetSerie(StockDataType.VARIATION);
             FloatSerie volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
             FloatSerie highestSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             FloatSerie emaSerie = stockSerie.GetIndicator($"EMA({period})").Series[0];
@@ -53,7 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-                        trail = Math.Max(trail, closeSerie[i] * (1.0f - 0.01f * nbAtr * natrSerie[i]));
+                        if (lowSerie[i] < emaSerie[i])
+                            trail = Math.Max(trail, lowSerie[i]);
                     }
                 }
                 else
@@ -62,19 +64,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         continue;
                     if (highestSerie[i] < period)
                         continue;
-                    if (closeSerie[i] * volumeSerie[i] < 1000000)
+                    if (closeSerie[i] * volumeSerie[i] < 200000)
                         continue;
-                    if ((volumeSerie[i] - volumeSerie[i - 1]) / volumeSerie[i - 1] < 0.5f)
+                    if (volumeSerie[i] < volumeSerie[i - 1])
                         continue;
-                    var variation = (closeSerie[i] - openSerie[i]) / openSerie[i];
-                    if (variation < 0.05f || variation > 0.2f)
+                    if (variationSerie[i] < 0.04f || variationSerie[i] > 0.2f)
                         continue;
                     if (closeSerie[i] < emaSerie[i])
                         continue;
-                    if (natrSerie[i] > 8.0f)
+                    if (natrSerie[i] > 15.0f)
                         continue;
 
-                    trail = closeSerie[i] * (1.0f - 0.01f * nbAtr * natrSerie[i]);
+                    trail = emaSerie[i];
 
                     holding = true;
                 }

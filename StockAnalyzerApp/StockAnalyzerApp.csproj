@@ -12,7 +12,7 @@
     <AssemblyName>Ultimate Chartist</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <ApplicationIcon>chart_line.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -22,7 +22,7 @@
     <TargetFrameworkProfile />
     <PublishUrl>\\DESKTOP-DAVID\Partage\UltimateChartist\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Unc</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -30,10 +30,12 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\DESKTOP-DAVID\Partage\UltimateChartist\</InstallUrl>
+    <InstallUrl>https://onedrive.live.com/%3fid=B924425212EBBA4D%2521689&amp;cid=B924425212EBBA4D/</InstallUrl>
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
-    <ApplicationRevision>2</ApplicationRevision>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -986,6 +988,7 @@
     <Content Include="Resources\AddSarex.bmp" />
     <Content Include="Resources\AddSegment.bmp" />
     <Content Include="Resources\AddToReport.png" />
+    <Content Include="Resources\AddWinRatio.bmp" />
     <Content Include="Resources\Backward-icon.png" />
     <Content Include="Resources\BarChart.bmp" />
     <Content Include="Resources\ButtonFastForward.png">
