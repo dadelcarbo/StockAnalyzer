@@ -142,6 +142,8 @@
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_STRONG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">

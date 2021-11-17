@@ -24,6 +24,12 @@ namespace StockAnalyzer.StockClasses
         public long VOLUME { get; set; }
         public float VARIATION { get; set; }
 
+        public float BodyHigh => Math.Max(OPEN, CLOSE);
+        public float BodyLow => Math.Min(OPEN, CLOSE);
+
+        public float ADR => BodyHigh - BodyLow;
+        public float NADR => ADR / CLOSE;
+
         private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
