@@ -162,6 +162,7 @@ namespace StockAnalyzer.StockPortfolio
                                             .Replace(" S A", "")
                                             .Replace(" UCITS ETF", "")
                                             .Replace(" SE", "")
+                                            .Replace(" NV", "")
                                             .Replace(" DAILY", "");
 
                                         var mapping = StockPortfolio.GetMapping(stockName);
