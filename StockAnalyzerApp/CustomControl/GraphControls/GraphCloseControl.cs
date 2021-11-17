@@ -1049,7 +1049,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected override void PaintGraphTitle(Graphics gr)
         {
-            string graphTitle = this.serie?.StockName;
+            string graphTitle = this.serie.StockGroup + " - " + this.serie?.StockName;
 
             // Add PaintBars, SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
@@ -1733,22 +1733,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
         }
 
-        private void DrawTmpSR(Graphics graphics, PointF mouseValuePoint)
-        {
-            if (this.IsInitialized && StockAnalyzerForm.MainFrame.CurrentStockSerie != null)
-            {
-                int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-
-                if (index < 200) return;
-
-                StockPaintBar_CONVEXCULL.GetSR(StockAnalyzerForm.MainFrame.CurrentStockSerie, index - 200, index);
-
-                foreach (var item in StockAnalyzerForm.MainFrame.CurrentStockSerie.StockAnalysis.DrawingItems[StockAnalyzerForm.MainFrame.CurrentStockSerie.BarDuration])
-                {
-                    DrawTmpItem(graphics, item.Pen, item, true);
-                }
-            }
-        }
 
         private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {

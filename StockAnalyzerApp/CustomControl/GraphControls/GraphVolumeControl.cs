@@ -65,20 +65,40 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             // Get last value
             this.mainSerie = CurveList.Find(c => c.DataSerie.Name == "VOLUME").DataSerie;
+            var closeSerie = CurveList.Find(c => c.DataSerie.Name == "CLOSE").DataSerie;
 
             float lastValue = this.mainSerie[EndIndex];
             string lastValueString;
-            if (lastValue > 100000000)
+            if (lastValue > 1000000)
             {
                 lastValueString = (lastValue / 1000000).ToString("0.#") + "M";
             }
-            else if (lastValue > 1000000)
+            else if (lastValue > 1000)
             {
                 lastValueString = (lastValue / 1000).ToString("0.#") + "K";
             }
             else
             {
                 lastValueString = lastValue.ToString("0.##");
+            }
+            lastValue *= closeSerie[EndIndex];
+            lastValueString += Environment.NewLine;
+            if (lastValue > 1000000000)
+            {
+                lastValueString += (lastValue / 1000000000).ToString("0.##") + "G€";
+            }
+            else
+            if (lastValue > 1000000)
+            {
+                lastValueString += (lastValue / 1000000).ToString("0.##") + "M€";
+            }
+            else if (lastValue > 1000)
+            {
+                lastValueString += (lastValue / 1000).ToString("0.##") + "K€";
+            }
+            else
+            {
+                lastValueString += lastValue.ToString("0.##") + "€";
             }
 
             aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, GraphRectangle.Top + 8);
