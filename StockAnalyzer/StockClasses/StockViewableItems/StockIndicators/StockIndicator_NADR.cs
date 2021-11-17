@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period"}; }
+            get { return new string[] { "Period" }; }
         }
 
         public override string[] SerieNames { get { return new string[] { "NADR(" + this.Parameters[0].ToString() + ")" }; } }
@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            this.series[0] = new FloatSerie(stockSerie.Values.Select(v=>v.NADR)).CalculateEMA((int)this.Parameters[0]);
+            this.series[0] = new FloatSerie(stockSerie.Values.Select(v => v.NADR)).CalculateEMA((int)this.Parameters[0]) * 100f;
             this.Series[0].Name = this.Name;
         }
 

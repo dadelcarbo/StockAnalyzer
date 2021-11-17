@@ -2767,21 +2767,6 @@ namespace StockAnalyzerApp
 
         private static string htmlAlertTemplate = "\r\n<B><U>" + commentTitleTemplate + "</U></B>" + commentTemplate;
 
-        class RankedSerie
-        {
-            public int rank;
-            public int previousRank;
-            public float rankIndicatorValue;
-            public float previousRankIndicatorValue;
-            public float Indicator2Value;
-            public StockSerie stockSerie;
-        }
-        class BreakoutSerie
-        {
-            public int highestIn;
-            public float trailStop;
-            public StockSerie stockSerie;
-        }
         class ReportSerie
         {
             public float rank;
@@ -2913,6 +2898,7 @@ namespace StockAnalyzerApp
             string htmlLeaders = string.Empty;
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TrailATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
 

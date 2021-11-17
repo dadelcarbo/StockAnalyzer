@@ -4,13 +4,13 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
-    public class StockCloud_TRAILATR : StockCloudBase
+    public class StockCloud_TRAILADR : StockCloudBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Definition => "Paint a cloud based on TRAIL ATR";
+        public override string Definition => "Paint a cloud based on TRAIL ADR";
 
         public override string[] ParameterNames
         {
@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Mid", "Resistance" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var atrBandIndicator = stockSerie.GetTrailStop($"TRAILATR({(int)this.parameters[0]},{((float)this.parameters[1]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{((float)this.parameters[2]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{this.parameters[3]})");
+            var atrBandIndicator = stockSerie.GetTrailStop($"TRAILADR({(int)this.parameters[0]},{((float)this.parameters[1]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{((float)this.parameters[2]).ToString(StockAnalyzerApp.Global.EnglishCulture)},{this.parameters[3]})");
             var longStop = atrBandIndicator.Series[0];
             var shortStop = atrBandIndicator.Series[1];
 
