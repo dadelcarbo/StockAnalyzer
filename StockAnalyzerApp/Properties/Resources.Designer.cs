@@ -143,6 +143,16 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap AddWinRatio {
+            get {
+                object obj = ResourceManager.GetObject("AddWinRatio", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Backward_icon {
             get {
                 object obj = ResourceManager.GetObject("Backward_icon", resourceCulture);

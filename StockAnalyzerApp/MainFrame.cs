@@ -1861,7 +1861,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1874,9 +1874,33 @@ namespace StockAnalyzerApp
         {
             foreach (GraphControl graphControl in this.graphList)
             {
-                if (drawAreaStripBtn.Checked)
+                if (drawWinRatioStripBtn.Checked)
                 {
                     graphControl.DrawingMode = GraphDrawMode.AddArea;
+                    graphControl.DrawingStep = GraphDrawingStep.SelectItem;
+                }
+                else
+                {
+                    graphControl.DrawingMode = GraphDrawMode.Normal;
+                    graphControl.DrawingStep = GraphDrawingStep.Done;
+                }
+            }
+            drawLineStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
+            cupHandleBtn.Checked = false;
+            deleteLineStripBtn.Checked = false;
+            addHalfLineStripBtn.Checked = false;
+            addSegmentStripBtn.Checked = false;
+            cutLineStripBtn.Checked = false;
+        }
+
+        private void drawWinRatioStripBtn_Click(object sender, EventArgs e)
+        {
+            foreach (GraphControl graphControl in this.graphList)
+            {
+                if (drawWinRatioStripBtn.Checked)
+                {
+                    graphControl.DrawingMode = GraphDrawMode.AddWinRatio;
                     graphControl.DrawingStep = GraphDrawingStep.SelectItem;
                 }
                 else
@@ -1909,7 +1933,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1933,7 +1957,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -1957,7 +1981,7 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
@@ -1997,7 +2021,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -2021,7 +2045,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -2045,7 +2069,7 @@ namespace StockAnalyzerApp
                 }
             }
             copyLineStripBtn.Checked = false;
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -2063,7 +2087,7 @@ namespace StockAnalyzerApp
 
             // Reset drawing buttons 
             copyLineStripBtn.Checked = false;
-            drawAreaStripBtn.Checked = false;
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
             cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
@@ -2901,7 +2925,7 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TrailATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-
+            
             //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
 
             //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
@@ -3042,6 +3066,7 @@ namespace StockAnalyzerApp
             const string rowTemplate = @"
          <tr>
              <td>%COL1%</td>
+             <td>%GROUP%</td>
              <td>%COL2%</td>
              <td>%COL3%</td>
              <td>%COL4%</td>
@@ -3108,11 +3133,12 @@ namespace StockAnalyzerApp
             <table  class=""reportTable"">
                 <thead>
                 <tr>
-                    <th style=""font-size:20px;"" rowspan=""1"">{reportGroup}</th>
+                    <th style=""font-size:20px;"" colspan=""2"" >{reportGroup}</th>
                     <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
-                    <th style=""width: 200px;"">Stock Name</th>
+                    <th>Group</th>
+                    <th>Stock Name</th>
                     <th>{rankIndicator}</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
@@ -3132,8 +3158,9 @@ namespace StockAnalyzerApp
                     var bitmapString = this.SnapshotAsHtml();
 
                     var stockName = stockNameTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastCompleteIndex];
+                    var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastIndex];
                     html += rowTemplate.
+                        Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                         Replace("%COL1%", stockName).
                         Replace("%COL2%", reportSerie.rank.ToString()).
                         Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).

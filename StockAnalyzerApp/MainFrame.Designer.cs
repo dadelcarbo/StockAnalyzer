@@ -144,7 +144,7 @@ namespace StockAnalyzerApp
             this.cupHandleBtn = new System.Windows.Forms.ToolStripButton();
             this.copyLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.cutLineStripBtn = new System.Windows.Forms.ToolStripButton();
-            this.drawAreaStripBtn = new System.Windows.Forms.ToolStripButton();
+            this.drawWinRatioStripBtn = new System.Windows.Forms.ToolStripButton();
             this.deleteLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.drawingStyleStripBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -1082,7 +1082,7 @@ namespace StockAnalyzerApp
             this.magnetStripBtn,
             this.cupHandleBtn,
             this.drawLineStripBtn,
-            this.drawAreaStripBtn,
+            this.drawWinRatioStripBtn,
             this.addHalfLineStripBtn,
             this.addSegmentStripBtn,
             this.copyLineStripBtn,
@@ -1123,16 +1123,16 @@ namespace StockAnalyzerApp
             this.drawLineStripBtn.Text = "Add a line";
             this.drawLineStripBtn.Click += new System.EventHandler(this.drawLineStripBtn_Click);
             // 
-            // drawAreaStripBtn
+            // drawWinRatioStripBtn
             // 
-            this.drawAreaStripBtn.CheckOnClick = true;
-            this.drawAreaStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.drawAreaStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddArea;
-            this.drawAreaStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.drawAreaStripBtn.Name = "drawAreaStripBtn";
-            this.drawAreaStripBtn.Size = new System.Drawing.Size(23, 22);
-            this.drawAreaStripBtn.Text = "Draw areas";
-            this.drawAreaStripBtn.Click += new System.EventHandler(this.drawAreaStripBtn_Click);
+            this.drawWinRatioStripBtn.CheckOnClick = true;
+            this.drawWinRatioStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.drawWinRatioStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddWinRatio;
+            this.drawWinRatioStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.drawWinRatioStripBtn.Name = "drawWinRatioStripBtn";
+            this.drawWinRatioStripBtn.Size = new System.Drawing.Size(23, 22);
+            this.drawWinRatioStripBtn.Text = "Draw win ratio";
+            this.drawWinRatioStripBtn.Click += new System.EventHandler(this.drawWinRatioStripBtn_Click);
             // 
             // addHalfLineStripBtn
             // 
@@ -1510,7 +1510,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem optionsMenuItem;
         private ToolStripMenuItem configDataProviderMenuItem;
         private ToolStripButton drawLineStripBtn;
-        private ToolStripButton drawAreaStripBtn;
+        private ToolStripButton drawWinRatioStripBtn;
         private ToolStripButton cupHandleBtn;
         private ToolStripButton copyLineStripBtn;
         private ToolStripButton deleteLineStripBtn;

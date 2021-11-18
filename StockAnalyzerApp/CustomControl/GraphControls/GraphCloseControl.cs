@@ -1466,6 +1466,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Rectangle2D(point1, point2), true);
                     }
                     break;
+                case GraphDrawMode.AddWinRatio:
+                    if (this.DrawingStep == GraphDrawingStep.ItemSelected)
+                    {
+                        if (newWinRatio == null)
+                        {
+                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new WinRatio(point1, point2, PointF.Empty), true);
+                        }
+                        else
+                        {
+                            newWinRatio.P3 = point2;
+                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newWinRatio, true);
+                        }
+                    }
+                    break;
                 case GraphDrawMode.AddSegment:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
@@ -1733,7 +1747,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
         }
 
-
+        WinRatio newWinRatio = null;
         private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {
             PointF point1 = selectedValuePoint;
@@ -1795,6 +1809,46 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 this.BackgroundDirty = true; // The new line becomes a part of the background
                                 selectedLineIndex = -1;
                                 selectedValuePoint = PointF.Empty;
+                            }
+                            catch (System.ArithmeticException)
+                            {
+                            }
+                            break;
+                        default:   // Shouldn't come there
+                            break;
+                    }
+                    break;
+                case GraphDrawMode.AddWinRatio:
+                    switch (this.DrawingStep)
+                    {
+                        case GraphDrawingStep.SelectItem: // Selecting the first point
+                            selectedValuePoint = mouseValuePoint;
+                            this.DrawingStep = GraphDrawingStep.ItemSelected;
+                            newWinRatio = null;
+                            break;
+                        case GraphDrawingStep.ItemSelected: // Selecting next points
+                            try
+                            {
+                                if (newWinRatio == null)
+                                {
+                                    newWinRatio = new WinRatio(point1, point2, PointF.Empty);
+                                    this.BackgroundDirty = true; // The new line becomes a part of the background
+                                    selectedLineIndex = -1;
+                                    selectedValuePoint = PointF.Empty;
+                                }
+                                else
+                                {
+                                    newWinRatio.P3 = point2;
+                                    drawingItems.Add(newWinRatio);
+                                    drawingItems.RefDate = dateSerie[(int)point1.X];
+                                    drawingItems.RefDateIndex = (int)point1.X;
+                                    AddToUndoBuffer(GraphActionType.AddItem, newWinRatio);
+                                    this.DrawingStep = GraphDrawingStep.SelectItem;
+                                    this.BackgroundDirty = true; // The new line becomes a part of the background
+                                    selectedLineIndex = -1;
+                                    selectedValuePoint = PointF.Empty;
+                                    newWinRatio = null;
+                                }
                             }
                             catch (System.ArithmeticException)
                             {
