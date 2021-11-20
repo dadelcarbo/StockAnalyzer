@@ -2,7 +2,6 @@
 using StockAnalyzer.StockPortfolio;
 using System;
 using StockAnalyzer;
-using System.Collections.Generic;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -10,10 +9,19 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
     {
         PortfolioViewModel portfolio;
         StockPosition position;
-        public StockPositionViewModel(StockPosition p, PortfolioViewModel portfolio)
+        public StockPositionViewModel(StockPosition pos, PortfolioViewModel portfolio)
         {
-            this.position = p;
-            this.portfolio = portfolio;
+            this.position = pos;
+            this.portfolio = portfolio; 
+            float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);
+            if (value == 0.0f) // if price is not found use open price
+            {
+                this.LastValue = pos.EntryValue;
+            }
+            else
+            {
+                this.LastValue = value;
+            }
         }
         public bool IsValidName
         {
@@ -60,9 +68,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
 
         public float LastValue { get; set; }
-        public float Variation => (LastValue - EntryValue) / (EntryValue);
+        public float Variation => (LastValue - EntryValue) / EntryValue;
         public float PortfolioVariation => PortfolioPercent * Variation;
         // @@@@ Need to use the most accurate portfolio value (Position value or Risk free value ?
-        public float PortfolioPercent => this.portfolio.Portfolio.TotalValue > 0 ? EntryValue * this.EntryQty / this.portfolio.Portfolio.InitialBalance : 0.0f;
+        public float PortfolioPercent => this.portfolio.Value > 0 ? EntryValue * this.EntryQty / this.portfolio.Value : 0.0f;
     }
 }

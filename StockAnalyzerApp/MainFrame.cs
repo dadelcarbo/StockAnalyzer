@@ -2817,7 +2817,8 @@ namespace StockAnalyzerApp
                     <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name} </th>
                 </tr>
                 <tr>
-                    <th style=""width: 200px;"">Stock Name</th>
+                    <th>Stock Name</th>
+                    <th>Duration</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
                     <th>Weekly %</th>

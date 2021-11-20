@@ -34,31 +34,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
-        public IEnumerable<StockPositionViewModel> OpenedPositions
-        {
-            get
-            {
-                var positions = Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this)).ToList();
-                float val = Portfolio.Balance;
-                foreach (var pos in positions)
-                {
-                    float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);
-                    if (value == 0.0f) // if price is not found use open price
-                    {
-                        val += pos.EntryQty * pos.EntryValue;
-                        pos.LastValue = pos.EntryValue;
-                    }
-                    else
-                    {
-                        val += pos.EntryQty * value;
-                        pos.LastValue = value;
-                    }
-                }
-                this.Value = val;
-                OnPropertyChanged(nameof(Value));
-                return positions;
-            }
-        }
+        public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
+
         public IEnumerable<StockPositionViewModel> ClosedPositions
         {
             get
@@ -68,6 +45,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
         }
 
-        public float Value { get; set; }
+        public float Value => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.LastValue).Sum();
+
+        public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.Stop).Sum();
     }
 }
