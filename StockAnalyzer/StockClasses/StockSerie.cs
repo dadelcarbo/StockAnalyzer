@@ -2019,6 +2019,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         isDownTrend = false;
                         emaSerieResistance[i] = float.NaN;
+                        emaSerieSupport[i] = previousLow = previousEMAUp = Math.Min(lowSerie[i - 1], lowSerie[i]);
                     }
                     else // Down Trend continues
                     {

@@ -59,11 +59,12 @@
             </GroupBox>
             <GroupBox Header="Date Range" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <Label Content="From "/>
+                    <Label Content="From " VerticalAlignment="Center"/>
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate, Mode=TwoWay}"/>
-                    <Label Content="To "/>
+                    <Label Content="To " VerticalAlignment="Center"/>
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate, Mode=TwoWay}"/>
-                    <Button Content="Apply" Click="CalculateBtn_OnClick" Margin="6"/>
+                    <Button Content="Apply" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                    <CheckBox Content="Intraday" VerticalAlignment="Center" IsChecked="{Binding DownloadIntraday}" ToolTip="Download intraday data from ABC Bourse"/>
                 </StackPanel>
             </GroupBox>
             <Button x:Name="exportToExcel" Height="24" Width="24"  VerticalAlignment="Center" Margin="6,10,0,0" 

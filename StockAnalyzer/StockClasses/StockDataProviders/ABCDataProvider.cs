@@ -1417,11 +1417,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         string[] row = sr.ReadLine().Split(';');
                         DateTime date = DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
-                        if (date.Year >= LOAD_START_YEAR)
-                        {
-                            var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), date);
-                            stockSerie.Add(value.DATE, value);
-                        }
+                        var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), date);
+                        stockSerie.Add(value.DATE, value);
                     }
                 }
                 result = true;

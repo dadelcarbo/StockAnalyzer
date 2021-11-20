@@ -147,6 +147,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public bool ExportEnabled => this.Lines != null && this.Lines.Count > 0;
 
+        public bool DownloadIntraday { get; set; }
+
         public List<PalmaresLine> Lines { get; set; }
 
         public PalmaresViewModel()
@@ -158,6 +160,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
             this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
+
+            DownloadIntraday = false;
         }
         public bool Calculate()
         {
@@ -199,6 +203,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 catch { }
             }
             #endregion
+
+            if (this.DownloadIntraday)
+            {
+                var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
+                dataProvider.DownloadAllGroupsIntraday();
+            }
 
             Lines = new List<PalmaresLine>();
             foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
