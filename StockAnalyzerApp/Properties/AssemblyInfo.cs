@@ -4,13 +4,23 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+#if DEBUG
 [assembly: AssemblyTitle("Ultimate Chartist")]
 [assembly: AssemblyDescription("Trade differently")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ultimate Chartist PLC")]
+[assembly: AssemblyCompany("Ultimate Chartist")]
 [assembly: AssemblyProduct("Ultimate Chartist")]
-[assembly: AssemblyCopyright("Copyright © Ultimate Chartist PLC 2012")]
+[assembly: AssemblyCopyright("Copyright © Ultimate Chartist 2012")]
 [assembly: AssemblyTrademark("Ultimate Chartist")]
+#else
+[assembly: AssemblyTitle("Ultimate Chartist Debug")]
+[assembly: AssemblyDescription("Trade differently Debug")]
+[assembly: AssemblyConfiguration(" Debug")]
+[assembly: AssemblyCompany("Ultimate Chartist Debug")]
+[assembly: AssemblyProduct("Ultimate Chartist Debug")]
+[assembly: AssemblyCopyright("Copyright © Ultimate Chartist 2012 Debug")]
+[assembly: AssemblyTrademark("Ultimate Chartist")]
+#endif
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

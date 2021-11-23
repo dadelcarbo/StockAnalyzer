@@ -314,7 +314,16 @@ namespace StockAnalyzerApp
             StockLog.Write("GetFolderPath: " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
             // This is the first time the user runs the application.
-            Settings.Default.RootFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UltimateChartistRoot";
+            if (string.IsNullOrEmpty(Settings.Default.RootFolder))
+            {
+                Settings.Default.RootFolder = Path.Combine(@"C:\ProgramData", "UltimateChartist");
+            }
+            if (!Directory.Exists(Settings.Default.RootFolder))
+            {
+                Directory.CreateDirectory(Settings.Default.RootFolder);
+                Settings.Default.DownloadData = true;
+            }
+
             string stockRootFolder = Settings.Default.RootFolder;
 
             // Root folder sanity check
@@ -342,21 +351,11 @@ namespace StockAnalyzerApp
             }
             Directory.CreateDirectory(folderName);
 
-
-            // Validate preferences and local repository
-            if (string.IsNullOrWhiteSpace(Settings.Default.UserId) || !CheckLicense())
-            {
-                StockSplashScreen.CloseForm(true);
-                return;
-            }
-
             // Parse Yahoo market data
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;
 
-            StockDataProviderBase.InitStockDictionary(this.StockDictionary,
-                Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(),
-                new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            StockDataProviderBase.InitStockDictionary(this.StockDictionary, Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(), new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -364,7 +363,7 @@ namespace StockAnalyzerApp
             // Deserialize Drawing Items - Read Analysis files
             if (Settings.Default.AnalysisFile == string.Empty)
             {
-                Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartistAnalysis.ulc";
+                Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartist.ulc";
                 Settings.Default.Save();
             }
             else
@@ -2926,7 +2925,7 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TrailATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            
+
             //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
 
             //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);

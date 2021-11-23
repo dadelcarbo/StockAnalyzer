@@ -20,6 +20,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string folder = Path.Combine(RootFolder, PORTFOLIO_FOLDER);
             try
             {
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
                 NotifyProgress("Loading portfolio");
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(folder);
             }

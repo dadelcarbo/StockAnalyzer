@@ -668,13 +668,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (previousISIN != row[0])
                         {
                             stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0] && s.StockGroup == group);
+                            if (stockSerie == null)
+                                continue;
                             previousISIN = row[0];
-                            if (stockSerie?.Count == 0)
+                            if (stockSerie.Count == 0)
                             {
-                                if (!this.LoadFromCSV(stockSerie))
-                                {
-                                    continue;
-                                }
+                                this.LoadFromCSV(stockSerie);
                             }
                         }
                         if (stockSerie != null)
@@ -789,11 +788,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 this.LoadData(stockSerie);
                 if (stockSerie.StockName == "CAC40")
                 {
-                    lastLoadedCAC40Date = stockSerie.Count > 0 ? stockSerie.Keys.Last() : new DateTime(LOAD_START_YEAR, 1, 1);
-                    if (lastLoadedCAC40Date.Date == DateTime.Today)
+                    if (stockSerie.Count == 0)
                     {
-                        this.needDownload = false;
-                        return true;
+                        var fileName = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+                        if (ForceDownloadData(stockSerie))
+                        {
+                            this.needDownload = true;
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_A);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_B);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_C);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.ALTERNEXT);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.SECTORS_CAC);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.BELGIUM);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.HOLLAND);
+                            DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.PORTUGAL);
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        lastLoadedCAC40Date = stockSerie.Count > 0 ? stockSerie.Keys.Last() : new DateTime(LOAD_START_YEAR, 1, 1);
+                        if (lastLoadedCAC40Date.Date == DateTime.Today)
+                        {
+                            this.needDownload = false;
+                            return true;
+                        }
                     }
                 }
                 if (stockSerie.Count == 0)
@@ -827,11 +846,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.SECTORS_CAC);
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.BELGIUM);
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.HOLLAND);
-                                //DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.GERMANY);
-                                //DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.SPAIN);
-                                //DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.ITALIA);
                                 DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.PORTUGAL);
-
                             }
                         }
 
@@ -1060,7 +1075,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup)
+        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup, bool loadData = true)
         {
             bool success = true;
 
@@ -1069,7 +1084,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 while (endDate - startDate > new TimeSpan(30, 0, 0, 0))
                 {
-                    DownloadMonthlyFileFromABC(destFolder, startDate, startDate.AddDays(30), stockGroup);
+                    DownloadMonthlyFileFromABC(destFolder, startDate, startDate.AddDays(30), stockGroup, false);
                     startDate = startDate.AddDays(30);
                 }
 
@@ -1077,7 +1092,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string fileName = destFolder + @"\" + abcGroup + "_" + endDate.Year + "_" + endDate.Month + ".csv";
                 if (this.DownloadGroup(destFolder, fileName, startDate, endDate, abcGroup))
                 {
-                    this.LoadGroupData(abcGroup, stockGroup);
+                    if (loadData)
+                    {
+                        this.LoadGroupData(abcGroup, stockGroup);
+                    }
                 }
             }
             catch (System.Exception ex)
