@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if DEBUG
+#if !DEBUG
 [assembly: AssemblyTitle("Ultimate Chartist")]
 [assembly: AssemblyDescription("Trade differently")]
 [assembly: AssemblyConfiguration("")]
