@@ -279,6 +279,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             get { return true; }
         }
+
+        static string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
             CreateDirectories();
@@ -286,26 +288,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockDictionary = dictionary; // Save dictionary for future use in daily download
 
             // Init From LBL file
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
-            //DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.GERMANY);
-            //DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
-            //DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
-            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
             DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
+            DownloadLibelleFromABC(RootFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
 
             // Load Config files
             string fileName = RootFolder + CONFIG_FILE;
+            if (!File.Exists(fileName))
+            {
+                File.WriteAllText(fileName, defaultConfigFile);
+            }
             InitFromFile(download, fileName);
             fileName = RootFolder + CONFIG_FILE_USER;
             InitFromFile(download, fileName);
-
             foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
             {
                 StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
@@ -793,7 +795,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var fileName = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + ".csv";
                         if (ForceDownloadData(stockSerie))
                         {
-                            this.needDownload = true;
+                            this.needDownload = true; 
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_A);
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_B);
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_C);

@@ -121,7 +121,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DownloadData {
             get {
                 return ((bool)(this["DownloadData"]));
@@ -205,7 +205,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2012-01-01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2015-01-01")]
         public global::System.DateTime DownloadStartDate {
             get {
                 return ((global::System.DateTime)(this["DownloadStartDate"]));

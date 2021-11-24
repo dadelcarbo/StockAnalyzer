@@ -273,6 +273,7 @@ namespace StockAnalyzerApp
             // Validate preferences and local repository
             while (string.IsNullOrWhiteSpace(Settings.Default.UserId) || !CheckLicense())
             {
+                Settings.Default.UserId = Environment.UserName;
                 PreferenceDialog prefDlg = new PreferenceDialog();
                 DialogResult res = prefDlg.ShowDialog();
                 if (res == DialogResult.Cancel)
@@ -2926,71 +2927,6 @@ namespace StockAnalyzerApp
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TrailATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
 
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_A, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_B, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.EURO_C, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.ALTERNEXT, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.BELGIUM, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.HOLLAND, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PORTUGAL, "___CupAndHandle", "Cup & Handle", "AUTODRAWING|CUPHANDLE(6,True,0)", "BrokenUp", "TRAILHIGHESTATR(20,1.5,4)", "ROC(50)", nbLeaders);
-
-            //            htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_B, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.EURO_C, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ALTERNEXT, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.BELGIUM, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.HOLLAND, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.PORTUGAL, breakoutBars, nbLeaders);
-            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.GERMANY, breakoutBars, nbLeaders);
-            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.ITALIA, breakoutBars, nbLeaders);
-            ////htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.SPAIN, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.INDICES, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.FOREX, breakoutBars, nbLeaders);
-            //htmlLeaders += GenerateBreakOutTable(duration, StockSerie.Groups.COMMODITY, breakoutBars, nbLeaders);
-
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_A, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "HIGHEST(5)", "LOWEST(5)", nbLeaders, "#");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "ROR(100)", "ROD(100)", nbLeaders, "P2");
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, "MANSFIELD(100,CAC40)", "MANSFIELD(100,CAC40)", nbLeaders, "#");
-
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_A);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_B, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_B);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.EURO_C, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.EURO_C);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.ALTERNEXT, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.ALTERNEXT);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COMMODITY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COMMODITY);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FOREX, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FOREX);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.COUNTRY, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.COUNTRY);
-            //htmlLeaders += GenerateLeaderLoserTable(duration, StockSerie.Groups.FUND, rankLeaderIndicatorName, rankLoserIndicatorName, nbLeaders);
-            //htmlLeaders += GererateReportForAlert(alertDefs, StockSerie.Groups.FUND);
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -3612,15 +3548,25 @@ namespace StockAnalyzerApp
             {
                 if (themeComboBox.SelectedItem.ToString() != value)
                 {
-                    themeComboBox.SelectedItem = value;
-                    currentTheme = value;
+                    if (themeComboBox.Items.Contains(value))
+                    {
+                        themeComboBox.SelectedItem = value;
+                        currentTheme = value;
+                        if (this.ThemeChanged != null)
+                        {
+                            this.ThemeChanged(value);
+                        }
+                    }
                 }
                 else
                 {
-                    currentTheme = value;
-                    if (this.ThemeChanged != null)
+                    if (currentTheme != value)
                     {
-                        this.ThemeChanged(value);
+                        currentTheme = value;
+                        if (this.ThemeChanged != null)
+                        {
+                            this.ThemeChanged(value);
+                        }
                     }
                 }
             }
@@ -4423,9 +4369,12 @@ namespace StockAnalyzerApp
             {
                 // Load Curve Theme
                 string fileName = Settings.Default.RootFolder + @"\themes\" + themeName + ".thm";
-                using (StreamReader sr = new StreamReader(fileName))
+                if (File.Exists(fileName))
                 {
-                    LoadThemeStream(themeName, sr);
+                    using (StreamReader sr = new StreamReader(fileName))
+                    {
+                        LoadThemeStream(themeName, sr);
+                    }
                 }
             }
             catch (System.Exception exception)
