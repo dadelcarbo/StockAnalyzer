@@ -795,7 +795,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var fileName = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + ".csv";
                         if (ForceDownloadData(stockSerie))
                         {
-                            this.needDownload = true; 
+                            this.needDownload = true;
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_A);
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_B);
                             DownloadMonthlyFileFromABC(RootFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.EURO_C);
@@ -908,27 +908,46 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
+        private String downloadingGroups = String.Empty;
         public void DownloadAllGroupsIntraday()
         {
-            var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
-            foreach (var group in groups)
+            try
             {
-                string abcGroup = GetABCGroup(group);
-                if (abcGroup != null)
+                while (downloadingGroups != String.Empty)
                 {
-                    var destFolder = RootFolder + ABC_INTRADAY_FOLDER;
-                    string fileName = abcGroup + ".csv";
-                    if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+                    Thread.Sleep(500);
+                }
+                lock (downloadingGroups)
+                {
+                    downloadingGroups = "True";
+                    var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
+                    foreach (var group in groups)
                     {
-                        // Deinitialise all the stocks belonging to group
-                        foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
+                        string abcGroup = GetABCGroup(group);
+                        if (abcGroup != null)
                         {
-                            serie.IsInitialised = false;
+                            var destFolder = RootFolder + ABC_INTRADAY_FOLDER;
+                            string fileName = abcGroup + ".csv";
+                            if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+                            {
+                                // Deinitialise all the stocks belonging to group
+                                foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
+                                {
+                                    serie.IsInitialised = false;
+                                }
+                            }
                         }
                     }
                 }
             }
-
+            catch (Exception ex)
+            {
+                StockLog.Write(ex.Message);
+            }
+            finally
+            {
+                downloadingGroups = String.Empty;
+            }
         }
 
         /// <summary>

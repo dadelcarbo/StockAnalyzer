@@ -752,7 +752,7 @@ namespace StockAnalyzer.StockClasses
                     }
                     else
                     {
-                        if (stockEvent.Events[eventIndex][index]) return true;
+                        return stockEvent.Events[eventIndex][index];
                     }
                 }
                 else if (stockAlert.PriceTrigger != 0 && index > 1)

@@ -833,6 +833,10 @@ namespace StockAnalyzerApp
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
                     s.BelongsToGroup(StockSerie.Groups.PEA)).ToList();
+                    if (alertConfig.TimeFrame == "Daily")
+                    {
+                        (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                    }
                 }
                 if (AlertDetectionStarted != null)
                 {
@@ -878,9 +882,9 @@ namespace StockAnalyzerApp
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
 
-                            int stopIndex = Math.Max(10, stockSerie.LastCompleteIndex - 10);
+                            int stopIndex = Math.Max(10, stockSerie.LastIndex - 10);
                             int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
-                            for (int i = stockSerie.LastCompleteIndex; i > stopIndex; i--)
+                            for (int i = stockSerie.LastIndex; i > stopIndex; i--)
                             {
                                 var dailyValue = values.ElementAt(i);
                                 if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
@@ -906,6 +910,7 @@ namespace StockAnalyzerApp
                                         else
                                         {
                                             alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                            break;
                                         }
                                     }
                                 }
