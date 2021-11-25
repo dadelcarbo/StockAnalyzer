@@ -909,6 +909,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         private String downloadingGroups = String.Empty;
+        int lastDownloadHour = 8;
         public void DownloadAllGroupsIntraday()
         {
             try
@@ -919,6 +920,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 lock (downloadingGroups)
                 {
+                    // Download ABC intraday data
+                    var now = DateTime.Now.TimeOfDay;
+                    if (!(now.Hours > lastDownloadHour && now < new TimeSpan(18, 0, 0) && now > new TimeSpan(9, 0, 0) && DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday))
+                    {
+                        return;
+                    }
+                    lastDownloadHour = now.Hours;
+
                     downloadingGroups = "True";
                     var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
                     foreach (var group in groups)

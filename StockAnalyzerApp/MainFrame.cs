@@ -715,7 +715,6 @@ namespace StockAnalyzerApp
         #region TIMER MANAGEMENT
         public static bool busy = false;
 
-        int lastDownloadHour = 8;
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
             if (TimerSuspended)
@@ -724,12 +723,7 @@ namespace StockAnalyzerApp
             busy = true;
 
             // Download ABC intraday data
-            var now = DateTime.Now.TimeOfDay;
-            if (now.Hours > lastDownloadHour && now < new TimeSpan(18, 0, 0))
-            {
-                (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-                lastDownloadHour = now.Hours;
-            }
+            (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
 
             // Download INTRADAY current serie
             try
