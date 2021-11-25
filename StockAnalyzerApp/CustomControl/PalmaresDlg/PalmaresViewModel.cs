@@ -213,7 +213,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             Lines = new List<PalmaresLine>();
             foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
-                if (!stockSerie.Initialise())
+                if (!stockSerie.Initialise() || stockSerie.Count < 50)
                     continue;
                 
                 var previousDuration = stockSerie.BarDuration;
@@ -230,7 +230,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     continue;
                 }
                 var endIndex = stockSerie.IndexOfFirstLowerOrEquals(this.ToDate);
-                if (endIndex == -1)
+                if (endIndex < 50)
                 {
                     continue;
                 }

@@ -956,12 +956,12 @@ namespace StockAnalyzerApp
                     foreach (var drawings in stockSerie.StockAnalysis.DrawingItems.Where(dr => dr.Value.Any(d => d.IsPersistent)))
                     {
                         stockSerie.BarDuration = drawings.Key;
-                        var values = stockSerie.GetValues(drawings.Key);
+                        var values = stockSerie.Values.ToArray();
                         drawingIndicator.ApplyTo(stockSerie);
                         int stopIndex = Math.Max(100, stockSerie.LastCompleteIndex - lookbackPeriod);
                         for (int i = stockSerie.LastCompleteIndex; i >= stopIndex; i--)
                         {
-                            var dailyValue = values.ElementAt(i);
+                            var dailyValue = values[i];
                             string eventName = null;
                             if (drawingIndicator.Events[0][i])
                                 eventName = "AUTODRAWING|DRAWING()=>ResistanceBroken";
@@ -969,7 +969,7 @@ namespace StockAnalyzerApp
                                 eventName = "AUTODRAWING|DRAWING()=>SupportBroken";
                             if (eventName != null)
                             {
-                                var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
+                                var date = i == stockSerie.LastIndex ? dailyValue.DATE : values[i + 1].DATE;
                                 var stockAlert = new StockAlert(eventName,
                                     drawings.Key,
                                     date,
@@ -1021,15 +1021,15 @@ namespace StockAnalyzerApp
                     #endregion
 
                     stockSerie.BarDuration = alertDef.BarDuration;
-                    var values = stockSerie.GetValues(alertDef.BarDuration);
+                    var values = stockSerie.Values.ToArray();
                     int stopIndex = stockSerie.IndexOfFirstLowerOrEquals(alertDef.CreationDate);
                     for (int i = stockSerie.LastCompleteIndex; i >= stopIndex; i--)
                     {
-                        var dailyValue = values.ElementAt(i);
+                        var dailyValue = values[i];
 
                         if (stockSerie.MatchEvent(alertDef, i))
                         {
-                            var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
+                            var date = i == stockSerie.LastIndex ? dailyValue.DATE : values[i + 1].DATE;
                             var stockAlert = new StockAlert(alertDef,
                                 date,
                                 stockSerie.StockName,
@@ -2948,52 +2948,6 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox.SelectedItem = previousBarDuration.Smoothing;
             this.barHeikinAshiCheckBox.CheckBox.Checked = previousBarDuration.HeikinAshi;
             this.barLineBreakComboBox.SelectedItem = previousBarDuration.LineBreak;
-        }
-
-        private string GererateReportForAlert(List<StockAlertDef> alertDefs, StockSerie.Groups stockGroup)
-        {
-            string htmlBody = string.Empty;
-
-            foreach (StockAlertDef alertDef in alertDefs)
-            {
-                var commentTitle = alertDef.BarDuration + ": " + alertDef.IndicatorName + " => " + alertDef.EventName;
-
-                var alertMsgs = new List<StockAlert>();
-                string html = string.Empty;
-                var alertMsg = "\r\n<pre>\r\n";
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup)))
-                {
-                    StockSplashScreen.ProgressVal++;
-                    StockSplashScreen.ProgressSubText = "Scanning " + stockSerie.StockName;
-
-                    if (!stockSerie.Initialise()) continue;
-
-                    StockBarDuration currentBarDuration = stockSerie.BarDuration;
-
-                    if (stockSerie.Count < 200 || (stockSerie.Last().Value.VOLUME * stockSerie.Last().Value.CLOSE) < 10000) continue;
-
-                    if (stockSerie.MatchEvent(alertDef))
-                    {
-                        var values = stockSerie.GetValues(alertDef.BarDuration);
-                        string alertLine = stockSerie.StockName.PadRight(30) + "\t" + values.ElementAt(values.Count - 1).DATE.ToShortDateString();
-
-                        var dailyValue = stockSerie.GetValues(StockBarDuration.Daily).Last();
-
-                        var alert = new StockAlert(alertDef, dailyValue.DATE, stockSerie.StockName, stockSerie.StockGroup.ToString(), dailyValue.CLOSE, dailyValue.VOLUME, 0f);
-
-                        // Generate Snapshot
-                        this.OnSelectedStockAndDurationChanged(stockSerie.StockName, alertDef.BarDuration, false);
-                        StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
-
-                        var bitmapString = this.graphCloseControl.GetSnapshotAsHTML();
-                        alertMsg += stockNameTemplate.Replace("%MSG%", alert.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    }
-                    stockSerie.BarDuration = currentBarDuration;
-                }
-                alertMsg += "</pre>";
-                htmlBody += htmlAlertTemplate.Replace(commentTitleTemplate, commentTitle).Replace(commentTemplate, alertMsg);
-            }
-            return htmlBody;
         }
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";

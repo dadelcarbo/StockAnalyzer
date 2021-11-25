@@ -242,11 +242,11 @@ namespace StockAnalyzer.StockClasses
                 if (isInitialised != value)
                 {
                     this.isInitialised = value;
-                    if (!value)
-                    {
-                        this.Clear();
-                        ResetAllCache();
-                    }
+                }
+                if (!value)
+                {
+                    this.Clear();
+                    ResetAllCache();
                 }
             }
         }
@@ -613,7 +613,7 @@ namespace StockAnalyzer.StockClasses
             this.dateArray = null;
             this.valueArray = null;
             this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
-            this.IsInitialised = false;
+            this.isInitialised = false;
         }
         public void ResetIndicatorCache()
         {
