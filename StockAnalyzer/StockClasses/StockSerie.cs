@@ -576,10 +576,7 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
-            this.DataSource = new StockDataSource
-            {
-                Duration = duration
-            };
+            this.DataSource = new StockDataSource { Duration = duration };
             ResetAllCache();
         }
         public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
@@ -593,10 +590,7 @@ namespace StockAnalyzer.StockClasses
             this.barDuration = StockBarDuration.Daily;
             this.DataProvider = dataProvider;
             this.IsInitialised = false;
-            this.DataSource = new StockDataSource
-            {
-                Duration = duration
-            };
+            this.DataSource = new StockDataSource { Duration = duration };
             ResetAllCache();
         }
         public void ResetAllCache()
@@ -613,7 +607,6 @@ namespace StockAnalyzer.StockClasses
             this.dateArray = null;
             this.valueArray = null;
             this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
-            this.isInitialised = false;
         }
         public void ResetIndicatorCache()
         {

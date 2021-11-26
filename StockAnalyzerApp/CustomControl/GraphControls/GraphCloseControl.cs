@@ -914,6 +914,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         // Input point are in Value Units
         protected override void PaintDailyBox(PointF mousePoint)
         {
+            if (this.serie.Count == 0) return;
             if (lastMouseIndex == -1) return;
             string value = string.Empty;
             value += BuildTabbedString("DATE", this.dateSerie[lastMouseIndex].ToString("dd/MM/yy"), 12) + "\r\n";

@@ -729,7 +729,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 StockLog.Write("Network is Available");
-                stockSerie.ResetAllCache();
+                stockSerie.IsInitialised = false;
                 int nbFile = 0;
                 for (int i = DateTime.Today.Year - 1; i >= ARCHIVE_START_YEAR; i--)
                 {
