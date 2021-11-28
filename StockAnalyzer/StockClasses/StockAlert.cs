@@ -9,6 +9,7 @@ namespace StockAnalyzer.StockClasses
         public string StockName { get; set; }
         public string StockGroup { get; set; }
         public string Alert { get; set; }
+        public string Theme { get; set; }
         [XmlIgnore]
         public string Event
         {
@@ -53,6 +54,7 @@ namespace StockAnalyzer.StockClasses
             AlertClose = alertClose;
             Speed = speed;
             ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
+            Theme = null;
         }
         public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
         {
@@ -64,6 +66,7 @@ namespace StockAnalyzer.StockClasses
             AlertClose = alertClose;
             Speed = speed;
             ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
+            Theme = alertDef.Theme;
         }
 
         public override string ToString()

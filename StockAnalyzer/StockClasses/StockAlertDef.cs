@@ -11,7 +11,6 @@ namespace StockAnalyzer.StockClasses
             this.CreationDate = DateTime.MinValue;
         }
 
-        public string Title { get; set; }
         public string Theme { get; set; }
         public Groups Group { get; set; }
         public DateTime CreationDate { get; set; }
