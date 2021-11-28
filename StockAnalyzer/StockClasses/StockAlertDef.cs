@@ -1,4 +1,5 @@
 ﻿using System;
+using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -10,25 +11,27 @@ namespace StockAnalyzer.StockClasses
             this.CreationDate = DateTime.MinValue;
         }
 
+        public string Title { get; set; }
+        public string Theme { get; set; }
+        public Groups Group { get; set; }
         public DateTime CreationDate { get; set; }
         public string StockName { get; set; }
         public float PriceTrigger { get; set; }
         public bool TriggerBrokenUp { get; set; }
         public StockBarDuration BarDuration { get; set; }
+
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }
+        public string IndicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
         public string EventName { get; set; }
-
-        public string FilterType { get; set; }
-        public string FilterName { get; set; }
-        public string FilterEventName { get; set; }
-
         public string EventFullName
         {
             get { return IndicatorFullName + "=>" + EventName; }
         }
 
-        public string IndicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
+        public string FilterType { get; set; }
+        public string FilterName { get; set; }
+        public string FilterEventName { get; set; }
         public string FilterFullName { get { return FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName; } }
 
         public override string ToString()

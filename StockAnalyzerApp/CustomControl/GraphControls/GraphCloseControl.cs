@@ -2202,7 +2202,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Portfolio = this.Portfolio,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
             };
-            openTradeViewModel.IndicatorName = openTradeViewModel.IndicatorNames?.FirstOrDefault();
+            openTradeViewModel.Theme = openTradeViewModel.IndicatorNames?.FirstOrDefault();
 
             OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
             if (openPositionDlg.ShowDialog() == DialogResult.OK)
@@ -2221,7 +2221,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 openTradeViewModel.StopValue,
                 openTradeViewModel.EntryComment,
                 openTradeViewModel.BarDuration,
-                openTradeViewModel.IndicatorName
+                openTradeViewModel.Theme
                 );
                 StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
             }

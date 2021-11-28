@@ -22,6 +22,7 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie highSerie;
         protected FloatSerie atrSerie;
         protected FloatSerie volumeSerie;
+        protected FloatSerie volumeEuroSerie;  // Exchanged volume in M€
 
         public StockTrade Trade { get; set; }
 
@@ -57,6 +58,7 @@ namespace StockAnalyzer.StockAgent
                 lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                 volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
+                volumeEuroSerie = (volumeSerie * closeSerie * 0.000001f).CalculateEMA(10);
                 if (stopATR != 0.0f)
                 {
                     atrSerie = stockSerie.GetIndicator("ATR(20").Series[0];
@@ -78,6 +80,8 @@ namespace StockAnalyzer.StockAgent
         {
             if (this.Trade == null)
             {
+                if (volumeEuroSerie[index] < 0.5f)
+                    return TradeAction.Nothing;
                 var action = this.TryToOpenPosition(index);
                 if (action == TradeAction.Buy && this.StopATR != 0.0f)
                 {

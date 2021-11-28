@@ -52,7 +52,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                     case "StockPositionViewModel":
                         {
                             StockPositionViewModel item = row.Item as StockPositionViewModel;
-                            SelectionChanged(item.StockName, item.BarDuration, item.Indicator);
+                            SelectionChanged(item.StockName, item.BarDuration, item.Theme);
                         }
                         break;
                     default:
@@ -90,7 +90,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 e.Cancel = true;
             }
         }
-        private void SelectionChanged(string stockName, StockBarDuration duration = null, string indicator = null)
+        private void SelectionChanged(string stockName, StockBarDuration duration = null, string theme = null)
         {
             var mapping = StockPortfolio.GetMapping(stockName);
             if (mapping != null)
@@ -100,10 +100,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
             {
                 StockAnalyzerForm.MainFrame.Activate();
-                if (!string.IsNullOrEmpty(indicator) && duration != null)
+                if (!string.IsNullOrEmpty(theme) && duration != null)
                 {
                     this.SelectedStockAndDurationChanged(stockName, duration, true);
-                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator(indicator);
+                    StockAnalyzerForm.MainFrame.CurrentTheme = theme;
                 }
                 else
                 {

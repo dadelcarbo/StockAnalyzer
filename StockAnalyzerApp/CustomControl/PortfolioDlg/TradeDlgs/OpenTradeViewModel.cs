@@ -95,7 +95,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             }
         }
         public StockBarDuration BarDuration { get; set; }
-        public string IndicatorName { get; set; }
+        public string Theme { get; set; }
         public string EntryComment { get; set; }
         public static Array BarDurations => Enum.GetValues(typeof(BarDuration));
         public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };

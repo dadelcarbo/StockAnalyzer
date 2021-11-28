@@ -58,7 +58,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float PortfolioRisk => PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
 
         public StockBarDuration BarDuration { get { return position.BarDuration; } set { if (position.BarDuration != value) { position.BarDuration = value; OnPropertyChanged("BarDuration"); } } }
-        public string Indicator { get { return position.Indicator; } set { if (position.Indicator != value) { position.Indicator = value; OnPropertyChanged("Indicator"); } } }
+        public string Theme { get { return position.Theme; } set { if (position.Theme != value) { position.Theme = value; OnPropertyChanged("Theme"); } } }
 
         public DateTime? ExitDate => position.ExitDate;
         public float? ExitValue => position.ExitValue;

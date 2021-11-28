@@ -65,7 +65,7 @@
                         <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Variation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Equity&#x0a;Return" DataMemberBinding="{Binding PortfolioVariation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
-                        <telerik:GridViewDataColumn Header="Indicator" DataMemberBinding="{Binding Indicator}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" ColumnGroupName="Technical"/>
 
                         <!--
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
@@ -107,6 +107,8 @@
 
                         <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Return, StringFormat=P2}" ColumnGroupName="Exit" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" ColumnGroupName="Technical"/>
 
                         <!--
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />

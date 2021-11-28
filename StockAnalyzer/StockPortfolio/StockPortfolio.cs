@@ -228,7 +228,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
         }
-        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string indicator, long id = -1)
+        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string theme, long id = -1)
         {
             var amount = value * qty + fee;
             if (this.Balance < amount)
@@ -264,7 +264,7 @@ namespace StockAnalyzer.StockPortfolio
                     StockName = operation.StockName,
                     EntryValue = openValue,
                     Stop = position.Stop,
-                    Indicator = position.Indicator,
+                    Theme = position.Theme,
                     BarDuration = position.BarDuration
                 };
             }
@@ -280,7 +280,7 @@ namespace StockAnalyzer.StockPortfolio
                     Stop = stop,
                     BarDuration = barDuration,
                     EntryComment = entryComment,
-                    Indicator = indicator
+                    Theme = theme
                 };
             }
 
@@ -321,7 +321,7 @@ namespace StockAnalyzer.StockPortfolio
                     EntryQty = position.EntryQty - qty,
                     EntryValue = position.EntryValue,
                     Stop = position.Stop,
-                    Indicator = position.Indicator,
+                    Theme = position.Theme,
                     BarDuration = position.BarDuration
                 });
             }

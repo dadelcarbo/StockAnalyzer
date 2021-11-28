@@ -2219,8 +2219,10 @@ namespace StockAnalyzerApp
         public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme)
         {
             this.CurrentStockSerie = stockSerie;
-            this.CurrentTheme = theme;
-
+            if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
+            {
+                this.CurrentTheme = theme;
+            }
             return SnapshotAsHtml();
         }
 
@@ -2847,7 +2849,7 @@ namespace StockAnalyzerApp
                 {
                     var stockSerie = StockDictionary.Instance[stockName];
                     this.ForceBarDuration(position.BarDuration, false);
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, "___TRAILATR");
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
                     var stockNameHtml = stockNameTemplate.Replace("%MSG%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
                     reportBody += rowTemplate.
@@ -2920,11 +2922,11 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty;
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "CloudUp", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2,-2,EMA,6)", "Long Reentry", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "CloudUp", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "Long Reentry", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
             htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TrailATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TrailATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2,-2,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TRAILATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
 
             htmlBody += htmlLeaders;
 
