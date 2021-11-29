@@ -2191,18 +2191,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
 
+            Portfolio.PositionValue = StockAnalyzerForm.MainFrame.Portfolio.EvaluateOpenedPositionsAt(this.dateSerie[lastMouseIndex], StockAnalyzerForm.MainFrame.BarDuration.Duration, out long vol);
+            var portfolioValue = Portfolio.TotalValue;
             var openTradeViewModel = new OpenTradeViewModel
             {
                 BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
                 EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
-                EntryQty = 10,
+                EntryQty = (int)(portfolioValue / 10f / this.closeCurveType.DataSerie[lastMouseIndex]),
                 EntryDate = this.dateSerie[lastMouseIndex],
                 StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
                 StockName = this.serie.StockName,
                 Portfolio = this.Portfolio,
-                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
+                Themes = StockAnalyzerForm.MainFrame.Themes,
+                Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
-            openTradeViewModel.Theme = openTradeViewModel.IndicatorNames?.FirstOrDefault();
 
             OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
             if (openPositionDlg.ShowDialog() == DialogResult.OK)

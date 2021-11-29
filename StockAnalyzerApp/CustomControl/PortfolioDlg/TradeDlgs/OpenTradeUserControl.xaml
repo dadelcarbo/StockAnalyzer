@@ -84,7 +84,7 @@
                 <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
                 <StackPanel Margin="1" Orientation="Horizontal">
                     <Label Width="70">Indicator:</Label>
-                    <ComboBox SelectedItem="{Binding IndicatorName}" ItemsSource="{Binding IndicatorNames}" Padding="4" IsEditable="True" Width="325"></ComboBox>
+                    <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="325"></ComboBox>
                 </StackPanel>
                 <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Label Width="70">Comment:</Label>

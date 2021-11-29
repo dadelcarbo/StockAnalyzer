@@ -3495,13 +3495,15 @@ namespace StockAnalyzerApp
         }
         #endregion
         #region THEME MANAGEMENT
+
+        public IEnumerable<string> Themes => themeComboBox.Items.OfType<string>().Where(t => !t.Contains("*") );
         private string currentTheme;
         public string CurrentTheme
         {
             get { return currentTheme; }
             set
             {
-                if (themeComboBox.SelectedItem.ToString() != value)
+                if (themeComboBox.SelectedItem.ToString() != value || value== "__NewTheme*")
                 {
                     if (themeComboBox.Items.Contains(value))
                     {
