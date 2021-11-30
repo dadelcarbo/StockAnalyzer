@@ -16,6 +16,7 @@ namespace StockAnalyzer.StockPortfolio
         public float EntryCost => EntryValue * EntryQty;
         public DateTime EntryDate { get; set; }
 
+        public float TrailStop { get; set; }
         public float Stop { get; set; }
 
         public StockBarDuration BarDuration { get; set; }

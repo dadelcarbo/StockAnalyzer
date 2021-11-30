@@ -89,6 +89,11 @@ namespace StockAnalyzer.StockPortfolio
             {
                 StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
             }
+            foreach(var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
+            {
+                if (position.TrailStop == 0f && position.Stop != 0f)
+                    position.TrailStop = position.Stop;
+            }
             // Load from SAXO export
             foreach (var file in Directory.EnumerateFiles(folder, "*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
             {
@@ -264,6 +269,7 @@ namespace StockAnalyzer.StockPortfolio
                     StockName = operation.StockName,
                     EntryValue = openValue,
                     Stop = position.Stop,
+                    TrailStop = position.TrailStop,
                     Theme = position.Theme,
                     BarDuration = position.BarDuration
                 };
@@ -278,6 +284,7 @@ namespace StockAnalyzer.StockPortfolio
                     StockName = operation.StockName,
                     EntryValue = amount / qty,
                     Stop = stop,
+                    TrailStop = stop,
                     BarDuration = barDuration,
                     EntryComment = entryComment,
                     Theme = theme

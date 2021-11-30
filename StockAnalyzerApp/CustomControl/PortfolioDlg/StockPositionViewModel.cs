@@ -53,9 +53,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
 
         public float Stop { get { return position.Stop; } set { if (position.Stop != value) { position.Stop = value; OnPropertyChanged("Stop"); OnPropertyChanged("TradeRisk"); OnPropertyChanged("PortfolioRisk"); } } }
+        public float TrailStop { get { return position.TrailStop; } set { if (position.TrailStop != value) { position.TrailStop = value; OnPropertyChanged("TrailStop"); OnPropertyChanged("TradeRisk"); OnPropertyChanged("PortfolioRisk"); } } }
 
-        public float TradeRisk => position.Stop == 0 ? 1.0f : (position.EntryValue - position.Stop) / position.EntryValue;
-        public float PortfolioRisk => PortfolioPercent * (position.EntryValue - position.Stop) / position.EntryValue;
+        public float TradeRisk => position.TrailStop == 0 ? 1.0f : (position.TrailStop - position.EntryValue) / position.EntryValue;
+        public float PortfolioRisk => PortfolioPercent * (position.TrailStop - position.EntryValue) / position.EntryValue;
 
         public StockBarDuration BarDuration { get { return position.BarDuration; } set { if (position.BarDuration != value) { position.BarDuration = value; OnPropertyChanged("BarDuration"); } } }
         public string Theme { get { return position.Theme; } set { if (position.Theme != value) { position.Theme = value; OnPropertyChanged("Theme"); } } }
@@ -65,7 +66,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         public float? Return => ExitValue == null ? null : (ExitValue - EntryValue) / ExitValue;
         public float? RiskRewardRatio => ExitValue != null && Stop > 0.0f ? (ExitValue - EntryValue) / (EntryValue - Stop) : null;
-
 
         public float LastValue { get; set; }
         public float Variation => (LastValue - EntryValue) / EntryValue;
