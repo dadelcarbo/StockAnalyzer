@@ -36,33 +36,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.LS", float.NaN);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.SS", float.NaN);
             int i = 0;
-            while (++i < stockSerie.Count && !topEMA.Events[6][i] && !topEMA.Events[7][i]) ;
-            bool bullish = topEMA.Events[6][i];
+            while (++i < stockSerie.Count && !topEMA.Events[8][i] && !topEMA.Events[8][i]) ;
             for (; i < stockSerie.Count; i++)
             {
-                if (bullish)
+                if (topEMA.Events[9][i]) // Bearish
                 {
-                    if (topEMA.Events[7][i])
-                    {
-                        bullish = false;
-                        shortStopSerie[i] = resistanceSerie[i];
-                    }
-                    else
-                    {
-                        longStopSerie[i] = supportSerie[i];
-                    }
+                    shortStopSerie[i] = resistanceSerie[i];
                 }
                 else
                 {
-                    if (topEMA.Events[6][i])
-                    {
-                        bullish = true;
-                        longStopSerie[i] = supportSerie[i];
-                    }
-                    else
-                    {
-                        shortStopSerie[i] = resistanceSerie[i];
-                    }
+                    longStopSerie[i] = supportSerie[i];
                 }
             }
 

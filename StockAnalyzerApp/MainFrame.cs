@@ -723,8 +723,9 @@ namespace StockAnalyzerApp
             busy = true;
 
             // Download ABC intraday data
+#if !DEBUG
             (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-
+#endif
             // Download INTRADAY current serie
             try
             {
@@ -3496,14 +3497,14 @@ namespace StockAnalyzerApp
         #endregion
         #region THEME MANAGEMENT
 
-        public IEnumerable<string> Themes => themeComboBox.Items.OfType<string>().Where(t => !t.Contains("*") );
+        public IEnumerable<string> Themes => themeComboBox.Items.OfType<string>().Where(t => !t.Contains("*"));
         private string currentTheme;
         public string CurrentTheme
         {
             get { return currentTheme; }
             set
             {
-                if (themeComboBox.SelectedItem.ToString() != value || value== "__NewTheme*")
+                if (themeComboBox.SelectedItem.ToString() != value || value == "__NewTheme*")
                 {
                     if (themeComboBox.Items.Contains(value))
                     {
