@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] {"Period"}; }
+            get { return new string[] { "Period" }; }
         }
 
         public override Object[] ParameterDefaultValues
@@ -52,118 +52,115 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
+            float alpha = 2.0f / (float)(period + 1);
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            FloatSerie sarSupport;
-            FloatSerie sarResistance;
-
-            stockSerie.CalculateTOPEMA(period, out sarSupport, out sarResistance);
-
-            this.Series[0] = sarSupport;
-            this.Series[0].Name = this.SerieNames[0];
-            this.Series[1] = sarResistance;
-            this.Series[1].Name = this.SerieNames[1];
+            FloatSerie supportSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+            FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+            float resistanceEMA = highSerie.GetMax(0, period - 1);
+            float supportEMA = lowSerie.GetMin(0, period - 1);
+            supportSerie[period - 1] = supportEMA;
+            resistanceSerie[period - 1] = resistanceEMA;
+            bool isBullish = false;
+            bool isBearish = false;
+            float previousLow = supportEMA;
+            float previousHigh = resistanceEMA;
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            float previousHigh = stockSerie.Values.First().HIGH, previousLow = stockSerie.Values.First().LOW;
-            float previousHigh2 = stockSerie.Values.First().HIGH, previousLow2 = stockSerie.Values.First().LOW;
-            bool waitingForEndOfUpTrend = false;
-            bool waitingForEndOfDownTrend = false;
-            bool isBullish = false;
-            bool isBearish = false;
-            for (int i = 5; i < stockSerie.Count; i++)
+            for (int i = period; i < stockSerie.Count; i++)
             {
-                if (!float.IsNaN(sarSupport[i]) && float.IsNaN(sarSupport[i - 1]))
+                // Resistance Management
+                if (!float.IsNaN(resistanceEMA))
                 {
-                    this.Events[0][i] = true; // SupportDetected
-
-                    if (waitingForEndOfDownTrend)
+                    resistanceEMA = Math.Min(resistanceEMA, resistanceEMA + alpha * (highSerie[i] - resistanceEMA));
+                    if (closeSerie[i] > resistanceEMA) // Broken up
                     {
-                        this.Events[3][i] = true; // EndOfTrend
-                        waitingForEndOfDownTrend = false;
-                    }
-
-                    if (sarSupport[i] > previousLow)
-                    {
-                        this.Events[4][i] = true; // HigherLow
-
-                        if (sarSupport[i] > previousHigh2)
+                        resistanceEMA = float.NaN;
+                        this.Events[2][i] = true;// ResistanceBroken
+                        if (isBullish == false)
                         {
-                            this.Events[2][i] = true; // PB
-                            waitingForEndOfDownTrend = true;
+                            isBullish = true;
+                            this.Events[4][i] = true;// FirstResistanceBroken
                         }
+                        isBearish = false;
                     }
-                    previousLow2 = previousLow;
-                    previousLow = sarSupport[i];
-                }
-                if (!float.IsNaN(sarResistance[i]) && float.IsNaN(sarResistance[i - 1]))
-                {
-                    this.Events[1][i] = true; // ResistanceDetected
-
-                    if (waitingForEndOfUpTrend)
-                    {
-                        this.Events[3][i] = true; // EndOfTrend
-                        waitingForEndOfUpTrend = false;
-                    }
-
-                    if (sarResistance[i] < previousHigh)
-                    {
-                        this.Events[5][i] = true; // LowerHigh
-                        if (sarResistance[i] < previousLow2)
-                        {
-                            this.Events[2][i] = true; // PB
-                            waitingForEndOfUpTrend = true;
-                        }
-                    }
-                    previousHigh2 = previousHigh;
-                    previousHigh = sarResistance[i];
-                }
-
-                bool supportBroken = float.IsNaN(sarSupport[i]) && !float.IsNaN(sarSupport[i - 1]);
-                this.Events[7][i] = supportBroken;
-                bool resistanceBroken = float.IsNaN(sarResistance[i]) && !float.IsNaN(sarResistance[i - 1]);
-                this.Events[6][i] = resistanceBroken;
-
-                if (isBullish)
-                {
-                    isBullish = !supportBroken;
                 }
                 else
                 {
-                    isBullish = !float.IsNaN(sarSupport[i]) && float.IsNaN(sarResistance[i]);
-                    this.Events[10][i] = isBullish; // FirstResistanceBroken
+                    if (highSerie[i - 1] > highSerie[i] && highSerie[i - 2] > highSerie[i]) // Resistance Detected (new top)
+                    {
+                        resistanceEMA = highSerie[i - 1]; // = resistanceSerie[i - 1] 
+                        resistanceEMA = resistanceEMA + alpha * (highSerie[i] - resistanceEMA);
+                        this.Events[1][i] = true; // ResistanceDetected
+                        if (resistanceEMA < previousHigh)
+                        {
+                            this.Events[7][i] = true; // LowerHigh
+                            this.StockTexts.Add(new StockText { AbovePrice = true, Index = i, Text = "LH" });
+                        }
+                        previousHigh = resistanceEMA;
+                    }
                 }
-                if (isBearish)
+
+                // Support Management
+                if (!float.IsNaN(supportEMA))
                 {
-                    isBearish = !resistanceBroken;
+                    supportEMA = Math.Max(supportEMA, supportEMA + alpha * (lowSerie[i] - supportEMA));
+                    if (closeSerie[i] < supportEMA) // Broken down
+                    {
+                        supportEMA = float.NaN;
+                        this.Events[3][i] = true;// SupportBroken
+                        if (isBearish == false)
+                        {
+                            isBearish = true;
+                            this.Events[5][i] = true;// FirstSupportBroken
+                        }
+                        isBullish = false;
+                    }
                 }
                 else
                 {
-                    isBearish = float.IsNaN(sarSupport[i]) && !float.IsNaN(sarResistance[i]);
-                    this.Events[11][i] = isBearish; // FirstSupportBroken
+                    if (lowSerie[i - 1] < lowSerie[i] && lowSerie[i - 2] < lowSerie[i]) // Support Detected (new low)
+                    {
+                        supportEMA = lowSerie[i - 1]; // supportSerie[i - 1] = 
+                        supportEMA = supportEMA + alpha * (lowSerie[i] - supportEMA);
+                        this.Events[0][i] = true; // SupportDetected
+                        if (supportEMA > previousLow)
+                        {
+                            this.Events[6][i] = true; // HigerLow
+                            this.StockTexts.Add(new StockText { AbovePrice = false, Index = i, Text = "HL" });
+                        }
+                        previousLow = supportEMA;
+                    }
                 }
 
-                this.Events[8][i] = isBullish;
-                this.Events[9][i] = isBearish;
+                supportSerie[i] = supportEMA;
+                resistanceSerie[i] = resistanceEMA;
+                this.Events[8][i] = isBullish; // Bullish
+                this.Events[9][i] = isBearish; // Bearish
             }
+
+            this.Series[0] = supportSerie;
+            this.Series[0].Name = this.SerieNames[0];
+            this.Series[1] = resistanceSerie;
+            this.Series[1].Name = this.SerieNames[1];
         }
 
         private static string[] eventNames = new string[]
         {
-            "SupportDetected", "ResistanceDetected",           // 0,1
-             "Pullback", "EndOfTrend",                          // 2,3
-             "HigherLow", "LowerHigh",                          // 4,5
-             "ResistanceBroken", "SupportBroken",               // 6,7
-             "Bullish", "Bearish",                              // 8,9
-             "FirstResistanceBroken", "FirstSupportBroken"      // 10,11
+            "SupportDetected", "ResistanceDetected",          // 0,1
+            "ResistanceBroken", "SupportBroken",              // 2,3
+            "FirstResistanceBroken", "FirstSupportBroken",    // 4,5
+            "HigherLow", "LowerHigh",                         // 6,7
+            "Bullish", "Bearish",                             // 8,9
         };
         public override string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false, true, true };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
         public override bool[] IsEvent => isEvent;
     }
 }
