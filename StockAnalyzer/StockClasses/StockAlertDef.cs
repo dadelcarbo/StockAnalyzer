@@ -12,6 +12,7 @@ namespace StockAnalyzer.StockClasses
         }
 
         public string Theme { get; set; }
+        public string Title { get; set; }
         public Groups Group { get; set; }
         public DateTime CreationDate { get; set; }
         public string StockName { get; set; }

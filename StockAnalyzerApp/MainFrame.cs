@@ -2922,11 +2922,15 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty;
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "CloudUp", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "Long Reentry", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "___TRAILATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            foreach (var alertDef in alertDefs)
+            {
+                htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, alertDef.Theme, alertDef.Title, alertDef.IndicatorFullName, alertDef.EventName, "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            }
+            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "CloudUp", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "Long Reentry", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "TRAILATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "TRAILATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
 
             htmlBody += htmlLeaders;
 
