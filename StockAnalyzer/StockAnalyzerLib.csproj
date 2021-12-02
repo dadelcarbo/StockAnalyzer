@@ -92,6 +92,7 @@
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\TOPEMAReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\TOPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\SARAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />

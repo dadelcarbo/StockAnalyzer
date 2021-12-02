@@ -1,4 +1,5 @@
-﻿using StockAnalyzerApp;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerApp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,7 +44,7 @@ namespace StockAnalyzer.StockAgent
         public float WinLossRatio => NbLostTrade != 0 ? this.AvgGain / -AvgLoss : 0f;
         public float Kelly => WinTradeRatio - (1.0f - WinTradeRatio) / WinLossRatio;
 
-        public string ToLog()
+        public string ToLog(StockBarDuration duration)
         {
             string res = "Nb Trade: " + Trades.Count() + Environment.NewLine;
             res += "Nb Win Trade: " + NbWinTrade + Environment.NewLine;
@@ -62,6 +63,13 @@ namespace StockAnalyzer.StockAgent
             res += "Win Rate: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
             res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P3") + Environment.NewLine;
+
+            if (duration == StockBarDuration.Daily)
+                res += "Exp Gain/Year: " + (260 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
+            else if (duration == StockBarDuration.Weekly)
+                res += "Exp Gain/Year: " + (52 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
+            else if (duration == StockBarDuration.Monthly)
+                res += "Exp Gain/Year: " + (12 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
 
             res += "Kelly: " + Kelly.ToString("P3") + Environment.NewLine;
 

@@ -128,9 +128,9 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public string ToLog()
+        public string ToLog(StockBarDuration duration)
         {
-            return this.TradeSummary.ToLog();
+            return this.TradeSummary.ToLog(duration);
         }
     }
 }

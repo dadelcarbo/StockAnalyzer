@@ -877,23 +877,23 @@ namespace StockAnalyzerApp
                             stockSerie.BarDuration = alertDef.BarDuration;
                             var values = stockSerie.GetValues(alertDef.BarDuration);
 
-                            int stopIndex = Math.Max(10, stockSerie.LastIndex - 10);
+                            int stopIndex = Math.Max(10, stockSerie.Count - 10);
                             int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
-                            for (int i = stockSerie.LastIndex; i > stopIndex; i--)
+                            for (int i = lastIndex; i > stopIndex; i--)
                             {
                                 var dailyValue = values.ElementAt(i);
                                 if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
                                     break;
                                 if (stockSerie.MatchEvent(alertDef, i))
                                 {
-                                    var date = i == stockSerie.LastIndex ? dailyValue.DATE : values.ElementAt(i + 1).DATE;
+                                    var date = dailyValue.DATE;
                                     var stockAlert = new StockAlert(alertDef,
                                         date,
                                         stockSerie.StockName,
                                         stockSerie.StockGroup.ToString(),
                                         dailyValue.CLOSE,
                                         dailyValue.VOLUME,
-                                        stockSerie.GetIndicator("ROR(100)").Series[0][i]);
+                                        stockSerie.GetIndicator("ROR(50)").Series[0][i]);
 
                                     if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {

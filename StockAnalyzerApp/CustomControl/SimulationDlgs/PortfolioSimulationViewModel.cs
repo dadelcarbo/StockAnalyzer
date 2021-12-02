@@ -231,8 +231,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                 this.TradeSummary = engine.TradeSummary;
 
-                string msg = tradeSummary.ToLog() + Environment.NewLine;
-                msg += engine.ToLog() + Environment.NewLine;
+                string msg = tradeSummary.ToLog(this.Duration) + Environment.NewLine;
+                msg += engine.ToLog(this.Duration) + Environment.NewLine;
                 msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
                 msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
 

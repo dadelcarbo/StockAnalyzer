@@ -167,12 +167,19 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.Report = "Performing";
 
                 this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent + Environment.NewLine + Environment.NewLine;
-                this.Stats += "WinRatio\tExpectedGainPerBar\t" + this.Parameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
+                if (this.Parameters.Count() == 0)
+                {
+                    this.Stats += "WinRatio\tExpectedGainPerBar\t" + Environment.NewLine;
+                }
+                else
+                {
+                    this.Stats += "WinRatio\tExpectedGainPerBar\t" + this.Parameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
+                }
                 engine = new StockAgentEngine(agentType);
                 engine.BestAgentDetected += (bestAgent) =>
                 {
                     this.BestAgent = bestAgent;
-                    string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
+                    string msg = bestAgent.TradeSummary.ToLog(this.BarDuration) + Environment.NewLine;
                     msg += bestAgent.ToLog() + Environment.NewLine;
                     this.Report = msg;
                 };

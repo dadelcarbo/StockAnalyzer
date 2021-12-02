@@ -254,7 +254,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.isFastForwarding = false;
             this.isSkipForwarding = false;
             // Generate statistics
-            var log = this.TradeSummary.ToLog();
+            var log = this.TradeSummary.ToLog(barDuration);
             MessageBox.Show(referenceSerie.StockName + Environment.NewLine + log, "Trade Summary", MessageBoxButton.OK);
 
             this.Start();

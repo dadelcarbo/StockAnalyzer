@@ -113,7 +113,7 @@ namespace StockAnalyzer.StockAgent
             // Get the elapsed time as a TimeSpan value.
             TimeSpan ts = stopWatch.Elapsed;
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            string msg = bestAgent.TradeSummary.ToLog() + Environment.NewLine;
+            string msg = bestAgent.TradeSummary.ToLog(duration) + Environment.NewLine;
             msg += bestAgent.ToLog() + Environment.NewLine;
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;

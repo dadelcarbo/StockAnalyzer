@@ -28,8 +28,6 @@ namespace StockAnalyzer.StockAgent.Agents
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (StopATR == 0)
-                return false;
             if (stockSerie.Count < Trigger)
                 return false;
             trailStop = stockSerie.GetTrailStop($"TRAILHIGHESTATR({Trigger},{StopATR},{TrailATR})");
