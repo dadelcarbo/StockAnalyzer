@@ -386,7 +386,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         {
                             if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
                             {
-                                bool isHilbertSR = stockIndicator.Name.StartsWith("HILBERT");
                                 int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
                                 int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
 
@@ -432,7 +431,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                                        this.backgroundBrush, srPoint.X - textOffset,
                                                        yPos, false);
                                                 }
-                                                else if (!isHilbertSR)
+                                                else
                                                 {
                                                     if (isSupport && stockIndicator.Events[4][index])
                                                     {

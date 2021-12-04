@@ -100,7 +100,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         if (resistanceEMA < previousHigh)
                         {
                             this.Events[7][i] = true; // LowerHigh
-                            this.StockTexts.Add(new StockText { AbovePrice = true, Index = i, Text = "LH" });
+                            this.StockTexts.Add(new StockText { AbovePrice = true, Index = i - 1, Text = "LH" });
                         }
                         previousHigh = resistanceEMA;
                     }
@@ -132,7 +132,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         if (supportEMA > previousLow)
                         {
                             this.Events[6][i] = true; // HigerLow
-                            this.StockTexts.Add(new StockText { AbovePrice = false, Index = i, Text = "HL" });
+                            this.StockTexts.Add(new StockText { AbovePrice = false, Index = i - 1, Text = "HL" });
                         }
                         previousLow = supportEMA;
                     }

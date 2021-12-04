@@ -113,7 +113,6 @@
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMansfield.cs" />
     <Compile Include="StockAgent\Agents\TrailEMA2Agent.cs" />
-    <Compile Include="StockAgent\Agents\HeikinAshiAgent.cs" />
     <Compile Include="StockAgent\Agents\HIGHLOWBARSAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMidAgent.cs" />
     <Compile Include="StockAgent\Agents\TFLowAgent.cs" />
@@ -311,7 +310,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HEIKINASHI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMOOSC.cs" />

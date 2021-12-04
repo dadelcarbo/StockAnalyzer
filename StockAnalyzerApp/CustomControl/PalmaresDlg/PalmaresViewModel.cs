@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -241,11 +242,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
                 float volume = 0.5f * (lastValue + openSerie[endIndex]) * stockSerie.GetSerie(StockDataType.VOLUME)[endIndex] / 1000000f;
+                var bodyHigh = stockSerie.Values.Select(v => v.BodyHigh).ToArray();
 
                 int highest = 0;
                 for (int i = endIndex - 1; i > 0; i--)
                 {
-                    if (lastValue > closeSerie[i])
+                    if (lastValue >= bodyHigh[i])
                     {
                         highest++;
                     }
