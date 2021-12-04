@@ -172,7 +172,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Brush textBrush = Brushes.Black;
 
         static protected Pen entryPen = new Pen(Color.Black, 1.0f);
-        static protected Pen stopPen = new Pen(Color.DarkRed, 1.0f);
+        static protected Pen stopPen = new Pen(Color.DarkRed, 2.0f);
         static protected Pen target1Pen = new Pen(Color.Green, 1.0f);
         static protected Pen target2Pen = new Pen(Color.DarkGreen, 1.0f);
 

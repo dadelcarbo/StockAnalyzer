@@ -772,8 +772,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 if (ShowOrders && this.Portfolio != null)
                 {
-                    PaintOrders(aGraphic);
                     PaintPositions(aGraphic);
+                    PaintOrders(aGraphic);
                 }
 
                 #endregion
@@ -1130,7 +1130,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
                 int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                if (entryIndex == -1) continue;
                 int exitIndex = this.IndexOf(position.ExitDate.Value, this.StartIndex, this.EndIndex);
+                if (exitIndex == -1) continue;
 
                 if (position.Stop != 0)
                 {
@@ -1151,6 +1153,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         graphic.FillRectangle(RedBrush, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
                         graphic.DrawRectangle(redPen, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
                     }
+                }
+            }
+
+            if (this.EndIndex == this.dateSerie.Length - 1)
+            {
+                var position = positions.FirstOrDefault(p => !p.IsClosed);
+                if (position != null && position.Stop != 0)
+                {
+                    int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                    this.DrawTmpSegment(graphic, stopPen, new PointF(entryIndex, position.Stop), new PointF(this.EndIndex + 10, position.Stop), true);
+                    
                 }
             }
         }

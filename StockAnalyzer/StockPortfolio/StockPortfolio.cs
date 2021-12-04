@@ -42,6 +42,13 @@ namespace StockAnalyzer.StockPortfolio
         // public List<StockOperation> Operations { get; }
         public List<StockTradeOperation> TradeOperations { get; set; }
         public List<StockPosition> Positions { get; }
+        public IEnumerable<StockPosition> SummaryPositions
+        {
+            get
+            {
+                return this.Positions.Where(p => !p.IsClosed);
+            }
+        }
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
         public string SaxoAccountId { get; set; }
@@ -89,7 +96,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
             }
-            foreach(var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
+            foreach (var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
             {
                 if (position.TrailStop == 0f && position.Stop != 0f)
                     position.TrailStop = position.Stop;
