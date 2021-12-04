@@ -172,7 +172,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Brush textBrush = Brushes.Black;
 
         static protected Pen entryPen = new Pen(Color.Black, 1.0f);
-        static protected Pen stopPen = new Pen(Color.DarkRed, 2.0f);
+        static protected Pen stopPen = new Pen(Color.Red, 2.0f);
+        static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.Triangle};
         static protected Pen target1Pen = new Pen(Color.Green, 1.0f);
         static protected Pen target2Pen = new Pen(Color.DarkGreen, 1.0f);
 
@@ -1338,6 +1339,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 newLine.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
             }
         }
+
         protected void DrawTmpHalfLine(Graphics graph, Pen pen, PointF point1, PointF point2, bool useTransform)
         {
             // Calculate intersection with bounding rectangle

@@ -1159,11 +1159,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.EndIndex == this.dateSerie.Length - 1)
             {
                 var position = positions.FirstOrDefault(p => !p.IsClosed);
-                if (position != null && position.Stop != 0)
+                if (position != null)
                 {
-                    int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
-                    this.DrawTmpSegment(graphic, stopPen, new PointF(entryIndex, position.Stop), new PointF(this.EndIndex + 10, position.Stop), true);
-                    
+                    if (position.Stop != 0)
+                    {
+                        int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                        this.DrawStop(graphic, stopPen, entryIndex, position.Stop);
+                    }
+                    if (position.TrailStop != 0 && position.TrailStop != position.Stop)
+                    {
+                        int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                        this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop);
+                    }
                 }
             }
         }
@@ -2138,6 +2145,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(this.foregroundGraphic, dateString, axisFont, Brushes.Black, this.backgroundBrush, dateLocation, true);
                 this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
+        }
+        protected void DrawStop(Graphics graph, Pen pen, float index, float stop)
+        {
+            // Calculate intersection with bounding rectangle
+            Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
+            var p1 = this.GetScreenPointFromValuePoint(index, stop);
+            var p2 = new PointF(GraphRectangle.Right, p1.Y);
+            Segment2D newLine = new Segment2D(p1, p2);
+            newLine.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
         }
         #endregion
         #region Geometric Functions
