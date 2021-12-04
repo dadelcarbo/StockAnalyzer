@@ -19,7 +19,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
     public partial class BinckPortfolioControl : System.Windows.Controls.UserControl
     {
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockAndDurationChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
 
         private System.Windows.Forms.Form Form { get; }
         public BinckPortfolioControl(System.Windows.Forms.Form form)
@@ -28,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             this.Form = form;
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
-            this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationChanged;
+            this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.closedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
@@ -102,8 +102,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 StockAnalyzerForm.MainFrame.Activate();
                 if (!string.IsNullOrEmpty(theme) && duration != null)
                 {
-                    this.SelectedStockAndDurationChanged(stockName, duration, true);
-                    StockAnalyzerForm.MainFrame.CurrentTheme = theme;
+                    this.SelectedStockAndDurationChanged(stockName, duration, theme, true);
                 }
                 else
                 {

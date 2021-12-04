@@ -25,6 +25,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndThemeChanged;
 
         private void ClearBtn_OnClick(object sender, RoutedEventArgs e)
         {
@@ -56,13 +57,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             if (SelectedStockChanged != null)
             {
                 StockAnalyzerForm.MainFrame.Activate();
-                this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
                 if (!string.IsNullOrEmpty(alert.Theme))
                 {
-                    StockAnalyzerForm.MainFrame.CurrentTheme = alert.Theme;
+                    this.SelectedStockAndThemeChanged(alert.StockName, alert.BarDuration, alert.Theme, true);
                 }
                 else
                 {
+                    this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
                     StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
                 }
                 this.Form.TopMost = true;

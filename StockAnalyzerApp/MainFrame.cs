@@ -62,6 +62,7 @@ namespace StockAnalyzerApp
 
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, StockBarDuration barDuration, bool activateMainWindow);
+        public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, StockBarDuration barDuration, string theme, bool activateMainWindow);
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, StockBarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
@@ -1214,9 +1215,60 @@ namespace StockAnalyzerApp
                         this.stockNameComboBox.Items.Add(stockName);
                     }
                 }
+                this.repaintSuspended = true;
                 this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
                 this.stockNameComboBox.Text = stockName;
                 this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
+                this.repaintSuspended = false;
+
+                StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+
+                if (activate)
+                {
+                    this.Activate();
+                }
+            }
+        }
+        public void OnSelectedStockAndDurationAndThemeChanged(string stockName, StockBarDuration barDuration, string theme, bool activate)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
+            {
+                if (!this.stockNameComboBox.Items.Contains(stockName))
+                {
+                    if (this.StockDictionary.ContainsKey(stockName))
+                    {
+                        var stockSerie = this.StockDictionary[stockName];
+
+                        StockSerie.Groups newGroup = stockSerie.StockGroup;
+                        if (!stockSerie.BelongsToGroup(this.selectedGroup))
+                        {
+                            this.selectedGroup = newGroup;
+
+                            foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
+                            {
+                                groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
+                            }
+
+                            InitialiseStockCombo(false);
+                        }
+                    }
+                    else
+                    {
+                        this.stockNameComboBox.Items.Add(stockName);
+                    }
+                }
+                this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
+                this.stockNameComboBox.Text = stockName;
+                this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
+
+                this.repaintSuspended = true;
+                this.barDurationComboBox.SelectedItem = barDuration.Duration;
+                this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
+                this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+                this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
+                this.repaintSuspended = false;
+
+                this.currentTheme = theme;
 
                 StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
 
@@ -1237,7 +1289,7 @@ namespace StockAnalyzerApp
                         var stockSerie = this.StockDictionary[stockName];
 
                         StockSerie.Groups newGroup = stockSerie.StockGroup;
-                        if (this.selectedGroup != newGroup)
+                        if (!stockSerie.BelongsToGroup(this.selectedGroup))
                         {
                             this.selectedGroup = newGroup;
 
@@ -1246,7 +1298,7 @@ namespace StockAnalyzerApp
                                 groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
                             }
 
-                            InitialiseStockCombo(true);
+                            InitialiseStockCombo(false);
                         }
                     }
                     else
@@ -2475,6 +2527,7 @@ namespace StockAnalyzerApp
             this.barLineBreakComboBox.SelectedItem = this.barLineBreakComboBox.Items.OfType<int>().First();
         }
 
+        private bool repaintSuspended = false;
         private void BarDurationChanged(object sender, EventArgs e)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -2502,8 +2555,10 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Not enough data to display...");
                         return;
                     }
-                    OnNeedReinitialise(true);
-                    this.ApplyTheme();
+                    if (!repaintSuspended)
+                    {
+                        OnNeedReinitialise(true);
+                    }
 
                     if (NotifyBarDurationChanged != null)
                     {
@@ -3508,7 +3563,7 @@ namespace StockAnalyzerApp
             get { return currentTheme; }
             set
             {
-                if (themeComboBox.SelectedItem.ToString() != value || value == "__NewTheme*")
+                if (themeComboBox.SelectedItem.ToString() != value || value == WORK_THEME)
                 {
                     if (themeComboBox.Items.Contains(value))
                     {
@@ -3724,9 +3779,11 @@ namespace StockAnalyzerApp
             {
                 alertDlg = new AlertDlg(intradayAlertConfig);
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                alertDlg.alertControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
                 alertDlg.Disposed += delegate
                 {
                     alertDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+                    alertDlg.alertControl1.SelectedStockAndThemeChanged -= OnSelectedStockAndDurationAndThemeChanged;
                     this.alertDlg = null;
                 };
                 alertDlg.Show();

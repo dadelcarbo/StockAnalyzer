@@ -915,7 +915,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected override void PaintDailyBox(PointF mousePoint)
         {
             if (this.serie.Count == 0) return;
-            if (lastMouseIndex == -1) return;
+            if (lastMouseIndex == -1 || lastMouseIndex > this.serie.Count) return;
             string value = string.Empty;
             value += BuildTabbedString("DATE", this.dateSerie[lastMouseIndex].ToString("dd/MM/yy"), 12) + "\r\n";
             if (this.dateSerie[lastMouseIndex].Hour != 0)
