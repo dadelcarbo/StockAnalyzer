@@ -226,15 +226,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.PaintHorizontalLines(aGraphic);
                 #endregion
 
-                #region Draw orders
-
-                if (ShowOrders && this.Portfolio != null)
-                {
-                    PaintOrders(aGraphic);
-                }
-
-                #endregion
-
                 #region Draw values and curves
 
                 PointF[] tmpPoints = null;
@@ -776,6 +767,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
+
+                #region Draw orders
+
+                if (ShowOrders && this.Portfolio != null)
+                {
+                    PaintOrders(aGraphic);
+                    PaintPositions(aGraphic);
+                }
+
+                #endregion
             }
         }
 
@@ -1107,6 +1108,50 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 valuePoint2D.Y = operation.OperationType == TradeOperationType.Sell ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
                 screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
                 this.DrawArrow(graphic, screenPoint2D, operation.OperationType == TradeOperationType.Buy, operation.IsShort);
+            }
+        }
+
+        static SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
+        static SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
+
+        private void PaintPositions(Graphics graphic)
+        {
+            if (this.Portfolio == null)
+            {
+                return;
+            }
+            var name = this.serie.StockName.ToUpper();
+            PointF valuePoint2D = PointF.Empty;
+            PointF screenPoint2D = PointF.Empty;
+            var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).ToList();
+            var startDate = this.dateSerie[this.StartIndex];
+            var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
+
+            foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
+            {
+                int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                int exitIndex = this.IndexOf(position.ExitDate.Value, this.StartIndex, this.EndIndex);
+
+                if (position.Stop != 0)
+                {
+                    var winRatio = new WinRatio(entryIndex, exitIndex, position.EntryValue, position.Stop, position.ExitValue.Value);
+                    DrawTmpItem(graphic, winRatio, true);
+                }
+                else
+                {
+                    PointF entryPoint = this.GetScreenPointFromValuePoint(entryIndex, position.EntryValue);
+                    PointF exitPoint = this.GetScreenPointFromValuePoint(exitIndex, position.ExitValue.Value);
+                    if (position.EntryValue < position.ExitValue.Value)
+                    {
+                        graphic.FillRectangle(GreenBrush, entryPoint.X, exitPoint.Y, exitPoint.X - entryPoint.X, entryPoint.Y - exitPoint.Y);
+                        graphic.DrawRectangle(greenPen, entryPoint.X, exitPoint.Y, exitPoint.X - entryPoint.X, entryPoint.Y - exitPoint.Y);
+                    }
+                    else
+                    {
+                        graphic.FillRectangle(RedBrush, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
+                        graphic.DrawRectangle(redPen, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
+                    }
+                }
             }
         }
 
@@ -1457,13 +1502,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Line2D(point1, point2), true);
+                        DrawTmpItem(this.foregroundGraphic, new Line2D(point1, point2), true);
                     }
                     break;
                 case GraphDrawMode.AddArea:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new Rectangle2D(point1, point2), true);
+                        DrawTmpItem(this.foregroundGraphic, new Rectangle2D(point1, point2), true);
                     }
                     break;
                 case GraphDrawMode.AddWinRatio:
@@ -1471,12 +1516,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (newWinRatio == null)
                         {
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, new WinRatio(point1, point2, PointF.Empty), true);
+                            DrawTmpItem(this.foregroundGraphic, new WinRatio(point1, point2, PointF.Empty), true);
                         }
                         else
                         {
-                            newWinRatio.P3 = point2;
-                            DrawTmpItem(this.foregroundGraphic, this.DrawingPen, newWinRatio, true);
+                            newWinRatio.Exit = point2;
+                            DrawTmpItem(this.foregroundGraphic, newWinRatio, true);
                         }
                     }
                     break;
@@ -1510,7 +1555,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (selectedLineIndex != -1)
                             {
                                 Line2D paraLine = ((Line2DBase)this.drawingItems[selectedLineIndex]).GetParallelLine(mouseValuePoint);
-                                this.DrawTmpItem(this.foregroundGraphic, this.DrawingPen, paraLine, true);
+                                this.DrawTmpItem(this.foregroundGraphic, paraLine, true);
                             }
                             break;
                         default:   // Shouldn't come there
@@ -1838,7 +1883,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 }
                                 else
                                 {
-                                    newWinRatio.P3 = point2;
+                                    newWinRatio.Exit = point2;
                                     drawingItems.Add(newWinRatio);
                                     drawingItems.RefDate = dateSerie[(int)point1.X];
                                     drawingItems.RefDateIndex = (int)point1.X;

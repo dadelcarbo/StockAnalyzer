@@ -1311,7 +1311,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 forceNoValueBoxDisplay = true;
             }
         }
-        protected void DrawTmpItem(Graphics graph, Pen pen, DrawingItem item, bool useTransform)
+        protected void DrawTmpItem(Graphics graph, DrawingItem item, bool useTransform)
         {
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);

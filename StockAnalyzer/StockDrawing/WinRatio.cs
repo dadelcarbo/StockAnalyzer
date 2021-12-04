@@ -10,31 +10,24 @@ namespace StockAnalyzer.StockDrawing
         static SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
         Font font = new Font(FontFamily.GenericSansSerif, 7);
 
-        public PointF P1 { get; set; }
-        public PointF P2 { get; set; }
+        public PointF Stop { get; set; }
+        public PointF Entry { get; set; }
 
         PointF p3 = PointF.Empty;
-        public PointF P3
+        public PointF Exit { get; set; }
+
+        public WinRatio(PointF stop, PointF entry, PointF exit)
         {
-            get => p3; 
-            set
-            {
-                p3 = value;
-                if (value == PointF.Empty) return;
-                if ((p3.Y > P1.Y && P2.Y < P1.Y) || (p3.Y < P1.Y && P2.Y > P1.Y))
-                {
-                    float tmp = P1.Y;
-                    P1 = new PointF(P1.X, P2.Y);
-                    P2 = new PointF(P2.X, tmp);
-                }
-            }
+            this.Stop = stop;
+            this.Entry = entry;
+            this.Exit = exit;
         }
 
-        public WinRatio(PointF p1, PointF p2, PointF p3)
+        public WinRatio(float startX, float endX, float entry, float stop, float exit)
         {
-            this.P1 = p1;
-            this.P2 = p2;
-            this.P3 = p3;
+            this.Stop = new PointF(startX, stop);
+            this.Entry = new PointF(startX, entry);
+            this.Exit = new PointF(endX, exit);
         }
         public bool Contains(PointF point)
         {
@@ -43,7 +36,7 @@ namespace StockAnalyzer.StockDrawing
 
         public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
-            PointF[] points = new PointF[] { this.P1, this.P2, this.P3 }.Where(p => p != PointF.Empty).ToArray();
+            PointF[] points = new PointF[] { this.Stop, this.Entry, this.Exit }.Where(p => p != PointF.Empty).ToArray();
 
             this.Transform(matrixValueToScreen, isLog, points);
             var left = points.Min(p => p.X);
@@ -61,17 +54,24 @@ namespace StockAnalyzer.StockDrawing
                     break;
                 case 3:
                     {
-                        var ratio = (P3.Y - P2.Y) / (P2.Y - P1.Y);
+                        var ratio = (Exit.Y - Entry.Y) / (Entry.Y - Stop.Y);
                         var loss = Math.Abs(points[0].Y - points[1].Y);
                         g.FillRectangle(RedBrush, left, Math.Min(points[0].Y, points[1].Y), width, loss);
-                        g.FillRectangle(GreenBrush, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
+                        g.FillRectangle(ratio > 0 ? GreenBrush : RedBrush, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
                         g.DrawRectangle(Pens.Red, left, Math.Min(points[0].Y, points[1].Y), width, loss);
-                        g.DrawRectangle(Pens.Green, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
-                        g.DrawString(ratio.ToString("#.##"), font, Brushes.Black, right, points[2].Y);
+                        g.DrawRectangle(ratio > 0 ? Pens.Green : Pens.Red, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
+                        if (ratio > 0)
+                        {
+                            g.DrawString($"R={ratio.ToString("0.##")}", font, Brushes.Black, right, points[0].Y);
+                        }
+                        else
+                        {
+                            g.DrawString($"R= {ratio.ToString("0.##")}", font, Brushes.Black, right, points[1].Y);
+                        }
                         for (float i = 1; i < ratio; i++)
                         {
                             var height = points[0].Y > points[1].Y ? Math.Max(points[1].Y, points[2].Y) - i * loss : Math.Min(points[1].Y, points[2].Y) + i * loss;
-                            g.DrawLine(Pens.Green, left, height, right, height);
+                            g.DrawLine(ratio > 0 ? Pens.Green : Pens.Red, left, height, right, height);
                         }
                     }
                     break;
