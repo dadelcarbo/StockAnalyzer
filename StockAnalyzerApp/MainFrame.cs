@@ -2557,7 +2557,7 @@ namespace StockAnalyzerApp
                     }
                     if (!repaintSuspended)
                     {
-                        OnNeedReinitialise(true);
+                        this.ApplyTheme();
                     }
 
                     if (NotifyBarDurationChanged != null)

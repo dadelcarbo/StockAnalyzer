@@ -519,6 +519,7 @@ namespace StockAnalyzer.StockPortfolio
                         if (position != null)
                         {
                             position.ExitDate = operation.Date;
+                            position.ExitValue = operation.Amount / operation.Qty;
                             if (position.EntryQty != qty)
                             {
                                 this.Positions.Add(new StockPosition
