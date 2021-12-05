@@ -2279,30 +2279,36 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
 
+            this.OnMouseDateChanged += openTradeViewModel.OnStopValueChanged;
             OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
-            if (openPositionDlg.ShowDialog() == DialogResult.OK)
+            openPositionDlg.Show(this);
+            openPositionDlg.FormClosed += (a, b) =>
             {
-                var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
-                if (StockAnalyzerForm.MainFrame.Portfolio.Balance < amount)
+                this.OnMouseDateChanged += openTradeViewModel.OnStopValueChanged;
+                if (openPositionDlg.DialogResult == DialogResult.OK)
                 {
-                    MessageBox.Show("You have insufficient cash to make this trade", "Invalid Operation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                StockAnalyzerForm.MainFrame.Portfolio.BuyTradeOperation(openTradeViewModel.StockName,
-                openTradeViewModel.EntryDate,
-                openTradeViewModel.EntryQty,
-                openTradeViewModel.EntryValue,
-                openTradeViewModel.Fee,
-                openTradeViewModel.StopValue,
-                openTradeViewModel.EntryComment,
-                openTradeViewModel.BarDuration,
-                openTradeViewModel.Theme
-                );
-                StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
-            }
+                    var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
+                    if (StockAnalyzerForm.MainFrame.Portfolio.Balance < amount)
+                    {
+                        MessageBox.Show("You have insufficient cash to make this trade", "Invalid Operation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    StockAnalyzerForm.MainFrame.Portfolio.BuyTradeOperation(openTradeViewModel.StockName,
+                    openTradeViewModel.EntryDate,
+                    openTradeViewModel.EntryQty,
+                    openTradeViewModel.EntryValue,
+                    openTradeViewModel.Fee,
+                    openTradeViewModel.StopValue,
+                    openTradeViewModel.EntryComment,
+                    openTradeViewModel.BarDuration,
+                    openTradeViewModel.Theme
+                    );
+                    StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
 
-            this.BackgroundDirty = true;
-            PaintGraph();
+                    this.BackgroundDirty = true;
+                    PaintGraph();
+                }
+            };
         }
 
         void sellMenu_Click(object sender, System.EventArgs e)

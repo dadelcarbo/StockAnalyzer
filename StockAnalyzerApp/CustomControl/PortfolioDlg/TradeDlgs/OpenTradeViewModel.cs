@@ -3,6 +3,7 @@ using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using StockAnalyzerApp.CustomControl.GraphControls;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -27,7 +28,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.OnPropertyChanged("PortfolioRisk");
             this.OnPropertyChanged("PortfolioPercent");
         }
-
         public int EntryQty
         {
             get => entryQty;
@@ -101,5 +101,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }
+
+        public void OnStopValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        {
+            if (crossMode)
+                this.StopValue = value;
+        }
     }
 }

@@ -94,7 +94,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     if (highSerie[i - 1] > highSerie[i] && highSerie[i - 2] > highSerie[i]) // Resistance Detected (new top)
                     {
-                        resistanceEMA = highSerie[i - 1]; // = resistanceSerie[i - 1] 
+                        resistanceEMA = Math.Max(highSerie[i - 2], highSerie[i - 1]);
+                        resistanceSerie[i - 1] = resistanceEMA;
                         resistanceEMA = resistanceEMA + alpha * (highSerie[i] - resistanceEMA);
                         this.Events[1][i] = true; // ResistanceDetected
                         if (resistanceEMA < previousHigh)
@@ -126,7 +127,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     if (lowSerie[i - 1] < lowSerie[i] && lowSerie[i - 2] < lowSerie[i]) // Support Detected (new low)
                     {
-                        supportEMA = lowSerie[i - 1]; // supportSerie[i - 1] = 
+                        supportEMA = Math.Min(lowSerie[i - 2], lowSerie[i - 1]);
+                        supportSerie[i - 1] = supportEMA;
                         supportEMA = supportEMA + alpha * (lowSerie[i] - supportEMA);
                         this.Events[0][i] = true; // SupportDetected
                         if (supportEMA > previousLow)

@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockAgent
                 volumeEuroSerie = (volumeSerie * closeSerie * 0.000001f).CalculateEMA(10);
                 if (stopATR != 0.0f)
                 {
-                    atrSerie = stockSerie.GetIndicator("ATR(20").Series[0];
+                    atrSerie = stockSerie.GetIndicator("ATR(10)").Series[0];
                 }
                 this.Trade = null;
                 this.StopATR = stopATR;
