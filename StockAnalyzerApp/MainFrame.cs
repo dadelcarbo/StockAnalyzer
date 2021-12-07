@@ -610,8 +610,9 @@ namespace StockAnalyzerApp
             if (this.selectedGroup != serie.StockGroup)
             {
                 this.selectedGroup = serie.StockGroup;
-
+                repaintSuspended = true;
                 SetDurationForStockGroup(serie.StockGroup);
+                repaintSuspended = false;
 
                 foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
                 {
