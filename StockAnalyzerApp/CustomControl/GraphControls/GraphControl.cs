@@ -173,7 +173,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         static protected Pen entryPen = new Pen(Color.Black, 1.0f);
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
-        static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.Triangle};
+        static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.Triangle };
         static protected Pen target1Pen = new Pen(Color.Green, 1.0f);
         static protected Pen target2Pen = new Pen(Color.DarkGreen, 1.0f);
 
@@ -790,7 +790,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     graphTitle += "  " + stockIndicator.Name;
                 }
-                this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.backgroundBrush, new PointF(1, 1), true);
+                this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
             }
         }
         protected virtual void PaintDailyBox(PointF mousePoint)
@@ -1592,16 +1592,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         /// <param name="location"></param>
         /// <param name="drawFrame"></param>
         /// <returns></returns>
-        protected float DrawString(Graphics aGraphic, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, bool drawFrame)
+        protected float DrawString(Graphics aGraphic, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, bool drawFrame, Pen pen = null)
         {
             string trimmedText = text.Trim();
             Size size = TextRenderer.MeasureText(trimmedText, font);
+            if (pen == null) pen = textFramePen;
 
             RectangleF rect = new RectangleF(location.X, location.Y, size.Width, size.Height);
             if (drawFrame)
             {
-                aGraphic.FillRectangle(textBackgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
-                aGraphic.DrawRectangle(textFramePen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+                aGraphic.FillRectangle(backgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+                aGraphic.DrawRectangle(pen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
             }
             aGraphic.DrawString(trimmedText, font, brush, rect);
             return location.X + size.Width - 26;

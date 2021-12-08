@@ -1045,7 +1045,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), Math.Min(mousePoint.Y + 10, GraphRectangle.Bottom - size.Height));
 
-            this.DrawString(this.foregroundGraphic, value, toolTipFont, Brushes.Black, this.backgroundBrush, point, true);
+            this.DrawString(this.foregroundGraphic, value, toolTipFont, Brushes.Black, this.textBackgroundBrush, point, true);
 
         }
         protected override void PaintGraphTitle(Graphics gr)
@@ -1073,7 +1073,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += " " + (this.CurveList.AutoDrawing.Name);
             }
-            float right = this.DrawString(gr, graphTitle, this.axisFont, Brushes.Black, this.backgroundBrush, new PointF(1, 1), true);
+            float right = this.DrawString(gr, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
@@ -2091,11 +2091,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF point2 = GetScreenPointFromValuePoint(new PointF(mouseIndex, currentClose));
                 if (currentClose >= previousClose)
                 {
-                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, Brushes.Green, backgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, Brushes.Green, textBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
                 else
                 {
-                    this.DrawString(this.foregroundGraphic, variation, axisFont, Brushes.Red, backgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, variation, axisFont, Brushes.Red, textBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
             }
         }
@@ -2142,8 +2142,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
 
                 PointF dateLocation = new PointF((int)screenPoint.X - 50, (int)GraphRectangle.Bottom + 2);
-                this.DrawString(this.foregroundGraphic, dateString, axisFont, Brushes.Black, this.backgroundBrush, dateLocation, true);
-                this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                this.DrawString(this.foregroundGraphic, dateString, axisFont, Brushes.Black, textBackgroundBrush, dateLocation, true);
+                this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
         }
         protected void DrawStop(Graphics graph, Pen pen, float index, float stop)
@@ -2151,9 +2151,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
             var p1 = this.GetScreenPointFromValuePoint(index, stop);
-            var p2 = new PointF(GraphRectangle.Right, p1.Y);
-            Segment2D newLine = new Segment2D(p1, p2);
-            newLine.Draw(graph, pen, GraphControl.matrixIdentity, rect2D, false);
+            var p2 = new PointF(GraphRectangle.Right + 30, p1.Y);
+            graph.DrawLine(pen, p1, p2);
+            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, redBrush, new PointF(GraphRectangle.Right + 30, p1.Y - 8), true);
         }
         #endregion
         #region Geometric Functions
