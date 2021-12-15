@@ -40,12 +40,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 return;
             }
 
-            //var highSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            //var highSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
             //var lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
             var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
-            highSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            highSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);

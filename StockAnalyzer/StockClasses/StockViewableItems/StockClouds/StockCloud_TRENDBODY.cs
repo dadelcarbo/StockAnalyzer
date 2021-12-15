@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             var fastPeriod = (int)this.parameters[0];
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
             var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 

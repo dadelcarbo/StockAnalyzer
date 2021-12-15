@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             int period = (int)this.parameters[0];
             float threeshold = (float)this.parameters[1];
 
-            if (stockSerie.ValueArray.Length < period)
+            if (stockSerie.Count <= period)
             {
                 // Generate events
                 this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);

@@ -110,6 +110,30 @@ namespace StockAnalyzerSettings.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPositions {
+            get {
+                return ((bool)(this["ShowPositions"]));
+            }
+            set {
+                this["ShowPositions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowDividend {
+            get {
+                return ((bool)(this["ShowDividend"]));
+            }
+            set {
+                this["ShowDividend"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowDrawings {
             get {
                 return ((bool)(this["ShowDrawings"]));
@@ -121,7 +145,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DownloadData {
             get {
                 return ((bool)(this["DownloadData"]));
@@ -205,13 +229,25 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2015-01-01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2012-01-01")]
         public global::System.DateTime DownloadStartDate {
             get {
                 return ((global::System.DateTime)(this["DownloadStartDate"]));
             }
             set {
                 this["DownloadStartDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2010")]
+        public int LoadStartYear {
+            get {
+                return ((int)(this["LoadStartYear"]));
+            }
+            set {
+                this["LoadStartYear"] = value;
             }
         }
         
@@ -395,22 +431,7 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowCommentMarquee"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowDividend
-        {
-            get
-            {
-                return ((bool)(this["ShowDividend"]));
-            }
-            set
-            {
-                this["ShowDividend"] = value;
-            }
-        }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("david.carbonel@free.fr")]
@@ -470,22 +491,19 @@ namespace StockAnalyzerSettings.Properties {
                 this["PortofolioValue"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2010")]
-        public int LoadStartYear
-        {
-            get
-            {
-                return ((int)(this["LoadStartYear"]));
+        [global::System.Configuration.DefaultSettingValueAttribute("ROC(120,1)")]
+        public string MomentumIndicator {
+            get {
+                return ((string)(this["MomentumIndicator"]));
             }
-            set
-            {
-                this["LoadStartYear"] = value;
+            set {
+                this["MomentumIndicator"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]

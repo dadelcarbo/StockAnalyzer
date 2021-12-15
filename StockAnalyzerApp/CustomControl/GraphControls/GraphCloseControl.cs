@@ -52,6 +52,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private PointF selectedValuePoint;
 
         protected bool ShowOrders { get { return Settings.Default.ShowOrders; } }
+        protected bool ShowPositions { get { return Settings.Default.ShowPositions; } }
         protected bool ShowEventMarquee { get { return Settings.Default.ShowEventMarquee; } }
         protected bool ShowCommentMarquee { get { return Settings.Default.ShowCommentMarquee; } }
         protected bool ShowDividend { get { return Settings.Default.ShowDividend; } }
@@ -770,9 +771,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #region Draw orders
 
-                if (ShowOrders && this.Portfolio != null)
+                if (ShowPositions && this.Portfolio != null)
                 {
                     PaintPositions(aGraphic);
+                }
+                if (ShowOrders && this.Portfolio != null)
+                {
                     PaintOrders(aGraphic);
                 }
 
@@ -1013,7 +1017,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
-                var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => v.BodyHigh).ToArray());
                 int highest = 0;
                 for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
                 {
@@ -1022,7 +1026,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
 
-                var bodyLowSerie = new FloatSerie(this.serie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                var bodyLowSerie = new FloatSerie(this.serie.Values.Select(v => v.BodyHigh).ToArray());
                 int lowest = 0;
                 for (int i = this.lastMouseIndex - 1; i > 0; i--, lowest++)
                 {

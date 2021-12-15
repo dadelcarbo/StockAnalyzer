@@ -42,6 +42,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
+            if (period>stockSerie.Count)
+            {
+                this.CreateEventSeries(stockSerie.Count);
+                return;
+            }
 
             // Calculate MDH Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
@@ -51,7 +56,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
             FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             upLine[0] = bodyHighSerie[0];
@@ -60,14 +65,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = 1; i <= period; i++)
             {
-                upLine[i] = bodyHighSerie.GetMax(0, i - 1);
-                downLine[i] = bodyLowSerie.GetMin(0, i - 1);
+                upLine[i] = bodyHighSerie.GetMax(0, i);
+                downLine[i] = bodyLowSerie.GetMin(0, i);
                 midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
             }
             for (int i = period + 1; i < stockSerie.Count; i++)
             {
-                upLine[i] = bodyHighSerie.GetMax(i - period - 1, i - 1);
-                downLine[i] = bodyLowSerie.GetMin(i - period - 1, i - 1);
+                upLine[i] = bodyHighSerie.GetMax(i - period - 1, i);
+                downLine[i] = bodyLowSerie.GetMin(i - period - 1, i);
                 midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
             }
 

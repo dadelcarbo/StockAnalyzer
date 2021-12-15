@@ -23,6 +23,12 @@
     <Setting Name="ShowOrders" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ShowPositions" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowDividend" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="ShowDrawings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -49,6 +55,9 @@
     </Setting>
     <Setting Name="DownloadStartDate" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)">2012-01-01</Value>
+    </Setting>
+    <Setting Name="LoadStartYear" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2010</Value>
     </Setting>
     <Setting Name="BarType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>

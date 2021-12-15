@@ -1329,11 +1329,6 @@ namespace StockAnalyzerApp
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                this.barDurationComboBox.SelectedItem = barDuration.Duration;
-                this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
-                this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
-                this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
-
                 if (!this.stockNameComboBox.Items.Contains(stockName))
                 {
                     if (this.StockDictionary.ContainsKey(stockName))
@@ -1358,6 +1353,14 @@ namespace StockAnalyzerApp
                         this.stockNameComboBox.Items.Add(stockName);
                     }
                 }
+
+                this.repaintSuspended = true;
+                this.barDurationComboBox.SelectedItem = barDuration.Duration;
+                this.barSmoothingComboBox.SelectedItem = barDuration.Smoothing;
+                this.barHeikinAshiCheckBox.CheckBox.Checked = barDuration.HeikinAshi;
+                this.barLineBreakComboBox.SelectedItem = barDuration.LineBreak;
+                this.repaintSuspended = false;
+
                 this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
                 this.stockNameComboBox.Text = stockName;
                 this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
@@ -2748,6 +2751,13 @@ namespace StockAnalyzerApp
         private void showOrdersMenuItem_Click(object sender, EventArgs e)
         {
             Settings.Default.ShowOrders = this.showOrdersMenuItem.Checked;
+            Settings.Default.Save();
+            // Refresh the graphs
+            OnNeedReinitialise(false);
+        }
+        private void showPositionsMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.ShowPositions = this.showPositionsMenuItem.Checked;
             Settings.Default.Save();
             // Refresh the graphs
             OnNeedReinitialise(false);

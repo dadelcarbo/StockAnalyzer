@@ -155,16 +155,14 @@ namespace StockAnalyzer.StockAgent
                         case TradeAction.Nothing:
                             break;
                         case TradeAction.Buy:
-                            i++;
-                            this.Agent.OpenTrade(serie, i);
+                            this.Agent.OpenTrade(serie, i + 1);
                             break;
                         case TradeAction.Sell:
-                            i++;
-                            this.Agent.CloseTrade(i);
+                            this.Agent.CloseTrade(i + 1);
                             break;
                         case TradeAction.PartSell:
                             i++;
-                            this.Agent.PartlyCloseTrade(i);
+                            this.Agent.PartlyCloseTrade(i + 1);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
             var bearEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bearish")];
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
             var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             bool isBear = false;

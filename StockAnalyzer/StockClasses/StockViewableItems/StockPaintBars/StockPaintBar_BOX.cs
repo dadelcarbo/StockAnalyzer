@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 }
                 DrawingItem.CreatePersistent = false;
 
-                var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
+                var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
                 var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
                 bool inBox = false;

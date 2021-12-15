@@ -62,6 +62,7 @@ namespace StockAnalyzerApp
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDrawingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showPositionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -364,6 +365,7 @@ namespace StockAnalyzerApp
             this.hideIndicatorsStockMenuItem,
             this.showDrawingsMenuItem,
             this.showOrdersMenuItem,
+            this.showPositionsMenuItem,
             this.toolStripSeparator14,
             this.showAgendaMenuItem,
             this.showDividendMenuItem,
@@ -419,6 +421,16 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showOrdersMenuItem.Text = "Show Orders";
             this.showOrdersMenuItem.Click += new System.EventHandler(this.showOrdersMenuItem_Click);
+            // 
+            // showPositionsMenuItem
+            // 
+            this.showPositionsMenuItem.Checked = true;
+            this.showPositionsMenuItem.CheckOnClick = true;
+            this.showPositionsMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showPositionsMenuItem.Name = "showPositionsMenuItem";
+            this.showPositionsMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.showPositionsMenuItem.Text = "Show Positions";
+            this.showPositionsMenuItem.Click += new System.EventHandler(this.showPositionsMenuItem_Click);
             // 
             // toolStripSeparator14
             // 
@@ -1530,6 +1542,7 @@ namespace StockAnalyzerApp
         private ToolStripProgressBar progressBar;
         private ToolStripMenuItem nameMappingMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
+        private ToolStripMenuItem showPositionsMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
         private ToolStripMenuItem showCommentMarqueeMenuItem;
