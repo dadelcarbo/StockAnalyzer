@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             var bearEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bearish")];
 
             var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             bool isBear = false;
             float trailStop = float.NaN;

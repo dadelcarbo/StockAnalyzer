@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             var bullEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bullish")];
 
             var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             bool isBull = false;
             float trailStop = float.NaN;

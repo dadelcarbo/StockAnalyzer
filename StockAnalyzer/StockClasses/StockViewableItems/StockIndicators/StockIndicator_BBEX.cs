@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             // Detecting events
             bool bullish = false;

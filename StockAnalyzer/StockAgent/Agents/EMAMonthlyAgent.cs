@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
             dates = stockSerie.Keys.ToArray();
             emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
 
             return true;
         }

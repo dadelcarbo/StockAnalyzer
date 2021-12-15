@@ -1055,7 +1055,7 @@ namespace StockAnalyzer.StockClasses
         public FloatSerie CalculateRateOfRise(int period, bool bodyLow = true)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : new FloatSerie(this.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)));
+            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : new FloatSerie(this.Values.Select(v => v.BodyLow));
 
             FloatSerie serie = new FloatSerie(Values.Count());
             float min;
@@ -1189,8 +1189,8 @@ namespace StockAnalyzer.StockClasses
             //  %D = MA3(%K)
             FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            var bodyHighSerie = new FloatSerie(this.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            var bodyLowSerie = new FloatSerie(this.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            var bodyHighSerie = new FloatSerie(this.Values.Select(v => v.BodyHigh).ToArray());
+            var bodyLowSerie = new FloatSerie(this.Values.Select(v => v.BodyLow).ToArray());
             float lowestLow = float.MaxValue;
             float highestHigh = float.MinValue;
 

@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
 
             //var highSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Max(v.OPEN, v.CLOSE)).ToArray());
-            //var lowSerie = new FloatSerie(stockSerie.Values.Select(v => Math.Min(v.OPEN, v.CLOSE)).ToArray());
+            //var lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
             var highSerie = new FloatSerie(stockSerie.Values.Select(v => v.HIGH).ToArray());
             var lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.LOW).ToArray());
 

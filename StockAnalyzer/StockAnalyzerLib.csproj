@@ -150,6 +150,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_STRONG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOCK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
