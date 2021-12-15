@@ -84,6 +84,7 @@ namespace StockAnalyzerApp.CustomControl
         void cancelBtn_Click(object sender, System.EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Close();
         }
 
         private void generateBreadthCheckBox_CheckedChanged(object sender, EventArgs e)
