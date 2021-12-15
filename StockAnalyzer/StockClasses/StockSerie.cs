@@ -64,12 +64,6 @@ namespace StockAnalyzer.StockClasses
             Replay,
             ALL
         }
-        public enum Trend
-        {
-            NoTrend,
-            UpTrend,
-            DownTrend
-        };
 
         #endregion
         #region public properties
@@ -2937,44 +2931,6 @@ namespace StockAnalyzer.StockClasses
         }
 
         #endregion
-
-        public StockSerie.Trend[] GenerateMultiTimeFrameTrendSummary(List<string> indicators, List<StockBarDuration> durations)
-        {
-            StockBarDuration currentDuration = this.BarDuration;
-
-            List<Trend> resultTrends = new List<Trend>();
-
-            foreach (string indicatorName in indicators)
-            {
-                foreach (StockBarDuration duration in durations)
-                {
-                    this.BarDuration = duration;
-                    if (this.IsInitialised)
-                    {
-                        IStockUpDownState stockState = this.GetViewableItem(indicatorName) as IStockUpDownState;
-                        if (stockState != null)
-                        {
-                            resultTrends.Add(stockState.UpDownState[this.LastCompleteIndex]);
-                        }
-                        else
-                        {
-                            resultTrends.Add(Trend.NoTrend);
-                        }
-                    }
-                    else
-                    {
-                        foreach (string eventName in indicators)
-                        {
-                            resultTrends.Add(Trend.NoTrend);
-                        }
-                    }
-                }
-            }
-
-            currentDuration = this.BarDuration = currentDuration;
-
-            return resultTrends.ToArray();
-        }
 
         public bool BelongsToGroup(Groups group)
         {

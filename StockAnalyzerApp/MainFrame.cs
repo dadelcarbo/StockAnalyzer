@@ -25,7 +25,6 @@ using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
-using StockAnalyzerApp.CustomControl.MultiTimeFrameDlg;
 using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
@@ -3346,13 +3345,6 @@ namespace StockAnalyzerApp
                     case Keys.Control | Keys.Shift | Keys.F5:
                         {
                             this.ForceDownloadStockGroup();
-                        }
-                        break;
-                    case Keys.Control | Keys.Shift | Keys.F8: // Generate multi time frame trend view.
-                        {
-                            MTFDlg mtfDlg = new MTFDlg();
-                            mtfDlg.MtfControl.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                            mtfDlg.Show();
                         }
                         break;
                     case Keys.Control | Keys.X:

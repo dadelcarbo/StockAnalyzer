@@ -4,7 +4,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_CROSSSR : StockUpDownIndicatorBase
+    public class StockIndicator_CROSSSR : StockIndicatorBase
     {
         public StockIndicator_CROSSSR()
         {

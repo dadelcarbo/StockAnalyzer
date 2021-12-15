@@ -4,7 +4,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_BARSINEVENT : StockUpDownIndicatorBase
+    public class StockIndicator_BARSINEVENT : StockIndicatorBase
     {
         public override string Definition => "Calculates the numbers of bars an evant has been true";
         public override IndicatorDisplayTarget DisplayTarget

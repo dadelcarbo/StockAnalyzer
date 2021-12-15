@@ -239,7 +239,6 @@
     <Compile Include="StockClasses\StockStatistic\StockPatternIndex.cs" />
     <Compile Include="StockClasses\StockStatistic\StockStatisticsEngine.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
-    <Compile Include="StockClasses\StockViewableItems\IStockUpDownState.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
     <Compile Include="StockClasses\StockDataProviders\IStockDataProvider.cs" />
@@ -383,7 +382,6 @@
     <Compile Include="StockClasses\StockViewableItems\IStockVisibility.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SPEED.cs" />
     <Compile Include="StockAnalyzerException.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockUpDownIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarTrailStopEventBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_BOX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FW.cs" />

@@ -97,40 +97,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
         #endregion
 
-
-        private StockSerie.Trend[] upDownState = null;
-
-        public StockSerie.Trend[] UpDownState
-        {
-            get
-            {
-                if (upDownState == null)
-                {
-                    FloatSerie longStop = this.Series[0];
-                    FloatSerie shortStop = this.Series[1];
-                    BoolSerie boolSerie = this.Events[0];
-                    upDownState = new StockSerie.Trend[boolSerie.Count];
-                    for (int i = 0; i < boolSerie.Count; i++)
-                    {
-                        if (!float.IsNaN(longStop[i]))
-                            upDownState[i] = StockSerie.Trend.UpTrend;
-                        else if (!float.IsNaN(shortStop[i]))
-                            upDownState[i] = StockSerie.Trend.DownTrend;
-                        else
-                            upDownState[i] = StockSerie.Trend.NoTrend;
-                    }
-                }
-                return upDownState;
-            }
-        }
-
         private static string[] eventNames = new string[]
           {
              "BrokenUp", "BrokenDown",           // 0,1
              "Pullback", "EndOfTrend",           // 2,3
              "HigherLow", "LowerHigh",           // 4,5
-             "Bullish", "Bearish",                // 6,7
-             "LH_HL", "HL_LH"                // 8,9
+             "Bullish", "Bearish",               // 6,7
+             "LH_HL", "HL_LH"                    // 8,9
           };
 
         public string[] EventNames => eventNames;
