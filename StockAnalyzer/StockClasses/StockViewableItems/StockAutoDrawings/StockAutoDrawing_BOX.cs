@@ -11,13 +11,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
 
-        public override string Definition => "Draws BOX pattern which start when a high occurs and limited low occurs (detects consolidation).";
+        public override string Definition => "Draws BOX pattern as defined per FinancialWisdom.";
 
-        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod" };
+        public override string[] ParameterNames => new string[] { "Length", "Range" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 25, 10 };
+        public override Object[] ParameterDefaultValues => new Object[] { 8, 0.1f };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeInt(2, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeFloat(0f, 10f) };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -26,12 +26,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 if (eventNames == null)
                 {
-                    eventNames = new string[] { "BrokenUp", "BrokenDown", "InBox" };
+                    eventNames = new string[] { "BrokenUp" };
                 }
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, false };
+        static readonly bool[] isEvent = new bool[] { true };
         public override bool[] IsEvent
         {
             get { return isEvent; }
@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 }, new Pen(Color.DarkRed) { Width = 2 }, new Pen(Color.Black) { Width = 2 } };
+                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 } };
                 }
                 return seriePens;
             }
@@ -51,82 +51,39 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var highPeriod = (int)this.parameters[0];
-            var lowPeriod = (int)this.parameters[1];
-            var validationPeriod = lowPeriod;
+            var boxLength = (int)this.parameters[0];
+            var boxRange = (float)this.parameters[1];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            var highestInSerie = stockSerie.GetIndicator($"HIGHEST({highPeriod})").Series[0];
+            var highestInSerie = stockSerie.GetIndicator($"HIGHEST({boxLength})").Series[0];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
             var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
-            var inBoxEvents = this.Events[Array.IndexOf<string>(this.EventNames, "InBox")];
 
             try
             {
                 var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
                 var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+                var volumeSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
-                bool inBox = false;
-                float boxHigh = 0f, boxLow = 0f, boxLowLimit = 0f;
-                PointF boxStartCorner = PointF.Empty;
-
-                for (int i = highPeriod; i < stockSerie.Count; i++)
+                for (int i = boxLength + 1; i < stockSerie.Count; i++)
                 {
-                    if (!inBox)
+                    if (highestInSerie[i] > boxLength)
                     {
-                        int startIndex = i - validationPeriod;
-                        if (highestInSerie[startIndex] > highPeriod && highestInSerie.FindMaxIndex(startIndex, i) == startIndex) // Begining of consolidation
-                        {
-                            // Initiate new box
-                            boxLow = bodyLowSerie.GetMin(startIndex, i);
-                            boxLowLimit = bodyLowSerie.GetMin(startIndex - lowPeriod - 1, startIndex);
-                            if (boxLow < boxLowLimit)
-                                continue;
-                            inBox = true;
-                            boxHigh = Math.Max(bodyHighSerie[startIndex], bodyHighSerie[startIndex + 1]);
-                            boxStartCorner = new PointF(startIndex, boxHigh);
-                        }
-                        else { continue; }
-                    }
-                    else
-                    {
-                        if (closeSerie[i] > boxHigh)
+                        // Check Box Size
+                        var boxHigh = bodyHighSerie.GetMax(i - boxLength - 1, i - 1);
+                        var boxLow = bodyLowSerie.GetMin(i - boxLength - 1, i - 1);
+                        var range = (boxHigh - boxLow) / boxHigh;
+                        if (range < boxRange && (volumeSerie[i] == 0 || volumeSerie[i] > volumeSerie[i - 1]))
                         {
                             // Box broken up
                             brokenUpEvents[i] = true;
-                            inBox = false;
-                            Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
+                            Rectangle2D box = new Rectangle2D(new PointF(i - boxLength - 1, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
                             this.DrawingItems.Insert(0, box);
                         }
-                        else
-                        {
-                            // Wait for box break out.
-                            if (bodyLowSerie[i] > boxLowLimit)
-                            {
-                                boxLow = Math.Min(boxLow, bodyLowSerie[i]);
-                            }
-                            else
-                            {
-                                brokenDownEvents[i] = true;
-                                inBox = false;
-                                Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(i, boxLow)) { Pen = this.SeriePens[1], Fill = true };
-                                this.DrawingItems.Insert(0, box);
-                            }
-                        }
+                        i += boxLength;
                     }
-                    if (inBox)
-                    {
-                        inBoxEvents[i] = true;
-                    }
-                }
-                if (inBox)
-                {
-                    Rectangle2D box = new Rectangle2D(boxStartCorner, new PointF(stockSerie.LastIndex, boxLowLimit)) { Pen = Pens.Gray, Fill = true };
-                    this.DrawingItems.Insert(0, box);
                 }
             }
             finally

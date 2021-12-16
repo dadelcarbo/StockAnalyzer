@@ -729,6 +729,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 j++;
                             }
                         }
+                        // AutoDrawing
+                        if (!eventFound && this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
+                        {
+                            int j = 0;
+                            foreach (var eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
+                            {
+                                if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
+                                {
+                                    eventFound = true;
+                                    break;
+                                }
+                                j++;
+                            }
+                        }
                         if (eventFound)
                         {
                             PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
@@ -1021,7 +1035,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 int highest = 0;
                 for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
                 {
-                    if (closeValue < bodyHighSerie[i])
+                    if (closeValue <= bodyHighSerie[i])
                         break;
                 }
                 value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
@@ -1365,6 +1379,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null && this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
                                 {
                                     eventTypeString += this.CurveList.PaintBar.Name + " - " + eventSerie.Name + System.Environment.NewLine;
+                                }
+                                j++;
+                            }
+                        }
+                        // Paint Bars
+                        if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
+                        {
+
+                            int j = 0;
+                            foreach (BoolSerie eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
+                            {
+                                if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
+                                {
+                                    eventTypeString += this.CurveList.AutoDrawing.Name + " - " + eventSerie.Name + System.Environment.NewLine;
                                 }
                                 j++;
                             }
