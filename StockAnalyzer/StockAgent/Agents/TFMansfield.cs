@@ -1,7 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
-using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {

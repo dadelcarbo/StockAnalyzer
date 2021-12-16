@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

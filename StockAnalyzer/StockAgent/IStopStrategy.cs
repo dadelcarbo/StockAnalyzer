@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace StockAnalyzer.StockAgent
 {

@@ -5,34 +5,36 @@ using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class ATRReentryAgent : StockAgentBase
+    public class TRENDBODY2Agent : StockAgentBase
     {
-        public ATRReentryAgent()
+        public TRENDBODY2Agent()
         {
-            Period = 12;
-            Width = 2.0f;
+            UpPeriod = 50;
+            DownPeriod = 25;
         }
 
-        [StockAgentParam(1, 30)]
-        public int Period { get; set; }
+        [StockAgentParam(2, 120)]
+        public int UpPeriod { get; set; }
 
-        [StockAgentParam(0.5f, 4.0f)]
-        public float Width { get; set; }
+        [StockAgentParam(2, 120)]
+        public int DownPeriod { get; set; }
+
+        public override string Description => "Buy with TRENDBODY2 Bull Events, TREND body with different High/Low period";
 
 
-        public override string Description => "Buy according to TrailATR CLOUD on re entry signal";
+        public override string DisplayIndicator => $"CLOUD|TRENDBODY2({UpPeriod},{DownPeriod})";
 
-        public override string DisplayIndicator => $"CLOUD|TRAILATR(50,{Width},{-Width},EMA,{Period}";
 
         IStockCloud cloud;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Period)
+            if (stockSerie.Count < Math.Max(UpPeriod, DownPeriod))
                 return false;
-            cloud = stockSerie.GetCloud($"TRAILATR(50,{Width},{-Width},EMA,{Period})");
-            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "Long Reentry")];
+
+            var cloud = stockSerie.GetCloud($"TRENDBODY2({UpPeriod},{DownPeriod})");
+            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudUp")];
             bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudDown")];
             return bullEvents != null && bearEvents != null;
         }

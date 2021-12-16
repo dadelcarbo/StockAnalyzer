@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Xml;
 using System.Xml.Serialization;
 using StockAnalyzerSettings.Properties;
 

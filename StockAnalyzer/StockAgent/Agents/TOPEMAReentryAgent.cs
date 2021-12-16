@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockMath;
-using System;
-using System.Linq;
 
 namespace StockAnalyzer.StockAgent.Agents
 {

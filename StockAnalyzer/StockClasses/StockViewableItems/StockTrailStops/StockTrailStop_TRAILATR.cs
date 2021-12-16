@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
 

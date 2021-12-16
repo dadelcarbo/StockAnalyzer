@@ -1,8 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
-using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {

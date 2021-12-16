@@ -92,6 +92,8 @@
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
+    <Compile Include="StockAgent\Agents\TRENDBODYAgent.cs" />
+    <Compile Include="StockAgent\Agents\TRENDBODY2Agent.cs" />
     <Compile Include="StockAgent\Agents\MYFWAgent.cs" />
     <Compile Include="StockAgent\Agents\TOPEMAReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\TOPEMAAgent.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADR.cs" />

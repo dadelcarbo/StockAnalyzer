@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockStatistic.MatchPatterns;
+﻿using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockStatistic
 {

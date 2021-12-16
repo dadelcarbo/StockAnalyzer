@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 
@@ -16,7 +15,7 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(2, 80)]
         public int Period { get; set; }
 
-        public override string Description => "Buy with TRENDBODY Cross above MidUp line in bullsih trend";
+        public override string Description => "Buy with TRENDBODY Cross above MidUp line in bullish trend";
 
         public override string DisplayIndicator => $"CLOUD|TRENDBODY({Period})";
 

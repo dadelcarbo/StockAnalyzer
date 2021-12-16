@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockMath;
 using System;
 
@@ -20,25 +20,26 @@ namespace StockAnalyzer.StockAgent.Agents
         public float Width { get; set; }
 
         public override string Description => "Buy when closing above ATR band and sell when closing below EMA";
-        public override string DisplayIndicator => $"CLOUD|ATR({Period},{Width},{-Width},EMA)";
+        public override string DisplayIndicator => $"CLOUD|ATR({Period},{Width},0,EMA)";
 
 
-        FloatSerie buyTrigger;
-        FloatSerie sellTrigger;
+        IStockCloud cloud;
+        BoolSerie bullEvents;
+        BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
             if (stockSerie.Count < Period)
                 return false;
 
-            var atrSerie = stockSerie.GetIndicator($"ATR({20})").Series[0];
-            sellTrigger = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            buyTrigger = sellTrigger + Width * atrSerie;
-            return buyTrigger != null;
+            var cloud = stockSerie.GetCloud($"ATR({Period},{Width},0,EMA)");
+            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudUp")];
+            bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudDown")];
+            return bullEvents != null && bearEvents != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (closeSerie[index] > buyTrigger[index])
+            if (bullEvents[index])
             {
                 return TradeAction.Buy;
             }
@@ -47,7 +48,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (closeSerie[index] < sellTrigger[index])
+            if (bearEvents[index])
             {
                 return TradeAction.Sell;
             }
