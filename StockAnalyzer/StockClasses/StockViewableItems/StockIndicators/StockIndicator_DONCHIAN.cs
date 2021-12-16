@@ -50,8 +50,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            var highSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            var lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            var highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            var lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             upLine[0] = closeSerie[0];
             downLine[0] = closeSerie[0];

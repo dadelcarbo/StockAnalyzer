@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            if (period>stockSerie.Count)
+            if (period > stockSerie.Count)
             {
                 this.CreateEventSeries(stockSerie.Count);
                 return;
@@ -56,8 +56,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            FloatSerie bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            FloatSerie bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             upLine[0] = bodyHighSerie[0];
             downLine[0] = bodyLowSerie[0];

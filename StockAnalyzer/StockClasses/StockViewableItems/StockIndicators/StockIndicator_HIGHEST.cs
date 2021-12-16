@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
+            var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
             for (int i = trigger; i < stockSerie.Count; i++)
             {

@@ -90,7 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
-    <Compile Include="StockAgent\Agents\ATRReentryAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailFIBOAgent.cs" />
+    <Compile Include="StockAgent\Agents\ATRStopReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
     <Compile Include="StockAgent\Agents\TRENDBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\TRENDBODY2Agent.cs" />
@@ -405,7 +406,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_FIBOCHANNEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLPROAM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />

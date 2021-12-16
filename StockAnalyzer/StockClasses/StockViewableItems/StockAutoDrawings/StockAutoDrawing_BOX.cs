@@ -67,8 +67,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             try
             {
-                var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-                var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+                var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+                var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
                 bool inBox = false;
                 float boxHigh = 0f, boxLow = 0f, boxLowLimit = 0f;

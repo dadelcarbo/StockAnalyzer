@@ -42,8 +42,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var upPeriod = (int)this.parameters[0];
             var downPeriod = (int)this.parameters[1];
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             var bullSerie = new FloatSerie(stockSerie.Count);

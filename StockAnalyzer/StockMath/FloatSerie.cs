@@ -272,6 +272,14 @@ namespace StockAnalyzer.StockMath
                 this.Values[i] = val;
             }
         }
+        public FloatSerie(int size, float val)
+        {
+            this.Values = new float[size];
+            for (int i = 0; i < size; i++)
+            {
+                this.Values[i] = val;
+            }
+        }
         public FloatSerie(float[] values, string name)
         {
             this.Values = values;

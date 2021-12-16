@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override string[] ParameterNames => new string[] { "Period", "Ratio" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 60, 1.0f };
+        public override Object[] ParameterDefaultValues => new Object[] { 60, 0.61f };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
 
@@ -21,8 +21,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie longStopSerie = new FloatSerie(stockSerie.Count);
-            FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count);
+            FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, float.NaN);
+            FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, float.NaN);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
@@ -31,45 +31,61 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             float upRatio = (float)this.parameters[1];
 
             var indicator = stockSerie.GetIndicator("FIBOCHANNEL(" + period + "," + upRatio + ")");
+            var bandUp = indicator.Series[0];
             var fiboUp = indicator.Series[1];
-            var fiboDown = indicator.Series[2];
+            var fiboDown = indicator.Series[3];
+            var bandDown = indicator.Series[4];
 
-            bool upTrend = true;
-            for(int i=0; i< period; i++)
+
+            bool upTrend = false;
+            bool downTrend = false;
+            for (int i = 0; i < period; i++)
             {
-                longStopSerie[i] = lowSerie[i];
+                longStopSerie[i] = float.NaN;
                 shortStopSerie[i] = float.NaN;
             }
             for (int i = period; i < stockSerie.Count; i++)
             {
-                if(upTrend)
+                if (upTrend)
                 {
                     if (closeSerie[i] < longStopSerie[i - 1])
-                    { // Trailing stop has been broken => reverse trend
+                    { // Trailing stop has been broken => stop up trend
                         upTrend = false;
                         longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = fiboUp[i];
                     }
                     else
                     {
                         // Trail the stop  
-                        longStopSerie[i] = Math.Max(longStopSerie[i - 1], fiboDown[i]);
-                        shortStopSerie[i] = float.NaN;
+                        longStopSerie[i] = Math.Max(longStopSerie[i - 1], fiboUp[i]);
                     }
                 }
                 else
                 {
-                    if (closeSerie[i] > shortStopSerie[i - 1])
-                    {  // Trailing stop has been broken => reverse trend
+                    if (bandUp[i] > bandUp[i - 1])
+                    {  // Up trend Starts
                         upTrend = true;
-                        longStopSerie[i] = fiboDown[i];
+                        longStopSerie[i] = fiboUp[i];
+                    }
+                }
+                if (downTrend)
+                {
+                    if (closeSerie[i] > shortStopSerie[i - 1])
+                    { // Trailing stop has been broken => stop up trend
+                        downTrend = false;
                         shortStopSerie[i] = float.NaN;
                     }
                     else
                     {
                         // Trail the stop  
-                        longStopSerie[i] = float.NaN;
-                        shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], fiboUp[i]);
+                        shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], fiboDown[i]);
+                    }
+                }
+                else
+                {
+                    if (bandDown[i] < bandDown[i - 1])
+                    {  // Down trend Starts
+                        downTrend = true;
+                        shortStopSerie[i] = fiboDown[i];
                     }
                 }
             }

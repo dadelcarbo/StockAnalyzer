@@ -52,6 +52,9 @@ namespace StockAnalyzer.StockAgent
             {
                 if (Worker != null && Worker.CancellationPending)
                     return;
+
+                serie.BarDuration = StockBarDuration.Daily;
+                serie.IsInitialised = false;
                 if (serie.Initialise())
                 {
                     serie.BarDuration = duration;

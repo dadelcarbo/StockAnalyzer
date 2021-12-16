@@ -25,8 +25,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILTF.SS", float.NaN);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            var bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            var bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             int trigger = (int)this.Parameters[0];
             int period = (int)this.Parameters[1];

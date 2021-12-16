@@ -1,39 +1,39 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class ATRReentryAgent : StockAgentBase
+    public class TrailFIBOAgent : StockAgentBase
     {
-        public ATRReentryAgent()
+        public TrailFIBOAgent()
         {
             Period = 12;
-            Width = 2.0f;
+            Ratio = 0.5f;
         }
 
-        [StockAgentParam(1, 30)]
+        [StockAgentParam(5, 80)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.5f, 4.0f)]
-        public float Width { get; set; }
+        [StockAgentParam(0.0f, 1.0f)]
+        public float Ratio { get; set; }
 
 
-        public override string Description => "Buy according to TrailATR CLOUD on re entry signal";
+        public override string Description => "Buy according to TrailATRwith same up and down width";
 
-        public override string DisplayIndicator => $"CLOUD|TRAILATR(50,{Width},{-Width},EMA,{Period}";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILFIBO({Period},{Ratio})";
 
-        IStockCloud cloud;
+        IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
         {
             if (stockSerie.Count < Period)
                 return false;
-            cloud = stockSerie.GetCloud($"TRAILATR(50,{Width},{-Width},EMA,{Period})");
-            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "Long Reentry")];
-            bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudDown")];
+            trailStop = stockSerie.GetTrailStop($"TRAILFIBO({Period},{Ratio})");
+            bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
+            bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
         }
 
@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (bearEvents[index])
+            if (bearEvents[index]) // bar fast below slow EMA
             {
                 return TradeAction.Sell;
             }

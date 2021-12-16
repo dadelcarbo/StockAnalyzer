@@ -1017,7 +1017,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
-                var bodyHighSerie = new FloatSerie(this.serie.Values.Select(v => v.BodyHigh).ToArray());
+                var bodyHighSerie = this.serie.GetSerie(StockDataType.BODYHIGH);
                 int highest = 0;
                 for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
                 {
@@ -1026,7 +1026,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
 
-                var bodyLowSerie = new FloatSerie(this.serie.Values.Select(v => v.BodyHigh).ToArray());
+                var bodyLowSerie = this.serie.GetSerie(StockDataType.BODYLOW);
                 int lowest = 0;
                 for (int i = this.lastMouseIndex - 1; i > 0; i--, lowest++)
                 {

@@ -46,8 +46,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            FloatSerie bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            FloatSerie bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             FloatSerie maSerie = this.series[0];
 

@@ -10,6 +10,8 @@ namespace StockAnalyzer.StockClasses
         OPEN,
         HIGH,
         LOW,
+        BODYHIGH,
+        BODYLOW,
         VARIATION,
         VOLUME
     };

@@ -242,7 +242,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
                 float volume = 0.5f * (lastValue + openSerie[endIndex]) * stockSerie.GetSerie(StockDataType.VOLUME)[endIndex] / 1000000f;
-                var bodyHigh = stockSerie.Values.Select(v => v.BodyHigh).ToArray();
+
+                var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
                 int highest = 0;
                 for (int i = endIndex - 1; i > 0; i--)

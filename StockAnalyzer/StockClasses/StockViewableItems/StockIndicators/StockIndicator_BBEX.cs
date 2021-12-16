@@ -72,8 +72,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie bodyHighSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            FloatSerie bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            FloatSerie bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            FloatSerie bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             // Detecting events
             bool bullish = false;

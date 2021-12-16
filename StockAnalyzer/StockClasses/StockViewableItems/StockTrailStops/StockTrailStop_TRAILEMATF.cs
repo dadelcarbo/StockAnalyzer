@@ -40,18 +40,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 return;
             }
 
-            //var highSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
-            //var lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
-            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            lowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
-            highSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyHigh).ToArray());
+            var highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            var lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-            FloatSerie emaSerie = stockSerie.GetIndicator($"EMA({period})").Series[0];
-            FloatSerie atrSerie = nbAtr * stockSerie.GetIndicator($"ATR({10})").Series[0];
+            var emaSerie = stockSerie.GetIndicator($"EMA({period})").Series[0];
+            var atrSerie = nbAtr * stockSerie.GetIndicator($"ATR({10})").Series[0];
 
             float longTrail = float.NaN;
             float shortTrail = float.NaN;
@@ -74,10 +70,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     {
                         longTrail = Math.Max(emaSerie[i] - atrSerie[i], longTrail);
                     }
-                    //if (lowSerie[i] < emaSerie[i])
-                    //{
-                    //    trail = Math.Max(lowSerie[i] - atrSerie[i], trail);
-                    //}
                 }
                 longStopSerie[i] = longTrail;
 
@@ -100,10 +92,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         {
                             shortTrail = Math.Min(emaSerie[i] + atrSerie[i], shortTrail);
                         }
-                        //if (lowSerie[i] < emaSerie[i])
-                        //{
-                        //    trail = Math.Max(lowSerie[i] - atrSerie[i], trail);
-                        //}
                     }
                     shortStopSerie[i] = shortTrail;
                 }

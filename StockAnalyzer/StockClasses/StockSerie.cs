@@ -348,6 +348,12 @@ namespace StockAnalyzer.StockClasses
                     case StockDataType.LOW:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.LOW).ToArray(), "LOW");
                         break;
+                    case StockDataType.BODYHIGH:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.BodyHigh).ToArray(), "BODYHIGH");
+                        break;
+                    case StockDataType.BODYLOW:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.BodyLow).ToArray(), "BODYLOW");
+                        break;
                     case StockDataType.VARIATION:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VARIATION).ToArray(), "VARIATION");
                         break;
@@ -1049,7 +1055,7 @@ namespace StockAnalyzer.StockClasses
         public FloatSerie CalculateRateOfRise(int period, bool bodyLow = true)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : new FloatSerie(this.Values.Select(v => v.BodyLow));
+            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : this.GetSerie(StockDataType.BODYLOW);
 
             FloatSerie serie = new FloatSerie(Values.Count());
             float min;
@@ -1183,8 +1189,8 @@ namespace StockAnalyzer.StockClasses
             //  %D = MA3(%K)
             FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            var bodyHighSerie = new FloatSerie(this.Values.Select(v => v.BodyHigh).ToArray());
-            var bodyLowSerie = new FloatSerie(this.Values.Select(v => v.BodyLow).ToArray());
+            var bodyHighSerie = this.GetSerie(StockDataType.BODYHIGH);
+            var bodyLowSerie = this.GetSerie(StockDataType.BODYLOW);
             float lowestLow = float.MaxValue;
             float highestHigh = float.MinValue;
 

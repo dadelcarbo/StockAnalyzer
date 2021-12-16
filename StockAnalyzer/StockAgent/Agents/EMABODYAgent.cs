@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockAgent.Agents
                 return false;
 
             emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            bodyLowSerie = new FloatSerie(stockSerie.Values.Select(v => v.BodyLow).ToArray());
+            bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             return true;
         }
