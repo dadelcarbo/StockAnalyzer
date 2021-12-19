@@ -12,10 +12,10 @@ namespace StockAnalyzer.StockAgent.Agents
             FastPeriod = 26;
         }
 
-        [StockAgentParam(15, 25)]
+        [StockAgentParam(15, 25, 1)]
         public int FastPeriod { get; set; }
 
-        [StockAgentParam(40, 60)]
+        [StockAgentParam(40, 60, 1)]
         public int SlowPeriod { get; set; }
 
         public override string Description => "Buy when OSC crosses above 0 and sell after lower close";

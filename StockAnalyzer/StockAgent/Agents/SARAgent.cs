@@ -5,7 +5,7 @@ namespace StockAnalyzer.StockAgent.Agents
 {
     public class SARAgent : StockAgentBase
     {
-        [StockAgentParam(0.0f, 1f)]
+        [StockAgentParam(0.0f, 1f, 0.01f)]
         public float Speed { get; set; }
 
         public override string Description => "Buy with BBStop";

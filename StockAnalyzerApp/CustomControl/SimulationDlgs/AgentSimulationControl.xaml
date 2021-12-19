@@ -24,8 +24,6 @@
                 <Label Margin="2">Group</Label>
                 <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
                 <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
-                <Label Margin="2">Accuracy</Label>
-                <telerik:RadNumericUpDown Minimum="2" Maximum="200" Value="{Binding Accuracy}" NumberDecimalDigits="0" Width="30"/>
                 <Label Margin="2">Stop ATR</Label>
                 <telerik:RadNumericUpDown Minimum="0" Maximum="20" SmallChange="0.1" LargeChange="1" Value="{Binding StopATR}" NumberDecimalDigits="1" Width="30"/>
                 <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>

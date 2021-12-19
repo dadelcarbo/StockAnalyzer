@@ -14,11 +14,11 @@ namespace StockAnalyzer.StockAgent.Agents
             DownWidth = 2.0f;
         }
 
-        [StockAgentParam(5, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
-        [StockAgentParam(0.5f, 4.0f)]
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
         public float UpWidth { get; set; }
-        [StockAgentParam(0.5f, 4.0f)]
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
         public float DownWidth { get; set; }
 
         public override string Description => "Buy according to TrailATR with different up and down width";

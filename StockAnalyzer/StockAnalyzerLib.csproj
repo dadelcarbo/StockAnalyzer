@@ -100,7 +100,6 @@
     <Compile Include="StockAgent\Agents\TOPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\SARAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
-    <Compile Include="StockAgent\Agents\BBTFAgent.cs" />
     <Compile Include="StockAgent\Agents\FWAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACDAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAOSCAgent.cs" />
@@ -121,7 +120,6 @@
     <Compile Include="StockAgent\Agents\HIGHLOWBARSAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMidAgent.cs" />
     <Compile Include="StockAgent\Agents\TFLowAgent.cs" />
-    <Compile Include="StockAgent\Agents\TrailHIGHESTMMAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
@@ -132,11 +130,9 @@
     <Compile Include="StockAgent\Agents\TrailSARAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\FilteredTrailHLAgent.cs" />
-    <Compile Include="StockAgent\Agents\TrailHLMMAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStop2Agent.cs" />
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
-    <Compile Include="StockAgent\Agents\EMAMMAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
     <Compile Include="StockAgent\Filters\IStockFilter.cs" />
@@ -146,7 +142,6 @@
     <Compile Include="StockAgent\PositionManagement.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
-    <Compile Include="StockAgent\StockAgentMoneyManagedBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOX - Copy.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
@@ -156,6 +151,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_STRONG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
@@ -233,7 +229,6 @@
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockAgenda.cs" />
-    <Compile Include="StockClasses\StockPercent.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\IStockMatchPattern.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_Any.cs" />
     <Compile Include="StockClasses\StockStatistic\MatchPatterns\StockMatchPattern_BarDown.cs" />
@@ -323,12 +318,10 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KUMODIST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSSR.cs" />
@@ -338,7 +331,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSING.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHL2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR3.cs" />
@@ -409,7 +401,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_OVERBOUGHT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_VOLPROAM.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2HL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PUKE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRAILHLSR.cs" />
@@ -438,7 +429,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBBTF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBREAK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
@@ -447,7 +437,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHIGHESTATR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTF.cs" />

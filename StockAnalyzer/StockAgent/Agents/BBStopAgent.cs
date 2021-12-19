@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             BBWidth = 2.0f;
         }
 
-        [StockAgentParam(5, 60)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.75f, 3.0f)]
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
         public float BBWidth { get; set; }
 
         public override string Description => "Buy with BBStop";

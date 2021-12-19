@@ -12,10 +12,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 13;
         }
 
-        [StockAgentParam(2, 20)]
+        [StockAgentParam(2, 20, 1)]
         public int Period { get; set; }
 
-        [StockAgentParam(20, 80)]
+        [StockAgentParam(20, 80, 5)]
         public int FilterPeriod { get; set; }
 
         public override string Description => "Buy with TRAILHL Stop";

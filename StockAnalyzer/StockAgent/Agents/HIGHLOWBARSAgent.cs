@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Period2 = 25;
         }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(2, 120, 1)]
         public int Period1 { get; set; }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(2, 120, 1)]
         public int Period2 { get; set; }
 
         public override string Description => "Buy with HIGHLOWBARS Bull Events";

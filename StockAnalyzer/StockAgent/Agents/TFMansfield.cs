@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 13;
         }
 
-        [StockAgentParam(2, 20)]
+        [StockAgentParam(2, 20, 1)]
         public int Period { get; set; }
 
         public override string Description => "Buy when MANSFIELD turn positive";

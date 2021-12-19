@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 13;
         }
 
-        [StockAgentParam(10, 40)]
+        [StockAgentParam(10, 40, 1)]
         public int Period { get; set; }
 
         public override string Description => "Buy when TOPEMA Resistance is broken and sell when TOPEMA Support broken";

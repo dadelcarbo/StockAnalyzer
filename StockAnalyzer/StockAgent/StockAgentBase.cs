@@ -278,7 +278,7 @@ namespace StockAnalyzer.StockAgent
             }
             return parameters[type];
         }
-        static public Dictionary<PropertyInfo, List<object>> GetParamRanges(Type type, int nbVal)
+        static public Dictionary<PropertyInfo, List<object>> GetParamRanges(Type type)
         {
             var res = new Dictionary<PropertyInfo, List<object>>();
             var parameters = GetParams(type);
@@ -287,24 +287,38 @@ namespace StockAnalyzer.StockAgent
                 if (param.Key.PropertyType == typeof(int))
                 {
                     var values = new List<object>();
-                    for (int i = (int)param.Value.Min; i <= (int)param.Value.Max; i++)
+                    for (int i = (int)param.Value.Min; i <= (int)param.Value.Max; i += (int)param.Value.Step)
                     {
                         values.Add(i);
+                    }
+                    if ((int)values.Last() != (int)param.Value.Max)
+                    {
+                        values.Add((int)param.Value.Max);
                     }
                     res.Add(param.Key, values);
                 }
                 else
                 if (param.Key.PropertyType == typeof(float))
                 {
-                    float val = (float)param.Value.Min;
-                    float step = ((float)param.Value.Max - val) / (float)nbVal;
-                    var values = new List<object>();
-                    for (int i = 0; i <= nbVal; i++)
+                    float min = (float)param.Value.Min;
+                    float max = (float)param.Value.Max;
+                    if (min == max)
                     {
-                        values.Add(val);
-                        val += step;
+                        res.Add(param.Key, new List<object>() { min });
                     }
-                    res.Add(param.Key, values);
+                    else
+                    {
+                        var values = new List<object>();
+                        for (float val = min; val <= max; val += param.Value.Step)
+                        {
+                            values.Add(val);
+                        }
+                        if ((float)values.Last() != (float)param.Value.Max)
+                        {
+                            values.Add((float)param.Value.Max);
+                        }
+                        res.Add(param.Key, values);
+                    }
                 }
                 else
                 {

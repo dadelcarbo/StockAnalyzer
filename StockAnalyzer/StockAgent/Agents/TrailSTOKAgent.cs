@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Threeshold = 2;
         }
 
-        [StockAgentParam(20, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0f, 1f)]
+        [StockAgentParam(0f, 1f, 0.1f)]
         public float Threeshold { get; set; }
 
         public override string Description => "Buy with TrailSTOK Stop";

@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 13;
         }
 
-        [StockAgentParam(10, 40)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
         public override string Description => "Buy when BODY is above EMA and closes when CLOSE is below EMA";

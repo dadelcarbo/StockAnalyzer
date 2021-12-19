@@ -25,6 +25,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 NotifyProgress("Loading portfolio");
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(folder);
+
+                folder += @"\Report";
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
             }
             catch (Exception ex)
             {

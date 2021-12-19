@@ -11,10 +11,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Smoothing = 3;
         }
 
-        [StockAgentParam(10, 120)]
+        [StockAgentParam(10, 120, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(2, 20)]
+        [StockAgentParam(2, 20, 1)]
         public int Smoothing { get; set; }
 
         public override string Description => "Buy when according to STOKSTREND signals";

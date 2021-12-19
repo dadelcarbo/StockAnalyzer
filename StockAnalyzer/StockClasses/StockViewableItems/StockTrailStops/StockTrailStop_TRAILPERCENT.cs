@@ -5,7 +5,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILPERCENT : StockTrailStopBase
     {
-        public override string Definition => base.Definition + Environment.NewLine + "Draw a trail stop that is calculated with the guppy ema bands.";
+        public override string Definition => base.Definition + Environment.NewLine + "Trail stop calculated when exceeding a treeshold from previous low percentage and selling when falling below the highest minus percentage";
 
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -13,9 +13,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
         public override bool RequiresVolumeData { get { return false; } }
 
-        public override string[] ParameterNames => new string[] { "Percent" };
-        public override Object[] ParameterDefaultValues => new Object[] { 0.15f };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0f, 1f) };
+        public override string[] ParameterNames => new string[] { "BuyThreshold", "SellThreshold" };
+        public override Object[] ParameterDefaultValues => new Object[] { 0.15f, 0.15f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0f, 1f), new ParamRangeFloat(0f, 1f) };
 
         public override string[] SerieNames { get { return new string[] { "TRAILPERCENT.LS", "TRAILPERCENT.SS" }; } }
 
@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             this.Series[1] = shortStopSerie;
 
             float upPercent = 1f + (float)this.parameters[0];
-            float downPercent = 1f - (float)this.parameters[0];
+            float downPercent = 1f - (float)this.parameters[1];
             int lookBack = 20;
 
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);

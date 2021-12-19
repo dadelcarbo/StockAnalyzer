@@ -28,14 +28,14 @@ namespace StockAnalyzer.StockAgent
         }
 
 
-        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, int accuracy, float stopATR, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, float stopATR, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
             // Calcutate Parameters Ranges
             IStockAgent bestAgent = null;
-            var parameters = StockAgentBase.GetParamRanges(this.AgentType, accuracy);
+            var parameters = StockAgentBase.GetParamRanges(this.AgentType);
 
 
             var stockSeries = new List<StockSerie>();

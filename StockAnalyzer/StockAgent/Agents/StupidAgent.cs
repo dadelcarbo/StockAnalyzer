@@ -13,11 +13,11 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public int LookBack { get; set; }
 
-        [StockAgentParam(0.01f, 0.3f)]
+        [StockAgentParam(0.01f, 0.3f, 0.01f)]
         public float EntryPercentDown { get; set; }
-        [StockAgentParam(0.01f, 0.3f)]
+        [StockAgentParam(0.01f, 0.3f, 0.01f)]
         public float ExitPercentDown { get; set; }
-        [StockAgentParam(0.01f, 0.3f)]
+        [StockAgentParam(0.01f, 0.3f, 0.01f)]
         public float ExitPercentUp { get; set; }
 
         protected override bool Init(StockSerie stockSerie) { return true; }

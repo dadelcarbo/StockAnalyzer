@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 50;
         }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
         public override string Description => "Buy with TRENDBODY Bull Events";
@@ -20,8 +20,6 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string DisplayIndicator => $"CLOUD|TRENDBODY({Period})";
 
-
-        IStockCloud cloud;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)

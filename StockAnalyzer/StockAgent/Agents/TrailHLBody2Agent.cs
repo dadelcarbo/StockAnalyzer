@@ -13,9 +13,9 @@ namespace StockAnalyzer.StockAgent.Agents
             PeriodDown = 13;
         }
 
-        [StockAgentParam(2, 80)]
+        [StockAgentParam(2, 80, 1)]
         public int PeriodUp { get; set; }
-        [StockAgentParam(2, 80)]
+        [StockAgentParam(2, 80, 1)]
         public int PeriodDown { get; set; }
 
         public override string Description => "Buy with TrailHLBodyAgent Stop";

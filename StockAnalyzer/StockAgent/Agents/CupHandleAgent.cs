@@ -13,9 +13,9 @@ namespace StockAnalyzer.StockAgent.Agents
             TrailPeriod = 13;
         }
 
-        [StockAgentParam(2, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
-        [StockAgentParam(2, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int TrailPeriod { get; set; }
 
         public override string Description => "Buy with Cup and Handle signal";

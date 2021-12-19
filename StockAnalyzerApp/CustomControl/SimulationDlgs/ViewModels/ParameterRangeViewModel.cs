@@ -11,6 +11,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
         public string Name { get; set; }
         public float Min { get => Attribute.Min; set => Attribute.Min = value; }
         public float Max { get => Attribute.Max; set => Attribute.Max = value; }
+        public float Step { get => Attribute.Step; set => Attribute.Step = value; }
 
         public static IEnumerable<ParameterRangeViewModel> GetParameters(Type type)
         {

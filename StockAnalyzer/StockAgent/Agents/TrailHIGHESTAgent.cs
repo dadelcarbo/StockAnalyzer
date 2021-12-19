@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Trigger = 13;
         }
 
-        [StockAgentParam(20, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Trigger { get; set; }
 
-        [StockAgentParam(2, 20)]
+       [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
         public override string Description => "Buy with TRAILHIGHEST Stop";

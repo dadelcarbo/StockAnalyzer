@@ -607,6 +607,7 @@ namespace StockAnalyzer.StockClasses
             this.dateArray = null;
             this.valueArray = null;
             this.BarSmoothedDictionary = new SortedDictionary<string, List<StockDailyValue>>();
+            this.barDuration = StockBarDuration.Daily;
         }
         public void ResetIndicatorCache()
         {

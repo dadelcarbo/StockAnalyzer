@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             TrailATR = 2;
         }
 
-        [StockAgentParam(20, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Trigger { get; set; }
 
-        [StockAgentParam(1f, 10f)]
+        [StockAgentParam(1f, 10f, 0.5f)]
         public float TrailATR { get; set; }
 
         public override string Description => "Buy with TrailHIGHESTATRAgent Stop";

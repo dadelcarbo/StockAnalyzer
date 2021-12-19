@@ -11,13 +11,13 @@ namespace StockAnalyzer.StockAgent.Agents
             FastPeriod = 13;
         }
 
-        [StockAgentParam(15, 25)]
+        [StockAgentParam(15, 25, 1)]
         public int FastPeriod { get; set; }
 
-        [StockAgentParam(40, 60)]
+        [StockAgentParam(40, 60, 1)]
         public int SlowPeriod { get; set; }
 
-        [StockAgentParam(6, 12)]
+        [StockAgentParam(6, 12, 1)]
         public int SignalPeriod { get; set; }
 
         public override string Description => "Buy when Open and close are above EMA";

@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Percent = 13;
         }
 
-        [StockAgentParam(0.1f, 1f)]
+        [StockAgentParam(0.1f, 1f, 0.1f)]
         public float Percent { get; set; }
 
         public override string Description => "Buy with TRAILSAR Stop"; 

@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Width = 2.0f;
         }
 
-        [StockAgentParam(5, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.5f, 4.0f)]
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
         public float Width { get; set; }
 
 

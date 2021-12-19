@@ -20,7 +20,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public AgentSimulationViewModel()
         {
             this.performText = "Perform";
-            this.Accuracy = 10;
             this.StopATR = 2f;
             this.Selector = "ExpectedGainPerBar";
 
@@ -35,7 +34,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         private StockBarDuration barDuration;
         public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
-        public int Accuracy { get; set; }
         public float StopATR { get; set; }
         public List<string> Selectors => new List<string> { "ExpectedGainPerBar", "ExpectedGain", "Kelly %", "WinTradeRatio", "WinLossRatio", "TotalGain" };
         public string Selector { get; set; }
@@ -294,7 +292,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, this.Accuracy, stopATR, selector);
+                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, stopATR, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }

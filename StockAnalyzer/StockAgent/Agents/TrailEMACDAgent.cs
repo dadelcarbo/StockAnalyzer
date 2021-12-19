@@ -12,12 +12,12 @@ namespace StockAnalyzer.StockAgent.Agents
             LongPeriod = 13;
         }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(5, 80, 5)]
         public int LongPeriod { get; set; }
 
         public int ShortPeriod => LongPeriod / 2;
 
-        [StockAgentParam(2, 20)]
+       [StockAgentParam(5, 80, 5)]
         public int SignalPriod { get; set; }
 
         public override string Description => "Buy with TrailEMACD Stop";

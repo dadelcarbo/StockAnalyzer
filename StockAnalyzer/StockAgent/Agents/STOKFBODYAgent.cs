@@ -12,12 +12,12 @@ namespace StockAnalyzer.StockAgent.Agents
             BearTrigger = 50f;
         }
 
-        [StockAgentParam(10, 120)]
+        [StockAgentParam(10, 120, 1)]
         public int Period { get; set; }
 
         public float BullTrigger { get; set; }
 
-        [StockAgentParam(0f, 100f)]
+        [StockAgentParam(0f, 100f, 5f)]
         public float BearTrigger { get; set; }
 
         public override string Description => "Buy when according to STOKFBODY signals";

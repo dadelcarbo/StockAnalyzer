@@ -11,10 +11,10 @@ namespace StockAnalyzer.StockAgent.Agents
             FastPeriod = 13;
         }
 
-        [StockAgentParam(10, 40)]
+        [StockAgentParam(5, 80, 5)]
         public int FastPeriod { get; set; }
 
-        [StockAgentParam(10, 40)]
+        [StockAgentParam(5, 80, 5)]
         public int SlowPeriod { get; set; }
 
         public int SignalPeriod => 1;

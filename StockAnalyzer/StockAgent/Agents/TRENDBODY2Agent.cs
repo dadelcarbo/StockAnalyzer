@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             DownPeriod = 25;
         }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(5, 80, 5)]
         public int UpPeriod { get; set; }
 
-        [StockAgentParam(2, 120)]
+        [StockAgentParam(5, 80, 5)]
         public int DownPeriod { get; set; }
 
         public override string Description => "Buy with TRENDBODY2 Bull Events, TREND body with different High/Low period";

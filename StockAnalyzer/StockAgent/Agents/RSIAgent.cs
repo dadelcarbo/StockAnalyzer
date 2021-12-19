@@ -12,13 +12,13 @@ namespace StockAnalyzer.StockAgent.Agents
             SellLevel = 50;
         }
 
-        [StockAgentParam(10, 50)]
+        [StockAgentParam(10, 50, 1)]
         public int Period { get; set; }
 
-        [StockAgentParam(10.0f, 90.0f)]
+        [StockAgentParam(10.0f, 90.0f, 0.05f)]
         public float BuyLevel { get; set; }
 
-        [StockAgentParam(10.0f, 90.0f)]
+        [StockAgentParam(10.0f, 90.0f, 0.05f)]
         public float SellLevel { get; set; }
 
         public override string Description => "Buy when according to RSI signals";

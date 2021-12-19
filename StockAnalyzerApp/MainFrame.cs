@@ -2894,7 +2894,7 @@ namespace StockAnalyzerApp
                 </thead>
                 <tbody>";
 
-            var positions = portfolio?.OpenedPositions.ToList();
+            var positions = portfolio?.OpenedPositions.OrderBy(p => p.StockName).ToList();
             if (positions == null || positions.Count == 0)
             {
                 return;
@@ -2949,7 +2949,7 @@ namespace StockAnalyzerApp
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
 
             var htmlReport = reportTemplate.Replace("%HTML_BODY%", reportBody);
-            string fileName = Path.Combine(Settings.Default.RootFolder, $@"Portfolio\{ portfolio.Name }.html");
+            string fileName = Path.Combine(Settings.Default.RootFolder, $@"Portfolio\Report\{ portfolio.Name }.html");
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 sw.Write(htmlReport);

@@ -8,27 +8,31 @@ namespace StockAnalyzer.StockAgent.Agents
         public BBAgent()
         {
             Period = 13;
-            BBWidth = 2.0f;
+            UpWidth = 2.0f;
+            DownWidth = 2.0f;
         }
 
-        [StockAgentParam(5, 60)]
+        [StockAgentParam(5, 60, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.75f, 3.0f)]
-        public float BBWidth { get; set; }
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
+        public float UpWidth { get; set; }
+
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
+        public float DownWidth { get; set; }
 
         public override string Description => "Buy with BBStop";
-        public override string DisplayIndicator => $"INDICATOR|BB({Period},{BBWidth},{-BBWidth},MA)";
+        public override string DisplayIndicator => $"INDICATOR|BB({Period},{UpWidth},{-DownWidth},MA)";
 
         FloatSerie upBand;
-        FloatSerie ma;
+        FloatSerie lowBand;
         protected override bool Init(StockSerie stockSerie)
         {
             if (stockSerie.Count < Period)
                 return false;
-            upBand = stockSerie.GetIndicator($"BB({Period},{BBWidth},{-BBWidth},MA)").Series[0];
-            ma = stockSerie.GetIndicator($"BB({Period},{BBWidth},{-BBWidth},MA)").Series[2];
-            return upBand != null && ma != null;
+            upBand = stockSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[0];
+            lowBand = stockSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[1];
+            return upBand != null && lowBand != null;
         }
 
         protected override TradeAction TryToOpenPosition(int index)
@@ -42,7 +46,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToClosePosition(int index)
         {
-            if (closeSerie[index] < ma[index])
+            if (closeSerie[index] < lowBand[index])
             {
                 return TradeAction.Sell;
             }

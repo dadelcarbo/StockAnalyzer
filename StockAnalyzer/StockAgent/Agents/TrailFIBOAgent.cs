@@ -13,10 +13,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Ratio = 0.5f;
         }
 
-        [StockAgentParam(5, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.0f, 1.0f)]
+        [StockAgentParam(0.0f, 1.0f, 0.1f)]
         public float Ratio { get; set; }
 
 

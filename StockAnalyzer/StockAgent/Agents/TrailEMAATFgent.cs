@@ -12,9 +12,9 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 13;
         }
 
-        [StockAgentParam(10, 80)]
+        [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
-        [StockAgentParam(0.5f, 3.5f)]
+        [StockAgentParam(0.5f, 4.0f, 0.5f)]
         public float NbATR { get; set; }
 
         public override string Description => "Buy with TRAILEMATF Stop";

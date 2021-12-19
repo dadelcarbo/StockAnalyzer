@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockAgent.Agents
             Period = 12;
         }
 
-        [StockAgentParam(5, 50)]
+        [StockAgentParam(5, 50, 1)]
         public int Period { get; set; }
 
         public override string Description => "Implements My FW blue print strategy";
