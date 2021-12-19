@@ -14,15 +14,15 @@ using System.Diagnostics;
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     /// <summary>
-    /// Interaction logic for BinckPortfolioControl.xaml
+    /// Interaction logic for PortfolioControl.xaml
     /// </summary>
-    public partial class BinckPortfolioControl : System.Windows.Controls.UserControl
+    public partial class PortfolioControl : System.Windows.Controls.UserControl
     {
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
 
         private System.Windows.Forms.Form Form { get; }
-        public BinckPortfolioControl(System.Windows.Forms.Form form)
+        public PortfolioControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
 

@@ -8,7 +8,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             InitializeComponent();
 
-            var control = this.elementHost1.Child as BinckPortfolioControl;
+            var control = this.elementHost1.Child as PortfolioControl;
             control.DataContext = new ViewModel();
         }
     }

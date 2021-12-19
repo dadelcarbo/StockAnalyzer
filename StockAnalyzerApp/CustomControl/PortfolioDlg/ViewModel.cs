@@ -1,7 +1,10 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerSettings.Properties;
 using System.Collections.Generic;
+using System.IO;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -19,13 +22,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             get { return StockAnalyzerForm.MainFrame.Portfolio; }
             set
             {
-                if (StockAnalyzerForm.MainFrame.Portfolio != value)
+                if (portfolioViewModel!= null && portfolioViewModel.IsDirty)
                 {
-                    StockAnalyzerForm.MainFrame.Portfolio = value;
-                    portfolioViewModel = null;
-                    OnPropertyChanged(nameof(Portfolio));
-                    OnPropertyChanged(nameof(PortfolioViewModel));
+                    portfolioViewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
+
+                StockAnalyzerForm.MainFrame.Portfolio = value;
+                portfolioViewModel = null;
+                OnPropertyChanged(nameof(Portfolio));
+                OnPropertyChanged(nameof(PortfolioViewModel));
             }
         }
         private PortfolioViewModel portfolioViewModel;

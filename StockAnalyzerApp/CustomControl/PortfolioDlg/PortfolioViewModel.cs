@@ -48,5 +48,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float Value => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.LastValue).Sum();
 
         public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
+
+        public bool IsDirty { get; set; }
     }
 }

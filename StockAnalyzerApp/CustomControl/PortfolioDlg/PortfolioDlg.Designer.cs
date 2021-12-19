@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.binckPortfolioControl1 = new BinckPortfolioControl(this);
+            this.binckPortfolioControl1 = new PortfolioControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -58,6 +58,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        public BinckPortfolioControl binckPortfolioControl1;
+        public PortfolioControl binckPortfolioControl1;
     }
 }

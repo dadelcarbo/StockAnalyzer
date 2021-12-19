@@ -2,17 +2,28 @@
 using StockAnalyzer.StockPortfolio;
 using System;
 using StockAnalyzer;
+using System.ComponentModel;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
-    public class StockPositionViewModel : NotifyPropertyChangedBase
+    public class StockPositionViewModel : INotifyPropertyChanged
     {
+        #region Notify Property Changed and Dirty management
+        public void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            portfolio.IsDirty = true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
         PortfolioViewModel portfolio;
         StockPosition position;
         public StockPositionViewModel(StockPosition pos, PortfolioViewModel portfolio)
         {
             this.position = pos;
-            this.portfolio = portfolio; 
+            this.portfolio = portfolio;
             float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);
             if (value == 0.0f) // if price is not found use open price
             {
