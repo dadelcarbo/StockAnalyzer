@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -6,8 +7,6 @@ namespace StockAnalyzer.StockAgent
     {
         public PositionManagement()
         {
-            this.PortfolioInitialBalance = 10000f;
-            this.PortfolioRisk = 1;
         }
 
         [Display(Description = "Maximum number of opened positions")]
@@ -16,9 +15,13 @@ namespace StockAnalyzer.StockAgent
         [Display(Description = "Maximum portfolio risk for a position in %", Name = "Portfolio Risk (%)")]
         public float PortfolioRisk { get; set; }
 
-        [Display(Description = "Portfolio initial balance")]
+        [Display(Description = "Portfolio initial balance", Name = "Portfolio Initial Balance")]
         public float PortfolioInitialBalance { get; set; }
 
+        [Display(Description = "Rank indicator to select best stocks, the highest the better")]
+        public string Rank { get; set; }
+
+        [Display(Description = "Sets a stop nb ATRs below opening price. Positio. size is adjusted to match max portfolio risk.\r\n If set to 0, all stocks are equally distributed", Name = "Stop ATR")]
         public float StopATR { get; set; }
     }
 }

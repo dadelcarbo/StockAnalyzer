@@ -25,6 +25,7 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie volumeEuroSerie;  // Exchanged volume in M€
 
         public StockTrade Trade { get; set; }
+        public StockSerie StockSerie { get; private set; }
 
         public static List<string> GetAgentNames()
         {
@@ -50,6 +51,7 @@ namespace StockAnalyzer.StockAgent
         {
             try
             {
+                this.StockSerie = stockSerie;
                 stockSerie.ResetIndicatorCache();
 
                 stockSerie.BarDuration = duration;

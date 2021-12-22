@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockAgent.Filters;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,18 +9,14 @@ namespace StockAnalyzer.StockAgent
     public class StockPortfolioAgentEngine
     {
         public StockTradeSummary TradeSummary { get; private set; }
-
-        public Type AgentType { get; private set; }
         public IEnumerable<StockAgentParam> Parameters { get; private set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
 
         public event AgentPerformedHandler AgentPerformed;
 
-        public StockPortfolioAgentEngine(Type agentType, IEnumerable<StockAgentParam> parameters)
+        public StockPortfolioAgentEngine()
         {
-            this.AgentType = agentType;
-            this.Parameters = parameters;
             this.TradeSummary = new StockTradeSummary();
         }
 
@@ -31,27 +26,16 @@ namespace StockAnalyzer.StockAgent
         private EquityValue[] equityCurve;
         public EquityValue[] EquityCurve => equityCurve;
 
-        public void PerformPortfolio(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, PositionManagement positionManagement)
+        public void PerformPortfolio(List<IStockPortfolioAgent> agents, int minIndex, StockBarDuration duration, PositionManagement positionManagement)
         {
-            IStockFilter filter = new ROCFilter();
-
-            var agentTuples = new List<Tuple<StockSerie, IStockAgent>>();
-            foreach (var serie in series)
-            {
-                var agent = StockAgentBase.CreateInstance(this.AgentType);
-                agent.SetParams(this.Parameters);
-                if (agent.Initialize(serie, duration, 0))
-                {
-                    agentTuples.Add(Tuple.Create(serie, agent));
-                }
-            }
+            var candidates = new List<Tuple<IStockPortfolioAgent, float>>();
 
             var refSerie = StockDictionary.Instance["CAC40"];
             refSerie.BarDuration = duration;
             var refVarSerie = refSerie.GetSerie(StockDataType.VARIATION);
             var openTrades = new List<StockTrade>();
 
-            float cash = 10000f;
+            float cash = positionManagement.PortfolioInitialBalance;
             float equity = cash;
             float refEquity = cash;
             equityCurve = new EquityValue[refSerie.Keys.Count];
@@ -68,7 +52,8 @@ namespace StockAnalyzer.StockAgent
                 // Sell Positions
                 foreach (var trade in openTrades)
                 {
-                    var agent = agentTuples.FirstOrDefault(t => trade.Serie == t.Item1).Item2;
+                    var agent = agents.FirstOrDefault(a => trade.Serie == a.StockSerie);
+
                     int index = trade.Serie.IndexOf(date);
                     if (index < minIndex || index >= trade.Serie.LastIndex) // Date not exists
                         continue;
@@ -91,27 +76,27 @@ namespace StockAnalyzer.StockAgent
                 int nbBuys = positionManagement.MaxPositions - openTrades.Count;
                 if (nbBuys > 0)
                 {
-                    var buyOpportunities = new List<Tuple<int, StockSerie>>();
-                    foreach (var tuple in agentTuples)
+                    var buyOpportunities = new List<Tuple<int, IStockPortfolioAgent>>();
+                    foreach (var agent in agents)
                     {
                         if (openTrades.Count >= positionManagement.MaxPositions)
                             break;
-                        if (openTrades.Any(t => t.Serie == tuple.Item1))
+                        if (openTrades.Any(t => t.Serie == agent.StockSerie))
                             continue;
-                        int index = tuple.Item1.IndexOf(date);
-                        if (index < minIndex || index >= tuple.Item1.LastIndex) // Date not exists
+                        int index = agent.StockSerie.IndexOf(date);
+                        if (index < minIndex || index >= agent.StockSerie.LastIndex) // Date not exists
                             continue;
 
-                        if (tuple.Item2.CanOpen(index))
+                        if (agent.CanOpen(index))
                         {
-                            buyOpportunities.Add(new Tuple<int, StockSerie>(index, tuple.Item1));
+                            buyOpportunities.Add(new Tuple<int, IStockPortfolioAgent>(index, agent));
                         }
                     }
 
-                    foreach (var tuple in buyOpportunities.OrderByDescending(b => filter.EvaluateRank(b.Item2, b.Item1)).Take(nbBuys))
+                    foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]).Take(nbBuys))
                     {
-                        Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockName}");
-                        var trade = new StockTrade(tuple.Item2, tuple.Item1 + 1);
+                        Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
+                        var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
                         trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
                         cash -= trade.EntryAmount;
                         this.TradeSummary.Trades.Add(trade);

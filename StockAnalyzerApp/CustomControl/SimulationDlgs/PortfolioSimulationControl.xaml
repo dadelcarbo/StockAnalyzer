@@ -41,6 +41,13 @@
                         <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding EntryEvents}" SelectedItem="{Binding EntryEvent}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label Margin="2" Width="40">Filter</Label>
+                        <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding IndicatorTypes}" SelectedItem="{Binding FilterType}"/>
+                        <TextBox Text="{Binding FilterIndicator}" Width="250" Margin="2"  VerticalContentAlignment="Center"/>
+                        <Label Content="Event"/>
+                        <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding FilterEvents}" SelectedItem="{Binding FilterEvent}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
                         <Label Margin="2" Width="40">Exit</Label>
                         <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding IndicatorTypes}" SelectedItem="{Binding ExitType}"/>
                         <TextBox Text="{Binding ExitIndicator}" Width="250" Margin="2"  VerticalContentAlignment="Center"/>
@@ -48,7 +55,10 @@
                         <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding ExitEvents}" SelectedItem="{Binding ExitEvent}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Label Margin="2" Width="40">Stop</Label>
+                        <Label Margin="2">Regime Indice</Label>
+                        <TextBox Text="{Binding RegimeIndice}" Width="40" Margin="2"  VerticalContentAlignment="Center"/>
+                        <Label Margin="2">Regime Period</Label>
+                        <TextBox Text="{Binding RegimePeriod}" Width="50" Margin="2"  VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
                 <!--<telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>-->

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockMath;
 using System.Collections.Generic;
 
 namespace StockAnalyzer.StockAgent
@@ -11,11 +12,18 @@ namespace StockAnalyzer.StockAgent
         PartSell
     }
 
+    public interface IStockPortfolioAgent : IStockAgent
+    {
+        FloatSerie RankSerie { get; set; }
+    }
+
     public interface IStockAgent
     {
         string Description { get; }
         string DisplayIndicator { get; }
         StockTradeSummary TradeSummary { get; }
+
+        StockSerie StockSerie { get; }
 
         bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stopATR);
         TradeAction Decide(int index);

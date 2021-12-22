@@ -1448,6 +1448,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     #endregion
 
+                    #region Display Trail Stop Anchor
+                    if (mouseOverThis && this.ShowPositions &&
+                        this.Portfolio != null &&
+                         (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                    {
+                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex -15, mouseValuePoint.Y);
+                        this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
+                    }
+                    #endregion
                 }
                 this.PaintForeground();
             }
@@ -2178,14 +2187,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
         }
-        protected void DrawStop(Graphics graph, Pen pen, float index, float stop)
+        protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool transform = true)
         {
-            // Calculate intersection with bounding rectangle
-            Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
-            var p1 = this.GetScreenPointFromValuePoint(index, stop);
-            var p2 = new PointF(GraphRectangle.Right + 30, p1.Y);
+            var p1 = transform ? this.GetScreenPointFromValuePoint(index, stop) : new PointF(index, stop);
+            var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
-            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, redBrush, new PointF(GraphRectangle.Right + 30, p1.Y - 8), true);
+            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, redBrush, new PointF(GraphRectangle.Right + 5, p1.Y - 8), true);
         }
         #endregion
         #region Geometric Functions

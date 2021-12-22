@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 {
     public class StockViewableItemsManager
     {
-        public static List<string> IndicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
+        public static List<string> IndicatorTypes = new List<string>() { "Indicator", "TrailStop", "Cloud", "AutoDrawing" };
 
         static public IStockViewableSeries GetViewableItem(string fullString)
         {
@@ -22,9 +22,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         }
         static public IStockViewableSeries GetViewableItem(string fullString, StockSerie stockSerie)
         {
-            IStockViewableSeries viewableSerie = null;
             string[] fields = fullString.Split('|');
+            if (fields.Length < 2 || string.IsNullOrEmpty(fields[1]))
+                return null;
             int offset = 2;
+            IStockViewableSeries viewableSerie = null;
             switch (fields[0].ToUpper())
             {
                 case "INDICATOR":

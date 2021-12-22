@@ -98,7 +98,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             catch (System.Exception e)
             {
-               if (e is StockAnalyzerException) throw e;
+               //if (e is StockAnalyzerException) throw e;
                indicator = null;
                StockLog.Write(e);
             }
