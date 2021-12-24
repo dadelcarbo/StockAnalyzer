@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockAgent.Agents;
+using System.Windows;
+using StockAnalyzer.StockClasses.StockDataProviders;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -21,7 +23,16 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
-            this.PositionManagement = new PositionManagement() { MaxPositions = 10, PortfolioInitialBalance = 10000, PortfolioRisk = 1, StopATR = 2, Rank = "ROC(50)" };
+            this.PositionManagement = new PositionManagement()
+            {
+                MaxPositions = 10,
+                PortfolioInitialBalance = 10000,
+                PortfolioRisk = 1,
+                StopATR = 2,
+                Rank = "ROC(50)",
+                RegimeIndice = "CAC40",
+                RegimePeriod = 50
+            };
             this.EntryType = "Indicator";
             this.EntryIndicator = "EMA(30)";
             this.EntryEvent = "CrossAbove";
@@ -136,12 +147,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         private IEnumerable<string> exitEvents;
         public IEnumerable<string> ExitEvents { get { return exitEvents; } set { if (value != exitEvents) { exitEvents = value; OnPropertyChanged("ExitEvents"); } } }
 
-        private string regimeIndice;
-        public string RegimeIndice { get { return regimeIndice; } set { if (value != regimeIndice) { regimeIndice = value; OnPropertyChanged("RegimeIndice"); } } }
-
-        private string regimePeriod;
-        public string RegimePeriod { get { return regimePeriod; } set { if (value != regimePeriod) { regimePeriod = value; OnPropertyChanged("RegimePeriod"); } } }
-
         public void Cancel()
         {
             if (worker != null)
@@ -250,6 +255,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
 
+                if (string.IsNullOrEmpty(this.PositionManagement.RegimeIndice) || !StockDictionary.Instance.Keys.Any(k => k == this.PositionManagement.RegimeIndice))
+                {
+                    MessageBox.Show("Regime filter not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 worker = new BackgroundWorker();
                 engine = new StockPortfolioAgentEngine();
 
@@ -281,20 +292,28 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
         {
-            Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
-            Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
-            engine.ProgressChanged += (s, evt) =>
+            try
             {
-                this.ProgressValue = evt.ProgressPercentage;
-            };
+                StockDataProviderBase.IntradayDownloadSuspended = true;
+                Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
+                Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
+                engine.ProgressChanged += (s, evt) =>
+                {
+                    this.ProgressValue = evt.ProgressPercentage;
+                };
 
-            if (this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise())))
-            {
-                e.Cancel = false;
+                if (this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise())))
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
-            else
+            finally
             {
-                e.Cancel = true;
+                StockDataProviderBase.IntradayDownloadSuspended = false;
             }
         }
         private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
@@ -315,7 +334,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         ExitType = this.ExitType,
                         ExitIndicator = this.ExitIndicator,
                         ExitEvent = this.ExitEvent,
-                        RankIndicator = this.PositionManagement.Rank
+                        PositionManagement = this.PositionManagement,
                     };
                     if (agent.Initialize(serie, this.Duration, this.PositionManagement.StopATR))
                     {

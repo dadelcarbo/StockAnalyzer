@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockClasses.StockDataProviders;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -245,21 +246,29 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
         {
-            Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
-            Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
-            engine.ProgressChanged += (s, evt) =>
+            try
             {
-                this.ProgressValue = evt.ProgressPercentage;
-            };
+                StockDataProviderBase.IntradayDownloadSuspended = true;
+                Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
+                Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
+                engine.ProgressChanged += (s, evt) =>
+                {
+                    this.ProgressValue = evt.ProgressPercentage;
+                };
 
-            var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
-            if (this.RunAgentEngine(series, this.StopATR))
-            {
-                e.Cancel = false;
+                var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
+                if (this.RunAgentEngine(series, this.StopATR))
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
-            else
+            finally
             {
-                e.Cancel = true;
+                StockDataProviderBase.IntradayDownloadSuspended = false;
             }
         }
 

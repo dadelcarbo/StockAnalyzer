@@ -63,6 +63,9 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
             this.showBarSmoothingCheckBox = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.rootFolderTextBox = new System.Windows.Forms.TextBox();
+            this.browseRootButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.chartParamGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
@@ -113,13 +116,6 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.enableLoggingCheckBox, "enableLoggingCheckBox");
             this.enableLoggingCheckBox.Name = "enableLoggingCheckBox";
             this.enableLoggingCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // showBarSmoothingCheckBox
-            // 
-            resources.ApplyResources(this.showBarSmoothingCheckBox, "showBarSmoothingCheckBox");
-            this.showBarSmoothingCheckBox.Name = "showBarSmoothingCheckBox";
-            this.showBarSmoothingCheckBox.UseVisualStyleBackColor = true;
-            this.showBarSmoothingCheckBox.CheckedChanged += new System.EventHandler(this.showBarSmoothingCheckBox_CheckedChanged);
             // 
             // label2
             // 
@@ -324,12 +320,40 @@ namespace StockAnalyzerApp.CustomControl
             this.generateDailyReportCheckBox.UseVisualStyleBackColor = true;
             this.generateDailyReportCheckBox.CheckedChanged += new System.EventHandler(this.generateDailyReportCheckBox_CheckedChanged);
             // 
+            // showBarSmoothingCheckBox
+            // 
+            resources.ApplyResources(this.showBarSmoothingCheckBox, "showBarSmoothingCheckBox");
+            this.showBarSmoothingCheckBox.Name = "showBarSmoothingCheckBox";
+            this.showBarSmoothingCheckBox.UseVisualStyleBackColor = true;
+            this.showBarSmoothingCheckBox.CheckedChanged += new System.EventHandler(this.showBarSmoothingCheckBox_CheckedChanged);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            // 
+            // rootFolderTextBox
+            // 
+            resources.ApplyResources(this.rootFolderTextBox, "rootFolderTextBox");
+            this.rootFolderTextBox.Name = "rootFolderTextBox";
+            this.rootFolderTextBox.TextChanged += new System.EventHandler(this.rootFolderTextBox_TextChanged);
+            this.rootFolderTextBox.Validating += RootFolderTextBox_Validating;
+            // 
+            // browseRootButton
+            // 
+            this.browseRootButton.Image = global::StockAnalyzerApp.Properties.Resources.AddFolder;
+            resources.ApplyResources(this.browseRootButton, "browseRootButton");
+            this.browseRootButton.Name = "browseRootButton";
+            this.browseRootButton.UseVisualStyleBackColor = true;
+            this.browseRootButton.Click += new System.EventHandler(this.browseRootButton_Click);
+            // 
             // PreferenceDialog
             // 
             this.AcceptButton = this.okBtn;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelBtn;
+            this.Controls.Add(this.browseRootButton);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.alertGroupBox);
             this.Controls.Add(this.groupBox3);
@@ -338,7 +362,9 @@ namespace StockAnalyzerApp.CustomControl
             this.Controls.Add(this.msg1);
             this.Controls.Add(this.getLicenseButton);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.rootFolderTextBox);
             this.Controls.Add(this.userIDTextBox);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.showBarSmoothingCheckBox);
             this.Controls.Add(this.enableLoggingCheckBox);
@@ -401,5 +427,8 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
         private System.Windows.Forms.CheckBox showBarSmoothingCheckBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox rootFolderTextBox;
+        private System.Windows.Forms.Button browseRootButton;
     }
 }

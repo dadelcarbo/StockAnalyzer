@@ -723,10 +723,6 @@ namespace StockAnalyzerApp
             if (busy) return;
             busy = true;
 
-            // Download ABC intraday data
-#if !DEBUG
-            (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-#endif
             // Download INTRADAY current serie
             try
             {
@@ -818,6 +814,15 @@ namespace StockAnalyzerApp
             {
                 string alertString = string.Empty;
 
+                // Download ABC intraday data
+                this.Cursor = Cursors.WaitCursor;
+                (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                if (this.currentStockSerie != null && this.currentStockSerie.BelongsToGroup(StockSerie.Groups.PEA))
+                {
+                    this.ApplyTheme();
+                }
+                this.Cursor = Cursors.Arrow;
+
                 List<StockSerie> stockList;
                 if (alertConfig.TimeFrame == "Intraday")
                 {
@@ -829,10 +834,6 @@ namespace StockAnalyzerApp
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
                     s.BelongsToGroup(StockSerie.Groups.PEA)).ToList();
-                    if (alertConfig.TimeFrame == "Daily")
-                    {
-                        (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-                    }
                 }
                 if (AlertDetectionStarted != null)
                 {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings.Properties;
@@ -26,6 +28,7 @@ namespace StockAnalyzerApp.CustomControl
             this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
             this.alertActiveCheckBox.Checked = Settings.Default.RaiseAlerts;
             this.generateDailyReportCheckBox.Checked = Settings.Default.GenerateDailyReport;
+            this.rootFolderTextBox.Text = Settings.Default.RootFolder;
             needRestart = false;
         }
 
@@ -128,6 +131,34 @@ namespace StockAnalyzerApp.CustomControl
         private void generateDailyReportCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             needRestart |= this.generateBreadthCheckBox.Checked;
+        }
+
+        private void browseRootButton_Click(object sender, EventArgs e)
+        {
+            this.folderBrowserDlg.SelectedPath = this.rootFolderTextBox.Text;
+            if (this.folderBrowserDlg.ShowDialog(this) == DialogResult.OK)
+            {
+                Settings.Default.RootFolder = this.folderBrowserDlg.SelectedPath;
+                this.rootFolderTextBox.Text = Settings.Default.RootFolder;
+                needRestart = true;
+            }
+        }
+
+        private void rootFolderTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Directory.Exists(rootFolderTextBox.Text))
+            {
+                Settings.Default.RootFolder = rootFolderTextBox.Text;
+            }
+        }
+
+        private void RootFolderTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!Directory.Exists(rootFolderTextBox.Text))
+            {
+                rootFolderTextBox.BackColor = Color.Red;
+                e.Cancel = true;
+            }
         }
     }
 }

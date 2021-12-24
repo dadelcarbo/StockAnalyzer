@@ -32,10 +32,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         BoolSerie exitEvents { get; set; }
 
-        public string RankIndicator { get; set; }
-
-        public string RegimeIndice { get; set; }
-        public string RegimePeriod { get; set; }
+        public PositionManagement PositionManagement { get; set; }
 
         protected override bool Init(StockSerie stockSerie)
         {
@@ -64,8 +61,8 @@ namespace StockAnalyzer.StockAgent.Agents
                     this.filterEvents = viewableSeries.Events[Array.IndexOf<string>(viewableSeries.EventNames, this.FilterEvent)];
                 }
             }
-            if (RankIndicator == null) return false;
-            var indicator = stockSerie.GetViewableItem("INDICATOR|" + this.RankIndicator) as IStockIndicator;
+            if (PositionManagement?.Rank == null) return false;
+            var indicator = stockSerie.GetViewableItem("INDICATOR|" + this.PositionManagement.Rank) as IStockIndicator;
             if (indicator == null) return false;
             RankSerie = indicator.Series[0];
 

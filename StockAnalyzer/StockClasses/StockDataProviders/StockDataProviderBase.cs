@@ -23,6 +23,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 rootFolder = value;
             }
         }
+        public static bool IntradayDownloadSuspended { get; set; } = false;
 
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\data\daily";

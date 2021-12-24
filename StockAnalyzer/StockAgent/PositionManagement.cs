@@ -23,5 +23,11 @@ namespace StockAnalyzer.StockAgent
 
         [Display(Description = "Sets a stop nb ATRs below opening price. Positio. size is adjusted to match max portfolio risk.\r\n If set to 0, all stocks are equally distributed", Name = "Stop ATR")]
         public float StopATR { get; set; }
+
+        [Display(Description = "Regime indice")]
+        public string RegimeIndice { get; set; }
+
+        [Display(Description = "Regime EMA Period")]
+        public int RegimePeriod { get; set; }
     }
 }

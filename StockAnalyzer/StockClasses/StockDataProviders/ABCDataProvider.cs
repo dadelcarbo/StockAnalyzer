@@ -914,6 +914,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             try
             {
+                if (IntradayDownloadSuspended) return;
                 while (downloadingGroups != String.Empty)
                 {
                     Thread.Sleep(500);

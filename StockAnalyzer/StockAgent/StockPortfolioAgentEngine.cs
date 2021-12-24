@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,11 +31,16 @@ namespace StockAnalyzer.StockAgent
         {
             var candidates = new List<Tuple<IStockPortfolioAgent, float>>();
 
-            var refSerie = StockDictionary.Instance["CAC40"];
+            var refSerie = StockDictionary.Instance[positionManagement.RegimeIndice];
             refSerie.BarDuration = duration;
             var refVarSerie = refSerie.GetSerie(StockDataType.VARIATION);
-            var openTrades = new List<StockTrade>();
+            BoolSerie regimeEvents = null;
+            if (positionManagement.RegimePeriod > 0)
+            {
+                regimeEvents = refSerie.GetIndicator($"EMA({positionManagement.RegimePeriod })").GetEvents("PriceAbove");
+            }
 
+            var openTrades = new List<StockTrade>();
             float cash = positionManagement.PortfolioInitialBalance;
             float equity = cash;
             float refEquity = cash;
@@ -48,7 +54,7 @@ namespace StockAnalyzer.StockAgent
             foreach (var date in refSerie.Keys.Skip(minIndex))
             {
                 equity = cash;
-                refEquity *= (1.0f + refVarSerie[i]);
+                refEquity *= 1.0f + refVarSerie[i];
                 // Sell Positions
                 foreach (var trade in openTrades)
                 {
@@ -74,7 +80,7 @@ namespace StockAnalyzer.StockAgent
 
                 // Identify buy list
                 int nbBuys = positionManagement.MaxPositions - openTrades.Count;
-                if (nbBuys > 0)
+                if (nbBuys > 0 && (regimeEvents == null || regimeEvents[refSerie.IndexOf(date)]))
                 {
                     var buyOpportunities = new List<Tuple<int, IStockPortfolioAgent>>();
                     foreach (var agent in agents)

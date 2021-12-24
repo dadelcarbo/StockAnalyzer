@@ -15,7 +15,7 @@
     <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="0.70*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -31,7 +31,7 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Header="Entry Strategy" Grid.Column="0">
+            <GroupBox Header="Strategy" Grid.Column="0">
                 <StackPanel Background="White">
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Label Margin="2" Width="40">Entry</Label>
@@ -54,17 +54,11 @@
                         <Label Content="Event"/>
                         <telerik:RadComboBox Margin="2" Width="140" ItemsSource="{Binding ExitEvents}" SelectedItem="{Binding ExitEvent}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="2">
-                        <Label Margin="2">Regime Indice</Label>
-                        <TextBox Text="{Binding RegimeIndice}" Width="40" Margin="2"  VerticalContentAlignment="Center"/>
-                        <Label Margin="2">Regime Period</Label>
-                        <TextBox Text="{Binding RegimePeriod}" Width="50" Margin="2"  VerticalContentAlignment="Center"/>
-                    </StackPanel>
                 </StackPanel>
                 <!--<telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>-->
             </GroupBox>
             <GroupBox Header="Position Management" Grid.Column="1">
-                <telerik:RadPropertyGrid Item="{Binding PositionManagement}" SortAndGroupButtonsVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed"/>
+                <telerik:RadPropertyGrid Item="{Binding PositionManagement}" SortAndGroupButtonsVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed" CanUserResizeDescriptionPanel="True"/>
             </GroupBox>
         </Grid>
         <TabControl Grid.Row="2">
