@@ -248,6 +248,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         BackgroundWorker worker = null;
 
+        public delegate void SimulationCompletedEventHandler();
+
+        public event SimulationCompletedEventHandler SimulationCompleted;
+
         StockPortfolioAgentEngine engine;
         public void Perform()
         {
@@ -270,6 +274,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.DoWork += RunAgentEngineOnGroup;
                 worker.RunWorkerCompleted += (a, e) =>
                 {
+                    this.SimulationCompleted?.Invoke();
                     StockAnalyzerForm.TimerSuspended = false;
                     this.PerformText = "Perform";
                     this.ProgressValue = 0;

@@ -22,10 +22,17 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             InitializeComponent();
 
             this.ViewModel = (PortfolioSimulationViewModel)this.Resources["ViewModel"];
+            this.ViewModel.SimulationCompleted += ViewModel_SimulationCompleted;
+        }
+
+        private void ViewModel_SimulationCompleted()
+        {
+            this.Cursor = System.Windows.Input.Cursors.Arrow;
         }
 
         private void performBtn_Click(object sender, RoutedEventArgs e)
         {
+            this.Cursor = System.Windows.Input.Cursors.Wait;
             this.ViewModel.Perform();
         }
 
