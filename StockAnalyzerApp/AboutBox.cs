@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Deployment.Application;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -41,9 +42,20 @@ namespace StockAnalyzerApp
       public string AssemblyVersion
       {
          get
-         {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-         }
+            {
+                Version version = null;
+
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    version = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                }
+                else
+                {
+                    version = this.GetType().Assembly.GetName().Version;
+                }
+
+                return version.ToString();
+            }
       }
 
       public string AssemblyDescription

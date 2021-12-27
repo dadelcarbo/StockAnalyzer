@@ -486,23 +486,23 @@ namespace StockAnalyzerApp
                 refreshTimer.Start();
             }
 
-            #region DailyAlerts
+            //#region DailyAlerts
 
-            if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            {
-                GenerateAlert(dailyAlertConfig);
-            }
+            //if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            //{
+            //    GenerateAlert(dailyAlertConfig);
+            //}
 
-            if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            {
-                GenerateAlert(weeklyAlertConfig);
-            }
-            if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            {
-                GenerateAlert(monthlyAlertConfig);
-            }
+            //if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            //{
+            //    GenerateAlert(weeklyAlertConfig);
+            //}
+            //if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
+            //{
+            //    GenerateAlert(monthlyAlertConfig);
+            //}
 
-            #endregion
+            //#endregion
 
             if (Settings.Default.GenerateDailyReport)
             {
@@ -2960,7 +2960,7 @@ namespace StockAnalyzerApp
         }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {
-            if (!File.Exists(ReportTemplatePath))
+            if (!File.Exists(ReportTemplatePath) || alertDefs.Count == 0)
                 return;
             var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
 
@@ -3171,6 +3171,7 @@ namespace StockAnalyzerApp
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
             GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
+            GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
         }
         #endregion
         WatchListDlg watchlistDlg = null;
