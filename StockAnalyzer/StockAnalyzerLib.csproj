@@ -145,6 +145,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RND.cs" />
@@ -414,7 +415,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ROXEX3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA2Lines.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MOMENTUM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_DOWLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_ADX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HOSC.cs" />

@@ -520,7 +520,7 @@ namespace StockAnalyzerApp
                 {
                     GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
                     GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
-                    GenerateReport("Monthly Report", StockBarDuration.Monthly, weeklyAlertConfig.AlertDefs);
+                    GenerateReport("Monthly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                     File.WriteAllText(fileName, cac40.Keys.Last().ToString());
                     //GenerateReport("Montly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                 }

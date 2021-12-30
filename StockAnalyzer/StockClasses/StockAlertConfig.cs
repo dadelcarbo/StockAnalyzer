@@ -52,10 +52,10 @@ namespace StockAnalyzer.StockClasses
                             startDate = startDate.AddMonths(-1);
                             break;
                         case "Weekly":
-                            startDate = startDate.AddMonths(-2);
+                            startDate = startDate.AddMonths(-1);
                             break;
                         case "Monthly":
-                            startDate = startDate.AddMonths(-6);
+                            startDate = startDate.AddMonths(-2);
                             break;
                         case "Intraday":
                             startDate = startDate.AddDays(-5);

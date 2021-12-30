@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (highestSerie[i] > trigger) // Broken Up
                     {
                         upTrend = true;
-                        hardStop = closeSerie[i] - stopATR * atrSerie[i];
+                        hardStop = lowSerie[i] - stopATR * atrSerie[i];
                         trailStop = closeSerie[i] - trailATR * atrSerie[i];
                         longStopSerie[i] = hardStop;
                         this.Events[0][i] = true;

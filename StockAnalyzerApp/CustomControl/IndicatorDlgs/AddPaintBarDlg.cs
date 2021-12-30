@@ -21,7 +21,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
       private void paintBarComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
       {
          IStockPaintBar ts = StockPaintBarManager.CreatePaintBar(this.PaintBarName);
-         this.descriptionTextBox.Text = ts.Definition;
+
+         this.descriptionTextBox.Text = ts == null ? "Paint Bar not defined !!!" : ts?.Definition;
       }
    }
 }
