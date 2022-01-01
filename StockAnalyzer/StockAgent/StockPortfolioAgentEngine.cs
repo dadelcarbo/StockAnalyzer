@@ -62,7 +62,10 @@ namespace StockAnalyzer.StockAgent
 
                     int index = trade.Serie.IndexOf(date);
                     if (index < minIndex || index >= trade.Serie.LastIndex) // Date not exists
+                    {
+                        equity += trade.EntryAmount;
                         continue;
+                    }
 
                     if (agent.CanClose(index))
                     {
@@ -80,12 +83,12 @@ namespace StockAnalyzer.StockAgent
 
                 // Identify buy list
                 int nbBuys = positionManagement.MaxPositions - openTrades.Count;
-                if (nbBuys > 0 && (regimeEvents == null || regimeEvents[refSerie.IndexOf(date)]))
+                if ((positionManagement.StopATR == 0 || nbBuys > 0) && (regimeEvents == null || regimeEvents[i]))
                 {
                     var buyOpportunities = new List<Tuple<int, IStockPortfolioAgent>>();
                     foreach (var agent in agents)
                     {
-                        if (openTrades.Count >= positionManagement.MaxPositions)
+                        if (positionManagement.StopATR == 0.0f && openTrades.Count >= positionManagement.MaxPositions)
                             break;
                         if (openTrades.Any(t => t.Serie == agent.StockSerie))
                             continue;
@@ -98,17 +101,41 @@ namespace StockAnalyzer.StockAgent
                             buyOpportunities.Add(new Tuple<int, IStockPortfolioAgent>(index, agent));
                         }
                     }
-
-                    foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]).Take(nbBuys))
+                    if (positionManagement.StopATR == 0.0f) // Equal weight distributed stocks
                     {
-                        Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
-                        var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
-                        trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
-                        cash -= trade.EntryAmount;
-                        this.TradeSummary.Trades.Add(trade);
-                        openTrades.Add(trade);
-                    }
+                        foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]).Take(nbBuys))
+                        {
+                            Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
+                            var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
 
+                            trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
+
+                            cash -= trade.EntryAmount;
+                            this.TradeSummary.Trades.Add(trade);
+                            openTrades.Add(trade);
+                        }
+                    }
+                    else // Equal risk distributed stocks
+                    {
+                        float portfolioRisk = equity * 0.01f * positionManagement.PortfolioRisk;
+                        foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]))
+                        {
+                            Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
+                            var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
+
+                            // Calculate position sizing
+                            var atr = trade.Serie.GetIndicator("ATR(10)").Series[0][tuple.Item1];
+                            var stockRisk = positionManagement.StopATR * atr;
+                            trade.Qty = (int)Math.Floor(portfolioRisk / stockRisk);
+
+                            if (cash > trade.EntryAmount && trade.Qty > 0)
+                            {
+                                cash -= trade.EntryAmount;
+                                this.TradeSummary.Trades.Add(trade);
+                                openTrades.Add(trade);
+                            }
+                        }
+                    }
                 }
 
                 equityCurve[i] = new EquityValue { X = i, Y = equity, Ref = refEquity, NbPos = openTrades.Count };

@@ -69,7 +69,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     if (viewableSeries != null)
                     {
                         this.EntryEvents = (viewableSeries as IStockEvent).EventNames;
-                        this.EntryEvent = this.EntryEvents.FirstOrDefault();
+                        if (this.EntryEvent == null || !this.EntryEvents.Contains(this.EntryEvent))
+                        {
+                            this.EntryEvent = this.EntryEvents.FirstOrDefault();
+                        }
                     }
                     else
                     {
@@ -100,7 +103,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     if (viewableSeries != null)
                     {
                         this.FilterEvents = (viewableSeries as IStockEvent).EventNames;
-                        this.FilterEvent = this.FilterEvents.FirstOrDefault();
+                        if (this.FilterEvent == null || !this.FilterEvents.Contains(this.FilterEvent))
+                        {
+                            this.FilterEvent = this.FilterEvents.FirstOrDefault();
+                        }
                     }
                     else
                     {
@@ -131,7 +137,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     if (viewableSeries != null)
                     {
                         this.ExitEvents = (viewableSeries as IStockEvent).EventNames;
-                        this.ExitEvent = this.ExitEvents.FirstOrDefault();
+                        if (this.ExitEvent == null || !this.ExitEvents.Contains(this.ExitEvent))
+                        {
+                            this.ExitEvent = this.ExitEvents.FirstOrDefault();
+                        }
                     }
                     else
                     {
@@ -307,7 +316,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = evt.ProgressPercentage;
                 };
 
-                if (this.RunAgentEngine(StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group) && s.Initialise())))
+
+                var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => s.BelongsToGroup(this.Group));
+                //foreach (var serie in series)
+                //{
+                //    serie.IsInitialised = false;
+                //}
+
+                if (this.RunAgentEngine(series.Where(s => s.Initialise())))
                 {
                     e.Cancel = false;
                 }

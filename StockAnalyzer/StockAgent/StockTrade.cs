@@ -176,15 +176,24 @@ namespace StockAnalyzer.StockAgent
                 (indexValue - this.EntryValue) / this.EntryValue :
                 (this.EntryValue - indexValue) / this.EntryValue;
         }
+        public float AmountAt(DateTime date)
+        {
+            if (date < this.EntryDate)
+            {
+                return this.EntryAmount;
+            }
+            int index = this.Serie.IndexOf(date);
+            return index == -1 ? this.EntryAmount : this.AmountAt(index);
+        }
         public float AmountAt(int index)
         {
             if (index < this.EntryIndex)
             {
-                throw new ArgumentOutOfRangeException("Cannot evaluate before trade is opened");
+                throw new ArgumentOutOfRangeException("Cannot evaluate before trade is opened stock: " + this.Serie.StockName);
             }
             if (this.IsClosed && index > this.EntryIndex)
             {
-                throw new ArgumentOutOfRangeException("Cannot evaluate after trade is closed");
+                throw new ArgumentOutOfRangeException("Cannot evaluate after trade is closed stock: " + this.Serie.StockName);
             }
             FloatSerie closeSerie = this.Serie.GetSerie(StockDataType.CLOSE);
             return Qty * closeSerie[index];

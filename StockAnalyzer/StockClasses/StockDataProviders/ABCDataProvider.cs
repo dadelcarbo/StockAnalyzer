@@ -570,23 +570,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 string filePattern = abcGroup + "_*.csv";
                 bool dataLoaded = false;
-                foreach (string currentFile in Directory.GetFiles(RootFolder + ABC_TMP_FOLDER, filePattern).OrderByDescending(s => s))
+                foreach (string currentFile in Directory.GetFiles(RootFolder + ABC_TMP_FOLDER, filePattern).OrderBy(s => s))
                 {
+                    NotifyProgress($"Loading {Path.GetFileNameWithoutExtension(currentFile)}");
                     ParseABCGroupCSVFile(currentFile, stockGroup);
-                    File.Delete(Path.Combine(RootFolder + ABC_TMP_FOLDER, currentFile));
+                    File.Delete(currentFile);
                     dataLoaded = true;
                 }
                 var fileName = Path.Combine(RootFolder + ABC_INTRADAY_FOLDER, abcGroup + ".csv");
                 if (File.Exists(fileName))
                 {
                     ParseABCGroupCSVFile(fileName, stockGroup, true);
-                    File.Delete(Path.Combine(RootFolder + ABC_TMP_FOLDER, fileName));
+                    File.Delete(fileName);
                     dataLoaded = true;
                 }
                 // Save to CSV file
                 if (dataLoaded)
                 {
-                    foreach (var serie in stockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(stockGroup) && s.Count > 0))
+                    NotifyProgress($"Saving files for {stockGroup}");
+                    foreach (var serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockGroup) && s.Count > 0))
                     {
                         this.SaveToCSV(serie, false);
                     }
@@ -1110,13 +1112,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             bool success = true;
 
-            NotifyProgress($"Downloading ABC daily for {stockGroup} from {startDate.ToShortDateString()}");
+            NotifyProgress($"Downloading data for {stockGroup} from {startDate.ToShortDateString()}");
             try
             {
-                while (endDate - startDate > new TimeSpan(30, 0, 0, 0))
+                while (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
                 {
-                    DownloadMonthlyFileFromABC(destFolder, startDate, startDate.AddDays(30), stockGroup, false);
-                    startDate = startDate.AddDays(30);
+                    var endOfMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+                    DownloadMonthlyFileFromABC(destFolder, startDate, endOfMonth, stockGroup, false);
+                    startDate = endOfMonth.AddDays(1);
                 }
 
                 string abcGroup = GetABCGroup(stockGroup);
