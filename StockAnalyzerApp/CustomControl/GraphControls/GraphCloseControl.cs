@@ -92,6 +92,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected System.Drawing.Drawing2D.Matrix matrixSecondaryScreenToValue;
         protected System.Drawing.Drawing2D.Matrix matrixSecondaryValueToScreen;
         public Pen SecondaryPen { get; set; }
+        public bool IsBuying { get; private set; } = false;
 
         #endregion
 
@@ -1451,9 +1452,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     #region Display Trail Stop Anchor
                     if (mouseOverThis && this.ShowPositions &&
                         this.Portfolio != null &&
-                         (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                        (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
+                    (mousePoint.X + 15 >= this.GraphRectangle.Right))
                     {
-                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex -15, mouseValuePoint.Y);
+                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y);
                         this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
                     }
                     #endregion
@@ -1477,6 +1479,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             PointF mousePoint = new PointF(e.X, e.Y);
+            if (this.ShowPositions && this.Portfolio != null && mousePoint.X + 15 >= this.GraphRectangle.Right)
+            {
+                var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                if (position != null)
+                {
+                    var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
+                    position.TrailStop = mouseValuePoint.Y;
+                    Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+                    this.ForceRefresh();
+                    return;
+                }
+            }
 
             // Allow clicking in the margin for usability purpose
             if (((e.X - this.GraphRectangle.Right) > 0.0f) && ((e.X - this.GraphRectangle.Right) < 20.0f))
@@ -2192,7 +2206,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var p1 = transform ? this.GetScreenPointFromValuePoint(index, stop) : new PointF(index, stop);
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
-            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, redBrush, new PointF(GraphRectangle.Right + 5, p1.Y - 8), true);
+            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         #endregion
         #region Geometric Functions
@@ -2318,12 +2332,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
 
+            this.IsBuying = true;
             this.OnMouseDateChanged += openTradeViewModel.OnStopValueChanged;
             OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
             openPositionDlg.Show(this);
             openPositionDlg.FormClosed += (a, b) =>
             {
-                this.OnMouseDateChanged += openTradeViewModel.OnStopValueChanged;
+                this.IsBuying = true;
+                this.OnMouseDateChanged -= openTradeViewModel.OnStopValueChanged;
                 if (openPositionDlg.DialogResult == DialogResult.OK)
                 {
                     var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
