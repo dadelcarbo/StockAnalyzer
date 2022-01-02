@@ -3763,6 +3763,7 @@ namespace StockAnalyzerApp
             {
                 marketReplayDlg = new MarketReplayDlg(this.selectedGroup, this.BarDuration);
                 marketReplayDlg.Disposed += marketReplayDlg_Disposed;
+                this.graphCloseControl.StopChanged += marketReplayDlg.OnStopValueChanged;
                 marketReplayDlg.Show();
             }
             else

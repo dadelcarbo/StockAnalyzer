@@ -99,6 +99,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public delegate void PointPickEventHandler(int index, DateTime date);
         public event PointPickEventHandler PointPick;
 
+        public delegate void StopChangedEventHandler(float stopValue);
+        public event StopChangedEventHandler StopChanged;
+
         override protected bool InitializeTransformMatrix()
         {
             if (base.InitializeTransformMatrix())
@@ -1488,6 +1491,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     position.TrailStop = mouseValuePoint.Y;
                     Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
                     this.ForceRefresh();
+                    if (StopChanged != null)
+                    {
+                        this.StopChanged(mouseValuePoint.Y);
+                    }
                     return;
                 }
             }

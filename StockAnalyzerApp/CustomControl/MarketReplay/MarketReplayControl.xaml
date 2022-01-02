@@ -37,8 +37,6 @@
             </Button>
             <Label Margin="2" VerticalAlignment="Center">Stop</Label>
             <TextBox Margin="2" Text="{Binding Stop}" VerticalAlignment="Center" Width="40"></TextBox>
-            <Label Margin="2" VerticalAlignment="Center">Target1</Label>
-            <TextBox Margin="2" Text="{Binding Target1}" VerticalAlignment="Center" Width="40"></TextBox>
             <Button Name="sellButton" Margin="2" Background="Red" Content="  Sell  " Command="{Binding SellCommand}">
                 <Button.Resources>
                     <Style TargetType="Border">
@@ -47,7 +45,7 @@
                 </Button.Resources>
             </Button>
             <Label Margin="2" VerticalAlignment="Center">Close</Label>
-            <TextBox Margin="2" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Width="40"></TextBox>
+            <TextBox Margin="2" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Width="60"></TextBox>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
             <Label Width="60">Indicator</Label>

@@ -1,39 +1,32 @@
 ﻿using StockAnalyzer;
+using StockAnalyzer.StockPortfolio;
 
 namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public class MarketReplayPositionViewModel : NotifyPropertyChangedBase
     {
-        private string stop;
-        private string target1;
-
-        public int Qty { get; set; }
-        public float Entry { get; set; }
-        public float Value { get; private set; }
-        public string Stop
+        private StockPosition position;
+        public MarketReplayPositionViewModel(StockPosition position)
         {
-            get => stop;
+            this.position = position;
+        }
+
+        public int Qty => this.position.EntryQty;
+        public float Entry => this.position.EntryValue;
+        public float Value { get; private set; }
+        public float Stop
+        {
+            get => this.position.TrailStop;
             set
             {
-                if (stop != value)
+                if (this.position.TrailStop != value)
                 {
-                    stop = value;
+                    this.position.TrailStop = value;
                     this.OnPropertyChanged("Stop");
                 }
             }
         }
-        public string Target1
-        {
-            get => target1;
-            set
-            {
-                if (target1 != value)
-                {
-                    target1 = value;
-                    this.OnPropertyChanged("Target1");
-                }
-            }
-        }
+
         public string Gain => ((Value - Entry) / Entry).ToString("P2");
 
         public void SetValue(float value)

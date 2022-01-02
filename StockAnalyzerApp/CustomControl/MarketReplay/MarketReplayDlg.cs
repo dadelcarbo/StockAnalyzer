@@ -1,4 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.CustomControl.GraphControls;
+using System;
 using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.MarketReplay
@@ -18,6 +20,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         private void MarketReplayDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
             marketReplayControl1.ViewModel.Closing();
+        }
+
+        internal void OnStopValueChanged(float stop)
+        {
+            marketReplayControl1.ViewModel.Stop = stop;
         }
     }
 }

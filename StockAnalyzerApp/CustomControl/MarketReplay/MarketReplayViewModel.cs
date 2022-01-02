@@ -69,23 +69,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 {
                     stop = value;
                     if (this.openPosition != null)
-                        this.openPosition.Stop = ((this.Stop - this.openPosition.Value) / this.Value).ToString("P2");
+                        this.openPosition.Stop = this.Stop;
                     this.OnPropertyChanged("Stop");
-                }
-            }
-        }
-        private float target1;
-        public float Target1
-        {
-            get => target1;
-            set
-            {
-                if (target1 != value)
-                {
-                    target1 = value;
-                    if (this.openPosition != null)
-                        this.openPosition.Target1 = this.Target1 == 0 ? "" : ((this.Target1 - this.openPosition.Value) / this.Value).ToString("P2");
-                    this.OnPropertyChanged("Target1");
                 }
             }
         }
@@ -274,10 +259,6 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     {
                         sell(lastValue, openPosition.Qty, Math.Min(stop, lastValue.OPEN));
                     }
-                    else if (this.target1 != 0 && lastValue.HIGH > this.target1) // Target  reached
-                    {
-                        sell(lastValue, 1, Math.Max(this.target1, lastValue.OPEN));
-                    }
                 }
                 else
                 {
@@ -293,40 +274,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         var value = Math.Max(this.Stop, lastValue.OPEN);
                         StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -value * qty));
 
-                        this.Positions.Add(openPosition = new MarketReplayPositionViewModel()
-                        {
-                            Entry = value,
-                            Stop = "",
-                            Target1 = "",
-                            Qty = qty
-                        });
+                        var position = StockPortfolio.ReplayPortfolio.OpenedPositions.FirstOrDefault();
+                        this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
                         openPosition.SetValue(lastValue.CLOSE);
                         openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, value);
                         this.Stop = 0;
-                        this.Target1 = 0;
-                    }
-                    else if (this.target1 != 0 && lastValue.HIGH < this.target1) // Target  reached
-                    {
-                        this.BuyEnabled = false;
-                        this.SellEnabled = true;
-
-                        var date = replaySerie.Keys.Last();
-                        int qty = 2;
-                        var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
-                        var value = Math.Min(this.Target1, lastValue.OPEN);
-                        StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -value * qty));
-
-                        this.Positions.Add(openPosition = new MarketReplayPositionViewModel()
-                        {
-                            Entry = value,
-                            Stop = "",
-                            Target1 = "",
-                            Qty = qty
-                        });
-                        openPosition.SetValue(lastValue.CLOSE);
-                        openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, value);
-                        this.Stop = 0;
-                        this.Target1 = 0;
                     }
                 }
                 if (!this.isSkipForwarding)
@@ -409,13 +361,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
             StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
 
-            this.Positions.Add(openPosition = new MarketReplayPositionViewModel()
-            {
-                Entry = this.Value,
-                Stop = ((this.Stop - this.Value) / this.Value).ToString("P2"),
-                Target1 = this.Target1 == 0 ? "" : ((this.Target1 - this.Value) / this.Value).ToString("P2"),
-                Qty = qty
-            });
+            var position = StockPortfolio.ReplayPortfolio.OpenedPositions.FirstOrDefault();
+            this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
             openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, this.Value);
 
             this.Forward();
@@ -439,27 +386,11 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 this.TradeSummary.Trades.Insert(0, openTrade);
                 openTrade.Close(replaySerie.LastCompleteIndex, value);
                 this.Stop = 0;
-                this.Target1 = 0;
                 openPosition = null;
                 openTrade = null;
                 this.BuyEnabled = true;
                 this.SellEnabled = false;
                 this.Positions.Clear();
-            }
-            else
-            {
-                MessageBox.Show("Partial close is not supported");
-                //// Partial close
-                //var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
-                //StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, lastValue.DATE, replaySerie.StockName, StockOperation.SELL, qty, value * qty));
-                //TradeSummary.Insert(0, new MarketReplayTradeViewModel()
-                //{
-                //    Entry = openPosition.Entry,
-                //    Target1 = "",
-                //    Exit = value
-                //});
-                //openPosition.Qty = 1;
-                //this.Target1 = 0;
             }
         }
 
@@ -498,7 +429,6 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.SelectedStockChanged(name, true);
 
             this.Stop = 0;
-            this.Target1 = 0;
             openPosition = null;
             openTrade = null;
             this.BuyEnabled = true;
