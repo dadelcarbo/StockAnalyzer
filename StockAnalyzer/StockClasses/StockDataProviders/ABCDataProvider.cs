@@ -477,7 +477,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private void InitFromFile(bool download, string fileName)
         {
-            StockLog.Write("InitFromFile " + fileName);
             if (File.Exists(fileName))
             {
                 using (StreamReader sr = new StreamReader(fileName, true))
@@ -1132,10 +1131,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex);
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed");
+                MessageBox.Show(ex.Message, "Connection failed");
                 success = false;
             }
             return success;
@@ -1430,7 +1429,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var values = stockSerie.Values.Where(v => v.DATE.Year < DateTime.Today.Year);
             if (values.Count() > 0)
             {
-                if (forceArchive || !File.Exists(fileName))
+                if (forceArchive || happyNewYear || !File.Exists(fileName))
                 {
                     using (StreamWriter sw = new StreamWriter(fileName))
                     {
