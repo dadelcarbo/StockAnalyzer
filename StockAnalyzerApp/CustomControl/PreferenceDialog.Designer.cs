@@ -64,8 +64,11 @@ namespace StockAnalyzerApp.CustomControl
             this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
             this.showBarSmoothingCheckBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.rootFolderTextBox = new System.Windows.Forms.TextBox();
-            this.browseRootButton = new System.Windows.Forms.Button();
+            this.dataFolderTextBox = new System.Windows.Forms.TextBox();
+            this.browseDataButton = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.personalFolderTextBox = new System.Windows.Forms.TextBox();
+            this.browsePersonalButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.chartParamGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
@@ -332,20 +335,40 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
             // 
-            // rootFolderTextBox
+            // dataFolderTextBox
             // 
-            resources.ApplyResources(this.rootFolderTextBox, "rootFolderTextBox");
-            this.rootFolderTextBox.Name = "rootFolderTextBox";
-            this.rootFolderTextBox.TextChanged += new System.EventHandler(this.rootFolderTextBox_TextChanged);
-            this.rootFolderTextBox.Validating += RootFolderTextBox_Validating;
+            resources.ApplyResources(this.dataFolderTextBox, "dataFolderTextBox");
+            this.dataFolderTextBox.Name = "dataFolderTextBox";
+            this.dataFolderTextBox.TextChanged += this.dataFolderTextBox_TextChanged;
+            this.dataFolderTextBox.Validating += dataFolderTextBox_Validating;
             // 
-            // browseRootButton
+            // browseDataButton
             // 
-            this.browseRootButton.Image = global::StockAnalyzerApp.Properties.Resources.AddFolder;
-            resources.ApplyResources(this.browseRootButton, "browseRootButton");
-            this.browseRootButton.Name = "browseRootButton";
-            this.browseRootButton.UseVisualStyleBackColor = true;
-            this.browseRootButton.Click += new System.EventHandler(this.browseRootButton_Click);
+            this.browseDataButton.Image = global::StockAnalyzerApp.Properties.Resources.AddFolder;
+            resources.ApplyResources(this.browseDataButton, "browseDataButton");
+            this.browseDataButton.Name = "browseDataButton";
+            this.browseDataButton.UseVisualStyleBackColor = true;
+            this.browseDataButton.Click += new System.EventHandler(this.browseDataButton_Click);
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
+            // 
+            // personalFolderTextBox
+            // 
+            resources.ApplyResources(this.personalFolderTextBox, "personalFolderTextBox");
+            this.personalFolderTextBox.Name = "personalFolderTextBox";
+            this.personalFolderTextBox.TextChanged += this.personalFolderTextBox_TextChanged;
+            this.personalFolderTextBox.Validating += this.personalFolderTextBox_Validating;
+            // 
+            // browsePersonalButton
+            // 
+            this.browsePersonalButton.Image = global::StockAnalyzerApp.Properties.Resources.AddFolder;
+            resources.ApplyResources(this.browsePersonalButton, "browsePersonalButton");
+            this.browsePersonalButton.Name = "browsePersonalButton";
+            this.browsePersonalButton.UseVisualStyleBackColor = true;
+            this.browsePersonalButton.Click += new System.EventHandler(this.browsePersonalButton_Click);
             // 
             // PreferenceDialog
             // 
@@ -353,7 +376,8 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelBtn;
-            this.Controls.Add(this.browseRootButton);
+            this.Controls.Add(this.browsePersonalButton);
+            this.Controls.Add(this.browseDataButton);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.alertGroupBox);
             this.Controls.Add(this.groupBox3);
@@ -361,8 +385,10 @@ namespace StockAnalyzerApp.CustomControl
             this.Controls.Add(this.chartParamGroupBox);
             this.Controls.Add(this.msg1);
             this.Controls.Add(this.getLicenseButton);
+            this.Controls.Add(this.personalFolderTextBox);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.rootFolderTextBox);
+            this.Controls.Add(this.dataFolderTextBox);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.userIDTextBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
@@ -428,7 +454,10 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
         private System.Windows.Forms.CheckBox showBarSmoothingCheckBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox rootFolderTextBox;
-        private System.Windows.Forms.Button browseRootButton;
+        private System.Windows.Forms.TextBox dataFolderTextBox;
+        private System.Windows.Forms.Button browseDataButton;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox personalFolderTextBox;
+        private System.Windows.Forms.Button browsePersonalButton;
     }
 }

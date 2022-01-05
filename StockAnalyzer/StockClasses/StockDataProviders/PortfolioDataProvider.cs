@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            string folder = Path.Combine(RootFolder, PORTFOLIO_FOLDER);
+            string folder = Path.Combine(DataFolder, PORTFOLIO_FOLDER);
             try
             {
                 if (!Directory.Exists(folder))

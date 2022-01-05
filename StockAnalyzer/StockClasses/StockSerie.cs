@@ -130,7 +130,7 @@ namespace StockAnalyzer.StockClasses
             StockAgenda stockAgenda = null;
             if (this.BelongsToGroup(Groups.CACALL))
             {
-                string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + AGENDA_SUBFOLDER;
+                string path = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + AGENDA_SUBFOLDER;
                 string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
                 if (File.Exists(fileName))
                 {
@@ -149,7 +149,7 @@ namespace StockAnalyzer.StockClasses
         public void SaveAgenda()
         {
             if (this.Agenda == null) return;
-            string path = StockAnalyzerSettings.Properties.Settings.Default.RootFolder + AGENDA_SUBFOLDER;
+            string path = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + AGENDA_SUBFOLDER;
             string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
@@ -3170,7 +3170,7 @@ namespace StockAnalyzer.StockClasses
             if (dailyValueList.Count == 0) return new List<StockDailyValue>();
 
             // Load cache if exists
-            //StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, this, timeSpan);
+            //StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, this, timeSpan);
 
             switch (timeSpan.Duration)
             {

@@ -218,7 +218,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                             StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
                             StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
 
-                            using (var sr = new StreamWriter(Path.Combine(Settings.Default.RootFolder, "AgentReport.tsv"), true))
+                            using (var sr = new StreamWriter(Path.Combine(Settings.Default.DataFolder, "AgentReport.tsv"), true))
                             {
                                 sr.WriteLine(rpt);
                             }

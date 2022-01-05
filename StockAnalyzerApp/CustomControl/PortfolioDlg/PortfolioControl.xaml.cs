@@ -115,7 +115,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
         {
             var viewModel = (ViewModel)this.DataContext;
-            viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+            viewModel.Portfolio.Serialize(Path.Combine(Settings.Default.DataFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
         }
 
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)

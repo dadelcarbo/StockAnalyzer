@@ -24,7 +24,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 if (portfolioViewModel!= null && portfolioViewModel.IsDirty)
                 {
-                    portfolioViewModel.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+                    portfolioViewModel.Portfolio.Serialize(Path.Combine(Settings.Default.DataFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
                 }
 
                 StockAnalyzerForm.MainFrame.Portfolio = value;

@@ -32,9 +32,6 @@
     <Setting Name="ShowDrawings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="DownloadData" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ShowEventMarquee" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -50,11 +47,8 @@
     <Setting Name="SelectedTheme" Type="System.String" Scope="User">
       <Value Profile="(Default)">Default</Value>
     </Setting>
-    <Setting Name="RootFolder" Type="System.String" Scope="User">
+    <Setting Name="DataFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DownloadStartDate" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)">2012-01-01</Value>
     </Setting>
     <Setting Name="LoadStartYear" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2010</Value>
@@ -104,12 +98,6 @@
     <Setting Name="ShowCommentMarquee" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="UserEMail" Type="System.String" Scope="User">
-      <Value Profile="(Default)">david.carbonel@free.fr</Value>
-    </Setting>
-    <Setting Name="UserSMTP" Type="System.String" Scope="User">
-      <Value Profile="(Default)">smtp.free.fr</Value>
-    </Setting>
     <Setting Name="SupportShortSelling" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -118,9 +106,6 @@
     </Setting>
     <Setting Name="PortofolioValue" Type="System.Single" Scope="User">
       <Value Profile="(Default)">16000</Value>
-    </Setting>
-    <Setting Name="MomentumIndicator" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ROC(120,1)</Value>
     </Setting>
     <Setting Name="RaiseAlerts" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -142,6 +127,24 @@
     </Setting>
     <Setting Name="ShowBarSmoothing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DownloadData" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DownloadStartDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2015-01-01</Value>
+    </Setting>
+    <Setting Name="UserEMail" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserSMTP" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PortfolioValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">16000</Value>
+    </Setting>
+    <Setting Name="PersonalFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

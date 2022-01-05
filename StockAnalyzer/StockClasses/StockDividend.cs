@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses
             {
                 shortName += ".PA";
             }
-            var filePath = Path.Combine(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
             if (File.Exists(filePath))
             {
                 this.LoadFromFile(filePath);
@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            var filePath = Path.Combine(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
             if (!force && File.Exists(filePath) && File.GetLastWriteTimeUtc(filePath) > DateTime.Today.AddMonths(-1))
                 return false;
 
@@ -98,7 +98,7 @@ namespace StockAnalyzer.StockClasses
             var webHelper = new StockWebHelper();
 
             this.DownloadDate = DateTime.Today;
-            if (webHelper.DownloadFile(StockDataProviderBase.RootFolder + DIVIDEND_SUBFOLDER, shortName + ".csv", url))
+            if (webHelper.DownloadFile(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv", url))
             {
                 this.LoadFromFile(filePath);
                 return true;

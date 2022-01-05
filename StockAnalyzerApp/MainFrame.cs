@@ -315,37 +315,37 @@ namespace StockAnalyzerApp
             StockLog.Write("GetFolderPath: " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
             // This is the first time the user runs the application.
-            if (string.IsNullOrEmpty(Settings.Default.RootFolder))
+            if (string.IsNullOrEmpty(Settings.Default.DataFolder))
             {
-                Settings.Default.RootFolder = Path.Combine(@"C:\ProgramData", "UltimateChartist");
+                Settings.Default.DataFolder = Path.Combine(@"C:\ProgramData", "UltimateChartist");
             }
-            if (!Directory.Exists(Settings.Default.RootFolder))
+            if (!Directory.Exists(Settings.Default.DataFolder))
             {
-                Directory.CreateDirectory(Settings.Default.RootFolder);
+                Directory.CreateDirectory(Settings.Default.DataFolder);
                 Settings.Default.DownloadData = true;
             }
 
-            string stockRootFolder = Settings.Default.RootFolder;
+            string dataFolder = Settings.Default.DataFolder;
 
             // Root folder sanity check
-            if (!Directory.Exists(Settings.Default.RootFolder))
+            if (!Directory.Exists(Settings.Default.DataFolder))
             {
                 MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 Environment.Exit(0);
             }
 
-            string folderName = Settings.Default.RootFolder + StockDividend.DIVIDEND_SUBFOLDER;
+            string folderName = Settings.Default.DataFolder + StockDividend.DIVIDEND_SUBFOLDER;
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
             }
-            folderName = Path.Combine(Settings.Default.RootFolder, "Palmares");
+            folderName = Path.Combine(Settings.Default.DataFolder, "Palmares");
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
             }
-            folderName = Path.Combine(Settings.Default.RootFolder, "Tweets");
+            folderName = Path.Combine(Settings.Default.DataFolder, "Tweets");
             if (Directory.Exists(folderName))
             {
                 Directory.Delete(folderName, true);
@@ -364,7 +364,7 @@ namespace StockAnalyzerApp
             // Deserialize Drawing Items - Read Analysis files
             if (Settings.Default.AnalysisFile == string.Empty)
             {
-                Settings.Default.AnalysisFile = Settings.Default.RootFolder + "\\" + "UltimateChartist.ulc";
+                Settings.Default.AnalysisFile = Settings.Default.DataFolder + "\\" + "UltimateChartist.ulc";
                 Settings.Default.Save();
             }
             else
@@ -507,7 +507,7 @@ namespace StockAnalyzerApp
             if (Settings.Default.GenerateDailyReport)
             {
                 // Daily report
-                var fileName = Settings.Default.RootFolder + @"\CommentReport\LastGeneration.txt";
+                var fileName = Settings.Default.DataFolder + @"\CommentReport\LastGeneration.txt";
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
                 {
@@ -525,7 +525,7 @@ namespace StockAnalyzerApp
                     //GenerateReport("Montly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                 }
                 /*
-                fileName = Settings.Default.RootFolder + @"\CommentReport\Weekly\Report.html";
+                fileName = Settings.Default.DataFolder + @"\CommentReport\Weekly\Report.html";
                 var lastUpdate = File.GetLastWriteTime(fileName).Date;
                 if (!File.Exists(fileName) || lastUpdate != DateTime.Today)
                 {
@@ -538,7 +538,7 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                fileName = Settings.Default.RootFolder + @"\CommentReport\Monthly\Report.html";
+                fileName = Settings.Default.DataFolder + @"\CommentReport\Monthly\Report.html";
                 lastUpdate = File.GetLastWriteTime(fileName).Date;
                 if (!File.Exists(fileName) || lastUpdate.Month != DateTime.Today.Month)
                 {
@@ -657,7 +657,7 @@ namespace StockAnalyzerApp
             //StockLicense stockLicense = null;
 
             //// Check on local disk in license is found
-            //string licenseFileName = Settings.Default.RootFolder + @"\license.dat";
+            //string licenseFileName = Settings.Default.DataFolder + @"\license.dat";
             //if (File.Exists(licenseFileName))
             //{
             //    string fileName = licenseFileName;
@@ -1491,7 +1491,7 @@ namespace StockAnalyzerApp
 
         private void LoadWatchList()
         {
-            string watchListsFileName = Settings.Default.RootFolder + @"\WatchLists.xml";
+            string watchListsFileName = Settings.Default.DataFolder + @"\WatchLists.xml";
 
             // Parse watch lists
             if (File.Exists(watchListsFileName))
@@ -2175,7 +2175,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Save watch list file
-                string watchListsFileName = Settings.Default.RootFolder + @"\WatchLists.xml";
+                string watchListsFileName = Settings.Default.DataFolder + @"\WatchLists.xml";
                 System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
                 settings.Indent = true;
                 settings.NewLineOnAttributes = true;
@@ -2948,7 +2948,7 @@ namespace StockAnalyzerApp
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
 
             var htmlReport = reportTemplate.Replace("%HTML_BODY%", reportBody);
-            string fileName = Path.Combine(Settings.Default.RootFolder, $@"Portfolio\Report\{ portfolio.Name }.html");
+            string fileName = Path.Combine(Settings.Default.DataFolder, $@"Portfolio\Report\{ portfolio.Name }.html");
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 sw.Write(htmlReport);
@@ -2967,7 +2967,7 @@ namespace StockAnalyzerApp
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
             string timeFrame = duration.ToString();
-            string folderName = Settings.Default.RootFolder + @"\CommentReport\" + timeFrame;
+            string folderName = Settings.Default.DataFolder + @"\CommentReport\" + timeFrame;
             CleanReportFolder(folderName);
 
             string fileName = folderName + @"\Report.html";
@@ -3161,7 +3161,7 @@ namespace StockAnalyzerApp
 
         void addToReportStripBtn_Click(object sender, EventArgs e)
         {
-            using (StreamWriter sw = File.AppendText(Settings.Default.RootFolder + @"\Report.cfg"))
+            using (StreamWriter sw = File.AppendText(Settings.Default.DataFolder + @"\Report.cfg"))
             {
                 sw.WriteLine(this.CurrentStockSerie.StockName + ";" + this.CurrentTheme + ";" + this.barDurationComboBox.SelectedItem.ToString() + ";" + (this.endIndex - this.startIndex));
             }
@@ -3624,7 +3624,7 @@ namespace StockAnalyzerApp
         {
             if (tweetDlg == null)
             {
-                string fileName = Path.Combine(Settings.Default.RootFolder + @"\Tweets\", $"tweet{++tweetCount}.png");
+                string fileName = Path.Combine(Settings.Default.DataFolder + @"\Tweets\", $"tweet{++tweetCount}.png");
                 var bitmap = this.graphCloseControl.GetSnapshot();
                 if (bitmap != null)
                     bitmap.Save(fileName, ImageFormat.Png);
@@ -4310,7 +4310,7 @@ namespace StockAnalyzerApp
             // Initialise Combo values
             themeComboBox.Items.Clear();
 
-            string folderName = Settings.Default.RootFolder + @"\themes";
+            string folderName = Settings.Default.DataFolder + @"\themes";
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
@@ -4391,7 +4391,7 @@ namespace StockAnalyzerApp
             try
             {
                 // Load Curve Theme
-                string fileName = Settings.Default.RootFolder + @"\themes\" + themeName + ".thm";
+                string fileName = Settings.Default.DataFolder + @"\themes\" + themeName + ".thm";
                 if (File.Exists(fileName))
                 {
                     using (StreamReader sr = new StreamReader(fileName))
@@ -4468,7 +4468,7 @@ namespace StockAnalyzerApp
             }
 
             // delete theme file
-            string fileName = Settings.Default.RootFolder + @"\themes\" + this.CurrentTheme + ".thm";
+            string fileName = Settings.Default.DataFolder + @"\themes\" + this.CurrentTheme + ".thm";
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);
@@ -4556,7 +4556,7 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie == null) return;
 
-            string folderName = Settings.Default.RootFolder;
+            string folderName = Settings.Default.DataFolder;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.DefaultExt = "ulc";
             openFileDialog.Filter = "Ultimate Chartist Analysis files (*.ulc)|*.ulc";
@@ -4594,7 +4594,7 @@ namespace StockAnalyzerApp
             saveFileDialog.Filter = "Ultimate Chartist Analysis files (*.ulc)|*.ulc";
             saveFileDialog.CheckFileExists = false;
             saveFileDialog.CheckPathExists = true;
-            saveFileDialog.InitialDirectory = Settings.Default.RootFolder;
+            saveFileDialog.InitialDirectory = Settings.Default.DataFolder;
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 string analysisFileName = saveFileDialog.FileName;
@@ -4605,7 +4605,7 @@ namespace StockAnalyzerApp
         }
         private void saveThemeMenuItem_Click(object sender, EventArgs e)
         {
-            string folderName = Settings.Default.RootFolder + @"\themes";
+            string folderName = Settings.Default.DataFolder + @"\themes";
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);

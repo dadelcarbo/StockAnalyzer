@@ -158,7 +158,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.ToDate = DateTime.Now;
             this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
 
-            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Palmares");
+            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Palmares");
             this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
 

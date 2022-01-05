@@ -14,13 +14,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public const int ARCHIVE_START_YEAR = 2000;
         public static int LOAD_START_YEAR => StockAnalyzerSettings.Properties.Settings.Default.LoadStartYear;
 
-        private static string rootFolder = null;
-        public static string RootFolder
+        private static string dataFolder = null;
+        public static string DataFolder
         {
-            get => rootFolder ?? (rootFolder = StockAnalyzerSettings.Properties.Settings.Default.RootFolder);
+            get => dataFolder ?? (dataFolder = StockAnalyzerSettings.Properties.Settings.Default.DataFolder);
             set
             {
-                rootFolder = value;
+                dataFolder = value;
             }
         }
         public static bool IntradayDownloadSuspended { get; set; } = false;
@@ -42,10 +42,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             // Read archive first
             string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            string fullFileName = RootFolder + "\\data\\archive\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            string fullFileName = DataFolder + "\\data\\archive\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
-            fullFileName = RootFolder + "\\data\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            fullFileName = DataFolder + "\\data\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
             return ParseCSVFile(stockSerie, fullFileName) || res;
         }
         public virtual bool ForceDownloadData(StockSerie stockSerie)
@@ -210,9 +210,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
         #region CSV FILE IO
-        //protected virtual bool ParseOptixFile(StockSerie stockSerie, string rootFolder)
+        //protected virtual bool ParseOptixFile(StockSerie stockSerie, string dataFolder)
         //{
-        //   string fileName = rootFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
+        //   string fileName = dataFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
 
         //   if (File.Exists(fileName))
         //   {
@@ -259,7 +259,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         //         return false;
         //      }
 
-        //      string optixFileName = rootFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
+        //      string optixFileName = dataFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
 
         //      using (WebClient wc = new WebClient())
         //      {
@@ -406,7 +406,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockValue;
         }
         #endregion
-
 
         public virtual bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {

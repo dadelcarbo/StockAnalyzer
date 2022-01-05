@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             this.FileName = fileName;
             isIntraday = fileName.ToLower().Contains("intraday");
-            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.RootFolder + FileName));
+            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.DataFolder + FileName));
             this.StockDico = stockDico;
             if (isIntraday)
             {
@@ -98,7 +98,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
         public void Save()
         {
-            InvestingConfigEntry.SaveToFile(this.Entries, Settings.Default.RootFolder + FileName);
+            InvestingConfigEntry.SaveToFile(this.Entries, Settings.Default.DataFolder + FileName);
         }
         public void AddEntry()
         {

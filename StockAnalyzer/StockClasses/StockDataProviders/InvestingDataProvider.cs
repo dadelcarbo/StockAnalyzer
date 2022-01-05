@@ -21,20 +21,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Parse Investing.cfg file// Create data folder if not existing
-            if (!Directory.Exists(RootFolder + FOLDER))
+            if (!Directory.Exists(DataFolder + FOLDER))
             {
-                Directory.CreateDirectory(RootFolder + FOLDER);
+                Directory.CreateDirectory(DataFolder + FOLDER);
             }
-            if (!Directory.Exists(RootFolder + ARCHIVE_FOLDER))
+            if (!Directory.Exists(DataFolder + ARCHIVE_FOLDER))
             {
-                Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
+                Directory.CreateDirectory(DataFolder + ARCHIVE_FOLDER);
             }
 
             this.needDownload = download;
 
             // Parse InvestingDownload.cfg file
-            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE_USER);
         }
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
@@ -75,14 +75,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             StockLog.Write("LoadData for " + stockSerie.StockName);
             bool res = false;
-            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
                 res = true;
             }
 
-            var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
             if (File.Exists(fileName))
             {
@@ -114,12 +114,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override bool ForceDownloadData(StockSerie stockSerie)
         {
             StockLog.Write("ForceDownloadData for " + stockSerie.StockName);
-            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 File.Delete(archiveFileName);
             }
-            var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);
@@ -137,7 +137,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading daily data for " + stockSerie.StockName);
 
-                var fileName = RootFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                 if (File.Exists(fileName))
                 {

@@ -154,7 +154,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;okBtn.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>19</value>
   </data>
   <data name="cancelBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -184,7 +184,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cancelBtn.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>18</value>
   </data>
   <data name="downloadDataCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -193,7 +193,7 @@
     <value>NoControl</value>
   </data>
   <data name="downloadDataCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 31</value>
+    <value>16, 21</value>
   </data>
   <data name="downloadDataCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>148, 17</value>
@@ -223,7 +223,7 @@
     <value>NoControl</value>
   </data>
   <data name="generateBreadthCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 54</value>
+    <value>16, 44</value>
   </data>
   <data name="generateBreadthCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>152, 17</value>
@@ -274,7 +274,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;enableLoggingCheckBox.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>17</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -304,7 +304,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>15</value>
   </data>
   <data name="userIDTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>55, 14</value>
@@ -325,13 +325,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;userIDTextBox.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>13</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 82</value>
+    <value>9, 94</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 84</value>
+    <value>176, 72</value>
   </data>
   <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -349,7 +349,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="getLicenseButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -376,7 +376,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;getLicenseButton.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="msg1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -410,67 +410,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;msg1.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;barNumberUpDown.Name" xml:space="preserve">
-    <value>barNumberUpDown</value>
-  </data>
-  <data name="&gt;&gt;barNumberUpDown.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;barNumberUpDown.Parent" xml:space="preserve">
-    <value>chartParamGroupBox</value>
-  </data>
-  <data name="&gt;&gt;barNumberUpDown.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;showVariationCheckBox.Name" xml:space="preserve">
-    <value>showVariationCheckBox</value>
-  </data>
-  <data name="&gt;&gt;showVariationCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;showVariationCheckBox.Parent" xml:space="preserve">
-    <value>chartParamGroupBox</value>
-  </data>
-  <data name="&gt;&gt;showVariationCheckBox.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;barNumberLabel.Name" xml:space="preserve">
-    <value>barNumberLabel</value>
-  </data>
-  <data name="&gt;&gt;barNumberLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;barNumberLabel.Parent" xml:space="preserve">
-    <value>chartParamGroupBox</value>
-  </data>
-  <data name="&gt;&gt;barNumberLabel.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="chartParamGroupBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 168</value>
-  </data>
-  <data name="chartParamGroupBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 84</value>
-  </data>
-  <data name="chartParamGroupBox.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="chartParamGroupBox.Text" xml:space="preserve">
-    <value>Chart Parameters</value>
-  </data>
-  <data name="&gt;&gt;chartParamGroupBox.Name" xml:space="preserve">
-    <value>chartParamGroupBox</value>
-  </data>
-  <data name="&gt;&gt;chartParamGroupBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;chartParamGroupBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;chartParamGroupBox.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="barNumberUpDown.Location" type="System.Drawing.Point, System.Drawing">
     <value>98, 24</value>
@@ -553,53 +493,29 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;barNumberLabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;startYearTextBox.Name" xml:space="preserve">
-    <value>startYearTextBox</value>
+  <data name="chartParamGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 168</value>
   </data>
-  <data name="&gt;&gt;startYearTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="chartParamGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 84</value>
   </data>
-  <data name="&gt;&gt;startYearTextBox.Parent" xml:space="preserve">
-    <value>groupBox2</value>
+  <data name="chartParamGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
-  <data name="&gt;&gt;startYearTextBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="chartParamGroupBox.Text" xml:space="preserve">
+    <value>Chart Parameters</value>
   </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
+  <data name="&gt;&gt;chartParamGroupBox.Name" xml:space="preserve">
+    <value>chartParamGroupBox</value>
   </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>193, 168</value>
-  </data>
-  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 88</value>
-  </data>
-  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>Data Provider</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+  <data name="&gt;&gt;chartParamGroupBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chartParamGroupBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;chartParamGroupBox.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="startYearTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 33</value>
@@ -652,89 +568,29 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;testButton.Name" xml:space="preserve">
-    <value>testButton</value>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>193, 168</value>
   </data>
-  <data name="&gt;&gt;testButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>145, 84</value>
   </data>
-  <data name="&gt;&gt;testButton.Parent" xml:space="preserve">
-    <value>groupBox3</value>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
-  <data name="&gt;&gt;testButton.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Data Provider</value>
   </data>
-  <data name="&gt;&gt;addressTextBox.Name" xml:space="preserve">
-    <value>addressTextBox</value>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
   </data>
-  <data name="&gt;&gt;addressTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;addressTextBox.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;addressTextBox.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;smtpTextBox.Name" xml:space="preserve">
-    <value>smtpTextBox</value>
-  </data>
-  <data name="&gt;&gt;smtpTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;smtpTextBox.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;smtpTextBox.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
-  <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
-  </data>
-  <data name="&gt;&gt;label3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 259</value>
-  </data>
-  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>325, 81</value>
-  </data>
-  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
-  </data>
-  <data name="groupBox3.Text" xml:space="preserve">
-    <value>Mail Settings</value>
-  </data>
-  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="testButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -865,65 +721,29 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Name" xml:space="preserve">
-    <value>alertFrequencyUpDown</value>
+  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 259</value>
   </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>325, 81</value>
   </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Parent" xml:space="preserve">
-    <value>alertGroupBox</value>
+  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
   </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>Mail Settings</value>
   </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
+  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
+    <value>groupBox3</value>
   </data>
-  <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>alertGroupBox</value>
-  </data>
-  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;alertActiveCheckBox.Name" xml:space="preserve">
-    <value>alertActiveCheckBox</value>
-  </data>
-  <data name="&gt;&gt;alertActiveCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;alertActiveCheckBox.Parent" xml:space="preserve">
-    <value>alertGroupBox</value>
-  </data>
-  <data name="&gt;&gt;alertActiveCheckBox.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="alertGroupBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 347</value>
-  </data>
-  <data name="alertGroupBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>325, 49</value>
-  </data>
-  <data name="alertGroupBox.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="alertGroupBox.Text" xml:space="preserve">
-    <value>Intraday Alerts</value>
-  </data>
-  <data name="&gt;&gt;alertGroupBox.Name" xml:space="preserve">
-    <value>alertGroupBox</value>
-  </data>
-  <data name="&gt;&gt;alertGroupBox.Type" xml:space="preserve">
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;alertGroupBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;alertGroupBox.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="alertFrequencyUpDown.Location" type="System.Drawing.Point, System.Drawing">
     <value>145, 21</value>
@@ -997,6 +817,48 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;alertActiveCheckBox.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="alertGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 347</value>
+  </data>
+  <data name="alertGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>325, 49</value>
+  </data>
+  <data name="alertGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="alertGroupBox.Text" xml:space="preserve">
+    <value>Intraday Alerts</value>
+  </data>
+  <data name="&gt;&gt;alertGroupBox.Name" xml:space="preserve">
+    <value>alertGroupBox</value>
+  </data>
+  <data name="&gt;&gt;alertGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;alertGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;alertGroupBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="generateDailyReportCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="generateDailyReportCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="generateDailyReportCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
+  </data>
+  <data name="generateDailyReportCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 17</value>
+  </data>
+  <data name="generateDailyReportCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="generateDailyReportCheckBox.Text" xml:space="preserve">
+    <value>Generate Daily Report</value>
+  </data>
   <data name="&gt;&gt;generateDailyReportCheckBox.Name" xml:space="preserve">
     <value>generateDailyReportCheckBox</value>
   </data>
@@ -1031,37 +893,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="generateDailyReportCheckBox.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="generateDailyReportCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="generateDailyReportCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 19</value>
-  </data>
-  <data name="generateDailyReportCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 17</value>
-  </data>
-  <data name="generateDailyReportCheckBox.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="generateDailyReportCheckBox.Text" xml:space="preserve">
-    <value>Generate Daily Report</value>
-  </data>
-  <data name="&gt;&gt;generateDailyReportCheckBox.Name" xml:space="preserve">
-    <value>generateDailyReportCheckBox</value>
-  </data>
-  <data name="&gt;&gt;generateDailyReportCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;generateDailyReportCheckBox.Parent" xml:space="preserve">
-    <value>groupBox4</value>
-  </data>
-  <data name="&gt;&gt;generateDailyReportCheckBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="showBarSmoothingCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1091,7 +923,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;showBarSmoothingCheckBox.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>16</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1100,7 +932,7 @@ Do you want to restart now ?</value>
     <value>NoControl</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 49</value>
+    <value>6, 44</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 13</value>
@@ -1109,7 +941,7 @@ Do you want to restart now ?</value>
     <value>6</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
-    <value>Root</value>
+    <value>Data</value>
   </data>
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
@@ -1121,51 +953,123 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>14</value>
   </data>
-  <data name="rootFolderTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>55, 46</value>
+  <data name="dataFolderTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>55, 41</value>
   </data>
-  <data name="rootFolderTextBox.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="dataFolderTextBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 20</value>
   </data>
-  <data name="rootFolderTextBox.TabIndex" type="System.Int32, mscorlib">
+  <data name="dataFolderTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;rootFolderTextBox.Name" xml:space="preserve">
-    <value>rootFolderTextBox</value>
+  <data name="&gt;&gt;dataFolderTextBox.Name" xml:space="preserve">
+    <value>dataFolderTextBox</value>
   </data>
-  <data name="&gt;&gt;rootFolderTextBox.Type" xml:space="preserve">
+  <data name="&gt;&gt;dataFolderTextBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;rootFolderTextBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;dataFolderTextBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;rootFolderTextBox.ZOrder" xml:space="preserve">
-    <value>9</value>
+  <data name="&gt;&gt;dataFolderTextBox.ZOrder" xml:space="preserve">
+    <value>11</value>
   </data>
-  <data name="browseRootButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="browseDataButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="browseRootButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>321, 46</value>
+  <data name="browseDataButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>321, 41</value>
   </data>
-  <data name="browseRootButton.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="browseDataButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>19, 20</value>
   </data>
-  <data name="browseRootButton.TabIndex" type="System.Int32, mscorlib">
+  <data name="browseDataButton.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;browseRootButton.Name" xml:space="preserve">
-    <value>browseRootButton</value>
+  <data name="&gt;&gt;browseDataButton.Name" xml:space="preserve">
+    <value>browseDataButton</value>
   </data>
-  <data name="&gt;&gt;browseRootButton.Type" xml:space="preserve">
+  <data name="&gt;&gt;browseDataButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;browseRootButton.Parent" xml:space="preserve">
+  <data name="&gt;&gt;browseDataButton.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;browseRootButton.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;browseDataButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label7.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 70</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 13</value>
+  </data>
+  <data name="label7.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="&gt;&gt;label7.Name" xml:space="preserve">
+    <value>label7</value>
+  </data>
+  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="personalFolderTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>55, 67</value>
+  </data>
+  <data name="personalFolderTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
+  </data>
+  <data name="personalFolderTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;personalFolderTextBox.Name" xml:space="preserve">
+    <value>personalFolderTextBox</value>
+  </data>
+  <data name="&gt;&gt;personalFolderTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;personalFolderTextBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;personalFolderTextBox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="browsePersonalButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>321, 67</value>
+  </data>
+  <data name="browsePersonalButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>19, 20</value>
+  </data>
+  <data name="browsePersonalButton.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;browsePersonalButton.Name" xml:space="preserve">
+    <value>browsePersonalButton</value>
+  </data>
+  <data name="&gt;&gt;browsePersonalButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;browsePersonalButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;browsePersonalButton.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

@@ -28,7 +28,8 @@ namespace StockAnalyzerApp.CustomControl
             this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
             this.alertActiveCheckBox.Checked = Settings.Default.RaiseAlerts;
             this.generateDailyReportCheckBox.Checked = Settings.Default.GenerateDailyReport;
-            this.rootFolderTextBox.Text = Settings.Default.RootFolder;
+            this.dataFolderTextBox.Text = Settings.Default.DataFolder;
+            this.personalFolderTextBox.Text = Settings.Default.PersonalFolder;
             needRestart = false;
         }
 
@@ -49,6 +50,9 @@ namespace StockAnalyzerApp.CustomControl
             Settings.Default.AlertsFrequency = (int)this.alertFrequencyUpDown.Value;
             Settings.Default.RaiseAlerts = this.alertActiveCheckBox.Checked;
             Settings.Default.GenerateDailyReport = this.generateDailyReportCheckBox.Checked;
+
+            Settings.Default.DataFolder = this.dataFolderTextBox.Text;
+            Settings.Default.PersonalFolder = this.personalFolderTextBox.Text;
 
             Settings.Default.Save();
 
@@ -133,31 +137,69 @@ namespace StockAnalyzerApp.CustomControl
             needRestart |= this.generateBreadthCheckBox.Checked;
         }
 
-        private void browseRootButton_Click(object sender, EventArgs e)
+        private void browseDataButton_Click(object sender, EventArgs e)
         {
-            this.folderBrowserDlg.SelectedPath = this.rootFolderTextBox.Text;
+            this.folderBrowserDlg.SelectedPath = this.dataFolderTextBox.Text;
             if (this.folderBrowserDlg.ShowDialog(this) == DialogResult.OK)
             {
-                Settings.Default.RootFolder = this.folderBrowserDlg.SelectedPath;
-                this.rootFolderTextBox.Text = Settings.Default.RootFolder;
+                Settings.Default.DataFolder = this.folderBrowserDlg.SelectedPath;
+                this.dataFolderTextBox.Text = Settings.Default.DataFolder;
                 needRestart = true;
             }
         }
 
-        private void rootFolderTextBox_TextChanged(object sender, EventArgs e)
+        private void dataFolderTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Directory.Exists(rootFolderTextBox.Text))
+            if (Directory.Exists(dataFolderTextBox.Text))
             {
-                Settings.Default.RootFolder = rootFolderTextBox.Text;
+                Settings.Default.DataFolder = dataFolderTextBox.Text;
+                needRestart = true;
             }
         }
 
-        private void RootFolderTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        private void dataFolderTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!Directory.Exists(rootFolderTextBox.Text))
+            if (!Directory.Exists(dataFolderTextBox.Text))
             {
-                rootFolderTextBox.BackColor = Color.Red;
+                dataFolderTextBox.BackColor = Color.Red;
                 e.Cancel = true;
+            }
+            else
+            {
+                dataFolderTextBox.BackColor = Color.White;
+            }
+        }
+
+        private void personalFolderTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Directory.Exists(personalFolderTextBox.Text))
+            {
+                Settings.Default.PersonalFolder = personalFolderTextBox.Text;
+                needRestart = true;
+            }
+        }
+
+        private void personalFolderTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!Directory.Exists(personalFolderTextBox.Text))
+            {
+                personalFolderTextBox.BackColor = Color.Red;
+                e.Cancel = true;
+            }
+            else
+            {
+                personalFolderTextBox.BackColor = Color.White;
+            }
+        }
+
+        private void browsePersonalButton_Click(object sender, EventArgs e)
+        {
+            this.folderBrowserDlg.SelectedPath = this.personalFolderTextBox.Text;
+            if (this.folderBrowserDlg.ShowDialog(this) == DialogResult.OK)
+            {
+                Settings.Default.PersonalFolder = this.folderBrowserDlg.SelectedPath;
+                this.personalFolderTextBox.Text = Settings.Default.PersonalFolder;
+                needRestart = true;
             }
         }
     }

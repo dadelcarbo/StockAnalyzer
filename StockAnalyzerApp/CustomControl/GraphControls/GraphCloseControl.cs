@@ -1489,7 +1489,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                     position.TrailStop = mouseValuePoint.Y;
-                    Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+                    Portfolio.Serialize(Path.Combine(Settings.Default.DataFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
                     this.ForceRefresh();
                     if (StopChanged != null)
                     {
@@ -2365,7 +2365,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     openTradeViewModel.BarDuration,
                     openTradeViewModel.Theme
                     );
-                    StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+                    StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.DataFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
 
                     this.BackgroundDirty = true;
                     PaintGraph();
@@ -2409,7 +2409,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     tradeViewModel.Fee,
                     tradeViewModel.ExitComment
                     );
-                StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.RootFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
+                StockAnalyzerForm.MainFrame.Portfolio.Serialize(Path.Combine(Settings.Default.DataFolder, PortfolioDataProvider.PORTFOLIO_FOLDER));
             }
             this.BackgroundDirty = true;
             PaintGraph();
@@ -2429,7 +2429,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             //    var date = this.dateSerie[lastMouseIndex];
             //    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
             //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.BUY, qty, value * qty, true));
-            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.DataFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
             //    this.BackgroundDirty = true;
             //    PaintGraph();
@@ -2464,7 +2464,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             //    var date = this.dateSerie[lastMouseIndex];
             //    var id = StockAnalyzerForm.MainFrame.BinckPortfolio.GetNextOperationId();
             //    StockAnalyzerForm.MainFrame.BinckPortfolio.AddOperation(StockOperation.FromSimu(id, date, this.serieName, StockOperation.SELL, qty, -value * qty, true));
-            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //    StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.DataFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
             //    this.BackgroundDirty = true;
             //    PaintGraph();
@@ -2487,7 +2487,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             //    {
 
             //        // StockAnalyzerForm.MainFrame.BinckPortfolio.RemoveOperation(operation);
-            //        StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.RootFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
+            //        StockAnalyzerForm.MainFrame.BinckPortfolio.Save(Path.Combine(Settings.Default.DataFolder, BinckPortfolioDataProvider.PORTFOLIO_FOLDER));
 
             //        this.BackgroundDirty = true;
             //        PaintGraph();

@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses
     {
         public static List<String> TimeFrames = new List<string> { "UserDefined", "Intraday", "Daily", "Weekly", "Monthly" };
 
-        public static string AlertDefFolder => Settings.Default.RootFolder + @"\Alert\AlertDef";
+        public static string AlertDefFolder => Settings.Default.DataFolder + @"\Alert\AlertDef";
 
         private StockAlertConfig(string timeFrame)
         {

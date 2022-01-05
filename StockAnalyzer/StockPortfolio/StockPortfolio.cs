@@ -679,7 +679,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             if (mappings != null)
                 return mappings;
-            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Portfolio");
+            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Portfolio");
             fileName = Path.Combine(fileName, "NameMappings.xml");
             if (File.Exists(fileName))
             {
@@ -700,7 +700,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public static void SaveMappings(List<StockNameMapping> newMappings)
         {
-            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.RootFolder, "Portfolio");
+            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Portfolio");
             fileName = Path.Combine(fileName, "NameMappings.xml");
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {

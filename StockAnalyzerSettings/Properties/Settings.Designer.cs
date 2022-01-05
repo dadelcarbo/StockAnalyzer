@@ -34,19 +34,6 @@ namespace StockAnalyzerSettings.Properties {
                 this["EventFilterMode"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data")]
-        public string InputDataFolder {
-            get {
-                return ((string)(this["InputDataFolder"]));
-            }
-            set {
-                this["InputDataFolder"] = value;
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -146,18 +133,6 @@ namespace StockAnalyzerSettings.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DownloadData {
-            get {
-                return ((bool)(this["DownloadData"]));
-            }
-            set {
-                this["DownloadData"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowEventMarquee {
             get {
                 return ((bool)(this["ShowEventMarquee"]));
@@ -214,31 +189,35 @@ namespace StockAnalyzerSettings.Properties {
                 this["SelectedTheme"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RootFolder {
+        public string DataFolder {
             get {
-                return ((string)(this["RootFolder"]));
+                return ((string)(this["DataFolder"]));
             }
-            set {
-                this["RootFolder"] = value;
+            set
+            {
+                this["DataFolder"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2012-01-01")]
-        public global::System.DateTime DownloadStartDate {
-            get {
-                return ((global::System.DateTime)(this["DownloadStartDate"]));
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PersonalFolder
+        {
+            get
+            {
+                return ((string)(this["PersonalFolder"]));
             }
-            set {
-                this["DownloadStartDate"] = value;
+            set
+            {
+                this["PersonalFolder"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2010")]
@@ -434,30 +413,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("david.carbonel@free.fr")]
-        public string UserEMail {
-            get {
-                return ((string)(this["UserEMail"]));
-            }
-            set {
-                this["UserEMail"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("smtp.free.fr")]
-        public string UserSMTP {
-            get {
-                return ((string)(this["UserSMTP"]));
-            }
-            set {
-                this["UserSMTP"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool SupportShortSelling {
             get {
@@ -489,18 +444,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["PortofolioValue"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ROC(120,1)")]
-        public string MomentumIndicator {
-            get {
-                return ((string)(this["MomentumIndicator"]));
-            }
-            set {
-                this["MomentumIndicator"] = value;
             }
         }
         
@@ -585,6 +528,66 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["ShowBarSmoothing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DownloadData {
+            get {
+                return ((bool)(this["DownloadData"]));
+            }
+            set {
+                this["DownloadData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2015-01-01")]
+        public global::System.DateTime DownloadStartDate {
+            get {
+                return ((global::System.DateTime)(this["DownloadStartDate"]));
+            }
+            set {
+                this["DownloadStartDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserEMail {
+            get {
+                return ((string)(this["UserEMail"]));
+            }
+            set {
+                this["UserEMail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserSMTP {
+            get {
+                return ((string)(this["UserSMTP"]));
+            }
+            set {
+                this["UserSMTP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("16000")]
+        public string PortfolioValue {
+            get {
+                return ((string)(this["PortfolioValue"]));
+            }
+            set {
+                this["PortfolioValue"] = value;
             }
         }
     }

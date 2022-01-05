@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockLogging
             {
                 if (!Debugger.IsAttached)
                 {
-                    string logFolder = Settings.Default.RootFolder + @"\log";
+                    string logFolder = Settings.Default.DataFolder + @"\log";
                     if (Directory.Exists(logFolder))
                     {
                         try

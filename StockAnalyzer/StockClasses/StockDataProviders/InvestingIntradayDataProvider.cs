@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {
             StockLog.Write("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
-            var durationFileName = RootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
+            var durationFileName = DataFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
             if (File.Exists(durationFileName))
             {
                 var values = serie.GetValues(duration);
@@ -52,33 +52,33 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Create data folder if not existing
-            if (!Directory.Exists(RootFolder + ARCHIVE_FOLDER))
+            if (!Directory.Exists(DataFolder + ARCHIVE_FOLDER))
             {
-                Directory.CreateDirectory(RootFolder + ARCHIVE_FOLDER);
+                Directory.CreateDirectory(DataFolder + ARCHIVE_FOLDER);
             }
 
-            if (!Directory.Exists(RootFolder + INTRADAY_FOLDER))
+            if (!Directory.Exists(DataFolder + INTRADAY_FOLDER))
             {
-                Directory.CreateDirectory(RootFolder + INTRADAY_FOLDER);
+                Directory.CreateDirectory(DataFolder + INTRADAY_FOLDER);
             }
 
             // Parse cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, RootFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE_USER);
         }
 
         public override bool SupportsIntradayDownload => true;
 
         public override bool LoadData(StockSerie stockSerie)
         {
-            var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
             }
 
-            var fileName = RootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var fileName = DataFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
             if (File.Exists(fileName))
             {
@@ -119,10 +119,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 NotifyProgress("ForceDownload intraday for " + stockSerie.StockName);
 
                 // Cleanup old files
-                var archiveFileName = RootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
                 if (File.Exists(archiveFileName))
                     File.Delete(archiveFileName);
-                var fileName = RootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var fileName = DataFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
                 if (File.Exists(fileName))
                     File.Delete(fileName);
 
@@ -138,7 +138,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                var fileName = RootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var fileName = DataFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                 if (File.Exists(fileName))
                 {

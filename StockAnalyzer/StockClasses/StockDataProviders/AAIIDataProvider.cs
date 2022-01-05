@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
       public override bool LoadData(StockSerie stockSerie)
       {
          bool res = false;
-         string fileName = RootFolder + BULLBEARRATIO_FILENAME;
+         string fileName = DataFolder + BULLBEARRATIO_FILENAME;
          if (stockSerie.StockName == bullBearLogRatioName)
          {
             stockDictionary[bearBullRatioName].Initialise();
