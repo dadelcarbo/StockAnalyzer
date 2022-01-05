@@ -815,13 +815,11 @@ namespace StockAnalyzerApp
                 string alertString = string.Empty;
 
                 // Download ABC intraday data
-                this.Cursor = Cursors.WaitCursor;
                 (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
                 if (this.currentStockSerie != null && this.currentStockSerie.BelongsToGroup(StockSerie.Groups.PEA))
                 {
                     this.ApplyTheme();
                 }
-                this.Cursor = Cursors.Arrow;
 
                 List<StockSerie> stockList;
                 if (alertConfig.TimeFrame == "Intraday")

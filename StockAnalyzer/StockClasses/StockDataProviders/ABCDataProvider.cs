@@ -1477,13 +1477,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             fileName = Path.Combine(RootFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.ShortName + ".csv");
             if (File.Exists(fileName))
             {
+                var lastArchiveDate = stockSerie.Count == 0 ? DateTime.MinValue : stockSerie.Keys.Last();
                 using (StreamReader sr = new StreamReader(fileName))
                 {
                     while (!sr.EndOfStream)
                     {
                         string[] row = sr.ReadLine().Split(';');
-                        var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), DateTime.ParseExact(row[0], DATEFORMAT, usCulture));
-                        stockSerie.Add(value.DATE, value);
+                        DateTime date = DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                        if (date > lastArchiveDate)
+                        {
+                            var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), date);
+                            stockSerie.Add(value.DATE, value);
+                        }
                     }
                 }
                 result = true;
