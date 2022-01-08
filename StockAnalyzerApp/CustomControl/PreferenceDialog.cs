@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
@@ -28,8 +29,8 @@ namespace StockAnalyzerApp.CustomControl
             this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
             this.alertActiveCheckBox.Checked = Settings.Default.RaiseAlerts;
             this.generateDailyReportCheckBox.Checked = Settings.Default.GenerateDailyReport;
-            this.dataFolderTextBox.Text = Settings.Default.DataFolder;
-            this.personalFolderTextBox.Text = Settings.Default.PersonalFolder;
+            this.dataFolderTextBox.Text = Folders.DataFolder;
+            this.personalFolderTextBox.Text = Folders.PersonalFolder;
             needRestart = false;
         }
 
@@ -51,8 +52,8 @@ namespace StockAnalyzerApp.CustomControl
             Settings.Default.RaiseAlerts = this.alertActiveCheckBox.Checked;
             Settings.Default.GenerateDailyReport = this.generateDailyReportCheckBox.Checked;
 
-            Settings.Default.DataFolder = this.dataFolderTextBox.Text;
-            Settings.Default.PersonalFolder = this.personalFolderTextBox.Text;
+            Folders.DataFolder = this.dataFolderTextBox.Text;
+            Folders.PersonalFolder = this.personalFolderTextBox.Text;
 
             Settings.Default.Save();
 
@@ -142,8 +143,8 @@ namespace StockAnalyzerApp.CustomControl
             this.folderBrowserDlg.SelectedPath = this.dataFolderTextBox.Text;
             if (this.folderBrowserDlg.ShowDialog(this) == DialogResult.OK)
             {
-                Settings.Default.DataFolder = this.folderBrowserDlg.SelectedPath;
-                this.dataFolderTextBox.Text = Settings.Default.DataFolder;
+                Folders.DataFolder = this.folderBrowserDlg.SelectedPath;
+                this.dataFolderTextBox.Text = Folders.DataFolder;
                 needRestart = true;
             }
         }
@@ -152,7 +153,7 @@ namespace StockAnalyzerApp.CustomControl
         {
             if (Directory.Exists(dataFolderTextBox.Text))
             {
-                Settings.Default.DataFolder = dataFolderTextBox.Text;
+                Folders.DataFolder = dataFolderTextBox.Text;
                 needRestart = true;
             }
         }
@@ -174,7 +175,7 @@ namespace StockAnalyzerApp.CustomControl
         {
             if (Directory.Exists(personalFolderTextBox.Text))
             {
-                Settings.Default.PersonalFolder = personalFolderTextBox.Text;
+                Folders.PersonalFolder = personalFolderTextBox.Text;
                 needRestart = true;
             }
         }
@@ -197,8 +198,8 @@ namespace StockAnalyzerApp.CustomControl
             this.folderBrowserDlg.SelectedPath = this.personalFolderTextBox.Text;
             if (this.folderBrowserDlg.ShowDialog(this) == DialogResult.OK)
             {
-                Settings.Default.PersonalFolder = this.folderBrowserDlg.SelectedPath;
-                this.personalFolderTextBox.Text = Settings.Default.PersonalFolder;
+                Folders.PersonalFolder = this.folderBrowserDlg.SelectedPath;
+                this.personalFolderTextBox.Text = Folders.PersonalFolder;
                 needRestart = true;
             }
         }

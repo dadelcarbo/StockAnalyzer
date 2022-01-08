@@ -1,8 +1,10 @@
 ﻿using StockAnalyzer.StockWeb;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
@@ -41,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             this.FileName = fileName;
             isIntraday = fileName.ToLower().Contains("intraday");
-            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Settings.Default.DataFolder + FileName));
+            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Folders.PersonalFolder + FileName));
             this.StockDico = stockDico;
             if (isIntraday)
             {
@@ -98,7 +100,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
         public void Save()
         {
-            InvestingConfigEntry.SaveToFile(this.Entries, Settings.Default.DataFolder + FileName);
+            InvestingConfigEntry.SaveToFile(this.Entries, Path.Combine(Folders.PersonalFolder, FileName));
         }
         public void AddEntry()
         {

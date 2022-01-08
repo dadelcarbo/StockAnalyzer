@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.IO;
 using System.Linq;
@@ -15,8 +16,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\InvestingIntraday";
         static private readonly string CONFIG_FILE = @"\InvestingIntradayDownload.cfg";
         static private readonly string CONFIG_FILE_USER = @"\InvestingIntradayDownload.user.cfg";
-
-        public string UserConfigFileName => CONFIG_FILE_USER;
 
         public override bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {
@@ -64,8 +63,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -317,7 +316,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, this.UserConfigFileName);
+            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, CONFIG_FILE_USER);
             return configDlg.ShowDialog();
         }
 

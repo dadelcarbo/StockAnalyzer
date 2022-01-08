@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,12 +14,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         protected bool needDownload = true;
 
         public const int ARCHIVE_START_YEAR = 2000;
-        public static int LOAD_START_YEAR => StockAnalyzerSettings.Properties.Settings.Default.LoadStartYear;
+        public static int LOAD_START_YEAR => Settings.Default.LoadStartYear;
 
         private static string dataFolder = null;
         public static string DataFolder
         {
-            get => dataFolder ?? (dataFolder = StockAnalyzerSettings.Properties.Settings.Default.DataFolder);
+            get => dataFolder ?? (dataFolder = Folders.DataFolder);
             set
             {
                 dataFolder = value;
@@ -26,11 +28,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public static bool IntradayDownloadSuspended { get; set; } = false;
 
         #region CONSTANTS
-        static protected string DAILY_SUBFOLDER = @"\data\daily";
-        static protected string INTRADAY_SUBFOLDER = @"\data\intraday";
-        static protected string WEEKLY_SUBFOLDER = @"\data\weekly";
-        static protected string DAILY_ARCHIVE_SUBFOLDER = @"\data\archive\daily";
-        static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"\data\archive\intraday";
+        static protected string DAILY_SUBFOLDER = @"\daily";
+        static protected string INTRADAY_SUBFOLDER = @"\intraday";
+        static protected string WEEKLY_SUBFOLDER = @"\weekly";
+        static protected string DAILY_ARCHIVE_SUBFOLDER = @"\archive\daily";
+        static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"\archive\intraday";
 
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
@@ -42,10 +44,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             // Read archive first
             string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            string fullFileName = DataFolder + "\\data\\archive\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            string fullFileName = DataFolder + DAILY_ARCHIVE_SUBFOLDER + stockSerie.DataProvider.ToString() + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
-            fullFileName = DataFolder + "\\data\\daily\\" + stockSerie.DataProvider.ToString() + "\\" + fileName;
+            fullFileName = DataFolder + DAILY_SUBFOLDER + stockSerie.DataProvider.ToString() + "\\" + fileName;
             return ParseCSVFile(stockSerie, fullFileName) || res;
         }
         public virtual bool ForceDownloadData(StockSerie stockSerie)
@@ -110,9 +112,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockDataProvider.Breadth:
                     dataProvider = new BreadthDataProvider();
                     break;
-                case StockDataProvider.AAII:
-                    dataProvider = new AAIIDataProvider();
-                    break;
                 case StockDataProvider.Investing:
                     dataProvider = new InvestingDataProvider();
                     break;
@@ -121,8 +120,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockDataProvider.SocGenIntraday:
                     dataProvider = new SocGenIntradayDataProvider();
-                    break;
-                case StockDataProvider.Test:
                     break;
                 default:
                     break;
@@ -198,13 +195,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (configDialogs == null)
             {
                 configDialogs = new List<IConfigDialog>();
-                //configDialogs.Add((IConfigDialog)new YahooDataProvider());
-                //configDialogs.Add((IConfigDialog)new YahooIntradayDataProvider());
-                //configDialogs.Add((IConfigDialog)new GoogleDataProvider());
-                //configDialogs.Add((IConfigDialog)new GoogleIntradayDataProvider());
-                configDialogs.Add((IConfigDialog)new ABCDataProvider());
-                configDialogs.Add((IConfigDialog)new InvestingIntradayDataProvider());
-                configDialogs.Add((IConfigDialog)new InvestingDataProvider());
+                configDialogs.Add(new ABCDataProvider());
+                configDialogs.Add(new InvestingIntradayDataProvider());
+                configDialogs.Add(new InvestingDataProvider());
             }
             return configDialogs;
         }

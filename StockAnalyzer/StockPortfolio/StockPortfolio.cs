@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -63,9 +64,9 @@ namespace StockAnalyzer.StockPortfolio
         public bool IsSimu { get; set; }
 
         #region PERSISTENCY
-        public void Serialize(string folder)
+        public void Serialize()
         {
-            string filepath = Path.Combine(folder, this.Name + PORTFOLIO_FILE_EXT);
+            string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
             using (FileStream fs = new FileStream(filepath, FileMode.Create))
             {
                 System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
@@ -679,8 +680,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             if (mappings != null)
                 return mappings;
-            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Portfolio");
-            fileName = Path.Combine(fileName, "NameMappings.xml");
+            var fileName = Path.Combine(Folders.Portfolio, "NameMappings.xml");
             if (File.Exists(fileName))
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Open))
@@ -700,8 +700,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public static void SaveMappings(List<StockNameMapping> newMappings)
         {
-            string fileName = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Portfolio");
-            fileName = Path.Combine(fileName, "NameMappings.xml");
+            var fileName = Path.Combine(Folders.Portfolio, "NameMappings.xml");
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
                 var settings = new System.Xml.XmlWriterSettings

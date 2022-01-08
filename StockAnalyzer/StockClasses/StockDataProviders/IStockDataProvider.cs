@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         SocGenIntraday,
         Portfolio,
         Generated,
-        AAII,
-        Test,
         Replay,
         Breadth,
         Investing

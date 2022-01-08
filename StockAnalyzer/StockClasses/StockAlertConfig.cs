@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml.Serialization;
-using StockAnalyzerSettings.Properties;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses
     {
         public static List<String> TimeFrames = new List<string> { "UserDefined", "Intraday", "Daily", "Weekly", "Monthly" };
 
-        public static string AlertDefFolder => Settings.Default.DataFolder + @"\Alert\AlertDef";
+        public static string AlertDefFolder => Folders.Alert + @"\AlertDef";
 
         private StockAlertConfig(string timeFrame)
         {

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -123,14 +124,12 @@ namespace StockAnalyzer.StockClasses
         private StockDividend dividend;
 
         public StockDividend Dividend => dividend ?? (dividend = new StockDividend(this));
-
-        private static string AGENDA_SUBFOLDER = @"\data\agenda";
         private StockAgenda LoadAgenda()
         {
             StockAgenda stockAgenda = null;
             if (this.BelongsToGroup(Groups.CACALL))
             {
-                string path = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + AGENDA_SUBFOLDER;
+                string path = Folders.AgendaFolder;
                 string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
                 if (File.Exists(fileName))
                 {
@@ -149,7 +148,7 @@ namespace StockAnalyzer.StockClasses
         public void SaveAgenda()
         {
             if (this.Agenda == null) return;
-            string path = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + AGENDA_SUBFOLDER;
+            string path = Folders.AgendaFolder;
             string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
@@ -3170,7 +3169,7 @@ namespace StockAnalyzer.StockClasses
             if (dailyValueList.Count == 0) return new List<StockDailyValue>();
 
             // Load cache if exists
-            //StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, this, timeSpan);
+            //StockDataProviderBase.LoadIntradayDurationArchive(StockAnalyzerSettings.Properties.Folders, this, timeSpan);
 
             switch (timeSpan.Duration)
             {

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class PortfolioDataProvider : StockDataProviderBase
     {
-        public const string PORTFOLIO_FOLDER = "portfolio";
-
         public override bool SupportsIntradayDownload
         {
             get { return false; }
@@ -16,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            string folder = Path.Combine(DataFolder, PORTFOLIO_FOLDER);
+            string folder = Folders.Portfolio;
             try
             {
                 if (!Directory.Exists(folder))

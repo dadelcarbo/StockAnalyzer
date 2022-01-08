@@ -2,6 +2,7 @@
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,8 +66,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
         }
 
         public override bool SupportsIntradayDownload => true;

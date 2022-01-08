@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
-        static private string AGENDA_SUBFOLDER = @"\data\agenda";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         static private string CONFIG_FILE = @"\EuronextDownload.cfg";
         static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
@@ -300,13 +300,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
 
             // Load Config files
-            string fileName = DataFolder + CONFIG_FILE;
+            string fileName = Folders.PersonalFolder + CONFIG_FILE;
             if (!File.Exists(fileName))
             {
                 File.WriteAllText(fileName, defaultConfigFile);
             }
             InitFromFile(download, fileName);
-            fileName = DataFolder + CONFIG_FILE_USER;
+            fileName = Folders.PersonalFolder + CONFIG_FILE_USER;
             InitFromFile(download, fileName);
             foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
             {
@@ -364,9 +364,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public static void CreateDirectories()
         {
-            if (!Directory.Exists(DataFolder + AGENDA_SUBFOLDER))
+            if (!Directory.Exists(Folders.AgendaFolder))
             {
-                Directory.CreateDirectory(DataFolder + AGENDA_SUBFOLDER);
+                Directory.CreateDirectory(Folders.AgendaFolder);
             }
             if (!Directory.Exists(DataFolder + ABC_DAILY_FOLDER))
             {
@@ -1193,7 +1193,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 cac40List = new List<string>();
 
                 // parse CAC40 list
-                string fileName = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + @"\" +
+                string fileName = DataFolder + @"\" +
                                   ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC40.txt";
                 if (File.Exists(fileName))
                 {
@@ -1232,8 +1232,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 sbf120List = new List<string>();
 
                 // parse SBF120 list
-                string fileName = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + @"\" +
-                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\SBF120.txt";
+                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\SBF120.txt";
                 if (File.Exists(fileName))
                 {
                     using (StreamReader sr = new StreamReader(fileName, true))
@@ -1263,8 +1262,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 srdList = new List<string>();
 
                 // parse SRD list
-                string fileName = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + @"\" +
-                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD.txt";
+                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD.txt";
                 if (File.Exists(fileName))
                 {
                     using (StreamReader sr = new StreamReader(fileName, true))
@@ -1301,7 +1299,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 srdloList = new List<string>();
 
                 // parse SRD_LO list
-                string fileName = StockAnalyzerSettings.Properties.Settings.Default.DataFolder + @"\" +
+                string fileName = DataFolder + @"\" +
                                   ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD_LO.txt";
                 if (File.Exists(fileName))
                 {

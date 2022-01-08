@@ -3,16 +3,15 @@ using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -218,7 +217,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                             StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
                             StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
 
-                            using (var sr = new StreamWriter(Path.Combine(Settings.Default.DataFolder, "AgentReport.tsv"), true))
+                            using (var sr = new StreamWriter(Path.Combine(Folders.PersonalFolder, "AgentReport.tsv"), true))
                             {
                                 sr.WriteLine(rpt);
                             }

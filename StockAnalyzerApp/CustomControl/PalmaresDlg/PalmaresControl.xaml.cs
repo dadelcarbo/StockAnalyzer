@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
@@ -171,8 +172,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                                 currentCulture.DateTimeFormat.CalendarWeekRule,
                                 currentCulture.DateTimeFormat.FirstDayOfWeek);
 
-                string exportFile = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder,
-                    $@"CommentReport\Palmares_{ViewModel.Group}_{ViewModel.ToDate.Year}_{weekNo}.xlsx");
+                string exportFile = Path.Combine(Folders.Palmares, $@"Palmares_{ViewModel.Group}_{ViewModel.ToDate.Year}_{weekNo}.xlsx");
 
                 using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
@@ -346,7 +346,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             saveFileDialog.Filter = "Ultimate Chartist Palmares settings (*.xml)|*.xml";
             saveFileDialog.CheckFileExists = false;
             saveFileDialog.CheckPathExists = true;
-            saveFileDialog.InitialDirectory = Path.Combine(Settings.Default.DataFolder, "Palmares");
+            saveFileDialog.InitialDirectory = Folders.Palmares;
             if (saveFileDialog.ShowDialog() != true)
                 return;
 
@@ -385,8 +385,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         }
         private void LoadSettings()
         {
-            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Palmares");
-            string fileName = Path.Combine(path, this.ViewModel.Setting + ".xml");
+            string fileName = Path.Combine(Folders.Palmares, this.ViewModel.Setting + ".xml");
             if (File.Exists(fileName))
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Open))

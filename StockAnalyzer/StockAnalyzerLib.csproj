@@ -195,7 +195,6 @@
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\StockBarDuration.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AAIIDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingIntradayDataProvider.cs" />

@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -158,7 +159,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.ToDate = DateTime.Now;
             this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
 
-            string path = Path.Combine(StockAnalyzerSettings.Properties.Settings.Default.DataFolder, "Palmares");
+            string path = Folders.Palmares;
             this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
 

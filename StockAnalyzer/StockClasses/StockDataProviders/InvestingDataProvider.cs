@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class InvestingDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string FOLDER = @"\data\daily\Investing";
-        static private string ARCHIVE_FOLDER = @"\data\archive\daily\Investing";
+        static private string FOLDER = @"\daily\Investing";
+        static private string ARCHIVE_FOLDER = @"\archive\daily\Investing";
 
         static private string CONFIG_FILE = @"\InvestingDownload.cfg";
         static private string CONFIG_FILE_USER = @"\InvestingDownload.user.cfg";
-        public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -33,8 +33,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             this.needDownload = download;
 
             // Parse InvestingDownload.cfg file
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, DataFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
+            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
         }
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
@@ -265,7 +265,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, this.UserConfigFileName);
+            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, CONFIG_FILE_USER);
             return configDlg.ShowDialog();
         }
 

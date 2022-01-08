@@ -1,4 +1,4 @@
-﻿using StockAnalyzerSettings.Properties;
+﻿using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlertLog : INotifyPropertyChanged
     {
-        public static string AlertLogFolder => Settings.Default.DataFolder + @"\Alert\AlertLog";
+        public static string AlertLogFolder => Folders.Alert + @"\AlertLog";
 
         private DateTime lastRefreshDate;
 

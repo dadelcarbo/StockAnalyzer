@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,6 @@ namespace StockAnalyzer.StockClasses
 
     public class StockDividend
     {
-        public static string DIVIDEND_SUBFOLDER = @"\data\dividend";
         public StockDividend(StockSerie stockSerie)
         {
             this.Entries = new List<StockDividendEntry>();
@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses
             {
                 shortName += ".PA";
             }
-            var filePath = Path.Combine(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(Folders.DividendFolder, shortName + ".csv");
             if (File.Exists(filePath))
             {
                 this.LoadFromFile(filePath);
@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            var filePath = Path.Combine(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv");
+            var filePath = Path.Combine(Folders.DividendFolder, shortName + ".csv");
             if (!force && File.Exists(filePath) && File.GetLastWriteTimeUtc(filePath) > DateTime.Today.AddMonths(-1))
                 return false;
 
@@ -98,7 +98,7 @@ namespace StockAnalyzer.StockClasses
             var webHelper = new StockWebHelper();
 
             this.DownloadDate = DateTime.Today;
-            if (webHelper.DownloadFile(StockDataProviderBase.DataFolder + DIVIDEND_SUBFOLDER, shortName + ".csv", url))
+            if (webHelper.DownloadFile(Folders.DividendFolder, shortName + ".csv", url))
             {
                 this.LoadFromFile(filePath);
                 return true;

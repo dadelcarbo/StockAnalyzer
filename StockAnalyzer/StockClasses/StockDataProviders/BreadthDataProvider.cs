@@ -7,8 +7,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class BreadthDataProvider : StockDataProviderBase
     {
-        static private string FOLDER = @"\data\daily\Breadth";
-        static private string ARCHIVE_FOLDER = @"\data\archive\daily\Breadth";
+        static private string FOLDER = @"\daily\Breadth";
+        static private string ARCHIVE_FOLDER = @"\archive\daily\Breadth";
 
         public static bool NeedGenerate { get; set; }
 

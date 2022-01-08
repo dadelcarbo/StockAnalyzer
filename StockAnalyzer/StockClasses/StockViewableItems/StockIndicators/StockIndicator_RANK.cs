@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -63,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             var indicatorName = this.parameters[0].ToString().Replace("_", ",");
 
-            var destinationFolder =Settings.Default.DataFolder + @"\data\Rank";
+            var destinationFolder = Folders.DataFolder + @"\Rank";
 
             string fileName = Path.Combine(destinationFolder, $"{stockSerie.StockGroup}_{indicatorName}_{stockSerie.BarDuration}.txt");
             if (!File.Exists(fileName))

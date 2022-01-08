@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
@@ -41,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
          this.groupComboBox.SelectedItem = userGroups[0];
 
          // Init personal list view
-         string fileName = Settings.Default.DataFolder + this.dataProvider.UserConfigFileName;
+         string fileName = Folders.PersonalFolder + this.dataProvider.UserConfigFileName;
          if (File.Exists(fileName))
          {
             using (StreamReader sr = new StreamReader(fileName, true))
@@ -120,7 +121,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
       }
       private void okButton_Click(object sender, EventArgs e)
       {
-         string fileName = Settings.Default.DataFolder + this.dataProvider.UserConfigFileName;
+         string fileName = Folders.PersonalFolder + this.dataProvider.UserConfigFileName;
          using (StreamWriter sw = new StreamWriter(fileName, false))
          {
             sw.WriteLine("# Personal Euronext download config file");

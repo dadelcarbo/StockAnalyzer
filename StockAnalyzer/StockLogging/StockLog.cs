@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockLogging
@@ -57,7 +58,7 @@ namespace StockAnalyzer.StockLogging
             {
                 if (!Debugger.IsAttached)
                 {
-                    string logFolder = Settings.Default.DataFolder + @"\log";
+                    string logFolder = Folders.Log;
                     if (Directory.Exists(logFolder))
                     {
                         try

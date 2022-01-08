@@ -18,9 +18,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.addAlertMenu = new System.Windows.Forms.MenuItem();
             this.buyMenu = new System.Windows.Forms.MenuItem();
             this.sellMenu = new System.Windows.Forms.MenuItem();
-            this.shortMenu = new System.Windows.Forms.MenuItem();
-            this.coverMenu = new System.Windows.Forms.MenuItem();
-            this.deleteOperationMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
             this.openInPEAPerfMenu = new MenuItem();
@@ -37,9 +34,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator1,
             this.buyMenu,
             this.sellMenu,
-            this.shortMenu,
-            this.coverMenu,
-            this.deleteOperationMenu,
             this.separator2,
             this.agendaMenu,
             this.separator3,
@@ -71,61 +65,43 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.sellMenu.Text = "Sell";
             this.sellMenu.Click += new System.EventHandler(this.sellMenu_Click);
             // 
-            // shortMenu
-            // 
-            this.shortMenu.Index = 4;
-            this.shortMenu.Text = "Short";
-            this.shortMenu.Click += new System.EventHandler(this.shortMenu_Click);
-            // 
-            // coverMenu
-            // 
-            this.coverMenu.Index = 5;
-            this.coverMenu.Text = "Cover";
-            this.coverMenu.Click += new System.EventHandler(this.coverMenu_Click);
-            // 
-            // deleteOperationMenu
-            // 
-            this.deleteOperationMenu.Index = 6;
-            this.deleteOperationMenu.Text = "Delete";
-            this.deleteOperationMenu.Click += new System.EventHandler(this.deleteOperationMenu_Click);
-            // 
             // separator2
             // 
-            this.separator2.Index = 7;
+            this.separator2.Index = 4;
             this.separator2.Text = "-";
             // 
             // agendaMenu
             // 
-            this.agendaMenu.Index = 8;
+            this.agendaMenu.Index = 5;
             this.agendaMenu.Text = "Agenda";
             this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
             // 
             // separator3
             // 
-            this.separator3.Index = 9;
+            this.separator3.Index = 6;
             this.separator3.Text = "-";
             // 
             // openInABCMenu
             // 
-            this.openInABCMenu.Index = 10;
+            this.openInABCMenu.Index = 7;
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
             // openInPEAPerf
             // 
-            this.openInPEAPerfMenu.Index = 11;
+            this.openInPEAPerfMenu.Index = 8;
             this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
             this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
             // 
             // openInZBMenu
             // 
-            this.openInZBMenu.Index = 12;
+            this.openInZBMenu.Index = 9;
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
             // openInSocGenMenu
             // 
-            this.openInSocGenMenu.Index = 13;
+            this.openInSocGenMenu.Index = 10;
             this.openInSocGenMenu.Text = "Open in SogGen Products";
             this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
             // 
@@ -140,9 +116,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem addAlertMenu;
         private MenuItem buyMenu;
         private MenuItem sellMenu;
-        private MenuItem shortMenu;
-        private MenuItem coverMenu;
-        private MenuItem deleteOperationMenu;
         private MenuItem separator1;
         private MenuItem separator2;
         private MenuItem separator3;

@@ -19,11 +19,6 @@ namespace StockAnalyzer.StockWeb
     {
         public delegate void DownloadingStockEventHandler(string text);
 
-
-        static protected string DAILY_SUBFOLDER = @"\data\daily";
-        static protected string WEEKLY_SUBFOLDER = @"\data\weekly";
-        static protected string DAILY_ARCHIVE_SUBFOLDER = @"\data\archive\daily";
-
         public StockWebHelper()
         {
         }
