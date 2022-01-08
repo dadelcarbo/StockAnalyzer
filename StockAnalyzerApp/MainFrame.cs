@@ -271,17 +271,6 @@ namespace StockAnalyzerApp
 
         protected override void OnShown(EventArgs e)
         {
-            // Validate preferences and local repository
-            while (string.IsNullOrWhiteSpace(Settings.Default.UserId))
-            {
-                Settings.Default.UserId = Environment.UserName;
-                PreferenceDialog prefDlg = new PreferenceDialog();
-                DialogResult res = prefDlg.ShowDialog();
-                if (res == DialogResult.Cancel)
-                {
-                    Environment.Exit(0);
-                }
-            }
             this.UpdateBarSmoothingVisibility();
 
             base.OnActivated(e);
@@ -315,22 +304,24 @@ namespace StockAnalyzerApp
 
             // This is the first time the user runs the application.
             string dataFolder = Folders.DataFolder;
-            if (string.IsNullOrEmpty(dataFolder))
+            if (string.IsNullOrEmpty(dataFolder) || !Directory.Exists(dataFolder) || string.IsNullOrEmpty(Folders.PersonalFolder) || !Directory.Exists(dataFolder))
             {
                 dataFolder = Folders.DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\data");
                 Folders.PersonalFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "UltimateChartist");
-            }
-            if (!Directory.Exists(dataFolder))
-            {
-                Directory.CreateDirectory(dataFolder);
-                Settings.Default.DownloadData = true;
+
+                Settings.Default.UserId = Environment.UserName;
+                PreferenceDialog prefDlg = new PreferenceDialog();
+                DialogResult res = prefDlg.ShowDialog();
+                if (res == DialogResult.Cancel)
+                {
+                    Environment.Exit(0);
+                }
             }
 
             // Root folder sanity check
-            if (!Directory.Exists(Folders.PersonalFolder))
+            if (!Directory.Exists(Folders.PersonalFolder) || !Directory.Exists(dataFolder))
             {
-                MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle,
-                    MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 Environment.Exit(0);
             }
 
