@@ -52,7 +52,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             // Calculate ATR Bands
-            var emaIndicator = stockSerie.GetIndicator(this.parameters[3] + "(" + (int)this.parameters[0] + ")").Series[0];
+            var period = (int)this.parameters[0];
+            var emaIndicator = stockSerie.GetIndicator(this.parameters[3] + "(" + period + ")").Series[0];
 
             var upDev = (float)parameters[1];
             var downDev = (float)parameters[2];
@@ -74,47 +75,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
 
-            bool waitingForBearSignal = false;
-            bool waitingForBullSignal = false;
-
-            for (int i = 1; i < upperBB.Count; i++)
+            for (int i = period; i < upperBB.Count; i++)
             {
-                if (waitingForBearSignal && highSerie[i - 1] >= highSerie[i] && closeSerie[i - 1] >= closeSerie[i])
+                if (closeSerie[i - 1] < upperBB[i - 1] && closeSerie[i] > upperBB[i])
                 {
-                    // BearishSignal
-                    this.eventSeries[3][i] = true;
-                    waitingForBearSignal = false;
-                }
-                if (highSerie[i] >= upperBB[i])
-                {
-                    waitingForBearSignal = true;
+                    // BrokenUp
                     this.eventSeries[0][i] = true;
                 }
-                if (waitingForBullSignal && lowSerie[i - 1] <= lowSerie[i] && closeSerie[i - 1] <= closeSerie[i])
+                else if (closeSerie[i - 1] > lowerBB[i - 1] && closeSerie[i] < lowerBB[i])
                 {
-                    // BullishSignal
-                    this.eventSeries[2][i] = true;
-                    waitingForBullSignal = false;
-                }
-                if (lowSerie[i] <= lowerBB[i])
-                {
-                    waitingForBullSignal = true;
-                    this.eventSeries[1][i] = lowSerie[i] <= lowerBB[i];
+                    // BrokenDown
+                    this.eventSeries[1][i] = true;
                 }
             }
         }
-        static string[] eventNames = new string[] { "UpBandOvershot", "DownBandOvershot", "BullishSignal", "BearishSignal" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
-        static readonly bool[] isEvent = new bool[] { false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        static string[] eventNames = new string[] { "BrokenUp", "BrokenDown" };
+        public override string[] EventNames => eventNames;
+        static readonly bool[] isEvent = new bool[] { true, true };
+        public override bool[] IsEvent => isEvent;
     }
 }

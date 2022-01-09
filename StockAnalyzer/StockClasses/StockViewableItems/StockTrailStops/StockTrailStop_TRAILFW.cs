@@ -40,10 +40,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie highestSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             FloatSerie emaSerie = stockSerie.GetIndicator($"EMA({period})").Series[0];
             FloatSerie natrSerie = stockSerie.GetIndicator("NATR(14)").Series[0];
+            FloatSerie oscSerie = stockSerie.GetIndicator("OSC(12,26,True,EMA)").Series[0];
+            FloatSerie oscSignalSerie = oscSerie.CalculateEMA(9);
 
             bool holding = false;
             float trail = float.NaN;
-            for (int i = 1; i < stockSerie.Count; i++)
+            for (int i = period; i < stockSerie.Count; i++)
             {
                 if (holding)
                 {
@@ -54,8 +56,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-                        if (lowSerie[i] < emaSerie[i])
-                            trail = Math.Max(trail, lowSerie[i]);
+
+                        trail = emaSerie[i];
+                        //if (oscSerie[i - 1] > oscSignalSerie[i - 1] && oscSerie[i] < oscSignalSerie[i])
+                        //if (oscSerie[i - 2] > oscSerie[i - 1] && oscSerie[i - 1] < oscSerie[i])
+                        //    trail = Math.Max(trail, Math.Min(lowSerie[i], lowSerie[i - 1]));
                     }
                 }
                 else
@@ -64,9 +69,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         continue;
                     if (highestSerie[i] < period)
                         continue;
-                    if (closeSerie[i] * volumeSerie[i] < 200000)
+                    if (closeSerie[i] * volumeSerie[i] < 1000000)
                         continue;
-                    if (volumeSerie[i] < volumeSerie[i - 1])
+                    if (volumeSerie[i] < volumeSerie[i - 1] * 1.25f)
                         continue;
                     if (variationSerie[i] < 0.04f || variationSerie[i] > 0.2f)
                         continue;
