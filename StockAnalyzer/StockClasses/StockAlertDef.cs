@@ -3,6 +3,12 @@ using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses
 {
+    public enum AlertType
+    {
+        Group,
+        Stock,
+        Price
+    }
     public class StockAlertDef
     {
         public StockAlertDef()
@@ -11,6 +17,8 @@ namespace StockAnalyzer.StockClasses
             this.CreationDate = DateTime.MinValue;
         }
 
+        public int Id { get; set; }
+        public AlertType Type { get; set; }
         public string Theme { get; set; }
         public string Title { get; set; }
         public Groups Group { get; set; }

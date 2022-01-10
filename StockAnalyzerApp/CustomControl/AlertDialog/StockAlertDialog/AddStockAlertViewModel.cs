@@ -1,62 +1,174 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
     public class AddStockAlertViewModel : NotifyPropertyChangedBase
     {
-        private string indicatorName;
-
         public AddStockAlertViewModel()
         {
             this.BrokenUp = true;
+            this.alertType = AlertType.Group;
+            this.alertDefs = StockAlertConfig.AlertConfigs.SelectMany(l => l.AlertDefs);
         }
 
-        public string Group { get; set; }
-        public string StockName { get; set; }
         public StockBarDuration BarDuration { get; set; }
 
-        public string IndicatorName
+        public string StockName { get; set; }
+        public StockSerie.Groups Group { get; set; }
+        public string Theme { get; set; }
+        public IList<string> Themes { get; set; }
+        public IEnumerable<string> IndicatorNames { get; set; }
+
+        #region Trigger
+        private string triggerName;
+        public string TriggerName
         {
-            get => indicatorName;
+            get => triggerName;
             set
             {
-                if (indicatorName != value)
+                if (triggerName != value)
                 {
-                    indicatorName = value;
-                    var viewableSeries = StockViewableItemsManager.GetViewableItem(this.indicatorName);
+                    triggerName = value;
+                    if (!string.IsNullOrEmpty(triggerName))
+                    {
+                        var viewableSeries = StockViewableItemsManager.GetViewableItem(this.triggerName);
 
-                    this.Events = (viewableSeries as IStockEvent).EventNames;
-                    this.Event = this.Events?[0];
-
-                    OnPropertyChanged("Events");
-                    OnPropertyChanged("IndicatorName");
+                        this.TriggerEvents = (viewableSeries as IStockEvent).EventNames;
+                        this.TriggerEvent = this.TriggerEvents?[0];
+                    }
+                    else
+                    {
+                        this.TriggerEvents = null;
+                        this.TriggerEvent = null;
+                    }
+                    OnPropertyChanged("TriggerEvents");
+                    OnPropertyChanged("TriggerName");
                 }
             }
         }
-        public IList<string> IndicatorNames { get; set; }
 
-        public string[] Events { get; set; }
+        public string[] TriggerEvents { get; set; }
 
-        private string eventName;
+        private string triggerEvent;
 
-        public string Event
+        public string TriggerEvent
         {
-            get { return eventName; }
+            get { return triggerEvent; }
             set
             {
-                if (value != eventName)
+                if (value != triggerEvent)
                 {
-                    eventName = value;
-                    OnPropertyChanged("Event");
+                    triggerEvent = value;
+                    OnPropertyChanged("TriggerEvent");
                 }
             }
         }
+        #endregion
+
+        #region Filter
+        private string filterName;
+        public string FilterName
+        {
+            get => filterName;
+            set
+            {
+                if (filterName != value)
+                {
+                    filterName = value;
+                    if (!string.IsNullOrEmpty(filterName))
+                    {
+                        var viewableSeries = StockViewableItemsManager.GetViewableItem(this.filterName);
+
+                        this.FilterEvents = (viewableSeries as IStockEvent).EventNames;
+                        this.FilterEvent = this.FilterEvents?[0];
+                    }
+                    else
+                    {
+                        this.FilterEvents = null;
+                        this.FilterEvent = null;
+                    }
+                    OnPropertyChanged("FilterEvents");
+                    OnPropertyChanged("FilterName");
+                }
+            }
+        }
+
+        public string[] FilterEvents { get; set; }
+
+        private string filterEvent;
+
+        public string FilterEvent
+        {
+            get { return filterEvent; }
+            set
+            {
+                if (value != filterEvent)
+                {
+                    filterEvent = value;
+                    OnPropertyChanged("FilterEvent");
+                }
+            }
+        }
+        #endregion
 
         public float Price { get; set; }
         public bool BrokenUp { get; set; }
 
+        private IEnumerable<StockAlertDef> alertDefs;
+        public IEnumerable<StockAlertDef> AlertDefs => alertDefs?.Where(a => a.Type == this.AlertType);
+
+        private AlertType alertType;
+        public AlertType AlertType
+        {
+            get => alertType;
+            set
+            {
+                if (alertType != value)
+                {
+                    alertType = value;
+                    OnPropertyChanged("AlertDefs");
+                }
+            }
+        }
+
+        internal void CreateAlert(AlertType alertType)
+        {
+            var alertDef = new StockAlertDef()
+            {
+                BarDuration = this.BarDuration,
+                CreationDate = DateTime.Now
+            };
+            string[] fields;
+            switch (alertType)
+            {
+                case AlertType.Group:
+                    alertDef.Group = this.Group;
+                    alertDef.BarDuration = this.BarDuration;
+                    fields = this.TriggerName.Split('|');
+                    alertDef.IndicatorType = fields[0];
+                    alertDef.IndicatorName = fields[1];
+                    alertDef.EventName = this.TriggerEvent;
+                    break;
+                case AlertType.Stock:
+                    fields = this.TriggerName.Split('|');
+                    alertDef.IndicatorType = fields[0];
+                    alertDef.IndicatorName = fields[1];
+                    alertDef.EventName = this.TriggerEvent;
+                    alertDef.StockName = this.StockName;
+                    break;
+                case AlertType.Price:
+                    alertDef.PriceTrigger = this.Price;
+                    alertDef.TriggerBrokenUp = this.BrokenUp;
+                    break;
+            }
+        }
     }
 }

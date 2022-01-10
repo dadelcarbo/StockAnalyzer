@@ -10,39 +10,22 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
     /// </summary>
     public partial class AddStockAlert : UserControl
     {
+        AddStockAlertViewModel ViewModel;
         AddStockAlertDlg ParentDlg;
-        public AddStockAlert(AddStockAlertDlg parent)
+        public AddStockAlert(AddStockAlertDlg parent, AddStockAlertViewModel viewModel)
         {
-            InitializeComponent();
             this.ParentDlg = parent;
+            this.ViewModel = viewModel;
+            InitializeComponent();
+            this.DataContext = viewModel;
         }
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = (AddStockAlertViewModel)this.DataContext;
-            var alertDef = new StockAlertDef()
+            var tab = (TabItem)this.tabControl.SelectedItem;
+            if (tab.Tag != null)
             {
-                StockName = viewModel.StockName,
-                BarDuration = viewModel.BarDuration,
-                CreationDate = DateTime.Now
-            };
-            switch (this.tabControl.SelectedIndex)
-            {
-                case 0:
-                    // Create StockAlert from Graph Indicators
-                    var fields = viewModel.IndicatorName.Split('|');
-                    alertDef.IndicatorType = fields[0];
-                    alertDef.IndicatorName = fields[1];
-                    alertDef.EventName = viewModel.Event;
-                    break;
-                case 1:
-                    alertDef.PriceTrigger = viewModel.Price;
-                    alertDef.TriggerBrokenUp = viewModel.BrokenUp;
-                    break;
-                case 2:
-                    break;
+                ViewModel.CreateAlert((AlertType)tab.Tag);
             }
-            var alertConfig = StockAlertConfig.GetConfig("UserDefined");
-            alertConfig.AlertDefs.Add(alertDef);
             StockAlertConfig.SaveConfig("UserDefined");
             this.ParentDlg.Ok();
         }
@@ -50,6 +33,16 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.ParentDlg.Cancel();
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ViewModel == null) return;
+
+            var tabItem = this.tabControl.SelectedItem as TabItem;
+            if (tabItem == null) return;
+
+            this.ViewModel.AlertType = (AlertType)tabItem.Tag;
         }
     }
 }

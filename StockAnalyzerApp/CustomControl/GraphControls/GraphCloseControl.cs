@@ -2301,18 +2301,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             var viewModel = new AddStockAlertViewModel()
             {
-                Group = StockAnalyzerForm.MainFrame.Group.ToString(),
+                Group = StockAnalyzerForm.MainFrame.Group,
                 StockName = this.serie.StockName,
                 BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
-                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme()
+                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
             };
-            viewModel.IndicatorName = viewModel.IndicatorNames?.FirstOrDefault();
+            viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
 
             var addAlertDlg = new AddStockAlertDlg(viewModel);
-            if (addAlertDlg.ShowDialog() == DialogResult.OK)
-            {
-
-            }
+            addAlertDlg.ShowDialog();
         }
         void buyMenu_Click(object sender, System.EventArgs e)
         {
