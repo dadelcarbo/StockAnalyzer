@@ -992,7 +992,9 @@
     <Content Include="Resources\AddSemiLine.bmp" />
     <Content Include="Resources\CutLeft.PNG" />
     <None Include="Resources\Decorator.png" />
-    <None Include="Resources\DeleteTheme.png" />
+    <Content Include="Resources\DeleteTheme.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\CupHandle.png" />
     <Content Include="Resources\excel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

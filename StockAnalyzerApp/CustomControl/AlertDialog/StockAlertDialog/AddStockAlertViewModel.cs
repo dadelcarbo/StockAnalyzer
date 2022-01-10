@@ -1,12 +1,12 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
@@ -16,15 +16,51 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
-            this.alertDefs = StockAlertConfig.AlertConfigs.SelectMany(l => l.AlertDefs);
+            this.allAlertDefs = StockAlertConfig.GetConfig("UserDefined").AlertDefs;
+            this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
+            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            if (this.Theme.Contains("*"))
+                this.Theme = this.Themes.FirstOrDefault();
+        }
+
+        internal void Init(StockAlertDef alertDef)
+        {
+            this.AlertId = alertDef.Id;
+            this.BarDuration = alertDef.BarDuration;
+            this.Theme = alertDef.Theme;
+            switch (this.alertType)
+            {
+                case AlertType.Group:
+                    this.Group = alertDef.Group;
+                    this.TriggerName = alertDef.IndicatorFullName;
+                    this.TriggerEvent = alertDef.EventName;
+                    this.FilterName = alertDef.FilterFullName;
+                    this.FilterEvent = alertDef.FilterEventName;
+                    break;
+                case AlertType.Stock:
+                    this.StockName = alertDef.StockName;
+                    this.TriggerName = alertDef.IndicatorFullName;
+                    this.TriggerEvent = alertDef.EventName;
+                    this.FilterName = alertDef.FilterFullName;
+                    this.FilterEvent = alertDef.FilterEventName;
+                    break;
+                case AlertType.Price:
+                    this.StockName = alertDef.StockName;
+                    this.Price = alertDef.PriceTrigger;
+                    this.BrokenUp = alertDef.TriggerBrokenUp;
+                    break;
+                default:
+                    break;
+            }
         }
 
         public StockBarDuration BarDuration { get; set; }
 
         public string StockName { get; set; }
         public StockSerie.Groups Group { get; set; }
+        public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public string Theme { get; set; }
-        public IList<string> Themes { get; set; }
+        public IEnumerable<string> Themes { get; set; }
         public IEnumerable<string> IndicatorNames { get; set; }
 
         #region Trigger
@@ -39,9 +75,14 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     triggerName = value;
                     if (!string.IsNullOrEmpty(triggerName))
                     {
+                        if (!IndicatorNames.Contains(value))
+                        {
+                            IndicatorNames = IndicatorNames.Prepend(value);
+                            OnPropertyChanged("IndicatorNames");
+                        }
                         var viewableSeries = StockViewableItemsManager.GetViewableItem(this.triggerName);
 
-                        this.TriggerEvents = (viewableSeries as IStockEvent).EventNames;
+                        this.TriggerEvents = (viewableSeries as IStockEvent)?.EventNames;
                         this.TriggerEvent = this.TriggerEvents?[0];
                     }
                     else
@@ -85,9 +126,14 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     filterName = value;
                     if (!string.IsNullOrEmpty(filterName))
                     {
+                        if (!IndicatorNames.Contains(value))
+                        {
+                            IndicatorNames = IndicatorNames.Prepend(value);
+                            OnPropertyChanged("IndicatorNames");
+                        }
                         var viewableSeries = StockViewableItemsManager.GetViewableItem(this.filterName);
 
-                        this.FilterEvents = (viewableSeries as IStockEvent).EventNames;
+                        this.FilterEvents = (viewableSeries as IStockEvent)?.EventNames;
                         this.FilterEvent = this.FilterEvents?[0];
                     }
                     else
@@ -122,8 +168,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public float Price { get; set; }
         public bool BrokenUp { get; set; }
 
-        private IEnumerable<StockAlertDef> alertDefs;
-        public IEnumerable<StockAlertDef> AlertDefs => alertDefs?.Where(a => a.Type == this.AlertType);
+        private List<StockAlertDef> allAlertDefs;
+        public IEnumerable<StockAlertDef> AlertDefs => allAlertDefs?.Where(a => a.Type == this.AlertType);
 
         private AlertType alertType;
         public AlertType AlertType
@@ -133,42 +179,124 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             {
                 if (alertType != value)
                 {
+                    AlertId = -1;
                     alertType = value;
                     OnPropertyChanged("AlertDefs");
                 }
             }
         }
 
-        internal void CreateAlert(AlertType alertType)
+        private int alertId2 = -1;
+        private int AlertId
         {
-            var alertDef = new StockAlertDef()
+            get => alertId2;
+            set { this.alertId2 = value; this.IsDeleteEnabled = this.alertId2 != -1; }
+        }
+
+        #region Add Alert Command
+        private CommandBase addAlertCommand;
+
+        public ICommand AddAlertCommand
+        {
+            get
             {
-                BarDuration = this.BarDuration,
-                CreationDate = DateTime.Now
-            };
-            string[] fields;
-            switch (alertType)
+                if (addAlertCommand == null)
+                {
+                    addAlertCommand = new CommandBase(AddAlert);
+                }
+
+                return addAlertCommand;
+            }
+        }
+
+        private void AddAlert()
+        {
+            var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId2);
+            if (alertDef == null)
+            {
+                alertDef = new StockAlertDef()
+                {
+                    Id = allAlertDefs.Max(a => a.Id) + 1,
+                    Type = this.alertType
+                };
+                this.allAlertDefs.Insert(0, alertDef);
+            }
+            else
+            {
+                if (alertDef.Type != alertType)
+                {
+                    MessageBox.Show("Invalid alert type:" + alertDef.Type);
+                    return;
+                }
+            }
+            switch (this.alertType)
             {
                 case AlertType.Group:
                     alertDef.Group = this.Group;
-                    alertDef.BarDuration = this.BarDuration;
-                    fields = this.TriggerName.Split('|');
-                    alertDef.IndicatorType = fields[0];
-                    alertDef.IndicatorName = fields[1];
-                    alertDef.EventName = this.TriggerEvent;
+                    alertDef.IndicatorType = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[0];
+                    alertDef.IndicatorName = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[1];
+                    alertDef.EventName = triggerEvent;
+                    alertDef.FilterType = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[0];
+                    alertDef.FilterName = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[1];
+                    alertDef.FilterEventName = filterEvent;
                     break;
                 case AlertType.Stock:
-                    fields = this.TriggerName.Split('|');
-                    alertDef.IndicatorType = fields[0];
-                    alertDef.IndicatorName = fields[1];
-                    alertDef.EventName = this.TriggerEvent;
                     alertDef.StockName = this.StockName;
+                    alertDef.IndicatorType = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[0];
+                    alertDef.IndicatorName = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[1];
+                    alertDef.EventName = triggerEvent;
+                    alertDef.FilterType = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[0];
+                    alertDef.FilterName = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[1];
+                    alertDef.FilterEventName = filterEvent;
                     break;
                 case AlertType.Price:
-                    alertDef.PriceTrigger = this.Price;
-                    alertDef.TriggerBrokenUp = this.BrokenUp;
+                    alertDef.StockName = this.StockName;
+                    alertDef.PriceTrigger = Price;
+                    alertDef.TriggerBrokenUp = BrokenUp;
+                    break;
+                default:
                     break;
             }
+            alertDef.BarDuration = this.BarDuration;
+            alertDef.Theme = this.Theme;
+            alertDef.CreationDate = DateTime.Now;
+
+            this.OnPropertyChanged("AlertDefs");
+            this.AlertId = -1;
         }
+
+        #endregion
+
+        #region Delete Alert Command
+
+        private bool isDeleteEnabled;
+        public bool IsDeleteEnabled { get => isDeleteEnabled; set => SetProperty(ref isDeleteEnabled, value); }
+
+        private CommandBase deleteAlertCommand;
+
+        public ICommand DeleteAlertCommand
+        {
+            get
+            {
+                if (deleteAlertCommand == null)
+                {
+                    deleteAlertCommand = new CommandBase(DeleteAlert);
+                }
+
+                return deleteAlertCommand;
+            }
+        }
+
+        private void DeleteAlert()
+        {
+            if (AlertId < 0)
+                return;
+            var alertDef = allAlertDefs.RemoveAll(a => a.Id == AlertId);
+            this.OnPropertyChanged("AlertDefs");
+            this.AlertId = -1;
+        }
+
+
+        #endregion
     }
 }

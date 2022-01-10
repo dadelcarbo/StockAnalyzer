@@ -2301,8 +2301,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             var viewModel = new AddStockAlertViewModel()
             {
-                Group = StockAnalyzerForm.MainFrame.Group,
                 StockName = this.serie.StockName,
+                Group = StockAnalyzerForm.MainFrame.Group,
                 BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
             };

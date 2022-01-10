@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using Telerik.Windows.Controls;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
@@ -21,11 +22,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         }
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            var tab = (TabItem)this.tabControl.SelectedItem;
-            if (tab.Tag != null)
-            {
-                ViewModel.CreateAlert((AlertType)tab.Tag);
-            }
             StockAlertConfig.SaveConfig("UserDefined");
             this.ParentDlg.Ok();
         }
@@ -43,6 +39,14 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             if (tabItem == null) return;
 
             this.ViewModel.AlertType = (AlertType)tabItem.Tag;
+        }
+
+        private void RadGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        {
+            var gridView = sender as RadGridView;
+            var alertDef = gridView.SelectedItem as StockAlertDef;
+
+            this.ViewModel.Init(alertDef);
         }
     }
 }
