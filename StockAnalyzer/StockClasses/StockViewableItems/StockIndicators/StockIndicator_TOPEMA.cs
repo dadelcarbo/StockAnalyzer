@@ -50,15 +50,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
+            this.CreateEventSeries(stockSerie.Count);
             int period = (int)this.parameters[0];
+
+            FloatSerie supportSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+            FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+
+            this.Series[0] = supportSerie;
+            this.Series[0].Name = this.SerieNames[0];
+            this.Series[1] = resistanceSerie;
+            this.Series[1].Name = this.SerieNames[1];
+
+            if (period >= stockSerie.Count)
+                return;
+
             float alpha = 2.0f / (float)(period + 1);
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-
-            FloatSerie supportSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
-            FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             float resistanceEMA = highSerie.GetMax(0, period - 1);
             float supportEMA = lowSerie.GetMin(0, period - 1);
             supportSerie[period - 1] = supportEMA;
@@ -69,7 +79,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float previousHigh = resistanceEMA;
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
 
             for (int i = period; i < stockSerie.Count; i++)
             {
@@ -145,10 +154,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[9][i] = isBearish; // Bearish
             }
 
-            this.Series[0] = supportSerie;
-            this.Series[0].Name = this.SerieNames[0];
-            this.Series[1] = resistanceSerie;
-            this.Series[1].Name = this.SerieNames[1];
         }
 
         private static string[] eventNames = new string[]

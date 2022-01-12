@@ -19,8 +19,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Content="Time Frame:"/>
-            <ComboBox x:Name="TimeFrameComboBox" Width="100" DisplayMemberPath="TimeFrame"
-                      ItemsSource="{Binding Source={StaticResource AlertConfigs}}"/>
+            <ComboBox x:Name="TimeFrameComboBox" Width="100" DisplayMemberPath="TimeFrame" ItemsSource="{Binding Source={StaticResource AlertConfigs}}"/>
             <Button Content="Refresh" x:Name="RefreshBtn" Click="RefreshBtn_OnClick" Margin="1,1,5,1"/>
             <Button Content="Clear" x:Name="ClearBtn" Click="ClearBtn_OnClick" Margin="1,1,5,1"/>
             <Label Content="Alert date:"/>

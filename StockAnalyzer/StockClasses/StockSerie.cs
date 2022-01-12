@@ -178,7 +178,7 @@ namespace StockAnalyzer.StockClasses
             var dailyValues = this.GetValues(StockBarDuration.Daily).OrderByDescending(s => s.DATE).Take(10).ToList();
             float price = dailyValues.Average(v => v.CLOSE);
             float vol = (float)dailyValues.Average(v => v.VOLUME) / 1000000f;
-            return (price * vol > trigger);
+            return price * vol > trigger;
         }
         #endregion
 
@@ -701,64 +701,78 @@ namespace StockAnalyzer.StockClasses
             try
             {
                 this.BarDuration = stockAlert.BarDuration;
+                if (index < 50 || this.LastIndex < index)
+                    return false;
                 int eventIndex;
                 IStockEvent stockEvent = null;
                 IStockViewableSeries indicator;
-                if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
+
+                switch (stockAlert.Type)
                 {
-                    indicator = StockViewableItemsManager.GetViewableItem(stockAlert.FilterFullName);
-                    if (this.HasVolume || !indicator.RequiresVolumeData)
-                    {
-                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.FilterEventName);
-                    if (eventIndex == -1)
-                    {
-                        StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
-                        return false;
-                    }
-                    else
-                    {
-                        if (!stockEvent.Events[eventIndex][index]) return false;
-                    }
-                }
-                if (!string.IsNullOrEmpty(stockAlert.IndicatorName))
-                {
-                    indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
-                    if (this.HasVolume || !indicator.RequiresVolumeData)
-                    {
-                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
-                    if (eventIndex == -1)
-                    {
-                        StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
-                        return false;
-                    }
-                    else
-                    {
-                        return stockEvent.Events[eventIndex][index];
-                    }
-                }
-                else if (stockAlert.PriceTrigger != 0 && index > 1)
-                {
-                    var closeSerie = this.GetSerie(StockDataType.CLOSE);
-                    if (stockAlert.TriggerBrokenUp)
-                    {
-                        return closeSerie[index - 1] < stockAlert.PriceTrigger && closeSerie[index] > stockAlert.PriceTrigger;
-                    }
-                    else
-                    {
-                        return closeSerie[index - 1] > stockAlert.PriceTrigger && closeSerie[index] < stockAlert.PriceTrigger;
-                    }
+                    case AlertType.Group:
+                    case AlertType.Stock:
+                        {
+                            if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
+                            {
+                                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.FilterFullName);
+                                if (this.HasVolume || !indicator.RequiresVolumeData)
+                                {
+                                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.FilterEventName);
+                                if (eventIndex == -1)
+                                {
+                                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                                    return false;
+                                }
+                                else
+                                {
+                                    if (!stockEvent.Events[eventIndex][index]) 
+                                        return false;
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(stockAlert.IndicatorName))
+                            {
+                                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+                                if (this.HasVolume || !indicator.RequiresVolumeData)
+                                {
+                                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+                                if (eventIndex == -1)
+                                {
+                                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                                    return false;
+                                }
+                                else
+                                {
+                                    return stockEvent.Events[eventIndex][index];
+                                }
+                            }
+                        }
+                        break;
+                    case AlertType.Price:
+                        if (stockAlert.PriceTrigger != 0 && index > 1)
+                        {
+                            var closeSerie = this.GetSerie(StockDataType.CLOSE);
+                            if (stockAlert.TriggerBrokenUp)
+                            {
+                                return closeSerie[index - 1] < stockAlert.PriceTrigger && closeSerie[index] > stockAlert.PriceTrigger;
+                            }
+                            else
+                            {
+                                return closeSerie[index - 1] > stockAlert.PriceTrigger && closeSerie[index] < stockAlert.PriceTrigger;
+                            }
+                        }
+                        break;
                 }
             }
             finally

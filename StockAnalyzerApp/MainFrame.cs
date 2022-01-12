@@ -276,7 +276,7 @@ namespace StockAnalyzerApp
             base.OnActivated(e);
 
             // Enable timers and multithreading
-            busy = false;
+            alertThreadBusy = false;
 
             this.FormClosing += StockAnalyzerForm_FormClosing1;
         }
@@ -505,30 +505,6 @@ namespace StockAnalyzerApp
                 alertTimer.Tick += new EventHandler(alertTimer_Tick);
                 alertTimer.Interval = minutes * 60 * 1000;
                 alertTimer.Start();
-
-                string fileName = Path.Combine(StockAlertLog.AlertLogFolder, "AlertLog.xml");
-                IEnumerable<string> alertLog = new List<string>();
-                bool needDirectAlertCheck = false;
-                if (File.Exists(fileName))
-                {
-                    if (File.GetLastWriteTime(fileName).Date != DateTime.Today)
-                    {
-                        if (DateTime.Now.Hour > 8 && DateTime.Now.Hour < 18)
-                        {
-                            needDirectAlertCheck = true;
-                        }
-                    }
-                    else if (DateTime.Now - File.GetLastWriteTime(fileName) > new TimeSpan(0, 0, minutes, 0))
-                    // Check if older than x Minutes
-                    {
-                        needDirectAlertCheck = true;
-                    }
-                }
-                else
-                {
-                    needDirectAlertCheck = true;
-                }
-                if (needDirectAlertCheck) alertTimer_Tick(null, null);
             }
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
@@ -664,14 +640,15 @@ namespace StockAnalyzerApp
 
         #endregion
         #region TIMER MANAGEMENT
-        public static bool busy = false;
+        public static bool alertThreadBusy = false;
 
         private void refreshTimer_Tick(object sender, EventArgs e)
         {
             if (TimerSuspended)
                 return;
-            if (busy) return;
-            busy = true;
+            if (alertThreadBusy)
+                return;
+            alertThreadBusy = true;
 
             // Download INTRADAY current serie
             try
@@ -696,7 +673,7 @@ namespace StockAnalyzerApp
             finally
             {
                 this.Cursor = Cursors.Arrow;
-                busy = false;
+                alertThreadBusy = false;
             }
         }
 
@@ -706,41 +683,162 @@ namespace StockAnalyzerApp
         {
             if (TimerSuspended)
                 return;
-            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 20) return;
-            if (this.intradayAlertConfig.AlertLog.LastRefreshDate > DateTime.Now.AddMinutes(-30))
+            if (alertThreadBusy)
+                return;
+
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.Hour < 8 || DateTime.Now.Hour > 20)
+                return;
+            if (StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertLog.LastRefreshDate > DateTime.Now.AddMinutes(-30))
             {
                 if (DateTime.Now.Minute % 30 > Settings.Default.AlertsFrequency)
                     return;
             }
 
-            if (this.intradayAlertConfig != null && this.intradayAlertConfig.AlertDefs.Count > 0)
+            if (StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs.Count > 0)
             {
                 var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
                 alertThread.Name = "IntradayAlert";
-                alertThread.Start(this.intradayAlertConfig);
+                alertThread.Start(StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday));
             }
         }
         public void GenerateAlert_Thread(object param)
         {
             try
             {
-                var p = (StockAlertConfig)param;
-                this.GenerateAlert(p);
+                this.GenerateAlert((StockAlertConfig)param);
             }
             catch (Exception ex)
             {
                 StockLog.Write(ex);
             }
         }
-
-        ManualResetEvent alertThreadEvent = new ManualResetEvent(true);
         public void GenerateAlert(StockAlertConfig alertConfig)
         {
             StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
-            alertThreadEvent.WaitOne();
-            alertThreadEvent.Reset();
-            if (busy || alertConfig == null) return;
-            busy = true;
+            if (alertThreadBusy || alertConfig == null)
+                return;
+            alertThreadBusy = true;
+
+            try
+            {
+                string alertString = string.Empty;
+
+                if (alertConfig.TimeFrame != StockAlertTimeFrame.Intraday)
+                {
+                    (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                }
+
+                foreach (var alertDef in alertConfig.AlertDefs)
+                {
+                    var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)).ToList();
+                    if (AlertDetectionStarted != null)
+                    {
+                        if (this.InvokeRequired)
+                        {
+                            this.Invoke(this.AlertDetectionStarted, stockList.Count);
+                        }
+                        else
+                        {
+                            this.AlertDetectionStarted(stockList.Count);
+                        }
+                    }
+                    foreach (var stockSerie in stockList.Where(s => !TimerSuspended && s.Initialise()))
+                    {
+                        if (AlertDetectionProgress != null)
+                        {
+                            if (this.InvokeRequired)
+                            {
+                                this.Invoke(this.AlertDetectionProgress, stockSerie.StockName);
+                            }
+                            else
+                            {
+                                this.AlertDetectionProgress(stockSerie.StockName);
+                            }
+                        }
+
+                        StockBarDuration previouBarDuration = stockSerie.BarDuration;
+                        if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
+                        {
+                            StockDataProviderBase.DownloadSerieData(stockSerie);
+                        }
+                        else
+                        {
+                            if (stockSerie.Values.Last().CLOSE < 1.0f)
+                            {
+                                continue;
+                            }
+                            if (stockSerie.HasVolume) // Check if it has at least x.xx M€ average daily liquidity
+                            {
+                                if (!stockSerie.HasLiquidity(0.2f))
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+
+                        stockSerie.BarDuration = alertDef.BarDuration;
+                        var values = stockSerie.GetValues(alertDef.BarDuration);
+                        int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
+
+                        var dailyValue = values.ElementAt(lastIndex);
+                        if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
+                            break;
+                        if (stockSerie.MatchEvent(alertDef, lastIndex))
+                        {
+                            var date = dailyValue.DATE;
+                            var stockAlert = new StockAlert(alertDef,
+                                date,
+                                stockSerie.StockName,
+                                stockSerie.StockGroup.ToString(),
+                                dailyValue.CLOSE,
+                                dailyValue.VOLUME,
+                                stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
+
+                            if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                            {
+                                alertString += stockAlert.ToString() + Environment.NewLine;
+                                if (this.InvokeRequired)
+                                {
+                                    this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                }
+                                else
+                                {
+                                    alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                }
+                            }
+                        }
+                        stockSerie.BarDuration = previouBarDuration;
+                    }
+                }
+                alertConfig.AlertLog.Save();
+
+                if (!string.IsNullOrWhiteSpace(alertString) && !string.IsNullOrWhiteSpace(Settings.Default.UserSMTP) && !string.IsNullOrWhiteSpace(Settings.Default.UserEMail))
+                {
+                    StockMail.SendEmail("Ultimate Chartist - " + alertConfig.AlertLog.FileName.Replace("AlertLog", "").Replace(".xml", "") + " Alert", alertString);
+                }
+
+                if (this.AlertDetected != null)
+                {
+                    this.Invoke(this.AlertDetected);
+                }
+
+                StockSplashScreen.CloseForm(true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "GenerateAlert exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                alertThreadBusy = false;
+            }
+        }
+
+        public void GenerateAlert2(StockAlertConfig alertConfig)
+        {
+            StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
+            if (alertThreadBusy || alertConfig == null) return;
+            alertThreadBusy = true;
 
             try
             {
@@ -861,17 +959,14 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                busy = false;
-                alertThreadEvent.Set();
+                alertThreadBusy = false;
             }
         }
         public void GenerateUserDefinedAlert(StockAlertConfig alertConfig)
         {
             StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
-            alertThreadEvent.WaitOne();
-            alertThreadEvent.Reset();
-            if (busy || alertConfig == null) return;
-            busy = true;
+            if (alertThreadBusy || alertConfig == null) return;
+            alertThreadBusy = true;
 
             try
             {
@@ -1002,9 +1097,7 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                busy = false;
-                alertThreadEvent.Set();
-                StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame + "alertThreadEvent.Set()");
+                alertThreadBusy = false;
             }
         }
         #endregion
@@ -1581,8 +1674,8 @@ namespace StockAnalyzerApp
 
         private void downloadBtn_Click(object sender, EventArgs e)
         {
-            if (busy) return;
-            busy = true;
+            if (alertThreadBusy) return;
+            alertThreadBusy = true;
             if (Control.ModifierKeys == Keys.Control)
             {
                 DownloadStockGroup();
@@ -1591,7 +1684,7 @@ namespace StockAnalyzerApp
             {
                 DownloadStock(false);
             }
-            busy = false;
+            alertThreadBusy = false;
         }
 
         private void ForceDownloadStock(bool showSplash)
@@ -1642,7 +1735,6 @@ namespace StockAnalyzerApp
                     this.Cursor = Cursors.Arrow;
                 }
             }
-
         }
         private void ForceDownloadStockGroup()
         {
@@ -2947,8 +3039,8 @@ namespace StockAnalyzerApp
         {
             const string rowTemplate = @"
          <tr>
-             <td>%GROUP%</td>
-             <td>%COL1%</td>
+             <td style=""font-size:14px;"">%COL1%</td>
+             <td style=""font-size:11px;"">%GROUP%</td>
              <td>%COL2%</td>
              <td>%COL3%</td>
              <td>%COL4%</td>
@@ -2981,7 +3073,7 @@ namespace StockAnalyzerApp
                     {
                         if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
                         {
-                            if (!stockSerie.HasLiquidity(0.05f))
+                            if (!stockSerie.HasLiquidity(0.5f))
                             {
                                 continue;
                             }
@@ -3019,8 +3111,8 @@ namespace StockAnalyzerApp
                     <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
-                    <th>Group</th>
                     <th>Stock Name</th>
+                    <th>Group</th>
                     <th>{rankIndicator}</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
@@ -3695,7 +3787,7 @@ namespace StockAnalyzerApp
         {
             if (alertDlg == null)
             {
-                alertDlg = new AlertDlg(intradayAlertConfig);
+                alertDlg = new AlertDlg(StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday));
                 alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
                 alertDlg.alertControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
                 alertDlg.Disposed += delegate

@@ -1059,7 +1059,7 @@ namespace StockAnalyzer.StockMath
         public float GetMin(int startIndex, int endIndex)
         {
             float minValue = float.MaxValue;
-
+            endIndex = Math.Min(endIndex, this.LastIndex);
             for (int i = startIndex; i <= endIndex; i++)
             {
                 if (float.IsNaN(Values[i]))
@@ -1073,7 +1073,7 @@ namespace StockAnalyzer.StockMath
         public float GetMax(int startIndex, int endIndex)
         {
             float maxValue = float.MinValue;
-
+            endIndex = Math.Min(endIndex, this.LastIndex);
             for (int i = startIndex; i <= endIndex; i++)
             {
                 if (float.IsNaN(Values[i]))

@@ -248,7 +248,7 @@ namespace StockAnalyzerApp.CustomControl
         Cursor cursor;
         private void selectButton_Click(object sender, EventArgs e)
         {
-            StockAnalyzerForm.busy = true;
+            StockAnalyzerForm.alertThreadBusy = true;
 
             startDate = DateTime.Now;
             //    ForceCheckNodes();
@@ -394,7 +394,7 @@ namespace StockAnalyzerApp.CustomControl
                     processTimer.Stop();
                     processTimer.Dispose();
 
-                    StockAnalyzerForm.busy = false;
+                    StockAnalyzerForm.alertThreadBusy = false;
 
                     this.Enabled = true;
                     Cursor = cursor;

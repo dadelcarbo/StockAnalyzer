@@ -3,7 +3,6 @@ using StockAnalyzer.StockLogging;
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
@@ -34,16 +33,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             alertLog.Clear();
         }
 
-        private async void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
+        private void RefreshBtn_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                //var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-                //alertThread.Name = "Alert";
-                //alertThread.Start(this.SelectedTimeFrame);
-                var timeFrame = this.SelectedTimeFrame;
-                StockAnalyzerForm.MainFrame.GenerateAlert_Thread(timeFrame);
-                //await Task.Run(() => StockAnalyzerForm.MainFrame.GenerateAlert_Thread(timeFrame));
+                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
+                alertThread.Name = "AlertDialogThread";
+                alertThread.Start(this.SelectedTimeFrame);
             }
             catch (Exception ex)
             {
