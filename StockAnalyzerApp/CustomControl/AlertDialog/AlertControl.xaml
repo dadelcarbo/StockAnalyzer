@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:l="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             xmlns:system="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog"
              x:Class="StockAnalyzerApp.CustomControl.AlertDialog.AlertControl"
              mc:Ignorable="d" 
              d:DesignHeight="300" Width="750">

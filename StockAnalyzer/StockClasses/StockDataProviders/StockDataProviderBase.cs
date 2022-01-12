@@ -136,7 +136,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             else
             {
                 StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
+                serie.BarDuration = StockBarDuration.Daily;
                 bool res = dataProvider.DownloadDailyData(serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {

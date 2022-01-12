@@ -152,7 +152,6 @@ namespace StockAnalyzerApp
             this.saveAnalysisToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.snapshotToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.addToReportStripBtn = new System.Windows.Forms.ToolStripButton();
             this.generateDailyReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
             this.AddToWatchListToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.graphCloseControl = new CustomControl.GraphControls.GraphCloseControl();
@@ -1105,7 +1104,6 @@ namespace StockAnalyzerApp
             this.saveAnalysisToolStripButton,
             this.snapshotToolStripButton,
             this.toolStripSeparator7,
-            this.addToReportStripBtn,
             this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
             this.drawToolStrip.Location = new System.Drawing.Point(3, 27);
@@ -1253,16 +1251,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
-            // 
-            // addToReportStripBtn
-            // 
-            this.addToReportStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addToReportStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddToReport;
-            this.addToReportStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addToReportStripBtn.Name = "addToReportStripBtn";
-            this.addToReportStripBtn.Size = new System.Drawing.Size(23, 22);
-            this.addToReportStripBtn.Text = "Add to Report";
-            this.addToReportStripBtn.Click += new System.EventHandler(this.addToReportStripBtn_Click);
             // 
             // generateDailyReportToolStripBtn
             // 
@@ -1572,7 +1560,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem logSerieMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
-        private ToolStripButton addToReportStripBtn;
         private ToolStripButton generateDailyReportToolStripBtn;
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
         private ToolStripSeparator toolStripSeparator13;

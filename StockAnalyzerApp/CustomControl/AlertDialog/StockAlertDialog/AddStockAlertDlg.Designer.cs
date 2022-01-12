@@ -50,6 +50,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Controls.Add(this.elementHost1);
             this.Name = "AddStockAlertDlg";
             this.Text = "Add Stock Alert";
+            this.ControlBox = false;
             this.ResumeLayout(false);
 
         }

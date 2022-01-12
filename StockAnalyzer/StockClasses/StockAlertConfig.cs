@@ -110,8 +110,8 @@ namespace StockAnalyzer.StockClasses
                 }
                 return allAlertDefs;
             }
-
         }
+
         private List<StockAlertDef> alertDefs = null;
         public List<StockAlertDef> AlertDefs
         {
@@ -141,7 +141,7 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-        public static void SaveConfig()
+        static public void SaveConfig()
         {
             if (allAlertDefs != null)
             {
@@ -160,6 +160,12 @@ namespace StockAnalyzer.StockClasses
                     serializer.Serialize(xmlWriter, allAlertDefs);
                 }
             }
+        }
+
+        static public void ReloadConfig()
+        {
+            allAlertDefs = null;
+            configs = null;
         }
     }
 }

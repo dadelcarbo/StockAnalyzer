@@ -467,32 +467,14 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
-            // Refresh intraday every 2 minutes.
+            // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
                 refreshTimer = new System.Windows.Forms.Timer();
                 refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
-                refreshTimer.Interval = 120 * 1000;
+                refreshTimer.Interval = 5 * 60 * 1000;
                 refreshTimer.Start();
             }
-
-            //#region DailyAlerts
-
-            //if (!dailyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            //{
-            //    GenerateAlert(dailyAlertConfig);
-            //}
-
-            //if (!weeklyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            //{
-            //    GenerateAlert(weeklyAlertConfig);
-            //}
-            //if (!monthlyAlertConfig.AlertLog.IsUpToDate(DateTime.Today.AddDays(-1)))
-            //{
-            //    GenerateAlert(monthlyAlertConfig);
-            //}
-
-            //#endregion
 
             if (Settings.Default.GenerateDailyReport)
             {
@@ -508,9 +490,9 @@ namespace StockAnalyzerApp
                 cac40.BarDuration = StockBarDuration.Daily;
                 if (reportDate < cac40.Keys.Last())
                 {
-                    GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
-                    GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
-                    GenerateReport("Monthly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
+                    GenerateReport("Daily Report", StockBarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
+                    GenerateReport("Weekly Report", StockBarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
+                    //GenerateReport("Monthly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
                     File.WriteAllText(fileName, cac40.Keys.Last().ToString());
                 }
             }
@@ -694,7 +676,7 @@ namespace StockAnalyzerApp
             // Download INTRADAY current serie
             try
             {
-                if (this.currentStockSerie != null && this.currentStockSerie.StockGroup == StockSerie.Groups.INTRADAY)
+                if (this.currentStockSerie != null)
                 {
                     this.Cursor = Cursors.WaitCursor;
 
@@ -719,9 +701,6 @@ namespace StockAnalyzerApp
         }
 
         private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-        private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily);
-        private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly);
-        private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Monthly);
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -2922,14 +2901,10 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-
             string fileName = folderName + @"\Report.html";
-
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             #region Report leaders
-
-            this.barDurationComboBox.SelectedItem = StockBarDuration.Daily;
 
             var previousSize = this.Size;
             this.Size = new Size(600, 600);
@@ -2940,16 +2915,10 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty;
-            foreach (var alertDef in alertDefs)
+            foreach (var alertDef in alertDefs.OrderBy(a => a.Id))
             {
-                htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, alertDef.Theme, alertDef.Title, alertDef.IndicatorFullName, alertDef.EventName, "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
+                htmlLeaders += GenerateAlertTable(duration, alertDef.Group, alertDef.Theme, alertDef.Title, alertDef.IndicatorFullName, alertDef.EventName, "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
             }
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Cloud Up", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "CloudUp", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TRAILATR", "TrailATR Reentry", "CLOUD|TRAILATR(30,2.75,-0.5,EMA,6)", "Long Reentry", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            //htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "___TOPEMA", "TopEMA Entry", "INDICATOR|TOPEMA(6)", "ResistanceBroken", "TRAILTOPEMA(6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.PEA, "TRAILATR", "Drawing", "AUTODRAWING|DRAWING()", "ResistanceBroken", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-            htmlLeaders += GenerateAlertTable(duration, StockSerie.Groups.SECTORS_CAC, "TRAILATR", "Drawing", "INDICATOR|TRUE()", "True", "TRAILATR(30,2.75,-0.5,EMA,6)", "ROC(50)", nbLeaders);
-
             htmlBody += htmlLeaders;
 
             StockSplashScreen.CloseForm(true);
@@ -2978,8 +2947,8 @@ namespace StockAnalyzerApp
         {
             const string rowTemplate = @"
          <tr>
-             <td>%COL1%</td>
              <td>%GROUP%</td>
+             <td>%COL1%</td>
              <td>%COL2%</td>
              <td>%COL3%</td>
              <td>%COL4%</td>
@@ -3111,14 +3080,10 @@ namespace StockAnalyzerApp
                 Directory.CreateDirectory(folderName);
             }
         }
-
-        void addToReportStripBtn_Click(object sender, EventArgs e)
-        {
-        }
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
-            GenerateReport("Daily Report", StockBarDuration.Daily, dailyAlertConfig.AlertDefs);
-            GenerateReport("Weekly Report", StockBarDuration.Weekly, weeklyAlertConfig.AlertDefs);
+            GenerateReport("Daily Report", StockBarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
+            GenerateReport("Weekly Report", StockBarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
         }
         #endregion
         WatchListDlg watchlistDlg = null;

@@ -25,7 +25,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             StockAlertConfig.SaveConfig();
-
             var fileName = Folders.Report + @"\LastGeneration.txt";
             if (File.Exists(fileName))
                 File.Delete(fileName);
@@ -34,6 +33,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
+            StockAlertConfig.ReloadConfig();
             this.ParentDlg.Cancel();
         }
 
