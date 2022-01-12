@@ -987,6 +987,9 @@
     </Content>
     <Content Include="Resources\Candle.bmp" />
     <None Include="Resources\AD.png" />
+    <Content Include="Resources\check.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\comment-icon.bmp" />
     <None Include="Resources\cut.png" />
     <Content Include="Resources\AddSemiLine.bmp" />
@@ -1054,7 +1057,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\SaveAnalysisAs.png" />
-    <None Include="Resources\SaveTheme.png" />
+    <Content Include="Resources\SaveTheme.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\ReportTemplate.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

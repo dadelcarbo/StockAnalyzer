@@ -145,6 +145,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADR.cs" />

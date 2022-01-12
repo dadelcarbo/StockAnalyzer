@@ -15,10 +15,13 @@ namespace StockAnalyzer.StockClasses
         {
             this.BarDuration = StockBarDuration.Daily;
             this.CreationDate = DateTime.MinValue;
+            this.Active = true;
         }
 
         public int Id { get; set; }
         public AlertType Type { get; set; }
+        public bool Active{ get; set; }
+
         public string Theme { get; set; }
         public string Title { get; set; }
         public Groups Group { get; set; }

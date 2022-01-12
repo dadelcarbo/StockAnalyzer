@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerSettings;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
@@ -22,7 +24,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         }
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            StockAlertConfig.SaveConfig("UserDefined");
+            StockAlertConfig.SaveConfig();
+
+            var fileName = Folders.Report + @"\LastGeneration.txt";
+            if (File.Exists(fileName))
+                File.Delete(fileName);
             this.ParentDlg.Ok();
         }
 

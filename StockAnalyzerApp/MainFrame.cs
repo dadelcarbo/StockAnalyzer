@@ -718,11 +718,10 @@ namespace StockAnalyzerApp
             }
         }
 
-        private StockAlertConfig userDefinedAlertConfig = StockAlertConfig.GetConfig("UserDefined");
-        private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig("Intraday");
-        private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig("Daily");
-        private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig("Weekly");
-        private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig("Monthly");
+        private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
+        private StockAlertConfig dailyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily);
+        private StockAlertConfig weeklyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly);
+        private StockAlertConfig monthlyAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Monthly);
 
         private void alertTimer_Tick(object sender, EventArgs e)
         {
@@ -741,27 +740,13 @@ namespace StockAnalyzerApp
                 alertThread.Name = "IntradayAlert";
                 alertThread.Start(this.intradayAlertConfig);
             }
-
-            if (this.userDefinedAlertConfig != null && this.userDefinedAlertConfig.AlertDefs.Count > 0)
-            {
-                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-                alertThread.Name = "UserDefinedAlert";
-                alertThread.Start(this.userDefinedAlertConfig);
-            }
         }
         public void GenerateAlert_Thread(object param)
         {
             try
             {
                 var p = (StockAlertConfig)param;
-                if (p.TimeFrame == "UserDefined")
-                {
-                    this.GenerateUserDefinedAlert(p);
-                }
-                else
-                {
-                    this.GenerateAlert(p);
-                }
+                this.GenerateAlert(p);
             }
             catch (Exception ex)
             {
@@ -790,10 +775,9 @@ namespace StockAnalyzerApp
                 }
 
                 List<StockSerie> stockList;
-                if (alertConfig.TimeFrame == "Intraday")
+                if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)
                 {
                     stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded &&
-                    //!s.StockName.StartsWith("INT_") &&
                     s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
                 }
                 else

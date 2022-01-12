@@ -16,7 +16,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
-            this.allAlertDefs = StockAlertConfig.GetConfig("UserDefined").AlertDefs;
+            this.allAlertDefs = StockAlertConfig.AllAlertDefs;
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
@@ -26,11 +26,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         internal void Init(StockAlertDef alertDef)
         {
             this.AlertId = alertDef.Id;
+            this.Active = alertDef.Active;
             this.BarDuration = alertDef.BarDuration;
             this.Theme = alertDef.Theme;
             switch (this.alertType)
             {
                 case AlertType.Group:
+                    this.Title = alertDef.Title;
                     this.Group = alertDef.Group;
                     this.TriggerName = alertDef.IndicatorFullName;
                     this.TriggerEvent = alertDef.EventName;
@@ -54,12 +56,27 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
-        public StockBarDuration BarDuration { get; set; }
+        private bool active;
+        public bool Active { get => active; set => SetProperty(ref active, value); }
 
-        public string StockName { get; set; }
-        public StockSerie.Groups Group { get; set; }
+        private string title;
+        public string Title { get => title; set => SetProperty(ref title, value); }
+
+        private StockBarDuration barDuration;
+        public StockBarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
+
+        private string stockName;
+        public string StockName { get => stockName; set => SetProperty(ref stockName, value); }
+
+        private StockSerie.Groups group;
+        public StockSerie.Groups Group { get => group; set => SetProperty(ref group, value); }
+
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
-        public string Theme { get; set; }
+
+        private string theme;
+        public string Theme { get => theme; set => SetProperty(ref theme, value); }
+
+
         public IEnumerable<string> Themes { get; set; }
         public IEnumerable<string> IndicatorNames { get; set; }
 
@@ -232,6 +249,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             switch (this.alertType)
             {
                 case AlertType.Group:
+                    alertDef.Title = this.Title;
                     alertDef.Group = this.Group;
                     alertDef.IndicatorType = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[0];
                     alertDef.IndicatorName = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[1];
@@ -257,6 +275,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 default:
                     break;
             }
+            alertDef.Active = this.Active;
             alertDef.BarDuration = this.BarDuration;
             alertDef.Theme = this.Theme;
             alertDef.CreationDate = DateTime.Now;
