@@ -18,7 +18,7 @@
             <TabItem Header="Group Alert" Tag="{x:Static Member=stockClasses:AlertType.Group}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="110"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" >

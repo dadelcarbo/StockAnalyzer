@@ -39,7 +39,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             {
                 var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
                 alertThread.Name = "AlertDialogThread";
-                alertThread.Start(this.SelectedTimeFrame);
+                alertThread.Start(StockAlertConfig.GetConfig(this.SelectedTimeFrame.TimeFrame));
             }
             catch (Exception ex)
             {

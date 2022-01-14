@@ -14,6 +14,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
     {
         public AddStockAlertViewModel()
         {
+            this.Active = true;
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
             this.allAlertDefs = StockAlertConfig.AllAlertDefs;
