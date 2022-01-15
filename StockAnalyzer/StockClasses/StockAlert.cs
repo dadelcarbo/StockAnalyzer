@@ -1,81 +1,66 @@
 ﻿using System;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
 {
     public class StockAlert : IEquatable<StockAlert>
     {
+        public StockAlert()
+        {
+        }
         public DateTime Date { get; set; }
         public string StockName { get; set; }
         public string StockGroup { get; set; }
-        public string Alert { get; set; }
-        public string Theme { get; set; }
-        [XmlIgnore]
-        public string Event
+        public int AlertDefId { get; set; }
+        public string Theme => this.alertDef?.Theme;
+        public StockBarDuration BarDuration => alertDef?.BarDuration;
+        public string AlertDescription
         {
             get
             {
-                if (Alert == null || !Alert.Contains("=>"))
+                if (alertDef == null)
                     return null;
-                var index = Alert.IndexOf("=>");
-                return Alert.Remove(0, index + 2);
+                switch (this.alertDef.Type)
+                {
+                    case AlertType.Group:
+                        {
+                            return this.alertDef?.Title;
+                        }
+                    case AlertType.Stock:
+                        {
+                            return "User Alert: " + this.alertDef.EventName;
+                        }
+                    case AlertType.Price:
+                        {
+                            return this.alertDef.TriggerBrokenUp ? $"{this.alertDef.PriceTrigger} Broken Up" : $"{this.alertDef.PriceTrigger} Broken Down";
+                        }
+                };
+                return null;
             }
         }
-        [XmlIgnore]
-        public string Indicator
-        {
-            get
-            {
-                if (Alert == null || !Alert.Contains("=>"))
-                    return null;
-                var index = Alert.IndexOf("=>");
-                return Alert.Substring(0, index);
-            }
-        }
-        public StockBarDuration BarDuration { get; set; }
 
         public float AlertClose { get; set; }
         public float Speed { get; set; }
 
         public long ExchangedMoney { get; set; }
 
-        public string Duration { get { return BarDuration.Duration.ToString(); } }
+        private StockAlertDef alertDef;
+        public void SetAlertDef()
+        {
+            this.alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
+        }
 
-        public StockAlert()
-        {
-        }
-        public StockAlert(string eventFullName, StockBarDuration duration, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
-        {
-            this.Alert = eventFullName;
-            this.BarDuration = duration;
-            Date = date;
-            StockName = stockName;
-            StockGroup = stockGroup;
-            AlertClose = alertClose;
-            Speed = speed;
-            ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
-            Theme = null;
-        }
         public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, long volume, float speed)
         {
-            this.Alert = alertDef.EventFullName;
-            this.BarDuration = alertDef.BarDuration;
+            this.alertDef = alertDef;
+            this.AlertDefId = alertDef.Id;
             Date = date;
             StockName = stockName;
             StockGroup = stockGroup;
             AlertClose = alertClose;
             Speed = speed;
             ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
-            Theme = alertDef.Theme;
-        }
-
-        public override string ToString()
-        {
-            if (Date.Date == Date)
-            {
-                return StockName.PadRight(30) + "\t" + Date.ToShortDateString() + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
-            }
-            return StockName.PadRight(30) + "\t" + Date + "\t" + BarDuration + "\t" + Alert.PadRight(42) + "\t" + AlertClose;
         }
         public static bool operator ==(StockAlert a, StockAlert b)
         {
@@ -105,12 +90,9 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            return this.StockName == other.StockName &&
-                   this.StockGroup == other.StockGroup &&
-                   this.Date == other.Date &&
-                   this.Alert.ToString() == other.Alert.ToString() &&
-                   this.BarDuration == other.BarDuration &&
-                   this.AlertClose == other.AlertClose;
+            return this.AlertDefId == other.AlertDefId &&
+                   this.StockName == other.StockName &&
+                   this.Date == other.Date;
         }
 
         public override int GetHashCode()

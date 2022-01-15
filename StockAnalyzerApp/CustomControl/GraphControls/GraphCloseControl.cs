@@ -2307,6 +2307,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
             };
             viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
+            viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
 
             var addAlertDlg = new AddStockAlertDlg(viewModel);
             addAlertDlg.ShowDialog();

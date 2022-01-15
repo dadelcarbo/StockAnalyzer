@@ -64,7 +64,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
                 else
                 {
                     this.SelectedStockChanged(alert.StockName, alert.BarDuration, true);
-                    StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alert.Indicator);
+                    var alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(a => a.Id == alert.AlertDefId);
+                    if (alertDef != null)
+                    {
+                        StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
+                    }
                 }
                 this.Form.TopMost = true;
                 this.Form.TopMost = false;

@@ -7,7 +7,8 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              x:Class="StockAnalyzerApp.CustomControl.AlertDialog.AlertControl"
              mc:Ignorable="d" 
-             d:DesignHeight="300" Width="750">
+             d:DesignHeight="300" Width="750"
+             d:DataContext="{d:DesignInstance Type=l:StockAlertConfig, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <x:StaticExtension Member="l:StockAlertConfig.AlertConfigs" x:Key="AlertConfigs"/>
@@ -38,9 +39,8 @@
                 <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockGroup}" Header="Group" DataMemberBinding="{Binding StockGroup}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Duration, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.LineBreak}" Header="LineBreak" DataMemberBinding="{Binding BarDuration.LineBreak, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding Indicator}" Header="Indicator" DataMemberBinding="{Binding Indicator, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding Event}" Header="Event" DataMemberBinding="{Binding Event, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertDefId}" Header="Alert&#xA;Id" DataMemberBinding="{Binding AlertDefId, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertDescription}" Header="Alert&#xA;Description" DataMemberBinding="{Binding AlertDescription, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding AlertClose}" Header="Alert&#xA;Close" DataMemberBinding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Speed}" Header="Speed" DataMemberBinding="{Binding Speed, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding ExchangedMoney}" Header="Exchanged&#xA;Money (K€)" DataMemberBinding="{Binding ExchangedMoney, Mode=OneWay}" IsReadOnly="True"/>

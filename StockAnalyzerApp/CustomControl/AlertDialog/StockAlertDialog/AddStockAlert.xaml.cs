@@ -22,20 +22,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             InitializeComponent();
             this.DataContext = viewModel;
         }
-        private void okButton_Click(object sender, RoutedEventArgs e)
-        {
-            StockAlertConfig.SaveConfig();
-            var fileName = Folders.Report + @"\LastGeneration.txt";
-            if (File.Exists(fileName))
-                File.Delete(fileName);
-            this.ParentDlg.Ok();
-        }
-
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            StockAlertConfig.ReloadConfig();
-            this.ParentDlg.Cancel();
-        }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

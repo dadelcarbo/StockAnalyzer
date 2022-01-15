@@ -2,8 +2,10 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -30,6 +32,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Active = alertDef.Active;
             this.BarDuration = alertDef.BarDuration;
             this.Theme = alertDef.Theme;
+            this.Stop = alertDef.Stop;
             switch (this.alertType)
             {
                 case AlertType.Group:
@@ -80,6 +83,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         public IEnumerable<string> Themes { get; set; }
         public IEnumerable<string> IndicatorNames { get; set; }
+        public IEnumerable<string> StopNames => IndicatorNames.Where(i => i.StartsWith("TRAILSTOP|")).Select(i => i.Replace("TRAILSTOP|", ""));
+
+        private string stop;
+        public string Stop { get => stop; set => SetProperty(ref stop, value); }
 
         #region Trigger
         private string triggerName;
@@ -168,7 +175,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public string[] FilterEvents { get; set; }
 
         private string filterEvent;
-
         public string FilterEvent
         {
             get { return filterEvent; }
@@ -204,11 +210,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
-        private int alertId2 = -1;
-        private int AlertId
+        private int alertId = -1;
+        public int AlertId
         {
-            get => alertId2;
-            set { this.alertId2 = value; this.IsDeleteEnabled = this.alertId2 != -1; }
+            get => alertId;
+            set { SetProperty(ref alertId, value); this.IsDeleteEnabled = this.alertId != -1; }
         }
 
         #region Add Alert Command
@@ -229,7 +235,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void AddAlert()
         {
-            var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId2);
+            var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId);
             if (alertDef == null)
             {
                 alertDef = new StockAlertDef()
@@ -280,9 +286,15 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.BarDuration = this.BarDuration;
             alertDef.Theme = this.Theme;
             alertDef.CreationDate = DateTime.Now;
+            alertDef.Stop = this.Stop;
 
             this.OnPropertyChanged("AlertDefs");
             this.AlertId = -1;
+
+            StockAlertConfig.SaveConfig();
+            var fileName = Folders.Report + @"\LastGeneration.txt";
+            if (File.Exists(fileName))
+                File.Delete(fileName);
         }
 
         #endregion
@@ -311,11 +323,16 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             if (AlertId < 0)
                 return;
-            var alertDef = allAlertDefs.RemoveAll(a => a.Id == AlertId);
+
+            allAlertDefs.RemoveAll(a => a.Id == AlertId);
             this.OnPropertyChanged("AlertDefs");
             this.AlertId = -1;
-        }
 
+            StockAlertConfig.SaveConfig();
+            var fileName = Folders.Report + @"\LastGeneration.txt";
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+        }
 
         #endregion
     }

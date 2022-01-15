@@ -114,6 +114,11 @@ namespace StockAnalyzer.StockClasses
                     System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
                     this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName));
+
+                    foreach (var alert in this.Alerts)
+                    {
+                        alert.SetAlertDef();
+                    }
                 }
             }
             catch (Exception ex)
@@ -140,7 +145,7 @@ namespace StockAnalyzer.StockClasses
                 };
                 System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                 XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.Alert).ThenBy(a => a.StockName));
+                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.AlertDefId).ThenBy(a => a.StockName));
                 serializer.Serialize(xmlWriter, this.alerts);
             }
         }

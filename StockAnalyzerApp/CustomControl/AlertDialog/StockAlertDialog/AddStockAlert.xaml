@@ -9,32 +9,36 @@
              mc:Ignorable="d"
              d:DesignWidth="700" d:DesignHeight="550" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=local:AddStockAlertViewModel, IsDesignTimeCreatable=False}">
-    <Grid Background="White">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid Background="White" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <TabControl Name="tabControl" Grid.Row="0" Margin="1" SelectionChanged="tabControl_SelectionChanged">
             <TabItem Header="Group Alert" Tag="{x:Static Member=stockClasses:AlertType.Group}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="110"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" >
                         <Button  Height="26" Margin="1" Command="{Binding AddAlertCommand}">
                             <Image Source="../../../Resources/check.png"/>
                         </Button>
-                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" IsEnabled="{Binding IsDeleteEnabled}">
+                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Image Source="../../../Resources/DeleteTheme.png"/>
                         </Button>
                     </StackPanel>
                     <StackPanel Grid.Row="0">
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80" Content="Title "/>
-                            <TextBox Text="{Binding Title}" Width="496"/>
+                            <TextBox Text="{Binding Title}" Width="496"  VerticalAlignment="Center"/>
                             <Label Content="Active"/>
                             <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center"/>
+                            <Label Content=" Id "/>
+                            <TextBox Text="{Binding AlertId}" IsEnabled="False" Width="30" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80" Content="Group "/>
@@ -43,20 +47,24 @@
                             <Label Content="Theme"/>
                             <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1">
+                        <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Trigger</Label>
                             <telerik:RadComboBox SelectedItem="{Binding TriggerName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
                             <Label Content="Event"/>
                             <telerik:RadComboBox SelectedItem="{Binding TriggerEvent, Mode=TwoWay}" ItemsSource="{Binding TriggerEvents}" Width="250"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1">
+                        <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Filter</Label>
                             <telerik:RadComboBox SelectedItem="{Binding FilterName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
                             <Label Content="Event"/>
                             <telerik:RadComboBox SelectedItem="{Binding FilterEvent, Mode=TwoWay}" ItemsSource="{Binding FilterEvents}" Width="250"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="1">
+                            <Label Width="80">Stop</Label>
+                            <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
+                        </StackPanel>
                     </StackPanel>
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" Height="400"
+                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" MaxHeight="350" Height="350"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" 
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="RadGridView_SelectionChanged">
                         <telerik:RadGridView.Columns>
@@ -66,12 +74,13 @@
                             <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" IsReadOnly="True"/>
-                            <telerik:GridViewDataColumn Header="Filter&#x0a;Type" DataMemberBinding="{Binding FilterType}" IsReadOnly="True"/>
-                            <telerik:GridViewDataColumn Header="Filter&#x0a;Name" DataMemberBinding="{Binding FilterName}" IsReadOnly="True"/>
-                            <telerik:GridViewDataColumn Header="Filter&#x0a;Event" DataMemberBinding="{Binding FilterEventName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Type" DataMemberBinding="{Binding IndicatorType}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Name" DataMemberBinding="{Binding IndicatorName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Event" DataMemberBinding="{Binding EventName}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Filter&#x0a;Type" DataMemberBinding="{Binding FilterType}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Filter&#x0a;Name" DataMemberBinding="{Binding FilterName}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Filter&#x0a;Event" DataMemberBinding="{Binding FilterEventName}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
@@ -80,14 +89,14 @@
             <TabItem Header="Stock Alert" Tag="{x:Static Member=stockClasses:AlertType.Stock}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" >
                         <Button  Height="26" Margin="1" Command="{Binding AddAlertCommand}">
                             <Image Source="../../../Resources/check.png"/>
                         </Button>
-                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" IsEnabled="{Binding IsDeleteEnabled}">
+                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Image Source="../../../Resources/DeleteTheme.png"/>
                         </Button>
                     </StackPanel>
@@ -100,21 +109,27 @@
                             <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
                             <Label Content="Active"/>
                             <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center"/>
+                            <Label Content=" Id "/>
+                            <TextBox Text="{Binding AlertId}" IsEnabled="False" Width="30" VerticalContentAlignment="Center"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1">
+                        <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Trigger</Label>
                             <telerik:RadComboBox SelectedItem="{Binding TriggerName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
                             <Label Content="Event"/>
                             <telerik:RadComboBox SelectedItem="{Binding TriggerEvent, Mode=TwoWay}" ItemsSource="{Binding TriggerEvents}" Width="250"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1">
+                        <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Filter</Label>
                             <telerik:RadComboBox SelectedItem="{Binding FilterName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
                             <Label Content="Event"/>
                             <telerik:RadComboBox SelectedItem="{Binding FilterEvent, Mode=TwoWay}" ItemsSource="{Binding FilterEvents}" Width="250"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="1">
+                            <Label Width="80">Stop</Label>
+                            <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
+                        </StackPanel>
                     </StackPanel>
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" Height="400"
+                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" MaxHeight="350" Height="350"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" 
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="RadGridView_SelectionChanged">
                         <telerik:RadGridView.Columns>
@@ -129,6 +144,7 @@
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Type" DataMemberBinding="{Binding IndicatorType}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Name" DataMemberBinding="{Binding IndicatorName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Event" DataMemberBinding="{Binding EventName}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
@@ -141,14 +157,14 @@
                         <ColumnDefinition Width="645*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Column="1" >
                         <Button  Height="26" Margin="1" Command="{Binding AddAlertCommand}">
                             <Image Source="../../../Resources/check.png"/>
                         </Button>
-                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" IsEnabled="{Binding IsDeleteEnabled}">
+                        <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Image Source="../../../Resources/DeleteTheme.png"/>
                         </Button>
                     </StackPanel>
@@ -161,6 +177,8 @@
                             <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
                             <Label Content="Active"/>
                             <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center"/>
+                            <Label Content=" Id "/>
+                            <TextBox Text="{Binding AlertId}" IsEnabled="False" Width="30" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="40">Price</Label>
@@ -168,9 +186,12 @@
                             <RadioButton VerticalAlignment="Center" IsChecked="{Binding BrokenUp}" Margin="4">Broken Up</RadioButton>
                             <RadioButton VerticalAlignment="Center" Margin="4">Broken Down</RadioButton>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="1">
+                            <Label Width="80">Stop</Label>
+                            <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
+                        </StackPanel>
                     </StackPanel>
-
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" Height="400"
+                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" MaxHeight="350" Height="350"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" 
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="RadGridView_SelectionChanged" Grid.ColumnSpan="2">
                         <telerik:RadGridView.Columns>
@@ -181,15 +202,12 @@
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Price&#x0a;Trigger" DataMemberBinding="{Binding PriceTrigger}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Broken&#x0a;Up" DataMemberBinding="{Binding TriggerBrokenUp}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
         </TabControl>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="1">
-            <Button Content="Save and Exit" Margin="1" Click="okButton_Click" IsDefault="True"/>
-            <Button Content="Cancel" Margin="1" Click="cancelButton_Click" IsCancel="True"></Button>
-        </StackPanel>
     </Grid>
 </UserControl>

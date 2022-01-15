@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses
 
         public int Id { get; set; }
         public AlertType Type { get; set; }
-        public bool Active{ get; set; }
+        public bool Active { get; set; }
 
         public string Theme { get; set; }
         public string Title { get; set; }
@@ -37,13 +37,15 @@ namespace StockAnalyzer.StockClasses
         public string EventName { get; set; }
         public string EventFullName
         {
-            get { return IndicatorFullName + "=>" + EventName; }
+            get { return EventName + "=>" + IndicatorFullName; }
         }
 
         public string FilterType { get; set; }
         public string FilterName { get; set; }
         public string FilterEventName { get; set; }
         public string FilterFullName { get { return FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName; } }
+
+        public string Stop { get; set; }
 
         public override string ToString()
         {
