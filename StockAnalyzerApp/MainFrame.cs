@@ -296,18 +296,23 @@ namespace StockAnalyzerApp
                 new System.Windows.FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             // Graphical initialisation
-            StockSplashScreen.ProgressText = "Checking license";
+            StockSplashScreen.ProgressText = "Initialising folders";
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ProgressMax = 100;
             StockSplashScreen.ProgressMin = 0;
             StockSplashScreen.ShowSplashScreen();
 
             // This is the first time the user runs the application.
-            string dataFolder = Folders.DataFolder;
-            if (string.IsNullOrEmpty(dataFolder) || !Directory.Exists(dataFolder) || string.IsNullOrEmpty(Folders.PersonalFolder) || !Directory.Exists(dataFolder))
+            while (string.IsNullOrEmpty(Folders.DataFolder) || !Directory.Exists(Folders.DataFolder) || string.IsNullOrEmpty(Folders.PersonalFolder) || !Directory.Exists(Folders.PersonalFolder))
             {
-                dataFolder = Folders.DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\data");
-                Folders.PersonalFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "UltimateChartist");
+                if (string.IsNullOrEmpty(Folders.DataFolder))
+                {
+                    Folders.DataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\data");
+                }
+                if (string.IsNullOrEmpty(Folders.PersonalFolder))
+                {
+                    Folders.PersonalFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "UltimateChartist");
+                }
 
                 Settings.Default.UserId = Environment.UserName;
                 PreferenceDialog prefDlg = new PreferenceDialog();
@@ -316,13 +321,6 @@ namespace StockAnalyzerApp
                 {
                     Environment.Exit(0);
                 }
-            }
-
-            // Root folder sanity check
-            if (!Directory.Exists(Folders.PersonalFolder) || !Directory.Exists(dataFolder))
-            {
-                MessageBox.Show(UltimateChartistStrings.SetupCorruptedText, UltimateChartistStrings.SetupCorruptedTitle, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                Environment.Exit(0);
             }
 
             string folderName = Folders.DividendFolder;
@@ -705,6 +703,7 @@ namespace StockAnalyzerApp
         {
             try
             {
+                Thread.CurrentThread.CurrentCulture = EnglishCulture;
                 this.GenerateAlert((StockAlertConfig)param);
             }
             catch (Exception ex)
@@ -714,13 +713,15 @@ namespace StockAnalyzerApp
         }
         public void GenerateAlert(StockAlertConfig alertConfig)
         {
-            StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Alert: " + alertConfig.TimeFrame);
+            StockLog.Write("Thread: " + Thread.CurrentThread.Name + "Culture: " + Thread.CurrentThread.CurrentCulture);
             if (alertThreadBusy || alertConfig == null)
                 return;
             alertThreadBusy = true;
 
             try
             {
+                alertConfig.AlertLog.Alerts.Clear();
+
                 if (alertConfig.TimeFrame != StockAlertTimeFrame.Intraday)
                 {
                     (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
@@ -728,6 +729,7 @@ namespace StockAnalyzerApp
 
                 foreach (var alertDef in alertConfig.AlertDefs)
                 {
+                    StockLog.Write($"AlertDef.Id: {alertDef.Id}");
                     List<StockSerie> stockList = new List<StockSerie>();
                     switch (alertDef.Type)
                     {
@@ -796,12 +798,22 @@ namespace StockAnalyzerApp
                             continue;
                         if (stockSerie.MatchEvent(alertDef, lastIndex))
                         {
+                            float stop = float.NaN;
+                            if (!string.IsNullOrEmpty(alertDef.Stop))
+                            {
+                                var trailStopSerie = stockSerie.GetTrailStop(alertDef.Stop)?.Series[0];
+                                if (trailStopSerie != null)
+                                {
+                                    stop = (float)Math.Round(trailStopSerie[lastIndex], 2);
+                                }
+                            }
                             var date = dailyValue.DATE;
                             var stockAlert = new StockAlert(alertDef,
                                 date,
                                 stockSerie.StockName,
                                 stockSerie.StockGroup.ToString(),
                                 dailyValue.CLOSE,
+                                stop,
                                 dailyValue.VOLUME,
                                 stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
 

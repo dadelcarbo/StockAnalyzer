@@ -238,9 +238,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId);
             if (alertDef == null)
             {
+                int nextId = allAlertDefs.Count() == 0 ? 1 : allAlertDefs.Max(a => a.Id) + 1;
                 alertDef = new StockAlertDef()
                 {
-                    Id = allAlertDefs.Max(a => a.Id) + 1,
+                    Id = nextId,
                     Type = this.alertType
                 };
                 this.allAlertDefs.Insert(0, alertDef);
