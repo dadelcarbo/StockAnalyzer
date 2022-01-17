@@ -2,6 +2,7 @@
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -277,7 +278,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool SupportsIntradayDownload
         {
-            get { return true; }
+            get { return Settings.Default.SupportIntraday; }
         }
 
         static string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";

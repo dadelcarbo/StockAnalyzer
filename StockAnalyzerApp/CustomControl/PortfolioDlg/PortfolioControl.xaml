@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=False}" 
-             d:DesignHeight="450" d:DesignWidth="800" Language="fr-FR">
+             d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <local:StockDateToStringConverter x:Key="StockDateConverter"/>
     </UserControl.Resources>
@@ -56,10 +56,10 @@
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=C2}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=F2}" ColumnGroupName="Entry" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
-                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=C3}" ColumnGroupName="Risk"/>
-                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop, StringFormat=C3}" ColumnGroupName="Risk"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=F3}" ColumnGroupName="Risk"/>
+                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop, StringFormat=F3}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="Trade&#x0a;Risk" DataMemberBinding="{Binding TradeRisk, StringFormat=P2}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="Equity&#x0a;Risk" DataMemberBinding="{Binding PortfolioRisk, StringFormat=P2}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current"/>
@@ -100,12 +100,12 @@
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=C3}" ColumnGroupName="Entry"/>
-                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop, StringFormat=C3}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=F3}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop, StringFormat=F3}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
                         
                         <telerik:GridViewDataColumn Header="Exit&#x0a;Date" DataMemberBinding="{Binding ExitDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Exit" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue, StringFormat=C3}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue, StringFormat=F3}" ColumnGroupName="Exit" IsReadOnly="True"/>
 
                         <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Return, StringFormat=P2}" ColumnGroupName="Exit" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=\{0:F\}}" ColumnGroupName="Exit" IsReadOnly="True"/>

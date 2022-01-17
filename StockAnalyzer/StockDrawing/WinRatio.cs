@@ -62,11 +62,11 @@ namespace StockAnalyzer.StockDrawing
                         g.DrawRectangle(ratio > 0 ? Pens.Green : Pens.Red, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
                         if (ratio > 0)
                         {
-                            g.DrawString($"R={ratio.ToString("0.##")}", font, Brushes.Black, right, points[0].Y);
+                            g.DrawString($"R={ratio.ToString("0.##")}", font, Brushes.Black, left, points[0].Y);
                         }
                         else
                         {
-                            g.DrawString($"R= {ratio.ToString("0.##")}", font, Brushes.Black, right, points[1].Y);
+                            g.DrawString($"R= {ratio.ToString("0.##")}", font, Brushes.Black, left, points[1].Y);
                         }
                         for (float i = 1; i < ratio; i++)
                         {

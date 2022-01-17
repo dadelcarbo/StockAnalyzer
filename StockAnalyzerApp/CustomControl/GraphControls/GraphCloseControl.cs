@@ -1376,7 +1376,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // Paint Bars
                         if (this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
                         {
-
                             int j = 0;
                             foreach (BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
                             {

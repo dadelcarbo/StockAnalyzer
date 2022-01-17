@@ -37,19 +37,22 @@ namespace StockAnalyzer.StockClasses
 
         private void LoadFromFile(string filePath)
         {
-            DownloadDate = File.GetLastWriteTimeUtc(filePath);
-            var entries = new List<StockDividendEntry>();
-            foreach (var line in File.ReadAllLines(filePath).Skip(1))
+            if (File.Exists(filePath))
             {
-                try
+                DownloadDate = File.GetLastWriteTimeUtc(filePath);
+                var entries = new List<StockDividendEntry>();
+                foreach (var line in File.ReadAllLines(filePath).Skip(1))
                 {
-                    var fields = line.Split(',');
-                    entries.Add(new StockDividendEntry { Date = DateTime.Parse(fields[0]), Dividend = float.Parse(fields[1]) });
+                    try
+                    {
+                        var fields = line.Split(',');
+                        entries.Add(new StockDividendEntry { Date = DateTime.Parse(fields[0]), Dividend = float.Parse(fields[1]) });
+                    }
+                    catch { }
                 }
-                catch { }
-            }
 
-            this.Entries = entries.OrderBy(e => e.Date).ToList();
+                this.Entries = entries.OrderBy(e => e.Date).ToList();
+            }
         }
 
         public DateTime DownloadDate { get; set; }
@@ -74,7 +77,7 @@ namespace StockAnalyzer.StockClasses
         public bool DownloadFromYahoo(StockSerie stockSerie, bool force = false)
         {
             var shortName = stockSerie.ShortName;
-            if (stockSerie.DataProvider == StockDataProvider.ABC)
+            if (stockSerie.DataProvider == StockDataProvider.ABC && stockSerie.BelongsToGroup(StockSerie.Groups.PEA))
             {
                 if (!shortName.EndsWith(".PA"))
                 {

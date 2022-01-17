@@ -24,6 +24,7 @@ namespace StockAnalyzerApp.CustomControl
             this.showVariationCheckBox.Checked = Settings.Default.ShowVariation;
             this.userIDTextBox.Text = Settings.Default.UserId;
             this.startYearTextBox.Value = Settings.Default.LoadStartYear;
+            this.supportIntradayCheckBox.Checked = Settings.Default.SupportIntraday;
             this.smtpTextBox.Text = Settings.Default.UserSMTP;
             this.addressTextBox.Text = Settings.Default.UserEMail;
             this.alertFrequencyUpDown.Value = Settings.Default.AlertsFrequency;
@@ -45,6 +46,8 @@ namespace StockAnalyzerApp.CustomControl
             Settings.Default.ShowVariation = this.showVariationCheckBox.Checked;
             Settings.Default.UserId = this.userIDTextBox.Text;
             Settings.Default.LoadStartYear = (int)this.startYearTextBox.Value;
+            Settings.Default.SupportIntraday = this.supportIntradayCheckBox.Checked;
+            
             Settings.Default.UserSMTP = this.smtpTextBox.Text;
             Settings.Default.UserEMail = this.addressTextBox.Text;
 
@@ -71,11 +74,6 @@ namespace StockAnalyzerApp.CustomControl
         }
 
         private void userIDTextBox_TextChanged(object sender, EventArgs e)
-        {
-            needRestart = true;
-        }
-
-        private void intradaySupportCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             needRestart = true;
         }

@@ -32,6 +32,19 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.closedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
+
+            StockAnalyzerForm.MainFrame.GraphCloseControl.StopChanged += GraphCloseControl_StopChanged;
+            Form.FormClosing += Form_FormClosing;
+        }
+
+        private void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.GraphCloseControl.StopChanged += GraphCloseControl_StopChanged;
+        }
+
+        private void GraphCloseControl_StopChanged(float stopValue)
+        {
+            this.openedPositionGridView.Rebind();
         }
 
         private void MouseDownOnCell(object sender, MouseButtonEventArgs e)

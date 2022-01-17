@@ -545,7 +545,7 @@ Do you want to restart now ?</value>
     <value>NoControl</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 16</value>
+    <value>6, 17</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>82, 13</value>
@@ -567,6 +567,36 @@ Do you want to restart now ?</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="supportIntradayCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="supportIntradayCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="supportIntradayCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 59</value>
+  </data>
+  <data name="supportIntradayCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>109, 17</value>
+  </data>
+  <data name="supportIntradayCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="supportIntradayCheckBox.Text" xml:space="preserve">
+    <value>Supports Intraday</value>
+  </data>
+  <data name="&gt;&gt;supportIntradayCheckBox.Name" xml:space="preserve">
+    <value>supportIntradayCheckBox</value>
+  </data>
+  <data name="&gt;&gt;supportIntradayCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;supportIntradayCheckBox.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;supportIntradayCheckBox.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>193, 168</value>

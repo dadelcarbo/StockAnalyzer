@@ -50,6 +50,7 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.startYearTextBox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.supportIntradayCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.testButton = new System.Windows.Forms.Button();
             this.addressTextBox = new System.Windows.Forms.TextBox();
@@ -200,6 +201,7 @@ namespace StockAnalyzerApp.CustomControl
             // 
             this.groupBox2.Controls.Add(this.startYearTextBox);
             this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.supportIntradayCheckBox);
             resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
@@ -228,6 +230,12 @@ namespace StockAnalyzerApp.CustomControl
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            // 
+            // supportIntradayCheckBox
+            // 
+            resources.ApplyResources(this.supportIntradayCheckBox, "supportIntradayCheckBox");
+            this.supportIntradayCheckBox.Name = "supportIntradayCheckBox";
+            this.supportIntradayCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -339,8 +347,6 @@ namespace StockAnalyzerApp.CustomControl
             // 
             resources.ApplyResources(this.dataFolderTextBox, "dataFolderTextBox");
             this.dataFolderTextBox.Name = "dataFolderTextBox";
-            this.dataFolderTextBox.TextChanged += this.dataFolderTextBox_TextChanged;
-            this.dataFolderTextBox.Validating += dataFolderTextBox_Validating;
             // 
             // browseDataButton
             // 
@@ -359,8 +365,6 @@ namespace StockAnalyzerApp.CustomControl
             // 
             resources.ApplyResources(this.personalFolderTextBox, "personalFolderTextBox");
             this.personalFolderTextBox.Name = "personalFolderTextBox";
-            this.personalFolderTextBox.TextChanged += this.personalFolderTextBox_TextChanged;
-            this.personalFolderTextBox.Validating += this.personalFolderTextBox_Validating;
             // 
             // browsePersonalButton
             // 
@@ -438,8 +442,9 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.CheckBox showVariationCheckBox;
         private System.Windows.Forms.Label barNumberLabel;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.NumericUpDown startYearTextBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown startYearTextBox;
+        private System.Windows.Forms.CheckBox supportIntradayCheckBox; 
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox smtpTextBox;
         private System.Windows.Forms.Label label3;

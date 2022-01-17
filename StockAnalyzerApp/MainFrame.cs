@@ -651,6 +651,10 @@ namespace StockAnalyzerApp
             // Download INTRADAY current serie
             try
             {
+                if (Settings.Default.SupportIntraday)
+                {
+                    (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                }
                 if (this.currentStockSerie != null)
                 {
                     this.Cursor = Cursors.WaitCursor;
@@ -3722,6 +3726,9 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
                         return;
                     }
+
+                    var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem, this.barHeikinAshiCheckBox.CheckBox.Checked, (int)this.barLineBreakComboBox.SelectedItem);
+                    this.CurrentStockSerie.BarDuration = this.BarDuration;
                     // Delete transient drawing created by alert Detection
                     if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
