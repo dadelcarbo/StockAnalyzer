@@ -76,7 +76,18 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float? ExitValue => position.ExitValue;
 
         public float? Return => ExitValue == null ? null : (ExitValue - EntryValue) / ExitValue;
-        public float? RiskRewardRatio => ExitValue != null && Stop > 0.0f ? (ExitValue - EntryValue) / (EntryValue - Stop) : null;
+        public float? RiskRewardRatio
+        {
+            get
+            {
+                if (Stop == 0.0f)
+                    return null;
+                if (this.position.IsClosed)
+                    return (ExitValue - EntryValue) / (EntryValue - Stop);
+                else
+                    return (LastValue - EntryValue) / (EntryValue - Stop);
+            }
+        }
 
         public float LastValue { get; set; }
         public float Variation => (LastValue - EntryValue) / EntryValue;

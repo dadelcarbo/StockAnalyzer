@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockDrawing
             this.Transform(matrixValueToScreen, isLog, points);
             var left = points.Min(p => p.X);
             var right = points.Max(p => p.X);
-            var width = right - left;
+            var width = Math.Max(10, right - left);
 
             switch (points.Length)
             {
@@ -62,16 +62,21 @@ namespace StockAnalyzer.StockDrawing
                         g.DrawRectangle(ratio > 0 ? Pens.Green : Pens.Red, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
                         if (ratio > 0)
                         {
-                            g.DrawString($"R={ratio.ToString("0.##")}", font, Brushes.Black, left, points[0].Y);
+                            this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
+                            for (float i = 1; i < ratio; i++)
+                            {
+                                var height = Math.Max(points[1].Y, points[2].Y) - i * loss;
+                                g.DrawLine(Pens.Green, left, height, right, height);
+                            }
                         }
                         else
                         {
-                            g.DrawString($"R= {ratio.ToString("0.##")}", font, Brushes.Black, left, points[1].Y);
-                        }
-                        for (float i = 1; i < ratio; i++)
-                        {
-                            var height = points[0].Y > points[1].Y ? Math.Max(points[1].Y, points[2].Y) - i * loss : Math.Min(points[1].Y, points[2].Y) + i * loss;
-                            g.DrawLine(ratio > 0 ? Pens.Green : Pens.Red, left, height, right, height);
+                            for (float i = -1; i > ratio; i--)
+                            {
+                                var height = Math.Min(points[1].Y, points[2].Y) - i * loss;
+                                g.DrawLine(Pens.Red, left, height, right, height);
+                            }
+                            this.DrawText(g, $"R= {ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 40, points[1].Y - 13), true, Pens.Black);
                         }
                     }
                     break;

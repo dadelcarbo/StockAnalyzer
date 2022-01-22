@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockDrawing
@@ -47,6 +48,19 @@ namespace StockAnalyzer.StockDrawing
             };
         }
 
+        public void DrawText(Graphics g, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, bool drawFrame, Pen pen)
+        {
+            string trimmedText = text.Trim();
+            Size size = TextRenderer.MeasureText(trimmedText, font);
+
+            RectangleF rect = new RectangleF(location.X, location.Y, size.Width, size.Height);
+            if (drawFrame)
+            {
+                g.FillRectangle(backgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+                g.DrawRectangle(pen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+            }
+            g.DrawString(trimmedText, font, brush, rect);
+        }
         #region XML SERIALISATION
         public abstract System.Xml.Schema.XmlSchema GetSchema();
         public abstract void ReadXml(System.Xml.XmlReader reader);

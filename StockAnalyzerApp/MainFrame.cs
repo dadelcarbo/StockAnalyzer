@@ -679,8 +679,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private StockAlertConfig intradayAlertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-
         private void alertTimer_Tick(object sender, EventArgs e)
         {
             if (TimerSuspended)
@@ -724,11 +722,15 @@ namespace StockAnalyzerApp
 
             try
             {
-                alertConfig.AlertLog.Alerts.Clear();
-
                 if (alertConfig.TimeFrame != StockAlertTimeFrame.Intraday)
                 {
                     (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                    alertConfig.AlertLog.Alerts.Clear();
+                }
+                else
+                {
+                    var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
+                    oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
                 }
 
                 foreach (var alertDef in alertConfig.AlertDefs)
@@ -914,9 +916,10 @@ namespace StockAnalyzerApp
             }
         }
 
+        const int MIN_BAR_DISPLAY = 25;
         private void ZoomIn()
         {
-            NbBars = Math.Max(25, (int)(NbBars / 1.75f));
+            NbBars = Math.Max(MIN_BAR_DISPLAY, (int)(NbBars / 1.75f));
             int newIndex = Math.Max(0, endIndex - NbBars);
             if (newIndex != this.startIndex)
             {
@@ -1197,7 +1200,7 @@ namespace StockAnalyzerApp
                 }
                 id += " - " + this.CurrentStockSerie.DataProvider;
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
-                if (newSerie.Count < 20)
+                if (newSerie.Count < MIN_BAR_DISPLAY)
                 {
                     DeactivateGraphControls("Not enough data to display");
                     return;
@@ -2329,7 +2332,7 @@ namespace StockAnalyzerApp
                     }
                     this.endIndex = this.CurrentStockSerie.Count - 1;
                     this.startIndex = Math.Max(0, this.endIndex - NbBars);
-                    if (endIndex - startIndex < 10)
+                    if (endIndex - startIndex < MIN_BAR_DISPLAY)
                     {
                         this.DeactivateGraphControls("Not enough data to display...");
                         return;
@@ -3573,6 +3576,7 @@ namespace StockAnalyzerApp
             }
             else
             {
+                alertDlg.WindowState = FormWindowState.Normal;
                 alertDlg.Activate();
             }
         }
@@ -3727,12 +3731,19 @@ namespace StockAnalyzerApp
                         return;
                     }
 
+                    // Set bar duration
                     var bd = new StockBarDuration((BarDuration)this.barDurationComboBox.SelectedItem, (int)this.barSmoothingComboBox.SelectedItem, this.barHeikinAshiCheckBox.CheckBox.Checked, (int)this.barLineBreakComboBox.SelectedItem);
                     this.CurrentStockSerie.BarDuration = this.BarDuration;
                     // Delete transient drawing created by alert Detection
                     if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                     {
                         this.CurrentStockSerie.ResetIndicatorCache();
+                    }
+
+                    if (this.CurrentStockSerie.Count < MIN_BAR_DISPLAY)
+                    {
+                        this.DeactivateGraphControls("Not enough data to display...");
+                        return;
                     }
 
                     // Build curve list from definition
@@ -4020,31 +4031,26 @@ namespace StockAnalyzerApp
                         }
                     }
 
-                    // Apply Strategy
-
-                    // Create new simulation portfolio
-                    if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH) ||
-                        this.currentStockSerie.BelongsToGroup(StockSerie.Groups.INDICATOR) ||
-                        this.currentStockSerie.BelongsToGroup(StockSerie.Groups.NONE))
+                    if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                     {
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
+                        string[] fields = this.currentStockSerie.StockName.Split('.');
+                        if (this.StockDictionary.ContainsKey(fields[1]))
                         {
-                            string[] fields = this.currentStockSerie.StockName.Split('.');
-                            if (this.StockDictionary.ContainsKey(fields[1]))
-                            {
-                                this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
-                            }
+                            this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
                         }
                     }
 
-                    // Reinitialise drawing
+                    // Reinitialise zoom
                     ResetZoom();
-                    this.Cursor = Cursors.Arrow;
                 }
 
                 catch (Exception ex)
                 {
                     StockAnalyzerException.MessageBox(ex);
+                }
+                finally
+                {
+                    this.Cursor = Cursors.Arrow;
                 }
             }
         }

@@ -500,19 +500,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #endregion
 
-                #region Display drawing items
-
-                if (this.ShowDrawings && this.drawingItems != null)
-                {
-                    PaintDrawings(aGraphic, this.drawingItems);
-                }
-                if (this.CurveList?.AutoDrawing?.DrawingItems != null)
-                {
-                    PaintDrawings(aGraphic, this.CurveList.AutoDrawing.DrawingItems);
-                }
-
-                #endregion
-
                 #region Display the stock value
                 if (this.CurveList.PaintBar != null)
                 {
@@ -796,6 +783,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 if (ShowOrders && this.Portfolio != null)
                 {
                     PaintOrders(aGraphic);
+                }
+
+                #endregion
+
+                #region Display drawing items
+
+                if (this.ShowDrawings && this.drawingItems != null)
+                {
+                    PaintDrawings(aGraphic, this.drawingItems);
+                }
+                if (this.CurveList?.AutoDrawing?.DrawingItems != null)
+                {
+                    PaintDrawings(aGraphic, this.CurveList.AutoDrawing.DrawingItems);
                 }
 
                 #endregion
@@ -1597,7 +1597,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (newWinRatio == null)
                         {
-                            DrawTmpItem(this.foregroundGraphic, new WinRatio(point1, point2, PointF.Empty), true);
+                            if (point1.Y < point2.Y)
+                            {
+                                DrawTmpItem(this.foregroundGraphic, new WinRatio(point1, point2, PointF.Empty), true);
+                            }
+                            else
+                            {
+                                DrawTmpItem(this.foregroundGraphic, new WinRatio(point2, point1, PointF.Empty), true);
+                            }
                         }
                         else
                         {
@@ -1957,7 +1964,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 if (newWinRatio == null)
                                 {
-                                    newWinRatio = new WinRatio(point1, point2, PointF.Empty);
+                                    if (point1.Y < point2.Y)
+                                    {
+                                        newWinRatio = new WinRatio(point1, point2, PointF.Empty);
+                                    }
+                                    else
+                                    {
+                                        newWinRatio = new WinRatio(point2, point1, PointF.Empty);
+                                    }
                                     this.BackgroundDirty = true; // The new line becomes a part of the background
                                     selectedLineIndex = -1;
                                     selectedValuePoint = PointF.Empty;
