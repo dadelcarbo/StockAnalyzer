@@ -91,7 +91,7 @@ namespace StockAnalyzer.StockDrawing
         {
             Segment2D[] segmentArray = rect.GetSegments();
 
-            PointF[] pointArray = new PointF[] { PointF.Empty, PointF.Empty };
+            PointF[] pointArray = new PointF[] { PointF.Empty, PointF.Empty, PointF.Empty, PointF.Empty };
             int nbPoints = 0;
 
             PointF intersectionPoint = PointF.Empty;

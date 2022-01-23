@@ -51,15 +51,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private PointF selectedValuePoint;
 
-        protected bool ShowOrders { get { return Settings.Default.ShowOrders; } }
-        protected bool ShowPositions { get { return Settings.Default.ShowPositions; } }
-        protected bool ShowEventMarquee { get { return Settings.Default.ShowEventMarquee; } }
-        protected bool ShowCommentMarquee { get { return Settings.Default.ShowCommentMarquee; } }
-        protected bool ShowDividend { get { return Settings.Default.ShowDividend; } }
+        protected bool ShowDrawings => Settings.Default.ShowDrawings;
+        protected bool ShowVariation => Settings.Default.ShowVariation;
+        protected bool ShowOrders => Settings.Default.ShowOrders;
+        protected bool ShowPositions => Settings.Default.ShowPositions;
+        protected bool ShowEventMarquee => Settings.Default.ShowEventMarquee;
+        protected bool ShowCommentMarquee => Settings.Default.ShowCommentMarquee;
+        protected bool ShowDividend => Settings.Default.ShowDividend;
 
         protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda); } }
-        protected bool ShowIndicatorDiv { get { return Settings.Default.ShowIndicatorDiv; } }
-        protected bool ShowIndicatorText { get { return Settings.Default.ShowIndicatorText; } }
+        protected bool ShowIndicatorDiv => Settings.Default.ShowIndicatorDiv;
+        protected bool ShowIndicatorText => Settings.Default.ShowIndicatorText;
 
 
         GraphCurveType closeCurveType = null;
@@ -138,8 +140,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         override protected void SetFrameMargin()
         {
-            this.XMargin = MARGIN_SIZE * 2;
-            this.YMargin = MARGIN_SIZE;
+            this.XMargin = WIDTH_MARGIN_SIZE;
+            this.YMargin = HEIGHT_MARGIN_SIZE;
         }
         #region PAINT METHODS
         override protected void PaintCopyright(Graphics aGraphic)
@@ -945,12 +947,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 value += BuildTabbedString("TIME", this.dateSerie[lastMouseIndex].ToShortTimeString(), 12) + "\r\n";
             }
             float closeValue = float.NaN;
+            float var = float.NaN;
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
                     if (closeCurveType.DataSerie.Name == "CLOSE")
+                    {
                         closeValue = curveType.DataSerie[this.lastMouseIndex];
+                        var previousClose = curveType.DataSerie[Math.Max(0, this.lastMouseIndex - 1)];
+                        var = (closeValue - previousClose) / previousClose;
+                    }
                     if (curveType.DataSerie.Name.Length > 6)
                     {
                         value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
@@ -960,6 +967,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
                     }
                 }
+            }
+            if (!float.IsNaN(var))
+            {
+                value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n" + "\r\n";
             }
             // Add indicators
             foreach (IStockIndicator stockIndicator in CurveList.Indicators)
@@ -1054,21 +1065,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
             }
 #if DEBUG
-            value += BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12) + "\r\n";
-#endif
-            // Remove last new line.
-            if (value.Length != 0)
-            {
-                value = value.Remove(value.LastIndexOf("\r\n"));
-            }
-
+            value += "\r\n" + BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12);
+#endif 
             // Draw it now
             Size size = TextRenderer.MeasureText(value, toolTipFont);
-
             PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), Math.Min(mousePoint.Y + 10, GraphRectangle.Bottom - size.Height));
 
             this.DrawString(this.foregroundGraphic, value, toolTipFont, Brushes.Black, this.textBackgroundBrush, point, true);
-
         }
         protected override void PaintGraphTitle(Graphics gr)
         {
@@ -1186,12 +1189,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (position.Stop != 0)
                     {
                         int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
-                        this.DrawStop(graphic, stopPen, entryIndex, position.Stop);
+                        this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
                     }
                     if (position.TrailStop != 0 && position.TrailStop != position.Stop)
                     {
                         int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
-                        this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop);
+                        this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
                     }
                 }
             }
@@ -1300,12 +1303,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                     }
+                    DrawMouseCross(mouseValuePoint, mouseOverThis, this.axisDashPen);
                     int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
                     if (this.DrawingMode == GraphDrawMode.Normal)
                     {
                         if ((key & Keys.Control) != 0)
                         {
-                            DrawMouseCross(mouseValuePoint, mouseOverThis);
                             this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
                         }
                         else
@@ -1452,12 +1455,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     #endregion
 
                     #region Display Trail Stop Anchor
-                    if (mouseOverThis && this.ShowPositions &&
-                        this.Portfolio != null &&
+                    if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
                         (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
-                    (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                        (mousePoint.X + 15 >= this.GraphRectangle.Right))
                     {
-                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y);
+                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, false);
                         this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
                     }
                     #endregion
@@ -1572,8 +1574,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF point1 = selectedValuePoint;
             PointF point2 = mouseValuePoint;
 
-            if ((int)selectedValuePoint.X == (int)mouseValuePoint.X)
-                return;
             if ((Control.ModifierKeys & Keys.Shift) != 0)
             {
                 point2 = new PointF(mouseValuePoint.X, point1.Y);
@@ -2174,7 +2174,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        protected override void DrawMousePos(int indexInValues, int y)
+        protected override void DrawMousePos(int indexInValues, float y)
         {
             if (indexInValues != -1)
             {
@@ -2189,20 +2189,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         value = high;
                         screenPoint = GetScreenPointFromValuePoint(indexInValues, high);
-                        this.foregroundGraphic.DrawEllipse(greenPen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
+                        //this.foregroundGraphic.DrawEllipse(greenPen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
                     }
                     else
                     {
                         value = low;
                         screenPoint = GetScreenPointFromValuePoint(indexInValues, low);
-                        this.foregroundGraphic.DrawEllipse(redPen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
+                        //this.foregroundGraphic.DrawEllipse(redPen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
                     }
                 }
                 else
                 {
                     value = closeCurveType.DataSerie[indexInValues];
                     screenPoint = GetScreenPointFromValuePoint(new PointF(indexInValues, value));
-                    this.foregroundGraphic.DrawEllipse(mousePen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
+                    //this.foregroundGraphic.DrawEllipse(mousePen, screenPoint.X - MOUSE_MARQUEE_SIZE, screenPoint.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
                 }
                 // Draw date for selected value
                 string dateString;
@@ -2221,12 +2221,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
         }
-        protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool transform = true)
+        protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool showText)
         {
-            var p1 = transform ? this.GetScreenPointFromValuePoint(index, stop) : new PointF(index, stop);
+            var p1 = this.GetScreenPointFromValuePoint(index, stop);
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
-            this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+            if (showText)
+                this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         #endregion
         #region Geometric Functions

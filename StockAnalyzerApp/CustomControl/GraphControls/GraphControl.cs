@@ -59,7 +59,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public event MouseDateChangedHandler OnMouseDateChanged;
 
         // Constants
-        protected const int MARGIN_SIZE = 18;
+        protected const int HEIGHT_MARGIN_SIZE = 18;
+        protected const int WIDTH_MARGIN_SIZE = 30;
         protected const int MOUSE_MARQUEE_SIZE = 3;
         protected const int EVENT_MARQUEE_SIZE = 4;
 
@@ -82,14 +83,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public List<HLine> horizontalLines { get; set; }
 
         public GraphChartMode ChartMode { get; set; }
-        public bool ShowVariation { get; set; }
 
         protected float minValue = float.MaxValue;
         protected float maxValue = float.MinValue;
         public bool IsLogScale { get; set; }
         public bool IsInverse { get; set; }
         public bool ScaleInvisible { get; set; }
-        protected bool ShowDrawings { get { return StockAnalyzerSettings.Properties.Settings.Default.ShowDrawings; } }
         public bool ShowGrid { get; set; }
         protected List<GraphAction> GraphActions { get; set; }
         protected int currentActionIndex;
@@ -160,6 +159,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected Pen framePen;
         protected Pen textFramePen;
         protected Pen axisPen;
+        protected Pen axisDashPen;
         protected Pen mousePen;
         protected Pen HigherHighPen;
         protected Pen LowerLowPen;
@@ -253,6 +253,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             textFramePen = new Pen(Color.Black, 1.0f);
             gridPen = new Pen(Color.LightGray, 1.0f);
             axisPen = new Pen(Color.Black, 1.0f);
+            axisDashPen = new Pen(Color.DarkGray, 1.0f) { DashStyle = DashStyle.Dash };
             axisFont = new Font(FontFamily.GenericSansSerif, 7);
             toolTipFont = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Monospace), 8);
             mousePen = new Pen(Color.Black, 1.0f);
@@ -418,7 +419,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-                this.XMargin = MARGIN_SIZE * 2;
+                this.XMargin = WIDTH_MARGIN_SIZE;
                 this.YMargin = 0;
             }
         }
@@ -967,15 +968,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     if (mousePoint.X > this.GraphRectangle.Left && mousePoint.X < this.GraphRectangle.Right)
                     {
-                        if (crossMode)
-                        {
-                            DrawMouseCross(valuePoint, true);
-                        }
-                        else
-                        {
-                            // Display under mouse info
-                            DrawMousePos(index);
-                        }
+                        DrawMouseCross(valuePoint, crossMode, this.axisDashPen);
+                        //if (crossMode)
+                        //{
+                        //    DrawMouseCross(valuePoint, true, this.axisPen);
+                        //}
+                        //else
+                        //{
+                        //    // Display under mouse info
+                        //    DrawMousePos(index);
+                        //}
 
                         PaintForeground();
                     }
@@ -1001,7 +1003,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
                             var valuePoint = GetValuePointFromScreenPoint(mousePoint);
-                            DrawMouseCross(valuePoint, mouseOverThis);
+                            DrawMouseCross(valuePoint, mouseOverThis, this.axisPen);
                             PaintForeground();
 
                             if (mouseOverThis && this.OnMouseDateChanged != null)
@@ -1041,7 +1043,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             int index = RoundToIndex(mousePoint);
 
                             // Display under mouse info
-                            DrawMousePos(index);
+                            DrawMousePos(index, mouseValuePoint.Y);
 
                             lastMouseIndex = index;
 
@@ -1086,6 +1088,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         virtual protected void Form1_MouseLeave(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(this.alternateString))
+                Cursor.Show();
             if (mouseDown)
             {
                 mouseDown = false;
@@ -1094,6 +1098,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         virtual protected void Form1_MouseEnter(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(this.alternateString))
+                Cursor.Hide();
             if (mouseDown)
             {
                 forceNoValueBoxDisplay = false;
@@ -1122,7 +1128,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
         #region DRAWING FUNCTIONS
-        protected virtual void DrawMousePos(int mouseIndex, int y = 0)
+        protected virtual void DrawMousePos(int mouseIndex, float y = 0)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
@@ -1133,9 +1139,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         // GetMarquee value
                         float value = this.mainSerie[mouseIndex];
                         if (float.IsNaN(value)) return;
-                        PointF point = new PointF(mouseIndex, value);
+                        PointF point = new PointF(mouseIndex, y);
                         PointF point2 = GetScreenPointFromValuePoint(point);
-                        this.foregroundGraphic.DrawEllipse(mousePen, point2.X - MOUSE_MARQUEE_SIZE, point2.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
+
+                        DrawMouseCross(point, y != 0, this.axisDashPen);
+
+                        //this.foregroundGraphic.DrawEllipse(mousePen, point2.X - MOUSE_MARQUEE_SIZE, point2.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
 
                         string valueString;
                         if (value > 100000000)
@@ -1621,17 +1630,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             aGraphic.DrawString(trimmedText, font, brush, rect);
             return x + size.Width - 26;
         }
-        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine)
+        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, Pen pen)
         {
             // Draw straight Line
             PointF screenPoint = RoundToIndexValue(GetScreenPointFromValuePoint(mouseValuePoint));
             if (drawHorizontalLine)
             {
-                this.foregroundGraphic.DrawLine(this.axisPen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
+                this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
                 // Print current value
                 this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
-            this.foregroundGraphic.DrawLine(this.axisPen, screenPoint.X, GraphRectangle.Bottom, screenPoint.X, GraphRectangle.Top);
+            this.foregroundGraphic.DrawLine(pen, screenPoint.X, GraphRectangle.Bottom, screenPoint.X, GraphRectangle.Top);
         }
         #endregion
         #region UNDO BUFFER MANAGEMENT

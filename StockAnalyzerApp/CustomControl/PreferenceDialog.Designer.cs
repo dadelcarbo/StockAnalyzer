@@ -191,6 +191,7 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.showVariationCheckBox, "showVariationCheckBox");
             this.showVariationCheckBox.Name = "showVariationCheckBox";
             this.showVariationCheckBox.UseVisualStyleBackColor = true;
+            
             // 
             // barNumberLabel
             // 

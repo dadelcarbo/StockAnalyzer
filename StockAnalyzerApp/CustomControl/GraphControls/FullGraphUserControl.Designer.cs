@@ -62,7 +62,6 @@
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
-            this.graphCloseControl.ShowVariation = false;
             this.graphCloseControl.Size = new System.Drawing.Size(590, 136);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
@@ -86,7 +85,6 @@
             this.graphVolumeControl.Name = "graphVolumeControl";
             this.graphVolumeControl.ScaleInvisible = false;
             this.graphVolumeControl.ShowGrid = false;
-            this.graphVolumeControl.ShowVariation = false;
             this.graphVolumeControl.Size = new System.Drawing.Size(590, 32);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 0;
@@ -144,7 +142,6 @@
             this.graphScrollerControl.Name = "graphScrollerControl";
             this.graphScrollerControl.ScaleInvisible = false;
             this.graphScrollerControl.ShowGrid = false;
-            this.graphScrollerControl.ShowVariation = false;
             this.graphScrollerControl.Size = new System.Drawing.Size(590, 19);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 1;
@@ -170,7 +167,6 @@
             this.graphIndicator1Control.RangeMin = 0F;
             this.graphIndicator1Control.ScaleInvisible = false;
             this.graphIndicator1Control.ShowGrid = false;
-            this.graphIndicator1Control.ShowVariation = false;
             this.graphIndicator1Control.Size = new System.Drawing.Size(200, 14);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 3;
@@ -196,7 +192,6 @@
             this.graphIndicator2Control.RangeMin = 0F;
             this.graphIndicator2Control.ScaleInvisible = false;
             this.graphIndicator2Control.ShowGrid = false;
-            this.graphIndicator2Control.ShowVariation = false;
             this.graphIndicator2Control.Size = new System.Drawing.Size(200, 14);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 4;
@@ -222,7 +217,6 @@
             this.graphIndicator3Control.RangeMin = 0F;
             this.graphIndicator3Control.ScaleInvisible = false;
             this.graphIndicator3Control.ShowGrid = false;
-            this.graphIndicator3Control.ShowVariation = false;
             this.graphIndicator3Control.Size = new System.Drawing.Size(200, 15);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 5;

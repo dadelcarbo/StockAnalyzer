@@ -197,6 +197,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private bool holdingViewWindow = false;
         private float tolerance = Resources.ScrollLeft.Width / 2;
 
+        override protected void Form1_MouseLeave(object sender, EventArgs e)
+        {
+            if (mouseDown)
+            {
+                mouseDown = false;
+                forceNoValueBoxDisplay = false;
+            }
+        }
+        override protected void Form1_MouseEnter(object sender, EventArgs e)
+        {
+            if (mouseDown)
+            {
+                forceNoValueBoxDisplay = false;
+                mouseDown = false;
+            }
+        }
         override protected void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             if (this.GraphRectangle.Contains(e.Location))

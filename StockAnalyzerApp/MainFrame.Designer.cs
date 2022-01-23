@@ -1294,7 +1294,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
-            this.graphCloseControl.ShowVariation = false;
             this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
@@ -1320,7 +1319,6 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.Name = "graphScrollerControl";
             this.graphScrollerControl.ScaleInvisible = false;
             this.graphScrollerControl.ShowGrid = false;
-            this.graphScrollerControl.ShowVariation = false;
             this.graphScrollerControl.Size = new System.Drawing.Size(975, 583);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 2;
@@ -1348,7 +1346,6 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.RangeMin = 0F;
             this.graphIndicator1Control.ScaleInvisible = false;
             this.graphIndicator1Control.ShowGrid = false;
-            this.graphIndicator1Control.ShowVariation = false;
             this.graphIndicator1Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 2;
@@ -1376,7 +1373,6 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.RangeMin = 0F;
             this.graphIndicator2Control.ScaleInvisible = false;
             this.graphIndicator2Control.ShowGrid = false;
-            this.graphIndicator2Control.ShowVariation = false;
             this.graphIndicator2Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 1;
@@ -1404,7 +1400,6 @@ namespace StockAnalyzerApp
             this.graphIndicator3Control.RangeMin = 0F;
             this.graphIndicator3Control.ScaleInvisible = false;
             this.graphIndicator3Control.ShowGrid = false;
-            this.graphIndicator3Control.ShowVariation = false;
             this.graphIndicator3Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 1;
@@ -1430,7 +1425,6 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.Name = "graphVolumeControl";
             this.graphVolumeControl.ScaleInvisible = false;
             this.graphVolumeControl.ShowGrid = false;
-            this.graphVolumeControl.ShowVariation = false;
             this.graphVolumeControl.Size = new System.Drawing.Size(975, 583);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 2;

@@ -3779,7 +3779,6 @@ namespace StockAnalyzerApp
                             {
                                 case "CLOSEGRAPH":
                                     graphControl = this.graphCloseControl;
-                                    this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
                                     this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
                                     this.graphCloseControl.Dividends = this.CurrentStockSerie.Dividend;
                                     break;
@@ -4431,9 +4430,6 @@ namespace StockAnalyzerApp
                 prefDlg.FormClosed += PrefDlg_FormClosed;
             }
             prefDlg.Show();
-
-            this.graphCloseControl.ShowVariation = Settings.Default.ShowVariation;
-
             OnNeedReinitialise(true);
         }
 
