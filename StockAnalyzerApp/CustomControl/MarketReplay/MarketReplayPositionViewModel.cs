@@ -23,9 +23,12 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 {
                     this.position.TrailStop = value;
                     this.OnPropertyChanged("Stop");
+                    this.OnPropertyChanged("R");
                 }
             }
         }
+
+        public string R => ((Value - Entry) / (Entry - Stop)).ToString("0.00");
 
         public string Gain => ((Value - Entry) / Entry).ToString("P2");
 
@@ -34,6 +37,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.Value = value;
             this.OnPropertyChanged("Value");
             this.OnPropertyChanged("Gain");
+            this.OnPropertyChanged("R");
         }
     }
 }

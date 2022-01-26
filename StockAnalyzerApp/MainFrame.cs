@@ -443,6 +443,7 @@ namespace StockAnalyzerApp
             this.showEventMarqueeMenuItem.Checked = Settings.Default.ShowEventMarquee;
             this.showIndicatorDivMenuItem.Checked = Settings.Default.ShowIndicatorDiv;
             this.showIndicatorTextMenuItem.Checked = Settings.Default.ShowIndicatorText;
+            this.showVariationBtn.CheckState = Settings.Default.ShowVariation ? CheckState.Checked : CheckState.Unchecked;
 
             this.StockSerieChanged += new OnStockSerieChangedHandler(StockAnalyzerForm_StockSerieChanged);
             this.ThemeChanged += new OnThemeChangedHandler(StockAnalyzerForm_ThemeChanged);
@@ -945,6 +946,20 @@ namespace StockAnalyzerApp
         private void ZoomInBtn_Click(object sender, EventArgs e)
         {
             ZoomIn();
+        }
+        private void showVariationBtn_Click(object sender, EventArgs e)
+        {
+            if (this.showVariationBtn.CheckState == CheckState.Checked)
+            {
+                this.showVariationBtn.CheckState = CheckState.Unchecked;
+                Settings.Default.ShowVariation = false;
+            }
+            else
+            {
+                this.showVariationBtn.CheckState = CheckState.Checked;
+                Settings.Default.ShowVariation = true;
+            }
+            ChangeZoom(this.startIndex, this.endIndex);
         }
 
         private void logScaleBtn_Click(object sender, EventArgs e)
@@ -3079,6 +3094,12 @@ namespace StockAnalyzerApp
                     case Keys.Control | Keys.C:
                         ClearSecondarySerie();
                         break;
+                    case Keys.Control | Keys.V:
+                        showVariationBtn_Click(null, null);
+                        break;
+                    case Keys.Control | Keys.L:
+                        logScaleBtn_Click(null, null);
+                        break;
                     case Keys.Control | Keys.Left:
                         {
                             Rewind((this.endIndex - this.startIndex) / 4);
@@ -3160,7 +3181,8 @@ namespace StockAnalyzerApp
                 try
                 {
                     GraphControl graphControl = (GraphControl)sender;
-                    if (graphControl.GraphRectangle.Contains(e.Location) && e.Location.X > graphControl.GraphRectangle.X)
+                    //if (graphControl.GraphRectangle.Contains(e.Location) && e.Location.X > graphControl.GraphRectangle.X)
+                    if (e.Location.X > graphControl.GraphRectangle.X)
                     {
                         if (graphControl == this.graphScrollerControl && graphControl.IsInitialized)
                         {
@@ -3196,7 +3218,6 @@ namespace StockAnalyzerApp
                     StockLog.Write(exception);
                 }
                 lastMouseLocation = e.Location;
-
             }
         }
         #region SECONDARY SERIE MENU

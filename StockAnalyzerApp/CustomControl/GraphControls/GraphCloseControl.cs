@@ -1038,11 +1038,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 value += BuildTabbedString(this.secondaryFloatSerie.Name, this.secondaryFloatSerie[this.lastMouseIndex], 12) + "\r\n";
             }
-
-            if (StockAnalyzerForm.MainFrame.CurrentStockSerie != null && StockAnalyzerForm.MainFrame.CurrentStockSerie.IsInitialised && StockAnalyzerForm.MainFrame.CurrentStockSerie.LastIndex == this.lastMouseIndex)
-            {
-                value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
-            }
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
@@ -1065,6 +1060,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
             }
 #if DEBUG
+            if (StockAnalyzerForm.MainFrame.CurrentStockSerie != null && StockAnalyzerForm.MainFrame.CurrentStockSerie.IsInitialised && StockAnalyzerForm.MainFrame.CurrentStockSerie.LastIndex == this.lastMouseIndex)
+            {
+                value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
+            }
             value += "\r\n" + BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12);
 #endif 
             // Draw it now
@@ -1285,187 +1284,186 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         #region MOUSE EVENTS
         override public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
         {
-            if (this.IsInitialized && this.CurveList != null)
+            if (!this.IsInitialized || this.CurveList == null || this.CurveList.Count == 0)
+                return;
+            if (mouseDown)
             {
-                if (mouseDown)
+                DrawSelectionZone(e, key);
+                this.PaintForeground();
+                return;
+            }
+            PointF mousePoint = new PointF(e.X, e.Y);
+            PointF mouseValuePoint;
+            if (this.Magnetism)
+            {
+                mouseValuePoint = FindClosestExtremum(GetValuePointFromScreenPoint(mousePoint));
+            }
+            else
+            {
+                mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
+            }
+            DrawMouseCross(mouseValuePoint, mouseOverThis, this.axisDashPen);
+            int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
+            if (this.DrawingMode == GraphDrawMode.Normal)
+            {
+                if ((key & Keys.Control) != 0)
                 {
-                    DrawSelectionZone(e, key);
+                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
                 }
                 else
                 {
-                    PointF mousePoint = new PointF(e.X, e.Y);
-                    PointF mouseValuePoint;
-                    if (this.Magnetism)
-                    {
-                        mouseValuePoint = FindClosestExtremum(GetValuePointFromScreenPoint(mousePoint));
-                    }
-                    else
-                    {
-                        mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                    }
-                    DrawMouseCross(mouseValuePoint, mouseOverThis, this.axisDashPen);
-                    int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-                    if (this.DrawingMode == GraphDrawMode.Normal)
-                    {
-                        if ((key & Keys.Control) != 0)
-                        {
-                            this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
-                        }
-                        else
-                        {
-                            RefreshMouseMarquee(index, e.Location, false);
-                            this.RaiseDateChangedEvent(null, this.dateSerie[index], 0, false);
-                        }
-                    }
-                    else
-                    {
-                        RefreshMouseMarquee(index, e.Location, true);
-                        ManageMouseMoveDrawing(e, mouseValuePoint);
-                    }
-                    #region Display Event text box
-                    // Display events if required
-                    if (mouseOverThis && this.ShowEventMarquee &&
-                        (mousePoint.Y >= this.GraphRectangle.Top) &&
-                        (mousePoint.Y <= this.GraphRectangle.Top + EVENT_MARQUEE_SIZE * 2))
-                    {
-                        string eventTypeString = string.Empty;
-                        int i = this.RoundToIndex(mousePoint);
-                        foreach (IStockIndicator indicator in this.CurveList.Indicators.Where(indic => indic.Events != null))
-                        {
-                            for (int j = 0; j < indicator.EventCount; j++)
-                            {
-                                BoolSerie eventSerie = indicator.Events[j];
-                                if (indicator.IsEvent[j] && eventSerie != null && indicator.Events.Count() > 0)
-                                {
-                                    if (eventSerie[i])
-                                    {
-                                        eventTypeString += indicator.Name + " - " + eventSerie.Name +
-                                                           System.Environment.NewLine;
-                                    }
-                                }
-                            }
-                        }
-                        // Cloud
-                        if (this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
-                        {
-                            for (int j = 0; j < CurveList.Cloud.EventCount; j++)
-                            {
-                                BoolSerie eventSerie = CurveList.Cloud.Events[j];
-                                if (CurveList.Cloud.IsEvent[j] && eventSerie != null && CurveList.Cloud.Events.Count() > 0)
-                                {
-                                    if (eventSerie[i])
-                                    {
-                                        eventTypeString += CurveList.Cloud.Name + " - " + eventSerie.Name + System.Environment.NewLine;
-                                    }
-                                }
-                            }
-                        }
-                        // Trail Stops
-                        if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
-                        {
-                            for (int j = 0; j < CurveList.TrailStop.EventCount; j++)
-                            {
-                                BoolSerie eventSerie = CurveList.TrailStop.Events[j];
-                                if (CurveList.TrailStop.IsEvent[j] && eventSerie != null && CurveList.TrailStop.Events.Count() > 0)
-                                {
-                                    if (eventSerie[i])
-                                    {
-                                        eventTypeString += CurveList.TrailStop.Name + " - " + eventSerie.Name +
-                                                           System.Environment.NewLine;
-                                    }
-                                }
-                            }
-                        }
-                        // Paint Bars
-                        if (this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
-                        {
-                            int j = 0;
-                            foreach (BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
-                            {
-                                if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null && this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
-                                {
-                                    eventTypeString += this.CurveList.PaintBar.Name + " - " + eventSerie.Name + System.Environment.NewLine;
-                                }
-                                j++;
-                            }
-                        }
-                        // Paint Bars
-                        if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
-                        {
-
-                            int j = 0;
-                            foreach (BoolSerie eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
-                            {
-                                if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
-                                {
-                                    eventTypeString += this.CurveList.AutoDrawing.Name + " - " + eventSerie.Name + System.Environment.NewLine;
-                                }
-                                j++;
-                            }
-                        }
-
-                        if ((this.GraphRectangle.Right - mousePoint.X) < 100.0f)
-                        {
-                            mousePoint.X -= 100.0f;
-                        }
-                        this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, backgroundBrush, mousePoint.X, mousePoint.Y, true);
-                    }
-                    #endregion
-                    #region Display Agenda Text
-                    if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
-                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
-                    {
-                        int i = this.RoundToIndex(mousePoint);
-                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
-                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
-                        var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
-                        if (agendaEntry != null)
-                        {
-                            string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
-                            eventText += "Date : " + agendaEntry.Date.ToShortDateString();
-                            Size size = TextRenderer.MeasureText(eventText, axisFont);
-                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                        }
-                    }
-                    #endregion
-                    #region Display Dividend Text
-                    if (mouseOverThis && this.ShowDividend &&
-                        this.Dividends != null && this.Dividends.Entries.Count > 0 &&
-                         (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                         (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
-                    {
-                        int i = this.RoundToIndex(mousePoint);
-                        DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
-                        DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
-                        var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
-                        if (dividendEntry != null)
-                        {
-                            var coupon = dividendEntry.Dividend;
-                            float yield = coupon / closeCurveType.DataSerie[i];
-                            var eventText = "Dividende";
-                            eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
-                            eventText += Environment.NewLine + "Coupon: " + dividendEntry.Dividend.ToString();
-                            eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
-
-                            Size size = TextRenderer.MeasureText(eventText, axisFont);
-                            this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                        }
-                    }
-                    #endregion
-
-                    #region Display Trail Stop Anchor
-                    if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
-                        (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
-                        (mousePoint.X + 15 >= this.GraphRectangle.Right))
-                    {
-                        this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, false);
-                        this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
-                    }
-                    #endregion
+                    RefreshMouseMarquee(index, e.Location, false);
+                    this.RaiseDateChangedEvent(null, this.dateSerie[index], 0, false);
                 }
-                this.PaintForeground();
             }
+            else
+            {
+                RefreshMouseMarquee(index, e.Location, true);
+                ManageMouseMoveDrawing(e, mouseValuePoint);
+            }
+            #region Display Event text box
+            // Display events if required
+            if (mouseOverThis && this.ShowEventMarquee &&
+                (mousePoint.Y >= this.GraphRectangle.Top) &&
+                (mousePoint.Y <= this.GraphRectangle.Top + EVENT_MARQUEE_SIZE * 2))
+            {
+                string eventTypeString = string.Empty;
+                int i = this.RoundToIndex(mousePoint);
+                foreach (IStockIndicator indicator in this.CurveList.Indicators.Where(indic => indic.Events != null))
+                {
+                    for (int j = 0; j < indicator.EventCount; j++)
+                    {
+                        BoolSerie eventSerie = indicator.Events[j];
+                        if (indicator.IsEvent[j] && eventSerie != null && indicator.Events.Count() > 0)
+                        {
+                            if (eventSerie[i])
+                            {
+                                eventTypeString += indicator.Name + " - " + eventSerie.Name +
+                                                   System.Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+                // Cloud
+                if (this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                {
+                    for (int j = 0; j < CurveList.Cloud.EventCount; j++)
+                    {
+                        BoolSerie eventSerie = CurveList.Cloud.Events[j];
+                        if (CurveList.Cloud.IsEvent[j] && eventSerie != null && CurveList.Cloud.Events.Count() > 0)
+                        {
+                            if (eventSerie[i])
+                            {
+                                eventTypeString += CurveList.Cloud.Name + " - " + eventSerie.Name + System.Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+                // Trail Stops
+                if (this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
+                {
+                    for (int j = 0; j < CurveList.TrailStop.EventCount; j++)
+                    {
+                        BoolSerie eventSerie = CurveList.TrailStop.Events[j];
+                        if (CurveList.TrailStop.IsEvent[j] && eventSerie != null && CurveList.TrailStop.Events.Count() > 0)
+                        {
+                            if (eventSerie[i])
+                            {
+                                eventTypeString += CurveList.TrailStop.Name + " - " + eventSerie.Name +
+                                                   System.Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+                // Paint Bars
+                if (this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
+                {
+                    int j = 0;
+                    foreach (BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
+                    {
+                        if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null && this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
+                        {
+                            eventTypeString += this.CurveList.PaintBar.Name + " - " + eventSerie.Name + System.Environment.NewLine;
+                        }
+                        j++;
+                    }
+                }
+                // Paint Bars
+                if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
+                {
+
+                    int j = 0;
+                    foreach (BoolSerie eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
+                    {
+                        if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
+                        {
+                            eventTypeString += this.CurveList.AutoDrawing.Name + " - " + eventSerie.Name + System.Environment.NewLine;
+                        }
+                        j++;
+                    }
+                }
+
+                if ((this.GraphRectangle.Right - mousePoint.X) < 100.0f)
+                {
+                    mousePoint.X -= 100.0f;
+                }
+                this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, backgroundBrush, mousePoint.X, mousePoint.Y, true);
+            }
+            #endregion
+            #region Display Agenda Text
+            if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
+                 (mousePoint.Y <= this.GraphRectangle.Bottom) &&
+                 (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
+            {
+                int i = this.RoundToIndex(mousePoint);
+                DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
+                if (agendaEntry != null)
+                {
+                    string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
+                    eventText += "Date : " + agendaEntry.Date.ToShortDateString();
+                    Size size = TextRenderer.MeasureText(eventText, axisFont);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                }
+            }
+            #endregion
+            #region Display Dividend Text
+            if (mouseOverThis && this.ShowDividend &&
+                this.Dividends != null && this.Dividends.Entries.Count > 0 &&
+                 (mousePoint.Y <= this.GraphRectangle.Bottom) &&
+                 (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
+            {
+                int i = this.RoundToIndex(mousePoint);
+                DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
+                DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
+                if (dividendEntry != null)
+                {
+                    var coupon = dividendEntry.Dividend;
+                    float yield = coupon / closeCurveType.DataSerie[i];
+                    var eventText = "Dividende";
+                    eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
+                    eventText += Environment.NewLine + "Coupon: " + dividendEntry.Dividend.ToString();
+                    eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
+
+                    Size size = TextRenderer.MeasureText(eventText, axisFont);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                }
+            }
+            #endregion
+
+            #region Display Trail Stop Anchor
+            if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
+                (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
+                (mousePoint.X + 15 >= this.GraphRectangle.Right))
+            {
+                this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, false);
+                this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
+            }
+            #endregion
+
+            this.PaintForeground();
         }
         override public void GraphControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {

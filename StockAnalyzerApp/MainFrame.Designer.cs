@@ -134,6 +134,7 @@ namespace StockAnalyzerApp
             this.zoomOutBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
             this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
+            this.showVariationBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -927,6 +928,7 @@ namespace StockAnalyzerApp
             this.fastForwardBtn,
             this.zoomOutBtn,
             this.zoomInBtn,
+            this.showVariationBtn,
             this.logScaleBtn,
             this.toolStripSeparator2,
             this.excludeButton,
@@ -1063,8 +1065,18 @@ namespace StockAnalyzerApp
             this.logScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.logScaleBtn.Name = "logScaleBtn";
             this.logScaleBtn.Size = new System.Drawing.Size(23, 20);
-            this.logScaleBtn.ToolTipText = "Log scale";
+            this.logScaleBtn.ToolTipText = "Log scale CTRL+L";
             this.logScaleBtn.Click += new System.EventHandler(this.logScaleBtn_Click);
+            // 
+            // showVariationBtn
+            // 
+            this.showVariationBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.showVariationBtn.Name = "showVariationBtn";
+            this.showVariationBtn.Text = "%";
+            this.showVariationBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.showVariationBtn.Size = new System.Drawing.Size(23, 20);
+            this.showVariationBtn.ToolTipText = "Show bar variation CTRL+V";
+            this.showVariationBtn.Click += new System.EventHandler(this.showVariationBtn_Click);
             // 
             // toolStripSeparator2
             // 
@@ -1538,6 +1550,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator6;
         private ToolStripButton zoomInBtn;
         private ToolStripButton rewindBtn;
+        private ToolStripButton showVariationBtn;
         private ToolStripButton logScaleBtn;
         private ToolStripButton fastForwardBtn;
         private ToolStripSeparator toolStripSeparator8;

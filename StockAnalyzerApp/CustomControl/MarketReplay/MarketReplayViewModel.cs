@@ -363,6 +363,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             var position = StockPortfolio.ReplayPortfolio.OpenedPositions.FirstOrDefault();
             this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
+            openPosition.Stop = this.Stop;
             openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, this.Value);
 
             this.Forward();
