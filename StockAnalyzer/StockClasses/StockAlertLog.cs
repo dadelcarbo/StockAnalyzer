@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlertLog : INotifyPropertyChanged
     {
-        public static string AlertLogFolder => Folders.Alert + @"\AlertLog";
+        public static string AlertLogFolder => Path.Combine(Folders.Alert, "AlertLog");
 
         private DateTime lastRefreshDate;
 

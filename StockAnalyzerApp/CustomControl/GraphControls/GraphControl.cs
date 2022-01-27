@@ -255,7 +255,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             axisPen = new Pen(Color.Black, 1.0f);
             axisDashPen = new Pen(Color.FromArgb(0x60, 0x60, 0x60), 1.0f) { DashStyle = DashStyle.Dash };
             axisFont = new Font(FontFamily.GenericSansSerif, 7);
-            toolTipFont = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Monospace), 7);
+            toolTipFont = new Font(FontFamily.GenericMonospace, 8);
             mousePen = new Pen(Color.Black, 1.0f);
             HigherHighPen = new Pen(Color.Green, 1.0f);
             LowerLowPen = new Pen(Color.Red, 1.0f);

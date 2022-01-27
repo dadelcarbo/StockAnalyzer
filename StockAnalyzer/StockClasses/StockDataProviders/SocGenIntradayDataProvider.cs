@@ -16,8 +16,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\SocGenIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\SocGenIntraday";
-        static private readonly string CONFIG_FILE = @"\SocGenIntradayDownload.cfg";
-        static private readonly string CONFIG_FILE_USER = @"\SocGenIntradayDownload.user.cfg";
+        static private readonly string CONFIG_FILE = "SocGenIntradayDownload.cfg";
+        static private readonly string CONFIG_FILE_USER = "SocGenIntradayDownload.user.cfg";
 
         public string UserConfigFileName => CONFIG_FILE_USER;
 
@@ -66,8 +66,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER));
         }
 
         public override bool SupportsIntradayDownload => true;

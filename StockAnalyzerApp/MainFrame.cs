@@ -478,7 +478,7 @@ namespace StockAnalyzerApp
             if (Settings.Default.GenerateDailyReport)
             {
                 // Daily report
-                var fileName = Folders.Report + @"\LastGeneration.txt";
+                var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
                 {
@@ -582,7 +582,7 @@ namespace StockAnalyzerApp
             //StockLicense stockLicense = null;
 
             //// Check on local disk in license is found
-            //string licenseFileName = Folders.PersonalFolder + @"\license.dat";
+            //string licenseFileName = Path.Combine( Folders.PersonalFolder , @"\license.dat");
             //if (File.Exists(licenseFileName))
             //{
             //    string fileName = licenseFileName;
@@ -1287,7 +1287,7 @@ namespace StockAnalyzerApp
 
         private void LoadWatchList()
         {
-            string watchListsFileName = Folders.PersonalFolder + @"\WatchLists.xml";
+            string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
 
             // Parse watch lists
             if (File.Exists(watchListsFileName))
@@ -1970,7 +1970,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Save watch list file
-                string watchListsFileName = Folders.PersonalFolder + @"\WatchLists.xml";
+                string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
                 System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
                 settings.Indent = true;
                 settings.NewLineOnAttributes = true;
@@ -2765,7 +2765,7 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            string fileName = folderName + @"\Report.html";
+            string fileName = Path.Combine(folderName, "Report.html");
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             #region Report leaders
@@ -4199,7 +4199,7 @@ namespace StockAnalyzerApp
             try
             {
                 // Load Curve Theme
-                string fileName = Folders.Theme + @"\" + themeName + ".thm";
+                string fileName = Path.Combine(Folders.Theme , themeName + ".thm");
                 if (File.Exists(fileName))
                 {
                     using (StreamReader sr = new StreamReader(fileName))
@@ -4276,7 +4276,7 @@ namespace StockAnalyzerApp
             }
 
             // delete theme file
-            string fileName = Folders.Theme + @"\" + CurrentTheme + ".thm";
+            string fileName = Path.Combine(Folders.Theme, CurrentTheme + ".thm");
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);
@@ -4429,7 +4429,7 @@ namespace StockAnalyzerApp
             SaveThemeForm saveThemeForm = new SaveThemeForm(themeList);
             if (saveThemeForm.ShowDialog() == DialogResult.OK)
             {
-                SaveCurveTheme(folderName + @"\" + saveThemeForm.Theme + ".thm");
+                SaveCurveTheme(folderName + @"\" + Path.Combine(Folders.Theme, saveThemeForm.Theme + ".thm") + ".thm");
                 if (!this.themeComboBox.Items.Contains(saveThemeForm.Theme))
                 {
                     this.themeComboBox.Items.Add(saveThemeForm.Theme);

@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             var indicatorName = this.parameters[0].ToString().Replace("_", ",");
 
-            var destinationFolder = Folders.DataFolder + @"\Rank";
+            var destinationFolder = Path.Combine(Folders.DataFolder, "Rank");
 
             string fileName = Path.Combine(destinationFolder, $"{stockSerie.StockGroup}_{indicatorName}_{stockSerie.BarDuration}.txt");
             if (!File.Exists(fileName))
@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     if (line.StartsWith(stockSerie.StockName))
                     {
-                        rankSerie.Values = line.Split('|').Skip(1).Select(r => float.Parse(r)/100.0f).ToArray();
+                        rankSerie.Values = line.Split('|').Skip(1).Select(r => float.Parse(r) / 100.0f).ToArray();
                         break;
                     }
                 }

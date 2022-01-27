@@ -157,6 +157,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
+    <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>
     </Compile>

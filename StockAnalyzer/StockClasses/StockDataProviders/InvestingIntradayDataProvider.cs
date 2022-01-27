@@ -14,8 +14,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\InvestingIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\InvestingIntraday";
-        static private readonly string CONFIG_FILE = @"\InvestingIntradayDownload.cfg";
-        static private readonly string CONFIG_FILE_USER = @"\InvestingIntradayDownload.user.cfg";
+        static private readonly string CONFIG_FILE = "InvestingIntradayDownload.cfg";
+        static private readonly string CONFIG_FILE_USER = "InvestingIntradayDownload.user.cfg";
 
         public override bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
         {
@@ -63,8 +63,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -228,7 +228,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             stockSerie.Ticker = long.Parse(row[0]);
 
                             var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
-                            if (dailySerie!= null)
+                            if (dailySerie != null)
                             {
                                 stockSerie.ISIN = dailySerie.ISIN;
                             }

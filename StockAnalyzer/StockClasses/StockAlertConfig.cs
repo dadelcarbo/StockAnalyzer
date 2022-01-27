@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses
     {
         static public IEnumerable<StockAlertTimeFrame> TimeFrames = Enum.GetValues(typeof(StockAlertTimeFrame)).Cast<StockAlertTimeFrame>();
 
-        public static string AlertDefFolder => Folders.Alert + @"\AlertDef";
+        public static string AlertDefFolder => Path.Combine(Folders.Alert , "AlertDef");
 
         private StockAlertConfig(StockAlertTimeFrame timeFrame)
         {
@@ -81,7 +81,7 @@ namespace StockAnalyzer.StockClasses
             {
                 if (allAlertDefs == null)
                 {
-                    string alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.xml";
+                    string alertFileName = Path.Combine(AlertDefFolder, "AlertDefUserDefined.xml");
                     // Parse alert lists
                     if (File.Exists(alertFileName))
                     {

@@ -45,7 +45,7 @@ namespace StockAnalyzerApp.CustomControl
                //   else
                //   {
                //      // Succeeded, save file to local disk.
-               //      string licenseFileName = Folders.PersonalFolder + @"\license.dat";
+               //      string licenseFileName = Path.Combine( Folders.PersonalFolder , @"\license.dat");
                //      using (StreamWriter sr = new StreamWriter(licenseFileName, false))
                //      {
                //         sr.Write(licenseString);

@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             this.FileName = fileName;
             isIntraday = fileName.ToLower().Contains("intraday");
-            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Folders.PersonalFolder + FileName));
+            this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Path.Combine(Folders.PersonalFolder, FileName)));
             this.StockDico = stockDico;
             if (isIntraday)
             {
@@ -104,11 +104,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         }
         public void AddEntry()
         {
+            var prefix = isIntraday ? "INT_" : string.Empty;
+            var stockName = this.SelectedItem.Exchange == "Paris" ? prefix + this.SelectedItem.Description.Replace(" SA", "").ToUpper(): this.SelectedItem.Symbol;
             this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
             {
                 Group = StockSerie.Groups.INTRADAY.ToString(),
                 ShortName = this.SelectedItem.Symbol,
-                StockName = this.SelectedItem.FullName
+                StockName = stockName
             });
 
             this.PropertyChanged(this, new PropertyChangedEventArgs("AddEnabled"));

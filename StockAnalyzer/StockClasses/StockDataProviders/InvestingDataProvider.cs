@@ -15,8 +15,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string FOLDER = @"\daily\Investing";
         static private string ARCHIVE_FOLDER = @"\archive\daily\Investing";
 
-        static private string CONFIG_FILE = @"\InvestingDownload.cfg";
-        static private string CONFIG_FILE_USER = @"\InvestingDownload.user.cfg";
+        static private string CONFIG_FILE = "InvestingDownload.cfg";
+        static private string CONFIG_FILE_USER = "InvestingDownload.user.cfg";
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -33,8 +33,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             this.needDownload = download;
 
             // Parse InvestingDownload.cfg file
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE);
-            InitFromFile(stockDictionary, download, Folders.PersonalFolder + CONFIG_FILE_USER);
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER));
         }
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {

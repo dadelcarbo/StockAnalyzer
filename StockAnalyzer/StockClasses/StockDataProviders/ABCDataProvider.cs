@@ -23,8 +23,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
         static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
-        static private string CONFIG_FILE = @"\EuronextDownload.cfg";
-        static private string CONFIG_FILE_USER = @"\EuronextDownload.user.cfg";
+        static private string CONFIG_FILE = "EuronextDownload.cfg";
+        static private string CONFIG_FILE_USER = "EuronextDownload.user.cfg";
         static private string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
 
         #region ABC DOWNLOAD HELPER
@@ -301,13 +301,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
 
             // Load Config files
-            string fileName = Folders.PersonalFolder + CONFIG_FILE;
+            string fileName = Path.Combine(Folders.PersonalFolder , CONFIG_FILE);
             if (!File.Exists(fileName))
             {
                 File.WriteAllText(fileName, defaultConfigFile);
             }
             InitFromFile(download, fileName);
-            fileName = Folders.PersonalFolder + CONFIG_FILE_USER;
+            fileName = Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER);
             InitFromFile(download, fileName);
             foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
             {
