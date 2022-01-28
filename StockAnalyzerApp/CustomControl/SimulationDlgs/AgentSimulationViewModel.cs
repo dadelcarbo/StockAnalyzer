@@ -12,6 +12,7 @@ using System.Threading;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings;
+using StockAnalyzer.StockHelpers;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -25,7 +26,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
-            this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.BarDuration);
+            this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.ViewModel.BarDuration);
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
@@ -195,7 +196,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     try
                     {
-                        StockAnalyzerForm.TimerSuspended = false;
+                        StockTimer.TimerSuspended = false;
                         this.PerformText = "Perform";
                         this.ProgressValue = 0;
                         if (e.Cancelled)
@@ -233,7 +234,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
 
                 this.PerformText = "Cancel";
-                StockAnalyzerForm.TimerSuspended = true;
+                StockTimer.TimerSuspended = true;
                 this.Report = "Initializing series...";
                 worker.RunWorkerAsync();
             }

@@ -8,727 +8,583 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StockAnalyzerSettings.Properties
-{
-
-
+namespace StockAnalyzerSettings.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
+        
+        public static Settings Default {
+            get {
                 return defaultInstance;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("EventAll")]
-        public string EventFilterMode
-        {
-            get
-            {
+        public string EventFilterMode {
+            get {
                 return ((string)(this["EventFilterMode"]));
             }
-            set
-            {
+            set {
                 this["EventFilterMode"] = value;
             }
         }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AnalysisFile
-        {
-            get
-            {
+        public string InputDataFolder {
+            get {
+                return ((string)(this["InputDataFolder"]));
+            }
+            set {
+                this["InputDataFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AnalysisFile {
+            get {
                 return ((string)(this["AnalysisFile"]));
             }
-            set
-            {
+            set {
                 this["AnalysisFile"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("INDICES")]
-        public string SelectedGroup
-        {
-            get
-            {
+        public string SelectedGroup {
+            get {
                 return ((string)(this["SelectedGroup"]));
             }
-            set
-            {
+            set {
                 this["SelectedGroup"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("OrderFile.xml")]
-        public string PortofolioFile
-        {
-            get
-            {
+        public string PortofolioFile {
+            get {
                 return ((string)(this["PortofolioFile"]));
             }
-            set
-            {
+            set {
                 this["PortofolioFile"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowSummaryOrders
-        {
-            get
-            {
+        public bool ShowSummaryOrders {
+            get {
                 return ((bool)(this["ShowSummaryOrders"]));
             }
-            set
-            {
+            set {
                 this["ShowSummaryOrders"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowOrders
-        {
-            get
-            {
+        public bool ShowOrders {
+            get {
                 return ((bool)(this["ShowOrders"]));
             }
-            set
-            {
+            set {
                 this["ShowOrders"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowPositions
-        {
-            get
-            {
+        public bool ShowPositions {
+            get {
                 return ((bool)(this["ShowPositions"]));
             }
-            set
-            {
+            set {
                 this["ShowPositions"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowDividend
-        {
-            get
-            {
+        public bool ShowDividend {
+            get {
                 return ((bool)(this["ShowDividend"]));
             }
-            set
-            {
+            set {
                 this["ShowDividend"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowDrawings
-        {
-            get
-            {
+        public bool ShowDrawings {
+            get {
                 return ((bool)(this["ShowDrawings"]));
             }
-            set
-            {
+            set {
                 this["ShowDrawings"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowEventMarquee
-        {
-            get
-            {
+        public bool ShowEventMarquee {
+            get {
                 return ((bool)(this["ShowEventMarquee"]));
             }
-            set
-            {
+            set {
                 this["ShowEventMarquee"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SelectedEvents
-        {
-            get
-            {
+        public string SelectedEvents {
+            get {
                 return ((string)(this["SelectedEvents"]));
             }
-            set
-            {
+            set {
                 this["SelectedEvents"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string EventMarquees
-        {
-            get
-            {
+        public string EventMarquees {
+            get {
                 return ((string)(this["EventMarquees"]));
             }
-            set
-            {
+            set {
                 this["EventMarquees"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("EventAll")]
-        public string EventMarqueeMode
-        {
-            get
-            {
+        public string EventMarqueeMode {
+            get {
                 return ((string)(this["EventMarqueeMode"]));
             }
-            set
-            {
+            set {
                 this["EventMarqueeMode"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Default")]
-        public string SelectedTheme
-        {
-            get
-            {
+        public string SelectedTheme {
+            get {
                 return ((string)(this["SelectedTheme"]));
             }
-            set
-            {
+            set {
                 this["SelectedTheme"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DataFolder
-        {
-            get
-            {
+        public string DataFolder {
+            get {
                 return ((string)(this["DataFolder"]));
             }
-            set
-            {
+            set {
                 this["DataFolder"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PersonalFolder
-        {
-            get
-            {
-                return ((string)(this["PersonalFolder"]));
-            }
-            set
-            {
-                this["PersonalFolder"] = value;
-            }
-        }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2010")]
-        public int LoadStartYear
-        {
-            get
-            {
+        public int LoadStartYear {
+            get {
                 return ((int)(this["LoadStartYear"]));
             }
-            set
-            {
+            set {
                 this["LoadStartYear"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int BarType
-        {
-            get
-            {
+        public int BarType {
+            get {
                 return ((int)(this["BarType"]));
             }
-            set
-            {
+            set {
                 this["BarType"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SupportIntraday
-        {
-            get
-            {
+        public bool SupportIntraday {
+            get {
                 return ((bool)(this["SupportIntraday"]));
             }
-            set
-            {
+            set {
                 this["SupportIntraday"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool GenerateBreadth
-        {
-            get
-            {
+        public bool GenerateBreadth {
+            get {
                 return ((bool)(this["GenerateBreadth"]));
             }
-            set
-            {
+            set {
                 this["GenerateBreadth"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1, -1")]
-        public global::System.Drawing.Point ThemeToolbarLocation
-        {
-            get
-            {
+        public global::System.Drawing.Point ThemeToolbarLocation {
+            get {
                 return ((global::System.Drawing.Point)(this["ThemeToolbarLocation"]));
             }
-            set
-            {
+            set {
                 this["ThemeToolbarLocation"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1, -1")]
-        public global::System.Drawing.Point StockToolbarLocation
-        {
-            get
-            {
+        public global::System.Drawing.Point StockToolbarLocation {
+            get {
                 return ((global::System.Drawing.Point)(this["StockToolbarLocation"]));
             }
-            set
-            {
+            set {
                 this["StockToolbarLocation"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1, -1")]
-        public global::System.Drawing.Point drawingToolbarLocation
-        {
-            get
-            {
+        public global::System.Drawing.Point drawingToolbarLocation {
+            get {
                 return ((global::System.Drawing.Point)(this["drawingToolbarLocation"]));
             }
-            set
-            {
+            set {
                 this["drawingToolbarLocation"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215,16777215," +
             "16777215,16777215,16777215,16777215,16777215,16777215,16777215")]
-        public string CustomColors
-        {
-            get
-            {
+        public string CustomColors {
+            get {
                 return ((string)(this["CustomColors"]));
             }
-            set
-            {
+            set {
                 this["CustomColors"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool LoggingEnabled
-        {
-            get
-            {
+        public bool LoggingEnabled {
+            get {
                 return ((bool)(this["LoggingEnabled"]));
             }
-            set
-            {
+            set {
                 this["LoggingEnabled"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowStatusBar
-        {
-            get
-            {
+        public bool ShowStatusBar {
+            get {
                 return ((bool)(this["ShowStatusBar"]));
             }
-            set
-            {
+            set {
                 this["ShowStatusBar"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UserId
-        {
-            get
-            {
+        public string UserId {
+            get {
                 return ((string)(this["UserId"]));
             }
-            set
-            {
+            set {
                 this["UserId"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MachineID
-        {
-            get
-            {
+        public string MachineID {
+            get {
                 return ((string)(this["MachineID"]));
             }
-            set
-            {
+            set {
                 this["MachineID"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1:255:0:0:0:Solid")]
-        public string DrawingPen
-        {
-            get
-            {
+        public string DrawingPen {
+            get {
                 return ((string)(this["DrawingPen"]));
             }
-            set
-            {
+            set {
                 this["DrawingPen"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowVariation
-        {
-            get
-            {
+        public bool ShowVariation {
+            get {
                 return ((bool)(this["ShowVariation"]));
             }
-            set
-            {
+            set {
                 this["ShowVariation"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int DefaultBarNumber
-        {
-            get
-            {
+        public int DefaultBarNumber {
+            get {
                 return ((int)(this["DefaultBarNumber"]));
             }
-            set
-            {
+            set {
                 this["DefaultBarNumber"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowCommentMarquee
-        {
-            get
-            {
+        public bool ShowCommentMarquee {
+            get {
                 return ((bool)(this["ShowCommentMarquee"]));
             }
-            set
-            {
+            set {
                 this["ShowCommentMarquee"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SupportShortSelling
-        {
-            get
-            {
+        public bool SupportShortSelling {
+            get {
                 return ((bool)(this["SupportShortSelling"]));
             }
-            set
-            {
+            set {
                 this["SupportShortSelling"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2011-01-03")]
-        public global::System.DateTime StrategyStartDate
-        {
-            get
-            {
+        public global::System.DateTime StrategyStartDate {
+            get {
                 return ((global::System.DateTime)(this["StrategyStartDate"]));
             }
-            set
-            {
+            set {
                 this["StrategyStartDate"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("16000")]
-        public float PortofolioValue
-        {
-            get
-            {
+        public float PortofolioValue {
+            get {
                 return ((float)(this["PortofolioValue"]));
             }
-            set
-            {
+            set {
                 this["PortofolioValue"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool RaiseAlerts
-        {
-            get
-            {
+        public bool RaiseAlerts {
+            get {
                 return ((bool)(this["RaiseAlerts"]));
             }
-            set
-            {
+            set {
                 this["RaiseAlerts"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public int AlertsFrequency
-        {
-            get
-            {
-                return ((int)(this["AlertsFrequency"]));
-            }
-            set
-            {
-                this["AlertsFrequency"] = value;
-            }
-        }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowIndicatorDiv
-        {
-            get
-            {
+        public bool ShowIndicatorDiv {
+            get {
                 return ((bool)(this["ShowIndicatorDiv"]));
             }
-            set
-            {
+            set {
                 this["ShowIndicatorDiv"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool GenerateDailyReport
-        {
-            get
-            {
+        public bool GenerateDailyReport {
+            get {
                 return ((bool)(this["GenerateDailyReport"]));
             }
-            set
-            {
+            set {
                 this["GenerateDailyReport"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowIndicatorText
-        {
-            get
-            {
+        public bool ShowIndicatorText {
+            get {
                 return ((bool)(this["ShowIndicatorText"]));
             }
-            set
-            {
+            set {
                 this["ShowIndicatorText"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ShowAgenda
-        {
-            get
-            {
+        public string ShowAgenda {
+            get {
                 return ((string)(this["ShowAgenda"]));
             }
-            set
-            {
+            set {
                 this["ShowAgenda"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowBarSmoothing
-        {
-            get
-            {
+        public bool ShowBarSmoothing {
+            get {
                 return ((bool)(this["ShowBarSmoothing"]));
             }
-            set
-            {
+            set {
                 this["ShowBarSmoothing"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DownloadData
-        {
-            get
-            {
+        public bool DownloadData {
+            get {
                 return ((bool)(this["DownloadData"]));
             }
-            set
-            {
+            set {
                 this["DownloadData"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2015-01-01")]
-        public global::System.DateTime DownloadStartDate
-        {
-            get
-            {
+        public global::System.DateTime DownloadStartDate {
+            get {
                 return ((global::System.DateTime)(this["DownloadStartDate"]));
             }
-            set
-            {
+            set {
                 this["DownloadStartDate"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UserEMail
-        {
-            get
-            {
+        public string UserEMail {
+            get {
                 return ((string)(this["UserEMail"]));
             }
-            set
-            {
+            set {
                 this["UserEMail"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UserSMTP
-        {
-            get
-            {
+        public string UserSMTP {
+            get {
                 return ((string)(this["UserSMTP"]));
             }
-            set
-            {
+            set {
                 this["UserSMTP"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("16000")]
-        public string PortfolioValue
-        {
-            get
-            {
+        public string PortfolioValue {
+            get {
                 return ((string)(this["PortfolioValue"]));
             }
-            set
-            {
+            set {
                 this["PortfolioValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PersonalFolder {
+            get {
+                return ((string)(this["PersonalFolder"]));
+            }
+            set {
+                this["PersonalFolder"] = value;
             }
         }
     }

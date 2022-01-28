@@ -3,6 +3,7 @@ using StockAnalyzer.StockLogging;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
@@ -22,7 +23,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             this.Form = form;
         }
-        public StockAlertConfig SelectedTimeFrame => TimeFrameComboBox.SelectedItem == null ? StockAlertConfig.AlertConfigs.First() : TimeFrameComboBox.SelectedItem as StockAlertConfig;
+        public StockAlertConfig SelectedTimeFrame { get; set; } = StockAlertConfig.AlertConfigs.First();
 
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndThemeChanged;
@@ -37,9 +38,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                var alertThread = new Thread(StockAnalyzerForm.MainFrame.GenerateAlert_Thread);
-                alertThread.Name = "AlertDialogThread";
-                alertThread.Start(StockAlertConfig.GetConfig(this.SelectedTimeFrame.TimeFrame));
+                Task.Run(() => StockAnalyzerForm.MainFrame.GenerateAlert(this.SelectedTimeFrame, null));
             }
             catch (Exception ex)
             {
@@ -87,6 +86,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
                 e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
             }
+        }
+
+        private void TimeFrameComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            this.SelectedTimeFrame = this.TimeFrameComboBox.SelectedItem as StockAlertConfig;
         }
     }
 }

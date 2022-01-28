@@ -12,6 +12,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockAgent.Agents;
 using System.Windows;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockHelpers;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -21,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         {
             this.performText = "Perform";
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
-            this.Duration = StockAnalyzerForm.MainFrame.BarDuration;
+            this.Duration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
             this.PositionManagement = new PositionManagement()
             {
@@ -284,7 +285,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker.RunWorkerCompleted += (a, e) =>
                 {
                     this.SimulationCompleted?.Invoke();
-                    StockAnalyzerForm.TimerSuspended = false;
+                    StockTimer.TimerSuspended = false;
                     this.PerformText = "Perform";
                     this.ProgressValue = 0;
                     if (e.Cancelled)
@@ -296,7 +297,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
 
                 this.PerformText = "Cancel";
-                StockAnalyzerForm.TimerSuspended = true;
+                StockTimer.TimerSuspended = true;
                 worker.RunWorkerAsync();
             }
             else

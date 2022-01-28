@@ -20,18 +20,24 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Content="Time Frame:"/>
-            <ComboBox x:Name="TimeFrameComboBox" Width="100" DisplayMemberPath="TimeFrame" ItemsSource="{Binding Source={StaticResource AlertConfigs}}"/>
+            <ComboBox x:Name="TimeFrameComboBox" Width="100" DisplayMemberPath="TimeFrame" ItemsSource="{Binding Source={StaticResource AlertConfigs}}" SelectionChanged="TimeFrameComboBox_SelectionChanged"/>
             <Button Content="Refresh" x:Name="RefreshBtn" Click="RefreshBtn_OnClick" Margin="1,1,5,1"/>
             <Button Content="Clear" x:Name="ClearBtn" Click="ClearBtn_OnClick" Margin="1,1,5,1"/>
             <Label Content="Alert date:"/>
             <Label Content="{Binding AlertLog.LastRefreshDate, StringFormat=\{0:F\}}"/>
         </StackPanel>
-        <ProgressBar Grid.Row="0" HorizontalAlignment="Right" Width="300" Height="16" Margin="0,0,5,0"
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
+            <Label Content="{Binding AlertLog.ProgressTitle}" Margin="0,2,0,0"/>
+            <Grid>
+                <ProgressBar Width="300" Height="16" Margin="0,0,5,0" HorizontalAlignment="Right" 
                      Value="{Binding AlertLog.ProgressValue}"
                      Maximum="{Binding AlertLog.ProgressMax}"
                      Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <Label Content="{Binding AlertLog.ProgressName}" HorizontalAlignment="Right" Width="300" Margin="2" Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Label Content="{Binding AlertLog.ProgressName}" HorizontalAlignment="Right" Width="300" Margin="2" Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid>
+        </StackPanel>
         <telerik:RadGridView Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" 
+
                              AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
             <telerik:RadGridView.Columns>

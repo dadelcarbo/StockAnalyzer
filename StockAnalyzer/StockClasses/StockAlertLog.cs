@@ -61,6 +61,9 @@ namespace StockAnalyzer.StockClasses
         private string progressName;
         public string ProgressName { get { return progressName; } set { if (value != progressName) { progressName = value; NotifyPropertyChanged("ProgressName"); } } }
 
+        private string progressTitle;
+        public string ProgressTitle { get { return progressTitle; } set { if (value != progressTitle) { progressTitle = value; NotifyPropertyChanged("ProgressTitle"); } } }
+
         private readonly string fileName;
         private StockAlertLog(string fileName, DateTime startDate)
         {

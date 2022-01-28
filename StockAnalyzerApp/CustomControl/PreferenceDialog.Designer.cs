@@ -58,8 +58,6 @@ namespace StockAnalyzerApp.CustomControl
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.alertGroupBox = new System.Windows.Forms.GroupBox();
-            this.alertFrequencyUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
             this.alertActiveCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
@@ -77,7 +75,6 @@ namespace StockAnalyzerApp.CustomControl
             ((System.ComponentModel.ISupportInitialize)(this.startYearTextBox)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.alertGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -191,7 +188,7 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.showVariationCheckBox, "showVariationCheckBox");
             this.showVariationCheckBox.Name = "showVariationCheckBox";
             this.showVariationCheckBox.UseVisualStyleBackColor = true;
-            
+
             // 
             // barNumberLabel
             // 
@@ -278,38 +275,10 @@ namespace StockAnalyzerApp.CustomControl
             // 
             // alertGroupBox
             // 
-            this.alertGroupBox.Controls.Add(this.alertFrequencyUpDown);
-            this.alertGroupBox.Controls.Add(this.label5);
             this.alertGroupBox.Controls.Add(this.alertActiveCheckBox);
             resources.ApplyResources(this.alertGroupBox, "alertGroupBox");
             this.alertGroupBox.Name = "alertGroupBox";
             this.alertGroupBox.TabStop = false;
-            // 
-            // alertFrequencyUpDown
-            // 
-            resources.ApplyResources(this.alertFrequencyUpDown, "alertFrequencyUpDown");
-            this.alertFrequencyUpDown.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.alertFrequencyUpDown.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.alertFrequencyUpDown.Name = "alertFrequencyUpDown";
-            this.alertFrequencyUpDown.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.alertFrequencyUpDown.ValueChanged += new System.EventHandler(this.alertFrequencyUpDown_ValueChanged);
-            // 
-            // label5
-            // 
-            resources.ApplyResources(this.label5, "label5");
-            this.label5.Name = "label5";
             // 
             // alertActiveCheckBox
             // 
@@ -417,7 +386,6 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox3.PerformLayout();
             this.alertGroupBox.ResumeLayout(false);
             this.alertGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.alertFrequencyUpDown)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
@@ -445,7 +413,7 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown startYearTextBox;
-        private System.Windows.Forms.CheckBox supportIntradayCheckBox; 
+        private System.Windows.Forms.CheckBox supportIntradayCheckBox;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox smtpTextBox;
         private System.Windows.Forms.Label label3;
@@ -453,8 +421,6 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.TextBox addressTextBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox alertGroupBox;
-        private System.Windows.Forms.NumericUpDown alertFrequencyUpDown;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox alertActiveCheckBox;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox generateDailyReportCheckBox;

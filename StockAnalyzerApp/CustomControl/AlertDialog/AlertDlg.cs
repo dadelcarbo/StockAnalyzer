@@ -25,11 +25,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressValue++;
         }
 
-        void MainFrame_AlertDetectionStarted(int nbStock)
+        void MainFrame_AlertDetectionStarted(int nbStock, string alertTitle)
         {
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressValue = 0;
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressMax = nbStock;
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressVisibility = true;
+            this.alertControl.SelectedTimeFrame.AlertLog.ProgressTitle = alertTitle;
+            this.alertControl.SelectedTimeFrame.AlertLog.ProgressName = null;
         }
 
         void MainFrame_AlertDetected()
@@ -37,6 +39,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
             this.Activate();
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressValue = 0;
             this.alertControl.SelectedTimeFrame.AlertLog.ProgressVisibility = false;
+            this.alertControl.SelectedTimeFrame.AlertLog.ProgressTitle = null;
+            this.alertControl.SelectedTimeFrame.AlertLog.ProgressName = null;
         }
     }
 }

@@ -2315,7 +2315,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 StockName = this.serie.StockName,
                 Group = StockAnalyzerForm.MainFrame.Group,
-                BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
+                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                 IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
             };
             viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
@@ -2334,11 +2334,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
 
-            Portfolio.PositionValue = StockAnalyzerForm.MainFrame.Portfolio.EvaluateOpenedPositionsAt(this.dateSerie[lastMouseIndex], StockAnalyzerForm.MainFrame.BarDuration.Duration, out long vol);
+            Portfolio.PositionValue = StockAnalyzerForm.MainFrame.Portfolio.EvaluateOpenedPositionsAt(this.dateSerie[lastMouseIndex], StockAnalyzerForm.MainFrame.ViewModel.BarDuration.Duration, out long vol);
             var portfolioValue = Portfolio.TotalValue;
             var openTradeViewModel = new OpenTradeViewModel
             {
-                BarDuration = StockAnalyzerForm.MainFrame.BarDuration,
+                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                 EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
                 EntryQty = (int)(portfolioValue / 10f / this.closeCurveType.DataSerie[lastMouseIndex]),
                 EntryDate = this.dateSerie[lastMouseIndex],
