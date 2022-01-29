@@ -308,7 +308,9 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (value == 0)
                     return;
-                throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}");
+                //throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}"); @@@@
+                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                return;
             }
             var amount = value * qty - fee;
             var operation = new StockTradeOperation()

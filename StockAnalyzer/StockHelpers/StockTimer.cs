@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +15,32 @@ namespace StockAnalyzer.StockHelpers
         public delegate void StockTimerCallback();
 
         public static bool TimerSuspended { get; set; }
+        private List<StockTimer> timers = new List<StockTimer>();
 
+        private static ManualResetEvent resetEvent = new ManualResetEvent(true);
         private Timer timer;
-
-        static public List<StockTimer> Timers = new List<StockTimer>();
 
         private StockTimer(StockAlertTimerCallback callBack, TimeSpan dueTime, TimeSpan endTime, TimeSpan period, StockAlertConfig alertConfig, StockBarDuration barDuration)
         {
-            timer = new Timer(x =>
+            this.timer = new Timer(x =>
             {
-                if (!TimerSuspended && DateTime.Now.TimeOfDay <= endTime)
+                var time = DateTime.Now.TimeOfDay;
+                StockLog.Write($"AlertTimer Time: {time} BarDuration: {barDuration}");
+                if (!TimerSuspended && time < endTime)
                 {
-                    Task.Run(() => callBack(alertConfig, barDuration));
+                    try
+                    {
+                        lock (resetEvent)
+                        {
+                            resetEvent.WaitOne();
+                            resetEvent.Reset();
+                        }
+                        callBack(alertConfig, barDuration);
+                    }
+                    finally
+                    {
+                        resetEvent.Set();
+                    }
                 }
             }, null, dueTime, period);
         }
@@ -33,13 +48,27 @@ namespace StockAnalyzer.StockHelpers
         {
             this.timer = new Timer(x =>
             {
-                if (!TimerSuspended && DateTime.Now.TimeOfDay < endTime)
+                var time = DateTime.Now.TimeOfDay;
+                StockLog.Write($"Timer Time: {time}");
+                if (!TimerSuspended && time < endTime)
                 {
-                    callBack();
+                    try
+                    {
+                        lock (resetEvent)
+                        {
+                            resetEvent.WaitOne();
+                            resetEvent.Reset();
+                        }
+                        callBack();
+                    }
+                    finally
+                    {
+                        resetEvent.Set();
+                    }
                 }
             }, null, dueTime, period);
 
-            Timers.Add(this);
+            timers.Add(this);
         }
 
         public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockAlertConfig alertConfig, StockBarDuration barDuration, StockAlertTimerCallback callBack)
