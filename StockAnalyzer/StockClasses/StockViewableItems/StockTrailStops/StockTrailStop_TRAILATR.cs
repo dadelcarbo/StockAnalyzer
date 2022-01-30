@@ -33,8 +33,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 };
             }
         }
-        public override string[] SerieNames { get { return new string[] { "TRAILATR.S", "TRAILATR.R" }; } }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

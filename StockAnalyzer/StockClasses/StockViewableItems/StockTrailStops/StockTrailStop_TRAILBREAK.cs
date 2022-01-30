@@ -17,8 +17,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { "TRAILBREAK.LS", "TRAILBREAK.SS" };
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             var period = (int)this.parameters[0];

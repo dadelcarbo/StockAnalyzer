@@ -23,8 +23,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeInt(0, 500) }; }
         }
-
-        public override string[] SerieNames { get { return new string[] { "TRAILHLS.LS", "TRAILHLS.SS" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

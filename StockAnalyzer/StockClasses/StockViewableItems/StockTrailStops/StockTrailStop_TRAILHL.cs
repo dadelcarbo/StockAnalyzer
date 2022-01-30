@@ -13,8 +13,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override Object[] ParameterDefaultValues => new Object[] { 2 };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
-
-        public override string[] SerieNames => new string[] { "TRAILHL.LS", "TRAILHL.SS" };
         
         public override void ApplyTo(StockSerie stockSerie)
         {

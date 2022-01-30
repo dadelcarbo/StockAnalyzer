@@ -31,8 +31,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             get { return new ParamRange[] { new ParamRangeInt(0, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "TRAILFOLLOW.LS", "TRAILFOLLOW.SS" }; } }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

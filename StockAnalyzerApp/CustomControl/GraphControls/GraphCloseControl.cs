@@ -303,11 +303,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                         bullBrush.Dispose();
                         bearBrush.Dispose();
+                        for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
+                        {
+                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i]?.Count > 0)
+                            {
+                                DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.Cloud.Series[i], this.CurveList.Cloud.SeriePens[i]);
+                            }
+                        }
                     }
                     #endregion
                     #region DISPLAY TRAIL STOPS
                     if (this.CurveList.TrailStop?.Series[0] != null && this.CurveList.TrailStop.Series[0].Count > 0)
                     {
+                        this.DrawStockText(aGraphic, this.CurveList.TrailStop.StockTexts);
                         FloatSerie longStopSerie = this.CurveList.TrailStop.Series[0];
                         FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];
 
@@ -324,6 +332,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         using (Brush brush = new SolidBrush(Color.FromArgb(92, shortPen.Color.R, shortPen.Color.G, shortPen.Color.B)))
                         {
                             FillArea(aGraphic, shortStopSerie, shortPen, brush);
+                        }
+                        if (this.CurveList.TrailStop.SerieVisibility[2] && this.CurveList.TrailStop.Series[2]?.Count > 0)
+                        {
+                            DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.TrailStop.Series[2], this.CurveList.TrailStop.SeriePens[2]);
                         }
                     }
                     #endregion
@@ -453,16 +465,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 {
                                     DrawSeriePoints(aGraphic, tmpPoints, stockIndicator.Series[i], stockIndicator.SeriePens[i]);
                                 }
-                            }
-                        }
-                    }
-                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 2)
-                    {
-                        for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
-                        {
-                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i]?.Count > 0)
-                            {
-                                DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.Cloud.Series[i], this.CurveList.Cloud.SeriePens[i]);
                             }
                         }
                     }

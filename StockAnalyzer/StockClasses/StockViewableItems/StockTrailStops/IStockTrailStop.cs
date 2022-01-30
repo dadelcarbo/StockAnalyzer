@@ -2,8 +2,8 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-   public interface IStockTrailStop : IStockViewableSeries, IStockEvent
-   {
+   public interface IStockTrailStop : IStockViewableSeries, IStockEvent, IStockText
+    {
       FloatSerie[] Series { get; }
    }
 }

@@ -17,8 +17,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
-        public override string[] SerieNames => new string[] { "TRAILEMAHL.LS", "TRAILEMAHL.SS" };
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILEMAHL.LS", float.NaN);

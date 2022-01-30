@@ -61,12 +61,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             float alpha = 2.0f / ((int)this.parameters[4] + 1f);
             var resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[3], float.NaN);
             float resistance = float.NaN;
+            float previousResistance = float.MinValue;
 
             var bullSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0]);
             var bearSerie = new FloatSerie(stockSerie.Count, this.SerieNames[1]);
             bullSerie[0] = bearSerie[0] = maSerie[0];
 
-            float previousResistance = float.MinValue;
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 bullSerie[i] = closeSerie[i];

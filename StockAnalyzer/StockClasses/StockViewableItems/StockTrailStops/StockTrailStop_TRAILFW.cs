@@ -24,8 +24,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             get { return new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeFloat(0f, 20f) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "TRAILFW.LS", "TRAILFW.SS" }; } }
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             var period = (int)this.Parameters[0];

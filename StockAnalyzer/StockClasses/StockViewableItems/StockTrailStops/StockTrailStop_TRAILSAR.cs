@@ -11,8 +11,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override Object[] ParameterDefaultValues => new Object[] { 0.1f };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.001f, 20f) };
-        public override string[] SerieNames => new string[] { "TRAILSAR.LS", "TRAILSAR.SS" };
-
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;
