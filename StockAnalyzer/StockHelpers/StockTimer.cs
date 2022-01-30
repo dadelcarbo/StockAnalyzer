@@ -1,99 +1,132 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace StockAnalyzer.StockHelpers
 {
     public class StockTimer
     {
-        public delegate void StockAlertTimerCallback(StockAlertConfig alertConfig, StockBarDuration barDuration);
         public delegate void StockTimerCallback();
+        public event StockTimerCallback TimerTick;
+
+        public delegate void StockAlertTimerCallback(StockAlertConfig alertConfig, List<StockBarDuration> barDurations);
+        public event StockAlertTimerCallback AlertTimerTick;
 
         public static bool TimerSuspended { get; set; }
-        private List<StockTimer> timers = new List<StockTimer>();
 
-        private static ManualResetEvent resetEvent = new ManualResetEvent(true);
         private Timer timer;
+        const int refreshPeriod = 10000; // 10 seconds
 
-        private StockTimer(StockAlertTimerCallback callBack, TimeSpan dueTime, TimeSpan endTime, TimeSpan period, StockAlertConfig alertConfig, StockBarDuration barDuration)
+        static public List<StockTimer> Timers = new List<StockTimer>();
+        public static void StopAll()
         {
-            this.timer = new Timer(x =>
-            {
-                var time = DateTime.Now.TimeOfDay;
-                StockLog.Write($"AlertTimer Time: {time} BarDuration: {barDuration}");
-                if (!TimerSuspended && time < endTime)
-                {
-                    try
-                    {
-                        lock (resetEvent)
-                        {
-                            resetEvent.WaitOne();
-                            resetEvent.Reset();
-                        }
-                        callBack(alertConfig, barDuration);
-                    }
-                    finally
-                    {
-                        resetEvent.Set();
-                    }
-                }
-            }, null, dueTime, period);
-        }
-        private StockTimer(StockTimerCallback callBack, TimeSpan dueTime, TimeSpan endTime, TimeSpan period)
-        {
-            this.timer = new Timer(x =>
-            {
-                var time = DateTime.Now.TimeOfDay;
-                StockLog.Write($"Timer Time: {time}");
-                if (!TimerSuspended && time < endTime)
-                {
-                    try
-                    {
-                        lock (resetEvent)
-                        {
-                            resetEvent.WaitOne();
-                            resetEvent.Reset();
-                        }
-                        callBack();
-                    }
-                    finally
-                    {
-                        resetEvent.Set();
-                    }
-                }
-            }, null, dueTime, period);
-
-            timers.Add(this);
+            Timers.ForEach((t) => t.timer.Dispose());
+            Timers.Clear();
         }
 
-        public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockAlertConfig alertConfig, StockBarDuration barDuration, StockAlertTimerCallback callBack)
+        readonly private TimeSpan startTime, endTime, period;
+        #region Basic Timer (parameterless)
+        private StockTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockTimerCallback callback)
         {
-            DateTime now = DateTime.Now;
-            DateTime firstRun = DateTime.Today + startTime;
-            while (now > firstRun)
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.period = period;
+
+            this.TimerTick += callback;
+            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = false };
+            this.timer.Elapsed += Timer_Elapsed;
+            Timers.Add(this);
+        }
+
+        int previousTick = 0;
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var time = DateTime.Now.TimeOfDay;
+            if (TimerSuspended || time < startTime)
+                return;
+            if (time > endTime)
             {
-                firstRun = firstRun + period;
+                this.timer.Stop();
+                return;
+            }
+            var timeSeconds = time.TotalSeconds;
+            var periodSeconds = period.TotalSeconds;
+            var currentTick = (int)(timeSeconds / periodSeconds);
+            if (currentTick == previousTick)
+            {
+                return;
+            }
+            previousTick = currentTick;
+
+            TimerTick?.Invoke();
+        }
+
+        public static StockTimer CreateRefreshTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockTimerCallback callback)
+        {
+            return new StockTimer(startTime, endTime, period, callback);
+        }
+        #endregion
+
+        class PeriodTick
+        {
+            public int Tick { get; set; }
+            public int PeriodSeconds { get; set; }
+        }
+
+        private SortedDictionary<StockBarDuration, PeriodTick> periodTicks = new SortedDictionary<StockBarDuration, PeriodTick> {
+            { StockBarDuration.M_5, new PeriodTick { Tick = 0, PeriodSeconds = 60*5} },
+            { StockBarDuration.M_15, new PeriodTick { Tick = 0, PeriodSeconds = 60*15} },
+            { StockBarDuration.M_30, new PeriodTick { Tick = 0, PeriodSeconds = 60*30} },
+            { StockBarDuration.H_1, new PeriodTick { Tick = 0, PeriodSeconds = 60*60} },
+            };
+
+        private readonly StockAlertConfig alertConfig;
+        public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback, StockAlertConfig alertConfig)
+        {
+            return new StockTimer(startTime, endTime, callback, alertConfig);
+        }
+
+
+        private StockTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback, StockAlertConfig alertConfig)
+        {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.alertConfig = alertConfig;
+
+            this.AlertTimerTick += callback;
+            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = true };
+            this.timer.Elapsed += Timer_Elapsed1;
+            Timers.Add(this);
+        }
+
+        private void Timer_Elapsed1(object sender, ElapsedEventArgs e)
+        {
+            var time = DateTime.Now.TimeOfDay;
+            if (TimerSuspended || time < startTime)
+                return;
+            if (time > endTime)
+            {
+                this.timer.Stop();
+                return;
             }
 
-            TimeSpan dueTime = firstRun - now + new TimeSpan(0, 0, 10);
-            return new StockTimer(callBack, dueTime, endTime, period, alertConfig, barDuration);
-        }
-        public static StockTimer CreateRefreshTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockTimerCallback callBack)
-        {
-            DateTime now = DateTime.Now;
-            DateTime firstRun = DateTime.Today + startTime;
-            while (now > firstRun)
+            var timeSeconds = time.TotalSeconds;
+            var barDurations = new List<StockBarDuration>();
+            foreach (var tickPeriod in periodTicks)
             {
-                firstRun = firstRun + period;
+                var currentTick = (int)(timeSeconds / tickPeriod.Value.PeriodSeconds);
+                if (currentTick != tickPeriod.Value.Tick)
+                {
+                    barDurations.Add(tickPeriod.Key);
+                    tickPeriod.Value.Tick = currentTick;
+                }
             }
-
-            TimeSpan dueTime = firstRun - now + new TimeSpan(0, 0, 10);
-            return new StockTimer(callBack, dueTime, endTime, period);
+            if (barDurations.Count > 0)
+            {
+                AlertTimerTick?.Invoke(this.alertConfig, barDurations);
+            }
         }
     }
 }
+

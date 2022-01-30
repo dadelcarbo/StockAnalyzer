@@ -11,7 +11,7 @@ namespace StockAnalyzerSettings
         public static string Tweets => Path.Combine(Settings.Default.PersonalFolder, "Tweets");
         public static string Report => Path.Combine(Settings.Default.PersonalFolder, "Report");
         public static string Alert => Path.Combine(Settings.Default.PersonalFolder, "Alert");
-        public static string Log => Path.Combine(Settings.Default.PersonalFolder, "Log");
+        public static string Log => Path.Combine(Settings.Default.DataFolder, "Log");
 
         public static string DataFolder { get { return Settings.Default.DataFolder; } set { if (value != Settings.Default.DataFolder) Settings.Default.DataFolder = value; } }
         public static string PersonalFolder { get { return Settings.Default.PersonalFolder; } set { if (value != Settings.Default.PersonalFolder) Settings.Default.PersonalFolder = value; } }

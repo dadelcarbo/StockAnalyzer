@@ -85,46 +85,39 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return dataProvider.LoadData(serie);
             }
         }
-        public static bool LoadIntradayDurationArchive(StockSerie serie, StockBarDuration duration)
-        {
-            IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
-            if (dataProvider == null)
-            {
-                return false;
-            }
-            else
-            {
-                return dataProvider.LoadIntradayDurationArchiveData(serie, duration);
-            }
-        }
 
+        private static SortedDictionary<StockDataProvider, IStockDataProvider> dataProviders = new SortedDictionary<StockDataProvider, IStockDataProvider>();
         public static IStockDataProvider GetDataProvider(StockDataProvider dataProviderType)
         {
-            IStockDataProvider dataProvider = null;
-            switch (dataProviderType)
+            if (!dataProviders.ContainsKey(dataProviderType))
             {
-                case StockDataProvider.ABC:
-                    dataProvider = new ABCDataProvider();
-                    break;
-                case StockDataProvider.Portfolio:
-                    dataProvider = new PortfolioDataProvider();
-                    break;
-                case StockDataProvider.Breadth:
-                    dataProvider = new BreadthDataProvider();
-                    break;
-                case StockDataProvider.Investing:
-                    dataProvider = new InvestingDataProvider();
-                    break;
-                case StockDataProvider.InvestingIntraday:
-                    dataProvider = new InvestingIntradayDataProvider();
-                    break;
-                case StockDataProvider.SocGenIntraday:
-                    dataProvider = new SocGenIntradayDataProvider();
-                    break;
-                default:
-                    break;
+                IStockDataProvider dataProvider = null;
+                switch (dataProviderType)
+                {
+                    case StockDataProvider.ABC:
+                        dataProvider = new ABCDataProvider();
+                        break;
+                    case StockDataProvider.Portfolio:
+                        dataProvider = new PortfolioDataProvider();
+                        break;
+                    case StockDataProvider.Breadth:
+                        dataProvider = new BreadthDataProvider();
+                        break;
+                    case StockDataProvider.Investing:
+                        dataProvider = new InvestingDataProvider();
+                        break;
+                    case StockDataProvider.InvestingIntraday:
+                        dataProvider = new InvestingIntradayDataProvider();
+                        break;
+                    case StockDataProvider.SocGenIntraday:
+                        dataProvider = new SocGenIntradayDataProvider();
+                        break;
+                    default:
+                        break;
+                }
+                dataProviders.Add(dataProviderType, dataProvider);
             }
-            return dataProvider;
+            return dataProviders[dataProviderType];
         }
         public static bool DownloadSerieData(StockSerie serie)
         {

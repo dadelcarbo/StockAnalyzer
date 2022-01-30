@@ -562,8 +562,12 @@ namespace StockAnalyzerApp
 
             if (Settings.Default.GenerateDailyReport)
             {
+                if (!Directory.Exists(Folders.Log))
+                {
+                    Directory.CreateDirectory(Folders.Log);
+                }
                 // Daily report
-                var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
+                var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
                 {
@@ -584,20 +588,17 @@ namespace StockAnalyzerApp
             // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
-                StockTimer.CreateRefreshTimer(new TimeSpan(9, 0, 0), new TimeSpan(17, 40, 0), new TimeSpan(0, 5, 0), RefreshTimer_Tick);
+                var startTime = new TimeSpan(9, 0, 0);
+                var endTime = new TimeSpan(17, 40, 0);
 
-                // Checks for alert every x minutes.
+                // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
                 {
-                    var startTime = new TimeSpan(9, 0, 0);
-                    var endTime = new TimeSpan(17, 40, 0);
-
                     var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-                    StockTimer.CreateAlertTimer(startTime, endTime, new TimeSpan(0, 5, 0), alertConfig, StockBarDuration.M_5, GenerateAlert);
-                    StockTimer.CreateAlertTimer(startTime, endTime, new TimeSpan(0, 15, 0), alertConfig, StockBarDuration.M_15, GenerateAlert);
-                    StockTimer.CreateAlertTimer(startTime, endTime, new TimeSpan(0, 30, 0), alertConfig, StockBarDuration.M_30, GenerateAlert);
-                    StockTimer.CreateAlertTimer(startTime, endTime, new TimeSpan(1, 0, 0), alertConfig, StockBarDuration.H_1, GenerateAlert);
+                    StockTimer.CreateAlertTimer(startTime, endTime, GenerateAlert, alertConfig);
                 }
+                Task.Delay(500).Wait();
+                StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 5, 0), RefreshTimer_Tick);
             }
 
 
@@ -610,6 +611,11 @@ namespace StockAnalyzerApp
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
+        }
+
+        private void T_Tick(object sender, EventArgs e)
+        {
+            RefreshTimer_Tick();
         }
 
         private void goBtn_Click(object sender, EventArgs e)
@@ -734,40 +740,19 @@ namespace StockAnalyzerApp
 
         #endregion
         #region TIMER MANAGEMENT
+
+
+        private Object timerLock = new Object();
         public static bool alertThreadBusy = false;
-
-        private static ManualResetEvent mre = new ManualResetEvent(true);
-
-        static int tickCount = 0;
-        private void DebugTimer_Tick()
-        {
-            int count = ++tickCount;
-            if (count > 10)
-                return;
-            Console.WriteLine($"DebugTimer_Tick {DateTime.Now.TimeOfDay} TickCount: {count} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
-            Stopwatch stopWatch = new Stopwatch();
-
-            stopWatch.Start();
-            lock (mre)
-            {
-                mre.WaitOne();
-                mre.Reset();
-            }
-            stopWatch.Stop();
-
-            Console.WriteLine($"DebugTimer_Tick waited {stopWatch.ElapsedMilliseconds} TickCount: {count} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
-
-            Task.Delay(5000).Wait();
-            mre.Set();
-            Console.WriteLine($"DebugTimer_Tick finally {DateTime.Now.TimeOfDay} TickCount: {count} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
-        }
-
         private void RefreshTimer_Tick()
         {
-            Console.WriteLine($"RefreshTimer_Tick {DateTime.Now.TimeOfDay} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
-            if (alertThreadBusy)
-                return;
-            alertThreadBusy = true;
+            StockLog.Write($"RefreshTimer_Tick {DateTime.Now.TimeOfDay} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
+            lock (timerLock)
+            {
+                if (alertThreadBusy)
+                    return;
+                alertThreadBusy = true;
+            }
 
             // Download INTRADAY current serie
             try
@@ -782,7 +767,7 @@ namespace StockAnalyzerApp
                     {
                         if (this.currentStockSerie.Initialise())
                         {
-                            this.Invoke(new Action(() => this.ApplyTheme()));
+                            this.BeginInvoke(new Action(() => this.ApplyTheme()));
                         }
                         else
                         {
@@ -791,22 +776,29 @@ namespace StockAnalyzerApp
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
             finally
             {
                 alertThreadBusy = false;
             }
         }
 
-        public void GenerateAlert(StockAlertConfig alertConfig, StockBarDuration barDuration)
+        public void GenerateAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
         {
             StockLog.Write("GenerateAlert Thread: " + Thread.CurrentThread.ManagedThreadId + "Culture: " + Thread.CurrentThread.CurrentCulture);
-            if (alertThreadBusy || alertConfig == null)
-                return;
-            alertThreadBusy = true;
+            lock (timerLock)
+            {
+                if (alertThreadBusy || alertConfig == null)
+                    return;
+                alertThreadBusy = true;
+            }
 
             try
             {
-                var alertDefs = barDuration == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => a.BarDuration == barDuration);
+                var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
                 if (alertDefs.Count() == 0)
                     return;
                 if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)
@@ -1527,9 +1519,12 @@ namespace StockAnalyzerApp
 
         private void downloadBtn_Click(object sender, EventArgs e)
         {
-            if (alertThreadBusy)
-                return;
-            alertThreadBusy = true;
+            lock (timerLock)
+            {
+                if (alertThreadBusy)
+                    return;
+                alertThreadBusy = true;
+            }
             if (Control.ModifierKeys == Keys.Control)
             {
                 DownloadStockGroup();

@@ -100,26 +100,11 @@ namespace StockAnalyzer.StockLogging
                 StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : {4}", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name, logText);
             }
         }
-        static public void WriteMethodEntry(StackFrame sf)
-        {
-            if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
-            {
-                StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
-            }
-        }
-
         static public void WriteMethodEntry(Type type, StackFrame sf)
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
                 StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3}::{4} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
-            }
-        }
-        static public void WriteMethodExit(StackFrame sf)
-        {
-            if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
-            {
-                StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name);
             }
         }
         static public void WriteMethodExit(Type type, StackFrame sf)
