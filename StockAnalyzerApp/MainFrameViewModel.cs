@@ -23,18 +23,9 @@ namespace StockAnalyzerApp
     {
         static public bool NotificationSuspended { get; set; } = false;
 
+        #region Bar Duration
         private StockBarDuration barDuration;
-        public StockBarDuration BarDuration
-        {
-            get
-            {
-                return barDuration;
-            }
-            set
-            {
-                SetProperty(ref barDuration, value);
-            }
-        }
+        public StockBarDuration BarDuration { get { return barDuration; } set { SetProperty(ref barDuration, value); } }
 
         public void SetBarDuration(BarDuration barDuration, int smoothing, bool heikenAshi, int lineBreak, bool notifyPropertyChanged)
         {
@@ -54,5 +45,12 @@ namespace StockAnalyzerApp
                 this.barDuration = bd;
             }
         }
+        #endregion
+
+        #region Theme
+        private string theme;
+        public string Theme { get { return theme; } set { SetProperty(ref theme, value); } }
+
+        #endregion
     }
 }
