@@ -1,4 +1,5 @@
 ﻿using StockAnalyzerSettings.Properties;
+using System;
 using System.IO;
 
 namespace StockAnalyzerSettings
@@ -11,13 +12,12 @@ namespace StockAnalyzerSettings
         public static string Tweets => Path.Combine(Settings.Default.PersonalFolder, "Tweets");
         public static string Report => Path.Combine(Settings.Default.PersonalFolder, "Report");
         public static string Alert => Path.Combine(Settings.Default.PersonalFolder, "Alert");
-        public static string Log => Path.Combine(Settings.Default.DataFolder, "Log");
+        public static string Log => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Log");
 
         public static string DataFolder { get { return Settings.Default.DataFolder; } set { if (value != Settings.Default.DataFolder) Settings.Default.DataFolder = value; } }
         public static string PersonalFolder { get { return Settings.Default.PersonalFolder; } set { if (value != Settings.Default.PersonalFolder) Settings.Default.PersonalFolder = value; } }
 
         public static string DividendFolder => Path.Combine (DataFolder, "dividend");
         public static string AgendaFolder => Path.Combine (DataFolder, "agenda");
-
     }
 }

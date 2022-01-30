@@ -15,21 +15,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            string folder = Folders.Portfolio;
             try
             {
-                if (!Directory.Exists(folder))
+                if (!Directory.Exists(Folders.Portfolio))
                 {
-                    Directory.CreateDirectory(folder);
+                    Directory.CreateDirectory(Folders.Portfolio);
                 }
-                NotifyProgress("Loading portfolio");
-                Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(folder);
+                var processedFolder = Path.Combine(Folders.Portfolio, "Processed");
+                if (!Directory.Exists(processedFolder))
+                {
+                    Directory.CreateDirectory(processedFolder);
+                }
+                var reportFolder = Path.Combine(Folders.Portfolio, "Report");
+                if (!Directory.Exists(reportFolder))
+                {
+                    Directory.CreateDirectory(reportFolder);
+                }
 
-                folder += @"\Report";
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
+                NotifyProgress("Loading portfolio");
+                Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(Folders.Portfolio);
             }
             catch (Exception ex)
             {

@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -89,34 +90,51 @@ namespace StockAnalyzer.StockPortfolio
         }
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
-            LoadMappings();
+            try
+            {
+                LoadMappings();
 
-            // Load saved portfolio
-            StockPortfolio.Portfolios = new List<StockPortfolio>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
-            {
-                StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
-            }
-            foreach (var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
-            {
-                if (position.TrailStop == 0f && position.Stop != 0f)
-                    position.TrailStop = position.Stop;
-            }
-            // Load from SAXO export
-            foreach (var file in Directory.EnumerateFiles(folder, "*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
-            {
-                LoadFromSAXO(file, folder);
-            }
+                // Load saved portfolio
+                StockPortfolio.Portfolios = new List<StockPortfolio>();
+                foreach (var file in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s))
+                {
+                    StockPortfolio.Portfolios.Add(StockPortfolio.Deserialize(file));
+                }
+                foreach (var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
+                {
+                    if (position.TrailStop == 0f && position.Stop != 0f)
+                        position.TrailStop = position.Stop;
+                }
+                // Load from SAXO export
+                var processedFolder = Path.Combine(Folders.Portfolio, "Processed");
+                foreach (var file in Directory.EnumerateFiles(folder, "Transactions_*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
+                {
+                    LoadFromSAXO(file);
+                    File.Move(file, Path.Combine(processedFolder, Path.GetFileName(file)));
+                }
+                var downloadFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                foreach (var file in Directory.EnumerateFiles(downloadFolder, "Transactions_*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
+                {
+                    LoadFromSAXO(file);
+                    File.Move(file, Path.Combine(processedFolder, Path.GetFileName(file)));
+                }
+                // Save SAXO Portfolio
+                StockPortfolio.Portfolios.ForEach(p => p.Serialize());
 
-            // Add simulation portfolio
-            SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
-            StockPortfolio.Portfolios.Add(SimulationPortfolio);
-            ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
-            StockPortfolio.Portfolios.Add(ReplayPortfolio);
+                // Add simulation portfolio
+                SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
+                StockPortfolio.Portfolios.Add(SimulationPortfolio);
+                ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
+                StockPortfolio.Portfolios.Add(ReplayPortfolio);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading portfolio file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
             return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
         }
 
-        private static void LoadFromSAXO(string fileName, string folder)
+        private static void LoadFromSAXO(string fileName)
         {
             try
             {
