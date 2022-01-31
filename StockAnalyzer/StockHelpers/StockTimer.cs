@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockHelpers
             this.period = period;
 
             this.TimerTick += callback;
-            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = false };
+            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = true };
             this.timer.Elapsed += Timer_Elapsed;
             Timers.Add(this);
         }

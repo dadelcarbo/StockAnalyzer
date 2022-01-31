@@ -97,21 +97,24 @@ namespace StockAnalyzer.StockLogging
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
-                StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3} : {4}", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), sf.GetMethod().Name, logText);
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {sf.GetMethod().Name}";
+                StockLog.Logger.sw.WriteLine($"{prefix}: {logText}");
             }
         }
         static public void WriteMethodEntry(Type type, StackFrame sf)
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3}::{4} : Entry", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {type.Name}::{sf.GetMethod().Name}";
+                StockLog.Logger.sw.WriteLine($"{prefix}: Entry");
             }
         }
         static public void WriteMethodExit(Type type, StackFrame sf)
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                StockLog.Logger.sw.WriteLine("{0}({1},{2}): {3}::{4} : Exit", sf.GetFileName(), sf.GetFileLineNumber(), sf.GetFileColumnNumber(), type.ToString(), sf.GetMethod().Name);
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {type.Name}::{sf.GetMethod().Name}";
+                StockLog.Logger.sw.WriteLine($"{prefix}: Exit");
             }
         }
 

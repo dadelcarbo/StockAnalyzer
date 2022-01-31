@@ -171,6 +171,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             "__RequestVerificationToken=$TOKEN";
         public bool DownloadIntradayGroup(string destFolder, string fileName, string group)
         {
+            StockLog.Write(group);
             if (!this.Initialize()) return false;
 
             try
@@ -301,13 +302,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
 
             // Load Config files
-            string fileName = Path.Combine(Folders.PersonalFolder , CONFIG_FILE);
+            string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
             if (!File.Exists(fileName))
             {
                 File.WriteAllText(fileName, defaultConfigFile);
             }
             InitFromFile(download, fileName);
-            fileName = Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER);
+            fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER);
             InitFromFile(download, fileName);
             foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
             {
@@ -827,7 +828,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     // Check if up to date
                     var lastLoadedDate = stockSerie.Keys.Last();
-                    if (stockSerie.StockName != "CAC40" && lastLoadedDate == lastDownloadedCAC40Date)
+                    if (stockSerie.StockName != "CAC40" && lastLoadedDate >= lastDownloadedCAC40Date)
                         return true;
 
                     var fileName = stockSerie.ISIN + "_" + stockSerie.ShortName + "_" + stockSerie.StockGroup.ToString() + ".csv";
@@ -911,12 +912,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         private String downloadingGroups = String.Empty;
-        int lastDownloadHour = 8;
+        TimeSpan nextDownload = new TimeSpan(9, 1, 0);
         public void DownloadAllGroupsIntraday()
         {
+            StockLog.Write(string.Empty);
             try
             {
-                if (IntradayDownloadSuspended) return;
+                if (IntradayDownloadSuspended)
+                    return;
+                var now = DateTime.Now.TimeOfDay;
+                if (DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Today.DayOfWeek == DayOfWeek.Saturday || now.Hours > 18 || now.Hours < 9)
+                    return;
                 while (downloadingGroups != String.Empty)
                 {
                     Thread.Sleep(500);
@@ -924,12 +930,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 lock (downloadingGroups)
                 {
                     // Download ABC intraday data
-                    var now = DateTime.Now.TimeOfDay;
-                    if (!(now.Hours > lastDownloadHour && now < new TimeSpan(18, 0, 0) && now > new TimeSpan(9, 0, 0) && DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday))
+                    if (now < nextDownload)
                     {
+                        StockLog.Write("Up To Date");
                         return;
                     }
-                    lastDownloadHour = now.Hours;
+                    int minutes = ((int)now.TotalMinutes / 5) * 5;
+                    nextDownload = TimeSpan.FromMinutes(minutes+5);
 
                     downloadingGroups = "True";
                     var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };

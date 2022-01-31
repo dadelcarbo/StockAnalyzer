@@ -66,8 +66,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -111,7 +111,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        var entries = StockWebHelper.DownloadData(url).Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
+                        var rawData = StockWebHelper.DownloadData(url);
+                        var entries = rawData.Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
                         if (DownloadHistory.ContainsKey(stockSerie.Ticker))
                         {
                             DownloadHistory[stockSerie.Ticker] = DateTime.Now;
@@ -122,6 +123,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         stockSerie.IsInitialised = false;
                         this.LoadData(stockSerie);
+
                         DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last().Date.AddDays(1) : DateTime.MinValue;
                         var values = new Dictionary<DateTime, float>();
                         DateTime date;

@@ -383,7 +383,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrailStop trailStop = StockTrailStopManager.CreateTrailStop(trailStopName);
                 if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
                 {
-                    StockLog.Write($"{trailStopName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{trailStopName} to {this.StockName} - {this.BarDuration}");
                     trailStop.ApplyTo(this);
                     this.TrailStopCache = trailStop;
                     return trailStop;
@@ -402,7 +402,7 @@ namespace StockAnalyzer.StockClasses
                 IStockIndicator indicator = StockIndicatorManager.CreateIndicator(indicatorName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
-                    StockLog.Write($"{indicatorName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}");
                     indicator.ApplyTo(this);
                     AddIndicatorSerie(indicator);
                     return indicator;
@@ -422,7 +422,7 @@ namespace StockAnalyzer.StockClasses
                 IStockCloud indicator = StockCloudManager.CreateCloud(cloudName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
-                    StockLog.Write($"{cloudName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{cloudName} to {this.StockName} - {this.BarDuration}");
                     indicator.ApplyTo(this);
                     AddCloudSerie(indicator);
                     return indicator;
@@ -441,7 +441,7 @@ namespace StockAnalyzer.StockClasses
                 IStockPaintBar paintBar = StockPaintBarManager.CreatePaintBar(paintBarName);
                 if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
                 {
-                    StockLog.Write($"{paintBarName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{paintBarName} to {this.StockName} - {this.BarDuration}");
                     paintBar.ApplyTo(this);
 
                     this.PaintBarCache = paintBar;
@@ -461,7 +461,7 @@ namespace StockAnalyzer.StockClasses
                 IStockAutoDrawing paintBar = StockAutoDrawingManager.CreateAutoDrawing(autoDrawingName);
                 if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
                 {
-                    StockLog.Write($"{autoDrawingName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{autoDrawingName} to {this.StockName} - {this.BarDuration}");
                     paintBar.ApplyTo(this);
 
                     this.AutoDrawingCache = paintBar;
@@ -482,7 +482,7 @@ namespace StockAnalyzer.StockClasses
                 IStockDecorator decorator = StockDecoratorManager.CreateDecorator(decoratorName, decoratedItem);
                 if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
                 {
-                    StockLog.Write($"{decoratorName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{decoratorName} to {this.StockName} - {this.BarDuration}");
                     decorator.ApplyTo(this);
                     this.DecoratorCache.Add(fullDecoratorName, decorator);
                     return decorator;
@@ -501,7 +501,7 @@ namespace StockAnalyzer.StockClasses
                 IStockTrail trail = StockTrailManager.CreateTrail(trailName, trailedItem);
                 if (trail != null && (this.HasVolume || !trail.RequiresVolumeData))
                 {
-                    StockLog.Write($"{trailName} to {this.StockName}-{this.BarDuration}");
+                    StockLog.Write($"{trailName} to {this.StockName} - {this.BarDuration}");
                     trail.ApplyTo(this);
                     this.TrailCache = trail;
                     return trail;

@@ -597,8 +597,7 @@ namespace StockAnalyzerApp
                     var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
                     StockTimer.CreateAlertTimer(startTime, endTime, GenerateAlert, alertConfig);
                 }
-                Task.Delay(500).Wait();
-                StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 5, 0), RefreshTimer_Tick);
+                StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
 
@@ -746,11 +745,14 @@ namespace StockAnalyzerApp
         public static bool alertThreadBusy = false;
         private void RefreshTimer_Tick()
         {
-            StockLog.Write($"RefreshTimer_Tick {DateTime.Now.TimeOfDay} Thread Id: " + Thread.CurrentThread.ManagedThreadId);
+            StockLog.Write($"Thread Id: " + Thread.CurrentThread.ManagedThreadId);
             lock (timerLock)
             {
                 if (alertThreadBusy)
+                {
+                    StockLog.Write($"alertThreadBusy");
                     return;
+                }
                 alertThreadBusy = true;
             }
 
@@ -791,8 +793,11 @@ namespace StockAnalyzerApp
             StockLog.Write("GenerateAlert Thread: " + Thread.CurrentThread.ManagedThreadId + "Culture: " + Thread.CurrentThread.CurrentCulture);
             lock (timerLock)
             {
-                if (alertThreadBusy || alertConfig == null)
-                    return;
+                while (alertThreadBusy)
+                {
+                    StockLog.Write($"alertThreadBusy Waiting...");
+                    Task.Delay(500).Wait();
+                }
                 alertThreadBusy = true;
             }
 
@@ -1526,7 +1531,10 @@ namespace StockAnalyzerApp
             lock (timerLock)
             {
                 if (alertThreadBusy)
+                {
+                    StockLog.Write($"alertThreadBusy");
                     return;
+                }
                 alertThreadBusy = true;
             }
             if (Control.ModifierKeys == Keys.Control)

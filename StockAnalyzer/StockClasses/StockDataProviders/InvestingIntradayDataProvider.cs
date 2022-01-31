@@ -155,7 +155,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     else
                     {
                         var writeDate = File.GetLastWriteTime(fileName);
-                        if (writeDate > DateTime.Now.AddMinutes(-2))
+                        if (writeDate > DateTime.Now.AddSeconds(-59))
                         {
                             stockSerie.Initialise();
                             if (stockSerie.Last().Key.Day == writeDate.Day)
