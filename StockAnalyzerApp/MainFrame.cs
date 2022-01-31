@@ -4424,12 +4424,6 @@ namespace StockAnalyzerApp
         }
         private void saveThemeMenuItem_Click(object sender, EventArgs e)
         {
-            string folderName = Folders.Theme;
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-            }
-
             List<string> themeList = new List<string>();
             foreach (object theme in this.themeComboBox.Items)
             {
@@ -4440,7 +4434,7 @@ namespace StockAnalyzerApp
             SaveThemeForm saveThemeForm = new SaveThemeForm(themeList);
             if (saveThemeForm.ShowDialog() == DialogResult.OK)
             {
-                SaveCurveTheme(folderName + @"\" + Path.Combine(Folders.Theme, saveThemeForm.Theme + ".thm") + ".thm");
+                SaveCurveTheme(Path.Combine(Folders.Theme, saveThemeForm.Theme + ".thm"));
                 if (!this.themeComboBox.Items.Contains(saveThemeForm.Theme))
                 {
                     this.themeComboBox.Items.Add(saveThemeForm.Theme);
