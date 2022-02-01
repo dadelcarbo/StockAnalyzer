@@ -830,6 +830,10 @@ namespace StockAnalyzerApp
                             stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockName == alertDef.StockName).ToList();
                             break;
                     }
+                    if (alertDef.IndicatorFullName == "AUTODRAWING|DRAWING()")
+                    {
+                        stockList = stockList.Where(s => s.StockAnalysis.DrawingItems.ContainsKey(alertDef.BarDuration) && s.StockAnalysis.DrawingItems[alertDef.BarDuration].Count > 0).ToList();
+                    }
                     if (stockList.Count == 0)
                         continue;
 
@@ -1262,27 +1266,9 @@ namespace StockAnalyzerApp
                     this.Text = "Ultimate Chartist - " + "No stock selected";
                     return;
                 }
-                if (newSerie.BelongsToGroup(StockSerie.Groups.INTRADAY))
-                {
-                    this.statusLabel.Text = ("Downloading data...");
-                    this.Refresh();
-                    this.Cursor = Cursors.WaitCursor;
-                    StockDataProviderBase.DownloadSerieData(newSerie);
-                }
-                if (!newSerie.IsInitialised)
-                {
-                    this.statusLabel.Text = ("Loading data...");
-                    //this.Refresh();
-                    this.Cursor = Cursors.WaitCursor;
-                }
-
                 this.currentStockSerie = newSerie;
-                if (!newSerie.Initialise() || newSerie.Count == 0)
-                {
-                    DeactivateGraphControls("No data to display");
-                    this.Text = "Ultimate Chartist - " + "Failure Loading data selected from " + this.CurrentStockSerie.DataProvider;
-                    return;
-                }
+
+                #region Set Window Title
                 string id;
                 if (CurrentStockSerie.ShortName == CurrentStockSerie.StockName)
                 {
@@ -1298,27 +1284,48 @@ namespace StockAnalyzerApp
                 }
                 id += " - " + this.CurrentStockSerie.DataProvider;
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
-                if (newSerie.Count < MIN_BAR_DISPLAY)
+                #endregion
+
+                if (currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY))
                 {
-                    DeactivateGraphControls("Not enough data to display");
+                    this.statusLabel.Text = ("Downloading data...");
+                    this.Refresh();
+                    this.Cursor = Cursors.WaitCursor;
+                    StockDataProviderBase.DownloadSerieData(currentStockSerie);
+                }
+                if (!currentStockSerie.IsInitialised)
+                {
+                    this.statusLabel.Text = ("Loading data...");
+                    this.Cursor = Cursors.WaitCursor;
+                }
+
+                if (!currentStockSerie.Initialise() || currentStockSerie.Count == 0)
+                {
+                    DeactivateGraphControls("No data to display");
                     return;
                 }
 
                 this.currentStockSerie.BarDuration = this.ViewModel.BarDuration;
 
-                if (!ignoreLinkedTheme
-                    && newSerie.StockAnalysis != null
-                    && !string.IsNullOrEmpty(newSerie.StockAnalysis.Theme)
-                    && this.themeComboBox.SelectedText != newSerie.StockAnalysis.Theme
-                    && this.themeComboBox.Items.Contains(newSerie.StockAnalysis.Theme))
+                if (currentStockSerie.Count < MIN_BAR_DISPLAY)
                 {
-                    if (this.themeComboBox.SelectedItem.ToString() == newSerie.StockAnalysis.Theme)
+                    DeactivateGraphControls("Not enough data to display");
+                    return;
+                }
+
+                if (!ignoreLinkedTheme
+                    && currentStockSerie.StockAnalysis != null
+                    && !string.IsNullOrEmpty(currentStockSerie.StockAnalysis.Theme)
+                    && this.themeComboBox.SelectedText != currentStockSerie.StockAnalysis.Theme
+                    && this.themeComboBox.Items.Contains(currentStockSerie.StockAnalysis.Theme))
+                {
+                    if (this.themeComboBox.SelectedItem.ToString() == currentStockSerie.StockAnalysis.Theme)
                     {
                         ApplyTheme();
                     }
                     else
                     {
-                        this.themeComboBox.SelectedItem = newSerie.StockAnalysis.Theme;
+                        this.themeComboBox.SelectedItem = currentStockSerie.StockAnalysis.Theme;
                     }
                 }
                 else
