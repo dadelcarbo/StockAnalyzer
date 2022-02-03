@@ -26,7 +26,5 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         bool ForceDownloadData(StockSerie stockSerie);
         bool DownloadIntradayData(StockSerie stockSerie);
         void InitDictionary(StockDictionary stockDictionary, bool download);
-
-        bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration);
     }
 }

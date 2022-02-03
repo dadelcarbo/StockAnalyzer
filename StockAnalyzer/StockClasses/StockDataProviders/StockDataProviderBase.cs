@@ -392,10 +392,5 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockValue;
         }
         #endregion
-
-        public virtual bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
-        {
-            return false;
-        }
     }
 }

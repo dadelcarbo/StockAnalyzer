@@ -21,37 +21,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public string UserConfigFileName => CONFIG_FILE_USER;
 
-        public override bool LoadIntradayDurationArchiveData(StockSerie serie, StockBarDuration duration)
-        {
-            StockLog.Write("LoadIntradayDurationArchiveData Name:" + serie.StockName + " duration:" + duration);
-            var durationFileName = DataFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" + serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" + serie.StockGroup.ToString() + ".txt";
-            if (File.Exists(durationFileName))
-            {
-                var values = serie.GetValues(duration);
-                if (values == null)
-                    StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: 0");
-                else StockLog.Write("LoadIntradayDurationArchiveData Cache File Found, current size is: " + values.Count);
-                serie.ReadFromCSVFile(durationFileName, duration);
-
-
-                StockLog.Write("LoadIntradayDurationArchiveData New serie size is: " + serie.GetValues(duration).Count);
-                if (serie.GetValues(duration).Count > 0)
-                {
-                    StockLog.Write("LoadIntradayDurationArchiveData First bar: " + serie.GetValues(duration).First().ToString());
-                    StockLog.Write("LoadIntradayDurationArchiveData Last bar: " + serie.GetValues(duration).Last().ToString());
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-            return true;
-        }
-
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Create data folder if not existing

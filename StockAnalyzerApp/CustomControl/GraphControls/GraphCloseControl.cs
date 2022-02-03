@@ -1187,14 +1187,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var position = positions.FirstOrDefault(p => !p.IsClosed);
                 if (position != null)
                 {
+                    int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                    this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
                     if (position.Stop != 0)
                     {
-                        int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
                         this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
                     }
                     if (position.TrailStop != 0 && position.TrailStop != position.Stop)
                     {
-                        int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
                         this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
                     }
                 }

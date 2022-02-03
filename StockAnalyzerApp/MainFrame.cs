@@ -588,7 +588,7 @@ namespace StockAnalyzerApp
             // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
-                var startTime = new TimeSpan(9, 0, 0);
+                var startTime = new TimeSpan(8, 0, 0);
                 var endTime = new TimeSpan(17, 40, 0);
 
                 // Checks for alert every x minutes according to bar duration.

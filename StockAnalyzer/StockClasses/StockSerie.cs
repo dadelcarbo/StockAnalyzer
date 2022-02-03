@@ -183,12 +183,15 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
+        public DateTime LastDate { get; private set; } = DateTime.MinValue;
         public new void Add(DateTime date, StockDailyValue dailyValue)
         {
             if (date.Year >= StockDataProviderBase.LOAD_START_YEAR)
             {
                 //this.DataSource.Values.Add(dailyValue);
                 base.Add(date, dailyValue);
+                if (date > LastDate)
+                    LastDate = date;
             }
         }
 
@@ -732,7 +735,7 @@ namespace StockAnalyzer.StockClasses
                                 }
                                 else
                                 {
-                                    if (!stockEvent.Events[eventIndex][index]) 
+                                    if (!stockEvent.Events[eventIndex][index])
                                         return false;
                                 }
                             }
@@ -3732,7 +3735,6 @@ namespace StockAnalyzer.StockClasses
         {
             using (StreamWriter sw = new StreamWriter(fileName))
             {
-                DateTime lastDate = this.Keys.Last();
                 sw.WriteLine(StockDailyValue.StringFormat());
                 foreach (StockDailyValue value in this.Values)
                 {
