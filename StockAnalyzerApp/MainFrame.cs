@@ -1286,7 +1286,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if (currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY))
+                if (currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) && currentStockSerie.IsMarketOpened())
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -1298,21 +1298,17 @@ namespace StockAnalyzerApp
                     this.statusLabel.Text = ("Loading data...");
                     this.Cursor = Cursors.WaitCursor;
                 }
-
                 if (!currentStockSerie.Initialise() || currentStockSerie.Count == 0)
                 {
                     DeactivateGraphControls("No data to display");
                     return;
                 }
-
                 this.currentStockSerie.BarDuration = this.ViewModel.BarDuration;
-
                 if (currentStockSerie.Count < MIN_BAR_DISPLAY)
                 {
                     DeactivateGraphControls("Not enough data to display");
                     return;
                 }
-
                 if (!ignoreLinkedTheme
                     && currentStockSerie.StockAnalysis != null
                     && !string.IsNullOrEmpty(currentStockSerie.StockAnalysis.Theme)

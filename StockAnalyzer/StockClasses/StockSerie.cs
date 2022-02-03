@@ -183,15 +183,11 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
-        public DateTime LastDate { get; private set; } = DateTime.MinValue;
         public new void Add(DateTime date, StockDailyValue dailyValue)
         {
             if (date.Year >= StockDataProviderBase.LOAD_START_YEAR)
             {
-                //this.DataSource.Values.Add(dailyValue);
                 base.Add(date, dailyValue);
-                if (date > LastDate)
-                    LastDate = date;
             }
         }
 
@@ -1380,6 +1376,21 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
+
+        public bool IsMarketOpened()
+        {
+            var today = DateTime.Now;
+            if (today.DayOfWeek == DayOfWeek.Sunday || today.DayOfWeek == DayOfWeek.Saturday)
+                return false;
+            if (this.StockName.StartsWith("INT_") && today.TimeOfDay > new TimeSpan(9, 0, 0) && today.TimeOfDay > new TimeSpan(17, 40, 0))
+                return true;
+            if (this.StockName.StartsWith("FUT_") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay > new TimeSpan(22, 05, 0))
+                return true;
+            if (this.StockName.StartsWith("TURBO") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay > new TimeSpan(22, 05, 0))
+                return true;
+            return false;
+        }
+
         public void CalculateHMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float alpha1 = 2.0f / (float)(period + 1);
@@ -3688,41 +3699,6 @@ namespace StockAnalyzer.StockClasses
                         if (readValue != null && !this.ContainsKey(readValue.DATE))
                         {
                             this.Add(readValue.DATE, readValue);
-                        }
-                    }
-                }
-                result = true;
-            }
-            return result;
-        }
-
-        public bool ReadFromCSVFile(string fileName, StockBarDuration duration)
-        {
-            bool result = false;
-            if (File.Exists(fileName))
-            {
-                List<StockDailyValue> bars;
-                DateTime lastDateTime = DateTime.MinValue;
-                if (this.BarSmoothedDictionary.ContainsKey(duration.ToString()))
-                {
-                    bars = this.BarSmoothedDictionary[duration.ToString()];
-                    lastDateTime = bars.Last().DATE;
-                }
-                else
-                {
-                    bars = new List<StockDailyValue>();
-                    this.BarSmoothedDictionary.Add(duration.ToString(), bars);
-                }
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    sr.ReadLine(); // Skip the first line
-                    StockDailyValue readValue = null;
-                    while (!sr.EndOfStream)
-                    {
-                        readValue = StockDailyValue.ReadMarketDataFromCSVStream(sr, this.StockName, true);
-                        if (readValue != null && readValue.DATE > lastDateTime) //!bars.Any(b => b.DATE == readValue.DATE))
-                        {
-                            bars.Add(readValue);
                         }
                     }
                 }
