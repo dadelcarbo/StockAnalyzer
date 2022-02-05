@@ -14,6 +14,8 @@ namespace StockAnalyzer.StockDrawing
         [XmlIgnore]
         public bool IsPersistent { get; set; }
 
+        protected static Font font = new Font(FontFamily.GenericSansSerif, 7);
+
         public DrawingItem()
         {
             this.IsPersistent = DrawingItem.CreatePersistent;

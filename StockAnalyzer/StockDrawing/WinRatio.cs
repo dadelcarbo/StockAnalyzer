@@ -8,7 +8,6 @@ namespace StockAnalyzer.StockDrawing
     {
         static SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
         static SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
-        Font font = new Font(FontFamily.GenericSansSerif, 7);
 
         public PointF Stop { get; set; }
         public PointF Entry { get; set; }

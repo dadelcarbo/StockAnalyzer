@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override string[] ParameterNames => new string[] { "Length", "Range" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 8, 0.1f };
+        public override Object[] ParameterDefaultValues => new Object[] { 8, 0.15f };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeFloat(0f, 10f) };
 
@@ -53,7 +53,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             var boxLength = (int)this.parameters[0];
             var boxRange = (float)this.parameters[1];
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             var highestInSerie = stockSerie.GetIndicator($"HIGHEST({boxLength})").Series[0];
 
@@ -65,24 +64,35 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
                 var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
-                var volumeSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+                var volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
+                var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
                 for (int i = boxLength + 1; i < stockSerie.Count; i++)
                 {
-                    if (highestInSerie[i] > boxLength)
+                    if (highestInSerie[i - 1] < boxLength && highestInSerie[i] > boxLength)
                     {
-                        // Check Box Size
-                        var boxHigh = bodyHighSerie.GetMax(i - boxLength - 1, i - 1);
-                        var boxLow = bodyLowSerie.GetMin(i - boxLength - 1, i - 1);
+                        var index = i - boxLength;
+                        var boxHigh = bodyHighSerie.GetMax(index, i - 1);
+                        var boxLow = bodyLowSerie.GetMin(index, i - 1);
                         var range = (boxHigh - boxLow) / boxHigh;
-                        if (range < boxRange && (volumeSerie[i] == 0 || volumeSerie[i] > volumeSerie[i - 1]))
+                        if (range > boxRange)
+                            continue;
+                        while (index > 0 && range < boxRange && closeSerie[i] > boxHigh && closeSerie[index] >= boxLow)
+                        {
+                            index--;
+                            boxHigh = Math.Max(boxHigh, bodyHighSerie[index]);
+                            range = (boxHigh - boxLow) / boxHigh;
+                        }
+                        index++;
+                        if (i - index >= boxLength)
                         {
                             // Box broken up
                             brokenUpEvents[i] = true;
-                            Rectangle2D box = new Rectangle2D(new PointF(i - boxLength - 1, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
+                            boxHigh = bodyHighSerie.GetMax(index, i - 1);
+                            var box = new Box(new PointF(index, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
                             this.DrawingItems.Insert(0, box);
+                            i += boxLength;
                         }
-                        i += boxLength;
                     }
                 }
             }

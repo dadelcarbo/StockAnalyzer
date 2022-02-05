@@ -12,9 +12,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings.Properties;
-using System.IO;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
@@ -2433,6 +2431,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         void openInABCMenu_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInABCMenu();
+        }
+        void openInTradingView_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInTradingView();
         }
         void openInPEAPerf_Click(object sender, System.EventArgs e)
         {

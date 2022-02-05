@@ -156,6 +156,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
+    <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
@@ -493,7 +494,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />
     <Compile Include="StockClasses\StockWatchList.cs" />
     <Compile Include="StockDrawing\CupHandle2D.cs" />
-    <Compile Include="StockDrawing\StockDrawingItems2.cs" />
     <Compile Include="StockDrawing\Bullet2D.cs" />
     <Compile Include="StockDrawing\CandleStick.cs" />
     <Compile Include="StockDrawing\HalfLine2D.cs" />

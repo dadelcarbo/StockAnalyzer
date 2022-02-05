@@ -434,7 +434,6 @@ namespace StockAnalyzerApp
             }
             Directory.CreateDirectory(folderName);
 
-            // Parse Yahoo market data
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;
 
@@ -798,6 +797,7 @@ namespace StockAnalyzerApp
                     StockLog.Write($"alertThreadBusy Waiting...");
                     Task.Delay(500).Wait();
                 }
+                RefreshTimer_Tick();
                 alertThreadBusy = true;
             }
 
@@ -4554,9 +4554,16 @@ namespace StockAnalyzerApp
 
         internal void OpenInABCMenu()
         {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ABCName))
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
                 return;
             string url = $"https://www.abcbourse.com/graphes/display.aspx?s={this.currentStockSerie.ABCName}";
+            Process.Start(url);
+        }
+        internal void OpenInTradingView()
+        {
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
+                return;
+            string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-overview/";
             Process.Start(url);
         }
 

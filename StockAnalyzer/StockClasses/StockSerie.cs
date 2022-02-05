@@ -1382,11 +1382,11 @@ namespace StockAnalyzer.StockClasses
             var today = DateTime.Now;
             if (today.DayOfWeek == DayOfWeek.Sunday || today.DayOfWeek == DayOfWeek.Saturday)
                 return false;
-            if (this.StockName.StartsWith("INT_") && today.TimeOfDay > new TimeSpan(9, 0, 0) && today.TimeOfDay > new TimeSpan(17, 40, 0))
+            if (this.StockName.StartsWith("INT_") && today.TimeOfDay > new TimeSpan(9, 0, 0) && today.TimeOfDay < new TimeSpan(17, 40, 0))
                 return true;
-            if (this.StockName.StartsWith("FUT_") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay > new TimeSpan(22, 05, 0))
+            if (this.StockName.StartsWith("FUT_") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay < new TimeSpan(22, 05, 0))
                 return true;
-            if (this.StockName.StartsWith("TURBO") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay > new TimeSpan(22, 05, 0))
+            if (this.StockName.StartsWith("TURBO") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay < new TimeSpan(22, 05, 0))
                 return true;
             return false;
         }
