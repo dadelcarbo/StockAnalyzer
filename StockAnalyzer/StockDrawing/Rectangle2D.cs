@@ -20,8 +20,8 @@ namespace StockAnalyzer.StockDrawing
         }
         public Rectangle2D(PointF p1, PointF p2)
         {
-            this.TopLeft = new PointF(Math.Min(p1.X, p2.X), Math.Max(p1.Y, p2.Y));
-            this.BottomRight = new PointF(Math.Max(p1.X, p2.X), Math.Min(p1.Y, p2.Y));
+            this.TopLeft = new PointF(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y));
+            this.BottomRight = new PointF(Math.Max(p1.X, p2.X), Math.Max(p1.Y, p2.Y));
         }
         public float Left
         {

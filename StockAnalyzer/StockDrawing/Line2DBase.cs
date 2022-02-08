@@ -71,7 +71,7 @@ namespace StockAnalyzer.StockDrawing
             else
             {
                 Point1 = p1;
-                Point2 = new PointF(p1.X + vx, p1.Y + vy); ;
+                Point2 = new PointF(p1.X + vx, p1.Y + vy);
             }
         }
         public Line2DBase(PointF p1, float vx, float vy, Pen pen)

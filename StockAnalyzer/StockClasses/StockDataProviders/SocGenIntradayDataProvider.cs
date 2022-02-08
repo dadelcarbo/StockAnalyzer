@@ -82,6 +82,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         var rawData = StockWebHelper.DownloadData(url);
                         var entries = rawData.Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
+                        if (entries.Length < 2)
+                            return false;
+
                         if (DownloadHistory.ContainsKey(stockSerie.Ticker))
                         {
                             DownloadHistory[stockSerie.Ticker] = DateTime.Now;

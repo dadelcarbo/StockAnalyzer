@@ -143,10 +143,11 @@ namespace StockAnalyzerApp
             this.drawLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addHalfLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.addSegmentStripBtn = new System.Windows.Forms.ToolStripButton();
-            this.cupHandleBtn = new System.Windows.Forms.ToolStripButton();
+            this.drawCupHandleStripBtn = new System.Windows.Forms.ToolStripButton();
             this.copyLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.cutLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.drawWinRatioStripBtn = new System.Windows.Forms.ToolStripButton();
+            this.drawBoxStripBtn = new System.Windows.Forms.ToolStripButton();
             this.deleteLineStripBtn = new System.Windows.Forms.ToolStripButton();
             this.drawingStyleStripBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -1103,9 +1104,10 @@ namespace StockAnalyzerApp
             this.drawToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.drawToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.magnetStripBtn,
-            this.cupHandleBtn,
-            this.drawLineStripBtn,
+            this.drawCupHandleStripBtn,
             this.drawWinRatioStripBtn,
+            this.drawBoxStripBtn,
+            this.drawLineStripBtn,
             this.addHalfLineStripBtn,
             this.addSegmentStripBtn,
             this.copyLineStripBtn,
@@ -1156,6 +1158,17 @@ namespace StockAnalyzerApp
             this.drawWinRatioStripBtn.Text = "Draw win ratio";
             this.drawWinRatioStripBtn.Click += new System.EventHandler(this.drawWinRatioStripBtn_Click);
             // 
+            // drawBoxStripBtn
+            // 
+            this.drawBoxStripBtn.CheckOnClick = true;
+            this.drawBoxStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.drawBoxStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.AddBox;
+            this.drawBoxStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.drawBoxStripBtn.Name = "drawBoxStripBtn";
+            this.drawBoxStripBtn.Size = new System.Drawing.Size(23, 22);
+            this.drawBoxStripBtn.Text = "Draw Box";
+            this.drawBoxStripBtn.Click += new System.EventHandler(this.drawBoxStripBtn_Click);
+            // 
             // addHalfLineStripBtn
             // 
             this.addHalfLineStripBtn.CheckOnClick = true;
@@ -1180,15 +1193,15 @@ namespace StockAnalyzerApp
             // 
             // cupHandleBtn
             // 
-            this.cupHandleBtn.CheckOnClick = true;
-            this.cupHandleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.cupHandleBtn.Image = global::StockAnalyzerApp.Properties.Resources.CupHandle;
-            this.cupHandleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cupHandleBtn.Name = "cupHandleBtn";
-            this.cupHandleBtn.Size = new System.Drawing.Size(23, 22);
-            this.cupHandleBtn.Text = "cupHandleBtn";
-            this.cupHandleBtn.ToolTipText = "Draw cup and handle";
-            this.cupHandleBtn.Click += new System.EventHandler(this.cupHandleBtn_Click);
+            this.drawCupHandleStripBtn.CheckOnClick = true;
+            this.drawCupHandleStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.drawCupHandleStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.CupHandle;
+            this.drawCupHandleStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.drawCupHandleStripBtn.Name = "cupHandleBtn";
+            this.drawCupHandleStripBtn.Size = new System.Drawing.Size(23, 22);
+            this.drawCupHandleStripBtn.Text = "cupHandleBtn";
+            this.drawCupHandleStripBtn.ToolTipText = "Draw cup and handle";
+            this.drawCupHandleStripBtn.Click += new System.EventHandler(this.cupHandleBtn_Click);
             // 
             // copyLineStripBtn
             // 
@@ -1517,7 +1530,8 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem configDataProviderMenuItem;
         private ToolStripButton drawLineStripBtn;
         private ToolStripButton drawWinRatioStripBtn;
-        private ToolStripButton cupHandleBtn;
+        private ToolStripButton drawBoxStripBtn;
+        private ToolStripButton drawCupHandleStripBtn;
         private ToolStripButton copyLineStripBtn;
         private ToolStripButton deleteLineStripBtn;
         private ToolStripButton drawingStyleStripBtn;

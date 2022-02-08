@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml.Serialization;
@@ -6,25 +7,46 @@ using System.Xml.Serialization;
 namespace StockAnalyzer.StockDrawing
 {
     [Serializable]
-    public class CupHandle2D : Segment2D
+    public class CupHandle2D : Segment2D, IOpenedDrawing
     {
         public CupHandle2D()
         {
 
         }
-        public CupHandle2D(PointF point1, PointF point2, PointF pivot, PointF leftLow, PointF rightLow, Pen pen, bool inverse = false)
+        public CupHandle2D(PointF point1, PointF point2, PointF pivot, PointF leftLow, PointF rightLow, Pen pen, bool inverse, bool isOpened)
            : base(point1, point2, pen)
         {
             this.Pivot = pivot;
             this.LeftLow = leftLow;
             this.RightLow = rightLow;
             this.Inverse = inverse;
+            this.IsOpened = isOpened;
         }
 
         public PointF Pivot { get; set; }
         public PointF RightLow { get; set; }
         public PointF LeftLow { get; set; }
         public bool Inverse { get; set; }
+
+        #region IOpenedDrawing
+        public bool IsOpened { get; set; }
+        public bool TryClose(FloatSerie closeSerie)
+        {
+            if (!this.IsOpened)
+                return false;
+            if (this.Point2.X > closeSerie.LastIndex)
+                return false;
+            for (int i = (int)this.Point2.X; i < closeSerie.Count; i++)
+            {
+                if (closeSerie[i] > this.Point2.Y)
+                {
+                    this.IsOpened = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
 
         const int PIVOT_SIZE = 6;
         public override void Draw(Graphics g, Pen pen, Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)

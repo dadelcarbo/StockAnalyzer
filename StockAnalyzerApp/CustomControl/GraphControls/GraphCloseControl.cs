@@ -1282,7 +1282,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             return marqueePoints;
         }
         #region MOUSE EVENTS
-        override public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
+        override public void MouseMoveOverControl(MouseEventArgs e, Keys key, bool mouseOverThis)
         {
             if (!this.IsInitialized || this.CurveList == null || this.CurveList.Count == 0)
                 return;
@@ -1465,7 +1465,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             this.PaintForeground();
         }
-        override public void GraphControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        override public void GraphControl_MouseClick(object sender, MouseEventArgs e)
         {
             if (!this.Focused) this.Focus();
 
@@ -1518,7 +1518,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 if (this.DrawingMode == GraphDrawMode.Normal)
                 {
-                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    if (e.Button == MouseButtons.Left)
                     {
                         // Create horizontal line is CTRL key is pressed
                         if ((Control.ModifierKeys & Keys.Control) != 0)
@@ -1567,7 +1567,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.PaintForeground();
             }
         }
-        protected void ManageMouseMoveDrawing(System.Windows.Forms.MouseEventArgs e, PointF mouseValuePoint)
+        protected void ManageMouseMoveDrawing(MouseEventArgs e, PointF mouseValuePoint)
         {
             PointF point1 = selectedValuePoint;
             PointF point2 = mouseValuePoint;
@@ -1584,10 +1584,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         DrawTmpItem(this.foregroundGraphic, new Line2D(point1, point2), true);
                     }
                     break;
-                case GraphDrawMode.AddArea:
+                case GraphDrawMode.AddBox:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpItem(this.foregroundGraphic, new Rectangle2D(point1, point2), true);
+                        DrawTmpItem(this.foregroundGraphic, new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y)), true);
                     }
                     break;
                 case GraphDrawMode.AddWinRatio:
@@ -1718,7 +1718,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         // Draw open cup and handle (not completed yet)
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftLow, rightLow, DrawingPen);
+                        bool opened = j > EndIndex && closeCurveType.DataSerie[EndIndex] < pivot.Y;
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftLow, rightLow, DrawingPen, false, opened);
                     }
                 }
             }
@@ -1773,7 +1774,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                         // Draw open cup and handle (not completed yet)
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true);
+                        bool opened = j > EndIndex && closeCurveType.DataSerie[EndIndex] > pivot.Y;
+                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true, opened);
                     }
                 }
             }
@@ -1879,7 +1881,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
 
         WinRatio newWinRatio = null;
-        private void MouseClickDrawing(System.Windows.Forms.MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
+        private void MouseClickDrawing(MouseEventArgs e, ref PointF mousePoint, ref PointF mouseValuePoint)
         {
             PointF point1 = selectedValuePoint;
             PointF point2 = mouseValuePoint;
@@ -1921,7 +1923,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             break;
                     }
                     break;
-                case GraphDrawMode.AddArea:
+                case GraphDrawMode.AddBox:
                     switch (this.DrawingStep)
                     {
                         case GraphDrawingStep.SelectItem: // Selecting the first point
@@ -1931,7 +1933,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                var newArea = new Rectangle2D(point1, point2);
+                                var newArea = new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
                                 drawingItems.Add(newArea);
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
@@ -2248,7 +2250,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             return returnPoint;
         }
-        private void HighlightClosestLine(System.Windows.Forms.MouseEventArgs e)
+        private void HighlightClosestLine(MouseEventArgs e)
         {
             // Find the closest line in the list
             int index = FindClosestLine(new PointF(e.X, e.Y));

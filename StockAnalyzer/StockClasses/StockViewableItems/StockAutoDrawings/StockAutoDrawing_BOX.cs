@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 } };
+                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 1 } };
                 }
                 return seriePens;
             }

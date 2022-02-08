@@ -131,7 +131,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                         brokenUpEvents[i] = bullEvents[i] = true;
 
                         // Draw open cup and handle
-                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black);
+                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black, false, false);
                         this.DrawingItems.Insert(0, cupHandle);
                     }
                 }

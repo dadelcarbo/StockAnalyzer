@@ -73,9 +73,9 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap AddArea {
+        public static System.Drawing.Bitmap AddBox {
             get {
-                object obj = ResourceManager.GetObject("AddArea", resourceCulture);
+                object obj = ResourceManager.GetObject("AddBox", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

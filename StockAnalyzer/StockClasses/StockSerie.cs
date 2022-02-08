@@ -1377,11 +1377,18 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
+        public bool NeedIntradayDowload()
+        {
+            return true;
+        }
         public bool IsMarketOpened()
         {
+            return true;
             var today = DateTime.Now;
             if (today.DayOfWeek == DayOfWeek.Sunday || today.DayOfWeek == DayOfWeek.Saturday)
                 return false;
+            if (this.StockName.StartsWith("INT_US_") && today.TimeOfDay > new TimeSpan(14, 30, 0) && today.TimeOfDay < new TimeSpan(22, 0, 0))
+                return true;
             if (this.StockName.StartsWith("INT_") && today.TimeOfDay > new TimeSpan(9, 0, 0) && today.TimeOfDay < new TimeSpan(17, 40, 0))
                 return true;
             if (this.StockName.StartsWith("FUT_") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay < new TimeSpan(22, 05, 0))

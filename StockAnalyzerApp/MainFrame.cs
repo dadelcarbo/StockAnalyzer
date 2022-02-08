@@ -611,11 +611,6 @@ namespace StockAnalyzerApp
             this.Focus();
         }
 
-        private void T_Tick(object sender, EventArgs e)
-        {
-            RefreshTimer_Tick();
-        }
-
         private void goBtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(searchText.Text)) return;
@@ -790,6 +785,8 @@ namespace StockAnalyzerApp
         public void GenerateAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
         {
             StockLog.Write("GenerateAlert Thread: " + Thread.CurrentThread.ManagedThreadId + "Culture: " + Thread.CurrentThread.CurrentCulture);
+
+            RefreshTimer_Tick();
             lock (timerLock)
             {
                 while (alertThreadBusy)
@@ -797,7 +794,6 @@ namespace StockAnalyzerApp
                     StockLog.Write($"alertThreadBusy Waiting...");
                     Task.Delay(500).Wait();
                 }
-                RefreshTimer_Tick();
                 alertThreadBusy = true;
             }
 
@@ -1803,21 +1799,22 @@ namespace StockAnalyzerApp
                 }
             }
             drawWinRatioStripBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
         }
 
-        private void drawAreaStripBtn_Click(object sender, EventArgs e)
+        private void drawBoxStripBtn_Click(object sender, EventArgs e)
         {
             foreach (GraphControl graphControl in this.graphList)
             {
-                if (drawWinRatioStripBtn.Checked)
+                if (drawBoxStripBtn.Checked)
                 {
-                    graphControl.DrawingMode = GraphDrawMode.AddArea;
+                    graphControl.DrawingMode = GraphDrawMode.AddBox;
                     graphControl.DrawingStep = GraphDrawingStep.SelectItem;
                 }
                 else
@@ -1826,9 +1823,10 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
+            drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1851,8 +1849,9 @@ namespace StockAnalyzerApp
                 }
             }
             drawLineStripBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
             copyLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1863,7 +1862,7 @@ namespace StockAnalyzerApp
         {
             foreach (GraphControl graphControl in this.graphList)
             {
-                if (cupHandleBtn.Checked)
+                if (drawCupHandleStripBtn.Checked)
                 {
                     graphControl.DrawingMode = GraphDrawMode.AddCupHandle;
                     graphControl.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1875,8 +1874,9 @@ namespace StockAnalyzerApp
                 }
             }
             drawWinRatioStripBtn.Checked = false;
-            copyLineStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1900,7 +1900,8 @@ namespace StockAnalyzerApp
             }
             drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -1923,9 +1924,10 @@ namespace StockAnalyzerApp
                 }
             }
             drawWinRatioStripBtn.Checked = false;
-            copyLineStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -1961,10 +1963,11 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            copyLineStripBtn.Checked = false;
             drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -1985,10 +1988,11 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            copyLineStripBtn.Checked = false;
             drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             cutLineStripBtn.Checked = false;
@@ -2009,10 +2013,11 @@ namespace StockAnalyzerApp
                     graphControl.DrawingStep = GraphDrawingStep.Done;
                 }
             }
-            copyLineStripBtn.Checked = false;
             drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;
@@ -2027,10 +2032,11 @@ namespace StockAnalyzerApp
             }
 
             // Reset drawing buttons 
-            copyLineStripBtn.Checked = false;
             drawWinRatioStripBtn.Checked = false;
             drawLineStripBtn.Checked = false;
-            cupHandleBtn.Checked = false;
+            drawCupHandleStripBtn.Checked = false;
+            drawBoxStripBtn.Checked = false;
+            copyLineStripBtn.Checked = false;
             deleteLineStripBtn.Checked = false;
             addHalfLineStripBtn.Checked = false;
             addSegmentStripBtn.Checked = false;

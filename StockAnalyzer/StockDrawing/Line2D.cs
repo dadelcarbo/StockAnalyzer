@@ -145,15 +145,25 @@ namespace StockAnalyzer.StockDrawing
         {
             // Calculate intersection with bounding rectangle
             Line2D newLine = (Line2D)this.Transform(matrixValueToScreen, isLog);
-            Segment2D trimmedSegment = newLine.Trim(graphRectangle);
-
-            if (trimmedSegment.Point1 != PointF.Empty && trimmedSegment.Point2 != PointF.Empty)
+            if (newLine.IsHorizontal)
             {
-                g.DrawLine(this.Pen, trimmedSegment.Point1, trimmedSegment.Point2);
+                if (newLine.Point1.Y < graphRectangle.Bottom && newLine.Point1.Y > graphRectangle.Top)
+                {
+                    g.DrawLine(this.Pen, new PointF(graphRectangle.Left + 1, newLine.Point1.Y), new PointF(graphRectangle.Right - 1, newLine.Point1.Y));
+                }
             }
             else
             {
-                StockLog.Write("Invalid line to be drawn");
+                Segment2D trimmedSegment = newLine.Trim(graphRectangle);
+
+                if (trimmedSegment.Point1 != PointF.Empty && trimmedSegment.Point2 != PointF.Empty)
+                {
+                    g.DrawLine(this.Pen, trimmedSegment.Point1, trimmedSegment.Point2);
+                }
+                else
+                {
+                    StockLog.Write("Invalid line to be drawn");
+                }
             }
         }
     }
