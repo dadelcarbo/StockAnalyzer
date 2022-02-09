@@ -37,17 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             get { return isEvent; }
         }
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 1 } };
-                }
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ?? new Pen[] { new Pen(Color.Green) { Width = 1 } };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -69,30 +59,34 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
                 for (int i = boxLength + 1; i < stockSerie.Count; i++)
                 {
-                    if (highestInSerie[i - 1] < boxLength && highestInSerie[i] > boxLength)
+                    if (highestInSerie[i] > boxLength)
                     {
+                        bool valid = true;
+                        for (int j = 1; j < boxLength; j++)
+                        {
+                            if (highestInSerie[i - j] > boxLength)
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+                        if (!valid)
+                            continue;
                         var index = i - boxLength;
                         var boxHigh = bodyHighSerie.GetMax(index, i - 1);
                         var boxLow = bodyLowSerie.GetMin(index, i - 1);
                         var range = (boxHigh - boxLow) / boxHigh;
                         if (range > boxRange)
                             continue;
-                        while (index > 0 && range < boxRange && closeSerie[i] > boxHigh && closeSerie[index] >= boxLow)
+                        while (index > 0 && closeSerie[index] <= boxHigh && closeSerie[index] >= boxLow)
                         {
                             index--;
-                            boxHigh = Math.Max(boxHigh, bodyHighSerie[index]);
-                            range = (boxHigh - boxLow) / boxHigh;
                         }
-                        index++;
-                        if (i - index >= boxLength)
-                        {
-                            // Box broken up
-                            brokenUpEvents[i] = true;
-                            boxHigh = bodyHighSerie.GetMax(index, i - 1);
-                            var box = new Box(new PointF(index, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
-                            this.DrawingItems.Insert(0, box);
-                            i += boxLength;
-                        }
+                        // Box broken up
+                        brokenUpEvents[i] = true;
+                        var box = new Box(new PointF(index, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
+                        this.DrawingItems.Insert(0, box);
+                        i += boxLength;
                     }
                 }
             }
