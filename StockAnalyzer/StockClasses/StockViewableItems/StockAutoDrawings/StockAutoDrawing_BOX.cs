@@ -78,10 +78,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                         var range = (boxHigh - boxLow) / boxHigh;
                         if (range > boxRange)
                             continue;
+                        index--;
                         while (index > 0 && closeSerie[index] <= boxHigh && closeSerie[index] >= boxLow)
                         {
                             index--;
                         }
+                        index++;
                         // Box broken up
                         brokenUpEvents[i] = true;
                         var box = new Box(new PointF(index, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
