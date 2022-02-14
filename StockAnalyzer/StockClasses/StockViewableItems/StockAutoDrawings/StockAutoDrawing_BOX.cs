@@ -56,17 +56,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                 var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
                 var volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                var emaSerie = closeSerie.CalculateEMA(boxLength);
 
                 for (int i = boxLength + 1; i < stockSerie.Count; i++)
                 {
                     if (highestInSerie[i] > boxLength)
                     {
-                        bool valid = true;
+                        int nextIndex = i;
+                        bool valid = false;
                         for (int j = 1; j < boxLength; j++)
                         {
-                            if (highestInSerie[i - j] > boxLength)
+                            if (closeSerie[i - j] < emaSerie[i - j])
                             {
-                                valid = false;
+                                valid = true;
+                                nextIndex = i - j + 1;
                                 break;
                             }
                         }
@@ -88,7 +91,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                         brokenUpEvents[i] = true;
                         var box = new Box(new PointF(index, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[0], Fill = true };
                         this.DrawingItems.Insert(0, box);
-                        i += boxLength;
+                        i = nextIndex + boxLength;
                     }
                 }
             }

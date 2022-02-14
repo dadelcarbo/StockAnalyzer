@@ -48,6 +48,8 @@ namespace StockAnalyzer.StockDrawing
             if (graphRectangle.Contains(points[0]) && graphRectangle.Contains(points[2]))
             {
                 g.DrawLines(pen, points);
+                var mid = (2f * points[0].Y + points[2].Y) / 3f;
+                g.DrawLine(pen, points[0].X, mid, points[1].X, mid);
                 if (this.Fill)
                 {
                     g.FillPolygon(fillBrush, points);
