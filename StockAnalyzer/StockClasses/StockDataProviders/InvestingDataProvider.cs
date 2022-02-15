@@ -108,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var interval = "D";
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((endDate - refDate).TotalSeconds);
-            return $"http://tvc4.forexpros.com/0f8a29a810801b55700d8d096869fe1f/1567000256/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            return $"https://tvc6.investing.com/ffa8fd5d4c4157b4617aa4b2ae453a04/1644944166/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool ForceDownloadData(StockSerie stockSerie)
@@ -209,9 +209,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                             nbTries--;
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             nbTries--;
+                            StockLog.Write(ex);
                         }
                     }
                 }
