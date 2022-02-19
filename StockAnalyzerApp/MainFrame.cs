@@ -4569,7 +4569,7 @@ namespace StockAnalyzerApp
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
                 return;
-            string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-overview/";
+            string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
             Process.Start(url);
         }
 
