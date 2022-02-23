@@ -3749,7 +3749,6 @@ namespace StockAnalyzerApp
             }
         }
 
-
         private bool repaintSuspended = false;
         private void ApplyTheme()
         {
@@ -3786,6 +3785,9 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Not enough data to display...");
                         return;
                     }
+
+                    // Add to browsing history
+                    this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.CurrentTheme);
 
                     // Build curve list from definition
                     if (!this.themeDictionary.ContainsKey(currentTheme))

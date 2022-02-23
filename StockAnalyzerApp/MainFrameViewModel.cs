@@ -52,5 +52,34 @@ namespace StockAnalyzerApp
         public string Theme { get { return theme; } set { SetProperty(ref theme, value); } }
 
         #endregion
+
+        private int browsingHistoryIndex = 0;
+        private List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
+
+        internal void AddHistory(string stockName, string theme)
+        {
+            this.browingHistory.Add(new BrowsingEntry
+            {
+                StockName = stockName,
+                BarDuration = this.BarDuration,
+                Theme = theme,
+            });
+            browsingHistoryIndex = this.browingHistory.Count - 1;
+        }
+
+        internal void BrowseNext()
+        {
+            if (browsingHistoryIndex < browingHistory.Count - 1)
+            {
+                browsingHistoryIndex++;
+            }
+        }
+        internal void BrowseBack()
+        {
+            if (browsingHistoryIndex > 0)
+            {
+                browsingHistoryIndex--;
+            }
+        }
     }
 }

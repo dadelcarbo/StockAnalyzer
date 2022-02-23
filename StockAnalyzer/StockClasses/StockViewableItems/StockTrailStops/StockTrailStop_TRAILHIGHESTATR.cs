@@ -41,11 +41,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     if (closeSerie[i] < longStopSerie[i - 1]) // Broken Down
                     {
                         upTrend = false;
-                        this.Events[1][i] = true;
                     }
                     else
                     {
-                        this.Events[6][i] = true;
                         if (closeSerie[i] > closeSerie[i - 1])
                             trailStop = Math.Max(trailStop, closeSerie[i] - trailATR * atrSerie[i]);
                         longStopSerie[i] = Math.Max(trailStop, hardStop);
@@ -59,8 +57,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         hardStop = lowSerie[i] - stopATR * atrSerie[i];
                         trailStop = closeSerie[i] - trailATR * atrSerie[i];
                         longStopSerie[i] = hardStop;
-                        this.Events[0][i] = true;
-                        this.Events[6][i] = true;
                     }
                 }
             }
@@ -69,15 +65,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             this.Series[0].Name = this.SerieNames[0];
             this.Series[1] = shortStopSerie;
             this.Series[1].Name = this.SerieNames[1];
-        }
 
-        private static string[] eventNames = new string[]
-          {
-             "BrokenUp", "BrokenDown",           // 0,1
-             "Pullback", "EndOfTrend",           // 2,3
-             "HigherLow", "LowerHigh",           // 4,5
-             "Bullish", "Bearish",               // 6,7
-             "LH_HL", "HL_LH"                    // 8,9
-          };
+            // Generate events
+            this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
+        }
     }
 }

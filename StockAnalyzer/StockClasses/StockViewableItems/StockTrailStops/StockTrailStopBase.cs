@@ -231,7 +231,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             float previousResistance = float.MinValue;
             for (int i = period; i < stockSerie.Count; i++)
             {
-                if (float.IsNaN(shortStop[i])) // Bullish
+                if (!float.IsNaN(longStop[i])) // Bullish
                 {
                     if (float.IsNaN(resistance))
                     {
@@ -266,7 +266,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else // Bearish
                 {
-                    previousResistance = shortStop[i];
+                    previousResistance = resistance;
                     resistance = float.NaN;
                 }
 
