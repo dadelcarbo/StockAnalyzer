@@ -1151,7 +1151,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        static float[] fibonacciRetracements = new float[] { 0.236f, 0.382f, 0.5f, 0.618f, 0.764f };
+        static float[] fibonacciRetracements = new float[] { 0.25f, 0.5f, 0.75f };
         protected void DrawSelectionZone(MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))
@@ -1168,8 +1168,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 float variation = (newValue.Y - initialValue.Y) / initialValue.Y;
                 float points = newValue.Y - initialValue.Y;
 
-                this.DrawHorizontalLine(mouseDownPos.Y, initialValue.Y, axisPen);
-                this.DrawHorizontalLine(e.Location.Y, newValue.Y, axisPen);
+                this.DrawHorizontalLine(mouseDownPos.Y, initialValue.Y, axisDashPen);
+                this.DrawHorizontalLine(e.Location.Y, newValue.Y, axisDashPen);
 
                 // Draw selection zone and Fibonacci retracements
                 float fiboY = 0.0f;
