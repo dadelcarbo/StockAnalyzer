@@ -966,17 +966,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     if (mousePoint.X > this.GraphRectangle.Left && mousePoint.X < this.GraphRectangle.Right)
                     {
-                        DrawMouseCross(valuePoint, crossMode, this.axisDashPen);
-                        //if (crossMode)
-                        //{
-                        //    DrawMouseCross(valuePoint, true, this.axisPen);
-                        //}
-                        //else
-                        //{
-                        //    // Display under mouse info
-                        //    DrawMousePos(index);
-                        //}
-
+                        DrawMouseCross(valuePoint, crossMode, true, this.axisDashPen);
                         PaintForeground();
                     }
                 }
@@ -1001,7 +991,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
                             var valuePoint = GetValuePointFromScreenPoint(mousePoint);
-                            DrawMouseCross(valuePoint, mouseOverThis, this.axisPen);
+                            DrawMouseCross(valuePoint, mouseOverThis, true, this.axisPen);
                             PaintForeground();
 
                             if (mouseOverThis && this.OnMouseDateChanged != null)
@@ -1140,9 +1130,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         PointF point = new PointF(mouseIndex, y);
                         PointF point2 = GetScreenPointFromValuePoint(point);
 
-                        DrawMouseCross(point, y != 0, this.axisDashPen);
-
-                        //this.foregroundGraphic.DrawEllipse(mousePen, point2.X - MOUSE_MARQUEE_SIZE, point2.Y - MOUSE_MARQUEE_SIZE, MOUSE_MARQUEE_SIZE * 2, MOUSE_MARQUEE_SIZE * 2);
+                        DrawMouseCross(point, y != 0, true, this.axisDashPen);
 
                         string valueString;
                         if (value > 100000000)
@@ -1164,7 +1152,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         static float[] fibonacciRetracements = new float[] { 0.236f, 0.382f, 0.5f, 0.618f, 0.764f };
-        protected void DrawSelectionZone(System.Windows.Forms.MouseEventArgs e, Keys key)
+        protected void DrawSelectionZone(MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
@@ -1176,8 +1164,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Retrieve the real values
                 PointF initialValue = GetValuePointFromScreenPoint(mouseDownPos);
                 PointF newValue = GetValuePointFromScreenPoint(e.Location);
+
                 float variation = (newValue.Y - initialValue.Y) / initialValue.Y;
                 float points = newValue.Y - initialValue.Y;
+
+                this.DrawHorizontalLine(mouseDownPos.Y, initialValue.Y, axisPen);
+                this.DrawHorizontalLine(e.Location.Y, newValue.Y, axisPen);
 
                 // Draw selection zone and Fibonacci retracements
                 float fiboY = 0.0f;
@@ -1237,7 +1229,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF fiboPoint = this.GetValuePointFromScreenPoint(0, e.Location.Y);
                 this.DrawString(foregroundGraphic,
                     "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
-                    "Value:\t" + fiboPoint.Y.ToString("#.###") + "   " + Environment.NewLine +
                     "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
                     "Diff:\t" + points.ToString("0.##"),
                     toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
@@ -1555,7 +1546,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             aGraphic.DrawString(trimmedText, font, brush, rect);
             return x + size.Width - 26;
         }
-        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, Pen pen)
+        protected void DrawHorizontalLine(int y, float value, Pen pen)
+        {
+            this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left,y, GraphRectangle.Right, y);
+            // Print current value
+            this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
+
+        }
+        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen)
         {
             // Draw straight Line
             PointF screenPoint = RoundToIndexValue(GetScreenPointFromValuePoint(mouseValuePoint));
@@ -1565,7 +1563,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Print current value
                 this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
-            this.foregroundGraphic.DrawLine(pen, screenPoint.X, GraphRectangle.Bottom, screenPoint.X, GraphRectangle.Top);
+            if (drawVerticalLine)
+            {
+                this.foregroundGraphic.DrawLine(pen, screenPoint.X, GraphRectangle.Bottom, screenPoint.X, GraphRectangle.Top);
+            }
         }
         #endregion
         #region UNDO BUFFER MANAGEMENT
@@ -1682,7 +1683,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             return (type + ":").PadRight(tabLocation) + value;
         }
-
         protected int selectedLineIndex = -1;
         public void ResetDrawingMode()
         {

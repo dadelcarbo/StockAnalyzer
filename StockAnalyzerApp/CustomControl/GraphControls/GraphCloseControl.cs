@@ -1302,7 +1302,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
             }
-            DrawMouseCross(mouseValuePoint, mouseOverThis, this.axisDashPen);
+            DrawMouseCross(mouseValuePoint, mouseOverThis, true, this.axisDashPen);
             int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
             if (this.DrawingMode == GraphDrawMode.Normal)
             {
@@ -1452,7 +1452,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             #endregion
-
             #region Display Trail Stop Anchor
             if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
                 (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
