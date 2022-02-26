@@ -2252,21 +2252,19 @@ namespace StockAnalyzerApp
         }
         #endregion
 
-        #region REWIND/FAST FORWARD METHODS
-
+        #region History Browsing 
         private void rewindBtn_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-            int step = 20;
-            Rewind(step);
+            this.ViewModel.BrowseBack();
         }
 
         private void fastForwardBtn_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-            int step = 20;
-            Forward(step);
+            this.ViewModel.BrowseNext();
         }
+        #endregion
+
+        #region REWIND/FAST FORWARD METHODS
 
         private void Rewind(int step)
         {

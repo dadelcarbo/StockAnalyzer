@@ -53,6 +53,9 @@ namespace StockAnalyzerApp
 
         #endregion
 
+        #region StockSerie
+        #endregion
+
         private int browsingHistoryIndex = 0;
         private List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
 
@@ -72,6 +75,8 @@ namespace StockAnalyzerApp
             if (browsingHistoryIndex < browingHistory.Count - 1)
             {
                 browsingHistoryIndex++;
+                var browsingEntry = browingHistory[browsingHistoryIndex];
+                StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged(browsingEntry.StockName, browsingEntry.BarDuration, browsingEntry.Theme, false);
             }
         }
         internal void BrowseBack()
@@ -79,6 +84,8 @@ namespace StockAnalyzerApp
             if (browsingHistoryIndex > 0)
             {
                 browsingHistoryIndex--;
+                var browsingEntry = browingHistory[browsingHistoryIndex];
+                StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged(browsingEntry.StockName, browsingEntry.BarDuration, browsingEntry.Theme, false);
             }
         }
     }

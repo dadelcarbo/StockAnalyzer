@@ -914,6 +914,8 @@ namespace StockAnalyzerApp
             // 
             this.browseToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rewindBtn,
+            this.fastForwardBtn,
             this.stockNameComboBox,
             this.barDurationComboBox,
             this.lineBreakLabel,
@@ -925,8 +927,6 @@ namespace StockAnalyzerApp
             this.searchText,
             this.goBtn,
             this.toolStripSeparator6,
-            this.rewindBtn,
-            this.fastForwardBtn,
             this.zoomOutBtn,
             this.zoomInBtn,
             this.showVariationBtn,
@@ -1026,7 +1026,7 @@ namespace StockAnalyzerApp
             this.rewindBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.rewindBtn.Name = "rewindBtn";
             this.rewindBtn.Size = new System.Drawing.Size(23, 20);
-            this.rewindBtn.ToolTipText = "Rewind";
+            this.rewindBtn.ToolTipText = "Back";
             this.rewindBtn.Click += new System.EventHandler(this.rewindBtn_Click);
             // 
             // fastForwardBtn
@@ -1036,7 +1036,7 @@ namespace StockAnalyzerApp
             this.fastForwardBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.fastForwardBtn.Name = "fastForwardBtn";
             this.fastForwardBtn.Size = new System.Drawing.Size(23, 20);
-            this.fastForwardBtn.ToolTipText = "Forward";
+            this.fastForwardBtn.ToolTipText = "Next";
             this.fastForwardBtn.Click += new System.EventHandler(this.fastForwardBtn_Click);
             // 
             // zoomOutBtn
