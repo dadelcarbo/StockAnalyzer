@@ -995,11 +995,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         trailName = CurveList.TrailStop.Series[i].Name;
                         trailValue = CurveList.TrailStop.Series[i][this.lastMouseIndex];
                         value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
+                        if (!float.IsNaN(trailValue))
+                        {
+                            value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                        }
                     }
-                }
-                if (!float.IsNaN(trailValue))
-                {
-                    value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
                 }
             }
             if (CurveList.AutoDrawing != null)

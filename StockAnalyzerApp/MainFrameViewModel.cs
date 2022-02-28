@@ -61,6 +61,15 @@ namespace StockAnalyzerApp
 
         internal void AddHistory(string stockName, string theme)
         {
+            int index = -1;
+            foreach(var item in this.browingHistory)
+            {
+                index++;
+                if (item.StockName == stockName && item.Theme == theme && item.BarDuration == this.BarDuration)
+                {
+                    return; // Already in history
+                }
+            }
             this.browingHistory.Add(new BrowsingEntry
             {
                 StockName = stockName,
