@@ -53,7 +53,8 @@ namespace StockAnalyzer.StockDrawing
                     break;
                 case 3:
                     {
-                        var ratio = (Exit.Y - Entry.Y) / (Entry.Y - Stop.Y);
+                        var R = (Entry.Y - Stop.Y);
+                        var ratio = (Exit.Y - Entry.Y) / R;
                         var loss = Math.Abs(points[0].Y - points[1].Y);
                         g.FillRectangle(RedBrush, left, Math.Min(points[0].Y, points[1].Y), width, loss);
                         g.FillRectangle(ratio > 0 ? GreenBrush : RedBrush, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
@@ -62,20 +63,38 @@ namespace StockAnalyzer.StockDrawing
                         if (ratio > 0)
                         {
                             this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
-                            for (float i = 1; i < ratio; i++)
+
+                            if (ratio > 1f)
                             {
-                                var height = Math.Max(points[1].Y, points[2].Y) - i * loss;
-                                g.DrawLine(Pens.Green, left, height, right, height);
+                                var rPoints = new PointF[(int)ratio];
+                                for (int i = 1; i < ratio; i++)
+                                {
+                                    rPoints[i - 1] = new PointF(0, Entry.Y + i * R);
+                                }
+                                this.Transform(matrixValueToScreen, isLog, rPoints);
+                                for (int i = 0; i < (int)ratio; i++)
+                                {
+                                    g.DrawLine(Pens.Green, left, rPoints[i].Y, right, rPoints[i].Y);
+                                }
                             }
                         }
                         else
                         {
-                            for (float i = -1; i > ratio; i--)
-                            {
-                                var height = Math.Min(points[1].Y, points[2].Y) - i * loss;
-                                g.DrawLine(Pens.Red, left, height, right, height);
-                            }
                             this.DrawText(g, $"R= {ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 40, points[1].Y - 13), true, Pens.Black);
+
+                            if (ratio < -1f)
+                            {
+                                var rPoints = new PointF[(int)-ratio];
+                                for (int i = 1; i < -ratio; i++)
+                                {
+                                    rPoints[i - 1] = new PointF(0, Entry.Y - i * R);
+                                }
+                                this.Transform(matrixValueToScreen, isLog, rPoints);
+                                for (int i = 0; i < (int)-ratio; i++)
+                                {
+                                    g.DrawLine(Pens.Red, left, rPoints[i].Y, right, rPoints[i].Y);
+                                }
+                            }
                         }
                     }
                     break;

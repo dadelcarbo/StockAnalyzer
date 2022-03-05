@@ -1302,7 +1302,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
             }
-            DrawMouseCross(mouseValuePoint, mouseOverThis, true, this.axisDashPen);
+            bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
+            DrawMouseCross(mouseValuePoint, drawHorizontalLine, true, this.axisDashPen);
             int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
             if (this.DrawingMode == GraphDrawMode.Normal)
             {
