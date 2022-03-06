@@ -142,6 +142,7 @@
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXOLD.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
@@ -431,7 +432,7 @@
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLETRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMATF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMAHL.cs" />

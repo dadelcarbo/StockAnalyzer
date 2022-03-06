@@ -55,6 +55,7 @@ using Telerik.Windows.Data;
 using StockAnalyzerSettings;
 using StockAnalyzer.StockHelpers;
 using System.Threading.Tasks;
+using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 
 namespace StockAnalyzerApp
 {
@@ -3615,7 +3616,24 @@ namespace StockAnalyzerApp
                 alertDlg.Activate();
             }
         }
+        AddStockAlertDlg addAlertDlg = null;
+        void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
+        {
+            var viewModel = new AddStockAlertViewModel()
+            {
+                StockName = this.CurrentStockSerie.StockName,
+                Group = StockAnalyzerForm.MainFrame.Group,
+                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
+                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
+            };
+            viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
+            viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
+
+            addAlertDlg = new AddStockAlertDlg(viewModel);
+            addAlertDlg.ShowDialog();
+        }
         #endregion
+
         #region DRAWING DIALOG
         DrawingDlg drawingDlg = null;
         void drawingDialogMenuItem_Click(object sender, EventArgs e)
