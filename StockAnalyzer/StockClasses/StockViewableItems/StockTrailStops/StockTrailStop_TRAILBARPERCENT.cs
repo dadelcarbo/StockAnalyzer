@@ -3,26 +3,25 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILFOLLOW : StockTrailStopBase
+    public class StockTrailStop_TRAILBARPERCENT : StockTrailStopBase
     {
-        public override string Definition => "Draws Trail Stop following trend on up bar with an efficiency ratio, staying flat on down bars";
+        public override string Definition => "Draws Trail Stop following trend with a given percentage per bar";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
-        public override string[] ParameterNames => new string[] { "Ratio" };
+        public override string[] ParameterNames => new string[] { "Percent" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 0.5f };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.0f, 1f) };
+        public override Object[] ParameterDefaultValues => new Object[] { 0.01f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.001f, 20f) };
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
-            float ratio = (float)this.Parameters[0];
+            float progress = 1.0f + (float)this.Parameters[0];
 
-            longStopSerie = new FloatSerie(stockSerie.Count, "TRAILFOLLOW.LS", float.NaN);
-            shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILFOLLOW.SS", float.NaN);
+            longStopSerie = new FloatSerie(stockSerie.Count, "TRAILBARPERCENT.LS", float.NaN);
+            shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILBARPERCENT.SS", float.NaN);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie varSerie = stockSerie.GetSerie(StockDataType.VARIATION);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
@@ -41,15 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-                        float var = varSerie[i];
-                        if (var > 0)
-                        {
-                            longStopSerie[i] = longStopSerie[i - 1] * (1f + var * ratio);
-                        }
-                        else
-                        {
-                            longStopSerie[i] = longStopSerie[i - 1];
-                        }
+                        longStopSerie[i] = longStopSerie[i - 1] * progress;
                         previousExtremum = Math.Max(previousExtremum, highSerie[i]);
                     }
                 }
@@ -63,16 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-                        float var = varSerie[i];
-                        if (var < 0)
-                        {
-
-                            shortStopSerie[i] = shortStopSerie[i - 1] / (1f - var * ratio);
-                        }
-                        else
-                        {
-                            shortStopSerie[i] = shortStopSerie[i - 1];
-                        }
+                        shortStopSerie[i] = shortStopSerie[i - 1] / progress;
                         previousExtremum = Math.Min(previousExtremum, lowSerie[i]);
                     }
                 }

@@ -154,8 +154,10 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_STRONG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILNUP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBARPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockDrawing\Box.cs" />
@@ -435,7 +437,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLETRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMATF.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHIGHESTATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCBL.cs" />
@@ -445,8 +446,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSSAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSAR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFIBO.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILHLS.cs" />

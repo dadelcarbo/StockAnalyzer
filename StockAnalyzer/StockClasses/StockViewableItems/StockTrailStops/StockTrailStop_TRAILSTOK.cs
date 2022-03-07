@@ -68,33 +68,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                 }
                 longStopSerie[i] = longTrail;
-
-                //if (showShort)
-                //{
-                //    if (float.IsNaN(shortTrail))
-                //    {
-                //        if (highSerie[i] < emaSerie[i] && closeSerie[i] < openSerie[i])
-                //        {
-                //            shortTrail = emaSerie[i] + atrSerie[i];
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (closeSerie[i] > shortTrail)
-                //        {
-                //            shortTrail = float.NaN;
-                //        }
-                //        else
-                //        {
-                //            shortTrail = Math.Min(emaSerie[i] + atrSerie[i], shortTrail);
-                //        }
-                //        //if (lowSerie[i] < emaSerie[i])
-                //        //{
-                //        //    trail = Math.Max(lowSerie[i] - atrSerie[i], trail);
-                //        //}
-                //    }
-                //    shortStopSerie[i] = shortTrail;
-                //}
             }
 
             this.Series[0] = longStopSerie;

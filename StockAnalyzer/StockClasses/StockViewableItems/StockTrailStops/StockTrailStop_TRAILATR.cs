@@ -6,10 +6,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILATR : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override string Definition => "Draws Trail Stop based ATR Bands";
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames
         {
