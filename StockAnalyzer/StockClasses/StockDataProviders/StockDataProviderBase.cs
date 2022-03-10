@@ -112,6 +112,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.SocGenIntraday:
                         dataProvider = new SocGenIntradayDataProvider();
                         break;
+                    case StockDataProvider.SaxoIntraday:
+                        dataProvider = new SaxoIntradayDataProvider();
+                        break;
                     default:
                         break;
                 }

@@ -6,6 +6,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BarChart,
         InvestingIntraday,
         SocGenIntraday,
+        SaxoIntraday,
         Portfolio,
         Generated,
         Replay,

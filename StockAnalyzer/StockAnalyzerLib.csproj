@@ -141,6 +141,8 @@
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXOLD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />
