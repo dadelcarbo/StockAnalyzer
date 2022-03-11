@@ -102,12 +102,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             lastDate = stockSerie.Keys.Last().Date.AddDays(1);
                         }
-                        var timeSpan = DateTime.UtcNow - DateTime.Now;
+                        var timeSpan = Math.Round((DateTime.UtcNow - DateTime.Now).TotalHours);
                         foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate).OrderBy(b => b.x))
                         {
-                            DateTime date = bar.x.ToLocalTime() + timeSpan;
+                            DateTime date = bar.x.AddHours(timeSpan);
                             StockDailyValue newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, date);
-                            newBar.IsComplete = false;
+                            newBar.IsComplete = DateTime.Now > date.AddHours(1);
                             stockSerie.Add(date, newBar);
                         }
 
