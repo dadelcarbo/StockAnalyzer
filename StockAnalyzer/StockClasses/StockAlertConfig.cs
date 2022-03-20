@@ -157,7 +157,7 @@ namespace StockAnalyzer.StockClasses
                     };
                     var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                     var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    serializer.Serialize(xmlWriter, allAlertDefs);
+                    serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a=>a.Id).ToList());
                 }
             }
         }

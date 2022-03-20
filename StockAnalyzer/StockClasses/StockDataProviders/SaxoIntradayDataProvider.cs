@@ -54,13 +54,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public string FormatIntradayURL(string ticker)
         {
-            //return $"https://bourse.societegenerale.fr/product-detail?productId={ticker}";
-            return $"https://fr-be.structured-products.saxo/page-api/instrument-service/charts/BE/isin/{ticker}/?timespan=1W&type=ohlc&benchmarks=";
+            return $"https://fr-be.structured-products.saxo/page-api/instrument-service/charts/BE/isin/{ticker}/?timespan=1D&type=line&benchmarks=";
         }
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
-            return true;
+            return DownloadIntradayData(stockSerie);
         }
         static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
         public override bool DownloadIntradayData(StockSerie stockSerie)
@@ -81,11 +80,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        var jsonData = StockWebHelper.DownloadData(url);
-
-                        var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-
-
                         if (DownloadHistory.ContainsKey(stockSerie.Ticker))
                         {
                             DownloadHistory[stockSerie.Ticker] = DateTime.Now;
@@ -94,27 +88,53 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
                         }
+                        var jsonData = StockWebHelper.DownloadData(url);
+                        var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
+                        if (saxoData?.series?[0]?.data == null)
+                            return false;
 
                         stockSerie.IsInitialised = false;
                         this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.MinValue;
+                        DateTime lastDate = DateTime.Today;
                         if (stockSerie.Count > 0)
                         {
-                            lastDate = stockSerie.Keys.Last().Date.AddDays(1);
+                            lastDate = stockSerie.Keys.Last().Date;
                         }
-                        var timeSpan = Math.Round((DateTime.UtcNow - DateTime.Now).TotalHours);
-                        foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate).OrderBy(b => b.x))
+                        var date = lastDate.AddHours(8);
+                        StockDailyValue newBar = null;
+                        foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                         {
-                            DateTime date = bar.x.AddHours(timeSpan);
-                            StockDailyValue newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, date);
-                            newBar.IsComplete = DateTime.Now > date.AddHours(1);
-                            stockSerie.Add(date, newBar);
+                            if (newBar == null)
+                            {
+                                newBar = new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, date);
+                                stockSerie.Add(newBar.DATE, newBar);
+                                newBar = null;
+                            }
+                            else
+                            {
+                                var minute = (bar.x.Minute / 5) * 5;
+                                if (minute == newBar.DATE.Minute)
+                                {
+                                    newBar.HIGH = Math.Max(newBar.HIGH, bar.y);
+                                    newBar.LOW = Math.Min(newBar.LOW, bar.y);
+                                    newBar.CLOSE = bar.y;
+                                }
+                                else
+                                {
+                                    date = date.AddMinutes(5);
+                                    stockSerie.Add(newBar.DATE, newBar);
+                                    newBar = new StockDailyValue(newBar.CLOSE, bar.y, bar.y, bar.y, 0, date);
+                                }
+                            }
                         }
+                       // stockSerie.Add(date, newBar);
 
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
                         var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
+                        var lastArchiveDate = saxoData.series[0].data.Last().x.Hour == 22 ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
 
                         return true;
                     }

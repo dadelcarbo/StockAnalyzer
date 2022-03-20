@@ -40,6 +40,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         public string timespan { get; set; }
         public List<Series> series { get; set; }
-        public List<Line> lines { get; set; }
+        // public List<Line> lines { get; set; }
     }
 }

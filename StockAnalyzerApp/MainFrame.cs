@@ -560,7 +560,6 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
-            if (Settings.Default.GenerateDailyReport)
             {
                 if (!Directory.Exists(Folders.Log))
                 {
@@ -4587,7 +4586,8 @@ namespace StockAnalyzerApp
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
                 return;
-            string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
+            //string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
+            string url = $"https://fr.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
             Process.Start(url);
         }
 
@@ -4624,7 +4624,19 @@ namespace StockAnalyzerApp
         {
             if (!this.currentStockSerie.StockName.StartsWith("TURBO_"))
                 return;
-            string url = $"https://sgbourse.fr/product-detail?productId={this.currentStockSerie.Ticker}";
+            string url;
+            if (this.currentStockSerie.Ticker != 0)
+            {
+                url = $"https://sgbourse.fr/product-detail?productId={this.currentStockSerie.Ticker}";
+            }
+            else if (!string.IsNullOrEmpty(this.currentStockSerie.ISIN))
+            {
+                url = $"https://fr-be.structured-products.saxo/products/{this.currentStockSerie.ISIN}";
+            }
+            else
+            {
+                return;
+            }
             Process.Start(url);
         }
     }

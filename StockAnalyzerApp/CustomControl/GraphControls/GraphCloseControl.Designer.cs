@@ -110,7 +110,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // openInSocGenMenu
             // 
             this.openInSocGenMenu.Index = 10;
-            this.openInSocGenMenu.Text = "Open in SogGen Products";
+            this.openInSocGenMenu.Text = "Open in Data Provider";
             this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
             // 
             // GraphCloseControl

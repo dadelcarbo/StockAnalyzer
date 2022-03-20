@@ -34,6 +34,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static protected string DAILY_ARCHIVE_SUBFOLDER = @"\archive\daily";
         static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"\archive\intraday";
 
+        public const string URL_PREFIX_INVESTING = "https://tvc6.investing.com/ffa8fd5d4c4157b4617aa4b2ae453a04/1644944166/1/1/8";
+
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
         #endregion
