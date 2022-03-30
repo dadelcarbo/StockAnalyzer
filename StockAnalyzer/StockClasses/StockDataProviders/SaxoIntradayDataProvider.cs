@@ -64,9 +64,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
-            if (stockSerie.Count > 0 && DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
+            if (stockSerie.Count > 0)
             {
-                return false;  // Do not download more than every 2 minutes.
+                if (DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
+                {
+                    return false;  // Do not download more than every 2 minutes.
+                }
+                var lastDate = stockSerie.Keys.Last();
+                if (lastDate.Date == DateTime.Today && lastDate.TimeOfDay == new TimeSpan(21, 55, 00))
+                {
+                    return false;
+                }
             }
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -95,20 +103,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         stockSerie.IsInitialised = false;
                         this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.Today;
+                        DateTime lastDate = DateTime.Today.AddHours(8);
                         if (stockSerie.Count > 0)
                         {
-                            lastDate = stockSerie.Keys.Last().Date;
+                            lastDate = stockSerie.Keys.Last();
+                            if (stockSerie.Keys.Last().Date == DateTime.Today)
+                            {
+                                stockSerie.Remove(stockSerie.Keys.Last());
+                            }
                         }
-                        var date = lastDate.AddHours(8);
+                        var date = lastDate;
                         StockDailyValue newBar = null;
                         foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                         {
                             if (newBar == null)
                             {
                                 newBar = new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, date);
-                                stockSerie.Add(newBar.DATE, newBar);
-                                newBar = null;
                             }
                             else
                             {
@@ -127,12 +137,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 }
                             }
                         }
-                       // stockSerie.Add(date, newBar);
+                        if (newBar != null)
+                        {
+                            stockSerie.Add(date, newBar);
+                        }
 
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
                         var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                        var lastArchiveDate = saxoData.series[0].data.Last().x.Hour == 22 ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
 
                         stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
 

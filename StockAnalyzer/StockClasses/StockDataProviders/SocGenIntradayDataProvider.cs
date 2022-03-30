@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 Directory.CreateDirectory(DataFolder + INTRADAY_FOLDER);
             }
-
+            return;
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
