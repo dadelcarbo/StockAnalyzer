@@ -54,6 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             var maSerie = atrBandIndicator.Series[2];
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
             var bullSerie = new FloatSerie(stockSerie.Count);
             var bearSerie = new FloatSerie(stockSerie.Count);
@@ -107,8 +108,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 {
                     this.Events[9][i] = true;
                 }
+                this.Events[12][i] = (closeSerie[i - 1] < upBand || openSerie[i] < upBand) && closeSerie[i] > upBand;
+                this.Events[13][i] = (closeSerie[i - 1] > lowBand || openSerie[i] > lowBand) && closeSerie[i] < lowBand;
             }
-
         }
         public override string[] EventNames => eventNames;
 
@@ -118,11 +120,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
              "BullishCloud", "BearishCloud",            // 3, 4
              "CloudUp", "CloudDown",                    // 5, 6
              "SignalUp", "SignalDown" , "SignalInCloud",// 7,8,9
-             "BrokenUp", "BrokenDown"                   // 10,11
+             "BrokenUp", "BrokenDown",                  // 10,11
+             "CloseAbove", "CloseBelow"                 // 12,13
   };
         public override bool[] IsEvent => isEvent;
 
-        protected static new readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true, false, false, false, true, true };
+        protected static new readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true, false, false, false, true, true, true, true };
 
     }
 }

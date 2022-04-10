@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
-using StockAnalyzerApp;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -106,9 +105,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         DateTime lastDate = DateTime.Today.AddHours(8);
                         if (stockSerie.Count > 0)
                         {
-                            lastDate = stockSerie.Keys.Last();
                             if (stockSerie.Keys.Last().Date == DateTime.Today)
                             {
+                                lastDate = stockSerie.Keys.Last();
                                 stockSerie.Remove(stockSerie.Keys.Last());
                             }
                         }
