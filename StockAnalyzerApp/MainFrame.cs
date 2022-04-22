@@ -979,7 +979,7 @@ namespace StockAnalyzerApp
                 {
                     StockLog.Write(e);
                     DeactivateGraphControls(e.Message);
-                    MessageBox.Show(e.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    StockAnalyzerException.MessageBox(e);
                 }
             }
         }
@@ -2108,15 +2108,7 @@ namespace StockAnalyzerApp
             catch (System.Exception exception)
             {
                 success = false;
-                if (exception.InnerException != null)
-                {
-                    MessageBox.Show(exception.InnerException.Message, "Application Error", MessageBoxButtons.OK,
-                       MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show(exception.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                StockAnalyzerException.MessageBox(exception);
             }
             if (success)
             {
@@ -4245,9 +4237,9 @@ namespace StockAnalyzerApp
                     }
                 }
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Application Error loading theme", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StockAnalyzerException.MessageBox(exception);
             }
         }
 

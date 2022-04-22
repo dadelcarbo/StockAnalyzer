@@ -948,11 +948,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             float closeValue = float.NaN;
             float var = float.NaN;
+            float atr = 0;
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
-                    if (closeCurveType.DataSerie.Name == "CLOSE")
+                    if (curveType.DataSerie.Name == "HIGH")
+                    {
+                        atr += curveType.DataSerie[this.lastMouseIndex];
+                    }
+                    if (curveType.DataSerie.Name == "LOW")
+                    {
+                        atr -= curveType.DataSerie[this.lastMouseIndex];
+                    }
+                    if (curveType.DataSerie.Name == "CLOSE")
                     {
                         closeValue = curveType.DataSerie[this.lastMouseIndex];
                         var previousClose = curveType.DataSerie[Math.Max(0, this.lastMouseIndex - 1)];
@@ -970,7 +979,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (!float.IsNaN(var))
             {
-                value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n" + "\r\n";
+                value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n";
+                value += BuildTabbedString("ATR", Math.Round(atr,2).ToString(), 12) + "\r\n" + "\r\n";
             }
             // Add indicators
             foreach (IStockIndicator stockIndicator in CurveList.Indicators)

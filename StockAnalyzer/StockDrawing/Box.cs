@@ -7,7 +7,7 @@ namespace StockAnalyzer.StockDrawing
 {
     public class Box : Rectangle2D, IOpenedDrawing
     {
-        static Brush fillBrush = new SolidBrush(Color.FromArgb(128, Color.LightGreen));
+        static Brush fillBrush = new SolidBrush(Color.FromArgb(32, Color.LightGreen));
 
         public Box(PointF p1, PointF p2) : this(p1, p2, false)
         {

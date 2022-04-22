@@ -226,8 +226,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public Pen DrawingPen { get; set; }
 
-        public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(128, Color.LightGreen));
-        public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(128, Color.LightCoral));
+        public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(32, Color.LightGreen));
+        public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(32, Color.LightCoral));
 
         // Transformation Matrix
         protected Matrix matrixScreenToValue;
@@ -1548,7 +1548,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected void DrawHorizontalLine(int y, float value, Pen pen)
         {
-            this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left,y, GraphRectangle.Right, y);
+            this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, y, GraphRectangle.Right, y);
             // Print current value
             this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
 

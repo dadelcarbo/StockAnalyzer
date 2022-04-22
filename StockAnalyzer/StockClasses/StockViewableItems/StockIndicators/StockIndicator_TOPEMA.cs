@@ -100,7 +100,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else
                 {
-                    if (highSerie[i - 1] > highSerie[i] && highSerie[i - 2] > highSerie[i]) // Resistance Detected (new top)
+                    if (highSerie[i - 1] > highSerie[i] && highSerie[i - 2] > highSerie[i])
+                    // Resistance Detected (new top ==> latest high is lowset than two previous highs tp avoid continous line on break)
                     {
                         resistanceEMA = Math.Max(highSerie[i - 2], highSerie[i - 1]);
                         resistanceSerie[i - 1] = resistanceEMA;
