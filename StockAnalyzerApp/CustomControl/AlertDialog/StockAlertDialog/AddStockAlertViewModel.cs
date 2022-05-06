@@ -33,6 +33,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.BarDuration = alertDef.BarDuration;
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
+            this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
             {
                 case AlertType.Group:
@@ -87,6 +88,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private string stop;
         public string Stop { get => stop; set => SetProperty(ref stop, value); }
+        private float minLiquidity;
+        public float MinLiquidity { get => minLiquidity; set => SetProperty(ref minLiquidity, value); }
 
         #region Trigger
         private string triggerName;
@@ -283,6 +286,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 default:
                     break;
             }
+            alertDef.MinLiquidity = this.MinLiquidity;
             alertDef.Active = this.Active;
             alertDef.BarDuration = this.BarDuration;
             alertDef.Theme = this.Theme;

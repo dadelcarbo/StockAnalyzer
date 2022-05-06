@@ -1165,8 +1165,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF initialValue = GetValuePointFromScreenPoint(mouseDownPos);
                 PointF newValue = GetValuePointFromScreenPoint(e.Location);
 
-                float variation = (newValue.Y - initialValue.Y) / initialValue.Y;
-                float points = newValue.Y - initialValue.Y;
+                float diff = newValue.Y - initialValue.Y;
+                float variation = diff / initialValue.Y;
 
                 this.DrawHorizontalLine(mouseDownPos.Y, initialValue.Y, axisDashPen);
                 this.DrawHorizontalLine(e.Location.Y, newValue.Y, axisDashPen);
@@ -1226,11 +1226,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
 
                 // Display tooltip
-                PointF fiboPoint = this.GetValuePointFromScreenPoint(0, e.Location.Y);
+                string diffString = diff.ToString("0.####");
                 this.DrawString(foregroundGraphic,
                     "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
-                    "Var:\t" + variation.ToString("P2") + "   " + Environment.NewLine +
-                    "Diff:\t" + points.ToString("0.##"),
+                    "Var:\t" + variation.ToString("P2") + "     " + Environment.NewLine +
+                    "Diff:\t" + diffString,
                     toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
 
                 // force the value box not to display.
@@ -1673,9 +1673,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 valueString = (value / 1000).ToString("0.###") + "K";
             }
+            if (value > 10)
+            {
+                valueString = value.ToString("0.##");
+            }
             else
             {
-                valueString = value.ToString("0.###");
+                valueString = value.ToString("0.####");
             }
             return (type + ":").PadRight(tabLocation) + valueString;
         }

@@ -980,7 +980,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (!float.IsNaN(var))
             {
                 value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n";
-                value += BuildTabbedString("ATR", Math.Round(atr,2).ToString(), 12) + "\r\n" + "\r\n";
+                value += BuildTabbedString("ATR", atr.ToString("0.####"), 12) + "\r\n" + "\r\n";
             }
             // Add indicators
             foreach (IStockIndicator stockIndicator in CurveList.Indicators)

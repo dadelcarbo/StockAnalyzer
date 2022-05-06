@@ -28,6 +28,10 @@ namespace StockAnalyzer.StockClasses
         public DateTime CreationDate { get; set; }
         public string StockName { get; set; }
         public float PriceTrigger { get; set; }
+        /// <summary>
+        /// Minimum liquidity in M€. Ignored if equals to zero
+        /// </summary>
+        public float MinLiquidity { get; set; }
         public bool TriggerBrokenUp { get; set; }
         public StockBarDuration BarDuration { get; set; }
 

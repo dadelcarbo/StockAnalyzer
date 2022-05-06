@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <TabControl Name="tabControl" Grid.Row="0" Margin="1" SelectionChanged="tabControl_SelectionChanged">
-            <TabItem Header="Group Alert" Tag="{x:Static Member=stockClasses:AlertType.Group}">
+            <TabItem Header="Group Alert" Tag="{x:Static Member=stockClasses:AlertType.Group}" Height="24" VerticalAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -62,6 +62,8 @@
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Stop</Label>
                             <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
+                            <Label>Min Liquidity (M€)</Label>
+                            <TextBox Text="{Binding MinLiquidity, Mode=TwoWay}" Width="40" VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                     <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AlertDefs}" ShowGroupPanel="False" MaxHeight="350" Height="350"
@@ -86,7 +88,7 @@
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Stock Alert" Tag="{x:Static Member=stockClasses:AlertType.Stock}">
+            <TabItem Header="Stock Alert" Tag="{x:Static Member=stockClasses:AlertType.Stock}" Height="22" VerticalAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>

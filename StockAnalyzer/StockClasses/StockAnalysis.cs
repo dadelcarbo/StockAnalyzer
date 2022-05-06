@@ -27,8 +27,8 @@ namespace StockAnalyzer.StockClasses
         }
         public bool IsEmpty()
         {
-            return this.Excluded == false 
-                && this.Theme == string.Empty 
+            return this.Excluded == false
+                && this.Theme == string.Empty
                 && this.DrawingItems.Values.SelectMany(d => d, (d, dd) => dd).Where(dd => dd.IsPersistent).Count() == 0;
         }
 
@@ -103,9 +103,10 @@ namespace StockAnalyzer.StockClasses
             int count = 0;
             if (!DrawingItem.KeepTransient)
             {
-                foreach (StockBarDuration barDuration in this.DrawingItems.Keys)
+                foreach (var values in this.DrawingItems.Values)
                 {
-                    count = Math.Max(count, this.DrawingItems[barDuration].RemoveAll(d => !d.IsPersistent));
+                    count = Math.Max(count, values.RemoveAll(d => !d.IsPersistent));
+
                 }
             }
             return count;

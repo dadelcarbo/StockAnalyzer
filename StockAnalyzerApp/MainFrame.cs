@@ -2782,7 +2782,7 @@ namespace StockAnalyzerApp
             var previousSize = this.Size;
             this.Size = new Size(600, 600);
 
-            int nbLeaders = 30;
+            int nbLeaders = 40;
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
@@ -2849,15 +2849,16 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ProgressVal++;
                     if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
                     {
-                        if (stockSerie.HasVolume) // Check if it has at least 100 K€ average daily liquidity
+                        stockSerie.BarDuration = StockBarDuration.Daily;
+                        if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
                         {
-                            if (!stockSerie.HasLiquidity(0.5f))
+                            if (!stockSerie.HasLiquidity(alertDef.MinLiquidity))
                             {
                                 continue;
                             }
                         }
                         stockSerie.BarDuration = alertDef.BarDuration;
-                        if (stockSerie.Keys.Last() != lastDate)
+                        if (stockSerie.Keys.Last() != lastDate && !stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
                             continue;
 
                         var values = stockSerie.GetValues(alertDef.BarDuration);
@@ -2921,7 +2922,7 @@ namespace StockAnalyzerApp
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2%", reportSerie.rank.ToString()).
+                            Replace("%COL2%", reportSerie.rank.ToString("P2")).
                             Replace("%COL3%", "").
                             Replace("%COL4%", "").
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
@@ -2932,7 +2933,7 @@ namespace StockAnalyzerApp
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2%", reportSerie.rank.ToString()).
+                            Replace("%COL2%", reportSerie.rank.ToString("P2")).
                             Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
                             Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).

@@ -4,7 +4,7 @@ using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_DISTTOPEMA : StockIndicatorBase
+    public class StockIndicator_DISTTOPEMAR : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -16,14 +16,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 12 }; }
+            get { return new Object[] { 6 }; }
         }
         public override ParamRange[] ParameterRanges
         {
             get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "DISTTRAILEMA(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "DISTTOPEMAR(" + this.Parameters[0].ToString() + ")" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -63,7 +63,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie distSerie = new FloatSerie(stockSerie.Count);
             for (int i = period; i < stockSerie.Count; i++)
             {
-                distSerie[i] = float.IsNaN(shortStop[i]) ? (closeSerie[i] - longStop[i]) / closeSerie[i] : (closeSerie[i] - shortStop[i]) / closeSerie[i];
+                distSerie[i] = float.IsNaN(shortStop[i]) ? 0 : (shortStop[i] - closeSerie[i]) / closeSerie[i];
             }
 
             this.series[0] = distSerie;

@@ -333,7 +333,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTOPEMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTOPEMAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_XMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
