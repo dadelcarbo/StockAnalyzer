@@ -2779,8 +2779,10 @@ namespace StockAnalyzerApp
 
             #region Report leaders
 
+            var previousState = this.WindowState;
             var previousSize = this.Size;
             this.Size = new Size(600, 600);
+            this.WindowState = FormWindowState.Normal;
 
             int nbLeaders = 40;
             StockSplashScreen.FadeInOutSpeed = 0.25;
@@ -2798,6 +2800,7 @@ namespace StockAnalyzerApp
             #endregion
 
             this.Size = previousSize;
+            this.WindowState = previousState;
 
             var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", title).Replace("%HTML_BODY%", htmlBody);
             using (StreamWriter sw = new StreamWriter(fileName))
