@@ -3783,6 +3783,8 @@ namespace StockAnalyzerApp
                         return;
                     }
 
+                    
+
                     // Set bar duration
                     this.CurrentStockSerie.BarDuration = this.ViewModel.BarDuration;
                     // Delete transient drawing created by alert Detection

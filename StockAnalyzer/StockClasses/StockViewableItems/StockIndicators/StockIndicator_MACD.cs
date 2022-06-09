@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_MACD : StockIndicatorBase
     {
-        public StockIndicator_MACD()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.NonRangedIndicator; }
@@ -27,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "Histogram", "MACD", "Signal" }; } }
+        public override string[] SerieNames { get { return new string[] { "EMACD", "Signal", "Histogram" }; } }
 
 
         public override System.Drawing.Pen[] SeriePens
@@ -36,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Custom }, new Pen(Color.Red), new Pen(Color.Black) };
+                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Black), new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Custom } };
                 }
                 return seriePens;
             }
@@ -59,14 +56,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var fastMA = stockSerie.GetIndicator($"MA({this.parameters[1]})").Series[0];
             var slowMA = stockSerie.GetIndicator($"MA({this.parameters[0]})").Series[0];
 
-            FloatSerie MACDSerie = fastMA - slowMA;
+            FloatSerie MACDSerie = (fastMA - slowMA) / fastMA;
             FloatSerie signalSerie = MACDSerie.CalculateMA((int)this.parameters[2]);
-            this.series[0] = MACDSerie - signalSerie;
-            this.series[0].Name = this.SerieNames[0];
-            this.series[1] = MACDSerie;
-            this.series[1].Name = this.SerieNames[1];
-            this.series[2] = signalSerie;
-            this.series[2].Name = this.SerieNames[2];
+            this.series[0] = MACDSerie;
+            this.series[0].Name = this.SerieNames[1];
+            this.series[1] = signalSerie;
+            this.series[1].Name = this.SerieNames[2];
+            this.series[2] = MACDSerie - signalSerie;
+            this.series[2].Name = this.SerieNames[0];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);

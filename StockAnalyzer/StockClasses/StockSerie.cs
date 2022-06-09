@@ -3646,5 +3646,32 @@ namespace StockAnalyzer.StockClasses
         {
             return this.StockName + " " + this.Count;
         }
+
+        #region Multithread Lock/Unlock
+
+        object lockObject = new object();
+        AutoResetEvent lockEvent = new AutoResetEvent(true);
+        internal void Lock()
+        {
+            StockLog.Write("Lock unsafe");
+            lock (lockObject)
+            {
+                StockLog.Write("Lock safe");
+                lockEvent.WaitOne();
+                lockEvent.Reset();
+            }
+        }
+
+        internal void UnLock()
+        {
+            StockLog.Write("Unlock unsafe");
+            lock (lockObject)
+            {
+                StockLog.Write("Unlock safe");
+                lockEvent.Set();
+            }
+        }
+
+        #endregion
     }
 }
