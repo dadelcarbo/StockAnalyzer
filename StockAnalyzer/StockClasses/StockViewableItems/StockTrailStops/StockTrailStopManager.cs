@@ -76,7 +76,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                   throw new StockAnalyzerException("TrailStop " + name + " doesn't not exist ! ");
                }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                if (e is StockAnalyzerException) throw e;
                trailStop = null;

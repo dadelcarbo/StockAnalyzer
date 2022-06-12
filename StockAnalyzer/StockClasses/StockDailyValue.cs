@@ -136,7 +136,7 @@ namespace StockAnalyzer.StockClasses
                                 DateTime.Parse(row[0], usCulture));
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 // Assume input is right, Ignore invalid lines
             }

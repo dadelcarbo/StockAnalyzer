@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                   throw new StockAnalyzerException("Cloud " + name + " doesn't not exist ! ");
                }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                if (e is StockAnalyzerException) throw e;
                indicator = null;

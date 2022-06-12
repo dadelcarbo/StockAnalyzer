@@ -256,7 +256,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     res = true;
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 StockLog.Write("Unable to parse daily data for " + stockSerie.StockName);
                 StockLog.Write(e);

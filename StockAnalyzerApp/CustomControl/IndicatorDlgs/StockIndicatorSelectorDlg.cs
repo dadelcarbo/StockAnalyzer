@@ -545,7 +545,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                     continue;
                             }
                         }
-                        catch (System.Exception e)
+                        catch (Exception e)
                         {
                             StockLog.Write(e);
                         }

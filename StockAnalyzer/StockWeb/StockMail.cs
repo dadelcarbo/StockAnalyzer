@@ -1,5 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using System.Net.Mail;
+using System;
 
 namespace StockAnalyzer.StockWeb
 {
@@ -44,7 +45,7 @@ namespace StockAnalyzer.StockWeb
 
                         //smtp.Send(message);
                     }
-                    catch (System.Exception)
+                    catch (Exception)
                     {
                         //System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
                     }

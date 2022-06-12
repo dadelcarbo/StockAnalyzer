@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                   throw new StockAnalyzerException("Indicator " + name + " doesn't not exist ! ");
                }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                //if (e is StockAnalyzerException) throw e;
                indicator = null;

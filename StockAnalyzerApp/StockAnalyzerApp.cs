@@ -22,7 +22,7 @@ namespace StockAnalyzerApp
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new StockAnalyzerForm());
          }
-         catch (System.Exception ex)
+         catch (Exception ex)
          {
             MessageBox.Show(ex.Message, "Internal Software Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             if (ex.InnerException != null)

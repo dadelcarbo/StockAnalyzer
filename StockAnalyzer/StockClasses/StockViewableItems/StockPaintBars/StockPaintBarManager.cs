@@ -80,7 +80,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                   throw new StockAnalyzerException("PaintBar " + name + " doesn't not exist ! ");
                }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                if (e is StockAnalyzerException) throw e;
                paintBar = null;

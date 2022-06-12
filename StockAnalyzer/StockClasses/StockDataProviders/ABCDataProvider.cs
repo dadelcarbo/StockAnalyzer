@@ -595,7 +595,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex);
             }
@@ -1079,7 +1079,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex);
                 System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
@@ -1103,7 +1103,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     success = this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     StockLog.Write(ex);
                     success = false;

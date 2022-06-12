@@ -459,7 +459,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     this.BackgroundDirty = true;
                 }
-                catch (System.Exception exception)
+                catch (Exception exception)
                 {
                     StockLog.Write(exception);
                 }
@@ -511,7 +511,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             this.graphic.DrawImage(backgroundBitmap, 0, 0);
                         }
                     }
-                    catch (System.Exception e)
+                    catch (Exception e)
                     {
                         this.Deactivate("Software Error: " + e.Message, false);
                     }

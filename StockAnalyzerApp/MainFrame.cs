@@ -772,9 +772,11 @@ namespace StockAnalyzerApp
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                StockLog.Write(ex);
+                StockLog.Write(exception);
+
+                StockAnalyzerException.MessageBox(exception);
             }
             finally
             {
@@ -911,9 +913,9 @@ namespace StockAnalyzerApp
 
                 StockSplashScreen.CloseForm(true);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                MessageBox.Show(ex.Message, "GenerateAlert exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StockAnalyzerException.MessageBox(exception);
             }
             finally
             {
@@ -975,11 +977,11 @@ namespace StockAnalyzerApp
                     StockLog.Write(e);
                     DeactivateGraphControls(e.Message);
                 }
-                catch (System.Exception e)
+                catch (Exception exception)
                 {
-                    StockLog.Write(e);
-                    DeactivateGraphControls(e.Message);
-                    StockAnalyzerException.MessageBox(e);
+                    StockLog.Write(exception);
+                    DeactivateGraphControls(exception.Message);
+                    StockAnalyzerException.MessageBox(exception);
                 }
             }
         }
@@ -1436,14 +1438,9 @@ namespace StockAnalyzerApp
                     this.SaveAnalysis(analysisFileName);
                 }
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
-                string message = exception.Message;
-                if (exception.InnerException != null)
-                {
-                    message += "\n\r" + exception.InnerException.Message;
-                }
-                MessageBox.Show(message, "Error Loading Analysis file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StockAnalyzerException.MessageBox(exception);
             }
         }
 
@@ -1527,7 +1524,7 @@ namespace StockAnalyzerApp
 
         private void downloadBtn_Click(object sender, EventArgs e)
         {
-            lock (timerLock)
+            try
             {
                 if (alertThreadBusy)
                 {
@@ -1535,16 +1532,23 @@ namespace StockAnalyzerApp
                     return;
                 }
                 alertThreadBusy = true;
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    DownloadStockGroup();
+                }
+                else
+                {
+                    DownloadStock(false);
+                }
             }
-            if (Control.ModifierKeys == Keys.Control)
+            catch (Exception ex)
             {
-                DownloadStockGroup();
+                StockLog.Write(ex);
             }
-            else
+            finally
             {
-                DownloadStock(false);
+                alertThreadBusy = false;
             }
-            alertThreadBusy = false;
         }
 
         private void ForceDownloadStock(bool showSplash)
@@ -2105,7 +2109,7 @@ namespace StockAnalyzerApp
                     xmlWriter.WriteEndDocument();
                 }
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
                 success = false;
                 StockAnalyzerException.MessageBox(exception);
@@ -3223,7 +3227,7 @@ namespace StockAnalyzerApp
                         }
                     }
                 }
-                catch (System.Exception exception)
+                catch (Exception exception)
                 {
                     StockLog.Write(exception);
                 }
@@ -3783,7 +3787,7 @@ namespace StockAnalyzerApp
                         return;
                     }
 
-                    
+
 
                     // Set bar duration
                     this.CurrentStockSerie.BarDuration = this.ViewModel.BarDuration;
@@ -4073,15 +4077,15 @@ namespace StockAnalyzerApp
                                     CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
                                     startIndex, endIndex);
                             }
-                            catch (System.Exception e)
+                            catch (Exception exception)
                             {
-                                StockAnalyzerException.MessageBox(e);
+                                StockAnalyzerException.MessageBox(exception);
                                 StockLog.Write("Exception loading theme: " + this.currentTheme);
                                 foreach (string line in this.themeDictionary[currentTheme][entry])
                                 {
                                     StockLog.Write(line);
                                 }
-                                StockLog.Write(e);
+                                StockLog.Write(exception);
                             }
                         }
                     }
@@ -4099,9 +4103,9 @@ namespace StockAnalyzerApp
                     ResetZoom();
                 }
 
-                catch (Exception ex)
+                catch (Exception exception)
                 {
-                    StockAnalyzerException.MessageBox(ex);
+                    StockAnalyzerException.MessageBox(exception);
                 }
                 finally
                 {
@@ -4136,9 +4140,9 @@ namespace StockAnalyzerApp
                     this.NotifyThemeChanged?.Invoke(this.themeDictionary[this.currentTheme]);
                 }
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Error loading theme");
+                StockAnalyzerException.MessageBox(exception);
             }
         }
         private void InitialisePortfolioCombo()

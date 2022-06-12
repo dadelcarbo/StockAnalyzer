@@ -76,7 +76,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                         throw new StockAnalyzerException("AutoDrawing " + name + " doesn't not exist ! ");
                     }
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     if (e is StockAnalyzerException) throw e;
                     autoDraw = null;

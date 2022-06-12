@@ -152,7 +152,7 @@ namespace StockAnalyzer.StockClasses
                }
             }
          }
-         catch (System.Exception)
+         catch (Exception)
          {
             stats = null;
          }

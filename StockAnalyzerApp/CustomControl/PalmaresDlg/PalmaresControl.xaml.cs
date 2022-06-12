@@ -187,7 +187,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 Clipboard.SetText("=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/\"&C2&\"p\";D2)");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 StockAnalyzerException.MessageBox(ex);
             }

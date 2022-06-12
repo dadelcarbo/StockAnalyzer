@@ -389,7 +389,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         break;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex.Message);
                 // Assume input is right, Ignore invalid lines

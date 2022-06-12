@@ -2486,7 +2486,7 @@ namespace StockAnalyzer.StockClasses
                     this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 StockLog.Write(e);
             }
@@ -2702,7 +2702,7 @@ namespace StockAnalyzer.StockClasses
                     this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 StockLog.Write(e);
             }
@@ -2853,7 +2853,7 @@ namespace StockAnalyzer.StockClasses
                     rangingSerie[i] = trendStatus == DowEvent.Ranging;
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 StockLog.Write(e);
             }

@@ -274,7 +274,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     res = true;
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 StockLog.Write("Unable to parse intraday data for " + stockSerie.StockName);
                 StockLog.Write(e);

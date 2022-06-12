@@ -118,7 +118,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
-                catch (System.Exception exception)
+                catch (Exception exception)
                 {
                     StockLog.Write(exception);
                 }
@@ -428,7 +428,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     currentStockSerie.StockAnalysis.DrawingItems[currentStockSerie.BarDuration],
                                     startIndex, endIndex);
                             }
-                            catch (System.Exception e)
+                            catch (Exception e)
                             {
                                 StockLog.Write(e);
                             }
