@@ -19,6 +19,7 @@ namespace StockAnalyzer.StockClasses
         }
 
         public int Id { get; set; }
+        public int Rank { get; set; }
         public AlertType Type { get; set; }
         public bool Active { get; set; }
 

@@ -15,9 +15,6 @@ namespace StockAnalyzer.StockClasses
             this.stockSerie = serie;
             stockSerie.Lock();
         }
-        private StockSerieLocker()
-        {
-        }
         public void Dispose()
         {
             stockSerie.UnLock();

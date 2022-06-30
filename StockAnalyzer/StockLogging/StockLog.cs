@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 
@@ -10,29 +11,32 @@ namespace StockAnalyzer.StockLogging
     {
         private StackFrame sf;
         private Type callerType;
-        public MethodLogger(Object caller)
+        private bool isActive = false;
+        public MethodLogger(Object caller, bool activated = false, string text = "")
         {
-            if (StockLog.Logger.isMethodLoggingEnabled)
+            isActive = activated;
+            if (activated && StockLog.Logger.isMethodLoggingEnabled)
             {
                 callerType = caller.GetType();
                 sf = new StackTrace(1, true).GetFrame(0);
-                StockLog.WriteMethodEntry(callerType, sf);
+                StockLog.WriteMethodEntry(callerType, sf, text);
             }
         }
 
-        public MethodLogger(Type callerType)
+        public MethodLogger(Type callerType, bool activated = false, string text = "")
         {
-            if (StockLog.Logger.isMethodLoggingEnabled)
+            isActive = activated;
+            if (activated && StockLog.Logger.isMethodLoggingEnabled)
             {
                 this.callerType = callerType;
                 sf = new StackTrace(1, true).GetFrame(0);
-                StockLog.WriteMethodEntry(callerType, sf);
+                StockLog.WriteMethodEntry(callerType, sf, text);
             }
         }
 
         public void Dispose()
         {
-            if (StockLog.Logger.isMethodLoggingEnabled)
+            if (isActive && StockLog.Logger.isMethodLoggingEnabled)
             {
                 StockLog.WriteMethodExit(callerType, sf);
             }
@@ -53,7 +57,7 @@ namespace StockAnalyzer.StockLogging
         private StockLog()
         {
             isEnabled = Settings.Default.LoggingEnabled;
-            isMethodLoggingEnabled = false; // Settings.Default.LoggingEnabled;
+            isMethodLoggingEnabled = Settings.Default.LoggingEnabled;
             if (isEnabled)
             {
                 if (!Debugger.IsAttached)
@@ -97,23 +101,23 @@ namespace StockAnalyzer.StockLogging
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {sf.GetMethod().Name}";
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: {logText}");
             }
         }
-        static public void WriteMethodEntry(Type type, StackFrame sf)
+        static public void WriteMethodEntry(Type type, StackFrame sf, string text)
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {type.Name}::{sf.GetMethod().Name}";
-                StockLog.Logger.sw.WriteLine($"{prefix}: Entry");
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
+                StockLog.Logger.sw.WriteLine($"{prefix}: Entry {text}");
             }
         }
         static public void WriteMethodExit(Type type, StackFrame sf)
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {type.Name}::{sf.GetMethod().Name}";
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: Exit");
             }
         }
@@ -134,20 +138,16 @@ namespace StockAnalyzer.StockLogging
                 StreamWriter sw = StockLog.Logger.sw;
                 if (objException.Source != null)
                 {
-                    sw.WriteLine("Source      : " +
-                            objException.Source.ToString().Trim());
+                    sw.WriteLine("Source      : " + objException.Source.ToString().Trim());
                 }
                 if (objException.TargetSite != null)
                 {
-                    sw.WriteLine("Method      : " +
-                            objException.TargetSite.Name.ToString());
+                    sw.WriteLine("Method      : " + objException.TargetSite.Name.ToString());
                 }
-                sw.WriteLine("Date        : " +
-                        DateTime.Now.ToLongTimeString());
-                sw.WriteLine("Time        : " +
-                        DateTime.Now.ToShortDateString());
-                sw.WriteLine("Error       : " +
-                        strException.Trim());
+                sw.WriteLine("Date        : " + DateTime.Now.ToLongTimeString());
+                sw.WriteLine("Time        : " + DateTime.Now.ToShortDateString());
+                sw.WriteLine("Thread        : " + Thread.CurrentThread.ManagedThreadId);
+                sw.WriteLine("Error       : " + strException.Trim());
                 if (objException.StackTrace != null)
                 {
                     sw.WriteLine("Stack Trace : " +

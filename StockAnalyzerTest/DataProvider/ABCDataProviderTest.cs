@@ -12,7 +12,7 @@ namespace StockAnalyzerTest.DataProvider
         [TestInitialize]
         public void TestInitialize()
         {
-            StockDataProviderBase.RootFolder = Environment.CurrentDirectory;
+            StockDataProviderBase.DataFolder = Environment.CurrentDirectory;
             ABCDataProvider.CreateDirectories();
         }
         [TestMethod]

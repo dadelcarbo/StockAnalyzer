@@ -71,6 +71,7 @@
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="RadGridView_SelectionChanged">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Rank" DataMemberBinding="{Binding Rank}" />
                             <telerik:GridViewDataColumn Header="Active" DataMemberBinding="{Binding Active}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>

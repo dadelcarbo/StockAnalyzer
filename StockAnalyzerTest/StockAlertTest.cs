@@ -15,8 +15,8 @@ namespace StockAnalyzerTest
         {
             List<StockAlertDef> expectedAlertDefs = new List<StockAlertDef>()
             {
-                new StockAlertDef() {BarDuration = StockBarDuration.TLB_3D, EventName="Event1", IndicatorName="Indic1", IndicatorType="IndicType1"},
-                new StockAlertDef() {BarDuration = new StockBarDuration(BarDuration.TLB_6D, 3), EventName="Event1", IndicatorName="Indic1", IndicatorType="IndicType1"}
+                new StockAlertDef() {BarDuration = StockBarDuration.Bar_3, EventName="Event1", IndicatorName="Indic1", IndicatorType="IndicType1"},
+                new StockAlertDef() {BarDuration = new StockBarDuration(BarDuration.Bar_6, 3), EventName="Event1", IndicatorName="Indic1", IndicatorType="IndicType1"}
             };
 
             var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
@@ -45,12 +45,5 @@ namespace StockAnalyzerTest
             }
         }
 
-        [TestMethod]
-        public void EqualityTest()
-        {
-            var alert1 = new StockAlert() { BarDuration = StockBarDuration.TLB_3D, Alert = "t1", AlertClose = 12, Date = DateTime.Today, ExchangedMoney = 1000, StockGroup = "CAC", StockName = "EDF" };
-            var alert2 = new StockAlert() { BarDuration = StockBarDuration.TLB_3D, Alert = "t1", AlertClose = 12, Date = DateTime.Today, ExchangedMoney = 1000, StockGroup = "CAC", StockName = "EDF" };
-            Assert.AreEqual(alert1, alert2);
-        }
     }
 }

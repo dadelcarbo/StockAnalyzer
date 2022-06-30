@@ -201,13 +201,17 @@ namespace StockAnalyzer.StockClasses
         public StockBarDuration BarDuration
         {
             get { return barDuration; }
-            set { this.SetBarDuration(value); }
+            set
+            {
+                using (new StockSerieLocker(this))
+                {
+                    this.SetBarDuration(value);
+                }
+            }
         }
 
         [XmlIgnore]
         public FloatSerie[] ValueSeries { get; set; }
-        [XmlIgnore]
-        protected Dictionary<string, FloatSerie> FloatSerieCache { get; set; }
         [XmlIgnore]
         public Dictionary<string, IStockIndicator> IndicatorCache { get; set; }
         [XmlIgnore]
@@ -299,6 +303,7 @@ namespace StockAnalyzer.StockClasses
                 return newList;
             }
         }
+
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
             StockLog.Write($"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}");
@@ -363,14 +368,6 @@ namespace StockAnalyzer.StockClasses
             }
 
             return ValueSeries[(int)dataType];
-        }
-        public FloatSerie GetSerie(String serieName)
-        {
-            if (this.FloatSerieCache.ContainsKey(serieName))
-            {
-                return this.FloatSerieCache[serieName];
-            }
-            return null;
         }
         public IStockTrailStop GetTrailStop(String trailStopName)
         {
@@ -595,7 +592,6 @@ namespace StockAnalyzer.StockClasses
         public void ResetAllCache()
         {
             this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
-            this.FloatSerieCache = new Dictionary<string, FloatSerie>();
             this.IndicatorCache = new Dictionary<string, IStockIndicator>();
             this.DecoratorCache = new Dictionary<string, IStockDecorator>();
             this.CloudCache = new Dictionary<string, IStockCloud>();
@@ -3649,26 +3645,20 @@ namespace StockAnalyzer.StockClasses
 
         #region Multithread Lock/Unlock
 
-        object lockObject = new object();
-        AutoResetEvent lockEvent = new AutoResetEvent(true);
-        internal void Lock()
+        object __lockObj = new object();
+        public void Lock()
         {
-            StockLog.Write("Lock unsafe");
-            lock (lockObject)
+            using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
             {
-                StockLog.Write("Lock safe");
-                lockEvent.WaitOne();
-                lockEvent.Reset();
+                Monitor.Enter(__lockObj);
             }
         }
 
-        internal void UnLock()
+        public void UnLock()
         {
-            StockLog.Write("Unlock unsafe");
-            lock (lockObject)
+            using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
             {
-                StockLog.Write("Unlock safe");
-                lockEvent.Set();
+                Monitor.Exit(__lockObj);
             }
         }
 

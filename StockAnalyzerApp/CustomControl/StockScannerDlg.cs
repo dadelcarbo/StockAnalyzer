@@ -248,8 +248,6 @@ namespace StockAnalyzerApp.CustomControl
         Cursor cursor;
         private void selectButton_Click(object sender, EventArgs e)
         {
-            StockAnalyzerForm.alertThreadBusy = true;
-
             startDate = DateTime.Now;
             //    ForceCheckNodes();
             //    DumpCheckNodes();
@@ -394,8 +392,6 @@ namespace StockAnalyzerApp.CustomControl
                     processTimer.Stop();
                     processTimer.Dispose();
 
-                    StockAnalyzerForm.alertThreadBusy = false;
-
                     this.Enabled = true;
                     Cursor = cursor;
                     this.Activate();
@@ -466,7 +462,11 @@ namespace StockAnalyzerApp.CustomControl
             try
             {
                 StockLog.Write("StockName:" + stockSerie.StockName + "ThreadID:" + Thread.CurrentThread.ManagedThreadId);
-                StockDataProviderBase.DownloadSerieData(stockSerie);
+
+                using (new StockSerieLocker(stockSerie))
+                {
+                    StockDataProviderBase.DownloadSerieData(stockSerie);
+                }
                 lock (progress)
                 {
                     progress[stockSerie] = ProgressStatus.Downloaded;
@@ -537,38 +537,42 @@ namespace StockAnalyzerApp.CustomControl
                     progressLabel.Text = stockSerie.StockName;
                     progressLabel.Refresh();
 
-                    if (this.refreshDataCheckBox.Checked)
-                    {
-                        stockSerie.IsInitialised = false;
-                        StockDataProviderBase.DownloadSerieData(stockSerie);
-                    }
 
-                    if (!stockSerie.Initialise())
+                    using (new StockSerieLocker(stockSerie))
                     {
-                        continue;
-                    }
+                        if (this.refreshDataCheckBox.Checked)
+                        {
+                            stockSerie.IsInitialised = false;
+                            StockDataProviderBase.DownloadSerieData(stockSerie);
+                        }
 
-                    stockSerie.BarDuration = barDuration;
-                    int lastIndex = completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                    int firstIndex = lastIndex + 1 - (int)periodComboBox.SelectedItem;
+                        if (!stockSerie.Initialise())
+                        {
+                            continue;
+                        }
 
-                    // Check event matching
-                    bool selected =
-                       false;
-                    for (int i = lastIndex; i >= firstIndex && !selected; i--)
-                    {
-                        selected |= allCriteria
-                           ? stockSerie.MatchEventsAnd(i, eventMatches)
-                           : stockSerie.MatchEventsOr(i, eventMatches);
-                    }
-                    if (selected)
-                    {
-                        selectedStockListBox.Items.Add(stockSerie.StockName);
-                        selectedStockListBox.Refresh();
-                    }
-                    if (progressBar != null)
-                    {
-                        progressBar.Value++;
+                        stockSerie.BarDuration = barDuration;
+                        int lastIndex = completeBarCheckBox.Checked ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
+                        int firstIndex = lastIndex + 1 - (int)periodComboBox.SelectedItem;
+
+                        // Check event matching
+                        bool selected =
+                           false;
+                        for (int i = lastIndex; i >= firstIndex && !selected; i--)
+                        {
+                            selected |= allCriteria
+                               ? stockSerie.MatchEventsAnd(i, eventMatches)
+                               : stockSerie.MatchEventsOr(i, eventMatches);
+                        }
+                        if (selected)
+                        {
+                            selectedStockListBox.Items.Add(stockSerie.StockName);
+                            selectedStockListBox.Refresh();
+                        }
+                        if (progressBar != null)
+                        {
+                            progressBar.Value++;
+                        }
                     }
                 }
             }

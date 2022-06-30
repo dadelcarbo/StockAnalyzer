@@ -16,7 +16,7 @@ namespace StockAnalyzerTest
         {
             const string stockName = "TEST";
             StockSerie stockSerie = new StockSerie(stockName, stockName, Groups.NONE, StockDataProvider.Generated, BarDuration.Daily);
-            stockSerie.IsPortofolioSerie = false;
+            stockSerie.IsPortfolioSerie = false;
 
             float value = 10.0f;
             for (DateTime date = DateTime.Today.AddDays(-size); date <= DateTime.Today; date = date.AddDays(1))
@@ -44,19 +44,6 @@ namespace StockAnalyzerTest
             serie.BarDuration = StockBarDuration.Daily;
             serie.BarDuration = new StockBarDuration() { Smoothing = 2 };
             serie.BarDuration = new StockBarDuration() { Smoothing = 3 };
-        }
-
-        [TestMethod]
-        public void StockSerieMultipleTimeFrameDataTest()
-        {
-            var serie = StockTestUtility.StockSerieLoad("Lyxor CAC 40 (-2x) Inverse", "BX4.PA", StockSerie.Groups.FUND, StockDataProvider.ABC);
-
-            var durations = new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly, StockBarDuration.Monthly };
-
-            var vars = serie.GetMTFVariation(durations, 10, new DateTime(2020, 02, 19));
-
-            var dump = vars.Select(v => v.Select(va => va.ToString("P2")).Aggregate((i, j) => i + " " + j)).Aggregate((i, j) => i + Environment.NewLine + j);
-            Assert.IsNotNull(dump);
         }
 
         [TestMethod]

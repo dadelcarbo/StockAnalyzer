@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerApp", "StockAnalyzerApp\StockAnalyzerApp.csproj", "{4160792F-0A7C-4ABE-AD3D-83603AD6DF29}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerLib", "StockAn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerSettings", "StockAnalyzerSettings\StockAnalyzerSettings.csproj", "{D7BE95C8-BCE9-4E66-B305-C85D07936F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockDownloader", "StockDownloader\StockDownloader.csproj", "{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerTest", "StockAnalyzerTest\StockAnalyzerTest.csproj", "{87F4F775-6F91-4702-B25C-84A50FC87026}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F92D739E-9B6C-434F-AF40-912E9639E03C}"
@@ -22,8 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		StockAnalyzerApp.vsmdi = StockAnalyzerApp.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockYahooDownloader", "StockYahooDownloader\StockYahooDownloader\StockYahooDownloader.csproj", "{349F2143-1FD2-41BB-83D3-05AF0105AF0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockLicenseKeyGenerator", "StockLicenseKeyGenerator\StockLicenseKeyGenerator.csproj", "{DD32CBB8-4471-4292-99F3-B6064DF7D6D0}"
 EndProject
@@ -67,16 +63,6 @@ Global
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D7BE95C8-BCE9-4E66-B305-C85D07936F73}.Release|x86.ActiveCfg = Release|Any CPU
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Debug|x86.ActiveCfg = Debug|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Debug|x86.Build.0 = Debug|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|Any CPU.ActiveCfg = Release|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|Mixed Platforms.Build.0 = Release|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|x86.ActiveCfg = Release|x86
-		{75C3BB2F-4073-46BE-A3FD-175DFBAD53FF}.Release|x86.Build.0 = Release|x86
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -87,16 +73,6 @@ Global
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{87F4F775-6F91-4702-B25C-84A50FC87026}.Release|x86.ActiveCfg = Release|Any CPU
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|x86.ActiveCfg = Debug|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Debug|x86.Build.0 = Debug|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Release|Any CPU.ActiveCfg = Release|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Release|x86.ActiveCfg = Release|x86
-		{349F2143-1FD2-41BB-83D3-05AF0105AF0E}.Release|x86.Build.0 = Release|x86
 		{DD32CBB8-4471-4292-99F3-B6064DF7D6D0}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{DD32CBB8-4471-4292-99F3-B6064DF7D6D0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{DD32CBB8-4471-4292-99F3-B6064DF7D6D0}.Debug|Mixed Platforms.Build.0 = Debug|x86

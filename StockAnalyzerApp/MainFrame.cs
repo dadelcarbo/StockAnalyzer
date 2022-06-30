@@ -293,7 +293,7 @@ namespace StockAnalyzerApp
         /// <param name="e"></param>
         private void BarDurationChanged(object sender, EventArgs e)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.currentStockSerie == null || !this.currentStockSerie.Initialise()) return;
 
@@ -369,9 +369,6 @@ namespace StockAnalyzerApp
             this.UpdateBarSmoothingVisibility();
 
             base.OnActivated(e);
-
-            // Enable timers and multithreading
-            alertThreadBusy = false;
 
             this.FormClosing += StockAnalyzerForm_FormClosing1;
         }
@@ -577,9 +574,7 @@ namespace StockAnalyzerApp
                 cac40.BarDuration = StockBarDuration.Daily;
                 if (reportDate < cac40.Keys.Last())
                 {
-                    GenerateReport("Daily Report", StockBarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
-                    GenerateReport("Weekly Report", StockBarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
-                    //GenerateReport("Monthly Report", StockBarDuration.Monthly, monthlyAlertConfig.AlertDefs);
+                    generateDailyReportToolStripBtn_Click(null, null);
                     File.WriteAllText(fileName, cac40.Keys.Last().ToString());
                 }
             }
@@ -588,7 +583,7 @@ namespace StockAnalyzerApp
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
                 var startTime = new TimeSpan(8, 0, 0);
-                var endTime = new TimeSpan(17, 40, 0);
+                var endTime = new TimeSpan(22, 00, 0);
 
                 // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
@@ -610,6 +605,8 @@ namespace StockAnalyzerApp
             StockSplashScreen.CloseForm(true);
             this.Focus();
         }
+
+        private bool showTimerDebug = true;
 
         private void goBtn_Click(object sender, EventArgs e)
         {
@@ -734,195 +731,177 @@ namespace StockAnalyzerApp
         #endregion
         #region TIMER MANAGEMENT
 
-
-        private Object timerLock = new Object();
-        public static bool alertThreadBusy = false;
         private void RefreshTimer_Tick()
         {
-            StockLog.Write($"Thread Id: " + Thread.CurrentThread.ManagedThreadId);
-            lock (timerLock)
+            using (new MethodLogger(this, showTimerDebug))
             {
-                if (alertThreadBusy)
+                using (new StockSerieLocker(this.currentStockSerie))
                 {
-                    StockLog.Write($"alertThreadBusy");
-                    return;
-                }
-                alertThreadBusy = true;
-            }
-
-            // Download INTRADAY current serie
-            try
-            {
-                if (Settings.Default.SupportIntraday)
-                {
-                    (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-                }
-                if (this.currentStockSerie != null)
-                {
-                    if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
+                    // Download INTRADAY current serie
+                    try
                     {
-                        if (this.currentStockSerie.Initialise())
+                        if (Settings.Default.SupportIntraday)
                         {
-                            this.BeginInvoke(new Action(() => this.ApplyTheme()));
+                            (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
                         }
-                        else
+                        if (this.currentStockSerie != null)
                         {
-                            this.DeactivateGraphControls("Unable to download selected stock data...");
+                            if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
+                            {
+                                if (this.currentStockSerie.Initialise())
+                                {
+                                    this.BeginInvoke(new Action(() => this.ApplyTheme()));
+                                }
+                                else
+                                {
+                                    this.DeactivateGraphControls("Unable to download selected stock data...");
+                                }
+                            }
                         }
                     }
-                }
-            }
-            catch (Exception exception)
-            {
-                StockLog.Write(exception);
+                    catch (Exception exception)
+                    {
+                        StockLog.Write(exception);
 
-                StockAnalyzerException.MessageBox(exception);
-            }
-            finally
-            {
-                alertThreadBusy = false;
+                        StockAnalyzerException.MessageBox(exception);
+                    }
+                    finally
+                    {
+                    }
+                }
             }
         }
 
         public void GenerateAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
         {
-            StockLog.Write("GenerateAlert Thread: " + Thread.CurrentThread.ManagedThreadId + "Culture: " + Thread.CurrentThread.CurrentCulture);
-
-            RefreshTimer_Tick();
-            lock (timerLock)
+            using (new MethodLogger(this, showTimerDebug))
             {
-                while (alertThreadBusy)
+                try
                 {
-                    StockLog.Write($"alertThreadBusy Waiting...");
-                    Task.Delay(500).Wait();
-                }
-                alertThreadBusy = true;
-            }
-
-            try
-            {
-                var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
-                if (alertDefs.Count() == 0)
-                    return;
-                if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)
-                {
-                    var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
-                    oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
-                }
-                else
-                {
-                    (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
-                    alertConfig.AlertLog.Alerts.Clear();
-                }
-                foreach (var alertDef in alertDefs)
-                {
-                    StockLog.Write($"AlertDef.Id: {alertDef.Id}");
-                    List<StockSerie> stockList = new List<StockSerie>();
-                    switch (alertDef.Type)
+                    var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
+                    if (alertDefs.Count() == 0)
+                        return;
+                    if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)
                     {
-                        case AlertType.Group:
-                            stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)).ToList();
-                            break;
-                        case AlertType.Stock:
-                        case AlertType.Price:
-                            stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockName == alertDef.StockName).ToList();
-                            break;
+                        var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
+                        oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
                     }
-                    if (alertDef.IndicatorFullName == "AUTODRAWING|DRAWING()")
+                    else
                     {
-                        stockList = stockList.Where(s => s.StockAnalysis.DrawingItems.ContainsKey(alertDef.BarDuration) && s.StockAnalysis.DrawingItems[alertDef.BarDuration].Count > 0).ToList();
+                        (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                        alertConfig.AlertLog.Alerts.Clear();
                     }
-                    if (stockList.Count == 0)
-                        continue;
-
-                    NotifyAlertStarted(alertDef.Title, stockList.Count);
-
-                    foreach (var stockSerie in stockList.Where(s => s.Initialise()))
+                    foreach (var alertDef in alertDefs)
                     {
-                        NotifyAlertProgress(stockSerie.StockName);
-
-                        StockBarDuration previouBarDuration = stockSerie.BarDuration;
-                        if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
+                        StockLog.Write($"AlertDef.Id: {alertDef.Id}");
+                        List<StockSerie> stockList = new List<StockSerie>();
+                        switch (alertDef.Type)
                         {
-                            StockDataProviderBase.DownloadSerieData(stockSerie);
+                            case AlertType.Group:
+                                stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)).ToList();
+                                break;
+                            case AlertType.Stock:
+                            case AlertType.Price:
+                                stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockName == alertDef.StockName).ToList();
+                                break;
                         }
-                        else
+                        if (alertDef.IndicatorFullName == "AUTODRAWING|DRAWING()")
                         {
-                            if (stockSerie.Values.Last().CLOSE < 1.0f)
-                            {
-                                continue;
-                            }
-                            if (stockSerie.HasVolume) // Check if it has at least x.xx M€ average daily liquidity
-                            {
-                                if (!stockSerie.HasLiquidity(0.2f))
-                                {
-                                    continue;
-                                }
-                            }
+                            stockList = stockList.Where(s => s.StockAnalysis.DrawingItems.ContainsKey(alertDef.BarDuration) && s.StockAnalysis.DrawingItems[alertDef.BarDuration].Count > 0).ToList();
                         }
-
-                        stockSerie.BarDuration = alertDef.BarDuration;
-                        var values = stockSerie.GetValues(alertDef.BarDuration);
-                        int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
-
-                        var dailyValue = values.ElementAt(lastIndex);
-                        if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
+                        if (stockList.Count == 0)
                             continue;
-                        if (stockSerie.MatchEvent(alertDef, lastIndex))
-                        {
-                            float stop = float.NaN;
-                            if (!string.IsNullOrEmpty(alertDef.Stop))
-                            {
-                                var trailStopSerie = stockSerie.GetTrailStop(alertDef.Stop)?.Series[0];
-                                if (trailStopSerie != null)
-                                {
-                                    stop = (float)Math.Round(trailStopSerie[lastIndex], 2);
-                                }
-                            }
-                            var date = dailyValue.DATE;
-                            var stockAlert = new StockAlert(alertDef,
-                                date,
-                                stockSerie.StockName,
-                                stockSerie.StockGroup.ToString(),
-                                dailyValue.CLOSE,
-                                stop,
-                                dailyValue.VOLUME,
-                                stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
 
-                            if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                        NotifyAlertStarted(alertDef.Title, stockList.Count);
+
+                        foreach (var stockSerie in stockList.Where(s => s.Initialise()))
+                        {
+                            NotifyAlertProgress(stockSerie.StockName);
+
+                            using (new StockSerieLocker(stockSerie))
                             {
-                                if (this.InvokeRequired)
+                                StockBarDuration previouBarDuration = stockSerie.BarDuration;
+                                if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
                                 {
-                                    this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                    StockDataProviderBase.DownloadSerieData(stockSerie);
                                 }
                                 else
                                 {
-                                    alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                    if (stockSerie.Values.Last().CLOSE < 1.0f)
+                                    {
+                                        continue;
+                                    }
+                                    if (stockSerie.HasVolume) // Check if it has at least x.xx M€ average daily liquidity
+                                    {
+                                        if (!stockSerie.HasLiquidity(0.2f))
+                                        {
+                                            continue;
+                                        }
+                                    }
                                 }
+
+                                stockSerie.BarDuration = alertDef.BarDuration;
+                                var values = stockSerie.GetValues(alertDef.BarDuration);
+                                int lastIndex = alertDef.BarDuration == StockBarDuration.Daily || alertDef.BarDuration == StockBarDuration.Weekly || alertDef.BarDuration == StockBarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
+
+                                var dailyValue = values.ElementAt(lastIndex);
+                                if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
+                                    continue;
+                                if (stockSerie.MatchEvent(alertDef, lastIndex))
+                                {
+                                    float stop = float.NaN;
+                                    if (!string.IsNullOrEmpty(alertDef.Stop))
+                                    {
+                                        var trailStopSerie = stockSerie.GetTrailStop(alertDef.Stop)?.Series[0];
+                                        if (trailStopSerie != null)
+                                        {
+                                            stop = (float)Math.Round(trailStopSerie[lastIndex], 2);
+                                        }
+                                    }
+                                    var date = dailyValue.DATE;
+                                    var stockAlert = new StockAlert(alertDef,
+                                        date,
+                                        stockSerie.StockName,
+                                        stockSerie.StockGroup.ToString(),
+                                        dailyValue.CLOSE,
+                                        stop,
+                                        dailyValue.VOLUME,
+                                        stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
+
+                                    if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                                    {
+                                        if (this.InvokeRequired)
+                                        {
+                                            this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
+                                        }
+                                        else
+                                        {
+                                            alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
+                                        }
+                                    }
+                                }
+                                stockSerie.BarDuration = previouBarDuration;
                             }
                         }
-                        stockSerie.BarDuration = previouBarDuration;
                     }
-                }
-                alertConfig.AlertLog.Save();
+                    alertConfig.AlertLog.Save();
 
-                if (this.AlertDetected != null)
+                    if (this.AlertDetected != null)
+                    {
+                        this.Invoke(this.AlertDetected);
+                    }
+
+                    StockSplashScreen.CloseForm(true);
+                }
+                catch (Exception exception)
                 {
-                    this.Invoke(this.AlertDetected);
+                    StockAnalyzerException.MessageBox(exception);
                 }
-
-                StockSplashScreen.CloseForm(true);
-            }
-            catch (Exception exception)
-            {
-                StockAnalyzerException.MessageBox(exception);
-            }
-            finally
-            {
-                alertThreadBusy = false;
+                finally
+                {
+                }
             }
         }
-
         private void NotifyAlertStarted(string title, int count)
         {
             if (AlertDetectionStarted != null)
@@ -964,7 +943,7 @@ namespace StockAnalyzerApp
 
         private void ChangeZoom(int startIndex, int endIndex)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 try
                 {
@@ -987,7 +966,7 @@ namespace StockAnalyzerApp
         }
         private void ResetZoom()
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.CurrentStockSerie == null || this.CurrentStockSerie.Count == 0 ||
                     this.CurrentStockSerie.IsInitialised == false)
@@ -1073,7 +1052,7 @@ namespace StockAnalyzerApp
 
         public void OnSelectedStockChanged(string stockName, bool activate)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (!this.stockNameComboBox.Items.Contains(stockName))
                 {
@@ -1116,7 +1095,7 @@ namespace StockAnalyzerApp
         }
         public void OnSelectedStockAndDurationAndThemeChanged(string stockName, StockBarDuration barDuration, string theme, bool activate)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (!this.stockNameComboBox.Items.Contains(stockName))
                 {
@@ -1166,7 +1145,7 @@ namespace StockAnalyzerApp
         }
         public void OnSelectedStockAndDurationChanged(string stockName, StockBarDuration barDuration, bool activate)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (!this.stockNameComboBox.Items.Contains(stockName))
                 {
@@ -1209,7 +1188,7 @@ namespace StockAnalyzerApp
 
         public void OnSelectedStockAndDurationAndIndexChanged(string stockName, int startIndex, int endIndex, StockBarDuration barDuration, bool activate)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (!this.stockNameComboBox.Items.Contains(stockName))
                 {
@@ -1255,7 +1234,7 @@ namespace StockAnalyzerApp
         }
         private void StockAnalyzerForm_StockSerieChanged(StockSerie newSerie, bool ignoreLinkedTheme)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 //
                 if (newSerie == null)
@@ -1479,7 +1458,7 @@ namespace StockAnalyzerApp
 
         public void OnNeedReinitialise(bool resetDrawingButtons)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.currentStockSerie == null) return;
                 if (resetDrawingButtons)
@@ -1526,12 +1505,6 @@ namespace StockAnalyzerApp
         {
             try
             {
-                if (alertThreadBusy)
-                {
-                    StockLog.Write($"alertThreadBusy");
-                    return;
-                }
-                alertThreadBusy = true;
                 if (Control.ModifierKeys == Keys.Control)
                 {
                     DownloadStockGroup();
@@ -1545,15 +1518,11 @@ namespace StockAnalyzerApp
             {
                 StockLog.Write(ex);
             }
-            finally
-            {
-                alertThreadBusy = false;
-            }
         }
 
         private void ForceDownloadStock(bool showSplash)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.currentStockSerie != null)
                 {
@@ -1663,7 +1632,7 @@ namespace StockAnalyzerApp
         }
         private void DownloadStock(bool showSplash)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.currentStockSerie != null)
                 {
@@ -1678,16 +1647,19 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
+                    using (new StockSerieLocker(currentStockSerie))
                     {
-                        this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
-                        if (this.currentStockSerie.Initialise())
+                        if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                         {
-                            this.ApplyTheme();
-                        }
-                        else
-                        {
-                            this.DeactivateGraphControls("Unable to download selected stock data...");
+                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
+                            if (this.currentStockSerie.Initialise())
+                            {
+                                this.ApplyTheme();
+                            }
+                            else
+                            {
+                                this.DeactivateGraphControls("Unable to download selected stock data...");
+                            }
                         }
                     }
 
@@ -1720,8 +1692,11 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockDataProviderBase.DownloadSerieData(stockSerie);
                         StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+                        using (new StockSerieLocker(stockSerie))
+                        {
+                            StockDataProviderBase.DownloadSerieData(stockSerie);
+                        }
 
                         if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
                         {
@@ -2770,7 +2745,7 @@ namespace StockAnalyzerApp
             string folderName = Path.Combine(Folders.Report, timeFrame);
             CleanReportFolder(folderName);
 
-            if (!File.Exists(ReportTemplatePath) || alertDefs.Count == 0)
+            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active) == 0)
                 return;
             var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
 
@@ -2794,7 +2769,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlLeaders = string.Empty;
-            foreach (var alertDef in alertDefs.OrderBy(a => a.Id))
+            foreach (var alertDef in alertDefs.Where(a => a.Active).OrderBy(a => a.Rank))
             {
                 htmlLeaders += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
             }
@@ -3410,7 +3385,7 @@ namespace StockAnalyzerApp
         }
         public void SetThemeFromIndicator(string fullName)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 if (this.themeDictionary.ContainsKey(this.currentTheme) && this.themeDictionary[this.currentTheme].Values.Any(v => v.Any(vv => vv.Contains(fullName))))
                 {
@@ -3678,7 +3653,7 @@ namespace StockAnalyzerApp
         }
         private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this))
             {
                 StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.CurrentTheme]);
                 indicatorSelectorDialog.ThemeEdited += new OnThemeEditedHandler(indicatorSelectorDialog_ThemeEdited);
@@ -3767,349 +3742,350 @@ namespace StockAnalyzerApp
         private bool repaintSuspended = false;
         private void ApplyTheme()
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (new MethodLogger(this, showTimerDebug))
             {
-                try
+                using (new StockSerieLocker(this.currentStockSerie))
                 {
-                    this.Cursor = Cursors.WaitCursor;
-
-                    StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.CurrentTheme}");
-                    if (changingGroup) return;
-                    if (this.CurrentTheme == null || this.CurrentStockSerie == null) return;
-                    if (!this.CurrentStockSerie.IsInitialised)
+                    try
                     {
-                        this.statusLabel.Text = ("Loading data...");
-                        this.Refresh();
-                    }
-                    if (!this.CurrentStockSerie.Initialise() || this.CurrentStockSerie.Count == 0)
-                    {
-                        this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
-                        return;
-                    }
+                        this.Cursor = Cursors.WaitCursor;
 
-
-
-                    // Set bar duration
-                    this.CurrentStockSerie.BarDuration = this.ViewModel.BarDuration;
-                    // Delete transient drawing created by alert Detection
-                    if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
-                    {
-                        this.CurrentStockSerie.ResetIndicatorCache();
-                    }
-
-                    if (this.CurrentStockSerie.Count < MIN_BAR_DISPLAY)
-                    {
-                        this.DeactivateGraphControls("Not enough data to display...");
-                        return;
-                    }
-
-                    // Add to browsing history
-                    this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.CurrentTheme);
-
-                    // Build curve list from definition
-                    if (!this.themeDictionary.ContainsKey(currentTheme))
-                    {
-                        // LoadTheme
-                        LoadCurveTheme(currentTheme);
-                    }
-
-                    // Force resetting the secondary serie.
-                    if (themeDictionary[currentTheme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
-                    {
-                        if (this.graphCloseControl.SecondaryFloatSerie != null)
+                        StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.CurrentTheme}");
+                        if (changingGroup) return;
+                        if (this.CurrentTheme == null || this.CurrentStockSerie == null) return;
+                        if (!this.CurrentStockSerie.IsInitialised)
                         {
-                            themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
+                            this.statusLabel.Text = ("Loading data...");
+                            this.Refresh();
                         }
-                        else
+                        if (!this.CurrentStockSerie.Initialise() || this.CurrentStockSerie.Count == 0)
                         {
-                            themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|NONE");
+                            this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
+                            return;
                         }
-                    }
 
-                    DateTime[] dateSerie = CurrentStockSerie.Keys.ToArray();
-                    GraphCurveTypeList curveList;
-                    bool skipEntry = false;
-                    foreach (string entry in themeDictionary[currentTheme].Keys)
-                    {
-                        if (entry.ToUpper().EndsWith("GRAPH"))
+                        // Set bar duration
+                        this.CurrentStockSerie.BarDuration = this.ViewModel.BarDuration;
+                        // Delete transient drawing created by alert Detection
+                        if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                         {
-                            GraphControl graphControl = null;
-                            curveList = new GraphCurveTypeList();
-                            switch (entry.ToUpper())
+                            this.CurrentStockSerie.ResetIndicatorCache();
+                        }
+
+                        if (this.CurrentStockSerie.Count < MIN_BAR_DISPLAY)
+                        {
+                            this.DeactivateGraphControls("Not enough data to display...");
+                            return;
+                        }
+
+                        // Add to browsing history
+                        this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.CurrentTheme);
+
+                        // Build curve list from definition
+                        if (!this.themeDictionary.ContainsKey(currentTheme))
+                        {
+                            // LoadTheme
+                            LoadCurveTheme(currentTheme);
+                        }
+
+                        // Force resetting the secondary serie.
+                        if (themeDictionary[currentTheme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
+                        {
+                            if (this.graphCloseControl.SecondaryFloatSerie != null)
                             {
-                                case "CLOSEGRAPH":
-                                    graphControl = this.graphCloseControl;
-                                    this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
-                                    this.graphCloseControl.Dividends = this.CurrentStockSerie.Dividend;
-                                    break;
-                                case "SCROLLGRAPH":
-                                    graphControl = this.graphScrollerControl;
-                                    break;
-                                case "INDICATOR1GRAPH":
-                                    graphControl = this.graphIndicator1Control;
-                                    break;
-                                case "INDICATOR2GRAPH":
-                                    graphControl = this.graphIndicator2Control;
-                                    break;
-                                case "INDICATOR3GRAPH":
-                                    graphControl = this.graphIndicator3Control;
-                                    break;
-                                case "VOLUMEGRAPH":
-                                    if (this.CurrentStockSerie.HasVolume)
-                                    {
-                                        graphControl = this.graphVolumeControl;
-                                        curveList.Add(new GraphCurveType(
-                                            CurrentStockSerie.GetSerie(StockDataType.VOLUME),
-                                            Pens.Green, true));
-                                    }
-                                    else
-                                    {
-                                        this.graphVolumeControl.Deactivate("This serie has no volume data", false);
-                                        skipEntry = true;
-                                    }
-                                    break;
-                                default:
+                                themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
+                            }
+                            else
+                            {
+                                themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|NONE");
+                            }
+                        }
+
+                        DateTime[] dateSerie = CurrentStockSerie.Keys.ToArray();
+                        GraphCurveTypeList curveList;
+                        bool skipEntry = false;
+                        foreach (string entry in themeDictionary[currentTheme].Keys)
+                        {
+                            if (entry.ToUpper().EndsWith("GRAPH"))
+                            {
+                                GraphControl graphControl = null;
+                                curveList = new GraphCurveTypeList();
+                                switch (entry.ToUpper())
+                                {
+                                    case "CLOSEGRAPH":
+                                        graphControl = this.graphCloseControl;
+                                        this.graphCloseControl.Agenda = this.CurrentStockSerie.Agenda;
+                                        this.graphCloseControl.Dividends = this.CurrentStockSerie.Dividend;
+                                        break;
+                                    case "SCROLLGRAPH":
+                                        graphControl = this.graphScrollerControl;
+                                        break;
+                                    case "INDICATOR1GRAPH":
+                                        graphControl = this.graphIndicator1Control;
+                                        break;
+                                    case "INDICATOR2GRAPH":
+                                        graphControl = this.graphIndicator2Control;
+                                        break;
+                                    case "INDICATOR3GRAPH":
+                                        graphControl = this.graphIndicator3Control;
+                                        break;
+                                    case "VOLUMEGRAPH":
+                                        if (this.CurrentStockSerie.HasVolume)
+                                        {
+                                            graphControl = this.graphVolumeControl;
+                                            curveList.Add(new GraphCurveType(
+                                                CurrentStockSerie.GetSerie(StockDataType.VOLUME),
+                                                Pens.Green, true));
+                                        }
+                                        else
+                                        {
+                                            this.graphVolumeControl.Deactivate("This serie has no volume data", false);
+                                            skipEntry = true;
+                                        }
+                                        break;
+                                    default:
+                                        continue;
+                                }
+
+                                if (skipEntry)
+                                {
+                                    skipEntry = false;
                                     continue;
-                            }
-
-                            if (skipEntry)
-                            {
-                                skipEntry = false;
-                                continue;
-                            }
-                            try
-                            {
-                                List<HLine> horizontalLines = new List<HLine>();
-
-                                foreach (string line in this.themeDictionary[currentTheme][entry])
+                                }
+                                try
                                 {
-                                    string[] fields = line.Split('|');
-                                    switch (fields[0].ToUpper())
-                                    {
-                                        case "GRAPH":
-                                            string[] colorItem = fields[1].Split(':');
-                                            graphControl.BackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                            colorItem = fields[2].Split(':');
-                                            graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                            graphControl.ShowGrid = bool.Parse(fields[3]);
-                                            colorItem = fields[4].Split(':');
-                                            graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                    List<HLine> horizontalLines = new List<HLine>();
 
-                                            if (entry.ToUpper() == "CLOSEGRAPH")
-                                            {
-                                                if (fields.Length >= 7)
+                                    foreach (string line in this.themeDictionary[currentTheme][entry])
+                                    {
+                                        string[] fields = line.Split('|');
+                                        switch (fields[0].ToUpper())
+                                        {
+                                            case "GRAPH":
+                                                string[] colorItem = fields[1].Split(':');
+                                                graphControl.BackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                                colorItem = fields[2].Split(':');
+                                                graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                                graphControl.ShowGrid = bool.Parse(fields[3]);
+                                                colorItem = fields[4].Split(':');
+                                                graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+
+                                                if (entry.ToUpper() == "CLOSEGRAPH")
                                                 {
-                                                    this.graphCloseControl.SecondaryPen = GraphCurveType.PenFromString(fields[6]);
+                                                    if (fields.Length >= 7)
+                                                    {
+                                                        this.graphCloseControl.SecondaryPen = GraphCurveType.PenFromString(fields[6]);
+                                                    }
+                                                    else
+                                                    {
+                                                        this.graphCloseControl.SecondaryPen = new Pen(Color.DarkGoldenrod, 1);
+                                                    }
+                                                    graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
+                                                    // Set buttons
+                                                    switch (graphControl.ChartMode)
+                                                    {
+                                                        case GraphChartMode.Line:
+                                                            this.barchartStripButton.Checked = false;
+                                                            this.candleStripButton.Checked = false;
+                                                            this.linechartStripButton.Checked = true;
+                                                            break;
+                                                        case GraphChartMode.BarChart:
+                                                            this.barchartStripButton.Checked = true;
+                                                            this.candleStripButton.Checked = false;
+                                                            this.linechartStripButton.Checked = false;
+                                                            break;
+                                                        case GraphChartMode.CandleStick:
+                                                            this.barchartStripButton.Checked = false;
+                                                            this.candleStripButton.Checked = true;
+                                                            this.linechartStripButton.Checked = false;
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                            case "SECONDARY":
+                                                if (this.currentStockSerie.SecondarySerie != null)
+                                                {
+                                                    CheckSecondarySerieMenu(fields[1]);
+                                                    this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.currentStockSerie.SecondarySerie);
                                                 }
                                                 else
                                                 {
-                                                    this.graphCloseControl.SecondaryPen = new Pen(Color.DarkGoldenrod, 1);
-                                                }
-                                                graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
-                                                // Set buttons
-                                                switch (graphControl.ChartMode)
-                                                {
-                                                    case GraphChartMode.Line:
-                                                        this.barchartStripButton.Checked = false;
-                                                        this.candleStripButton.Checked = false;
-                                                        this.linechartStripButton.Checked = true;
-                                                        break;
-                                                    case GraphChartMode.BarChart:
-                                                        this.barchartStripButton.Checked = true;
-                                                        this.candleStripButton.Checked = false;
-                                                        this.linechartStripButton.Checked = false;
-                                                        break;
-                                                    case GraphChartMode.CandleStick:
-                                                        this.barchartStripButton.Checked = false;
-                                                        this.candleStripButton.Checked = true;
-                                                        this.linechartStripButton.Checked = false;
-                                                        break;
-                                                    default:
-                                                        break;
-                                                }
-                                            }
-                                            break;
-                                        case "SECONDARY":
-                                            if (this.currentStockSerie.SecondarySerie != null)
-                                            {
-                                                CheckSecondarySerieMenu(fields[1]);
-                                                this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.currentStockSerie.SecondarySerie);
-                                            }
-                                            else
-                                            {
-                                                if (fields[1].ToUpper() == "NONE" ||
-                                                    !this.StockDictionary.ContainsKey(fields[1]))
-                                                {
-                                                    ClearSecondarySerieMenu();
-                                                    this.graphCloseControl.SecondaryFloatSerie = null;
-                                                }
-                                                else
-                                                {
-                                                    if (this.StockDictionary.ContainsKey(fields[1]))
+                                                    if (fields[1].ToUpper() == "NONE" ||
+                                                        !this.StockDictionary.ContainsKey(fields[1]))
                                                     {
-                                                        CheckSecondarySerieMenu(fields[1]);
-                                                        this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                                                        ClearSecondarySerieMenu();
+                                                        this.graphCloseControl.SecondaryFloatSerie = null;
                                                     }
-                                                }
-                                            }
-                                            break;
-                                        case "DATA":
-                                            curveList.Add(
-                                                new GraphCurveType(
-                                                    CurrentStockSerie.GetSerie(
-                                                        (StockDataType)Enum.Parse(typeof(StockDataType), fields[1])),
-                                             fields[2], bool.Parse(fields[3])));
-                                            break;
-                                        case "TRAIL":
-                                        case "INDICATOR":
-                                            {
-                                                IStockIndicator stockIndicator =
-                                                    (IStockIndicator)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            this.CurrentStockSerie);
-                                                if (stockIndicator != null)
-                                                {
-                                                    if (entry.ToUpper() != "CLOSEGRAPH")
+                                                    else
                                                     {
-                                                        if (stockIndicator.DisplayTarget ==
-                                                            IndicatorDisplayTarget.RangedIndicator)
+                                                        if (this.StockDictionary.ContainsKey(fields[1]))
                                                         {
-                                                            IRange range = (IRange)stockIndicator;
-                                                            ((GraphRangedControl)graphControl).RangeMin = range.Min;
-                                                            ((GraphRangedControl)graphControl).RangeMax = range.Max;
-                                                        }
-                                                        else
-                                                        {
-                                                            ((GraphRangedControl)graphControl).RangeMin = float.NaN;
-                                                            ((GraphRangedControl)graphControl).RangeMax = float.NaN;
+                                                            CheckSecondarySerieMenu(fields[1]);
+                                                            this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
                                                         }
                                                     }
-                                                    if (
-                                                        !(stockIndicator.RequiresVolumeData &&
-                                                          !this.CurrentStockSerie.HasVolume))
+                                                }
+                                                break;
+                                            case "DATA":
+                                                curveList.Add(
+                                                    new GraphCurveType(
+                                                        CurrentStockSerie.GetSerie(
+                                                            (StockDataType)Enum.Parse(typeof(StockDataType), fields[1])),
+                                                 fields[2], bool.Parse(fields[3])));
+                                                break;
+                                            case "TRAIL":
+                                            case "INDICATOR":
+                                                {
+                                                    IStockIndicator stockIndicator =
+                                                        (IStockIndicator)
+                                                            StockViewableItemsManager.GetViewableItem(line,
+                                                                this.CurrentStockSerie);
+                                                    if (stockIndicator != null)
                                                     {
-                                                        curveList.Indicators.Add(stockIndicator);
+                                                        if (entry.ToUpper() != "CLOSEGRAPH")
+                                                        {
+                                                            if (stockIndicator.DisplayTarget ==
+                                                                IndicatorDisplayTarget.RangedIndicator)
+                                                            {
+                                                                IRange range = (IRange)stockIndicator;
+                                                                ((GraphRangedControl)graphControl).RangeMin = range.Min;
+                                                                ((GraphRangedControl)graphControl).RangeMax = range.Max;
+                                                            }
+                                                            else
+                                                            {
+                                                                ((GraphRangedControl)graphControl).RangeMin = float.NaN;
+                                                                ((GraphRangedControl)graphControl).RangeMax = float.NaN;
+                                                            }
+                                                        }
+                                                        if (
+                                                            !(stockIndicator.RequiresVolumeData &&
+                                                              !this.CurrentStockSerie.HasVolume))
+                                                        {
+                                                            curveList.Indicators.Add(stockIndicator);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            break;
-                                        case "CLOUD":
-                                            {
-                                                var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
-                                                if (stockCloud != null)
+                                                break;
+                                            case "CLOUD":
                                                 {
-                                                    curveList.Cloud = stockCloud;
+                                                    var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    if (stockCloud != null)
+                                                    {
+                                                        curveList.Cloud = stockCloud;
+                                                    }
                                                 }
-                                            }
-                                            break;
-                                        case "PAINTBAR":
-                                            {
-                                                IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
-                                                curveList.PaintBar = paintBar;
-                                            }
-                                            break;
-                                        case "AUTODRAWING":
-                                            {
-                                                IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
-                                                curveList.AutoDrawing = autoDrawing;
-                                            }
-                                            break;
-                                        case "DECORATOR":
-                                            {
-                                                IStockDecorator decorator =
-                                                    (IStockDecorator)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            this.CurrentStockSerie);
-                                                curveList.Decorator = decorator;
-                                                this.GraphCloseControl.CurveList.ShowMes.Add(decorator);
-                                            }
-                                            break;
-                                        case "TRAILSTOP":
-                                            {
-                                                IStockTrailStop trailStop =
-                                                    (IStockTrailStop)
-                                                        StockViewableItemsManager.GetViewableItem(line,
-                                                            this.CurrentStockSerie);
-                                                curveList.TrailStop = trailStop;
-                                            }
-                                            break;
-                                        case "LINE":
-                                            horizontalLines.Add(new HLine(float.Parse(fields[1]),
-                                                GraphCurveType.PenFromString(fields[2])));
-                                            break;
-                                        default:
-                                            continue;
+                                                break;
+                                            case "PAINTBAR":
+                                                {
+                                                    IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    curveList.PaintBar = paintBar;
+                                                }
+                                                break;
+                                            case "AUTODRAWING":
+                                                {
+                                                    IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    curveList.AutoDrawing = autoDrawing;
+                                                }
+                                                break;
+                                            case "DECORATOR":
+                                                {
+                                                    IStockDecorator decorator =
+                                                        (IStockDecorator)
+                                                            StockViewableItemsManager.GetViewableItem(line,
+                                                                this.CurrentStockSerie);
+                                                    curveList.Decorator = decorator;
+                                                    this.GraphCloseControl.CurveList.ShowMes.Add(decorator);
+                                                }
+                                                break;
+                                            case "TRAILSTOP":
+                                                {
+                                                    IStockTrailStop trailStop =
+                                                        (IStockTrailStop)
+                                                            StockViewableItemsManager.GetViewableItem(line,
+                                                                this.CurrentStockSerie);
+                                                    curveList.TrailStop = trailStop;
+                                                }
+                                                break;
+                                            case "LINE":
+                                                horizontalLines.Add(new HLine(float.Parse(fields[1]),
+                                                    GraphCurveType.PenFromString(fields[2])));
+                                                break;
+                                            default:
+                                                continue;
+                                        }
                                     }
-                                }
-                                if (curveList.FindIndex(c => c.DataSerie.Name == "CLOSE") < 0)
-                                {
-                                    curveList.Insert(0,
-                                        new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.CLOSE), Pens.Black,
-                                            false));
-                                }
-                                if (graphControl == this.graphCloseControl)
-                                {
-                                    if (curveList.FindIndex(c => c.DataSerie.Name == "LOW") < 0)
+                                    if (curveList.FindIndex(c => c.DataSerie.Name == "CLOSE") < 0)
                                     {
                                         curveList.Insert(0,
-                                            new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.LOW), Pens.Black,
+                                            new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.CLOSE), Pens.Black,
                                                 false));
                                     }
-                                    if (curveList.FindIndex(c => c.DataSerie.Name == "HIGH") < 0)
+                                    if (graphControl == this.graphCloseControl)
                                     {
-                                        curveList.Insert(0,
-                                            new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.HIGH), Pens.Black,
-                                                false));
+                                        if (curveList.FindIndex(c => c.DataSerie.Name == "LOW") < 0)
+                                        {
+                                            curveList.Insert(0,
+                                                new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.LOW), Pens.Black,
+                                                    false));
+                                        }
+                                        if (curveList.FindIndex(c => c.DataSerie.Name == "HIGH") < 0)
+                                        {
+                                            curveList.Insert(0,
+                                                new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.HIGH), Pens.Black,
+                                                    false));
+                                        }
+                                        if (curveList.FindIndex(c => c.DataSerie.Name == "OPEN") < 0)
+                                        {
+                                            curveList.Insert(0,
+                                                new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.OPEN), Pens.Black,
+                                                    false));
+                                        }
                                     }
-                                    if (curveList.FindIndex(c => c.DataSerie.Name == "OPEN") < 0)
+                                    if (!this.CurrentStockSerie.StockAnalysis.DrawingItems.ContainsKey(this.CurrentStockSerie.BarDuration))
                                     {
-                                        curveList.Insert(0,
-                                            new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.OPEN), Pens.Black,
-                                                false));
+                                        this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
                                     }
+                                    graphControl.Initialize(curveList, horizontalLines, dateSerie,
+                                        CurrentStockSerie,
+                                        CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
+                                        startIndex, endIndex);
                                 }
-                                if (!this.CurrentStockSerie.StockAnalysis.DrawingItems.ContainsKey(this.CurrentStockSerie.BarDuration))
+                                catch (Exception exception)
                                 {
-                                    this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
+                                    StockAnalyzerException.MessageBox(exception);
+                                    StockLog.Write("Exception loading theme: " + this.currentTheme);
+                                    foreach (string line in this.themeDictionary[currentTheme][entry])
+                                    {
+                                        StockLog.Write(line);
+                                    }
+                                    StockLog.Write(exception);
                                 }
-                                graphControl.Initialize(curveList, horizontalLines, dateSerie,
-                                    CurrentStockSerie,
-                                    CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
-                                    startIndex, endIndex);
-                            }
-                            catch (Exception exception)
-                            {
-                                StockAnalyzerException.MessageBox(exception);
-                                StockLog.Write("Exception loading theme: " + this.currentTheme);
-                                foreach (string line in this.themeDictionary[currentTheme][entry])
-                                {
-                                    StockLog.Write(line);
-                                }
-                                StockLog.Write(exception);
                             }
                         }
-                    }
 
-                    if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
-                    {
-                        string[] fields = this.currentStockSerie.StockName.Split('.');
-                        if (this.StockDictionary.ContainsKey(fields[1]))
+                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
                         {
-                            this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                            string[] fields = this.currentStockSerie.StockName.Split('.');
+                            if (this.StockDictionary.ContainsKey(fields[1]))
+                            {
+                                this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                            }
                         }
+
+                        // Reinitialise zoom
+                        ResetZoom();
                     }
 
-                    // Reinitialise zoom
-                    ResetZoom();
-                }
-
-                catch (Exception exception)
-                {
-                    StockAnalyzerException.MessageBox(exception);
-                }
-                finally
-                {
-                    this.Cursor = Cursors.Arrow;
+                    catch (Exception exception)
+                    {
+                        StockAnalyzerException.MessageBox(exception);
+                    }
+                    finally
+                    {
+                        this.Cursor = Cursors.Arrow;
+                    }
                 }
             }
         }
