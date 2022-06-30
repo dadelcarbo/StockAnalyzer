@@ -772,12 +772,21 @@ namespace StockAnalyzerApp
             }
         }
 
+        bool isGeneratingAlerts = false;
         public void GenerateAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
             {
+                StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
+                if (isGeneratingAlerts)
+                    return;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 try
                 {
+                    isGeneratingAlerts = true;
+
                     var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
                     if (alertDefs.Count() == 0)
                         return;
@@ -814,12 +823,14 @@ namespace StockAnalyzerApp
 
                         NotifyAlertStarted(alertDef.Title, stockList.Count);
 
-                        foreach (var stockSerie in stockList.Where(s => s.Initialise()))
+                        foreach (var stockSerie in stockList)
                         {
                             NotifyAlertProgress(stockSerie.StockName);
 
                             using (new StockSerieLocker(stockSerie))
                             {
+                                if (!stockSerie.Initialise())
+                                    continue;
                                 StockBarDuration previouBarDuration = stockSerie.BarDuration;
                                 if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
                                 {
@@ -890,8 +901,6 @@ namespace StockAnalyzerApp
                     {
                         this.Invoke(this.AlertDetected);
                     }
-
-                    StockSplashScreen.CloseForm(true);
                 }
                 catch (Exception exception)
                 {
@@ -899,6 +908,9 @@ namespace StockAnalyzerApp
                 }
                 finally
                 {
+                    isGeneratingAlerts = false;
+                    sw.Stop();
+                    StockLog.Write($"GenerateAlert Duration {sw.Elapsed}");
                 }
             }
         }

@@ -133,16 +133,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = StockBarDuration.Daily;
-                bool res = dataProvider.DownloadDailyData(serie);
-                if (dataProvider.SupportsIntradayDownload)
+                using (new StockSerieLocker(serie))
                 {
-                    res |= dataProvider.DownloadIntradayData(serie);
-                }
+                    StockBarDuration currentBarDuration = serie.BarDuration;
+                    serie.BarDuration = StockBarDuration.Daily;
+                    bool res = dataProvider.DownloadDailyData(serie);
+                    if (dataProvider.SupportsIntradayDownload)
+                    {
+                        res |= dataProvider.DownloadIntradayData(serie);
+                    }
 
-                serie.BarDuration = currentBarDuration;
-                return res;
+                    serie.BarDuration = currentBarDuration;
+                    return res;
+                }
             }
         }
         public static bool ForceDownloadSerieData(StockSerie serie)

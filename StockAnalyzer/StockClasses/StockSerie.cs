@@ -623,36 +623,39 @@ namespace StockAnalyzer.StockClasses
         {
             try
             {
-                if (!this.IsInitialised)
+                using (new StockSerieLocker(this))
                 {
-                    StockLog.Write($"Initialising {StockName}");
-                    // Multithread management
-                    while (initialisingThread != null && initialisingThread != Thread.CurrentThread)
-                        Thread.Sleep(50);
-                    this.initialisingThread = Thread.CurrentThread;
+                    if (!this.IsInitialised)
+                    {
+                        StockLog.Write($"Initialising {StockName}");
+                        // Multithread management
+                        while (initialisingThread != null && initialisingThread != Thread.CurrentThread)
+                            Thread.Sleep(50);
+                        this.initialisingThread = Thread.CurrentThread;
 
-                    if (this.Count == 0)
-                    {
-                        if (!StockDataProviderBase.LoadSerieData(this) || this.Count == 0)
+                        if (this.Count == 0)
                         {
-                            return false;
-                        }
-                        this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
-                    }
-                    else
-                    {
-                        if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
-                        {
+                            if (!StockDataProviderBase.LoadSerieData(this) || this.Count == 0)
+                            {
+                                return false;
+                            }
                             this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
                         }
-                    }
-                    // Force indicator,data,event and other to null;
-                    PreInitialise();
+                        else
+                        {
+                            if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+                            {
+                                this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                            }
+                        }
+                        // Force indicator,data,event and other to null;
+                        PreInitialise();
 
-                    // Flag initialisation as completed
-                    this.isInitialised = this.Count > 0;
+                        // Flag initialisation as completed
+                        this.isInitialised = this.Count > 0;
+                    }
+                    return isInitialised;
                 }
-                return isInitialised;
             }
             finally
             {
@@ -696,7 +699,9 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration currentBarDuration = this.BarDuration;
             try
             {
-                this.BarDuration = stockAlert.BarDuration;
+                if (this.BarDuration != stockAlert.BarDuration)
+                    this.BarDuration = stockAlert.BarDuration;
+
                 if (index < 50 || this.LastIndex < index)
                     return false;
                 int eventIndex;
@@ -773,7 +778,8 @@ namespace StockAnalyzer.StockClasses
             }
             finally
             {
-                this.BarDuration = currentBarDuration;
+                if (this.BarDuration != currentBarDuration)
+                    this.BarDuration = currentBarDuration;
             }
 
             return false;
