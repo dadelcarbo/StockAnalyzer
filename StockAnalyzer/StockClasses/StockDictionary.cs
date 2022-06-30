@@ -151,7 +151,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -258,7 +258,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -360,7 +360,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -462,7 +462,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -570,7 +570,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -677,7 +677,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -779,7 +779,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -875,7 +875,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -999,7 +999,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1199,7 +1199,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1315,7 +1315,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1417,7 +1417,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1520,7 +1520,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1629,7 +1629,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1739,7 +1739,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1848,7 +1848,7 @@ namespace StockAnalyzer.StockClasses
                     // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
-                        breadthSerie.Remove(lastBreadthDate);
+                        breadthSerie.RemoveLast();
                         lastBreadthDate = breadthSerie.Keys.Last();
                     }
                 }
@@ -1972,18 +1972,6 @@ namespace StockAnalyzer.StockClasses
                     {
                         return stockSerie.ValueArray[index].CLOSE;
                     }
-                }
-            }
-            return 0f;
-        }
-        public float GetLastPrice(string stockName)
-        {
-            if (this.ContainsKey(stockName))
-            {
-                var stockSerie = this[stockName];
-                if (stockSerie.Initialise())
-                {
-                    return stockSerie.Last().Value.CLOSE;
                 }
             }
             return 0f;

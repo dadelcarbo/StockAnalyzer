@@ -246,7 +246,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         }
         private void Forward()
         {
-            if (++referenceSerieIndex < referenceSerie.Count())
+            if (++referenceSerieIndex < referenceSerie.Count)
             {
                 //Add value in replay serie
                 CopyReferenceValues(referenceSerieIndex + 1);
@@ -312,7 +312,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         {
             if (isFastForwarding)
             {
-                if (referenceSerieIndex >= referenceSerie.Count())
+                if (referenceSerieIndex >= referenceSerie.Count)
                 {
                     isFastForwarding = false;
                     StopReplay();
@@ -324,7 +324,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             }
             else if (isSkipForwarding)
             {
-                if (referenceSerieIndex >= referenceSerie.Count())
+                if (referenceSerieIndex >= referenceSerie.Count)
                 {
                     isSkipForwarding = false;
                     StopReplay();
@@ -441,9 +441,9 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.replaySerie.IsInitialised = false;
             referenceSerie.BarDuration = this.barDuration;
             DateTime currentDate = DateTime.Today;
-            foreach (var dailyValue in referenceSerie.Take(nbValues))
+            foreach (var dailyValue in referenceSerie.Values.Take(nbValues))
             {
-                this.replaySerie.Add(currentDate, new StockDailyValue(currentDate, dailyValue.Value));
+                this.replaySerie.Add(currentDate, new StockDailyValue(currentDate, dailyValue));
                 currentDate = currentDate.AddDays(1);
             }
             replaySerie.Initialise();

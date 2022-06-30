@@ -103,14 +103,9 @@ namespace StockAnalyzer.StockHelpers
         private void Timer_Elapsed1(object sender, ElapsedEventArgs e)
         {
             var time = DateTime.Now.TimeOfDay;
-            if (TimerSuspended || time < startTime)
+            if (TimerSuspended || time < startTime || time > endTime)
                 return;
-            if (time > endTime)
-            {
-                this.timer.Stop();
-                return;
-            }
-
+           
             var timeSeconds = time.TotalSeconds;
             var barDurations = new List<StockBarDuration>();
             foreach (var tickPeriod in periodTicks)

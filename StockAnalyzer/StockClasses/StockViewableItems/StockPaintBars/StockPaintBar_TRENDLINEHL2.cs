@@ -178,7 +178,7 @@ namespace StockAnalyzer.StockClasses
         }
     }
 
-    public partial class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
+    public partial class StockSerie : StockSortedDictionary, IXmlSerializable
     {
         public void generateAutomaticHL3TrendLines(int startIndex, int endIndex, int period, int nbPivots, int maxPeriod, ref BoolSerie[] events)
         {

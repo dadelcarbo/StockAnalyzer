@@ -183,6 +183,7 @@
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
+    <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXOLD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRAILADR.cs" />

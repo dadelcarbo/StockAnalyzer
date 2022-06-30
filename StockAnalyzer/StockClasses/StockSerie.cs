@@ -22,9 +22,8 @@ using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses
 {
-    public partial class StockSerie : SortedDictionary<DateTime, StockDailyValue>, IXmlSerializable
+    public partial class StockSerie : StockSortedDictionary, IXmlSerializable
     {
-
         #region Type Definition
         public enum Groups
         {
@@ -164,7 +163,7 @@ namespace StockAnalyzer.StockClasses
 
         public bool IsPortfolioSerie { get; set; }
         public int LastIndex { get { return this.ValueArray.Length - 1; } }
-        public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Values.Count - 1 : this.Values.Count - 2; } }
+        public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2; } }
 
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
@@ -181,7 +180,6 @@ namespace StockAnalyzer.StockClasses
             return price * vol > trigger;
         }
         #endregion
-
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
         public new void Add(DateTime date, StockDailyValue dailyValue)
         {
@@ -250,8 +248,7 @@ namespace StockAnalyzer.StockClasses
 
         private StockDailyValue[] StockDailyValuesAsArray()
         {
-            StockDailyValue[] values = new StockDailyValue[this.Count];
-            this.Values.CopyTo(values, 0);
+            StockDailyValue[] values = this.Values.ToArray();
             return values;
         }
 
@@ -312,12 +309,8 @@ namespace StockAnalyzer.StockClasses
                 this.barDuration = newBarDuration;
                 return;
             }
-            this.Clear();
             this.ResetIndicatorCache();
-            foreach (StockDailyValue dailyValue in this.GetSmoothedValues(newBarDuration))
-            {
-                this.Add(dailyValue.DATE, dailyValue);
-            }
+            this.InitRange(this.GetSmoothedValues(newBarDuration));
             this.barDuration = newBarDuration;
             this.PreInitialise();
             valueArray = StockDailyValuesAsArray();
@@ -553,7 +546,6 @@ namespace StockAnalyzer.StockClasses
             }
         }
         #endregion
-
         #region Constructors
         public StockSerie()
         {
@@ -953,9 +945,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
 
             supportSerie[0] = float.NaN;
-            resistanceSerie[0] = this.First().Value.LOW;
-            float latestHigh = this.First().Value.HIGH;
-            float latestLow = this.First().Value.LOW;
+            resistanceSerie[0] = lowSerie[0];
+            float latestHigh = highSerie[0];
+            float latestLow = lowSerie[0];
 
             bool isUp = true;
             for (int i = 1; i < this.Count; i++)
@@ -1007,9 +999,9 @@ namespace StockAnalyzer.StockClasses
             FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
 
             supportSerie[0] = float.NaN;
-            resistanceSerie[0] = this.First().Value.LOW;
-            float latestHigh = this.First().Value.HIGH;
-            float latestLow = this.First().Value.LOW;
+            resistanceSerie[0] = lowSerie[0];
+            float latestHigh = highSerie[0];
+            float latestLow = lowSerie[0];
 
             bool isOverbought = false;
             bool isOversold = false;
@@ -1171,14 +1163,14 @@ namespace StockAnalyzer.StockClasses
         {
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
             //  %D = MA3(%K)
-            FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
+            FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             FloatSerie lowSerie = this.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = this.GetSerie(StockDataType.CLOSE);
             float lowestLow = float.MaxValue;
             float highestHigh = float.MinValue;
 
-            for (int i = 0; i < this.Values.Count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 lowestLow = lowSerie.GetMin(Math.Max(0, i - period), i);
                 highestHigh = highSerie.GetMax(Math.Max(0, i - period), i);
@@ -1203,14 +1195,14 @@ namespace StockAnalyzer.StockClasses
         {
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
             //  %D = MA3(%K)
-            FloatSerie fastOscillatorSerie = new FloatSerie(this.Values.Count);
+            FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             var bodyHighSerie = this.GetSerie(StockDataType.BODYHIGH);
             var bodyLowSerie = this.GetSerie(StockDataType.BODYLOW);
             float lowestLow = float.MaxValue;
             float highestHigh = float.MinValue;
 
-            for (int i = 0; i < this.Values.Count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 lowestLow = bodyLowSerie.GetMin(Math.Max(0, i - period), i);
                 highestHigh = bodyHighSerie.GetMax(Math.Max(0, i - period), i);
@@ -2911,7 +2903,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (dateArray == null)
             {
-                if (this.Keys.Count > 0)
+                if (this.Count > 0)
                 {
                     dateArray = this.Keys.ToArray();
                 }
@@ -2932,7 +2924,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (dateArray == null)
             {
-                if (this.Keys.Count > 0)
+                if (this.Count > 0)
                 {
                     dateArray = this.Keys.ToArray();
                 }
@@ -2953,7 +2945,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (dateArray == null)
             {
-                if (this.Keys.Count > 0)
+                if (this.Count > 0)
                 {
                     dateArray = this.Keys.ToArray();
                 }

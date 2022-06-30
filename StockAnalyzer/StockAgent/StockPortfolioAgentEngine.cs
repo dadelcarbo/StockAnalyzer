@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockAgent
             float cash = positionManagement.PortfolioInitialBalance;
             float equity = cash;
             float refEquity = cash;
-            equityCurve = new EquityValue[refSerie.Keys.Count];
+            equityCurve = new EquityValue[refSerie.Count];
             int i = 0;
             for (; i < minIndex; i++)
             {

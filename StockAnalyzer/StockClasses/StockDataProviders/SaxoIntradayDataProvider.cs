@@ -108,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (stockSerie.Keys.Last().Date == DateTime.Today)
                             {
                                 lastDate = stockSerie.Keys.Last();
-                                stockSerie.Remove(stockSerie.Keys.Last());
+                                stockSerie.RemoveLast();
                             }
                         }
                         var date = lastDate;
