@@ -452,6 +452,14 @@ namespace StockAnalyzerApp
                 LoadAnalysis(Settings.Default.AnalysisFile);
             }
 
+            // Download Intraday in background
+            if (Settings.Default.SupportIntraday && Settings.Default.DownloadData)
+            {
+                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
+                var task = new Task(() => { stockList.ForEach(s => StockDataProviderBase.DownloadSerieData(s)); });
+                task.Start();
+            }
+
 
 #if DEBUG
             bool fastStart = false;
@@ -780,6 +788,10 @@ namespace StockAnalyzerApp
                 if (isGeneratingAlerts)
                     return;
 
+                var wl = this.WatchLists.FirstOrDefault(w => w.Name == "SAXO");
+                if (wl == null || wl.StockList.Count == 0)
+                    return;
+
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 try
@@ -793,15 +805,15 @@ namespace StockAnalyzerApp
                     var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
                     oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
 
-                    var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
+                    var stockList = wl.StockList.Where(s=> this.StockDictionary.ContainsKey(s)).Select(s=> this.StockDictionary[s]).Where(s => !s.StockAnalysis.Excluded);
                     stockList.AsParallel().ForAll(s => StockDataProviderBase.DownloadSerieData(s));
 
                     foreach (var alertDefGroup in alertDefs.GroupBy(a => a.BarDuration))
                     {
                         StockLog.Write($"Generating alerts for : {alertDefGroup.Key}");
-                        NotifyAlertStarted(alertDefGroup.Key.ToString(), stockList.Count);
                         foreach (var stockSerie in stockList)
                         {
+                            NotifyAlertStarted(alertDefGroup.Key.ToString(), alertDefs.Count);
                             using (new StockSerieLocker(stockSerie))
                             {
                                 if (!stockSerie.Initialise())
