@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Tweetinvi.Core.Extensions;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -208,16 +210,23 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             if (this.DownloadIntraday)
             {
-                var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
-                dataProvider.DownloadAllGroupsIntraday();
+                if (this.group != StockSerie.Groups.INTRADAY)
+                {
+                    var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
+                    dataProvider.DownloadAllGroupsIntraday();
+                }
             }
 
             Lines = new List<PalmaresLine>();
             foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
+                if (this.DownloadIntraday && this.group == StockSerie.Groups.INTRADAY)
+                {
+                    StockDataProviderBase.DownloadSerieData(stockSerie);
+                }
                 if (!stockSerie.Initialise() || stockSerie.Count < 50)
                     continue;
-                
+
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
 
