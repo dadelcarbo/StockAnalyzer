@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockWeb
             if (encoding == null) encoding = Encoding.GetEncoding("ISO-8859-15");
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            
+
             HttpWebResponse response = (HttpWebResponse)req.GetResponse();
             // Get the stream containing content returned by the server.
             Stream dataStream = response.GetResponseStream();
@@ -76,48 +76,40 @@ namespace StockAnalyzer.StockWeb
             StreamReader reader = new StreamReader(req.GetResponse().GetResponseStream());
             return reader.ReadToEnd();
         }
-        private bool DownloadFile(string destFile, string url)
+
+        static readonly HttpClient httpClient = new HttpClient();
+        public static bool DownloadFile(string destFile, string url)
         {
-            if (File.GetLastWriteTime(destFile) > DateTime.Now.AddHours(-6))
-            {
-                return true;
-            }
             bool success = true;
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-
-            HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-            // Get the stream containing content returned by the server.
-            Stream dataStream = response.GetResponseStream();
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
-            string responseFromServer = reader.ReadToEnd();
-
-            if (responseFromServer.Length != 0)
+            try
             {
-                // Save content to file
-                StreamWriter writer = new StreamWriter(destFile);
-                writer.Write(responseFromServer);
-                writer.Close();
+                if (File.GetLastWriteTime(destFile) > DateTime.Now.AddHours(-6))
+                {
+                    return true;
+                }
+                var response = httpClient.GetAsync(url).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    // Save content to file
+                    var writer = new FileStream(destFile, FileMode.Create);
+                    response.Content.CopyToAsync(writer).Wait();
+                    writer.Close();
+                }
+                else
+                {
+                    success = false;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                StockLog.Write(ex);
                 success = false;
             }
-
-            // Cleanup the streams
-            reader.Close();
-            dataStream.Close();
-            // Close the reponse
-            response.Close();
-
             return success;
         }
         #endregion
         #region Investing.com
         private static string urlTemplate = $"{StockDataProviderBase.URL_PREFIX_INVESTING}/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
-        
-        private static HttpClient httpClient;
 
         public IEnumerable<StockDetails> GetInvestingStockDetails(string searchText, string exchange = "")
         {
@@ -127,8 +119,6 @@ namespace StockAnalyzer.StockWeb
             try
             {
                 // Request information
-                if (httpClient == null) httpClient = new HttpClient();
-
                 var result = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
 
                 // Parse response

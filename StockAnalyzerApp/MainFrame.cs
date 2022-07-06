@@ -805,7 +805,7 @@ namespace StockAnalyzerApp
                     var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
                     oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
 
-                    var stockList = wl.StockList.Where(s=> this.StockDictionary.ContainsKey(s)).Select(s=> this.StockDictionary[s]).Where(s => !s.StockAnalysis.Excluded);
+                    var stockList = wl.StockList.Where(s => this.StockDictionary.ContainsKey(s)).Select(s => this.StockDictionary[s]).Where(s => !s.StockAnalysis.Excluded);
                     stockList.AsParallel().ForAll(s => StockDataProviderBase.DownloadSerieData(s));
 
                     foreach (var alertDefGroup in alertDefs.GroupBy(a => a.BarDuration))
@@ -2912,6 +2912,38 @@ namespace StockAnalyzerApp
 
             this.Size = previousSize;
             this.WindowState = previousState;
+
+            // Download Market Harmonics pictures
+            string url = "http://www.market-harmonics.com/images/tech/sentiment/nu.png";
+            string destFile = Path.Combine(folderName, $"NU_{DateTime.Now.Ticks}.png");
+            if (StockWebHelper.DownloadFile(destFile, url))
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NU_IMG%", "file://" + destFile);
+            }
+            else
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NU_IMG%", url);
+            }
+            url = "http://www.market-harmonics.com/images/tech/sentiment/nulong.png";
+            destFile = Path.Combine(folderName, $"NUL_{DateTime.Now.Ticks}.png");
+            if (StockWebHelper.DownloadFile(destFile, url))
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NUL_IMG%", "file://" + destFile);
+            }
+            else
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NUL_IMG%", url);
+            }
+            url = "http://www.market-harmonics.com/images/tech/sentiment/ndsi.png";
+            destFile = Path.Combine(folderName, $"NSDI_{DateTime.Now.Ticks}.png");
+            if (StockWebHelper.DownloadFile(destFile, url))
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NSDI_IMG%", "file://" + destFile);
+            }
+            else
+            {
+                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NSDI_IMG%", url);
+            }
 
             var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", title).Replace("%HTML_BODY%", htmlBody);
             using (StreamWriter sw = new StreamWriter(fileName))
