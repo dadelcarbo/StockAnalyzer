@@ -23,7 +23,6 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string DisplayIndicator => $"CLOUD|ATR({Period},{Width},{-Width},EMA)";
 
 
-        IStockCloud cloud;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)

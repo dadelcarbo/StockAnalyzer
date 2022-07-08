@@ -17,12 +17,12 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public override string DisplayIndicator => $"INDICATOR|EMA({Period})";
 
-        FloatSerie histogramSerie;
-        FloatSerie emacdSerie;
-        FloatSerie signalSerie;
+        //FloatSerie histogramSerie;
+        //FloatSerie emacdSerie;
+        //FloatSerie signalSerie;
         FloatSerie natr;
-        FloatSerie highest;
         FloatSerie volumeEMA;
+        FloatSerie highest;
         FloatSerie variation;
         FloatSerie ror;
         FloatSerie ema;

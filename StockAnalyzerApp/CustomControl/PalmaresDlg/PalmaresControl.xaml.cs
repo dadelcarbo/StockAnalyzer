@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -327,6 +328,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
             catch (Exception ex)
             {
+                StockLog.Write(ex);
             }
             finally
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace StockAnalyzer.StockMath
@@ -1070,6 +1071,21 @@ namespace StockAnalyzer.StockMath
             }
             return minValue;
         }
+        public PointF GetMinPoint(int startIndex, int endIndex)
+        {
+            float minValue = float.MaxValue;
+            endIndex = Math.Min(endIndex, this.LastIndex);
+            int minIndex = startIndex;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                if (float.IsNaN(Values[i]))
+                {
+                    continue;
+                }
+                if (minValue > Values[i]) { minValue = Values[i]; minIndex = i; }
+            }
+            return new PointF(minIndex, minValue);
+        }
         public float GetMax(int startIndex, int endIndex)
         {
             float maxValue = float.MinValue;
@@ -1083,6 +1099,21 @@ namespace StockAnalyzer.StockMath
                 if (maxValue < Values[i]) maxValue = Values[i];
             }
             return maxValue;
+        }
+        public PointF GetMaxPoint(int startIndex, int endIndex)
+        {
+            float maxValue = float.MinValue;
+            endIndex = Math.Min(endIndex, this.LastIndex);
+            int maxIndex = startIndex;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                if (float.IsNaN(Values[i]))
+                {
+                    continue;
+                }
+                if (maxValue < Values[i]) { maxValue = Values[i]; maxIndex = i; }
+            }
+            return new PointF(maxIndex, maxValue);
         }
         public void GetMinMax(ref float minValue, ref float maxValue)
         {

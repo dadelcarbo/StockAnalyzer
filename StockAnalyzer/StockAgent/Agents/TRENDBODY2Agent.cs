@@ -25,7 +25,6 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string DisplayIndicator => $"CLOUD|TRENDBODY2({UpPeriod},{DownPeriod})";
 
 
-        IStockCloud cloud;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
         protected override bool Init(StockSerie stockSerie)
