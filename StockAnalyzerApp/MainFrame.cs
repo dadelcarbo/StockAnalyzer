@@ -784,6 +784,7 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this, showTimerDebug))
             {
+                bool alertFound = false;
                 StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
                 if (isGeneratingAlerts)
                     return;
@@ -866,6 +867,7 @@ namespace StockAnalyzerApp
                                             {
                                                 alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
                                             }
+                                            alertFound = true;
                                         }
                                     }
                                 }
@@ -878,6 +880,10 @@ namespace StockAnalyzerApp
                     if (this.AlertDetected != null)
                     {
                         this.Invoke(this.AlertDetected);
+                    }
+                    if (alertFound)
+                    {
+                        this.Invoke(new Action(() => showAlertDialogMenuItem_Click(null, null)));
                     }
                 }
                 catch (Exception exception)
@@ -1048,7 +1054,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-
         private void NotifyAlertProgress(string stockName)
         {
             if (AlertDetectionProgress != null)
