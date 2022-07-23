@@ -93,9 +93,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            return this.AlertDefId == other.AlertDefId &&
-                   this.StockName == other.StockName &&
-                   this.Date == other.Date;
+            return this.AlertDefId == other.AlertDefId &&                   this.StockName == other.StockName &&                   this.Date == other.Date;
         }
 
         public override int GetHashCode()

@@ -1052,21 +1052,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.lastMouseIndex > 0)
             {
                 var bodyHighSerie = this.serie.GetSerie(StockDataType.BODYHIGH);
-                int highest = 0;
-                for (int i = this.lastMouseIndex - 1; i > 0; i--, highest++)
-                {
-                    if (closeValue <= bodyHighSerie[i])
-                        break;
-                }
+                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex);
                 value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
 
                 var bodyLowSerie = this.serie.GetSerie(StockDataType.BODYLOW);
-                int lowest = 0;
-                for (int i = this.lastMouseIndex - 1; i > 0; i--, lowest++)
-                {
-                    if (closeValue > bodyLowSerie[i])
-                        break;
-                }
+                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex);
                 value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
             }
 #if DEBUG
@@ -1082,6 +1072,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             this.DrawString(this.foregroundGraphic, value, toolTipFont, Brushes.Black, this.textBackgroundBrush, point, true);
         }
+
         protected override void PaintGraphTitle(Graphics gr)
         {
             string graphTitle = this.serie.StockGroup + " - " + this.serie?.StockName;

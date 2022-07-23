@@ -1520,6 +1520,29 @@ namespace StockAnalyzer.StockMath
             return trailSerie;
         }
 
+        public int GetHighestIn(int index)
+        {
+            int highest = 0;
+            float refValue = this[index];
+            for (int i = index - 1; i > 0; i--, highest++)
+            {
+                if (refValue <= this[i])
+                    break;
+            }
+            return highest;
+        }
+        public int GetLowestIn(int index)
+        {
+            int lowest = 0;
+            float refValue = this[index];
+            for (int i = index - 1; i > 0; i--, lowest++)
+            {
+                if (refValue >= this[i])
+                    break;
+            }
+            return lowest;
+        }
+
         public FloatSerie CalculateHLTrail(int period)
         {
             FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILHL");

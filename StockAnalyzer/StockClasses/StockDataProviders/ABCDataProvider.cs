@@ -172,7 +172,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public bool DownloadIntradayGroup(string destFolder, string fileName, string group)
         {
             StockLog.Write(group);
-            if (!this.Initialize()) return false;
+            if (!this.Initialize())
+                return false;
+
+            var now = DateTime.Now.TimeOfDay;
+            if (now < TimeSpan.FromHours(9) || now > TimeSpan.FromHours(17.5))
+                return false;
 
             try
             {
@@ -936,7 +941,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         return;
                     }
                     int minutes = ((int)now.TotalMinutes / 5) * 5;
-                    nextDownload = TimeSpan.FromMinutes(minutes+5);
+                    nextDownload = TimeSpan.FromMinutes(minutes + 5);
 
                     downloadingGroups = "True";
                     var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
@@ -952,7 +957,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 // Deinitialise all the stocks belonging to group
                                 foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
                                 {
-                                    serie.IsInitialised = false;
+                                    using (new StockSerieLocker(serie))
+                                    {
+                                        serie.IsInitialised = false;
+                                    }
                                 }
                             }
                         }

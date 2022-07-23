@@ -3648,7 +3648,13 @@ namespace StockAnalyzer.StockClasses
         {
             using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
             {
-                Monitor.Enter(__lockObj);
+                bool lockTaken = false;
+                while(!lockTaken)
+                {
+                    StockLog.Write("Trying to lock");
+                    Monitor.TryEnter(__lockObj, 500, ref lockTaken);
+                }
+                StockLog.Write("Lock taken");
             }
         }
 

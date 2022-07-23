@@ -857,7 +857,7 @@ namespace StockAnalyzerApp
                                             dailyValue.VOLUME,
                                             stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
 
-                                        if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
+                                        if (!alertConfig.AlertLog.Alerts.Any(a => a == stockAlert))
                                         {
                                             if (this.InvokeRequired)
                                             {
@@ -2778,6 +2778,7 @@ namespace StockAnalyzerApp
             public float rank;
             public float trailStop;
             public StockSerie stockSerie;
+            public int highest;
         }
 
 
@@ -2975,6 +2976,7 @@ namespace StockAnalyzerApp
              <td>%COL4%</td>
              <td>%COL5%</td>
              <td>%COL6%</td>
+             <td>%COL7%</td>
          </tr>";
 
             string html = @"
@@ -3027,11 +3029,13 @@ namespace StockAnalyzerApp
                                 }
                             }
                             var rankSerie = stockSerie.GetIndicator(rankIndicator).Series[0];
+                            var highest = stockSerie.GetSerie(StockDataType.BODYHIGH).GetHighestIn(lastIndex);
                             reportSeries.Add(new ReportSerie()
                             {
                                 rank = rankSerie[lastIndex],
                                 trailStop = stop,
-                                stockSerie = stockSerie
+                                stockSerie = stockSerie,
+                                highest = highest
                             });
                         }
                     }
@@ -3043,7 +3047,7 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" colspan=""2"" >{alertDef.Group}</th>
-                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {tableHeader} </th>
+                    <th style=""font-size:20px;"" colspan=""7"" scope =""colgroup""> {tableHeader} </th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
@@ -3053,6 +3057,7 @@ namespace StockAnalyzerApp
                     <th>Trail Stop</th>
                     <th>{alertDef.BarDuration} %</th>
                     <th>Value</th>
+                    <th>Highest</th>
                 </tr>
                 </thead>
                 <tbody>";
@@ -3077,7 +3082,8 @@ namespace StockAnalyzerApp
                             Replace("%COL3%", "").
                             Replace("%COL4%", "").
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
-                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##")).
+                            Replace("%COL7%", reportSerie.highest.ToString());
                     }
                     else
                     {
@@ -3088,7 +3094,8 @@ namespace StockAnalyzerApp
                             Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
                             Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
-                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##")).
+                            Replace("%COL7%", reportSerie.highest.ToString());
                     }
                 }
 
