@@ -9,6 +9,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -151,7 +152,7 @@ namespace StockAnalyzer.StockPortfolio
 
                 foreach (var tradeGroup in data.Select(r => new
                 {
-                    TradeDate = r.Field<DateTime>(0),
+                    TradeDate = DateTime.Parse(r.Field<string>(0)),
                     AccountId = r.Field<string>(1),
                     Instrument = r.Field<string>(3),
                     Type = r.Field<string>(5),
@@ -159,7 +160,7 @@ namespace StockAnalyzer.StockPortfolio
                     OpId = r.Field<object>(7),
                     TradeId = r.Field<object>(8),
                     Row = r
-                }).GroupBy(r => r.AccountId))
+                }).Reverse().GroupBy(r => r.AccountId))
                 {
                     var portfolio = Portfolios.FirstOrDefault(p => p.SaxoAccountId == tradeGroup.Key);
                     if (portfolio == null)
@@ -176,8 +177,11 @@ namespace StockAnalyzer.StockPortfolio
                             if (portfolio.TradeOperations.Any(t => t.Id == tradeId))
                                 continue;
 
-                            //StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                            StockLog.Write($"Processing : {row.TradeDate.ToShortDateString()}\t{row.Instrument}\t{row.Type}\t{row.Event}");
 
+                            // Find stockName from mapping
+                            var stockName = GetStockNameFromSaxo(row.Instrument);
+                            
                             switch (row.Type)
                             {
                                 case "Liquidités":
@@ -187,22 +191,7 @@ namespace StockAnalyzer.StockPortfolio
                                     break;
                                 case "Opération":
                                     {
-                                        // Find stockNamefrom mapping
-                                        var stockName = row.Instrument.ToUpper()
-                                            .Replace(" SA", "")
-                                            .Replace(" S A", "")
-                                            .Replace(" UCITS ETF", "")
-                                            .Replace(" SE", "")
-                                            .Replace(" NV", "")
-                                            .Replace(" DAILY", "");
-
-                                        var mapping = StockPortfolio.GetMapping(stockName);
-                                        if (mapping != null)
-                                        {
-                                            stockName = mapping.StockName;
-                                        }
-
-                                        if (stockName.EndsWith(" Assented Rights"))
+                                        if (stockName == null || stockName.EndsWith(" Assented Rights"))
                                             continue;
                                         if (row.Row.ItemArray[10].GetType() == typeof(DBNull))
                                             continue;
@@ -212,10 +201,12 @@ namespace StockAnalyzer.StockPortfolio
                                         switch (row.Event)
                                         {
                                             case "Achat":
+                                            case "Buy":
                                                 if (amount == 0)
                                                     continue;
                                                 portfolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
                                                 break;
+                                            case "Sell":
                                             case "Vente":
                                                 portfolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
                                                 break;
@@ -223,15 +214,29 @@ namespace StockAnalyzer.StockPortfolio
                                                 portfolio.TransferOperation(stockName, row.TradeDate, qty, price, tradeId);
                                                 break;
                                             default:
+                                                StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                                                System.Windows.Forms.MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 break;
                                         }
-
                                     }
                                     break;
-                                //case "Opération sur titres":
-                                //    break;
+                                case "Opération sur titres":
+                                    switch (row.Event)
+                                    {
+                                        case "Dividende en espèces":
+                                            {
+                                                var amount = (float)row.Row.Field<double>(13);
+                                                portfolio.DividendOperation(stockName, row.TradeDate, amount, tradeId);
+                                                break;
+                                            }
+                                        default:
+                                            StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                                            break;
+                                    }
+                                    break;
                                 default:
                                     StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
+                                    System.Windows.Forms.MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     break;
                             }
 
@@ -327,7 +332,7 @@ namespace StockAnalyzer.StockPortfolio
                 if (value == 0)
                     return;
                 //throw new InvalidOperationException($"Selling not opened position: {stockName} qty:{qty}"); @@@@
-                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                StockLog.Write($"Selling not opened position: {stockName} qty:{qty}");
                 return;
             }
             var amount = value * qty - fee;
@@ -363,8 +368,6 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void TransferOperation(string stockName, DateTime date, int qty, float value, long id)
         {
-            if (stockName.StartsWith("*"))
-                return;
             var operation = new StockTradeOperation()
             {
                 Id = id == -1 ? GetNextOperationId() : id,
@@ -478,7 +481,7 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             else
                             {
-                                Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                                StockLog.Write($"Selling not opened position: {stockName} qty:{qty}");
                             }
                         }
                     }
@@ -554,7 +557,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else
                         {
-                            Console.WriteLine($"Selling not opened position: {stockName} qty:{qty}");
+                            StockLog.Write($"Selling not opened position: {stockName} qty:{qty}");
                         }
                     }
                     break;
@@ -646,8 +649,8 @@ namespace StockAnalyzer.StockPortfolio
 
         public void Dump()
         {
-            Console.WriteLine($"All Positions: {this.Positions.Count}");
-            Console.WriteLine($"Opened Positions: {this.OpenedPositions.Count()}");
+            StockLog.Write($"All Positions: {this.Positions.Count}");
+            StockLog.Write($"Opened Positions: {this.OpenedPositions.Count()}");
 
             foreach (var p in this.OpenedPositions.OrderBy(p => p.StockName))
             {
@@ -656,9 +659,9 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void Dump(DateTime date)
         {
-            Console.WriteLine($"Dump for date:{date.ToShortDateString()}");
-            Console.WriteLine($"All Positions: {this.Positions.Count}");
-            Console.WriteLine($"Opened Positions: {this.OpenedPositions.Count()}");
+            StockLog.Write($"Dump for date:{date.ToShortDateString()}");
+            StockLog.Write($"All Positions: {this.Positions.Count}");
+            StockLog.Write($"Opened Positions: {this.OpenedPositions.Count()}");
 
             foreach (var p in this.Positions.Where(p => p.EntryDate < date && p.ExitDate > date).OrderBy(p => p.StockName))
             {
@@ -735,8 +738,30 @@ namespace StockAnalyzer.StockPortfolio
             ResetMappings();
         }
 
+        private static string GetStockNameFromSaxo(string saxoName)
+        {
+            if (saxoName == null) return null;
+
+            // Find stockName from mapping
+            var stockName = saxoName.ToUpper()
+                .Replace(" SA", "")
+                .Replace(" S A", "")
+                .Replace(" UCITS ETF", "")
+                .Replace(" SE", "")
+                .Replace(" NV", "")
+                .Replace(" DAILY", "");
+
+            var mapping = StockPortfolio.GetMapping(stockName);
+            if (mapping != null)
+            {
+                stockName = mapping.StockName;
+            }
+            return stockName;
+        }
+
         public static StockNameMapping GetMapping(string binckName)
         {
+            if (binckName == null) return null;
             return Mappings.FirstOrDefault(m => binckName.Contains(m.SaxoName.ToUpper()));
         }
         #endregion

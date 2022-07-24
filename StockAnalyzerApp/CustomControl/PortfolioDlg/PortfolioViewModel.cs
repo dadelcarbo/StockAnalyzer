@@ -32,6 +32,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property]
         public DateTime CreationDate { get => Portfolio.CreationDate; set => Portfolio.CreationDate = value; }
 
+        [Property]
+        public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
+
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
         public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));

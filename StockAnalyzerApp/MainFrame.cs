@@ -2764,15 +2764,6 @@ namespace StockAnalyzerApp
 
         #region REPORTING
 
-        private static string commentTitleTemplate = "COMMENT_TITLE_TEMPLATE";
-        private static string commentTemplate = "COMMENT_TEMPLATE";
-        private static string eventTemplate = "EVENT_TEMPLATE";
-
-        // static private string htmlEventTemplate = "<P style=\"font-size: x-small\">" + eventTemplate + "</P>";
-        private static string htmlEventTemplate = "<br />" + eventTemplate;
-
-        private static string htmlAlertTemplate = "\r\n<B><U>" + commentTitleTemplate + "</U></B>" + commentTemplate;
-
         class ReportSerie
         {
             public float rank;
@@ -2781,8 +2772,7 @@ namespace StockAnalyzerApp
             public int highest;
         }
 
-
-        public void GeneratePortfolioReport(StockPortfolio portfolio)
+        public string GeneratePortfolioReportHtml(StockPortfolio portfolio)
         {
             const string rowTemplate = @"
          <tr>
@@ -2793,7 +2783,8 @@ namespace StockAnalyzerApp
              <td>%COL5%</td>
              <td>%COL6%</td>
          </tr>";
-            string html = $@"<table  class=""reportTable"">
+            string html = $@"
+<table  class=""reportTable"">
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1""></th>
@@ -2808,18 +2799,18 @@ namespace StockAnalyzerApp
                     <th>Value</th>
                 </tr>
                 </thead>
-                <tbody>";
+                <tbody>
+<br/>";
 
             var positions = portfolio?.OpenedPositions.OrderBy(p => p.StockName).ToList();
             if (positions == null || positions.Count == 0)
             {
-                return;
+                return string.Empty;
             }
             var previousSize = StockAnalyzerForm.MainFrame.Size;
             StockAnalyzerForm.MainFrame.Size = new System.Drawing.Size(600, 600);
             var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
 
-            string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
             string reportBody = html;
             foreach (var position in positions)
             {
@@ -2868,7 +2859,15 @@ namespace StockAnalyzerApp
             StockAnalyzerForm.MainFrame.Size = previousSize;
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
 
-            var htmlReport = reportTemplate.Replace("%HTML_BODY%", reportBody);
+            return reportBody;
+        }
+
+        public void GeneratePortfolioReportFile(StockPortfolio portfolio)
+        {
+            string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
+
+            var htmlReport = reportTemplate.Replace("%HTML_BODY%", GeneratePortfolioReportHtml(portfolio));
+
             string fileName = Path.Combine(Folders.Portfolio, $@"Report\{ portfolio.Name }.html");
             using (StreamWriter sw = new StreamWriter(fileName))
             {
@@ -2894,7 +2893,7 @@ namespace StockAnalyzerApp
             string fileName = Path.Combine(folderName, "Report.html");
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
-            #region Report leaders
+            #region Report Alerts
 
             var previousState = this.WindowState;
             var previousSize = this.Size;
@@ -2906,12 +2905,19 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
 
-            string htmlLeaders = string.Empty;
+            string htmlPortfolios = string.Empty;
+            foreach (var portfolio in this.Portfolios.Where(p => p.IsSimu == false))
+            {
+                htmlPortfolios += GeneratePortfolioReportHtml(portfolio);
+            }
+            htmlBody += htmlPortfolios;
+
+            string htmlAlerts = string.Empty;
             foreach (var alertDef in alertDefs.Where(a => a.Active).OrderBy(a => a.Rank))
             {
-                htmlLeaders += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
+                htmlAlerts += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
             }
-            htmlBody += htmlLeaders;
+            htmlBody += htmlAlerts;
 
             StockSplashScreen.CloseForm(true);
             #endregion

@@ -144,7 +144,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         private void reportButton_Click(object sender, RoutedEventArgs e)
         {
             var viewModel = this.DataContext as ViewModel;
-            StockAnalyzerForm.MainFrame.GeneratePortfolioReport(viewModel.Portfolio);
+            StockAnalyzerForm.MainFrame.GeneratePortfolioReportFile(viewModel.Portfolio);
         }
     }
 }
