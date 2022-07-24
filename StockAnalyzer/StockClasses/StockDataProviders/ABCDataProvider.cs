@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
@@ -11,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -30,28 +32,30 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region ABC DOWNLOAD HELPER
 
         private CookieContainer cookieContainer = null;
-        private HttpClient client = null;
+        private HttpClient httpClient = null;
         public string verifToken = null;
 
         private bool Initialize()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return false;
-            if (this.client == null)
+            if (this.httpClient == null)
             {
                 try
                 {
                     cookieContainer = new CookieContainer();
-                    this.client = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+                    var client = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
                     client.BaseAddress = new Uri("https://www.abcbourse.com/");
-                    var resp = client.GetAsync("download/historiques").Result;
+
+                    var resp = client.GetAsync("download/historiques").GetAwaiter().GetResult();
                     if (!resp.IsSuccessStatusCode)
                     {
-                        StockLog.Write("Failed initializing ABC Provider: " + resp.Content.ReadAsStringAsync().Result);
+                        StockLog.Write("Failed initializing ABC Provider HttpClient: " + resp.Content.ReadAsStringAsync().Result);
                         return false;
                     }
 
                     verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
+                    this.httpClient = client;
                 }
                 catch (Exception ex)
                 {
@@ -98,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                var resp = client.PostAsync("download/historiques", content).GetAwaiter().GetResult();
+                var resp = httpClient.PostAsync("download/historiques", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
@@ -143,7 +147,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                var resp = client.PostAsync("download/historiques", content).GetAwaiter().GetResult();
+                var resp = httpClient.PostAsync("download/historiques", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                 {
                     StockLog.Write("Failed downloading group: " + resp.Content.ReadAsStringAsync().Result);
@@ -188,7 +192,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                var resp = client.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
+                var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
@@ -212,7 +216,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             "cbPlace=false";
         public bool DownloadLabels(string destFolder, string fileName, string group)
         {
-            if (!this.Initialize()) return false;
+            if (!this.Initialize())
+                return false;
 
             try
             {
@@ -223,7 +228,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                var resp = client.PostAsync("download/libelles", content).GetAwaiter().GetResult();
+                var resp = httpClient.PostAsync("download/libelles", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode)
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
@@ -259,7 +264,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                var resp = client.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
+                var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode)
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
@@ -1076,7 +1081,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 // Send POST request
                 string url = $"/api/General/DownloadSector?sectorCode={sector}";
 
-                var resp = client.GetAsync(url).Result;
+                var resp = httpClient.GetAsync(url).Result;
                 if (!resp.IsSuccessStatusCode)
                     return false;
                 using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
@@ -1095,33 +1100,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
-        private bool DownloadLibelleFromABC(string destFolder, StockSerie.Groups group, bool initLibelle = true)
+        private void DownloadLibelleFromABC(string destFolder, StockSerie.Groups group, bool initLibelle = true)
         {
             string groupName = GetABCGroup(group);
             if (groupName == null)
-                return false;
+                return;
             string fileName = destFolder + @"\" + group.ToString() + ".txt";
-            bool success = false;
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                if (File.Exists(fileName) && File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
-                    success = true;
-
-                try
+                if (!File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
                 {
-                    success = this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
-                }
-                catch (Exception ex)
-                {
-                    StockLog.Write(ex);
-                    success = false;
+                    try
+                    {
+                        this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
+                    }
+                    catch (Exception ex)
+                    {
+                        StockLog.Write(ex);
+                    }
                 }
             }
-            if (success && initLibelle)
+
+            if (initLibelle)
             {
                 InitFromLibelleFile(fileName);
             }
-            return success;
         }
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup, bool loadData = true)
         {

@@ -209,6 +209,7 @@
     <Compile Include="StockDrawing\IOpenedDrawing.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
+    <Compile Include="StockHelpers\TaskExtension.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>
     </Compile>

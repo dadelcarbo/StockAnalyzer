@@ -583,6 +583,10 @@ namespace StockAnalyzerApp
                 if (reportDate < cac40.Keys.Last())
                 {
                     generateDailyReportToolStripBtn_Click(null, null);
+                    foreach (var portfolio in this.Portfolios.Where(p => p.IsSimu == false))
+                    {
+                        GeneratePortfolioReportFile(portfolio);
+                    }
                     File.WriteAllText(fileName, cac40.Keys.Last().ToString());
                 }
             }
@@ -2904,13 +2908,6 @@ namespace StockAnalyzerApp
             StockSplashScreen.FadeInOutSpeed = 0.25;
             StockSplashScreen.ProgressVal = 0;
             StockSplashScreen.ShowSplashScreen();
-
-            string htmlPortfolios = string.Empty;
-            foreach (var portfolio in this.Portfolios.Where(p => p.IsSimu == false))
-            {
-                htmlPortfolios += GeneratePortfolioReportHtml(portfolio);
-            }
-            htmlBody += htmlPortfolios;
 
             string htmlAlerts = string.Empty;
             foreach (var alertDef in alertDefs.Where(a => a.Active).OrderBy(a => a.Rank))
