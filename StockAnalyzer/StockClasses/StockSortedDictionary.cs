@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (size > 0 && key < keys[size - 1])
             {
-                throw new ArgumentException("Date must be greater than last key");
+                return;
             }
             if (size == allocatedSize)
             {
