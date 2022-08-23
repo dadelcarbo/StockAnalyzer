@@ -12,6 +12,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public static bool NeedGenerate { get; set; }
 
+        /// <summary>
+        /// Initialize Breadth serie dictionary
+        /// </summary>
+        /// <param name="stockDictionary"></param>
+        /// <param name="download"></param>
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             string line;
