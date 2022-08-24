@@ -59,10 +59,14 @@ namespace StockAnalyzerApp
         private int browsingHistoryIndex = 0;
         private List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
 
+        public bool IsHistoryActive { get; set; } = true;
+
         internal void AddHistory(string stockName, string theme)
         {
+            if (!IsHistoryActive)
+                return;
             int index = -1;
-            foreach(var item in this.browingHistory)
+            foreach (var item in this.browingHistory)
             {
                 index++;
                 if (item.StockName == stockName && item.Theme == theme && item.BarDuration == this.BarDuration)

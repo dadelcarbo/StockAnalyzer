@@ -293,7 +293,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public void Deactivate(string msg, bool setInitialisedTo)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using (MethodLogger ml = new MethodLogger(this, true, $"{msg},{setInitialisedTo}"))
             {
                 //StockLog.Write(msg);
                 this.alternateString = msg;
@@ -424,15 +424,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (this.GetType().ToString() == "StockAnalyzerApp.CustomControl.GraphControls.GraphCloseControl")
+            using (MethodLogger ml = new MethodLogger(this, true))
             {
-                if (this.alternateString == "App too small..." && this.FindForm().WindowState == FormWindowState.Normal)
+                if (this.GetType().ToString() == "StockAnalyzerApp.CustomControl.GraphControls.GraphCloseControl")
                 {
-                    this.Deactivate("", true);
+                    if (this.alternateString == "App too small..." && this.FindForm().WindowState != FormWindowState.Normal)
+                    {
+                        this.Deactivate("", true);
+                    }
                 }
-            }
-            using (MethodLogger ml = new MethodLogger(this))
-            {
                 if (!CheckGraphSanity()) { return; }
                 try
                 {

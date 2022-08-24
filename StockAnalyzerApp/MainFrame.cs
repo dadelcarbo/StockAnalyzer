@@ -31,7 +31,6 @@ using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.TweetDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
-using StockAnalyzerApp.Localisation;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -254,6 +253,8 @@ namespace StockAnalyzerApp
             NbBars = Settings.Default.DefaultBarNumber;
 
             Settings.Default.PropertyChanged += (sender, args) => Settings.Default.Save();
+
+            previousState = this.WindowState;
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -362,9 +363,30 @@ namespace StockAnalyzerApp
             }
             base.Activate();
         }
-        #endregion
+        private FormWindowState previousState;
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            if (this.WindowState != previousState)
+            {
+                previousState = this.WindowState;
+                OnWindowStateChanged(e);
+            }
+            base.OnClientSizeChanged(e);
+        }
+        protected void OnWindowStateChanged(EventArgs e)
+        {
+            using (MethodLogger ml = new MethodLogger(this, true, $"{this.WindowState}"))
+            {
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    this.ApplyTheme();
+                }
+            }
+        }
 
-        protected override void OnShown(EventArgs e)
+    #endregion
+
+    protected override void OnShown(EventArgs e)
         {
             this.UpdateBarSmoothingVisibility();
 
@@ -788,6 +810,7 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this, showTimerDebug))
             {
+                this.ViewModel.IsHistoryActive = false;
                 bool alertFound = false;
                 StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
                 if (isGeneratingAlerts)
@@ -907,6 +930,7 @@ namespace StockAnalyzerApp
                     isGeneratingAlerts = false;
                     sw.Stop();
                     StockLog.Write($"GenerateIntradayAlert Duration {sw.Elapsed}");
+                    this.ViewModel.IsHistoryActive = true;
                 }
             }
         }
@@ -2876,6 +2900,7 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
+            this.ViewModel.IsHistoryActive = false;
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
             var htmlReport = reportTemplate.Replace("%HTML_BODY%", GeneratePortfolioReportHtml(portfolio));
@@ -2887,9 +2912,11 @@ namespace StockAnalyzerApp
             }
 
             Process.Start(fileName);
+            this.ViewModel.IsHistoryActive = true;
         }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {
+            this.ViewModel.IsHistoryActive = false;
             string timeFrame = duration.ToString();
             string folderName = Path.Combine(Folders.Report, timeFrame);
             CleanReportFolder(folderName);
@@ -2973,6 +3000,7 @@ namespace StockAnalyzerApp
             OnSelectedStockChanged(previousStockSerie.StockName, true);
             this.CurrentTheme = previousTheme;
             this.ViewModel.BarDuration = previousBarDuration;
+            this.ViewModel.IsHistoryActive = true;
         }
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
