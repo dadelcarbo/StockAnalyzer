@@ -201,12 +201,14 @@ namespace StockAnalyzer.StockPortfolio
                                         switch (row.Event)
                                         {
                                             case "Achat":
+                                            case "Acheter":
                                             case "Buy":
                                                 if (amount == 0)
                                                     continue;
                                                 portfolio.BuyTradeOperation(stockName, row.TradeDate, qty, price, -amount - (qty * price), 0, null, BarDuration.Daily, null, tradeId);
                                                 break;
                                             case "Sell":
+                                            case "Vendre":
                                             case "Vente":
                                                 portfolio.SellTradeOperation(stockName, row.TradeDate, -qty, price, -(qty * price) - amount, null, tradeId);
                                                 break;
