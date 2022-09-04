@@ -33,6 +33,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 this.LastValue = value;
             }
+
+            if (!StockDictionary.Instance.ContainsKey(position.StockName))
+            {
+                var mapping = StockPortfolio.GetMapping(position.StockName);
+                if (mapping != null)
+                {
+                    position.StockName = mapping.StockName;
+                }
+            }
         }
         public bool IsValidName
         {

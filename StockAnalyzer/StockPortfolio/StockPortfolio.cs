@@ -693,7 +693,7 @@ namespace StockAnalyzer.StockPortfolio
         }
 
 
-        #region Binck Name Mapping
+        #region SAXO Name Mapping
         private static List<StockNameMapping> mappings;
         public static List<StockNameMapping> Mappings => LoadMappings();
 
@@ -751,7 +751,9 @@ namespace StockAnalyzer.StockPortfolio
                 .Replace(" UCITS ETF", "")
                 .Replace(" SE", "")
                 .Replace(" NV", "")
-                .Replace(" DAILY", "");
+                .Replace(" DAILY", "")
+                .Replace("-"," ")
+                .Replace("  ", " ");
 
             var mapping = StockPortfolio.GetMapping(stockName);
             if (mapping != null)
@@ -761,10 +763,10 @@ namespace StockAnalyzer.StockPortfolio
             return stockName;
         }
 
-        public static StockNameMapping GetMapping(string binckName)
+        public static StockNameMapping GetMapping(string saxoName)
         {
-            if (binckName == null) return null;
-            return Mappings.FirstOrDefault(m => binckName.Contains(m.SaxoName.ToUpper()));
+            if (saxoName == null) return null;
+            return Mappings.FirstOrDefault(m => saxoName.Contains(m.SaxoName.ToUpper()));
         }
         #endregion
 

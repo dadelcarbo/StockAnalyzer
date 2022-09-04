@@ -441,9 +441,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                         {
                             string[] row = line.Split(';');
-                            if (!stockDictionary.ContainsKey(row[1].ToUpper()))
+                            string stockName = row[1].ToUpper().Replace("-", " ").Replace("  ", " ");
+                            if (!stockDictionary.ContainsKey(stockName))
                             {
-                                StockSerie stockSerie = new StockSerie(row[1].ToUpper(), row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
+                                StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
                                 stockDictionary.Add(row[1].ToUpper(), stockSerie);
                             }
                             else
