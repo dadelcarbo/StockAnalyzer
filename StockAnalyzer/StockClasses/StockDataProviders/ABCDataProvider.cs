@@ -44,10 +44,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     cookieContainer = new CookieContainer();
-                    var client = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-                    client.BaseAddress = new Uri("https://www.abcbourse.com/");
+                    var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+                    httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
+                    httpClient.BaseAddress = new Uri("https://www.abcbourse.com/");
 
-                    var resp = client.GetAsync("download/historiques").GetAwaiter().GetResult();
+                    var resp = httpClient.GetAsync("download/historiques").GetAwaiter().GetResult();
                     if (!resp.IsSuccessStatusCode)
                     {
                         StockLog.Write("Failed initializing ABC Provider HttpClient: " + resp.Content.ReadAsStringAsync().Result);
@@ -55,7 +56,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
 
                     verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
-                    this.httpClient = client;
+                    this.httpClient = httpClient;
                 }
                 catch (Exception ex)
                 {

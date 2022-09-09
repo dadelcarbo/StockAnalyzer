@@ -181,8 +181,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            HttpClient client = new HttpClient();
-                            var response = client.GetAsync(url).Result;
+                            HttpClient httpClient = new HttpClient();
+                            httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
+
+                            var response = httpClient.GetAsync(url).Result;
                             if (response.IsSuccessStatusCode)
                             {
                                 var content = response.Content.ReadAsStringAsync().Result;

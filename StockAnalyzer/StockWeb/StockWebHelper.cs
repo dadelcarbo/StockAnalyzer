@@ -77,7 +77,15 @@ namespace StockAnalyzer.StockWeb
             return reader.ReadToEnd();
         }
 
-        static readonly HttpClient httpClient = new HttpClient();
+        static HttpClient httpClient;
+        static void InitWebClient()
+        {
+            if (httpClient==null)
+            {
+                httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true};
+            }
+        }
         public static bool DownloadFile(string destFile, string url)
         {
             bool success = true;
@@ -87,6 +95,7 @@ namespace StockAnalyzer.StockWeb
                 {
                     return true;
                 }
+                InitWebClient();
                 var response = httpClient.GetAsync(url).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -118,6 +127,7 @@ namespace StockAnalyzer.StockWeb
 
             try
             {
+                InitWebClient();
                 // Request information
                 var result = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
 
