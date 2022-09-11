@@ -55,13 +55,6 @@ namespace StockAnalyzer.StockAgent.Agents
             {
                 stop = longStopSerie[index];
             }
-            if (!this.Trade.IsPartlyClosed && closeSerie[index] > target)
-                return TradeAction.PartSell;
-
-            //if (bearEvents[index]) // bar fast below slow EMA
-            //{
-            //    return TradeAction.Sell;
-            //}
             return TradeAction.Nothing;
         }
     }

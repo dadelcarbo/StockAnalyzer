@@ -127,15 +127,6 @@ namespace StockAnalyzer.StockAgent
             this.Trade.CloseAtOpen(exitIndex);
             this.Trade = null;
         }
-        public void PartlyCloseTrade(int exitIndex)
-        {
-            if (this.Trade == null)
-                throw new InvalidOperationException("Cannot close the trade as it's not opened");
-            if (this.Trade.IsPartlyClosed)
-                throw new InvalidOperationException("Cannot partly close the trade as it's already partly closed opened");
-
-            this.Trade.PartialClose(exitIndex);
-        }
 
         protected abstract TradeAction TryToClosePosition(int index);
 

@@ -18,17 +18,11 @@ namespace StockAnalyzer.StockAgent
         public int ExitIndex { get; private set; }
         public DateTime ExitDate { get; private set; }
 
-        public float PartialExitValue { get; private set; }
-        public int PartialExitIndex { get; private set; }
-        public DateTime PartialExitDate { get; private set; }
-
         public float ExitValue { get; private set; }
         public float ExitAmount => ExitValue * Qty;
 
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
-        public bool IsPartlyClosed { get; private set; }
-
         public bool IsStopped { get; private set; }
 
         public int Duration
@@ -56,7 +50,6 @@ namespace StockAnalyzer.StockAgent
             this.EntryIndex = entryIndex;
             this.EntryDate = serie.Keys.ElementAt(entryIndex);
             this.ExitIndex = -1;
-            this.PartialExitIndex = -1;
             this.IsLong = isLong;
             this.Qty = qty;
 
@@ -74,7 +67,6 @@ namespace StockAnalyzer.StockAgent
             this.EntryIndex = entryIndex;
             this.EntryDate = serie.Keys.ElementAt(entryIndex);
             this.ExitIndex = -1;
-            this.PartialExitIndex = -1;
             this.IsLong = isLong;
             this.Qty = qty;
 
@@ -85,18 +77,7 @@ namespace StockAnalyzer.StockAgent
 
             this.IsClosed = false;
         }
-        public void PartialClose(int exitIndex)
-        {
-            if (this.IsPartlyClosed || this.IsClosed)
-                throw new InvalidOperationException("Cannot partly close a closed or partly closed trade");
 
-            this.PartialExitIndex = exitIndex;
-
-            this.PartialExitValue = openSerie[exitIndex];
-            this.PartialExitDate = Serie.Keys.ElementAt(exitIndex);
-
-            this.IsPartlyClosed = true;
-        }
         public void Close(int exitIndex, float exitValue, bool stopped = false)
         {
             this.ExitIndex = exitIndex;
@@ -120,7 +101,6 @@ namespace StockAnalyzer.StockAgent
             }
 
             this.IsClosed = true;
-            this.IsPartlyClosed = false;
             this.IsStopped = stopped;
         }
         public void CloseAtOpen(int exitIndex)
@@ -148,7 +128,6 @@ namespace StockAnalyzer.StockAgent
             }
 
             this.IsClosed = true;
-            this.IsPartlyClosed = false;
         }
         public void Evaluate()
         {

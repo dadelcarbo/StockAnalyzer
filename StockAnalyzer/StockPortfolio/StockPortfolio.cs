@@ -576,27 +576,30 @@ namespace StockAnalyzer.StockPortfolio
             this.Clear();
             var dates = trades.Select(t => t.EntryDate).
                 Union(trades.Where(t => t.ExitIndex >= 0).Select(t => t.ExitDate)).
-                Union(trades.Where(t => t.PartialExitIndex >= 0).Select(t => t.PartialExitDate)).
                 Distinct().OrderBy(d => d).ToList();
 
             int openedPosition = 0;
             foreach (var date in dates)
             {
-                // Sell Partially closed trades
-                foreach (var trade in trades.Where(t => t.PartialExitDate == date))
+                // Buy begining trades
+                foreach (var trade in trades.Where(t => t.EntryDate == date))
                 {
-                    var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
-                    if (pos == null)
-                        continue;
-                    var partialQty = (pos.EntryQty / 2);
-                    var amount = partialQty * trade.PartialExitValue;
-                    this.Balance += amount;
-                    var id = this.GetNextOperationId();
-                    var exit = StockOperation.FromSimu(id, trade.PartialExitDate, trade.Serie.StockName, StockOperation.SELL, partialQty, amount, !trade.IsLong);
-                    exit.Balance = this.Balance;
-                    this.AddOperation(exit);
-                }
+                    if (openedPosition >= MaxPositions)
+                        break;
 
+                    var qty = trade.Qty;
+                    var amount = qty * trade.EntryValue;
+                    this.Balance -= amount;
+
+                    var id = this.GetNextOperationId();
+                    var entry = StockOperation.FromSimu(id, trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
+                    entry.Balance = this.Balance;
+                    this.AddOperation(entry);
+                    var lastPosition = this.Positions.Last();
+                    lastPosition.Stop = trade.EntryStop;
+                    lastPosition.TrailStop = trade.EntryStop;
+                    openedPosition++;
+                }
                 // Sell completed trades
                 foreach (var trade in trades.Where(t => t.ExitDate == date))
                 {
@@ -610,27 +613,6 @@ namespace StockAnalyzer.StockPortfolio
                     exit.Balance = this.Balance;
                     this.AddOperation(exit);
                     openedPosition--;
-                }
-
-                // Buy begining trades
-                foreach (var trade in trades.Where(t => t.EntryDate == date))
-                {
-                    if (openedPosition >= MaxPositions)
-                        break;
-
-                    var amountToInvest = this.Balance / (float)(MaxPositions - openedPosition);
-                    var qty = (int)(amountToInvest / trade.EntryValue);
-                    var amount = qty * trade.EntryValue;
-                    this.Balance -= amount;
-
-                    var id = this.GetNextOperationId();
-                    var entry = StockOperation.FromSimu(id, trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
-                    entry.Balance = this.Balance;
-                    this.AddOperation(entry);
-                    var lastPosition = this.Positions.Last();
-                    lastPosition.Stop = trade.EntryStop;
-                    lastPosition.TrailStop = trade.EntryStop;
-                    openedPosition++;
                 }
             }
 
