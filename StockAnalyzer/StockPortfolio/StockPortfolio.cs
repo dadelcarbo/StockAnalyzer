@@ -181,7 +181,7 @@ namespace StockAnalyzer.StockPortfolio
 
                             // Find stockName from mapping
                             var stockName = GetStockNameFromSaxo(row.Instrument);
-                            
+
                             switch (row.Type)
                             {
                                 case "Liquidités":
@@ -627,6 +627,9 @@ namespace StockAnalyzer.StockPortfolio
                     var entry = StockOperation.FromSimu(id, trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
                     entry.Balance = this.Balance;
                     this.AddOperation(entry);
+                    var lastPosition = this.Positions.Last();
+                    lastPosition.Stop = trade.EntryStop;
+                    lastPosition.TrailStop = trade.EntryStop;
                     openedPosition++;
                 }
             }
@@ -752,7 +755,7 @@ namespace StockAnalyzer.StockPortfolio
                 .Replace(" SE", "")
                 .Replace(" NV", "")
                 .Replace(" DAILY", "")
-                .Replace("-"," ")
+                .Replace("-", " ")
                 .Replace("  ", " ");
 
             var mapping = StockPortfolio.GetMapping(stockName);

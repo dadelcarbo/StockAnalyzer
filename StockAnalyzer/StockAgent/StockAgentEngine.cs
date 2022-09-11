@@ -7,14 +7,21 @@ using System.Linq;
 
 namespace StockAnalyzer.StockAgent
 {
-    public delegate void AgentPerformedHandler(IStockAgent agent);
+    public delegate void AgentPerformedHandler(IStockAgent agent, IStockEntryStop entryStop);
     public class StockAgentEngine
     {
         public IStockAgent Agent { get; set; }
+        public Type AgentType { get; private set; }
+
+
+        public IStockEntryStop EntryStop { get; set; }
+
+        public Type EntryStopType { get; private set; }
+
+
         public StockTradeSummary BestTradeSummary { get; private set; }
         public IStockAgent BestAgent { get; private set; }
-
-        public Type AgentType { get; private set; }
+        public IStockEntryStop BestEntryStop { get; set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
 
@@ -22,21 +29,24 @@ namespace StockAnalyzer.StockAgent
 
         public event AgentPerformedHandler AgentPerformed;
 
-        public StockAgentEngine(Type agentType)
+        public StockAgentEngine(Type agentType, Type entryStopType)
         {
             this.AgentType = agentType;
+            this.EntryStopType = entryStopType;
         }
 
 
-        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, float stopATR, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
             // Calcutate Parameters Ranges
             IStockAgent bestAgent = null;
-            var parameters = StockAgentBase.GetParamRanges(this.AgentType);
-
+            IStockEntryStop bestEntryStop = null;
+            var agentParameters = StockAgentBase.GetParamRanges(this.AgentType);
+            var entryStopParameters = StockAgentBase.GetParamRanges(this.EntryStopType);
+            var allParameters = agentParameters.Union(entryStopParameters);
 
             var stockSeries = new List<StockSerie>();
             if (ProgressChanged != null)
@@ -71,9 +81,9 @@ namespace StockAnalyzer.StockAgent
                 nb++;
             }
 
-            int dim = parameters.Count;
-            var sizes = parameters.Select(p => p.Value.Count).ToArray();
-            var indexes = parameters.Select(p => 0).ToArray();
+            int dim = allParameters.Count();
+            var sizes = allParameters.Select(p => p.Value.Count).ToArray();
+            var indexes = allParameters.Select(p => 0).ToArray();
             nbSteps = sizes.Aggregate(1, (i, j) => i * j);
             modulo = Math.Max(1, nbSteps / 100);
             for (int i = 0; i < nbSteps; i++)
@@ -89,26 +99,33 @@ namespace StockAnalyzer.StockAgent
                 CalculateIndexes(dim, sizes, indexes, i);
 
                 // Set parameter values
-                this.Agent = StockAgentBase.CreateInstance(this.AgentType);
+                this.Agent = (IStockAgent)Activator.CreateInstance(this.AgentType);
                 int p = 0;
-                foreach (var param in parameters)
+                foreach (var param in agentParameters)
                 {
                     param.Key.SetValue(this.Agent, param.Value[indexes[p]], null);
                     p++;
                 }
+                this.EntryStop = (IStockEntryStop)Activator.CreateInstance(this.EntryStopType);
+                foreach (var param in entryStopParameters)
+                {
+                    param.Key.SetValue(this.EntryStop, param.Value[indexes[p]], null);
+                    p++;
+                }
 
                 // Perform calculation
-                this.Perform(series, minIndex, duration, stopATR);
+                this.Perform(series, minIndex, duration);
 
                 // Select Best (after cleaning outliers)
                 this.Agent.TradeSummary.CleanOutliers();
                 var tradeSummary = this.Agent.TradeSummary;
-                this.AgentPerformed?.Invoke(this.Agent);
+                this.AgentPerformed?.Invoke(this.Agent, this.EntryStop);
                 if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
                 {
                     bestAgent = this.Agent;
+                    bestEntryStop = this.EntryStop;
 
-                    this.BestAgentDetected?.Invoke(bestAgent);
+                    this.BestAgentDetected?.Invoke(bestAgent, this.EntryStop);
                 }
             }
             stopWatch.Stop();
@@ -118,11 +135,13 @@ namespace StockAnalyzer.StockAgent
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             string msg = bestAgent.TradeSummary.ToLog(duration) + Environment.NewLine;
             msg += bestAgent.ToLog() + Environment.NewLine;
+            msg += bestEntryStop.ToLog() + Environment.NewLine;
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
             this.BestTradeSummary = bestAgent.TradeSummary;
             this.BestAgent = bestAgent;
+            this.BestEntryStop = bestEntryStop;
 
             this.Report = msg;
         }
@@ -141,11 +160,15 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration, float stopATR)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
             foreach (var serie in series.Where(s => s.Count > minIndex))
             {
-                if (!this.Agent.Initialize(serie, duration, stopATR))
+                if (!this.Agent.Initialize(serie, duration, this.EntryStop))
+                {
+                    continue;
+                }
+                if (!this.EntryStop.Initialize(serie, duration))
                 {
                     continue;
                 }

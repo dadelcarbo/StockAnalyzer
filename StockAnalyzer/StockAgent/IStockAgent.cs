@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockAgent
         FloatSerie RankSerie { get; set; }
     }
 
-    public interface IStockAgent
+    public interface IStockAgent : IStockParameterized
     {
         string Description { get; }
         string DisplayIndicator { get; }
@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockAgent
 
         StockSerie StockSerie { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stopATR);
+        bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent);
         TradeAction Decide(int index);
 
         bool CanOpen(int index);
@@ -43,12 +43,6 @@ namespace StockAnalyzer.StockAgent
         void Randomize();
         IList<IStockAgent> Reproduce(IStockAgent partner, int nbChildren);
 
-
-        string GetParameterValues();
-        void SetParams(IEnumerable<StockAgentParam> paramList);
-        bool AreSameParams(IStockAgent other);
-
-        string ToParamValueString();
         string ToLog();
     }
 }

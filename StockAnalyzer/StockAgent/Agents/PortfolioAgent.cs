@@ -69,6 +69,9 @@ namespace StockAnalyzer.StockAgent.Agents
             return true;
         }
 
+        float StopATR { get; set; }
+        float HardStop { get; set; }
+
         protected override TradeAction TryToOpenPosition(int index)
         {
             if ((filterEvents == null || filterEvents[index]) && entryEvents[index])

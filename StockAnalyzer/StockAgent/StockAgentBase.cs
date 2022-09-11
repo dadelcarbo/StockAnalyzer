@@ -26,10 +26,13 @@ namespace StockAnalyzer.StockAgent
 
         public StockTrade Trade { get; set; }
         public StockSerie StockSerie { get; private set; }
-
+        static List<string> agentNames = null;
         public static List<string> GetAgentNames()
         {
-            var agentList = new List<string>();
+            if (agentNames != null)
+                return agentNames;
+
+            agentNames = new List<string>();
             foreach (Type t in typeof(IStockAgent).Assembly.GetTypes())
             {
                 Type st = t.GetInterface("IStockAgent");
@@ -37,17 +40,17 @@ namespace StockAnalyzer.StockAgent
                 {
                     if (!t.Name.EndsWith("Base"))
                     {
-                        agentList.Add(t.Name.Replace("Agent", ""));
+                        agentNames.Add(t.Name.Replace("Agent", ""));
                     }
                 }
             }
-            agentList.Sort();
-            return agentList;
+            agentNames.Sort();
+            return agentNames;
         }
 
-        protected float StopATR { get; private set; }
-        public float HardStop { get; protected set; }
-        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, float stopATR)
+        protected float EntryStopValue { get; private set; }
+        protected IStockEntryStop EntryStopAgent { get; private set; }
+        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent)
         {
             try
             {
@@ -61,12 +64,8 @@ namespace StockAnalyzer.StockAgent
                 highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                 volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
                 volumeEuroSerie = (volumeSerie * closeSerie * 0.000001f).CalculateEMA(10);
-                if (stopATR != 0.0f)
-                {
-                    atrSerie = stockSerie.GetIndicator("ATR(10)").Series[0];
-                }
                 this.Trade = null;
-                this.StopATR = stopATR;
+                this.EntryStopAgent = entryStopAgent;
 
                 return Init(stockSerie);
             }
@@ -85,17 +84,17 @@ namespace StockAnalyzer.StockAgent
                 if (volumeEuroSerie[index] < 0.5f)
                     return TradeAction.Nothing;
                 var action = this.TryToOpenPosition(index);
-                if (action == TradeAction.Buy && this.StopATR != 0.0f)
+                if (action == TradeAction.Buy && this.EntryStopAgent != null)
                 {
-                    this.HardStop = closeSerie[index] - (this.StopATR * atrSerie[index]);
+                    this.EntryStopValue = this.EntryStopAgent.GetStop(index);
                 }
                 return action;
             }
             else
             {
-                if (lowSerie[index] < this.HardStop)
+                if (lowSerie[index] < this.EntryStopValue)
                 {
-                    this.Trade.Close(index, Math.Min(this.HardStop, this.openSerie[index]), true);
+                    this.Trade.Close(index, Math.Min(this.EntryStopValue, this.openSerie[index]), true);
                     this.Trade = null;
 
                     return TradeAction.Nothing;
@@ -117,7 +116,7 @@ namespace StockAnalyzer.StockAgent
         {
             if (entryIndex >= serie.Count) return;
 
-            this.Trade = new StockTrade(serie, entryIndex, qty, isLong);
+            this.Trade = new StockTrade(serie, entryIndex, qty, this.EntryStopValue , isLong);
             this.TradeSummary.Trades.Add(this.Trade);
         }
 
@@ -182,7 +181,7 @@ namespace StockAnalyzer.StockAgent
             var parameters = StockAgentBase.GetParams(this.GetType());
             for (int i = 0; i < nbChildren; i++)
             {
-                IStockAgent agent = StockAgentBase.CreateInstance(this.GetType());
+                IStockAgent agent = (IStockAgent)Activator.CreateInstance(this.GetType());
                 foreach (var param in parameters)
                 {
                     var property = param.Key;
@@ -226,9 +225,10 @@ namespace StockAnalyzer.StockAgent
             return children;
         }
 
-        static public IStockAgent CreateInstance(Type agentType)
+        static public IStockAgent CreateInstance(string shortName)
         {
-            return (IStockAgent)Activator.CreateInstance(agentType);
+            Type type = typeof(IStockAgent).Assembly.GetType($"StockAnalyzer.StockAgent.Agents.{shortName}Agent");
+            return (IStockAgent)Activator.CreateInstance(type);
         }
 
         public override string ToString()

@@ -40,6 +40,7 @@ namespace StockAnalyzer.StockAgent
         public int NbLostTrade => Trades.Count(t => t.Gain < 0);
 
         public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbTrades : 0f;
+        public float RiskRewardRatio { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.RiskRewardRatio) : 0f; } }
 
         public float WinLossRatio => NbLostTrade != 0 ? this.AvgGain / -AvgLoss : 0f;
         public float Kelly => WinTradeRatio - (1.0f - WinTradeRatio) / WinLossRatio;
@@ -60,6 +61,7 @@ namespace StockAnalyzer.StockAgent
             res += Environment.NewLine;
             res += "Avg Duration: " + AvgDuration + Environment.NewLine;
             res += "Win/Loss Ratio: " + this.WinLossRatio.ToString("#.##") + Environment.NewLine;
+            res += "Risk/Reward Ratio: " + this.RiskRewardRatio.ToString("#.##") + Environment.NewLine;
             res += "Win Rate: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
             res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P3") + Environment.NewLine;
@@ -84,6 +86,7 @@ namespace StockAnalyzer.StockAgent
 
             res += AvgDuration + "\t";
             res += WinLossRatio.ToString("#.##") + "\t";
+            res += RiskRewardRatio.ToString("#.##") + "\t";
             res += WinTradeRatio.ToString("P2", Global.USCulture) + "\t";
             res += ExpectedReturn.ToString("P2", Global.USCulture) + "\t";
             res += ExpectedGainPerBar.ToString("P2", Global.USCulture) + "\t";

@@ -13,13 +13,18 @@ namespace StockAnalyzer.StockAgent
         public DateTime EntryDate { get; private set; }
         public float EntryValue { get; private set; }
         public float EntryAmount => EntryValue * Qty;
+        public float EntryStop { get; private set; }
+
         public int ExitIndex { get; private set; }
         public DateTime ExitDate { get; private set; }
+
         public float PartialExitValue { get; private set; }
         public int PartialExitIndex { get; private set; }
         public DateTime PartialExitDate { get; private set; }
+
         public float ExitValue { get; private set; }
         public float ExitAmount => ExitValue * Qty;
+
         public bool IsLong { get; private set; }
         public bool IsClosed { get; private set; }
         public bool IsPartlyClosed { get; private set; }
@@ -39,11 +44,13 @@ namespace StockAnalyzer.StockAgent
         public float Gain { get; private set; }
         public float Drawdown { get; private set; }
 
+        public float RiskRewardRatio { get; private set; }
+
         FloatSerie openSerie => this.Serie.GetSerie(StockDataType.OPEN);
         FloatSerie highSerie => this.Serie.GetSerie(StockDataType.HIGH);
         FloatSerie lowSerie => this.Serie.GetSerie(StockDataType.LOW);
 
-        public StockTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true)
+        public StockTrade(StockSerie serie, int entryIndex, int qty = 1, float stop = 0, bool isLong = true)
         {
             this.Serie = serie;
             this.EntryIndex = entryIndex;
@@ -54,6 +61,7 @@ namespace StockAnalyzer.StockAgent
             this.Qty = qty;
 
             this.EntryValue = openSerie[entryIndex];
+            this.EntryStop = stop;
 
             this.Gain = 0;
             this.Drawdown = 0;
@@ -101,12 +109,14 @@ namespace StockAnalyzer.StockAgent
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex);
                 this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.ExitValue - this.EntryValue) / (this.EntryValue - this.EntryStop);
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex);
                 this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.EntryValue - this.ExitValue) / (this.EntryStop - this.EntryValue);
             }
 
             this.IsClosed = true;
@@ -127,12 +137,14 @@ namespace StockAnalyzer.StockAgent
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, exitIndex - 1);
                 this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.ExitValue - this.EntryValue) / (this.EntryValue - this.EntryStop);
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, exitIndex - 1);
                 this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.EntryValue - this.ExitValue) / (this.EntryStop - this.EntryValue);
             }
 
             this.IsClosed = true;
@@ -149,12 +161,14 @@ namespace StockAnalyzer.StockAgent
                 this.Gain = (this.ExitValue - this.EntryValue) / this.EntryValue;
                 float minValue = lowSerie.GetMin(this.EntryIndex, Serie.LastIndex);
                 this.Drawdown = (minValue - this.EntryValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.ExitValue - this.EntryValue) / (this.EntryValue - this.EntryStop);
             }
             else
             {
                 this.Gain = (this.EntryValue - this.ExitValue) / this.EntryValue;
                 float maxValue = highSerie.GetMax(this.EntryIndex, Serie.LastIndex);
                 this.Drawdown = (this.EntryValue - maxValue) / this.EntryValue;
+                this.RiskRewardRatio = (this.EntryValue - this.ExitValue) / (this.EntryStop - this.EntryValue);
             }
         }
 
@@ -201,11 +215,11 @@ namespace StockAnalyzer.StockAgent
 
         public static string ToHeaderLog()
         {
-            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;DrawDown";
+            return "StockName;IsLong;EntryIndex;ExitIndex;EntryValue;ExitValue;Gain;DrawDown;RiskRewardRatio";
         }
         public string ToLog()
         {
-            return this.Serie.StockName + ";" + this.IsLong + ";" + this.EntryIndex + ";" + this.ExitIndex + ";" + this.EntryValue + ";" + this.ExitValue + ";" + this.Gain.ToString("P2") + ";" + this.Drawdown.ToString("P2") + ";";
+            return $"{this.Serie.StockName};{this.IsLong};{this.EntryIndex};{this.ExitIndex};{this.EntryValue};{this.ExitValue};{this.Gain.ToString("P2")};{this.Drawdown.ToString("P2")};{this.RiskRewardRatio}";
         }
     }
 }

@@ -24,20 +24,45 @@
                 <Label Margin="2">Group</Label>
                 <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
                 <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
-                <Label Margin="2">Stop ATR</Label>
-                <telerik:RadNumericUpDown Minimum="0" Maximum="20" SmallChange="0.1" LargeChange="1" Value="{Binding StopATR}" NumberDecimalDigits="1" Width="30"/>
-                <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="2">
-                <Label Margin="2">Agent</Label>
-                <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
                 <Label Margin="2">Selector</Label>
                 <telerik:RadComboBox Margin="1" Width="150" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
+                <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>
             </StackPanel>
         </StackPanel>
-        <GroupBox Header="Parameters" Grid.Row="1">
-            <telerik:RadGridView ItemsSource="{Binding Parameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
-        </GroupBox>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Agent Parameters" Grid.Column="0">
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Agent</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView ItemsSource="{Binding AgentParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Entry Stop (Risk)"  Grid.Column="1" >
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Entry Stop</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding EntryStops}" SelectedItem="{Binding EntryStop}" ToolTip="{Binding EntryStopDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Trail Stop"  Grid.Column="2" >
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Trail Stop</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding TrailStops}" SelectedItem="{Binding TrailStop}" ToolTip="{Binding TrailStopDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView ItemsSource="{Binding TrailStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
         <TabControl Grid.Row="2">
             <TabItem Header="Report">
                 <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
@@ -62,6 +87,11 @@
                         <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Gain, StringFormat=P2}">
                             <telerik:GridViewDataColumn.AggregateFunctions>
                                 <telerik:AverageFunction Caption="Average Gain: " ResultFormatString="{}{0:P2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Risk Reward" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=F2}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Gain: " ResultFormatString="{}{0:F2}"/>
                             </telerik:GridViewDataColumn.AggregateFunctions>
                         </telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="Drawdown" DataMemberBinding="{Binding Drawdown, StringFormat=P2}">

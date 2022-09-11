@@ -152,6 +152,7 @@
     <Compile Include="StockAgent\Agents\TrailSTOKAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
+    <Compile Include="StockAgent\EntryStops\StockEntryStop_BarLow.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
@@ -162,7 +163,6 @@
     <Compile Include="StockAgent\Agents\TFLowAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHL2Agent.cs" />
     <Compile Include="StockAgent\Agents\CupHandleAgent.cs" />
-    <Compile Include="StockAgent\Agents\TrailHIGHESTAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHLBody2Agent.cs" />
     <Compile Include="StockAgent\Agents\TrailPercentAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailTFAgent.cs" />
@@ -175,8 +175,11 @@
     <Compile Include="StockAgent\Agents\BBStopAgent.cs" />
     <Compile Include="StockAgent\Agents\EMACloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
+    <Compile Include="StockAgent\IStockEntryStop.cs" />
+    <Compile Include="StockAgent\IStockParameterized.cs" />
     <Compile Include="StockAgent\IStopStrategy.cs" />
     <Compile Include="StockAgent\PositionManagement.cs" />
+    <Compile Include="StockAgent\StockEntryStopBase.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />

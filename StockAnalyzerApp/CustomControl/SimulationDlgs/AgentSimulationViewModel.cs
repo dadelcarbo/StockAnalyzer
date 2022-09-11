@@ -13,6 +13,7 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings;
 using StockAnalyzer.StockHelpers;
+using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
@@ -21,11 +22,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         public AgentSimulationViewModel()
         {
             this.performText = "Perform";
-            this.StopATR = 2f;
             this.Selector = "ExpectedGainPerBar";
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             agent = Agents.FirstOrDefault();
+            entryStop = EntryStops.FirstOrDefault();
+            TrailStop = TrailStops.FirstOrDefault();
+
             this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.ViewModel.BarDuration);
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
@@ -35,8 +38,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         private StockBarDuration barDuration;
         public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
-        public float StopATR { get; set; }
-        public List<string> Selectors => new List<string> { "ExpectedGainPerBar", "ExpectedGain", "Kelly %", "WinTradeRatio", "WinLossRatio", "TotalGain" };
+        public List<string> Selectors => new List<string> { "RiskRewardRatio", "ExpectedGainPerBar", "ExpectedGain", "Kelly %", "WinTradeRatio", "WinLossRatio", "TotalGain" };
         public string Selector { get; set; }
 
         public void Cancel()
@@ -48,6 +50,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
+        #region Agent
         public List<string> Agents => StockAgentBase.GetAgentNames();
 
         private string agent;
@@ -59,16 +62,61 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 if (agent != value)
                 {
                     agent = value;
-                    OnPropertyChanged("Parameters");
+                    OnPropertyChanged("AgentParameters");
                     OnPropertyChanged("AgentDescription");
                 }
             }
         }
 
-        public string AgentDescription => StockAgentBase.CreateInstance(this.agentType).Description;
+        public string AgentDescription => StockAgentBase.CreateInstance(this.agent).Description;
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
-        public IEnumerable<ParameterRangeViewModel> Parameters => ParameterRangeViewModel.GetParameters(this.agentType);
+        public IEnumerable<ParameterRangeViewModel> AgentParameters => ParameterRangeViewModel.GetParameters(this.agentType);
+        #endregion
+        #region EntryStop
+        public List<string> EntryStops => StockEntryStopBase.GetEntryStopNames();
+
+        private string entryStop;
+        public string EntryStop
+        {
+            get => entryStop;
+            set
+            {
+                if (entryStop != value)
+                {
+                    entryStop = value;
+                    OnPropertyChanged("EntryStopParameters");
+                    OnPropertyChanged("EntryStopDescription");
+                }
+            }
+        }
+
+        private Type entryStopType => StockEntryStopBase.GetType(entryStop);
+        public string EntryStopDescription => StockEntryStopBase.CreateInstance(entryStop)?.Description;
+        public IEnumerable<ParameterRangeViewModel> EntryStopParameters => ParameterRangeViewModel.GetParameters(entryStopType);
+        #endregion
+        #region TrailStop
+        public List<string> TrailStops => StockTrailStopManager.GetTrailStopList();
+
+        private string trailStop;
+        public string TrailStop
+        {
+            get => trailStop;
+            set
+            {
+                if (trailStop != value)
+                {
+                    trailStop = value;
+                    OnPropertyChanged("TrailStopParameters");
+                    OnPropertyChanged("TrailStopDescription");
+                }
+            }
+        }
+
+        public string TrailStopDescription => StockTrailStopManager.CreateTrailStop(trailStop).Definition;
+
+        public IEnumerable<ParameterRangeViewModel> TrailStopParameters => ParameterRangeViewModel.GetTrailStopParameters(trailStop);
+        #endregion
 
         string report;
         public string Report
@@ -158,6 +206,19 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 }
             }
         }
+        private IStockEntryStop bestEntryStop;
+        public IStockEntryStop BestEntryStop
+        {
+            get => bestEntryStop;
+            set
+            {
+                if (bestEntryStop != value)
+                {
+                    bestEntryStop = value;
+                    OnPropertyChanged("BestEntryStop");
+                }
+            }
+        }
 
         public void Perform()
         {
@@ -166,25 +227,27 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.Report = "Performing";
 
                 this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent + Environment.NewLine + Environment.NewLine;
-                if (this.Parameters.Count() == 0)
+                if (this.AgentParameters.Count() == 0)
                 {
-                    this.Stats += "WinRatio\tExpectedGainPerBar\t" + Environment.NewLine;
+                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + Environment.NewLine;
                 }
                 else
                 {
-                    this.Stats += "WinRatio\tExpectedGainPerBar\t" + this.Parameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
+                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + this.AgentParameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
                 }
-                engine = new StockAgentEngine(agentType);
-                engine.BestAgentDetected += (bestAgent) =>
+                engine = new StockAgentEngine(agentType, entryStopType);
+                engine.BestAgentDetected += (bestAgent, bestEntryStop) =>
                 {
                     this.BestAgent = bestAgent;
+                    this.BestEntryStop = bestEntryStop;
                     string msg = bestAgent.TradeSummary.ToLog(this.BarDuration) + Environment.NewLine;
                     msg += bestAgent.ToLog() + Environment.NewLine;
+                    msg += bestEntryStop.ToLog() + Environment.NewLine;
                     this.Report = msg;
                 };
-                engine.AgentPerformed += (agent) =>
+                engine.AgentPerformed += (agent, entryStop) =>
                 {
-                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
+                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.RiskRewardRatio.ToString("#.##") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
                     .Replace(".", ",");
                 };
                 worker = new BackgroundWorker();
@@ -210,7 +273,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                             this.TradeSummary = engine.BestTradeSummary;
                             string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.BarDuration + "\t" + this.Agent + "\t";
                             rpt += engine.BestTradeSummary.ToStats();
-                            rpt += StopATR + "\t";
+                            rpt += EntryStop + "\t";
                             rpt += engine.BestAgent.GetParameterValues();
 
                             // Update Simu Portfolio
@@ -257,7 +320,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
 
                 var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
-                if (this.RunAgentEngine(series, this.StopATR))
+                if (this.RunAgentEngine(series))
                 {
                     e.Cancel = false;
                 }
@@ -272,13 +335,16 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
-        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries, float stopATR)
+        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
         {
             try
             {
                 Func<StockTradeSummary, float> selector;
                 switch (this.Selector)
                 {
+                    case "RiskRewardRatio":
+                        selector = t => t.RiskRewardRatio;
+                        break;
                     case "WinTradeRatio":
                         selector = t => t.WinTradeRatio;
                         break;
@@ -301,7 +367,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, stopATR, selector);
+                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }
