@@ -33,7 +33,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>86</ApplicationRevision>
+    <ApplicationRevision>89</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -651,11 +651,6 @@
       <DependentUpon>WatchListDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="MainFrameViewModel.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\PreferenceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -677,6 +672,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UltimateChartistStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SelectedStockSerieChangedEventArgs.cs" />
     <Compile Include="StockAnalyzerApp.cs" />
@@ -885,8 +885,8 @@
     <EmbeddedResource Include="Properties\Licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Localisation\UltimateChartistStrings.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -998,6 +998,7 @@
     <Content Include="Resources\comment-icon.bmp" />
     <None Include="Resources\cut.png" />
     <Content Include="Resources\AddSemiLine.bmp" />
+    <Content Include="Resources\copy.png" />
     <Content Include="Resources\CutLeft.PNG" />
     <None Include="Resources\Decorator.png" />
     <Content Include="Resources\DeleteTheme.png">

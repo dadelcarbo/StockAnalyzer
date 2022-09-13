@@ -384,9 +384,9 @@ namespace StockAnalyzerApp
             }
         }
 
-    #endregion
+        #endregion
 
-    protected override void OnShown(EventArgs e)
+        protected override void OnShown(EventArgs e)
         {
             this.UpdateBarSmoothingVisibility();
 
@@ -2406,6 +2406,23 @@ namespace StockAnalyzerApp
         {
             this.ViewModel.BrowseNext();
         }
+
+        private void copyIsinBtn_Click(object sender, EventArgs e)
+        {
+            if (this.CurrentStockSerie == null)
+                return;
+            if (!string.IsNullOrEmpty(this.currentStockSerie.ISIN))
+            {
+                Clipboard.SetText(this.currentStockSerie.ISIN);
+                return;
+            }
+            if (!string.IsNullOrEmpty(this.currentStockSerie.StockName))
+            {
+                Clipboard.SetText(this.currentStockSerie.StockName);
+                return;
+            }
+        }
+
         #endregion
 
         #region REWIND/FAST FORWARD METHODS

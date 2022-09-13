@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
+    <Compile Include="StockAgent\Agents\EMAAgent.cs" />
     <Compile Include="StockAgent\Agents\PortfolioAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailFIBOAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopReentryAgent.cs" />

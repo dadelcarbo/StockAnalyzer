@@ -132,6 +132,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.rewindBtn = new System.Windows.Forms.ToolStripButton();
             this.fastForwardBtn = new System.Windows.Forms.ToolStripButton();
+            this.copyIsinBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomOutBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
             this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
@@ -926,6 +927,7 @@ namespace StockAnalyzerApp
             this.browseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rewindBtn,
             this.fastForwardBtn,
+            this.copyIsinBtn,
             this.stockNameComboBox,
             this.barDurationComboBox,
             this.lineBreakLabel,
@@ -1048,6 +1050,16 @@ namespace StockAnalyzerApp
             this.fastForwardBtn.Size = new System.Drawing.Size(23, 20);
             this.fastForwardBtn.ToolTipText = "Next";
             this.fastForwardBtn.Click += new System.EventHandler(this.fastForwardBtn_Click);
+            // 
+            // copyIsinBtn
+            // 
+            this.copyIsinBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.copyIsinBtn.Image = global::StockAnalyzerApp.Properties.Resources.Copy;
+            this.copyIsinBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.copyIsinBtn.Name = "copyIsinBtn";
+            this.copyIsinBtn.Size = new System.Drawing.Size(23, 20);
+            this.copyIsinBtn.ToolTipText = "Copy ISIN";
+            this.copyIsinBtn.Click += new System.EventHandler(this.copyIsinBtn_Click);
             // 
             // zoomOutBtn
             // 
@@ -1577,6 +1589,7 @@ namespace StockAnalyzerApp
         private ToolStripButton showVariationBtn;
         private ToolStripButton logScaleBtn;
         private ToolStripButton fastForwardBtn;
+        private ToolStripButton copyIsinBtn;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripMenuItem currentPortfolioMenuItem;
