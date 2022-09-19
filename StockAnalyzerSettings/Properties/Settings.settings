@@ -143,5 +143,8 @@
     <Setting Name="PersonalFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="InvestingUrlRoot" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:local="clr-namespace:StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs"
+             xmlns:settings="clr-namespace:StockAnalyzerSettings.Properties;assembly=StockAnalyzerSettings"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=local:InvestingConfigViewModel, IsDesignTimeCreatable=True}"
@@ -16,9 +17,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="4">
-            <Label>Search:</Label>
             <TextBox Text="{Binding SearchText, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" HorizontalAlignment="Left" Width="80"/>
             <Button Command="{Binding AddCommand}">Add</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="4" HorizontalAlignment="Right">
+            <Label>URL Prefix:</Label>
+            <TextBox Text="{Binding Path=InvestingUrlRoot, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" Margin="5" Width="500"/>
         </StackPanel>
         <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" AutoGenerateColumns="True" MaxHeight="160" MinHeight="100" Margin="4" IsReadOnly="True" ShowGroupPanel="False" VerticalAlignment="Top"/>
         <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" SelectionUnit="FullRow" SelectionMode="Single" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False" CanUserDeleteRows="True"/>

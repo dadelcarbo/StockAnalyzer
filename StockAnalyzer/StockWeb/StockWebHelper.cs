@@ -80,10 +80,10 @@ namespace StockAnalyzer.StockWeb
         static HttpClient httpClient;
         static void InitWebClient()
         {
-            if (httpClient==null)
+            if (httpClient == null)
             {
                 httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true};
+                httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
             }
         }
         public static bool DownloadFile(string destFile, string url)
@@ -118,10 +118,10 @@ namespace StockAnalyzer.StockWeb
         }
         #endregion
         #region Investing.com
-        private static string urlTemplate = $"{StockDataProviderBase.URL_PREFIX_INVESTING}/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
 
         public IEnumerable<StockDetails> GetInvestingStockDetails(string searchText, string exchange = "")
         {
+            string urlTemplate = $"{StockDataProviderBase.URL_PREFIX_INVESTING}/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
             string url = urlTemplate.Replace("%SEARCHTEXT%", searchText);
             url = url.Replace("%EXCHANGE%", exchange);
 

@@ -5,6 +5,7 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -53,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public string FormatIntradayURL(string ticker)
         {
-            return $"https://fr-be.structured-products.saxo/page-api/instrument-service/charts/BE/isin/{ticker}/?timespan=1D&type=line&benchmarks=";
+            return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{ticker}/?timespan=1D&type=line&benchmarks=";
         }
 
         public override bool DownloadDailyData(StockSerie stockSerie)
@@ -102,7 +103,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         stockSerie.IsInitialised = false;
                         this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.Today.AddHours(8);
+                        DateTime lastDate = DateTime.MinValue;
                         if (stockSerie.Count > 0)
                         {
                             if (stockSerie.Keys.Last().Date == DateTime.Today)
@@ -110,6 +111,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 lastDate = stockSerie.Keys.Last();
                                 stockSerie.RemoveLast();
                             }
+                        }
+                        else
+                        {
+                            lastDate = saxoData.series[0].data.First().x;
                         }
                         var date = lastDate;
                         StockDailyValue newBar = null;
@@ -171,12 +176,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
 
                         var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[2]))
+                        if (!stockDictionary.ContainsKey(row[1]))
                         {
-                            var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.M_5);
+                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.M_5);
                             stockSerie.ISIN = row[0];
 
-                            stockDictionary.Add(row[2], stockSerie);
+                            stockDictionary.Add(row[1], stockSerie);
                             if (download && this.needDownload)
                             {
                                 this.needDownload = this.DownloadDailyData(stockSerie);
@@ -184,7 +189,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         else
                         {
-                            Console.WriteLine("Saxo Intraday Entry: " + row[2] + " already in stockDictionary");
+                            Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
                         }
                     }
                 }
@@ -238,9 +243,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            throw new NotImplementedException();
-            //var configDlg = new SaxoIntradayDataProviderConfigDlg(stockDico, this.UserConfigFileName);
-            //return configDlg.ShowDialog();
+            Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            return DialogResult.OK;
         }
 
         public string DisplayName => "Saxo Intraday";

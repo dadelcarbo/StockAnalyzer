@@ -37,7 +37,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data")]
         public string InputDataFolder {
             get {
                 return ((string)(this["InputDataFolder"]));
@@ -585,6 +585,19 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["PersonalFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8")]
+        public string InvestingUrlRoot {
+            get {
+                return ((string)(this["InvestingUrlRoot"]));
+            }
+            set
+            {
+                this["InvestingUrlRoot"] = value;
             }
         }
     }
