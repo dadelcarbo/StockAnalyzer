@@ -17,6 +17,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private readonly string CONFIG_FILE = "InvestingIntradayDownload.cfg";
         static private readonly string CONFIG_FILE_USER = "InvestingIntradayDownload.user.cfg";
 
+        #region HttpClient
+
+        static private HttpClient httpClient = null;
+        static private HttpRequestMessage request = null;
+        static public HttpResponseMessage HttpGet(string url)
+        {
+            if (httpClient == null)
+            {
+                var handler = new HttpClientHandler();
+                handler.AutomaticDecompression = ~DecompressionMethods.None;
+
+                httpClient = new HttpClient(handler);
+            }
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Get;
+                request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
+                request.Headers.TryAddWithoutValidation("accept", "*/*");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
+                request.Headers.TryAddWithoutValidation("origin", "https://tvc-invdn-com.investing.com");
+                request.Headers.TryAddWithoutValidation("referer", "https://tvc-invdn-com.investing.com/");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36");
+
+                request.RequestUri = new Uri(url);
+                return httpClient.SendAsync(request).Result;
+            }
+        }
+
+        #endregion
+
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Create data folder if not existing
@@ -103,6 +139,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static bool first = true;
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
+            StockLog.Write("DownloadIntradayData for " + stockSerie.StockName);
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
@@ -150,26 +187,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            HttpClient httpClient = new HttpClient(); 
-                            httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
-
-                            var response = httpClient.GetAsync(url).Result;
+                            var response = HttpGet(url);
+                            var content = response.Content.ReadAsStringAsync().Result;
                             if (response.IsSuccessStatusCode)
                             {
-                                var content = response.Content.ReadAsStringAsync().Result;
                                 if (content.StartsWith("{"))
                                 {
                                     File.WriteAllText(fileName, content);
                                     stockSerie.IsInitialised = false;
                                     return true;
                                 }
+                                StockLog.Write(content);
                                 return false;
                             }
+                            StockLog.Write(content);
                             nbTries--;
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             nbTries--;
+                            StockLog.Write(ex);
                         }
                     }
                 }

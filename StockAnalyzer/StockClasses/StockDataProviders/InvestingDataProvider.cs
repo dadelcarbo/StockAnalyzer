@@ -33,8 +33,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             this.needDownload = download;
 
             // Parse InvestingDownload.cfg file
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder , CONFIG_FILE_USER));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
@@ -176,39 +176,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         url = FormatURL(stockSerie.Ticker, lastDate, DateTime.Today);
                     }
 
-                    int nbTries = 3;
+
+                    int nbTries = 2;
                     while (nbTries > 0)
                     {
                         try
                         {
-                            HttpClient httpClient = new HttpClient();
-                            httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
-
-                            var response = httpClient.GetAsync(url).Result;
+                            var response = InvestingIntradayDataProvider.HttpGet(url);
+                            var content = response.Content.ReadAsStringAsync().Result;
                             if (response.IsSuccessStatusCode)
                             {
-                                var content = response.Content.ReadAsStringAsync().Result;
                                 if (content.StartsWith("{"))
                                 {
                                     File.WriteAllText(fileName, content);
                                     stockSerie.IsInitialised = false;
-                                    if (first)
-                                    {
-                                        first = false;
-                                        stockSerie.Initialise();
-                                        if (lastDate == stockSerie.Keys.Last())
-                                        {
-                                            return false;
-                                        }
-                                    }
-
                                     return true;
                                 }
-                                else
-                                {
-                                    return false;
-                                }
+                                StockLog.Write(content);
+                                return false;
                             }
+                            StockLog.Write(content);
                             nbTries--;
                         }
                         catch (Exception ex)
