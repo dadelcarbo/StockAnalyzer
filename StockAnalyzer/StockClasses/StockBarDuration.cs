@@ -9,6 +9,7 @@ namespace StockAnalyzer.StockClasses
         Weekly,
         Monthly,
         M_5,
+        M_10,
         M_15,
         M_30,
         H_1,
@@ -66,6 +67,7 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration H_2 = new StockBarDuration(BarDuration.H_2);
         public static StockBarDuration H_4 = new StockBarDuration(BarDuration.H_4);
         public static StockBarDuration M_5 = new StockBarDuration(BarDuration.M_5);
+        public static StockBarDuration M_10 = new StockBarDuration(BarDuration.M_10);
         public static StockBarDuration M_15 = new StockBarDuration(BarDuration.M_15);
         public static StockBarDuration M_30 = new StockBarDuration(BarDuration.M_30);
         public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
@@ -84,6 +86,7 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.H_2,
             StockBarDuration.H_4,
             StockBarDuration.M_5,
+            StockBarDuration.M_10,
             StockBarDuration.M_15,
             StockBarDuration.M_30
         };

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders
+namespace StockAnalyzer.StockClasses.StockDataProviders.Saxo
 {
     public class R
     {

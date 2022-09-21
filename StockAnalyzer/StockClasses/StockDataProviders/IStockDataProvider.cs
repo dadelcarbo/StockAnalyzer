@@ -11,7 +11,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Generated,
         Replay,
         Breadth,
-        Investing
+        Investing,
+        Citifirst
     }
 
     public delegate void DownloadingStockEventHandler(string text);

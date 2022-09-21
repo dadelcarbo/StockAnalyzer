@@ -4,7 +4,6 @@ using StockAnalyzer.StockWeb;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-
     public partial class BarChartJSon
     {
         [JsonProperty("t")]

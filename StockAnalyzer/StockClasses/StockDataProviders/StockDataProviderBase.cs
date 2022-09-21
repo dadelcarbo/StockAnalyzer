@@ -117,6 +117,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.SaxoIntraday:
                         dataProvider = new SaxoIntradayDataProvider();
                         break;
+                    case StockDataProvider.Citifirst:
+                        dataProvider = new CitifirstDataProvider();
+                        break;
                     default:
                         break;
                 }
@@ -200,6 +203,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 configDialogs.Add(new InvestingIntradayDataProvider());
                 configDialogs.Add(new InvestingDataProvider());
                 configDialogs.Add(new SaxoIntradayDataProvider());
+                configDialogs.Add(new CitifirstDataProvider());
             }
             return configDialogs;
         }

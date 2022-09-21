@@ -20,7 +20,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region HttpClient
 
         static private HttpClient httpClient = null;
-        static private HttpRequestMessage request = null;
         static public HttpResponseMessage HttpGet(string url)
         {
             if (httpClient == null)
@@ -200,7 +199,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 StockLog.Write(content);
                                 return false;
                             }
-                            StockLog.Write(content);
+                            StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + content);
                             nbTries--;
                         }
                         catch (Exception ex)

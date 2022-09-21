@@ -102,6 +102,10 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         public long Ticker { get; set; }
         public int SectorId { get; set; }
+
+        public string ProductType { get; set; }
+        public string Underlying { get; set; }
+        public string Url { get; set; }
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
 
@@ -3649,7 +3653,7 @@ namespace StockAnalyzer.StockClasses
             using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
             {
                 bool lockTaken = false;
-                while(!lockTaken)
+                while (!lockTaken)
                 {
                     StockLog.Write("Trying to lock");
                     Monitor.TryEnter(__lockObj, 500, ref lockTaken);
