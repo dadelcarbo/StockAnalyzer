@@ -127,15 +127,17 @@ namespace StockAnalyzer.StockWeb
 
             try
             {
-                InitWebClient();
-                // Request information
-                var result = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
+                var response =  InvestingIntradayDataProvider.HttpGet(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                // Parse response
-                if (string.IsNullOrWhiteSpace(result) || result == "[]") return new List<StockDetails>(); ;
+                    // Parse response
+                    if (string.IsNullOrWhiteSpace(result) || result == "[]") return new List<StockDetails>(); ;
 
-                return StockDetails.FromJson(result);
-
+                    return StockDetails.FromJson(result);
+                }
+                return null;
             }
             catch (Exception ex)
             {
