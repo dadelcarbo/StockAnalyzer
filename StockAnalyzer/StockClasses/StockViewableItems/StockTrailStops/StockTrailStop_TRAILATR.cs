@@ -26,8 +26,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 return new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
-                new ParamRangeFloat(0f, 20.0f),
-                new ParamRangeFloat(-20.0f, 0.0f),
+                new ParamRangeFloat(-5.0f, 20.0f),
+                new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
                 };
             }

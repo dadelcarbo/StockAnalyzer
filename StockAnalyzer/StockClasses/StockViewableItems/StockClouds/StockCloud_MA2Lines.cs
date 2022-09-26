@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 50, 3, "MA" }; }
+            get { return new Object[] { 20, 50, 3, "EMA" }; }
         }
         public override ParamRange[] ParameterRanges
         {
