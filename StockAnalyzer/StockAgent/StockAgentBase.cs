@@ -63,7 +63,7 @@ namespace StockAnalyzer.StockAgent
                 lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                 volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
-                volumeEuroSerie = (volumeSerie * closeSerie * 0.000001f).CalculateEMA(10);
+                volumeEuroSerie = stockSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
                 this.Trade = null;
                 this.EntryStopAgent = entryStopAgent;
 

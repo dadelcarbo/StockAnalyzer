@@ -13,7 +13,8 @@ namespace StockAnalyzer.StockClasses
         BODYHIGH,
         BODYLOW,
         VARIATION,
-        VOLUME
+        VOLUME,
+        EXCHANGED
     };
 
     public class StockDailyValue
@@ -23,7 +24,14 @@ namespace StockAnalyzer.StockClasses
         public float HIGH { get; set; }
         public float LOW { get; set; }
         public float CLOSE { get; set; }
+        /// <summary>
+        /// Exchanged volume expressed in number of shares.
+        /// </summary>
         public long VOLUME { get; set; }
+        /// <summary>
+        /// Exchanged capital expressed in serie currency.
+        /// </summary>
+        public float EXCHANGED => 0.5f * (OPEN + CLOSE) * VOLUME;
         public float VARIATION { get; set; }
 
         public float BodyHigh => Math.Max(OPEN, CLOSE);

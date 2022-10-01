@@ -2917,6 +2917,10 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
+            StockSerie previousStockSerie = this.CurrentStockSerie;
+            string previousTheme = this.CurrentTheme;
+            StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
+
             this.ViewModel.IsHistoryActive = false;
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
@@ -2929,6 +2933,10 @@ namespace StockAnalyzerApp
             }
 
             Process.Start(fileName);
+            this.ViewModel.IsHistoryActive = true;
+            OnSelectedStockChanged(previousStockSerie.StockName, true);
+            this.CurrentTheme = previousTheme;
+            this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)

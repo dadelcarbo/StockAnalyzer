@@ -179,9 +179,8 @@ namespace StockAnalyzer.StockClasses
         public bool HasLiquidity(float trigger)
         {
             var dailyValues = this.GetValues(StockBarDuration.Daily).OrderByDescending(s => s.DATE).Take(10).ToList();
-            float price = dailyValues.Average(v => v.CLOSE);
-            float vol = (float)dailyValues.Average(v => v.VOLUME) / 1000000f;
-            return price * vol > trigger;
+            float price = dailyValues.Average(v => v.EXCHANGED) / 1000000f;
+            return price > trigger;
         }
         #endregion
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
