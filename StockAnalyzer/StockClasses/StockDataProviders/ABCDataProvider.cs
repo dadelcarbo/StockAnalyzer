@@ -446,11 +446,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockDictionary.ContainsKey(stockName))
                             {
                                 StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
-                                stockDictionary.Add(row[1].ToUpper(), stockSerie);
+                                stockDictionary.Add(stockName, stockSerie);
                             }
                             else
                             {
-                                StockLog.Write(line + " already in group " + stockDictionary[row[1].ToUpper()].StockGroup);
+                                StockLog.Write(line + " already in group " + stockDictionary[stockName].StockGroup);
                             }
                         }
                     }

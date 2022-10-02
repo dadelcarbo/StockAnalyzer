@@ -233,11 +233,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 StockDataProvider.InvestingIntraday, BarDuration.M_5);
                             stockSerie.Ticker = long.Parse(row[0]);
 
-                            var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
-                            if (dailySerie != null)
-                            {
-                                stockSerie.ISIN = dailySerie.ISIN;
-                            }
+                            //var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
+                            //if (dailySerie != null)
+                            //{
+                            //    stockSerie.ISIN = dailySerie.ISIN;
+                            //}
                             stockDictionary.Add(row[2], stockSerie);
                             if (download && this.needDownload)
                             {

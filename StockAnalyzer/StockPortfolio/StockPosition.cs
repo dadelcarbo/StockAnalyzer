@@ -10,6 +10,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public long Id { get; set; }
         public string StockName { get; set; }
+        public string ISIN { get; set; }
 
         public int EntryQty { get; set; }
         public float EntryValue { get; set; } // This includes transaction fees

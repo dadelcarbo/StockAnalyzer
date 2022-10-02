@@ -16,18 +16,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { }; }
+            get { return new string[] { "Period" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { }; }
+            get { return new Object[] { 10 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 100) }; }
         }
-        public override string[] SerieNames { get { return new string[] { "VOLMONEY M€" }; } }
+        public override string[] SerieNames { get { return new string[] { "Exchanged M€", "Exchange MA" }; } }
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Black, 1) };
+                    seriePens = new Pen[] { new Pen(Color.Black, 1), new Pen(Color.Black, 2) };
                 }
                 return seriePens;
             }
@@ -43,10 +43,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie volume = stockSerie.GetSerie(StockDataType.VOLUME) * stockSerie.GetSerie(StockDataType.CLOSE) / 1000000.0f;
+            FloatSerie volume = stockSerie.GetSerie(StockDataType.EXCHANGED) / 1000000.0f;
+            FloatSerie volumeAvg = volume.CalculateMA((int)parameters[0]);
 
             this.Series[0] = volume;
             this.Series[0].Name = SerieNames[0];
+
+            this.Series[1] = volumeAvg;
+            this.Series[1].Name = SerieNames[1];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);

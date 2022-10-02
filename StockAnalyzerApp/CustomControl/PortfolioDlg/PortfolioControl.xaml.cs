@@ -59,13 +59,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                     case "StockTradeOperation":
                         {
                             StockTradeOperation item = row.Item as StockTradeOperation;
-                            SelectionChanged(item.StockName);
+                            SelectionChanged(item.StockName, item.ISIN);
                         }
                         break;
                     case "StockPositionViewModel":
                         {
                             StockPositionViewModel item = row.Item as StockPositionViewModel;
-                            SelectionChanged(item.StockName, item.BarDuration, item.Theme);
+                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
                         }
                         break;
                     default:
@@ -103,8 +103,16 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 e.Cancel = true;
             }
         }
-        private void SelectionChanged(string stockName, StockBarDuration duration = null, string theme = null)
+        private void SelectionChanged(string stockName, string isin, StockBarDuration duration = null, string theme = null)
         {
+            if (!string.IsNullOrEmpty(isin))
+            {
+                var serie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == isin);
+                if (serie != null)
+                {
+                    stockName = serie.StockName;
+                }
+            }
             var mapping = StockPortfolio.GetMapping(stockName);
             if (mapping != null)
                 stockName = mapping.StockName;

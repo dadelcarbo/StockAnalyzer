@@ -226,6 +226,7 @@
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
       <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StockPortfolio\SaxoOperation.cs" />
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />

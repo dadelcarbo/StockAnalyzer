@@ -26,6 +26,7 @@ namespace StockAnalyzer.StockPortfolio
         public DateTime Date { get; set; }
         public TradeOperationType OperationType { get; set; }
         public string StockName { get; set; }
+        public string ISIN { get; set; }
         public int Qty { get; set; }
         public float Value { get; set; } // Unit Value
         public float Fee { get; set; }
