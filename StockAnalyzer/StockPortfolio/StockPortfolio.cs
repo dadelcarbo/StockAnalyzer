@@ -853,7 +853,7 @@ namespace StockAnalyzer.StockPortfolio
                 .Replace("-", " ")
                 .Replace("  ", " ");
 
-            var mapping = StockPortfolio.GetMapping(stockName);
+            var mapping = StockPortfolio.GetMapping(stockName, null);
             if (mapping != null)
             {
                 stockName = mapping.StockName;
@@ -861,9 +861,16 @@ namespace StockAnalyzer.StockPortfolio
             return stockName;
         }
 
-        public static StockNameMapping GetMapping(string saxoName)
+        public static StockNameMapping GetMapping(string saxoName, string isin)
         {
-            if (saxoName == null) return null;
+            if (!string.IsNullOrEmpty(isin))
+            {
+                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == isin);
+                if (stockSerie != null)
+                    return new StockNameMapping { SaxoName = saxoName, StockName = stockSerie.StockName };
+            }
+            if (saxoName == null)
+                return null;
             return Mappings.FirstOrDefault(m => saxoName.Contains(m.SaxoName.ToUpper()));
         }
         #endregion

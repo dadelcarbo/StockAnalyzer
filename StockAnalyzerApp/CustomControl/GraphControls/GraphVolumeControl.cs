@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
+using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 
@@ -64,25 +66,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #endregion
 
             // Get last value
-            this.mainSerie = CurveList.Find(c => c.DataSerie.Name == "VOLUME").DataSerie;
-            var closeSerie = CurveList.Find(c => c.DataSerie.Name == "CLOSE").DataSerie;
+            this.mainSerie = CurveList.Find(c => c.DataSerie.Name == "EXCHANGED").DataSerie;
 
             float lastValue = this.mainSerie[EndIndex];
-            string lastValueString;
-            if (lastValue > 1000000)
-            {
-                lastValueString = (lastValue / 1000000).ToString("0.#") + "M";
-            }
-            else if (lastValue > 1000)
-            {
-                lastValueString = (lastValue / 1000).ToString("0.#") + "K";
-            }
-            else
-            {
-                lastValueString = lastValue.ToString("0.##");
-            }
-            lastValue *= closeSerie[EndIndex];
-            lastValueString += Environment.NewLine;
+            string lastValueString = string.Empty;
             if (lastValue > 1000000000)
             {
                 lastValueString += (lastValue / 1000000000).ToString("0.##") + "G€";
@@ -122,7 +109,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 int startValueIndex = currentCurveType.DataSerie.Count - points.Count();
                 if (points.Count() > 1)
                 {
-                    if (currentCurveType.DataSerie.Name == "VOLUME")
+                    if (currentCurveType.DataSerie.Name == "EXCHANGED")
                     {
                         float barWidth = Math.Max(1f, 0.80f * GraphRectangle.Width / (float)points.Count());
 
@@ -176,5 +163,46 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height - 1);
         }
+        override protected void PaintDailyBox(PointF mousePoint)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
+            {
+                string value = string.Empty;
+                foreach (GraphCurveType curveType in this.CurveList)
+                {
+                    if (curveType.IsVisible && !float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
+                    {
+                        if (curveType.DataSerie.Name == "EXCHANGED")
+                        {
+                            var volume = this.serie.GetSerie(StockAnalyzer.StockClasses.StockDataType.VOLUME)[this.lastMouseIndex];
+                            var exchanged = curveType.DataSerie[this.lastMouseIndex];
+                            value += BuildTabbedString(curveType.DataSerie.Name, volume, 12) + "\r\n";
+                            value += BuildTabbedString(curveType.DataSerie.Name + " €", exchanged, 12) + "\r\n";
+                        }
+                        else
+                        {
+                            value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
+                        }
+                    }
+                }
+                // Remove last new line.
+                if (value.Length != 0)
+                {
+                    value = value.Remove(value.LastIndexOf("\r\n"));
+                }
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    using (Font font = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Monospace), 8))
+                    {
+                        Size size = TextRenderer.MeasureText(value, font);
+
+                        PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
+
+                        this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.backgroundBrush, point, true);
+                    }
+                }
+            }
+        }
+
     }
 }

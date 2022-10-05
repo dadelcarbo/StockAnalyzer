@@ -2868,7 +2868,7 @@ namespace StockAnalyzerApp
             foreach (var position in positions)
             {
                 var stockName = position.StockName;
-                var mapping = StockPortfolio.GetMapping(stockName);
+                var mapping = StockPortfolio.GetMapping(stockName, position.ISIN);
                 if (mapping != null)
                     stockName = mapping.StockName;
                 if (StockDictionary.Instance.ContainsKey(stockName))
@@ -4075,9 +4075,7 @@ namespace StockAnalyzerApp
                                         if (this.CurrentStockSerie.HasVolume)
                                         {
                                             graphControl = this.graphVolumeControl;
-                                            curveList.Add(new GraphCurveType(
-                                                CurrentStockSerie.GetSerie(StockDataType.VOLUME),
-                                                Pens.Green, true));
+                                            curveList.Add(new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.EXCHANGED), Pens.Green, true));
                                         }
                                         else
                                         {

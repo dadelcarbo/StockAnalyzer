@@ -801,17 +801,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (curveType.IsVisible && !float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                     {
-                        if (curveType.DataSerie.Name == "VOLUME")
-                        {
-                            var volume = curveType.DataSerie[this.lastMouseIndex];
-                            var close = this.CurveList[0].DataSerie[this.lastMouseIndex];
-                            value += BuildTabbedString(curveType.DataSerie.Name, volume, 12) + "\r\n";
-                            value += BuildTabbedString(curveType.DataSerie.Name + " €", volume * close, 12) + "\r\n";
-                        }
-                        else
-                        {
-                            value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
-                        }
+                        value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
                     }
                 }
                 // Add indicators
@@ -1561,7 +1551,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
                 // Print current value
-                this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                //this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
             if (drawVerticalLine)
             {

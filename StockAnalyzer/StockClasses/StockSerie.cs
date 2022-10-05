@@ -360,6 +360,9 @@ namespace StockAnalyzer.StockClasses
                     case StockDataType.VOLUME:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f).ToArray(), "VOLUME");
                         break;
+                    case StockDataType.EXCHANGED:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.EXCHANGED).ToArray(), "EXCHANGED");
+                        break;
                 }
             }
 

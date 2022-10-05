@@ -105,15 +105,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
         private void SelectionChanged(string stockName, string isin, StockBarDuration duration = null, string theme = null)
         {
-            if (!string.IsNullOrEmpty(isin))
-            {
-                var serie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == isin);
-                if (serie != null)
-                {
-                    stockName = serie.StockName;
-                }
-            }
-            var mapping = StockPortfolio.GetMapping(stockName);
+            var mapping = StockPortfolio.GetMapping(stockName, isin);
             if (mapping != null)
                 stockName = mapping.StockName;
             if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName)

@@ -7,6 +7,7 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockPosition()
         {
+            BarDuration = StockBarDuration.Daily;
         }
         public long Id { get; set; }
         public string StockName { get; set; }

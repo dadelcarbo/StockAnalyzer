@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             if (!StockDictionary.Instance.ContainsKey(position.StockName))
             {
-                var mapping = StockPortfolio.GetMapping(position.StockName);
+                var mapping = StockPortfolio.GetMapping(position.StockName, position.ISIN);
                 if (mapping != null)
                 {
                     position.StockName = mapping.StockName;
@@ -47,7 +47,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             get
             {
-                var mapping = StockPortfolio.GetMapping(StockName);
+                var mapping = StockPortfolio.GetMapping(StockName, position.ISIN);
                 if (mapping == null)
                 {
                     return StockDictionary.Instance.ContainsKey(position.StockName);
