@@ -13,15 +13,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string Definition
         {
-            get { return "BB(int Period, float NbUpDev, float NbDownDev, string MAType)"; }
+            get { return "Band made of a moving average and border based on adding ATR"; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" }; }
+            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
         }
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 3.0f, -3.0f, "EMA" }; }
+            get { return new Object[] { 20, 10, 3.0f, -3.0f, "EMA" }; }
         }
         static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA" };
         public override ParamRange[] ParameterRanges
@@ -31,13 +31,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
+                new ParamRangeInt(1, 500),
                 new ParamRangeFloat(-5.0f, 20.0f),
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
                 };
             }
         }
-        public override string[] SerieNames { get { return new string[] { "ATRBANDUp", "ATRBANDDown", this.parameters[3] + "(" + (int)this.parameters[0] + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { "ATRBANDUp", "ATRBANDDown", this.parameters[4] + "(" + (int)this.parameters[0] + ")" }; } }
         public override System.Drawing.Pen[] SeriePens
         {
             get
@@ -53,12 +54,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             // Calculate ATR Bands
             var period = (int)this.parameters[0];
-            var emaIndicator = stockSerie.GetIndicator(this.parameters[3] + "(" + period + ")").Series[0];
+            var atrPeriod = (int)this.parameters[1];
+            var emaIndicator = stockSerie.GetIndicator(this.parameters[4] + "(" + period + ")").Series[0];
 
-            var upDev = (float)parameters[1];
-            var downDev = (float)parameters[2];
+            var upDev = (float)parameters[2];
+            var downDev = (float)parameters[3];
 
-            var atr = stockSerie.GetIndicator("ATR(" + this.parameters[0] + ")").Series[0];
+            var atr = stockSerie.GetIndicator("ATR(" + atrPeriod + ")").Series[0];
             var upperBB = emaIndicator + upDev * atr;
             var lowerBB = emaIndicator + downDev * atr;
 

@@ -1748,7 +1748,7 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
-        public void CalculateBBTrailStop(FloatSerie lowerBB, FloatSerie upperBB, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        public void CalculateBandTrailStop(FloatSerie lowerBB, FloatSerie upperBB, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             longStopSerie = new FloatSerie(this.Count, "TRAILBB.S");
             shortStopSerie = new FloatSerie(this.Count, "TRAILBB.R");

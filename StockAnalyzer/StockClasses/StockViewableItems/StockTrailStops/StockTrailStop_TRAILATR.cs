@@ -12,12 +12,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" }; }
+            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 30, 2f, -2f, "MA" }; }
+            get { return new Object[] { 30, 10, 2f, -2f, "MA" }; }
         }
         public override ParamRange[] ParameterRanges
         {
@@ -25,6 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             {
                 return new ParamRange[]
                 {
+                new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
                 new ParamRangeFloat(-5.0f, 20.0f),
                 new ParamRangeFloat(-20.0f, 5.0f),
@@ -37,8 +38,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
 
-            IStockIndicator bbIndicator = stockSerie.GetIndicator($"ATRBAND({parameters[0]},{parameters[1]},{parameters[2]},{parameters[3]})");
-            stockSerie.CalculateBBTrailStop(bbIndicator.Series[1], bbIndicator.Series[0], out longStopSerie, out shortStopSerie);
+            var bandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");
+            stockSerie.CalculateBandTrailStop(bandIndicator.Series[1], bandIndicator.Series[0], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;
             this.Series[1] = shortStopSerie;
 

@@ -15,12 +15,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" }; }
+            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 2.0f, -2.0f, "EMA" }; }
+            get { return new Object[] { 20, 10, 2.0f, -2.0f, "EMA" }; }
         }
         static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA", "MID" };
         public override ParamRange[] ParameterRanges
@@ -29,6 +29,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             {
                 return new ParamRange[]
                 {
+                new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
                 new ParamRangeFloat(-5.0f, 20.0f),
                 new ParamRangeFloat(-20.0f, 5.0f),
@@ -50,10 +51,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "MA" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var atrBandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(float)this.parameters[1]},{(float)this.parameters[2]},{this.parameters[3]})");
-            var atrUp = atrBandIndicator.Series[0];
-            var atrDown = atrBandIndicator.Series[1];
-            var maSerie = atrBandIndicator.Series[2];
+            var bandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");
+            var atrUp = bandIndicator.Series[0];
+            var atrDown = bandIndicator.Series[1];
+            var maSerie = bandIndicator.Series[2];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             var bullSerie = new FloatSerie(stockSerie.Count);

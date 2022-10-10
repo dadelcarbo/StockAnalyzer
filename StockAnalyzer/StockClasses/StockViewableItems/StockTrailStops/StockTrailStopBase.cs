@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
             return themeString;
         }
-        public sealed override string[] SerieNames { get { return new string[] { $"{this.Name}.LS", $"{this.Name}.SS", "LongReentry" }; } }
+        public sealed override string[] SerieNames { get { return new string[] { $"{this.ShortName}.LS", $"{this.ShortName}.SS", "LongReentry", "ShortReentry" }; } }
 
         protected FloatSerie[] series;
         public FloatSerie[] Series { get { return series; } }
@@ -47,10 +47,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.DarkRed, 2) };
+                    seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.DarkRed, 2), new Pen(Color.DarkGreen, 2) };
                     seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                     seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                     seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[3].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                 }
                 return seriePens;
             }
@@ -118,6 +119,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
+
+            var periodIndex = Array.IndexOf(this.ParameterNames, "ReentryPeriod");
+            if (periodIndex != -1)
+            {
+                this.ReentryPeriod = (int)this.parameters[periodIndex];
+            }
             this.CalculateLongReentry(stockSerie, longStopSerie, shortStopSerie);
 
             if (stockSerie.Count <= 4)
@@ -219,17 +226,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
         }
 
+        protected int ReentryPeriod { get; set; } = 6;
+
         private void CalculateLongReentry(StockSerie stockSerie, FloatSerie longStop, FloatSerie shortStop)
         {
-            int period = 6;
-            float alpha = 2.0f / (period + 1f);
+            float alpha = 2.0f / (ReentryPeriod + 1f);
             var resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);
             this.Series[2] = resistanceSerie;
+            if (this.ReentryPeriod == 0)
+                return;
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             float resistance = float.NaN;
             float previousResistance = float.MinValue;
-            for (int i = period; i < stockSerie.Count; i++)
+            for (int i = ReentryPeriod; i < stockSerie.Count; i++)
             {
                 if (!float.IsNaN(longStop[i])) // Bullish
                 {

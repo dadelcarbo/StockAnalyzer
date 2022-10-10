@@ -251,8 +251,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 float periodVariation = (lastValue - firstValue) / firstValue;
                 firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
-                float volume = stockSerie.Values.ElementAt(endIndex).EXCHANGED / 1000000f;
-
+                var lastBar = stockSerie.Values.ElementAt(endIndex);
                 var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
                 int highest = 0;
@@ -309,13 +308,14 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Name = stockSerie.StockName,
                     Value = lastValue,
                     Highest = highest,
-                    Volume = volume,
+                    Volume = lastBar.EXCHANGED,
                     Indicator1 = stockIndicator1,
                     Indicator2 = stockIndicator2,
                     Indicator3 = stockIndicator3,
                     Stop = stopValue,
                     PeriodVariation = periodVariation,
-                    BarVariation = barVariation
+                    BarVariation = barVariation,
+                    LastDate = lastBar.DATE
                     // Link = stockSerie.DataProvider == StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC ? $"https://www.abcbourse.com/graphes/eod/{stockSerie.ShortName}p" : null
                 });
 
