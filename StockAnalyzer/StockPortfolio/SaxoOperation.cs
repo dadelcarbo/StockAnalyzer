@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockPortfolio
                     Id = (long)r.Field<double>(0),
                     AccountId = r.Field<string>(1),
                     Instrument = r.Field<string>(2),
-                    Date = DateTime.Parse(r.Field<string>(3)),
+                    Date = DateTime.Parse(r.Field<string>(3).Replace('-', ' ')),
                     OperationType = r.Field<string>(4),
                     Qty = Math.Abs((int)r.Field<double>(6)),
                     Value = (float)r.Field<double>(7),

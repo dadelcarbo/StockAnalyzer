@@ -139,7 +139,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             else
                 e.Cancel = false;
         }
-        const string AlertLineTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
 
         private void reportButton_Click(object sender, RoutedEventArgs e)
         {

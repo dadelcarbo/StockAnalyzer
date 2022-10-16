@@ -789,6 +789,25 @@ namespace StockAnalyzer.StockPortfolio
             }
             return positionValue;
         }
+        public void EvaluateOpenedPositions()
+        {
+            // Calculate value for opened positions
+            var positions = this.Positions.Where(p => !p.IsClosed);
+            float positionValue = 0f;
+            foreach (var pos in positions)
+            {
+                float value = PriceProvider.GetLastClosingPrice(pos.StockName);
+                if (value == 0.0f)
+                {
+                    positionValue += pos.EntryQty * pos.EntryValue;
+                }
+                else
+                {
+                    positionValue += pos.EntryQty * value;
+                }
+            }
+            this.PositionValue = positionValue;
+        }
 
 
         #region SAXO Name Mapping

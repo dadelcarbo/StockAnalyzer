@@ -1488,6 +1488,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 if (position != null)
                 {
                     var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
+                    if (position.Stop == 0)
+                    {
+                        position.Stop = mouseValuePoint.Y;
+                    }
                     position.TrailStop = mouseValuePoint.Y;
                     Portfolio.Serialize();
                     this.ForceRefresh();

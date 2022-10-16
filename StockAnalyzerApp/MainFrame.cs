@@ -2835,21 +2835,25 @@ namespace StockAnalyzerApp
              <td>%COL4%</td>
              <td>%COL5%</td>
              <td>%COL6%</td>
+             <td>%COL7%</td>
+             <td>%COL8%</td>
          </tr>";
             string html = $@"
 <table  class=""reportTable"">
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1""></th>
-                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name} </th>
+                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name}: {portfolio.TotalValue} </th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
                     <th>Duration</th>
-                    <th>Trail Stop %</th>
-                    <th>Trail Stop</th>
-                    <th>Weekly %</th>
-                    <th>Value</th>
+                    <th>Stop</th>
+                    <th>Risk %</th>
+                    <th>Portfolio Risk %</th>
+                    <th>Return %</th>
+                    <th>Portfolio Return %</th>
+                    <th>Risk/Reward Ratio</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -2882,23 +2886,32 @@ namespace StockAnalyzerApp
                     var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
                     var stockNameHtml = stockNameTemplate.Replace("%MSG%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
+                    var risk = (position.EntryValue - position.Stop) / position.EntryValue;
+                    var portfolioRisk = risk * position.EntryQty / portfolio.TotalValue;
+                    var positionReturn = (lastValue.CLOSE - position.EntryValue) / position.EntryValue;
+                    var portfolioReturn = positionReturn * position.EntryQty / portfolio.TotalValue;
+                    var riskReward = positionReturn / risk;
                     reportBody += rowTemplate.
                         Replace("%COL1%", stockNameHtml).
                         Replace("%COL2%", position.BarDuration.ToString()).
-                        Replace("%COL3%", ((position.Stop - lastValue.CLOSE) / lastValue.CLOSE).ToString("P2")).
-                        Replace("%COL4%", position.Stop.ToString("#.##")).
-                        Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
-                        Replace("%COL6%", lastValue.CLOSE.ToString("#.##"));
+                        Replace("%COL3%", position.Stop.ToString("#.##")).
+                        Replace("%COL4%", risk.ToString("P2")).
+                        Replace("%COL5%", portfolioRisk.ToString("P2")).
+                        Replace("%COL6%", positionReturn.ToString("P2")).
+                        Replace("%COL7%", portfolioReturn.ToString("P2")).
+                        Replace("%COL8%", riskReward.ToString("0.##"));
                 }
                 else
                 {
                     reportBody += rowTemplate.
                         Replace("%COL1%", stockName).
                         Replace("%COL2%", position.BarDuration.ToString()).
-                        Replace("%COL3%", "???").
-                        Replace("%COL4%", position.Stop.ToString("#.##")).
-                        Replace("%COL5%", "???").
-                        Replace("%COL6%", "???");
+                        Replace("%COL3%", " - ").
+                        Replace("%COL4%", " - ").
+                        Replace("%COL5%", " - ").
+                        Replace("%COL6%", " - ").
+                        Replace("%COL7%", " - ").
+                        Replace("%COL8%", " - ");
                 }
             }
 
@@ -2924,15 +2937,17 @@ namespace StockAnalyzerApp
             this.ViewModel.IsHistoryActive = false;
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
+            portfolio.EvaluateOpenedPositions();
             var htmlReport = reportTemplate.Replace("%HTML_BODY%", GeneratePortfolioReportHtml(portfolio));
-
-            string fileName = Path.Combine(Folders.Portfolio, $@"Report\{ portfolio.Name }.html");
-            using (StreamWriter sw = new StreamWriter(fileName))
+            if (!string.IsNullOrEmpty(htmlReport))
             {
-                sw.Write(htmlReport);
+                string fileName = Path.Combine(Folders.Portfolio, $@"Report\{ portfolio.Name }.html");
+                using (StreamWriter sw = new StreamWriter(fileName))
+                {
+                    sw.Write(htmlReport);
+                }
+                Process.Start(fileName);
             }
-
-            Process.Start(fileName);
             this.ViewModel.IsHistoryActive = true;
             OnSelectedStockChanged(previousStockSerie.StockName, true);
             this.CurrentTheme = previousTheme;
@@ -2973,6 +2988,18 @@ namespace StockAnalyzerApp
             foreach (var alertDef in alertDefs.Where(a => a.Active).OrderBy(a => a.Rank))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
+            }
+
+            // Report Watchlist
+            var watchlistAlertDef = alertDefs.FirstOrDefault(a => a.Title == "Watchlist");
+            if (watchlistAlertDef != null)
+            {
+                var wl = this.WatchLists.FirstOrDefault(w => w.Name == "I&E France");
+                if (wl != null)
+                {
+                    var stockList = StockDictionary.Values.Where(s => wl.StockList.Contains(s.StockName));
+                    htmlAlerts += GenerateReportTable(watchlistAlertDef, "ROC(50)", 100, stockList);
+                }
             }
             htmlBody += htmlAlerts;
 
@@ -3031,6 +3058,12 @@ namespace StockAnalyzerApp
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         private string GenerateAlertTable(StockAlertDef alertDef, string rankIndicator, int nbStocks)
         {
+            var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
+            return GenerateReportTable(alertDef, rankIndicator, nbStocks, stockList);
+        }
+
+        private string GenerateReportTable(StockAlertDef alertDef, string rankIndicator, int nbStocks, IEnumerable<StockSerie> stockList)
+        {
             const string rowTemplate = @"
          <tr>
              <td style=""font-size:14px;"">%COL1%</td>
@@ -3042,7 +3075,6 @@ namespace StockAnalyzerApp
              <td>%COL6%</td>
              <td>%COL7%</td>
          </tr>";
-
             string html = @"
 <br/>
 ";
@@ -3050,7 +3082,6 @@ namespace StockAnalyzerApp
             {
                 StockSplashScreen.ProgressText = alertDef.Title + " " + alertDef.BarDuration + " for " + alertDef.Group;
                 var reportSeries = new List<ReportSerie>();
-                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
 
                 StockSplashScreen.ProgressVal = 0;
                 StockSplashScreen.ProgressMax = stockList.Count();
@@ -3163,15 +3194,16 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                html += @" 
+                html += @"
 </tbody>
 </table>";
-                return html;
             }
-            catch
+            catch (Exception exception)
             {
-                return string.Empty;
+                html = string.Empty;
+                StockLog.Write(exception);
             }
+            return html;
         }
 
         private static void CleanReportFolder(string folderName)

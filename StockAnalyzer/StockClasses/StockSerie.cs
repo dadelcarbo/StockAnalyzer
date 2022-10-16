@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses
             BELGIUM,
             HOLLAND,
             PORTUGAL,
-            //GERMANY,
+            EUROPE,
             //ITALIA,
             //SPAIN,
             USA,

@@ -1976,6 +1976,23 @@ namespace StockAnalyzer.StockClasses
             }
             return 0f;
         }
+        public float GetLastClosingPrice(string stockName)
+        {
+            if (this.ContainsKey(stockName))
+            {
+                var stockSerie = this[stockName];
+                if (stockSerie.Initialise())
+                {
+                    stockSerie.BarDuration = StockBarDuration.Daily;
+                    var index = stockSerie.LastIndex;
+                    if (index != -1)
+                    {
+                        return stockSerie.ValueArray[index].CLOSE;
+                    }
+                }
+            }
+            return 0f;
+        }
 
         public StockSerie GeneratePortfolioSerie(StockPortfolio.StockPortfolio portfolio)
         {
