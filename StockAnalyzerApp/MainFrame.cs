@@ -79,6 +79,11 @@ namespace StockAnalyzerApp
 
         public delegate void StockWatchListsChangedEventHandler();
 
+        public void RefreshGraphCloseControl()
+        {
+            this.GraphCloseControl.ForceRefresh();
+        }
+
         public delegate void AlertDetectedHandler();
         public event AlertDetectedHandler AlertDetected;
 
@@ -1137,7 +1142,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        private void ResetZoom()
+        public void ResetZoom()
         {
             using (new MethodLogger(this))
             {

@@ -66,6 +66,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             StockPositionViewModel item = row.Item as StockPositionViewModel;
                             SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
+                            item.PropertyChanged += Position_PropertyChanged;
                         }
                         break;
                     default:
@@ -78,6 +79,20 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 return;
             }
         }
+
+        private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Stop":
+                case "TrailStop":
+                    StockAnalyzerForm.MainFrame.RefreshGraphCloseControl();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
         {
             var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
