@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses
     {
         static public IEnumerable<StockAlertTimeFrame> TimeFrames = Enum.GetValues(typeof(StockAlertTimeFrame)).Cast<StockAlertTimeFrame>();
 
-        public static string AlertDefFolder => Path.Combine(Folders.Alert , "AlertDef");
+        public static string AlertDefFolder => Folders.AlertDef;
 
         private StockAlertConfig(StockAlertTimeFrame timeFrame)
         {
