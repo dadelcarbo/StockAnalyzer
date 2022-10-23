@@ -2,10 +2,13 @@
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -20,40 +23,114 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region HttpClient
 
         static private HttpClient httpClient = null;
-        static public HttpResponseMessage HttpGet(string url)
+        static public string HttpGetFromInvesting2(string url)
         {
-            if (httpClient == null)
+            try
             {
-                var handler = new HttpClientHandler();
-                handler.AutomaticDecompression = ~DecompressionMethods.None;
+                if (httpClient == null)
+                {
+                    var handler = new HttpClientHandler();
+                    handler.AutomaticDecompression = ~DecompressionMethods.None;
 
-                httpClient = new HttpClient(handler);
+                    httpClient = new HttpClient(handler);
+                }
+                using (var request = new HttpRequestMessage())
+                {
+                    request.Method = HttpMethod.Get;
+                    request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
+                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                    request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+                    request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                    request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
+
+                    request.RequestUri = new Uri(url);
+                    var response = httpClient.SendAsync(request).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return response.Content.ReadAsStringAsync().Result;
+                    }
+                    else
+                    {
+                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
+                    }
+                }
             }
-            using (var request = new HttpRequestMessage())
+            catch (Exception ex)
             {
-                request.Method = HttpMethod.Get;
-                request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
-                request.Headers.TryAddWithoutValidation("accept", "*/*");
-                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
-                request.Headers.TryAddWithoutValidation("origin", "https://tvc-invdn-com.investing.com");
-                request.Headers.TryAddWithoutValidation("referer", "https://tvc-invdn-com.investing.com/");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
-                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
-                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
-                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36");
-
-                request.RequestUri = new Uri(url);
-                return httpClient.SendAsync(request).Result;
+                StockLog.Write(ex);
             }
+            return null;
+        }
+
+        static private WebBrowser wb;
+        static public string HttpGetFromInvesting(string url)
+        {
+            try
+            {
+                return null;
+                if (wb == null)
+                {
+                    wb = new WebBrowser();
+                    wb.ScriptErrorsSuppressed = true;
+                    wb.Navigated += Wb_Navigated;
+                }
+                if (downloads.ContainsKey(url))
+                {
+                    string res = downloads[url];
+                    downloads.Remove(url);
+                    return res;
+                }
+                Console.WriteLine("DL-HttpGetFromInvesting: " + Thread.CurrentThread.ManagedThreadId);
+                Task.Run(() => DownloadData(url));
+
+                int tries = 100;
+                while (!downloads.ContainsKey(url) && --tries > 0)
+                {
+                    Task.Delay(100).Wait();
+                }
+                return null;
+                //return downloads[url];
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            return null;
+        }
+
+        private static void DownloadData(object url)
+        {
+            while (wb.IsBusy)
+            {
+                Console.WriteLine("DL-Wait busy web browser");
+                Thread.Sleep(100);
+            }
+            Console.WriteLine("DL-DownloadData: " + Thread.CurrentThread.ManagedThreadId);
+            wb.Navigate(url.ToString());
+        }
+
+        static SortedDictionary<string, string> downloads = new SortedDictionary<string, string>();
+        private static void Wb_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            Console.WriteLine("DL-Wb_Navigated: " + Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine(wb.DocumentText);
+            downloads.Add(e.Url.ToString(), wb.DocumentText);
         }
 
         #endregion
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
+            return;
             // Create data folder if not existing
             if (!Directory.Exists(DataFolder + ARCHIVE_FOLDER))
             {
@@ -101,7 +178,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return stockSerie.Count > 0;
         }
-
 
         public string FormatIntradayURL(long ticker, DateTime startDate)
         {
@@ -186,20 +262,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            var response = HttpGet(url);
-                            var content = response.Content.ReadAsStringAsync().Result;
-                            if (response.IsSuccessStatusCode)
+                            var response = HttpGetFromInvesting(url);
+                            if (!string.IsNullOrEmpty(response))
                             {
-                                if (content.StartsWith("{"))
+                                if (response.StartsWith("{"))
                                 {
-                                    File.WriteAllText(fileName, content);
+                                    File.WriteAllText(fileName, response);
                                     stockSerie.IsInitialised = false;
                                     return true;
                                 }
-                                StockLog.Write(content);
+                                StockLog.Write(response);
                                 return false;
                             }
-                            StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + content);
                             nbTries--;
                         }
                         catch (Exception ex)

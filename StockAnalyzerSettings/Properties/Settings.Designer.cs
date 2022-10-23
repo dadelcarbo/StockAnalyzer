@@ -587,10 +587,10 @@ namespace StockAnalyzerSettings.Properties {
                 this["PersonalFolder"] = value;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc6.investing.com/93128bbb961add19b49e857968d7772b/1666117430/1/1/8")]
         public string InvestingUrlRoot {
             get {
                 return ((string)(this["InvestingUrlRoot"]));

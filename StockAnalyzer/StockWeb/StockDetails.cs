@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockWeb
         public static string ToJson(this StockDetails[] self) => JsonConvert.SerializeObject(self);
     }
 
-    internal static class Converter
+    public static class Converter
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {

@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
+            return;
             // Parse Investing.cfg file// Create data folder if not existing
             if (!Directory.Exists(DataFolder + FOLDER))
             {
@@ -108,7 +110,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var interval = "D";
             var from = (long)((startDate - refDate).TotalSeconds);
             var to = (long)((endDate - refDate).TotalSeconds);
-            return $"https://tvc6.investing.com/ffa8fd5d4c4157b4617aa4b2ae453a04/1644944166/1/1/8/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
+            return $"{Settings.Default.InvestingUrlRoot}/history?symbol={ticker}&resolution={interval}&from={from}&to={to}";
         }
 
         public override bool ForceDownloadData(StockSerie stockSerie)
@@ -176,26 +178,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         url = FormatURL(stockSerie.Ticker, lastDate, DateTime.Today);
                     }
 
-
                     int nbTries = 2;
                     while (nbTries > 0)
                     {
                         try
                         {
-                            var response = InvestingIntradayDataProvider.HttpGet(url);
-                            var content = response.Content.ReadAsStringAsync().Result;
-                            if (response.IsSuccessStatusCode)
+                            var response = InvestingIntradayDataProvider.HttpGetFromInvesting(url);
+                            if (!string.IsNullOrEmpty(response))
                             {
-                                if (content.StartsWith("{"))
+                                if (response.StartsWith("{"))
                                 {
-                                    File.WriteAllText(fileName, content);
+                                    File.WriteAllText(fileName, response);
                                     stockSerie.IsInitialised = false;
                                     return true;
                                 }
-                                StockLog.Write(content);
+                                StockLog.Write(response);
                                 return false;
                             }
-                            StockLog.Write(content);
+                            StockLog.Write(response);
                             nbTries--;
                         }
                         catch (Exception ex)

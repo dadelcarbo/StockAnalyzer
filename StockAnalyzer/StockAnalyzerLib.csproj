@@ -188,6 +188,15 @@
     <Compile Include="StockClasses\StockDataProviders\CitifirstJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.Designer.cs">
+      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\YahooIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\YahooJson.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_NEARTOP.cs" />
@@ -586,6 +595,12 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.fr-FR.resx">
+      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.resx">
+      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockPortfolio\NameMappingDlg\NameMappingDlg.resx">
       <DependentUpon>NameMappingDlg.cs</DependentUpon>

@@ -27,6 +27,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public static bool IntradayDownloadSuspended { get; set; } = false;
 
+        protected StockSerie RefSerie { get; set; }
+
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\daily";
         static protected string INTRADAY_SUBFOLDER = @"\intraday";
@@ -120,6 +122,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.Citifirst:
                         dataProvider = new CitifirstDataProvider();
                         break;
+                    case StockDataProvider.Yahoo:
+                        dataProvider = new YahooDataProvider();
+                        break;
+                    case StockDataProvider.YahooIntraday:
+                        dataProvider = new YahooIntradayDataProvider();
+                        break;
                     default:
                         break;
                 }
@@ -204,6 +212,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 configDialogs.Add(new InvestingDataProvider());
                 configDialogs.Add(new SaxoIntradayDataProvider());
                 configDialogs.Add(new CitifirstDataProvider());
+                configDialogs.Add(new YahooDataProvider());
+                configDialogs.Add(new YahooIntradayDataProvider());
             }
             return configDialogs;
         }

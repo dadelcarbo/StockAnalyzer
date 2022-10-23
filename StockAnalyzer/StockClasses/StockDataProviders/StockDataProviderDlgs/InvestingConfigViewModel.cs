@@ -101,6 +101,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public void Save()
         {
             InvestingConfigEntry.SaveToFile(this.Entries, Path.Combine(Folders.PersonalFolder, FileName));
+
+            System.Console.WriteLine(Settings.Default.InvestingUrlRoot);
+            Settings.Default.Save();
         }
         public void AddEntry()
         {

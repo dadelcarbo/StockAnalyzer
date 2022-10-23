@@ -12,6 +12,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Replay,
         Breadth,
         Investing,
+        Yahoo,
+        YahooIntraday,
         Citifirst
     }
 

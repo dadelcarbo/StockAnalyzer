@@ -146,15 +146,12 @@ namespace StockAnalyzer.StockWeb
 
             try
             {
-                var response = InvestingIntradayDataProvider.HttpGet(url);
-                if (response.IsSuccessStatusCode)
+                var response = InvestingIntradayDataProvider.HttpGetFromInvesting(url);
+                if (!string.IsNullOrEmpty(response))
                 {
-                    var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    if (string.IsNullOrWhiteSpace(response) || response == "[]") return new List<StockDetails>(); ;
 
-                    // Parse response
-                    if (string.IsNullOrWhiteSpace(result) || result == "[]") return new List<StockDetails>(); ;
-
-                    return StockDetails.FromJson(result);
+                    return StockDetails.FromJson(response);
                 }
                 return null;
             }

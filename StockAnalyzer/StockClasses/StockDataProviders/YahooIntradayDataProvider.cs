@@ -1,393 +1,339 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
+using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
-using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class YahooIntradayDataProvider : StockDataProviderBase, IConfigDialog
     {
-        private static string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\YahooIntraday";
-        private static string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\YahooIntraday";
-        private static string CONFIG_FILE = @"\YahooIntradayDownload.cfg";
-        private static string CONFIG_FILE_USER = @"\YahooIntradayDownload.user.cfg";
+        static private string FOLDER = @"\intraday\YahooIntraday";
+        static private string ARCHIVE_FOLDER = @"\archive\intraday\YahooIntraday";
 
-        public string UserConfigFileName
+        static private string CONFIG_FILE = "YahooIntradayDownload.cfg";
+        static private string CONFIG_FILE_USER = "YahooIntradayDownload.user.cfg";
+
+        public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            get { return CONFIG_FILE_USER; }
+            // Parse YahooIntraday.cfg file// Create data folder if not existing
+            if (!Directory.Exists(DataFolder + FOLDER))
+            {
+                Directory.CreateDirectory(DataFolder + FOLDER);
+            }
+            if (!Directory.Exists(DataFolder + ARCHIVE_FOLDER))
+            {
+                Directory.CreateDirectory(DataFolder + ARCHIVE_FOLDER);
+            }
+
+            this.needDownload = download;
+
+            // Parse YahooIntradayDownload.cfg file
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
-        public override bool LoadIntradayDurationArchiveData(string rootFolder, StockSerie serie,
-           StockSerie.StockBarDuration duration)
+        private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
-            string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" +
-                                      serie.ShortName.Replace(':', '_') + "_" + serie.StockName + "_" +
-                                      serie.StockGroup.ToString() + ".txt";
-            if (File.Exists(durationFileName))
+            string line;
+            if (File.Exists(fileName))
             {
-                serie.ReadFromCSVFile(durationFileName, duration);
-            }
-            else
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public override void InitDictionary(string rootFolder, StockDictionary stockDictionary, bool download)
-        {
-            // Parse yahoo.cfg file// Create data folder if not existing
-            if (!Directory.Exists(rootFolder + ARCHIVE_FOLDER))
-            {
-                Directory.CreateDirectory(rootFolder + ARCHIVE_FOLDER);
-            }
-            foreach (StockSerie.StockBarDuration duration in cacheDurations)
-            {
-                string durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration;
-                if (!Directory.Exists(durationFileName))
+                using (var sr = new StreamReader(fileName, true))
                 {
-                    Directory.CreateDirectory(durationFileName);
-                }
-            }
-
-            if (!Directory.Exists(rootFolder + INTRADAY_FOLDER))
-            {
-                Directory.CreateDirectory(rootFolder + INTRADAY_FOLDER);
-            }
-            else
-            {
-                foreach (string file in Directory.GetFiles(rootFolder + INTRADAY_FOLDER))
-                {
-                    if (File.GetLastWriteTime(file).Date != DateTime.Today)
+                    while (!sr.EndOfStream)
                     {
-                        File.Delete(file);
+                        line = sr.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                        var row = line.Split(',');
+                        var stockName = row[1];
+                        if (!stockDictionary.ContainsKey(stockName))
+                        {
+                            var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.YahooIntraday, BarDuration.M_5);
+                            stockDictionary.Add(stockName, stockSerie);
+
+                            if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                            {
+                                RefSerie = stockSerie;
+                                // Check if download needed.
+                                stockSerie.Initialise();
+                                DateTime refDate = DateTime.MinValue;
+                                if (stockSerie.Count > 0)
+                                {
+                                    refDate = stockSerie.Keys.Last();
+                                }
+                                this.DownloadDailyData(stockSerie);
+                                stockSerie.Initialise();
+                                needDownload = refDate < stockSerie.Keys.Last();
+                            }
+                            else
+                            {
+                                if (download && this.needDownload)
+                                {
+                                    this.DownloadDailyData(stockSerie);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("YahooIntraday Daily Entry: " + row[2] + " already in stockDictionary");
+                        }
                     }
                 }
             }
-
-            // Parse YahooDownload.cfg file
-            this.needDownload = download;
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE);
-            InitFromFile(rootFolder, stockDictionary, download, rootFolder + CONFIG_FILE_USER);
         }
 
-        public override bool SupportsIntradayDownload
-        {
-            get { return true; }
-        }
+        public override bool SupportsIntradayDownload => false;
 
-        public override bool LoadData(string rootFolder, StockSerie stockSerie)
+        public override bool LoadData(StockSerie stockSerie)
         {
-            string archiveFileName = rootFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName +
-                                     "_" + stockSerie.StockGroup.ToString() + ".txt";
+            StockLog.Write("LoadData for " + stockSerie.StockName);
+            bool res = false;
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
+                res = true;
             }
 
-            string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                              stockSerie.StockGroup.ToString() + ".txt";
+            var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
             if (File.Exists(fileName))
             {
-                if (ParseIntradayData(stockSerie, fileName))
+                if (ParseDailyData(stockSerie, fileName))
                 {
-                    stockSerie.Values.Last().IsComplete = false;
                     var lastDate = stockSerie.Keys.Last();
 
-                    DateTime firstArchiveDate = lastDate.AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate,
-                       lastDate.AddDays(-5).Date);
-
-                    // Archive other time frames
-                    string durationFileName;
-                    StockSerie.StockBarDuration previousDuration = stockSerie.BarDuration;
-                    foreach (StockSerie.StockBarDuration duration in cacheDurations)
-                    {
-                        durationFileName = rootFolder + ARCHIVE_FOLDER + "\\" + duration + "\\" +
-                                           stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" +
-                                           stockSerie.StockGroup.ToString() + ".txt";
-
-                        if (File.Exists(durationFileName) &&
-                            File.GetLastWriteTime(durationFileName).Date == DateTime.Today.Date)
-                            break; // Only cache once a day.
-                        stockSerie.BarDuration = duration;
-                        stockSerie.SaveToCSVFromDateToDate(durationFileName, stockSerie.Keys.First(),
-                           lastDate.AddDays(-5).Date);
-                    }
-
-                    // Set back to previous duration.
-                    stockSerie.BarDuration = previousDuration;
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
+                    File.Delete(fileName);
                 }
                 else
                 {
                     return false;
                 }
+                res = true;
             }
-            return true;
+            return res;
         }
 
-        public override bool DownloadDailyData(string rootFolder, StockSerie stockSerie)
+        static DateTime refDate = new DateTime(1970, 01, 01);
+        public string FormatURL(string ticker, DateTime startDate, DateTime endDate, string interval)
         {
-            string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" +
-                              stockSerie.StockGroup.ToString() + ".txt";
+            var startTime = (int)(startDate - refDate).TotalSeconds;
+            var endTime = (int)(endDate - refDate).TotalSeconds;
+
+            return $"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?symbol={ticker}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
+        }
+
+        public override bool ForceDownloadData(StockSerie stockSerie)
+        {
+            StockLog.Write("ForceDownloadData for " + stockSerie.StockName);
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            if (File.Exists(archiveFileName))
+            {
+                File.Delete(archiveFileName);
+            }
+            var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(fileName))
             {
-                DateTime fileDate = File.GetLastWriteTime(fileName);
-                if (fileDate.Date == DateTime.Today)
-                    return false;
+                File.Delete(fileName);
             }
-            this.DownloadIntradayData(rootFolder, stockSerie);
-            return true;
+            stockSerie.IsInitialised = false;
+            first = true;
+            return this.DownloadDailyData(stockSerie);
         }
 
-        public override bool DownloadIntradayData(string rootFolder, StockSerie stockSerie)
+        static bool first = true;
+        public override bool DownloadDailyData(StockSerie stockSerie)
         {
+            StockLog.Write("DownloadDailyData for " + stockSerie.StockName);
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                NotifyProgress("Downloading intraday for " + stockSerie.StockName);
+                NotifyProgress("Downloading daily data for " + stockSerie.StockName);
 
-                string fileName = rootFolder + INTRADAY_FOLDER + "\\" + stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                var fileName = DataFolder + FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+
                 if (File.Exists(fileName))
                 {
-                    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
-                        return false;
-                }
-                using (WebClient wc = new WebClient())
-                {
-                    try
+                    var lastWriteTime = File.GetLastWriteTime(fileName);
+                    if (first && (lastWriteTime > DateTime.Now.AddHours(-2)
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
+                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today)))
                     {
-                        wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                        // @@@@ Intraday download
-                        //string url = "http://chartapi.finance.yahoo.com/instrument/1.0/" + stockSerie.ShortName +
-                        //             "/chartdata;type=quote;range=50d/csv";
-                        //wc.DownloadFile(url, fileName);
-                        
-                        stockSerie.IsInitialised = false;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-            return true;
-        }
-
-        private void InitFromFile(string rootFolder, StockDictionary stockDictionary, bool download, string fileName)
-        {
-            string line;
-            if (File.Exists(fileName))
-            {
-                using (StreamReader sr = new StreamReader(fileName, true))
-                {
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                        if (stockSerie != RefSerie)
                         {
-                            string[] row = line.Split(',');
-                            string stockName = row[1];
-                            StockSerie stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.YahooIntraday);
+                            first = false;
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
+                            return false;
+                    }
+                }
+                using (var wc = new WebClient())
+                {
+                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                            if (!stockDictionary.ContainsKey(stockName))
+                    var url = string.Empty;
+                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
+                    if (stockSerie.Initialise() && stockSerie.Count > 0)
+                    {
+                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                        if (lastDate >= DateTime.Today)
+                            return false;
+                        url = FormatURL(stockSerie.ShortName, lastDate.AddDays(-2), DateTime.Today, "5m");
+                    }
+                    else
+                    {
+                        url = FormatURL(stockSerie.ShortName, DateTime.Today.AddDays(-10), DateTime.Now, "5m");
+                    }
+
+                    int nbTries = 2;
+                    while (nbTries > 0)
+                    {
+                        try
+                        {
+                            var response = YahooDataProvider.HttpGetFromYahoo(url);
+                            if (!string.IsNullOrEmpty(response))
                             {
-                                stockDictionary.Add(stockName, stockSerie);
+                                if (response.StartsWith("{"))
+                                {
+                                    File.WriteAllText(fileName, response);
+                                    stockSerie.IsInitialised = false;
+                                    return true;
+                                }
+                                StockLog.Write(response);
+                                return false;
                             }
-                            else
-                            {
-                                StockLog.Write("Yahoo Entry: " + stockName + " already in stockDictionary");
-                            }
-                            if (download && this.needDownload)
-                            {
-                                this.needDownload = this.DownloadDailyData(rootFolder, stockSerie);
-                            }
+                            StockLog.Write(response);
+                            nbTries--;
+                        }
+                        catch (Exception ex)
+                        {
+                            nbTries--;
+                            StockLog.Write(ex);
                         }
                     }
                 }
             }
+            return false;
         }
 
-
-        //internal string YahooJsonToCSV(Stream fs)
-        //{
-        //    string csv = string.Empty;
-        //    try
-        //    {
-        //        using (StreamReader sr = new StreamReader(fs))
-        //        {
-        //            string line = sr.ReadToEnd();
-
-        //            var data = JsonConvert.DeserializeObject<RootObject>(line);
-
-        //            var res = data.chart.result.FirstOrDefault();
-        //            if (res == null) return string.Empty;
-
-        //            var values = res.indicators.quote[0];
-        //            if (values == null) return string.Empty;
-
-        //            List<StockDailyValue> bars = new List<StockDailyValue>();
-
-        //            DateTime now = DateTime.Now;
-        //            DateTime utcNow = now.ToUniversalTime();
-        //            int gmtoffset = (int)((now - utcNow).TotalSeconds);
-        //            DateTime startDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(res.meta.firstTradeDate);
-        //            DateTime init = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(gmtoffset);
-
-        //            for (int i = 0; i < res.timestamp.Count; i++)
-        //            {
-        //                DateTime date = init.AddSeconds(res.timestamp[i]);
-        //                float open = values.open[i].HasValue ? values.open[i].Value : float.NaN;
-        //                float high = values.high[i].HasValue ? values.high[i].Value : float.NaN;
-        //                float low = values.low[i].HasValue ? values.low[i].Value : float.NaN;
-        //                float close = values.close[i].HasValue ? values.close[i].Value : float.NaN;
-
-        //                if (float.IsNaN(open) || float.IsNaN(high) || float.IsNaN(low) || float.IsNaN(close))
-        //                    continue;
-
-        //                csv += new StockDailyValue(res.meta.symbol, open, high, low, close, values.volume[i].HasValue ? values.volume[i].Value : 0, date).ToString() + Environment.NewLine;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        csv = string.Empty;
-        //    }
-        //    return csv;
-        //}
-
-        private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
+        static private HttpClient httpClient = null;
+        private static string HttpGetFromYahoo(string url)
         {
-            bool res = false;
             try
             {
-                using (StreamReader sr = new StreamReader(fileName))
+                if (httpClient == null)
                 {
-                    string line;
+                    var handler = new HttpClientHandler();
+                    handler.AutomaticDecompression = ~DecompressionMethods.None;
 
-                    while ((line = sr.ReadLine()) != null)
+                    httpClient = new HttpClient(handler);
+                }
+                using (var request = new HttpRequestMessage())
+                {
+                    request.Method = HttpMethod.Get;
+                    //request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
+                    //request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                    //request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+                    //request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                    //request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
+                    //request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                    //request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                    //request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                    //request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+                    //request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                    //request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                    //request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
+
+                    request.RequestUri = new Uri(url);
+                    var response = httpClient.SendAsync(request).Result;
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (line.StartsWith("timezone")) break;
+                        return response.Content.ReadAsStringAsync().Result;
                     }
-                    if (sr.EndOfStream) return false;
-                    string[] row = line.Split(new char[] { ':' });
-                    string timeZone = row[1];
-                    double gmtoffset = timeZone == "CEST" ? -32400 : 0;
-
-                    while ((line = sr.ReadLine()) != null)
+                    else
                     {
-                        if (line.StartsWith("gmtoffset")) break;
+                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                     }
-                    if (sr.EndOfStream) return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            return null;
+        }
 
-
-                    row = line.Split(new char[] { ':' });
-                    gmtoffset += double.Parse(row[1]);
-
-
-                    DateTime now = DateTime.Now;
-                    DateTime utcNow = now.ToUniversalTime();
-                    gmtoffset -= (now - utcNow).TotalSeconds;
-
-                    while (!(line = sr.ReadLine()).StartsWith("range")) ;
-
-                    // First Range, read second offest for date calculation.
-                    row = line.Split(new char[] { ',', ':' });
-                    DateTime startDate = new DateTime(int.Parse(row[1].Substring(0, 4)), int.Parse(row[1].Substring(4, 2)), int.Parse(row[1].Substring(6, 2)));
-
-                    //  startDate = startDate.AddHours(9);
-                    long startTimeStamp = long.Parse(row[2]);
-
-                    while (!(line = sr.ReadLine()).StartsWith("volume")) ;
-
-                    while (!sr.EndOfStream)
+        private static bool ParseDailyData(StockSerie stockSerie, string fileName)
+        {
+            var res = false;
+            try
+            {
+                using (var sr = new StreamReader(fileName))
+                {
+                    var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
+                    if (!string.IsNullOrEmpty(yahooJson?.chart?.error))
                     {
-                        line = sr.ReadLine();
+                        StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
+                    }
 
-                        row = line.Split(new char[] { ',' });
-
-                        DateTime openDate = startDate;
-                        openDate = startDate.AddSeconds(long.Parse(row[0]) - startTimeStamp);
-                        openDate = startDate.AddSeconds(long.Parse(row[0]) - startTimeStamp - gmtoffset);
+                    int i = 0;
+                    var priceInt = yahooJson.chart.result[0].meta.priceHint;
+                    var quote = yahooJson.chart.result[0].indicators.quote[0];
+                    foreach (var timestamp in yahooJson.chart.result[0].timestamp)
+                    {
+                        if (quote.open[i] == null || quote.high[i] == null || quote.low[i] == null || quote.close[i] == null)
+                        {
+                            i++;
+                            continue;
+                        }
+                        var openDate = refDate.AddSeconds(timestamp).ToLocalTime();
                         if (!stockSerie.ContainsKey(openDate))
                         {
-                            StockDailyValue dailyValue = new StockDailyValue(stockSerie.StockName,
-                                   float.Parse(row[4], usCulture),
-                                   float.Parse(row[2], usCulture),
-                                   float.Parse(row[3], usCulture),
-                                   float.Parse(row[1], usCulture),
-                                   long.Parse(row[5]),
+                            long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                            var dailyValue = new StockDailyValue(
+                                   (float)Math.Round(quote.open[i].Value, priceInt),
+                                   (float)Math.Round(quote.high[i].Value, priceInt),
+                                   (float)Math.Round(quote.low[i].Value, priceInt),
+                                   (float)Math.Round(quote.close[i].Value, priceInt),
+                                   vol,
                                    openDate);
+
                             stockSerie.Add(dailyValue.DATE, dailyValue);
                         }
+                        i++;
                     }
-
                     stockSerie.ClearBarDurationCache();
 
                     res = true;
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                StockLog.Write("Unable to parse intraday data for " + stockSerie.StockName);
+                StockLog.Write("Unable to parse daily data for " + stockSerie.StockName);
                 StockLog.Write(e);
             }
             return res;
         }
 
-        public bool DownloadFileFromYahoo(string destFolder, string fileName, DateTime startDate, DateTime endDate, string stockName)
-        {
-            string url = @"http://ichart.finance.yahoo.com/table.csv?s=$NAME&a=$START_MONTH&b=$START_DAY&c=$START_YEAR&d=$END_MONTH&e=$END_DAY&f=$END_YEAR&g=d&ignore=.csv";
-
-            // Build URL
-            url = url.Replace("$NAME", stockName);
-            url = url.Replace("$START_DAY", startDate.Day.ToString());
-            url = url.Replace("$START_MONTH", (startDate.Month - 1).ToString());
-            url = url.Replace("$START_YEAR", startDate.Year.ToString());
-            url = url.Replace("$END_DAY", endDate.Day.ToString());
-            url = url.Replace("$END_MONTH", (endDate.Month - 1).ToString());
-            url = url.Replace("$END_YEAR", endDate.Year.ToString());
-
-            int nbTries = 2;
-            while (nbTries > 0)
-            {
-                try
-                {
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                        wc.DownloadFile(url, destFolder + "\\" + fileName);
-                        StockLog.Write("Download succeeded: " + stockName);
-                        return true;
-                    }
-                }
-                catch (SystemException e)
-                {
-                    StockLog.Write(e);
-                    nbTries--;
-                }
-            }
-            if (nbTries <= 0)
-            {
-                return false;
-            }
-            return true;
-        }
-
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            YahooIntradayDataProviderConfigDlg configDlg = new YahooIntradayDataProviderConfigDlg(stockDico);
+            var configDlg = new YahooDataProviderConfigDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName
-        {
-            get { return "Yahoo! Intraday"; }
-        }
+        public string DisplayName => "Yahoo Intraday";
     }
 }
