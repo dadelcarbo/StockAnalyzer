@@ -301,7 +301,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                             if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                             {
-                                RefSerie = stockSerie;
                                 // Check if download needed.
                                 stockSerie.Initialise();
                                 DateTime refDate = DateTime.MinValue;
@@ -309,15 +308,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 {
                                     refDate = stockSerie.Keys.Last();
                                 }
-                                this.DownloadDailyData(stockSerie);
-                                stockSerie.Initialise();
-                                needDownload = refDate < stockSerie.Keys.Last();
+                                this.DownloadIntradayData(stockSerie);
+                                if (stockSerie.Initialise())
+                                {
+                                    needDownload = refDate < stockSerie.Keys.Last();
+                                    RefSerie = stockSerie;
+                                }
                             }
                             else
                             {
                                 if (download && this.needDownload)
                                 {
-                                    this.DownloadDailyData(stockSerie);
+                                    this.DownloadIntradayData(stockSerie);
                                 }
                             }
                         }
