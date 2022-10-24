@@ -91,10 +91,20 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.M_30
         };
 
-        public static IList<StockBarDuration> LongValues = new List<StockBarDuration>() {
+        public static IList<StockBarDuration> DailyValues = new List<StockBarDuration>() {
             StockBarDuration.Daily,
             StockBarDuration.Weekly,
             StockBarDuration.Monthly
+        };
+
+        public static IList<StockBarDuration> IntradayValues = new List<StockBarDuration>() {
+            StockBarDuration.H_1,
+            StockBarDuration.H_2,
+            StockBarDuration.H_4,
+            StockBarDuration.M_5,
+            StockBarDuration.M_10,
+            StockBarDuration.M_15,
+            StockBarDuration.M_30
         };
 
         internal static bool TryParse(string v, out StockBarDuration barDuration)

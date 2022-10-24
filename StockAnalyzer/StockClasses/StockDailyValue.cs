@@ -158,7 +158,7 @@ namespace StockAnalyzer.StockClasses
         public override string ToString()
         {
             return DATE.ToString("s") + "," + OPEN.ToString(usCulture) + "," + HIGH.ToString(usCulture) + "," + LOW.ToString(usCulture) + "," + CLOSE.ToString(usCulture)
-                + "," + VOLUME.ToString(usCulture) + "," + CLOSE.ToString(usCulture);
+                + "," + VOLUME.ToString(usCulture);
         }
         #endregion
 

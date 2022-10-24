@@ -249,7 +249,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         if (previousHigh > highSerie[i] && float.IsNaN(resistanceSerie[i - 1]))
                         {
                             resistance = previousHigh;
-                            resistanceSerie[i - 1] = resistance;
+                            resistanceSerie[i - 1] = float.NaN;
                             resistanceSerie[i] = resistance;
                         }
                     }

@@ -89,7 +89,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        public override bool SupportsIntradayDownload => false;
+        public override bool SupportsIntradayDownload => true;
 
         public override bool LoadData(StockSerie stockSerie)
         {
@@ -187,9 +187,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (stockSerie.Initialise() && stockSerie.Count > 0)
                     {
                         lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        if (lastDate >= DateTime.Today)
-                            return false;
-                        url = FormatURL(stockSerie.ShortName, lastDate.AddDays(-2), DateTime.Today, "5m");
+                        url = FormatURL(stockSerie.ShortName, lastDate.AddDays(-2), DateTime.Now, "5m");
                     }
                     else
                     {
@@ -227,55 +225,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return false;
         }
 
-        static private HttpClient httpClient = null;
-        private static string HttpGetFromYahoo(string url)
-        {
-            try
-            {
-                if (httpClient == null)
-                {
-                    var handler = new HttpClientHandler();
-                    handler.AutomaticDecompression = ~DecompressionMethods.None;
-
-                    httpClient = new HttpClient(handler);
-                }
-                using (var request = new HttpRequestMessage())
-                {
-                    request.Method = HttpMethod.Get;
-                    //request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
-                    //request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                    //request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                    //request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    //request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    //request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    //request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
-
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-            }
-            return null;
-        }
-
         private static bool ParseDailyData(StockSerie stockSerie, string fileName)
         {
             var res = false;
@@ -299,19 +248,47 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             i++;
                             continue;
                         }
-                        var openDate = refDate.AddSeconds(timestamp).ToLocalTime();
-                        if (!stockSerie.ContainsKey(openDate))
+                        if (timestamp % 300 != 0) // Bar not Complete
                         {
-                            long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
-                            var dailyValue = new StockDailyValue(
-                                   (float)Math.Round(quote.open[i].Value, priceInt),
-                                   (float)Math.Round(quote.high[i].Value, priceInt),
-                                   (float)Math.Round(quote.low[i].Value, priceInt),
-                                   (float)Math.Round(quote.close[i].Value, priceInt),
-                                   vol,
-                                   openDate);
+                            var lastDate = refDate.AddSeconds(timestamp / 300 * 300).ToLocalTime();
+                            if (lastDate == stockSerie.Keys.Last())
+                            {
+                                var dailyValue = stockSerie[lastDate];
+                                var close = (float)Math.Round(quote.close[i].Value, priceInt);
+                                dailyValue.HIGH = Math.Max(dailyValue.HIGH, close);
+                                dailyValue.LOW = Math.Min(dailyValue.LOW, close);
+                                dailyValue.CLOSE = close;
+                            }
+                            else
+                            {
+                                long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                                var dailyValue = new StockDailyValue(
+                                       (float)Math.Round(quote.open[i].Value, priceInt),
+                                       (float)Math.Round(quote.high[i].Value, priceInt),
+                                       (float)Math.Round(quote.low[i].Value, priceInt),
+                                       (float)Math.Round(quote.close[i].Value, priceInt),
+                                       vol,
+                                       lastDate);
 
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
+                                stockSerie.Add(dailyValue.DATE, dailyValue);
+                            }
+                        }
+                        else
+                        {
+                            var openDate = refDate.AddSeconds(timestamp).ToLocalTime();
+                            if (!stockSerie.ContainsKey(openDate))
+                            {
+                                long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                                var dailyValue = new StockDailyValue(
+                                       (float)Math.Round(quote.open[i].Value, priceInt),
+                                       (float)Math.Round(quote.high[i].Value, priceInt),
+                                       (float)Math.Round(quote.low[i].Value, priceInt),
+                                       (float)Math.Round(quote.close[i].Value, priceInt),
+                                       vol,
+                                       openDate);
+
+                                stockSerie.Add(dailyValue.DATE, dailyValue);
+                            }
                         }
                         i++;
                     }
