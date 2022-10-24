@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
-            return DownloadIntradayData(stockSerie);
+            return true;
         }
         static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
         public bool DownloadIntradayData5m(StockSerie stockSerie)
@@ -187,7 +187,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.ISIN, "1D");
+                    var url = FormatIntradayURL(stockSerie.ISIN, "1W");
 
                     try
                     {
@@ -295,7 +295,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var row = line.Split(',');
                         if (!stockDictionary.ContainsKey(row[1]))
                         {
-                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.M_5);
+                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                             stockSerie.ISIN = row[0];
                             stockDictionary.Add(row[1], stockSerie);
 
