@@ -480,12 +480,12 @@ namespace StockAnalyzerApp
             }
 
             // Download Intraday in background
-            if (Settings.Default.SupportIntraday && Settings.Default.DownloadData)
-            {
-                var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
-                var task = new Task(() => { stockList.ForEach(s => StockDataProviderBase.DownloadSerieData(s)); });
-                task.Start();
-            }
+            //if (Settings.Default.SupportIntraday && Settings.Default.DownloadData)
+            //{
+            //    var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
+            //    var task = new Task(() => { stockList.ForEach(s => StockDataProviderBase.DownloadSerieData(s)); });
+            //    task.Start();
+            //}
 
 
 #if DEBUG

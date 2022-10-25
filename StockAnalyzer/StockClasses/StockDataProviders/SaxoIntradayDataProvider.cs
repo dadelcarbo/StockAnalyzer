@@ -63,12 +63,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return true;
         }
-        static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
+        static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public bool DownloadIntradayData5m(StockSerie stockSerie)
         {
             if (stockSerie.Count > 0)
             {
-                if (DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
+                if (DownloadHistory.ContainsKey(stockSerie.ShortName) && DownloadHistory[stockSerie.ShortName] > DateTime.Now.AddMinutes(-2))
                 {
                     return false;  // Do not download more than every 2 minutes.
                 }
@@ -90,13 +90,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        if (DownloadHistory.ContainsKey(stockSerie.Ticker))
+                        if (DownloadHistory.ContainsKey(stockSerie.ShortName))
                         {
-                            DownloadHistory[stockSerie.Ticker] = DateTime.Now;
+                            DownloadHistory[stockSerie.ShortName] = DateTime.Now;
                         }
                         else
                         {
-                            DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
+                            DownloadHistory.Add(stockSerie.ShortName, DateTime.Now);
                         }
                         var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
                         var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
@@ -169,7 +169,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (stockSerie.Count > 0)
             {
-                if (DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
+                if (DownloadHistory.ContainsKey(stockSerie.ShortName) && DownloadHistory[stockSerie.ShortName] > DateTime.Now.AddSeconds(-30))
                 {
                     return false;  // Do not download more than every 2 minutes.
                 }
@@ -191,13 +191,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        if (DownloadHistory.ContainsKey(stockSerie.Ticker))
+                        if (DownloadHistory.ContainsKey(stockSerie.ShortName))
                         {
-                            DownloadHistory[stockSerie.Ticker] = DateTime.Now;
+                            DownloadHistory[stockSerie.ShortName] = DateTime.Now;
                         }
                         else
                         {
-                            DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
+                            DownloadHistory.Add(stockSerie.ShortName, DateTime.Now);
                         }
                         var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
                         var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
@@ -211,19 +211,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             if (stockSerie.Keys.Last().Date == DateTime.Today)
                             {
-                                lastDate = stockSerie.Keys.Last();
                                 stockSerie.RemoveLast();
                             }
+                            lastDate = stockSerie.Keys.Last();
                         }
                         else
                         {
                             lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
                         }
-                        var date = lastDate;
                         StockDailyValue newBar = null;
                         foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                         {
-                            newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x);
+                            newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(-1));
                             stockSerie.Add(newBar.DATE, newBar);
                         }
 

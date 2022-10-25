@@ -201,7 +201,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            var response = YahooDataProvider.HttpGetFromYahoo(url);
+                            var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.ShortName);
                             if (!string.IsNullOrEmpty(response))
                             {
                                 if (response.StartsWith("{"))
@@ -228,7 +228,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static private HttpClient httpClient = null;
-        public static string HttpGetFromYahoo(string url)
+        public static string HttpGetFromYahoo(string url, string ticker)
         {
             try
             {
@@ -242,20 +242,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var request = new HttpRequestMessage())
                 {
                     request.Method = HttpMethod.Get;
-                    //request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
-                    //request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                    //request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                    //request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    //request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    //request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-                    //request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    //request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    //request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
+                    request.Headers.TryAddWithoutValidation("authority", "query1.finance.yahoo.com");
+                    request.Headers.TryAddWithoutValidation("accept", "*/*");
+                    request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
+                    request.Headers.TryAddWithoutValidation("cookie", "GUC=AQABBwFjUTNjgUIjOQUK&s=AQAAAHQwhHqy&g=Y0_klA; A1=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; A3=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; EuConsent=CPP_3gAPP_3gAAOACBFRClCoAP_AAH_AACiQIjNd_Hf_bX9n-f596ft0eY1f9_r3ruQzDhfNk-8F2L_W_LwX_2E7NB36pq4KmR4ku1LBIQNtHMnUDUmxaokVrzHsak2MpyNKJ7BkknsZe2dYGFtPm5lD-QKZ7_5_d3f52T_9_9v-39z33913v3d93-_12LjdV591H_v9fR_bc_Kdt_5-AAAAAAAAEEEQCTDEvIAuxLHAk0DSqFECMKwkKgFABBQDC0TWADA4KdlYBHqCFgAhNQEYEQIMQUYEAgAEAgCQiACQAsEACAIgEAAIAUICEABAwCCwAsDAIAAQDQMQAoABAkIMjgqOUwICIFogJbKwBKKqY0wgDLLACgERkVEAiAIAEgICAsHEMASAlADDQAYAAgkEIgAwABBIIVABgACCQQA; thamba=2; cmp=t=1666643858&j=1&u=1---&v=56; A1S=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o&j=GDPR; PRF=t^%^3DTSLA^%^252BAAPL^%^252B^%^255EFCHI^%^252BMC.PA^%^252BES^%^253DF^%^252BNQ^%^253DF^%^252BSI^%^253DF^%^252BCC^%^253DF^%^252BADYEN.AS^%^252BAVT.PA^%^252BAC.PA");
+                    request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
+                    request.Headers.TryAddWithoutValidation("referer", "https://finance.yahoo.com/quote/{ticker}/chart?p={ticker}");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
+                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
+                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
 
                     request.RequestUri = new Uri(url);
                     var response = httpClient.SendAsync(request).Result;
