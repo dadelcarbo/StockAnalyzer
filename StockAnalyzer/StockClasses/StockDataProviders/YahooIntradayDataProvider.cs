@@ -128,7 +128,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var startTime = (int)(startDate - refDate).TotalSeconds;
             var endTime = (int)(endDate - refDate).TotalSeconds;
 
-            return $"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?symbol={ticker}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=true&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
+            return $"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?symbol={ticker}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
         }
 
         public override bool ForceDownloadData(StockSerie stockSerie)

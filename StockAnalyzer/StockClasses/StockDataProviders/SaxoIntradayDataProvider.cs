@@ -209,30 +209,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         DateTime lastDate = DateTime.MinValue;
                         if (stockSerie.Count > 0)
                         {
-                            if (stockSerie.Keys.Last().Date == DateTime.Today)
-                            {
-                                stockSerie.RemoveLast();
-                            }
                             lastDate = stockSerie.Keys.Last();
                         }
                         else
                         {
                             lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
                         }
-                        StockDailyValue newBar = null;
+                        int nbNewBars = 0;
                         foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                         {
-                            newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(-1));
+                            var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(-1));
                             stockSerie.Add(newBar.DATE, newBar);
+                            nbNewBars++;
                         }
 
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                        if (nbNewBars > 0)
+                        {
+                            var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+                            var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
 
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
-
+                            stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
+                        }
                         return true;
                     }
                     catch (Exception e)

@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockPortfolio
                     Id = (long)r.Field<double>(0),
                     AccountId = r.Field<string>(1),
                     Instrument = r.Field<string>(2),
-                    Date = DateTime.Parse(r.Field<string>(3).Replace('-', ' ')),
+                    Date = ParseSaxoDate( r.Field<string>(3)),
                     OperationType = r.Field<string>(4),
                     Qty = Math.Abs((int)r.Field<double>(6)),
                     Value = (float)r.Field<double>(7),
@@ -80,6 +80,58 @@ namespace StockAnalyzer.StockPortfolio
                 StockLog.Write(e);
                 return null;
             }
+        }
+
+        static DateTime ParseSaxoDate(string dateString)
+        {
+            var fields = dateString.Split('-');
+            var year = int.Parse(fields[2]);
+            var day = int.Parse(fields[0]);
+            int month;
+            switch (fields[1])
+            {
+                case "janv.":
+                    month = 1;
+                    break;
+                case "févr.":
+                    month = 2;
+                    break;
+                case "mars":
+                    month = 3;
+                    break;
+                case "avr.":
+                    month = 4;
+                    break;
+                case "mai":
+                    month = 5;
+                    break;
+                case "juin":
+                    month = 6;
+                    break;
+                case "juil.":
+                    month = 7;
+                    break;
+                case "août":
+                    month = 8;
+                    break;
+                case "sept.":
+                    month = 9;
+                    break;
+                case "oct.":
+                    month = 10;
+                    break;
+                case "nov.":
+                    month = 11;
+                    break;
+                case "déc.":
+                    month = 12;
+                    break;
+                default:
+                    throw new ArgumentException($"Month {fields[1]} not supported");
+            }
+
+            return new DateTime(year, month, day);
+
         }
     }
 }
