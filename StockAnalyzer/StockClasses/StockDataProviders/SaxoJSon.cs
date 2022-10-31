@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Saxo
     }
     public class SaxoJSon
     {
-        public string timespan { get; set; }
+        //public string timespan { get; set; }
         public List<Series> series { get; set; }
         // public List<Line> lines { get; set; }
     }

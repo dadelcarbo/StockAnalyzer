@@ -956,7 +956,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     if (mousePoint.X > this.GraphRectangle.Left && mousePoint.X < this.GraphRectangle.Right)
                     {
-                        DrawMouseCross(valuePoint, crossMode, true, this.axisDashPen);
+                        DrawMouseCross(valuePoint, crossMode, true, this.axisDashPen, false);
                         PaintForeground();
                     }
                 }
@@ -981,7 +981,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
                             var valuePoint = GetValuePointFromScreenPoint(mousePoint);
-                            DrawMouseCross(valuePoint, mouseOverThis, true, this.axisPen);
+                            DrawMouseCross(valuePoint, mouseOverThis, true, this.axisPen, mouseOverThis);
                             PaintForeground();
 
                             if (mouseOverThis && this.OnMouseDateChanged != null)
@@ -1120,7 +1120,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         PointF point = new PointF(mouseIndex, y);
                         PointF point2 = GetScreenPointFromValuePoint(point);
 
-                        DrawMouseCross(point, y != 0, true, this.axisDashPen);
+                        DrawMouseCross(point, y != 0, true, this.axisDashPen, false);
 
                         string valueString;
                         if (value > 100000000)
@@ -1543,7 +1543,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
 
         }
-        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen)
+        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen, bool printValue)
         {
             // Draw straight Line
             PointF screenPoint = RoundToIndexValue(GetScreenPointFromValuePoint(mouseValuePoint));
@@ -1551,7 +1551,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
                 // Print current value
-                //this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                if (printValue)
+                    this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
             if (drawVerticalLine)
             {
