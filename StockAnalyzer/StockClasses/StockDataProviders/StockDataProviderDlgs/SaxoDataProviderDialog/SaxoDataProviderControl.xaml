@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog.SaxoDataProviderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:SaxoDataProviderViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Label Margin="2" Content="Underlying"/>
+            <telerik:RadAutoCompleteBox SelectionMode="Single"
+                                        ItemsSource="{Binding Underlyings}"      
+                                        DisplayMemberPath="value"  
+                                        TextSearchPath="value"
+                                        WatermarkContent="Search underlying"
+                                        NoResultsContent="No results found"
+                                        Width="160" SelectionChanged="RadAutoCompleteBox_SelectionChanged"
+                                        VerticalContentAlignment="Center" VerticalAlignment="Center">
+            </telerik:RadAutoCompleteBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Command="{Binding AddCommand}" Margin="4" >Add</Button>
+            <Button Command="{Binding SaveCommand}" Margin="4" >Save</Button>
+        </StackPanel>
+        <telerik:RadGridView Grid.Row="1"  Margin="4" ShowGroupPanel="True" ItemsSource="{Binding Products}" IsReadOnly="True"
+                             AutoGenerateColumns="False" SelectedItem="{Binding SelectedProduct}" SelectionUnit="FullRow" SelectionMode="Single"
+                             RowIndicatorVisibility="Collapsed">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="ISIN" DataMemberBinding="{Binding ISIN}"/>
+                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>
+                <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}"/>
+                <telerik:GridViewDataColumn Header="Bid" DataMemberBinding="{Binding Bid}"/>
+                <telerik:GridViewDataColumn Header="Ask" DataMemberBinding="{Binding Ask}"/>
+                <telerik:GridViewDataColumn Header="Leverage" DataMemberBinding="{Binding Leverage, StringFormat=\{0:F2\}}"/>
+                <telerik:GridViewDataColumn Header="Ratio" DataMemberBinding="{Binding Ratio}"/>
+                <telerik:GridViewDataColumn Header="Spread" DataMemberBinding="{Binding Spread, StringFormat=P2}"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" 
+                             VerticalAlignment="Stretch" Margin="4" RowIndicatorVisibility="Collapsed"
+                             SelectionUnit="FullRow" SelectionMode="Single" ShowGroupPanel="False" CanUserDeleteRows="True"/>
+    </Grid>
+</UserControl>

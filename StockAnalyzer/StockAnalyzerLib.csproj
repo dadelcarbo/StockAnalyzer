@@ -188,6 +188,18 @@
     <Compile Include="StockClasses\StockDataProviders\CitifirstJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">
+      <DependentUpon>SaxoDataProviderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.Designer.cs">
+      <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderViewModel.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoProduct.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -596,6 +608,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.resx">
+      <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.fr-FR.resx">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -665,6 +680,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

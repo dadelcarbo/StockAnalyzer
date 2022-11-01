@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Net.Http;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -334,7 +335,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            //Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+
+            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            return configDlg.ShowDialog();
+
             return DialogResult.OK;
         }
 

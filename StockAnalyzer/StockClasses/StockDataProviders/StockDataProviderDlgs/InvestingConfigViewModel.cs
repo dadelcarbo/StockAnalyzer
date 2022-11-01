@@ -87,14 +87,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         }
 
 
-        private ICommand _addCommand;
-        public ICommand AddCommand
-        {
-            get
-            {
-                return _addCommand ?? (_addCommand = new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled"));
-            }
-        }
         public StockDictionary StockDico { get; private set; }
         public string FileName { get; private set; }
 
@@ -105,10 +97,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             System.Console.WriteLine(Settings.Default.InvestingUrlRoot);
             Settings.Default.Save();
         }
+        private ICommand _addCommand;
+        public ICommand AddCommand
+        {
+            get
+            {
+                return _addCommand ?? (_addCommand = new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled"));
+            }
+        }
         public void AddEntry()
         {
             var prefix = isIntraday ? "INT_" : string.Empty;
-            var stockName = this.SelectedItem.Exchange == "Paris" ? prefix + this.SelectedItem.Description.Replace(" SA", "").ToUpper(): this.SelectedItem.Symbol;
+            var stockName = this.SelectedItem.Exchange == "Paris" ? prefix + this.SelectedItem.Description.Replace(" SA", "").ToUpper() : this.SelectedItem.Symbol;
             this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
             {
                 Group = StockSerie.Groups.INTRADAY.ToString(),
