@@ -2943,9 +2943,10 @@ namespace StockAnalyzerApp
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
             portfolio.EvaluateOpenedPositions();
-            var htmlReport = reportTemplate.Replace("%HTML_BODY%", GeneratePortfolioReportHtml(portfolio));
-            if (!string.IsNullOrEmpty(htmlReport))
+            var report = GeneratePortfolioReportHtml(portfolio);
+            if (!string.IsNullOrEmpty(report))
             {
+                var htmlReport = reportTemplate.Replace("%HTML_BODY%", report);
                 string fileName = Path.Combine(Folders.Portfolio, $@"Report\{ portfolio.Name }.html");
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
