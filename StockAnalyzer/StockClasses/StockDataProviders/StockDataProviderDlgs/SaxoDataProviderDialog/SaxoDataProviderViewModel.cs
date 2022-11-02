@@ -179,7 +179,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         private void Save()
         {
-            SaxoConfigEntry.SaveToFile(this.Entries, this.configFile);
+            try
+            {
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+                SaxoConfigEntry.SaveToFile(this.Entries, this.configFile);
+                Task.Delay(500).Wait();
+            }
+            catch(Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            finally
+            {
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+            }
         }
 
         private SaxoProduct selectedProduct;
