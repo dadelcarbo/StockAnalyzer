@@ -60,14 +60,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                             Type = p.type.value,
                             Ratio = p.ratioCalculated.value
                         };
-                        if (product.StockName.Contains("long"))
-                        {
-                            product.Type += " Long";
-                        }
-                        else
-                        {
-                            product.Type += " Short";
-                        }
                         if (double.TryParse(p.ask.value.value, out parsed))
                         {
                             product.Ask = parsed;
@@ -79,6 +71,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                         if (double.TryParse(p.leverage.value, out parsed))
                         {
                             product.Leverage = parsed;
+                        }
+                        if (product.StockName.Contains("long"))
+                        {
+                            product.Type += " Long";
+                        }
+                        else
+                        {
+                            product.Type += " Short";
+                            product.Leverage = -product.Leverage;
                         }
                         newProducts.Add(product);
                     }
