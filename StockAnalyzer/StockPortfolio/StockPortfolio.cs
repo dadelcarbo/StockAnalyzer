@@ -120,7 +120,6 @@ namespace StockAnalyzer.StockPortfolio
                 foreach (var file in Directory.EnumerateFiles(downloadFolder, "TradesExecuted_*" + SAXOPORTFOLIO_FILE_EXT).OrderBy(s => s))
                 {
                     var operations = SaxoOperation.LoadFromFile(file);
-                    File.Move(file, Path.Combine(processedFolder, Path.GetFileName(file)));
                     if (operations == null)
                         continue;
                     foreach (var opGroup in operations.GroupBy(o => o.AccountId))
@@ -133,6 +132,10 @@ namespace StockAnalyzer.StockPortfolio
                             portfolio.AddOperation(op);
                         }
                     }
+                    var destFile = Path.Combine(processedFolder, Path.GetFileName(file));
+                    if (File.Exists(destFile))
+                        File.Delete(destFile);
+                    File.Move(file, destFile);
                 }
 
                 // Save SAXO Portfolio
@@ -606,10 +609,9 @@ namespace StockAnalyzer.StockPortfolio
                             Fee = Math.Abs(operation.GrossAmount - operation.NetAmount)
                         };
                         this.TradeOperations.Add(tradeOperation);
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == tradeOperation.StockName);
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
                         if (position != null) // Position on this stock already exists, add new values
                         {
-
                             var openValue = (position.EntryValue * position.EntryQty + operation.Value * operation.Qty) / (position.EntryQty + operation.Qty);
 
                             position.ExitDate = operation.Date;
@@ -650,9 +652,8 @@ namespace StockAnalyzer.StockPortfolio
                             ISIN = operation.GetISIN(),
                             Fee = Math.Abs(operation.GrossAmount - operation.NetAmount)
                         };
-                        this.TradeOperations.Add(tradeOperation);
                         var qty = operation.Qty;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == tradeOperation.StockName);
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
                         if (position != null)
                         {
                             position.ExitDate = operation.Date;
@@ -668,6 +669,8 @@ namespace StockAnalyzer.StockPortfolio
                                     EntryValue = position.EntryValue
                                 });
                             }
+
+                            this.TradeOperations.Add(tradeOperation);
                         }
                         else
                         {
