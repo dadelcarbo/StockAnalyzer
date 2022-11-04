@@ -338,7 +338,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             //Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
 
             var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
-            return configDlg.ShowDialog();
+            configDlg.ShowDialog();
 
             return DialogResult.OK;
         }
