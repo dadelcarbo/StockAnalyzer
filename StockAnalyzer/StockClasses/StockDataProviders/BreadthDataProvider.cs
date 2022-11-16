@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         /// <param name="download"></param>
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
-            string line;
-            string fileName = DataFolder + "\\BreadthCfg.txt";
             // Parse yahoo.cfg file// Create data folder if not existing
             if (!Directory.Exists(DataFolder + FOLDER))
             {
@@ -31,6 +30,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Directory.CreateDirectory(DataFolder + ARCHIVE_FOLDER);
             }
 
+            string line;
+            string fileName = Path.Combine(Folders.PersonalFolder, "Breadth.cfg");
             if (File.Exists(fileName))
             {
                 // Parse GeneratedIndicator.txt file

@@ -67,7 +67,7 @@ namespace StockAnalyzer.StockLogging
                     {
                         try
                         {
-                            foreach (string file in Directory.GetFiles(logFolder))
+                            foreach (string file in Directory.GetFiles(logFolder, "*.log"))
                             {
                                 if (File.GetLastWriteTime(file).Date < DateTime.Today)
                                 {
