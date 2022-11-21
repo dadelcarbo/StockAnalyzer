@@ -238,13 +238,15 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void AddAlert()
         {
+            if (this.TriggerEvent == null)
+                return;
             var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId);
             if (alertDef == null)
             {
-                int nextId = allAlertDefs.Count() == 0 ? 1 : allAlertDefs.Max(a => a.Id) + 1;
+                this.AlertId = allAlertDefs.Count() == 0 ? 1 : allAlertDefs.Max(a => a.Id) + 1;
                 alertDef = new StockAlertDef()
                 {
-                    Id = nextId,
+                    Id = this.alertId,
                     Type = this.alertType
                 };
                 this.allAlertDefs.Insert(0, alertDef);
@@ -294,7 +296,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.Stop = this.Stop;
 
             this.OnPropertyChanged("AlertDefs");
-            this.AlertId = -1;
 
             StockAlertConfig.SaveConfig();
             var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
@@ -331,14 +332,45 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
             allAlertDefs.RemoveAll(a => a.Id == AlertId);
             this.OnPropertyChanged("AlertDefs");
-            this.AlertId = -1;
+            this.Clear();
 
             StockAlertConfig.SaveConfig();
             var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);
         }
-
         #endregion
+        #region NEW ALERT COMMAND
+
+        private CommandBase newAlertCommand;
+
+        public ICommand NewAlertCommand
+        {
+            get
+            {
+                if (newAlertCommand == null)
+                {
+                    newAlertCommand = new CommandBase(NewAlert);
+                }
+
+                return newAlertCommand;
+            }
+        }
+
+        private void NewAlert()
+        {
+            this.Clear();
+        }
+        #endregion
+        private void Clear()
+        {
+            this.AlertId = -1;
+            this.Active = true;
+            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            if (this.Theme.Contains("*"))
+                this.Theme = this.Themes.FirstOrDefault();
+            this.TriggerEvent = null;
+            this.FilterEvent = null;
+        }
     }
 }

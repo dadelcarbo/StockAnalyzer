@@ -592,6 +592,7 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
+            if (Settings.Default.GenerateDailyReport)
             {
                 if (!Directory.Exists(Folders.Log))
                 {
@@ -2967,7 +2968,7 @@ namespace StockAnalyzerApp
             string folderName = Path.Combine(Folders.Report, timeFrame);
             CleanReportFolder(folderName);
 
-            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active) == 0)
+            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active && a.Type == AlertType.Group) == 0)
                 return;
             var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
 
@@ -2991,7 +2992,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlAlerts = string.Empty;
-            foreach (var alertDef in alertDefs.Where(a => a.Active).OrderBy(a => a.Rank))
+            foreach (var alertDef in alertDefs.Where(a => a.Active && a.Type == AlertType.Group).OrderBy(a => a.Rank))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
             }
@@ -3103,7 +3104,7 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ProgressVal++;
                     if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
                     {
-                        stockSerie.BarDuration = StockBarDuration.Daily;
+                        stockSerie.BarDuration = alertDef.BarDuration;
                         if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
                         {
                             if (!stockSerie.HasLiquidity(alertDef.MinLiquidity))
@@ -3111,7 +3112,6 @@ namespace StockAnalyzerApp
                                 continue;
                             }
                         }
-                        stockSerie.BarDuration = alertDef.BarDuration;
                         if (stockSerie.Keys.Last() != lastDate && !stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
                             continue;
 

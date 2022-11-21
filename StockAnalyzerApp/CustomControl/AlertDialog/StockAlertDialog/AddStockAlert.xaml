@@ -7,7 +7,7 @@
              xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d"
-             d:DesignWidth="700" d:DesignHeight="550" Language="fr-FR"
+             d:DesignWidth="900" d:DesignHeight="550" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=local:AddStockAlertViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -30,6 +30,9 @@
                         <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Image Source="../../../Resources/DeleteTheme.png"/>
                         </Button>
+                        <Button Height="26" Margin="1" Command="{Binding NewAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Image Source="../../../Resources/NewAnalysis.png"/>
+                        </Button>
                     </StackPanel>
                     <StackPanel Grid.Row="0">
                         <StackPanel Orientation="Horizontal" Margin="1">
@@ -38,7 +41,7 @@
                             <Label Content="Active"/>
                             <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center"/>
                             <Label Content=" Id "/>
-                            <TextBox Text="{Binding AlertId}" IsEnabled="False" Width="30" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding AlertId, Mode=TwoWay}" IsEnabled="False" Width="30" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80" Content="Group "/>
@@ -80,6 +83,7 @@
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Type" DataMemberBinding="{Binding IndicatorType}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Name" DataMemberBinding="{Binding IndicatorName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Trigger&#x0a;Event" DataMemberBinding="{Binding EventName}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Liquidity" DataMemberBinding="{Binding MinLiquidity}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Filter&#x0a;Type" DataMemberBinding="{Binding FilterType}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Filter&#x0a;Name" DataMemberBinding="{Binding FilterName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Filter&#x0a;Event" DataMemberBinding="{Binding FilterEventName}" IsReadOnly="True"/>

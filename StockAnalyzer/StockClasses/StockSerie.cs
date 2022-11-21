@@ -172,15 +172,22 @@ namespace StockAnalyzer.StockClasses
         public StockSerie SecondarySerie { get; set; }
         public bool HasVolume { get; private set; }
         /// <summary>
-        /// Indicates if a stock has good liquitiy by on the last 10 days by average a exchange in million of Euro.
+        /// Indicates if a stock has good liquitiy by on the last 10 bars by average a exchange in million of Euro.
         /// </summary>
         /// <param name="trigger">0.1 indicates 100K€</param>
         /// <returns></returns>
         public bool HasLiquidity(float trigger)
         {
-            var dailyValues = this.GetValues(StockBarDuration.Daily).OrderByDescending(s => s.DATE).Take(10).ToList();
-            float price = dailyValues.Average(v => v.EXCHANGED) / 1000000f;
-            return price > trigger;
+            int startIndex = Math.Max(0, this.LastCompleteIndex - 9);
+            float value = 0;
+            int nb = 0;
+            for (int i = startIndex; i <= this.LastCompleteIndex; i++)
+            {
+                value += this.ValueArray[i].EXCHANGED;
+                nb++;
+            }
+            value /= nb * 1000000f;
+            return value > trigger;
         }
         #endregion
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT

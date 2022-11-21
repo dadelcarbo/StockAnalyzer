@@ -33,7 +33,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>121</ApplicationRevision>
+    <ApplicationRevision>124</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -1023,7 +1023,9 @@
     <None Include="Resources\Misc-Zoom-Out-icon.png" />
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
-    <None Include="Resources\NewAnalysis.png" />
+    <Content Include="Resources\NewAnalysis.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\ClearFilters.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
