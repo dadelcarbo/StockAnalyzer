@@ -153,6 +153,8 @@
     <Compile Include="StockAgent\Agents\TrailSTOKAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
+    <Compile Include="StockAgent\EntryStops\StockEntryStop_Percent.cs" />
+    <Compile Include="StockAgent\EntryStops\StockEntryStop_None.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_BarLow.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />

@@ -118,7 +118,7 @@ namespace StockAnalyzer.StockAgent
             if (openSerie[entryIndex] * 0.99 <= this.EntryStopValue) // Do not buy if lower than stop level or not more than 1% upper the stop)
                 return;
 
-            this.Trade = new StockTrade(serie, entryIndex, qty, this.EntryStopValue , isLong);
+            this.Trade = new StockTrade(serie, entryIndex, qty, this.EntryStopValue, isLong);
             this.TradeSummary.Trades.Add(this.Trade);
         }
 

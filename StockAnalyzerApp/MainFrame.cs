@@ -53,7 +53,6 @@ using System.Xml.Serialization;
 using Telerik.Windows.Data;
 using StockAnalyzerSettings;
 using StockAnalyzer.StockHelpers;
-using System.Threading.Tasks;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 
 namespace StockAnalyzerApp

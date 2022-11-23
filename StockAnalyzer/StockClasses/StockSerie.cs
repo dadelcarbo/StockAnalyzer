@@ -3152,7 +3152,9 @@ namespace StockAnalyzer.StockClasses
                         }
                         if (newValue != null)
                         {
-                            if (previousDayOfWeek == DayOfWeek.Friday) newValue.IsComplete = true;
+                            var lastDailyValue = dailyValueList.Last();
+                            if (lastDailyValue.DATE.DayOfWeek == DayOfWeek.Friday) 
+                                newValue.IsComplete = lastDailyValue.IsComplete;
                             newBarList.Add(newValue);
                         }
                     }

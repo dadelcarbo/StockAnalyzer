@@ -1303,16 +1303,27 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
             }
+
+            int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
             bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
             if ((key & Keys.Control) != 0)
             {
-                DrawMouseCross(mouseValuePoint, drawHorizontalLine, false, this.DrawingPen, true);
+                if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
+                    (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
+                    (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                {
+                    this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, true);
+                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
+                }
+                else
+                {
+                    DrawMouseCross(mouseValuePoint, drawHorizontalLine, false, this.DrawingPen, true);
+                }
             }
             else
             {
                 DrawMouseCross(mouseValuePoint, drawHorizontalLine, true, this.axisDashPen, false);
             }
-            int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
             if (this.DrawingMode == GraphDrawMode.Normal)
             {
                 if ((key & Keys.Control) != 0)
@@ -1461,14 +1472,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             #endregion
-            #region Display Trail Stop Anchor
-            if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
-                (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
-                (mousePoint.X + 15 >= this.GraphRectangle.Right))
-            {
-                this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, false);
-                this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
-            }
             #endregion
 
             this.PaintForeground();
@@ -2239,9 +2242,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
             if (showText)
-                this.DrawString(graph, stop.ToString("0.### ") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
-        #endregion
         #region Geometric Functions
         private PointF FindClosestExtremum(PointF mouseValuePoint)
         {

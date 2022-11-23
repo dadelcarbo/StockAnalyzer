@@ -104,7 +104,7 @@
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop, StringFormat=F3}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop, StringFormat=F3}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
-                        
+
                         <telerik:GridViewDataColumn Header="Exit&#x0a;Date" DataMemberBinding="{Binding ExitDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Exit" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue, StringFormat=F3}" ColumnGroupName="Exit" IsReadOnly="True"/>
 

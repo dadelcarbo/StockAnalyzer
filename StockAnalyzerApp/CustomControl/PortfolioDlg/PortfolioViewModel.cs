@@ -43,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             get
             {
-                var positions = Portfolio.Positions.Where(p => p.IsClosed).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
+                var positions = Portfolio.Positions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionViewModel(p, this));
                 return positions;
             }
         }
