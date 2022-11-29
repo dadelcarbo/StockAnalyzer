@@ -46,6 +46,7 @@ namespace StockAnalyzer.StockClasses
             //ITALIA,
             //SPAIN,
             USA,
+            SAXO,
             INDICES,
             INDICATOR,
             SECTORS,
@@ -101,6 +102,7 @@ namespace StockAnalyzer.StockClasses
         /// Investing.com ticker used for download
         /// </summary>
         public long Ticker { get; set; }
+        public long SaxoId { get; set; }
         public int SectorId { get; set; }
 
         public string ProductType { get; set; }
@@ -2900,6 +2902,8 @@ namespace StockAnalyzer.StockClasses
                 case Groups.PEA:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL);
                 // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
+                case Groups.SAXO:
+                    return this.SaxoId != 0;
                 default:
                     return this.StockGroup == group;
             }
@@ -3153,7 +3157,7 @@ namespace StockAnalyzer.StockClasses
                         if (newValue != null)
                         {
                             var lastDailyValue = dailyValueList.Last();
-                            if (lastDailyValue.DATE.DayOfWeek == DayOfWeek.Friday) 
+                            if (lastDailyValue.DATE.DayOfWeek == DayOfWeek.Friday)
                                 newValue.IsComplete = lastDailyValue.IsComplete;
                             newBarList.Add(newValue);
                         }

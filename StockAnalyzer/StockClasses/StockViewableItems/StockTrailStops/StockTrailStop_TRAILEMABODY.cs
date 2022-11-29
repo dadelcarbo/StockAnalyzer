@@ -3,10 +3,10 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILEMACD : StockTrailStopBase
+    public class StockTrailStop_TRAILEMABODY : StockTrailStopBase
     {
         public override string Definition => base.Definition + Environment.NewLine +
-            "Draw a trail stop that is calculated as a EMACD from a HIGHEST and trailing according to Finacial Wisdom EMACD style.";
+            "Draw a trail stop based on first body above the or below the EMA.";
 
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -15,16 +15,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override bool RequiresVolumeData { get { return false; } }
         public override string[] ParameterNames
         {
-            get { return new string[] { "LongPeriod", "ShortPeriod", "SignalPeriod" }; }
+            get { return new string[] { "Period", "UseBody" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 26, 12, 9 }; }
+            get { return new Object[] { 30, true }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeBool() }; }
         }
 
         public override void ApplyTo(StockSerie stockSerie)
@@ -32,44 +32,55 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, SerieNames[1], float.NaN);
 
-            int longPeriod = (int)this.parameters[0];
-            int shortPeriod = (int)this.parameters[1];
-            int signalPeriod = (int)this.parameters[2];
+            int period = (int)this.parameters[0];
+            bool useBody = (bool)this.parameters[1];
 
-            var emacd = stockSerie.GetIndicator($"EMACD({longPeriod},{shortPeriod},{signalPeriod})");
-            var highest = stockSerie.GetIndicator($"HIGHEST({longPeriod})").Series[0];
+            var ema = stockSerie.GetIndicator($"EMA({period})").Series[0];
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-
-            var positiveEvents = emacd.GetEvents("Positive");
-            var firstBelowSignalEvents = emacd.GetEvents("FirstBelowSignal");
-            float trailStop = float.NaN;
+            var bodyLowSerie = stockSerie.GetSerie(useBody ? StockDataType.BODYLOW : StockDataType.LOW);
+            var bodyHighSerie = stockSerie.GetSerie(useBody ? StockDataType.BODYHIGH : StockDataType.HIGH);
 
             bool upTrend = false;
-            for (int i = longPeriod; i < stockSerie.Count; i++)
+            bool downTrend = false;
+            for (int i = 1; i < stockSerie.Count; i++)
             {
                 if (upTrend)
                 {
-                    if (closeSerie[i] < trailStop)
+                    if (closeSerie[i] < ema[i])
                     {
                         upTrend = false;
                     }
                     else
                     {
-                        if (firstBelowSignalEvents[i])
-                        {
-                            trailStop = Math.Min(lowSerie[i], lowSerie[i - 1]);
-                        }
-                        longStopSerie[i] = trailStop;
+                        longStopSerie[i] = ema[i];
                     }
                 }
                 else
                 {
-                    if (positiveEvents[i] && highest[i] > longPeriod)
+                    if (bodyLowSerie[i] > ema[i])
                     {
+                        longStopSerie[i] = ema[i];
                         upTrend = true;
-                        trailStop = lowSerie.GetMin(i - shortPeriod, i);
-                        longStopSerie[i] = trailStop;
+                    }
+                }
+
+                if (downTrend)
+                {
+                    if (closeSerie[i] > ema[i])
+                    {
+                        downTrend = false;
+                    }
+                    else
+                    {
+                        shortStopSerie[i] = ema[i];
+                    }
+                }
+                else
+                {
+                    if (bodyHighSerie[i] < ema[i])
+                    {
+                        shortStopSerie[i] = ema[i];
+                        downTrend = true;
                     }
                 }
             }

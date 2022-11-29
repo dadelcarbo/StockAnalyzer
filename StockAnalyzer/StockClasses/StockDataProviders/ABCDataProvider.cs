@@ -332,6 +332,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
+            //DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.USA);
 
             // Load Config files
             string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
@@ -463,7 +464,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                         {
                             string[] row = line.Split(';');
-                            string stockName = row[1].ToUpper().Replace("-", " ").Replace("  ", " ");
+                            string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                             if (!stockDictionary.ContainsKey(stockName))
                             {
                                 StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
@@ -500,6 +501,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return line.StartsWith("PT");
                 case StockSerie.Groups.SECTORS_CAC:
                     return line.StartsWith("QS");
+                case StockSerie.Groups.USA:
+                    return line.StartsWith("US");
                     //case StockSerie.Groups.GERMANY:
                     //    return line.StartsWith("DE");
                     //case StockSerie.Groups.ITALIA:
@@ -671,6 +674,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockSerie.Groups.SBF120:
                     abcGroup = "xsbf120p";
+                    break;
+                case StockSerie.Groups.USA:
+                    abcGroup = "usau";
                     break;
                 //case StockSerie.Groups.GERMANY:
                 //    abcGroup = "germanyf";

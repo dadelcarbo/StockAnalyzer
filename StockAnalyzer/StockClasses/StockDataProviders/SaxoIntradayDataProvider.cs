@@ -6,7 +6,6 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -22,6 +21,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\SaxoIntraday";
         static private readonly string CONFIG_FILE = "SaxoIntradayDownload.cfg";
         static private readonly string CONFIG_FILE_USER = "SaxoIntradayDownload.user.cfg";
+        static private readonly string SAXO_ID_FILE = "SaxoUnderlyings.cfg";
+
+        static public string SaxoUnderlyingFile => Path.Combine(Folders.PersonalFolder, SAXO_ID_FILE);
 
         public string UserConfigFileName => CONFIG_FILE_USER;
 
@@ -37,10 +39,40 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Directory.CreateDirectory(DataFolder + INTRADAY_FOLDER);
             }
 
+            // Init Saxo ID
+            InitSaxoIds(stockDictionary, Path.Combine(Folders.PersonalFolder, SAXO_ID_FILE));
+
             // Parse SaxoIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+        }
+
+        private void InitSaxoIds(StockDictionary stockDictionary, string fileName)
+        {
+            string line;
+            if (File.Exists(fileName))
+            {
+                using (var sr = new StreamReader(fileName, true))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        line = sr.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                        var row = line.Split(',');
+                        var stockName = row[1].ToUpper();
+                        if (stockDictionary.ContainsKey(stockName))
+                        {
+                            stockDictionary[stockName].SaxoId = long.Parse(row[0]);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Saxo Underlying {stockName} not found in stockDictionary");
+                        }
+                    }
+                }
+            }
         }
 
         public override bool SupportsIntradayDownload => true;

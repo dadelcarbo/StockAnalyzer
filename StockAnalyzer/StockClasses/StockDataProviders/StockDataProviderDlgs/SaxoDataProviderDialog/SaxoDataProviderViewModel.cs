@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
@@ -19,14 +20,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
     {
         public SaxoDataProviderViewModel(StockDictionary stockDico, string cfgFile)
         {
-            this.configFile = cfgFile;
-            var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/search/*?productsSize=1&underlyingsSize=700&locale=fr_BE");
-            if (!string.IsNullOrEmpty(jsonData))
+            try
             {
-                var result = JsonConvert.DeserializeObject<SaxoUnderlyings>(jsonData);
-                this.Underlyings = result?.entries?.FirstOrDefault(e => e.key == "underlyings")?.entries;
+                this.configFile = cfgFile;
+                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/search/*?productsSize=1&underlyingsSize=700&locale=fr_BE");
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    var result = JsonConvert.DeserializeObject<SaxoUnderlyings>(jsonData);
+                    this.Underlyings = result?.entries?.FirstOrDefault(e => e.key == "underlyings")?.entries;
+
+                    // Load config file
+                    var underlyingFile = File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList();
+                    var ids = underlyingFile.Select(l => l.Split(',')[0]).ToList();
+
+                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value).ToList();
+                    if (newIds.Count > 0)
+                    {
+                        underlyingFile.AddRange(newIds);
+                        File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyingFile);
+
+                        MessageBox.Show("New Uderlying detected: " + Environment.NewLine + newIds.Aggregate((i,j) => i + Environment.NewLine + j));
+                    }
+                }
+                this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(cfgFile));
             }
-            this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(cfgFile));
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
         }
 
         private List<Entry> underlyings;
@@ -185,7 +206,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                 SaxoConfigEntry.SaveToFile(this.Entries, this.configFile);
                 Task.Delay(250).Wait();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 StockLog.Write(ex);
             }

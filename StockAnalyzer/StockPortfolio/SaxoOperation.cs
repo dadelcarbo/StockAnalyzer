@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockPortfolio
             var year = int.Parse(fields[2]);
             var day = int.Parse(fields[0]);
             int month;
-            switch (fields[1])
+            switch (fields[1].ToLower())
             {
                 case "janv.":
                     month = 1;
@@ -121,6 +121,7 @@ namespace StockAnalyzer.StockPortfolio
                     month = 10;
                     break;
                 case "nov.":
+                case "nov":
                     month = 11;
                     break;
                 case "déc.":

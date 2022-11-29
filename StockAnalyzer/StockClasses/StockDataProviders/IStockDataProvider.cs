@@ -3,17 +3,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     public enum StockDataProvider
     {
         ABC,
-        BarChart,
+        Yahoo,
+        YahooIntraday,
         InvestingIntraday,
         SocGenIntraday,
-        SaxoIntraday,
         Portfolio,
         Generated,
         Replay,
         Breadth,
         Investing,
-        Yahoo,
-        YahooIntraday,
+        SaxoIntraday,
         Citifirst
     }
 
