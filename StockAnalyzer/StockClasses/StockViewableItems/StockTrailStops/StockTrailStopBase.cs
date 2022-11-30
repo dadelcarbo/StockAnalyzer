@@ -239,28 +239,46 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             float alpha = 2.0f / (ReentryPeriod + 1f);
             var longReentrySerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);
             this.Series[2] = longReentrySerie;
+
+            var reentryRangeSerie = new FloatSerie(stockSerie.Count, this.ExtraNames[0], float.NaN);
+            this.Extras[0] = reentryRangeSerie;
+            var distToReentrySerie = new FloatSerie(stockSerie.Count, this.ExtraNames[1], float.NaN);
+            this.Extras[1] = distToReentrySerie;
+            var barsInReentrySerie = new FloatSerie(stockSerie.Count, this.ExtraNames[2], float.NaN);
+            this.Extras[2] = barsInReentrySerie;
+
             if (this.ReentryPeriod == 0)
                 return;
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             float longReentry = float.NaN;
             float previousResistance = float.MinValue;
+
+            int barsInReentry = 0;
+            float longReentryLow = float.NaN;
+            float previousHigh = float.NaN;
             for (int i = ReentryPeriod; i < stockSerie.Count; i++)
             {
                 if (!float.IsNaN(longStop[i])) // Bullish
                 {
                     if (float.IsNaN(longReentry))
                     {
-                        var previousHigh = highSerie[i - 1];
-                        if (previousHigh > highSerie[i] && float.IsNaN(longReentrySerie[i - 1]))
+                        previousHigh = highSerie[i - 1];
+                        if (previousHigh > highSerie[i] && float.IsNaN(longReentrySerie[i - 1])) // Starting LongReentry resistance.
                         {
                             longReentry = previousHigh;
-                            longReentrySerie[i - 1] = float.NaN;
                             longReentrySerie[i] = longReentry;
+
+                            longReentryLow = lowSerie[i];
+                            reentryRangeSerie[i] = (previousHigh - longReentryLow) / previousHigh;
+                            distToReentrySerie[i] = (longReentry - closeSerie[i]) / longReentry;
+                            barsInReentrySerie[i] = barsInReentry = 1;
                         }
                     }
                     else
                     {
+
                         if (closeSerie[i] > longReentry)
                         {
                             this.stockTexts.Add(new StockText
@@ -273,11 +291,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             previousResistance = longReentry;
                             longReentry = float.NaN;
                             this.Events[10][i] = true;
+
+                            reentryRangeSerie[i] = (previousHigh - longReentryLow) / previousHigh;
+                            barsInReentrySerie[i] = ++barsInReentry;
                         }
                         else
                         {
                             longReentry = Math.Min(longReentry, longReentry + alpha * (highSerie[i] - longReentry));
                             longReentrySerie[i] = longReentry;
+
+                            longReentryLow = Math.Min(lowSerie[i], longReentryLow);
+                            reentryRangeSerie[i] = (previousHigh - longReentryLow) / previousHigh;
+                            distToReentrySerie[i] = (longReentry - closeSerie[i]) / longReentry;
+                            barsInReentrySerie[i] = ++barsInReentry;
                         }
                     }
                 }

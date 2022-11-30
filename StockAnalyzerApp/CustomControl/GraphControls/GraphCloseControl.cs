@@ -994,7 +994,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             // Add Trail Stops
-            var trailValue = float.NaN;
+            var reentry = float.NaN;
             var trailName = string.Empty;
             if (CurveList.TrailStop != null)
             {
@@ -1003,27 +1003,31 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (CurveList.TrailStop.Series[i] != null && CurveList.TrailStop.Series[i].Count > 0 && !float.IsNaN(CurveList.TrailStop.Series[i][this.lastMouseIndex]))
                     {
                         trailName = CurveList.TrailStop.Series[i].Name;
-                        trailValue = CurveList.TrailStop.Series[i][this.lastMouseIndex];
-                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
-                        if (!float.IsNaN(trailValue))
+                        reentry = CurveList.TrailStop.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, reentry, 12) + "\r\n";
+                        if (!float.IsNaN(reentry))
                         {
-                            value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                            value += BuildTabbedString(trailName, (Math.Abs(reentry - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
                         }
                     }
                 }
+                value += "\r\n";
                 foreach (var extra in CurveList.TrailStop.Extras)
                 {
                     if (extra != null && extra.Count > 0 && !float.IsNaN(extra[this.lastMouseIndex]))
                     {
                         trailName = extra.Name;
-                        trailValue = extra[this.lastMouseIndex];
-                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
-                        if (!float.IsNaN(trailValue))
+                        reentry = extra[this.lastMouseIndex];
+                        if (extra.Name.StartsWith("Bars"))
                         {
-                            value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                            value += BuildTabbedString(trailName, reentry, 12) + "\r\n\r\n";
+                        }
+                        else
+                        {
+                            value += BuildTabbedString(trailName, reentry.ToString("P2"), 12) + "\r\n";
                         }
                     }
-                }    
+                }
             }
             if (CurveList.AutoDrawing != null)
             {
@@ -1032,13 +1036,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (CurveList.AutoDrawing.Series[i] != null && CurveList.AutoDrawing.Series[i].Count > 0 && !float.IsNaN(CurveList.AutoDrawing.Series[i][this.lastMouseIndex]))
                     {
                         trailName = CurveList.AutoDrawing.Series[i].Name;
-                        trailValue = CurveList.AutoDrawing.Series[i][this.lastMouseIndex];
-                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
+                        reentry = CurveList.AutoDrawing.Series[i][this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, reentry, 12) + "\r\n";
                     }
                 }
-                if (!float.IsNaN(trailValue))
+                if (!float.IsNaN(reentry))
                 {
-                    value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                    value += BuildTabbedString(trailName, (Math.Abs(reentry - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
                 }
             }
             // Add Cloud
