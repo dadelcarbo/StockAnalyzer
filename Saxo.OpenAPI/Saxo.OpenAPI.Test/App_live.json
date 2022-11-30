@@ -1,0 +1,11 @@
+﻿{
+  "AppName": "UltimateChartist",
+  "AppKey": "6d4f35deb92e4f40bc4f489cb6f8e23a",
+  "AuthorizationEndpoint": "https://live.logonvalidation.net/authorize",
+  "TokenEndpoint": "https://live.logonvalidation.net/token",
+  "GrantType": "PKCE",
+  "OpenApiBaseUrl": "https://gateway.saxobank.com/openapi/",
+  "RedirectUrls": [
+    "http://localhost/ultimatechartist"
+  ]
+}

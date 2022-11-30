@@ -1011,6 +1011,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
+                foreach (var extra in CurveList.TrailStop.Extras)
+                {
+                    if (extra != null && extra.Count > 0 && !float.IsNaN(extra[this.lastMouseIndex]))
+                    {
+                        trailName = extra.Name;
+                        trailValue = extra[this.lastMouseIndex];
+                        value += BuildTabbedString(trailName, trailValue, 12) + "\r\n";
+                        if (!float.IsNaN(trailValue))
+                        {
+                            value += BuildTabbedString(trailName, (Math.Abs(trailValue - closeValue) / closeValue).ToString("P2"), 12) + "\r\n";
+                        }
+                    }
+                }    
             }
             if (CurveList.AutoDrawing != null)
             {

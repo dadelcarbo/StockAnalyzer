@@ -1,0 +1,36 @@
+{
+  "AccountKey": "CqAIyjxiY2PltblJsb76Qg==",
+  "Uic": 25124,
+  "AssetType": "Stock",
+  "OrderType": "StopIfTraded",
+  "BuySell": "Buy",
+  "Amount": 185,
+  "OrderDuration": { "DurationType": "GoodTillCancel" },
+  "OrderRelation": "StandAlone",
+  "AppHint": 17105153,
+  "OrderPrice": 5.28,
+  "Orders": [
+    {
+      "AccountKey": "CqAIyjxiY2PltblJsb76Qg==",
+      "Uic": 25124,
+      "AssetType": "Stock",
+      "Amount": 185,
+      "BuySell": "Sell",
+      "OrderDuration": { "DurationType": "GoodTillCancel" },
+      "OrderPrice": 5.735,
+      "OrderType": "Limit",
+      "AppHint": 17105153
+    },
+    {
+      "AccountKey": "CqAIyjxiY2PltblJsb76Qg==",
+      "Uic": 25124,
+      "AssetType": "Stock",
+      "Amount": 185,
+      "BuySell": "Sell",
+      "OrderDuration": { "DurationType": "GoodTillCancel" },
+      "OrderPrice": 5.025,
+      "OrderType": "StopIfTraded",
+      "AppHint": 17105153
+    }
+  ]
+}

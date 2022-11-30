@@ -232,4 +232,3 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 .vs/*
-/Saxo.OpenAPI

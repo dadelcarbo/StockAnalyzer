@@ -11,6 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public StockTrailStopBase()
         {
             this.series = new FloatSerie[this.SeriesCount];
+            this.extras = new FloatSerie[this.ExtraNames.Length];
             if (EventCount != 0)
             {
                 this.eventSeries = new BoolSerie[this.EventCount];
@@ -40,6 +41,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         protected FloatSerie[] series;
         public FloatSerie[] Series { get { return series; } }
+
+        public string[] ExtraNames { get { return new string[] { "ReentryRange", "DistToReentry", "BarsInReentry" }; } }
+
+        protected FloatSerie[] extras;
+        public FloatSerie[] Extras { get { return extras; } }
 
         public virtual System.Drawing.Pen[] SeriePens
         {
@@ -231,54 +237,54 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         private void CalculateLongReentry(StockSerie stockSerie, FloatSerie longStop, FloatSerie shortStop)
         {
             float alpha = 2.0f / (ReentryPeriod + 1f);
-            var resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);
-            this.Series[2] = resistanceSerie;
+            var longReentrySerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);
+            this.Series[2] = longReentrySerie;
             if (this.ReentryPeriod == 0)
                 return;
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            float resistance = float.NaN;
+            float longReentry = float.NaN;
             float previousResistance = float.MinValue;
             for (int i = ReentryPeriod; i < stockSerie.Count; i++)
             {
                 if (!float.IsNaN(longStop[i])) // Bullish
                 {
-                    if (float.IsNaN(resistance))
+                    if (float.IsNaN(longReentry))
                     {
                         var previousHigh = highSerie[i - 1];
-                        if (previousHigh > highSerie[i] && float.IsNaN(resistanceSerie[i - 1]))
+                        if (previousHigh > highSerie[i] && float.IsNaN(longReentrySerie[i - 1]))
                         {
-                            resistance = previousHigh;
-                            resistanceSerie[i - 1] = float.NaN;
-                            resistanceSerie[i] = resistance;
+                            longReentry = previousHigh;
+                            longReentrySerie[i - 1] = float.NaN;
+                            longReentrySerie[i] = longReentry;
                         }
                     }
                     else
                     {
-                        if (closeSerie[i] > resistance)
+                        if (closeSerie[i] > longReentry)
                         {
                             this.stockTexts.Add(new StockText
                             {
                                 AbovePrice = false,
                                 Index = i,
-                                Text = resistance > previousResistance ? "HBO" : "LBO"
+                                Text = longReentry > previousResistance ? "HBO" : "LBO"
                             });
-                            resistanceSerie[i] = resistance;
-                            previousResistance = resistance;
-                            resistance = float.NaN;
+                            longReentrySerie[i] = longReentry;
+                            previousResistance = longReentry;
+                            longReentry = float.NaN;
                             this.Events[10][i] = true;
                         }
                         else
                         {
-                            resistance = Math.Min(resistance, resistance + alpha * (highSerie[i] - resistance));
-                            resistanceSerie[i] = resistance;
+                            longReentry = Math.Min(longReentry, longReentry + alpha * (highSerie[i] - longReentry));
+                            longReentrySerie[i] = longReentry;
                         }
                     }
                 }
                 else // Bearish
                 {
-                    previousResistance = resistance;
-                    resistance = float.NaN;
+                    previousResistance = longReentry;
+                    longReentry = float.NaN;
                 }
 
             }
