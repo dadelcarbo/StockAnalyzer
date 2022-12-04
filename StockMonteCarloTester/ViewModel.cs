@@ -44,7 +44,7 @@ namespace MonteCarloTester
                 this.AvgReturn[j] = new GraphValue { X = j };
             }
             this.WorstReturn = this.BestReturn = Calculate();
-            for (int i = 1; i < NbIter; i++)
+            for (int i = 1; i <= NbIter; i++)
             {
                 var series = this.Calculate();
                 if (this.WorstReturn.Last().Y > series.Last().Y)

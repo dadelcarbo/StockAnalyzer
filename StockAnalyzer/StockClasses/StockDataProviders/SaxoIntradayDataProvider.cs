@@ -79,7 +79,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(StockSerie stockSerie)
         {
-            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
@@ -101,7 +101,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (stockSerie.Count > 0)
             {
-                if (DownloadHistory.ContainsKey(stockSerie.ShortName) && DownloadHistory[stockSerie.ShortName] > DateTime.Now.AddMinutes(-2))
+                if (DownloadHistory.ContainsKey(stockSerie.Symbol) && DownloadHistory[stockSerie.Symbol] > DateTime.Now.AddMinutes(-2))
                 {
                     return false;  // Do not download more than every 2 minutes.
                 }
@@ -123,13 +123,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        if (DownloadHistory.ContainsKey(stockSerie.ShortName))
+                        if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                         {
-                            DownloadHistory[stockSerie.ShortName] = DateTime.Now;
+                            DownloadHistory[stockSerie.Symbol] = DateTime.Now;
                         }
                         else
                         {
-                            DownloadHistory.Add(stockSerie.ShortName, DateTime.Now);
+                            DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                         }
                         var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
                         var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
@@ -182,7 +182,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
 
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                         var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
 
@@ -202,7 +202,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (stockSerie.Count > 0)
             {
-                if (DownloadHistory.ContainsKey(stockSerie.ShortName) && DownloadHistory[stockSerie.ShortName] > DateTime.Now.AddSeconds(-30))
+                if (DownloadHistory.ContainsKey(stockSerie.Symbol) && DownloadHistory[stockSerie.Symbol] > DateTime.Now.AddSeconds(-30))
                 {
                     return false;  // Do not download more than every 2 minutes.
                 }
@@ -224,13 +224,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     try
                     {
-                        if (DownloadHistory.ContainsKey(stockSerie.ShortName))
+                        if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                         {
-                            DownloadHistory[stockSerie.ShortName] = DateTime.Now;
+                            DownloadHistory[stockSerie.Symbol] = DateTime.Now;
                         }
                         else
                         {
-                            DownloadHistory.Add(stockSerie.ShortName, DateTime.Now);
+                            DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                         }
                         var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
                         var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
@@ -259,7 +259,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (nbNewBars > 0)
                         {
                             var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ShortName.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
                             var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
 

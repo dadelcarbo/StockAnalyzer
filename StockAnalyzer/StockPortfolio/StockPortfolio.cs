@@ -1,13 +1,18 @@
-﻿using StockAnalyzer.StockAgent;
+﻿using Saxo.OpenAPI.AuthenticationServices;
+using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -33,6 +38,14 @@ namespace StockAnalyzer.StockPortfolio
         }
         #endregion
 
+        #region SAXO Sync
+        public void SaxoSync()
+        {
+            // new AccountService
+
+        }
+        #endregion
+
         public StockPortfolio()
         {
             this.TradeOperations = new List<StockTradeOperation>();
@@ -51,6 +64,7 @@ namespace StockAnalyzer.StockPortfolio
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
         public string SaxoAccountId { get; set; }
+        public string SaxoClientId { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
@@ -902,5 +916,80 @@ namespace StockAnalyzer.StockPortfolio
             return this.Name;
         }
 
+        public void Refresh()
+        {
+            if (string.IsNullOrEmpty(this.SaxoClientId))
+            {
+                Task.Delay(500).Wait();
+                return;
+            }
+
+            try
+            {
+                LoginService.Login(this.SaxoClientId, Path.Combine(Folders.Portfolio, "App.json"));
+                var accountService = new AccountService();
+                var account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
+                if (account == null)
+                {
+                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Check related orders
+                var orders = new OrderService().GetOrders(account);
+                var positions = accountService.GetPositions(account).Where(p => p.PositionBase.CanBeClosed).OrderBy(p => p.PositionId);
+                foreach (var saxoPosition in positions)
+                {
+                    var posId = long.Parse(saxoPosition.PositionId);
+                    var position = this.Positions.FirstOrDefault(p => p.Id == posId);
+                    if (position == null)
+                    {
+                        var instrument = new InstrumentService().GetInstrumentById(saxoPosition.PositionBase.Uic, account);
+                        if (instrument == null)
+                        {
+                            MessageBox.Show($"Instrument: {saxoPosition.PositionBase.Uic} not found !", "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            continue;
+                        }
+                        // Find instrument in stock Dictionnary
+                        var symbol = instrument.Symbol.Split(':')[0];
+                        var stockName = instrument.Description.ToUpper();
+                        var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol == symbol || s.StockName == stockName);
+                        if (stockSerie == null)
+                        {
+                            MessageBox.Show($"Serie symbol: {instrument.Description} not found !", "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            continue;
+                        }
+
+                        var newStockPosition = new StockPosition()
+                        {
+                            Id = posId,
+                            EntryQty = (int)saxoPosition.PositionBase.Amount,
+                            EntryDate = saxoPosition.PositionBase.ExecutionTimeOpen,
+                            EntryValue = saxoPosition.PositionBase.OpenPrice,
+                            ISIN = stockSerie.ISIN,
+                            StockName = stockSerie.StockName,
+                            BarDuration = stockSerie.StockGroup == StockSerie.Groups.INTRADAY ? BarDuration.H_1 : BarDuration.Daily,
+                        };
+                        this.Positions.Add(newStockPosition);
+
+                        // Find Stop and target orders
+                        var stopOrder = orders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
+                        if (stopOrder != null)
+                        {
+                            newStockPosition.Stop = stopOrder.Price;
+                            newStockPosition.TrailStop = stopOrder.Price;
+                        }
+                    }
+                    else
+                    {
+                        // ??/ What to do ////
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

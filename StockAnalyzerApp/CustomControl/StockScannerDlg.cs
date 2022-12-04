@@ -438,7 +438,7 @@ namespace StockAnalyzerApp.CustomControl
                             stockSerie.IsInitialised = false;
 
                             Thread thread = new Thread(DownloadSerie);
-                            thread.Name = "Scanner Dnld " + stockSerie.ShortName;
+                            thread.Name = "Scanner Dnld " + stockSerie.Symbol;
                             thread.Start(stockSerie);
                         }
                     }

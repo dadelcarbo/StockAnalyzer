@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override bool LoadData(StockSerie stockSerie)
         {
             // Read archive first
-            string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+            string fileName = stockSerie.Symbol + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
             string fullFileName = DataFolder + ARCHIVE_FOLDER + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateABCSectorEqualWeight(stockSerie, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 }
             }
-            string[] row = stockSerie.ShortName.Split('.');
+            string[] row = stockSerie.Symbol.Split('.');
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
             switch (row[0].Split('_')[0])
             {

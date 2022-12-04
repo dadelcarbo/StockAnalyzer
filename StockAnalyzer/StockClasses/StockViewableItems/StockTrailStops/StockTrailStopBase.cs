@@ -278,7 +278,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     }
                     else
                     {
-
                         if (closeSerie[i] > longReentry)
                         {
                             this.stockTexts.Add(new StockText
@@ -312,7 +311,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     previousResistance = longReentry;
                     longReentry = float.NaN;
                 }
-
             }
         }
         #region IStockText implementation

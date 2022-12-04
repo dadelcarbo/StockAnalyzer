@@ -303,7 +303,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
                     Group = stockSerie.StockGroup.ToString(),
-                    ShortName = stockSerie.ShortName,
+                    Symbol = stockSerie.Symbol,
                     //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",
                     Name = stockSerie.StockName,
                     Value = lastValue,

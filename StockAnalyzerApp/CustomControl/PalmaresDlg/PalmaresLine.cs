@@ -7,7 +7,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     {
         public string Sector { get; set; }
         public string Group { get; set; }
-        public string ShortName { get; set; }
+        public string Symbol { get; set; }
         public string Name { get; set; }
         public float Value { get; set; }
         [DisplayName("Period %")]

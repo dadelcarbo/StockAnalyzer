@@ -69,7 +69,7 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region public properties
         public string StockName { get; private set; }
-        public string ShortName { get; private set; }
+        public string Symbol { get; private set; }
         public string ABCName
         {
             get
@@ -79,19 +79,19 @@ namespace StockAnalyzer.StockClasses
                 {
                     case "FR":
                     case "QS":
-                        return this.ShortName + "p";
+                        return this.Symbol + "p";
                     case "BE":
-                        return this.ShortName + "g";
+                        return this.Symbol + "g";
                     case "NL":
-                        return this.ShortName + "n";
+                        return this.Symbol + "n";
                     case "DE":
-                        return this.ShortName + "f";
+                        return this.Symbol + "f";
                     case "IT":
-                        return this.ShortName + "i";
+                        return this.Symbol + "i";
                     case "ES":
-                        return this.ShortName + "m";
+                        return this.Symbol + "m";
                     case "PT":
-                        return this.ShortName + "I";
+                        return this.Symbol + "I";
                 }
                 return null;
             }
@@ -135,7 +135,7 @@ namespace StockAnalyzer.StockClasses
             if (this.BelongsToGroup(Groups.CACALL))
             {
                 string path = Folders.AgendaFolder;
-                string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+                string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
                 if (File.Exists(fileName))
                 {
                     using (FileStream fs = new FileStream(fileName, FileMode.Open))
@@ -154,7 +154,7 @@ namespace StockAnalyzer.StockClasses
         {
             if (this.Agenda == null) return;
             string path = Folders.AgendaFolder;
-            string fileName = path + @"\" + this.ShortName + "_" + this.StockGroup + ".xml";
+            string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
                 System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
@@ -572,7 +572,7 @@ namespace StockAnalyzer.StockClasses
         public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
-            this.ShortName = shortName;
+            this.Symbol = shortName;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortfolioSerie = false;
@@ -585,7 +585,7 @@ namespace StockAnalyzer.StockClasses
         public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
-            this.ShortName = shortName;
+            this.Symbol = shortName;
             this.ISIN = isin;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();

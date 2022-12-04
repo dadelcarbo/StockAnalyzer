@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30104.148
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAnalyzerApp", "StockAnalyzerApp\StockAnalyzerApp.csproj", "{4160792F-0A7C-4ABE-AD3D-83603AD6DF29}"
 	ProjectSection(ProjectDependencies) = postProject

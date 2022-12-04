@@ -9,7 +9,7 @@ namespace StockAnalyzerApp.CustomControl.AgendaDlg
         {
             InitializeComponent();
 
-            this.Text = "Agenda for " + stockSerie.ShortName + " - " + stockSerie.StockName;
+            this.Text = "Agenda for " + stockSerie.Symbol + " - " + stockSerie.StockName;
             stockSerie.Agenda.SortDescending();
             this.stockAgendaUserControl1.DataContext = stockSerie.Agenda;
         }

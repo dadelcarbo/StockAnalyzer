@@ -30,6 +30,9 @@
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="0,4,4,0" VerticalAlignment="Top">
+                <Image Source="../../Resources/Reload.png"/>
+            </Button>
             <Button x:Name="reportButton" Height="24" Width="24" Click="reportButton_Click" Margin="0,4,4,0" VerticalAlignment="Top">
                 <Image Source="../../Resources/email.png"/>
             </Button>

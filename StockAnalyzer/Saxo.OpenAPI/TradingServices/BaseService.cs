@@ -7,13 +7,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
 {
     public abstract class BaseService
     {
-
         /// <summary>
         /// Get Authorization header
         /// </summary>
@@ -29,15 +29,16 @@ namespace Saxo.OpenAPI.TradingServices
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        protected T Get<T>(Uri url)
+        protected T Get<T>(string method)
         {
             string content = string.Empty;
             try
             {
+                var url = new Uri(LoginHelpers.App.OpenApiBaseUrl + method);
                 Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url)
                 {
-                    Version = new Version(2, 0)  // Make sure HTTP/2 is used, once available
+                    Version = new Version(1, 1)  // Make sure HTTP/2 is used, once available
                 };
                 request.Headers.Authorization = GetAuthorizationHeader(LoginHelpers.Token);
 
@@ -49,6 +50,7 @@ namespace Saxo.OpenAPI.TradingServices
                     // since most requests are quite small.
                     // We therefore strongly recommend against using the Expect:100 - Continue header, and expect you to make sure your client library does not rely on this mechanism.
                     httpClient.DefaultRequestHeaders.ExpectContinue = false;
+
                     var res = httpClient.SendAsync(request).Result;
                     content = res.Content.ReadAsStringAsync().Result;
                     res.EnsureSuccessStatusCode();
@@ -65,13 +67,14 @@ namespace Saxo.OpenAPI.TradingServices
         /// <summary>
         /// Send out POST request
         /// </summary>
-        /// <param name="url"></param>
+        /// <param name="method"></param>
         /// <returns></returns>
-        protected T Post<T>(Uri url, object data)
+        protected T Post<T>(string method, object data)
         {
             string content = string.Empty;
             try
             {
+                var url = new Uri(LoginHelpers.App.OpenApiBaseUrl + method);
                 Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
                 {

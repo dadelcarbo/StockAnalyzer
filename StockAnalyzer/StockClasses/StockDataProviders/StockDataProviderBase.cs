@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         virtual public bool LoadData(StockSerie stockSerie)
         {
             // Read archive first
-            string fileName = stockSerie.ShortName + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
+            string fileName = stockSerie.Symbol + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
             string fullFileName = DataFolder + DAILY_ARCHIVE_SUBFOLDER + stockSerie.DataProvider.ToString() + "\\" + fileName;
             bool res = ParseCSVFile(stockSerie, fullFileName);
 
@@ -219,66 +219,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
         #region CSV FILE IO
-        //protected virtual bool ParseOptixFile(StockSerie stockSerie, string dataFolder)
-        //{
-        //   string fileName = dataFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
-
-        //   if (File.Exists(fileName))
-        //   {
-        //      using (StreamReader sr = new StreamReader(fileName))
-        //      {
-        //         string line = sr.ReadLine();  // Skip the first line
-        //         StockDailyValue dailyValue = null;
-        //         while (!sr.EndOfStream)
-        //         {
-        //            line = sr.ReadLine();  // Skip the first line
-        //            var fields = line.Split(',');
-        //            if (fields.Count() < 2 || string.IsNullOrEmpty(fields[0])) continue;
-        //            DateTime date = DateTime.Parse(fields[0], usCulture);
-
-        //            // Try to find the matching value at date in the serie
-        //            if (date >= stockSerie.Keys.First() && stockSerie.ContainsKey(date))
-        //            {
-        //               dailyValue = stockSerie[date];
-        //               dailyValue.OPTIX = float.Parse(fields[1], usCulture);
-        //            }
-        //         }
-        //      }
-        //      return true;
-        //   }
-        //   else
-        //   {
-        //      return false;
-        //   }
-        //}
-
-        //protected bool DownloadOptixData(StockSerie stockSerie)
-        //{
-        //   if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && stockSerie.HasOptix)
-        //   {
-        //      NotifyProgress("Downloading Optix for" + stockSerie.StockGroup.ToString());
-
-        //      if (!stockSerie.Initialise())
-        //      {
-        //         return false;
-        //      }
-
-        //      if (stockSerie.Values.Last().OPTIX != 0.0f)
-        //      {
-        //         return false;
-        //      }
-
-        //      string optixFileName = dataFolder + OPTIX_SUBFOLDER + "\\" + stockSerie.ShortName + ".csv";
-
-        //      using (WebClient wc = new WebClient())
-        //      {
-        //         wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-        //         wc.DownloadFile(stockSerie.OptixURL, optixFileName);
-        //         stockSerie.IsInitialised = false;
-        //      }
-        //   }
-        //   return true;
-        //}
 
         protected virtual bool ParseCSVFile(StockSerie stockSerie, string fileName)
         {

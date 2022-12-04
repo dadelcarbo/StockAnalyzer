@@ -7,5 +7,6 @@
   "OpenApiBaseUrl": "https://gateway.saxobank.com/openapi/",
   "RedirectUrls": [
     "http://localhost/ultimatechartist"
-  ]
+  ],
+  "_24hToken": ""
 }

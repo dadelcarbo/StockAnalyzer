@@ -12,16 +12,14 @@ namespace Saxo.OpenAPI.TradingServices
         {
             var orderReq = new OrderRequest
             {
-
             };
             return true;
         }
         public long PostOrder(OrderRequest order)
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), "trade/v2/orders");
             try
             {
-                var res = Post<OrderResponse>(url, order);
+                var res = Post<OrderResponse>("trade/v2/orders", order);
                 return long.Parse(res.OrderId);
             }
             catch (Exception ex)
@@ -32,10 +30,9 @@ namespace Saxo.OpenAPI.TradingServices
 
         public dynamic GetOrder(long orderId, string clientKey)
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), $"port/v1/orders/{clientKey}/{orderId}");
             try
             {
-                var res = Get<dynamic>(url);
+                var res = Get<dynamic>($"port/v1/orders/{clientKey}/{orderId}");
                 return res;
             }
             catch (Exception ex)
@@ -43,12 +40,11 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        public dynamic GetOrders(string clientKey, string accountKey)
+        public Orders GetOrders(Account account)
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), $"port/v1/orders/?ClientKey={clientKey}&AccountKey={accountKey}");
             try
             {
-                var res = Get<dynamic>(url);
+                var res = Get<Orders>($"port/v1/orders/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
                 return res;
             }
             catch (Exception ex)
@@ -89,11 +85,11 @@ namespace Saxo.OpenAPI.TradingServices
         public OrderDuration OrderDuration { get; set; }
         public string OrderRelation { get; set; }
         public float OrderPrice { get; set; }
-        public Order[] Orders { get; set; }
+        public OrderReq[] Orders { get; set; }
         public bool ManualOrder { get; set; }
     }
 
-    public class Order
+    public class OrderReq
     {
         public string AccountKey { get; set; }
         public int Uic { get; set; }
@@ -125,6 +121,70 @@ namespace Saxo.OpenAPI.TradingServices
     public class OrderDuration
     {
         public string DurationType { get; set; }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public class Orders
+    {
+        public int __count { get; set; }
+        public Order[] Data { get; set; }
+    }
+
+    public class Order
+    {
+        public string AccountId { get; set; }
+        public string AccountKey { get; set; }
+        public string AdviceNote { get; set; }
+        public float Amount { get; set; }
+        public float Ask { get; set; }
+        public string AssetType { get; set; }
+        public float Bid { get; set; }
+        public string BuySell { get; set; }
+        public string CalculationReliability { get; set; }
+        public string ClientId { get; set; }
+        public string ClientKey { get; set; }
+        public string ClientName { get; set; }
+        public string ClientNote { get; set; }
+        public string CorrelationKey { get; set; }
+        public float CurrentPrice { get; set; }
+        public int CurrentPriceDelayMinutes { get; set; }
+        public DateTime CurrentPriceLastTraded { get; set; }
+        public string CurrentPriceType { get; set; }
+        public float DistanceToMarket { get; set; }
+        public Duration Duration { get; set; }
+        public Exchange Exchange { get; set; }
+        public float IpoSubscriptionFee { get; set; }
+        public bool IsExtendedHoursEnabled { get; set; }
+        public bool IsForceOpen { get; set; }
+        public bool IsMarketOpen { get; set; }
+        public float MarketPrice { get; set; }
+        public string MarketState { get; set; }
+        public float MarketValue { get; set; }
+        public string NonTradableReason { get; set; }
+        public string OpenOrderType { get; set; }
+        public string OrderAmountType { get; set; }
+        public string OrderId { get; set; }
+        public string OrderRelation { get; set; }
+        public DateTime OrderTime { get; set; }
+        public float Price { get; set; }
+        public object[] RelatedOpenOrders { get; set; }
+        public string Status { get; set; }
+        public string TradingStatus { get; set; }
+        public int Uic { get; set; }
+    }
+
+    public class Duration
+    {
+        public string DurationType { get; set; }
+    }
+
+    public class Exchange
+    {
+        public string Description { get; set; }
+        public string ExchangeId { get; set; }
+        public bool IsOpen { get; set; }
+        public string TimeZoneId { get; set; }
     }
 
 }

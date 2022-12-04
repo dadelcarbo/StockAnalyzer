@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.33027.164
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saxo.OpenAPI", "Saxo.OpenAPI.csproj", "{00A3C2F0-CA1A-456F-BA86-75741014EDC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saxo.OpenAPI", "..\Saxo.OpenAPI\Saxo.OpenAPI.csproj", "{00A3C2F0-CA1A-456F-BA86-75741014EDC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saxo.OpenAPI.Test", "..\Saxo.OpenAPI.Test\Saxo.OpenAPI.Test.csproj", "{0017ED89-C9C5-4C45-905C-4510CA010CAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saxo.OpenAPI.Test", "Saxo.OpenAPI.Test.csproj", "{0017ED89-C9C5-4C45-905C-4510CA010CAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

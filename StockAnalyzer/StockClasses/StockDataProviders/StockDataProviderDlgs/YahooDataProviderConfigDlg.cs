@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             this.symbolTextBox.Text = this.symbolTextBox.Text.ToUpper().Trim();
 
             // Check if already registered in the dico
-            if (this.stockDictionary.Values.Count(s => s.ShortName == this.symbolTextBox.Text) > 0)
+            if (this.stockDictionary.Values.Count(s => s.Symbol == this.symbolTextBox.Text) > 0)
             {
                 // This serie already registered is system configuration
                 MessageBox.Show(DataProviderString.DlgContent_SerieAlreadyRegistered, DataProviderString.DlgTitle_SerieAlreadyRegistered, MessageBoxButtons.OK, MessageBoxIcon.Error);

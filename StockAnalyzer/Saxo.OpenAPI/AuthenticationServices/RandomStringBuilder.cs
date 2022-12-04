@@ -31,21 +31,20 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 return string.Empty;
 
             var randomString = new StringBuilder(length);
-            using (var rnd = new RNGCryptoServiceProvider())
+            var rnd = new Random();
+
+            var buf = new byte[length];
+            rnd.NextBytes(buf);
+
+            var enumerator = buf.GetEnumerator();
+            while (randomString.Length < length)
             {
-                var buf = new byte[length];
-                rnd.GetBytes(buf);
-
-                var enumerator = buf.GetEnumerator();
-                while (randomString.Length < length)
-                {
-                    enumerator.MoveNext();
-                    var index = Convert.ToInt32(enumerator.Current) % RandomSet.Count();
-                    randomString.Append((char)RandomSet[index]);
-                }
-
-                return randomString.ToString();
+                enumerator.MoveNext();
+                var index = Convert.ToInt32(enumerator.Current) % RandomSet.Count();
+                randomString.Append((char)RandomSet[index]);
             }
+
+            return randomString.ToString();
         }
     }
 }

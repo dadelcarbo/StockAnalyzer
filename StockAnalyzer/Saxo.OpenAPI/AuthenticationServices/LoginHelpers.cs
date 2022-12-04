@@ -1,46 +1,100 @@
 ﻿using Saxo.OpenAPI.Models;
+using Saxo.OpenAPI.TradingServices;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
+    class SaxoAPIException : Exception
+    {
+        public SaxoAPIException(string msg, Exception ex = null) : base(msg, ex)
+        {
+        }
+    }
     public static class LoginHelpers
     {
-        private static Token token;
-        public static Token Token => token;
+        public static LoginSession CurrentSession { get; set; }
 
-        private static App app;
-        public static App App => app;
-
-        public static Token GoLogin(App app, HttpListener listener)
+        public static App App
         {
-            LoginHelpers.app = app;
-            var authService = new PkceAuthService();
-            var authUrl = authService.GetAuthenticationRequest(app);
-
-            //System.Diagnostics.Process.Start(authUrl);
-            authUrl = authUrl.Replace("&", "^&");
-            Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
-
-            var authCode = GetAuthCode(app, listener);
-            if (authCode == null)
+            get
             {
-                return null;
+                if (CurrentSession == null)
+                {
+                    throw new SaxoAPIException("Session now intialized, log in first");
+                }
+                return CurrentSession.App;
             }
-
-            // Get Token
-            LoginHelpers.token = authService.GetToken(app, authCode);
-            return token;
         }
-        public static Token GoLogin(App app, string _24hToken)
+        public static Token Token
         {
-            LoginHelpers.app = app;
-            // Get Token
-            LoginHelpers.token = new Token { AccessToken = _24hToken, TokenType = "Bearer"};
-            return token;
+            get
+            {
+                if (CurrentSession == null)
+                {
+                    throw new SaxoAPIException("Session now intialized, log in first");
+                }
+                return CurrentSession.Token;
+            }
+        }
+
+        public static LoginSession GoLogin(App app, HttpListener listener)
+        {
+            try
+            {
+                var authService = new PkceAuthService();
+                var authUrl = authService.GetAuthenticationRequest(app);
+
+                //System.Diagnostics.Process.Start(authUrl);
+                authUrl = authUrl.Replace("&", "^&");
+                Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
+
+                var authCode = GetAuthCode(app, listener);
+                if (authCode == null)
+                {
+                    return null;
+                }
+
+                // Get Token
+                var token = authService.GetToken(app, authCode);
+                CurrentSession = new LoginSession
+                {
+                    App = app,
+                    Token = token
+                };
+                CurrentSession.Client = new ClientService().GetClient();
+                //Clipboard.SetText(token.AccessToken);
+                return CurrentSession;
+            }
+            catch (Exception ex)
+            {
+                CurrentSession = null;
+                throw new SaxoAPIException("Exception occured while loging in", ex);
+            }
+        }
+        public static LoginSession GoLogin(App app, string _24hToken)
+        {
+            try
+            {
+                // Get Token
+                var token = new Token { AccessToken = _24hToken, TokenType = "Bearer" };
+                CurrentSession = new LoginSession
+                {
+                    App = app,
+                    Token = token
+                };
+                CurrentSession.Client = new ClientService().GetClient();
+                return CurrentSession;
+            }
+            catch (Exception ex)
+            {
+                CurrentSession = null;
+                throw new SaxoAPIException("Exception occured while loging in", ex);
+            }
         }
 
         public static Token RefreshToken(App app, string refreshToken, HttpListener listener)

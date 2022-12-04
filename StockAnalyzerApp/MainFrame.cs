@@ -1425,13 +1425,13 @@ namespace StockAnalyzerApp
 
                 #region Set Window Title
                 string id;
-                if (CurrentStockSerie.ShortName == CurrentStockSerie.StockName)
+                if (CurrentStockSerie.Symbol == CurrentStockSerie.StockName)
                 {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName;
+                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol;
                 }
                 else
                 {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.ShortName + " - " + CurrentStockSerie.StockName;
+                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol + " - " + CurrentStockSerie.StockName;
                 }
                 if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
                 {
@@ -3702,7 +3702,7 @@ namespace StockAnalyzerApp
                 tweetDlg.Disposed += tweetDialog_Disposed;
                 tweetDlg.Show();
 
-                tweetDlg.ViewModel.Text = $"${this.currentStockSerie.ShortName}" + Environment.NewLine;
+                tweetDlg.ViewModel.Text = $"${this.currentStockSerie.Symbol}" + Environment.NewLine;
                 tweetDlg.ViewModel.FileName = fileName;
             }
             else
@@ -4842,7 +4842,7 @@ namespace StockAnalyzerApp
             if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
                 return;
             //string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
-            string url = $"https://fr.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
+            string url = $"https://fr.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.Symbol}/financials-statistics-and-ratios/";
             Process.Start(url);
         }
 

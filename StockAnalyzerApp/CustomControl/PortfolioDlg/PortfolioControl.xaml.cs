@@ -160,5 +160,16 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             var viewModel = this.DataContext as ViewModel;
             StockAnalyzerForm.MainFrame.GeneratePortfolioReportFile(viewModel.Portfolio);
         }
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            var cursor = this.Cursor;
+            this.Cursor = Cursors.Wait;
+
+            var viewModel = this.DataContext as ViewModel;
+            viewModel.Portfolio.Refresh();
+
+            this.openedPositionGridView.Rebind();
+            this.Cursor = cursor;
+        }
     }
 }

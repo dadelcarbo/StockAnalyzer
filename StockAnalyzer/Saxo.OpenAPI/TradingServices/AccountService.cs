@@ -17,10 +17,9 @@ namespace Saxo.OpenAPI.TradingServices
         /// <returns></returns>
         public Account[] GetAccounts()
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), "port/v1/accounts/me");
             try
             {
-                return Get<Accounts>(url).Data;
+                return Get<Accounts>("port/v1/accounts/me").Data;
             }
             catch (Exception ex)
             {
@@ -30,10 +29,9 @@ namespace Saxo.OpenAPI.TradingServices
 
         public Position[] GetPositions()
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), $"port/v1/positions/me");
             try
             {
-                return Get<Positions>(url).Data;
+                return Get<Positions>("port/v1/positions/me").Data;
             }
             catch (Exception ex)
             {
@@ -43,10 +41,9 @@ namespace Saxo.OpenAPI.TradingServices
 
         public Position[] GetPositions(Account account)
         {
-            Uri url = new Uri(new Uri(LoginHelpers.App.OpenApiBaseUrl), $"port/v1/positions/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
             try
             {
-                return Get<Positions>(url).Data;
+                return Get<Positions>($"port/v1/positions/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}").Data;
             }
             catch (Exception ex)
             {

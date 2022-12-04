@@ -212,11 +212,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -314,11 +314,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -416,11 +416,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -523,11 +523,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -631,11 +631,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -738,11 +738,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -834,11 +834,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -958,11 +958,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1083,11 +1083,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1275,11 +1275,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1291,7 +1291,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return false;
             }
-            int sectorId = int.Parse(breadthSerie.ShortName);
+            int sectorId = int.Parse(breadthSerie.Symbol);
             StockSerie[] indexComponents = this.Values.Where(s => s.SectorId == sectorId).ToArray();
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
@@ -1371,11 +1371,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_" + breadthSerie.StockGroup + ".csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1474,11 +1474,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1577,11 +1577,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1604,7 +1604,7 @@ namespace StockAnalyzer.StockClasses
             StockSerie[] indexComponents;
             if (indexName.EndsWith("_SI"))
             {
-                int sectorId = int.Parse(breadthSerie.ShortName);
+                int sectorId = int.Parse(breadthSerie.Symbol);
                 indexComponents = this.Values.Where(s => !s.StockAnalysis.Excluded && s.SectorId == sectorId).ToArray();
             }
             else
@@ -1694,11 +1694,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + $"_{breadthSerie.StockGroup}.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1802,11 +1802,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;
@@ -1904,11 +1904,11 @@ namespace StockAnalyzer.StockClasses
             {
                 if (!string.IsNullOrEmpty(destinationFolder))
                 {
-                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
+                    breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
                 }
                 if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
                 {
-                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.ShortName + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
+                    breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
                 }
             }
             return true;

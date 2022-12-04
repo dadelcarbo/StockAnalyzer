@@ -1,0 +1,12 @@
+﻿{
+  "AppName": "UltimateChartist",
+  "AppKey": "c43dd458af3c455eb3980927e6d1b61d",
+  "AuthorizationEndpoint": "https://sim.logonvalidation.net/authorize",
+  "TokenEndpoint": "https://sim.logonvalidation.net/token",
+  "GrantType": "PKCE",
+  "OpenApiBaseUrl": "https://gateway.saxobank.com/sim/openapi/",
+  "RedirectUrls": [
+    "http://localhost/ultimatechartist"
+  ],
+  "_24hToken": "eyJhbGciOiJFUzI1NiIsIng1dCI6IkRFNDc0QUQ1Q0NGRUFFRTlDRThCRDQ3ODlFRTZDOTEyRjVCM0UzOTQifQ.eyJvYWEiOiI3Nzc3NSIsImlzcyI6Im9hIiwiYWlkIjoiMTA5IiwidWlkIjoia0NLdG1obUdvLVFONm9lMkJxT0hJdz09IiwiY2lkIjoia0NLdG1obUdvLVFONm9lMkJxT0hJdz09IiwiaXNhIjoiRmFsc2UiLCJ0aWQiOiIyMDAyIiwic2lkIjoiZWM3YTYxYWY0MTdhNDdjZjkzYTk1Y2Q3ZjI2YzcxNWUiLCJkZ2kiOiI4NCIsImV4cCI6IjE2NzAyNDY0MTMiLCJvYWwiOiIxRiIsImlpZCI6ImFhNjE2NjNkMzM2MjQwYmQzM2E1MDhkYWJkODQ5NjQ1In0._RKN2EncpHKUNDlHLuesOAv0NqLNw3LoNK9Izj7y_t0k1HG789Zs-v04Aj3dGqKB0-GvCmM7s2HEWC0RIRk8xQ"
+}
