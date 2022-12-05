@@ -17,8 +17,8 @@ namespace Saxo.OpenAPI.Test
                 
                 var clientId = "13040737";
                 var appPath = Path.Combine(AppContext.BaseDirectory, "App_live.json");
-                clientId = "17236368";
-                appPath = Path.Combine(AppContext.BaseDirectory, "App_sim.json");
+                //clientId = "17236368";
+                //appPath = Path.Combine(AppContext.BaseDirectory, "App_sim.json");
 
                 var session = LoginService.Login(clientId, appPath);
 

@@ -34,13 +34,13 @@ namespace Saxo.OpenAPI.TradingServices
             string content = string.Empty;
             try
             {
-                var url = new Uri(LoginHelpers.App.OpenApiBaseUrl + method);
+                var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
                 Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url)
                 {
                     Version = new Version(1, 1)  // Make sure HTTP/2 is used, once available
                 };
-                request.Headers.Authorization = GetAuthorizationHeader(LoginHelpers.Token);
+                request.Headers.Authorization = GetAuthorizationHeader(LoginService.Token);
 
                 using (var httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, UseCookies = false }))
                 {
@@ -74,14 +74,14 @@ namespace Saxo.OpenAPI.TradingServices
             string content = string.Empty;
             try
             {
-                var url = new Uri(LoginHelpers.App.OpenApiBaseUrl + method);
+                var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
                 Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
                 {
                     //Version = new Version(2, 0)  // Make sure HTTP/2 is used, once available
                     Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
                 };
-                request.Headers.Authorization = GetAuthorizationHeader(LoginHelpers.Token);
+                request.Headers.Authorization = GetAuthorizationHeader(LoginService.Token);
 
                 using (var httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, UseCookies = false }))
                 {

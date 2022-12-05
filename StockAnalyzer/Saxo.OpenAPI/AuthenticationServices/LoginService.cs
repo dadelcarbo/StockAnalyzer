@@ -1,9 +1,8 @@
 ﻿using Saxo.OpenAPI.Models;
+using Saxo.OpenAPI.TradingServices;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
@@ -11,48 +10,84 @@ namespace Saxo.OpenAPI.AuthenticationServices
     {
         public static List<LoginSession> Sessions = new List<LoginSession>();
 
+        public static LoginSession CurrentSession { get; set; }
+
+        public static App App
+        {
+            get
+            {
+                if (CurrentSession == null)
+                {
+                    throw new SaxoAPIException("Session now intialized, log in first");
+                }
+                return CurrentSession.App;
+            }
+        }
+        public static Token Token
+        {
+            get
+            {
+                if (CurrentSession == null)
+                {
+                    throw new SaxoAPIException("Session now intialized, log in first");
+                }
+                return CurrentSession.Token;
+            }
+        }
+
         public static LoginSession Login(string clientId, string appPath)
         {
             try
             {
                 // Check if session already exists
-                if (LoginHelpers.CurrentSession != null && LoginHelpers.CurrentSession.Client.ClientId == clientId)
-                    return LoginHelpers.CurrentSession;
-
-                var session = Sessions.FirstOrDefault(s => s.Client?.ClientId == clientId);
-                if (session != null)
+                var session = Sessions.FirstOrDefault(s => s.ClientId == clientId);
+                if (session == null)
                 {
-                    LoginHelpers.CurrentSession = session;
-                    // TODO check token renewal
+                    session = new LoginSession
+                    {
+                        App = App.GetApp(appPath),
+                        ClientId = clientId,
+                        Token = Token.Deserialize(clientId)
+                    };
+                    Sessions.Add(session);
+                }
+                if (!session.HasTokenExpired())
+                {
+                    CurrentSession = session;
                     return session;
+                }
+                if (!session.HasRefreshTokenExpired())
+                {
+                    var refreshToken = LoginHelpers.RefreshToken(session);
+                    if (refreshToken != null)
+                    {
+                        refreshToken.Serialize(clientId);
+                        session.Token = refreshToken;
+                        CurrentSession = session;
+                        return session;
+                    }
                 }
 
                 // Establish Session
-                var app = App.GetApp(appPath);
-                if (string.IsNullOrEmpty(app._24hToken))
+                var token = LoginHelpers.GoLogin(session.App);
+                if (token != null)
                 {
-                    // Open Listener for Redirect
-                    var listener = LoginHelpers.BeginListening(app);
+                    token.Serialize(clientId);
+                    session.Token = token;
+                    CurrentSession = session;
 
-                    // Get token and call API
-                    session = LoginHelpers.GoLogin(app, listener);
-                }
-                else
-                {
-                    session = LoginHelpers.GoLogin(app, app._24hToken);
-                }
-                if (session != null)
-                {
-                    if (session.Client.ClientId != clientId)
+                    // Verify clientId
+                    var actualClientId = new ClientService().GetClient().ClientId;
+                    if (actualClientId != clientId)
                     {
                         throw new SaxoAPIException("Client ID mistmach");
                     }
-                    Sessions.Add(session);
                 }
                 return session;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                LoginService.CurrentSession = null;
                 throw new SaxoAPIException("Login exception", ex);
             }
         }

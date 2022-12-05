@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
             else
             {
-                return date.ToShortDateString() + " " + date.ToString("hh:mm");
+                return date.ToShortDateString() + " " + date.ToString("HH:mm");
             }
         }
 

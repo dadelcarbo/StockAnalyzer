@@ -964,7 +964,7 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             Id = posId,
                             EntryQty = (int)saxoPosition.PositionBase.Amount,
-                            EntryDate = saxoPosition.PositionBase.ExecutionTimeOpen,
+                            EntryDate = saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime(),
                             EntryValue = saxoPosition.PositionBase.OpenPrice,
                             ISIN = stockSerie.ISIN,
                             StockName = stockSerie.StockName,

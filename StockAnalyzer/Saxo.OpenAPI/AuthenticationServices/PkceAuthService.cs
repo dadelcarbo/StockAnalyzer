@@ -61,7 +61,9 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
             try
             {
-                return Send<Token>(request);
+                var token = Send<Token>(request);
+                token.CreationDate = DateTime.Now;
+                return token;
             }
             catch (Exception ex)
             {
@@ -78,8 +80,6 @@ namespace Saxo.OpenAPI.AuthenticationServices
         public Token RefreshToken(App app, string refreshToken)
         {
             var authenticationUrl = app.TokenEndpoint;
-            var appKey = app.AppKey;
-            var codeVerifier = app.CodeVerifier;
 
             var request = new HttpRequestMessage(HttpMethod.Post, authenticationUrl);
             request.Content = new FormUrlEncodedContent(new Dictionary<string, string>

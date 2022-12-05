@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
+using Saxo.OpenAPI.TradingServices;
 using System;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace Saxo.OpenAPI.Models
 {
     public class Token
     {
-        public DateTime IssueTime
-        {
-            get { return DateTime.UtcNow; }
-        }
+        [JsonProperty("creation_date")]
+        public DateTime CreationDate { get; set; }
 
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
@@ -24,6 +25,21 @@ namespace Saxo.OpenAPI.Models
 
         [JsonProperty("refresh_token_expires_in")]
         public int RefreshTokenExpiresIn { get; set; }
+
+        public void Serialize(string clientId)
+        {
+            var tokenFileName = Path.Combine(Path.GetTempPath(), $"{clientId}.json");
+            File.WriteAllText(tokenFileName, JsonConvert.SerializeObject(this, Formatting.Indented));
+        }
+        static public Token Deserialize(string clientId)
+        {
+            var tokenFileName = Path.Combine(Path.GetTempPath(), $"{clientId}.json");
+            if (File.Exists(tokenFileName))
+            {
+                return JsonConvert.DeserializeObject<Token>(File.ReadAllText(tokenFileName));
+            }
+            return null;
+        }
 
     }
 }
