@@ -3,6 +3,7 @@ using Saxo.OpenAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using static Saxo.OpenAPI.TradingServices.AccountService;
 
 namespace Saxo.OpenAPI.TradingServices
 {
@@ -50,8 +51,33 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-    }
 
+        public Position GetPositionById(Account account, long positionId)
+        {
+            try
+            {
+                return Get<Position>($"port/v1/positions/{positionId}/?ClientKey={account.ClientKey}");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public ClosedPositions GetClosedPositions(Account account, DateTime fromDate)
+        {
+            try
+            {
+                if (fromDate.Year == 1)
+                    return null;
+                return Get<ClosedPositions>($"cs/v1/reports/closedPositions/{account.ClientKey}/{fromDate.ToString("yyyy-MM-dd")}/{DateTime.Today.ToString("yyyy-MM-dd")}/?&AccountGroupKey={account.AccountGroupKey}&AccountKey={account.AccountKey}");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+    }
 
     public class Accounts
     {
@@ -164,4 +190,47 @@ namespace Saxo.OpenAPI.TradingServices
     }
 
 
+    public class ClosedPositions
+    {
+        public int __count { get; set; }
+        public Datum[] Data { get; set; }
+    }
+
+    public class Datum
+    {
+        public string AccountCurrency { get; set; }
+        public int AccountCurrencyDecimals { get; set; }
+        public string AccountId { get; set; }
+        public float Amount { get; set; }
+        public float AmountClose { get; set; }
+        public float AmountOpen { get; set; }
+        public string AssetType { get; set; }
+        public string ClientCurrency { get; set; }
+        public string ClosePositionId { get; set; }
+        public float ClosePrice { get; set; }
+        public string CloseType { get; set; }
+        public string ExchangeDescription { get; set; }
+        public string InstrumentCurrency { get; set; }
+        public string InstrumentDescription { get; set; }
+        public string InstrumentSymbol { get; set; }
+        public string OpenPositionId { get; set; }
+        public float OpenPrice { get; set; }
+        public float PnLAccountCurrency { get; set; }
+        public float PnLClientCurrency { get; set; }
+        public float PnLUSD { get; set; }
+        public float TotalBookedOnClosingLegAccountCurrency { get; set; }
+        public float TotalBookedOnClosingLegClientCurrency { get; set; }
+        public float TotalBookedOnClosingLegUSD { get; set; }
+        public float TotalBookedOnOpeningLegAccountCurrency { get; set; }
+        public float TotalBookedOnOpeningLegClientCurrency { get; set; }
+        public float TotalBookedOnOpeningLegUSD { get; set; }
+        public string TradeDate { get; set; }
+        public string TradeDateClose { get; set; }
+        public string TradeDateOpen { get; set; }
+        public string UnderlyingInstrumentDescription { get; set; }
+        public string UnderlyingInstrumentSymbol { get; set; }
+    }
+
+
 }
+

@@ -28,7 +28,7 @@ namespace Saxo.OpenAPI.TradingServices
         }
         public Instrument GetInstrumentByIsin(string isin)
         {
-            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture";
+            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut";
             try
             {
                 var instruments = Get<Instruments>(method);
@@ -44,7 +44,7 @@ namespace Saxo.OpenAPI.TradingServices
         private static List<Instrument> InstrumentCache = new List<Instrument>();
         public Instrument GetInstrumentById(long uic, Account account)
         {
-            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture";
+            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut";
             try
             {
                 var instrument = InstrumentCache.FirstOrDefault(i => i.Identifier == uic);

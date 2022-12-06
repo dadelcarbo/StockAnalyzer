@@ -65,6 +65,7 @@ namespace StockAnalyzer.StockPortfolio
         public string Name { get; set; }
         public string SaxoAccountId { get; set; }
         public string SaxoClientId { get; set; }
+        public DateTime LastSyncDate { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
@@ -937,8 +938,10 @@ namespace StockAnalyzer.StockPortfolio
 
                 // Check related orders
                 var orders = new OrderService().GetOrders(account);
-                var positions = accountService.GetPositions(account).Where(p => p.PositionBase.CanBeClosed).OrderBy(p => p.PositionId);
-                foreach (var saxoPosition in positions)
+                var saxoPositions = accountService.GetPositions(account).Where(p => p.PositionBase.CanBeClosed).OrderBy(p => p.PositionId).ToList();
+                var saxoPositionsIds = saxoPositions.Select(p => long.Parse(p.PositionId));
+                var untreatedPositions = this.OpenedPositions.Where(p => !saxoPositionsIds.Contains(p.Id));
+                foreach (var saxoPosition in saxoPositions)
                 {
                     var posId = long.Parse(saxoPosition.PositionId);
                     var position = this.Positions.FirstOrDefault(p => p.Id == posId);
@@ -967,12 +970,13 @@ namespace StockAnalyzer.StockPortfolio
                             EntryDate = saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime(),
                             EntryValue = saxoPosition.PositionBase.OpenPrice,
                             ISIN = stockSerie.ISIN,
+                            Uic = saxoPosition.PositionBase.Uic,
                             StockName = stockSerie.StockName,
                             BarDuration = stockSerie.StockGroup == StockSerie.Groups.INTRADAY ? BarDuration.H_1 : BarDuration.Daily,
                         };
                         this.Positions.Add(newStockPosition);
 
-                        // Find Stop and target orders
+                        // Find Stop orders
                         var stopOrder = orders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
                         if (stopOrder != null)
                         {
@@ -982,9 +986,23 @@ namespace StockAnalyzer.StockPortfolio
                     }
                     else
                     {
-                        // ??/ What to do ////
+                        // Update trailing stop
+                        var stopOrder = orders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
+                        if (stopOrder != null)
+                        {
+                            if (position.Stop == 0)
+                            {
+                                position.Stop = stopOrder.Price;
+                            }
+                            position.TrailStop = stopOrder.Price;
+                        }
                     }
                 }
+                var closedPositions = accountService.GetClosedPositions(account, LastSyncDate);
+                foreach (var position in untreatedPositions)
+                {
+                }
+                this.LastSyncDate = DateTime.Today;
             }
             catch (Exception ex)
             {
