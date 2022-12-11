@@ -24,6 +24,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.OnPropertyChanged("Fee");
 
             this.OnPropertyChanged("StopValue");
+            this.OnPropertyChanged("Risk");
             this.OnPropertyChanged("TradeRisk");
             this.OnPropertyChanged("PortfolioRisk");
             this.OnPropertyChanged("PortfolioPercent");
@@ -52,6 +53,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 }
             }
         }
+        public bool LimitOrder { get; set; }
         public float EntryCost => EntryQty * EntryValue + Fee;
         public float Fee => (EntryQty * EntryValue) < 1000f ? 2.5f : 5.0f;
         public float StopValue
@@ -66,6 +68,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 }
             }
         }
+        public float Risk => 1 + (this.PortfolioRisk - this.Portfolio.MaxRisk) / this.Portfolio.MaxRisk;
         public float TradeRisk => (EntryValue - StopValue) / EntryValue;
         public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
         public float PortfolioRisk => (EntryValue - StopValue) * EntryQty / this.Portfolio.TotalValue;

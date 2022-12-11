@@ -10,6 +10,7 @@ using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -142,8 +143,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
         private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
         {
+            var cursor = this.Cursor;
+            this.Cursor = Cursors.Wait;
             var viewModel = (ViewModel)this.DataContext;
             viewModel.Portfolio.Serialize();
+
+            Task.Delay(500).Wait();
+            this.Cursor = cursor;
         }
 
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)

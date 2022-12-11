@@ -12,9 +12,6 @@ namespace Saxo.OpenAPI.TradingServices
         /// <summary>
         /// Get client info
         /// </summary>
-        /// <param name="openApiBaseUrl"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="tokenType"></param>
         /// <returns></returns>
         public Account[] GetAccounts()
         {
@@ -28,15 +25,15 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public Position[] GetPositions()
+        public Balance GetBalance(Account account)
         {
             try
             {
-                return Get<Positions>("port/v1/positions/me").Data;
+                return Get<Balance>($"port/v1/balances/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FieldGroups=CalculateCashForTrading");
             }
             catch (Exception ex)
             {
-                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+                return null;
             }
         }
 
@@ -63,13 +60,24 @@ namespace Saxo.OpenAPI.TradingServices
                 return null;
             }
         }
-        public ClosedPositions GetClosedPositions(Account account, DateTime fromDate)
+        public HistoricalClosedPositions GetHistoricalClosedPositions(Account account, DateTime fromDate)
         {
             try
             {
                 if (fromDate.Year == 1)
                     return null;
-                return Get<ClosedPositions>($"cs/v1/reports/closedPositions/{account.ClientKey}/{fromDate.ToString("yyyy-MM-dd")}/{DateTime.Today.ToString("yyyy-MM-dd")}/?&AccountGroupKey={account.AccountGroupKey}&AccountKey={account.AccountKey}");
+                return Get<HistoricalClosedPositions>($"cs/v1/reports/closedPositions/{account.ClientKey}/{fromDate.ToString("yyyy-MM-dd")}/{DateTime.Today.ToString("yyyy-MM-dd")}/?&AccountGroupKey={account.AccountGroupKey}&AccountKey={account.AccountKey}");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public DailyClosedPositions GetDailyClosedPositions(Account account)
+        {
+            try
+            {
+                return Get<DailyClosedPositions>($"port/v1/closedpositions/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
             }
             catch (Exception)
             {
@@ -115,6 +123,68 @@ namespace Saxo.OpenAPI.TradingServices
         public string[] Sharing { get; set; }
         public bool SupportsAccountValueProtectionLimit { get; set; }
         public bool UseCashPositionsAsMarginCollateral { get; set; }
+    }
+
+    public class Balance
+    {
+        public string CalculationReliability { get; set; }
+        public float CashAvailableForTrading { get; set; }
+        public float CashBalance { get; set; }
+        public float CashBlocked { get; set; }
+        public bool ChangesScheduled { get; set; }
+        public int ClosedPositionsCount { get; set; }
+        public float CollateralAvailable { get; set; }
+        public float CorporateActionUnrealizedAmounts { get; set; }
+        public float CostToClosePositions { get; set; }
+        public string Currency { get; set; }
+        public int CurrencyDecimals { get; set; }
+        public Initialmargin InitialMargin { get; set; }
+        public float IntradayMarginDiscount { get; set; }
+        public bool IsPortfolioMarginModelSimple { get; set; }
+        public float MarginAndCollateralUtilizationPct { get; set; }
+        public float MarginAvailableForTrading { get; set; }
+        public float MarginCollateralNotAvailable { get; set; }
+        public float MarginExposureCoveragePct { get; set; }
+        public float MarginNetExposure { get; set; }
+        public float MarginUsedByCurrentPositions { get; set; }
+        public float MarginUtilizationPct { get; set; }
+        public float NetEquityForMargin { get; set; }
+        public int NetPositionsCount { get; set; }
+        public float NonMarginPositionsValue { get; set; }
+        public int OpenIpoOrdersCount { get; set; }
+        public int OpenPositionsCount { get; set; }
+        public float OptionPremiumsMarketValue { get; set; }
+        public int OrdersCount { get; set; }
+        public float OtherCollateral { get; set; }
+        public float SettlementValue { get; set; }
+        public float ShareSpendingPower { get; set; }
+        public float SpendingPower { get; set; }
+        public Spendingpowerdetail SpendingPowerDetail { get; set; }
+        public float SrdSpendingPower { get; set; }
+        public float TotalValue { get; set; }
+        public float TransactionsNotBooked { get; set; }
+        public int TriggerOrdersCount { get; set; }
+        public float UnrealizedMarginClosedProfitLoss { get; set; }
+        public float UnrealizedMarginOpenProfitLoss { get; set; }
+        public float UnrealizedMarginProfitLoss { get; set; }
+        public float UnrealizedPositionsValue { get; set; }
+    }
+
+    public class Initialmargin
+    {
+        public float CollateralAvailable { get; set; }
+        public float MarginAvailable { get; set; }
+        public float MarginCollateralNotAvailable { get; set; }
+        public float MarginUsedByCurrentPositions { get; set; }
+        public float MarginUtilizationPct { get; set; }
+        public float NetEquityForMargin { get; set; }
+        public float OtherCollateralDeduction { get; set; }
+    }
+
+    public class Spendingpowerdetail
+    {
+        public float Current { get; set; }
+        public float Maximum { get; set; }
     }
 
 
@@ -190,13 +260,13 @@ namespace Saxo.OpenAPI.TradingServices
     }
 
 
-    public class ClosedPositions
+    public class HistoricalClosedPositions
     {
         public int __count { get; set; }
-        public Datum[] Data { get; set; }
+        public ClosedPositions[] Data { get; set; }
     }
 
-    public class Datum
+    public class ClosedPositions
     {
         public string AccountCurrency { get; set; }
         public int AccountCurrencyDecimals { get; set; }
@@ -224,13 +294,52 @@ namespace Saxo.OpenAPI.TradingServices
         public float TotalBookedOnOpeningLegAccountCurrency { get; set; }
         public float TotalBookedOnOpeningLegClientCurrency { get; set; }
         public float TotalBookedOnOpeningLegUSD { get; set; }
-        public string TradeDate { get; set; }
-        public string TradeDateClose { get; set; }
-        public string TradeDateOpen { get; set; }
+        public DateTime TradeDate { get; set; }
+        public DateTime TradeDateClose { get; set; }
+        public DateTime TradeDateOpen { get; set; }
         public string UnderlyingInstrumentDescription { get; set; }
         public string UnderlyingInstrumentSymbol { get; set; }
     }
 
+
+    public class DailyClosedPositions
+    {
+        public int __count { get; set; }
+        public DailyClosedPosition[] Data { get; set; }
+    }
+
+    public class DailyClosedPosition
+    {
+        public Closedposition ClosedPosition { get; set; }
+        public string ClosedPositionUniqueId { get; set; }
+        public string NetPositionId { get; set; }
+    }
+
+    public class Closedposition
+    {
+        public string AccountId { get; set; }
+        public float Amount { get; set; }
+        public string AssetType { get; set; }
+        public string BuyOrSell { get; set; }
+        public string ClientId { get; set; }
+        public float ClosedProfitLoss { get; set; }
+        public float ClosedProfitLossInBaseCurrency { get; set; }
+        public float ClosingMarketValue { get; set; }
+        public float ClosingMarketValueInBaseCurrency { get; set; }
+        public string ClosingMethod { get; set; }
+        public string ClosingPositionId { get; set; }
+        public float ClosingPrice { get; set; }
+        public bool ConversionRateInstrumentToBaseSettledClosing { get; set; }
+        public bool ConversionRateInstrumentToBaseSettledOpening { get; set; }
+        public DateTime ExecutionTimeClose { get; set; }
+        public DateTime ExecutionTimeOpen { get; set; }
+        public string OpeningPositionId { get; set; }
+        public float OpenPrice { get; set; }
+        public float ProfitLossCurrencyConversion { get; set; }
+        public float ProfitLossOnTrade { get; set; }
+        public float ProfitLossOnTradeInBaseCurrency { get; set; }
+        public int Uic { get; set; }
+    }
 
 }
 

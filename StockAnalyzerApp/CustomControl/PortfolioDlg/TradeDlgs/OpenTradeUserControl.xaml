@@ -6,47 +6,44 @@
        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs"
        xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
-       mc:Ignorable="d" Background="LightYellow"
+       mc:Ignorable="d" d:Background="LightYellow"
        d:DesignHeight="381" d:DesignWidth="630" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}">
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Trade Entry">
                 <StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
+                    <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="45">Name:</Label>
-                        <TextBox Text="{Binding StockName}" Padding="4" Width="185" IsEnabled="False"></TextBox>
+                        <TextBox Text="{Binding StockName}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>
-                        <TextBox Text="{Binding EntryQty}" Width="80" HorizontalAlignment="Left" Padding="4"/>
-                        <Label Width="44">Fee:</Label>
-                        <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"/>
+                        <telerik:RadNumericUpDown Value="{Binding EntryQty}" NumberDecimalDigits="0" Width="50" HorizontalAlignment="Left"/>
+                        <Label Width="45" Content="Value:" Margin="15,0,0,0"/>
+                        <TextBox Text="{Binding EntryValue}" IsEnabled="{Binding IsChecked, ElementName=limitOrderCbx}" Width="80" HorizontalAlignment="Left" Padding="4"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <CheckBox x:Name="limitOrderCbx" Content="Limit Order" IsChecked="{Binding LimitOrder}" HorizontalAlignment="Left" Padding="4" VerticalContentAlignment="Center" Margin="10,0,20,0"/>
+                        <CheckBox x:Name="stopOrderCbx" Content="Stop Order" IsChecked="{Binding LimitOrder}" HorizontalAlignment="Left" Padding="4" VerticalContentAlignment="Center" Margin="10,0,20,0"/>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="45">Value:</Label>
-                        <TextBox Text="{Binding EntryValue}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
                         <Label Width="44">Cost:</Label>
                         <TextBox Text="{Binding EntryCost, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"></TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="45">Date:</Label>
-                        <StackPanel Orientation="Horizontal">
-                            <DatePicker SelectedDate="{Binding EntryDate}" HorizontalAlignment="Left" Padding="4"/>
-                            <TextBox Margin="22,0,0,0" Text="{Binding EntryTime}" Padding="4" Width="60"/>
-                        </StackPanel>
+                        <Label Width="44">Fee:</Label>
+                        <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Risk Management">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Portfolio %:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioPercent, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
+                        <Label Width="82">Risk (R)</Label>
+                        <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Stop:</Label>
-                        <TextBox Width="80" Text="{Binding StopValue}" Padding="4"></TextBox>
+                        <Label Width="82">Portfolio %</Label>
+                        <TextBox Width="80" Text="{Binding PortfolioPercent, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Trade Risk:</Label>
@@ -79,21 +76,28 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <GroupBox Header="Trade Log" >
-            <StackPanel>
-                <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+        <StackPanel Orientation="Horizontal">
+            <GroupBox Header="Exit Management" VerticalAlignment="Top" >
                 <StackPanel Margin="1" Orientation="Horizontal">
-                    <Label Width="70">Indicator:</Label>
-                    <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="325"></ComboBox>
+                    <Label Width="82">Stop:</Label>
+                    <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="50" HorizontalAlignment="Left" SmallChange="0.01"/>
                 </StackPanel>
-                <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Label Width="70">Comment:</Label>
-                    <telerik:RadWatermarkTextBox WatermarkContent="Entry comment" Text="{Binding EntryComment}" VerticalContentAlignment="Top"
+            </GroupBox>
+            <GroupBox Header="Trade Log" >
+                <StackPanel>
+                    <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                    <StackPanel Margin="1" Orientation="Horizontal">
+                        <Label Width="70">Indicator:</Label>
+                        <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="325"></ComboBox>
+                    </StackPanel>
+                    <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Label Width="70">Comment:</Label>
+                        <telerik:RadWatermarkTextBox WatermarkContent="Entry comment" Text="{Binding EntryComment}" VerticalContentAlignment="Top"
                                                  Padding="4" MaxLines="5" MinLines="5" HorizontalAlignment="Stretch" Width="325"></telerik:RadWatermarkTextBox>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </GroupBox>
-
+            </GroupBox>
+        </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Content="Ok" Margin="2" Click="okButton_Click" IsDefault="True"></Button>
             <Button Content="Cancel" Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>

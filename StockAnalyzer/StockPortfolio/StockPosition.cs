@@ -10,6 +10,7 @@ namespace StockAnalyzer.StockPortfolio
             BarDuration = StockBarDuration.Daily;
         }
         public long Id { get; set; }
+        public long OrderId { get; set; }
         public string StockName { get; set; }
         public string ISIN { get; set; }
         public long Uic { get; set; }
@@ -20,6 +21,7 @@ namespace StockAnalyzer.StockPortfolio
         public DateTime EntryDate { get; set; }
 
         public float TrailStop { get; set; }
+        public string TrailStopId { get; set; }
         public float Stop { get; set; }
 
         public StockBarDuration BarDuration { get; set; }

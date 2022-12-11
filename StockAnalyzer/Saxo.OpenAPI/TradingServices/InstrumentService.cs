@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
 {
@@ -41,23 +42,24 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        private static List<Instrument> InstrumentCache = new List<Instrument>();
-        public Instrument GetInstrumentById(long uic, Account account)
+        private static SortedDictionary<long,Instrument> InstrumentCache = new SortedDictionary<long, Instrument>();
+        public Instrument GetInstrumentById(long uic)
         {
-            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut";
+            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CFxSpot";
             try
             {
-                var instrument = InstrumentCache.FirstOrDefault(i => i.Identifier == uic);
-                if (instrument == null)
+                if (!InstrumentCache.ContainsKey(uic))
                 {
+                    Instrument instrument = null;
+                    //Task.Delay(2000).Wait();
                     var instruments = Get<Instruments>(method);
                     if (instruments.Data.Length > 0)
                     {
                         instrument = instruments.Data.First();
-                        InstrumentCache.Add(instrument);
                     }
+                    InstrumentCache.Add(uic, instrument);
                 }
-                return instrument;
+                return InstrumentCache[uic];
             }
             catch (Exception ex)
             {

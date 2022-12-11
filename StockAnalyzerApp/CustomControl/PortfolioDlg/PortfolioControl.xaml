@@ -29,14 +29,16 @@
             <Label>Max Risk:</Label>
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="0,4,4,0" VerticalAlignment="Top">
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label VerticalAlignment="Center">Sync Date:</Label>
+            <TextBox Text="{Binding Portfolio.LastSyncDate, Converter={StaticResource StockDateConverter}}" VerticalAlignment="Center" Margin="2"/>
+            <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
                 <Image Source="../../Resources/Reload.png"/>
             </Button>
-            <Button x:Name="reportButton" Height="24" Width="24" Click="reportButton_Click" Margin="0,4,4,0" VerticalAlignment="Top">
+            <Button x:Name="reportButton" Height="24" Width="24" Click="reportButton_Click" Margin="2" VerticalAlignment="Top">
                 <Image Source="../../Resources/email.png"/>
             </Button>
-            <Button x:Name="savePortfolioButton" Height="24" Width="24" Click="savePortfolioButton_Click" Margin="0,4,4,0" VerticalAlignment="Top" >
+            <Button x:Name="savePortfolioButton" Height="24" Width="24" Click="savePortfolioButton_Click" Margin="2" VerticalAlignment="Top" >
                 <Image Source="../../Resources/SaveAnalysis.png"/>
             </Button>
         </StackPanel>
@@ -55,6 +57,7 @@
                     </telerik:RadGridView.ColumnGroups>
                     <telerik:RadGridView.Columns>
                         <!--<telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>-->
+                        <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>

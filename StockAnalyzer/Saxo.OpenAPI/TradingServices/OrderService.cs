@@ -2,25 +2,61 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Security.Principal;
 using System.Text;
 
 namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
-        public bool StartPosition(Instrument instrument, int qty, float buyStop, float stop, float limit)
+
+        public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, float stopValue)
         {
-            var orderReq = new OrderRequest
+
+            var orderRequest = new OrderRequest
             {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = OrderType.Market.ToString(),
+                BuySell = "Buy",
+                Amount = qty,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
+                Orders = new OrderReq[]
+                {
+                    new OrderReq
+                    {
+                        AccountKey = account.AccountKey,
+                        Uic = instrument.Identifier,
+                        AssetType = instrument.AssetType,
+                        Amount = qty,
+                        BuySell =   "Sell",
+                        OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
+                        OrderPrice = stopValue,
+                        OrderType = OrderType.StopIfTraded.ToString(),
+                        ManualOrder = false
+                    }
+                }
             };
-            return true;
+
+            return PostOrder(orderRequest);
+
+
+            //    AccountKey = accounts[0].AccountKey,
+            //    AssetType = smcpInstrument.AssetType,
+            //    Amount = 1,
+            //    BuySell = "Buy",
+            //    Uic = smcpInstrument.Uic,
+            //    ManualOrder = true,
+            //    OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
+            //    OrderType = OrderType.Market.ToString()
         }
-        public long PostOrder(OrderRequest order)
+
+        public OrderResponse PostOrder(OrderRequest order)
         {
             try
             {
-                var res = Post<OrderResponse>("trade/v2/orders", order);
-                return long.Parse(res.OrderId);
+                return Post<OrderResponse>("trade/v2/orders", order);
             }
             catch (Exception ex)
             {
@@ -40,11 +76,25 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        public Orders GetOrders(Account account)
+        public OpenedOrders GetOpenedOrders(Account account)
         {
             try
             {
-                var res = Get<Orders>($"port/v1/orders/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
+                var res = Get<OpenedOrders>($"port/v1/orders/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
+                return res;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
+        public ClosedOrders GetClosedOrders(Account account, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                if (fromDate.Year == 1)
+                    return null;
+                var res = Get<ClosedOrders>($"cs/v1/reports/trades/{account.ClientKey}/?$top=1000&AccountKey={account.AccountKey}&FromDate={fromDate.ToString("yyyy-MM-dd")}&ToDate={toDate.ToString("yyyy-MM-dd")}");
                 return res;
             }
             catch (Exception ex)
@@ -92,13 +142,14 @@ namespace Saxo.OpenAPI.TradingServices
     public class OrderReq
     {
         public string AccountKey { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
         public string AssetType { get; set; }
         public int Amount { get; set; }
         public string BuySell { get; set; }
         public OrderDuration OrderDuration { get; set; }
         public float OrderPrice { get; set; }
         public string OrderType { get; set; }
+        public bool ManualOrder { get; internal set; }
     }
 
     public class OrderResponse
@@ -125,13 +176,13 @@ namespace Saxo.OpenAPI.TradingServices
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public class Orders
+    public class OpenedOrders
     {
         public int __count { get; set; }
-        public Order[] Data { get; set; }
+        public OpenedOrder[] Data { get; set; }
     }
 
-    public class Order
+    public class OpenedOrder
     {
         public string AccountId { get; set; }
         public string AccountKey { get; set; }
@@ -169,6 +220,7 @@ namespace Saxo.OpenAPI.TradingServices
         public DateTime OrderTime { get; set; }
         public float Price { get; set; }
         public object[] RelatedOpenOrders { get; set; }
+        public string RelatedPositionId { get; set; }
         public string Status { get; set; }
         public string TradingStatus { get; set; }
         public int Uic { get; set; }
@@ -186,5 +238,60 @@ namespace Saxo.OpenAPI.TradingServices
         public bool IsOpen { get; set; }
         public string TimeZoneId { get; set; }
     }
+
+
+    public class ClosedOrders
+    {
+        public int __count { get; set; }
+        public ClosedOrder[] Data { get; set; }
+    }
+
+    public class ClosedOrder
+    {
+        public string AccountCurrency { get; set; }
+        public int AccountCurrencyDecimals { get; set; }
+        public string AccountId { get; set; }
+        public string AdjustedTradeDate { get; set; }
+        public float Amount { get; set; }
+        public string AssetType { get; set; }
+        public float Barrier1 { get; set; }
+        public float Barrier2 { get; set; }
+        public float BookedAmountAccountCurrency { get; set; }
+        public float BookedAmountClientCurrency { get; set; }
+        public float BookedAmountUSD { get; set; }
+        public string ClientCurrency { get; set; }
+        public string Direction { get; set; }
+        public string ExchangeDescription { get; set; }
+        public float FinancingLevel { get; set; }
+        public string InstrumentCategoryCode { get; set; }
+        public int InstrumentCurrencyDecimal { get; set; }
+        public string InstrumentDescription { get; set; }
+        public string InstrumentSymbol { get; set; }
+        public string IssuerName { get; set; }
+        public string OrderId { get; set; }
+        public float Price { get; set; }
+        public float ResidualValue { get; set; }
+        public float SpreadCostAccountCurrency { get; set; }
+        public float SpreadCostClientCurrency { get; set; }
+        public float SpreadCostUSD { get; set; }
+        public float StopLoss { get; set; }
+        public float Strike { get; set; }
+        public float Strike2 { get; set; }
+        public string ToolId { get; set; }
+        public string ToOpenOrClose { get; set; }
+        public bool TradeBarrierEventStatus { get; set; }
+        public string TradeDate { get; set; }
+        public float TradedValue { get; set; }
+        public string TradeEventType { get; set; }
+        public DateTime TradeExecutionTime { get; set; }
+        public string TradeId { get; set; }
+        public string TradeType { get; set; }
+        public int Uic { get; set; }
+        public string UnderlyingInstrumentDescription { get; set; }
+        public string UnderlyingInstrumentSymbol { get; set; }
+        public string ValueDate { get; set; }
+        public string Venue { get; set; }
+    }
+
 
 }

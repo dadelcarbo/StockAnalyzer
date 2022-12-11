@@ -23,6 +23,7 @@ namespace StockAnalyzer.StockPortfolio
             this.Id = this.portfolio.TradeOperations.Count;
         }
         public long Id { get; set; }
+        public long TradeId { get; set; }
         public DateTime Date { get; set; }
         public TradeOperationType OperationType { get; set; }
         public string StockName { get; set; }
