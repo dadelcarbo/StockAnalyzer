@@ -4,7 +4,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public partial class OpenPositionDlg : Form
     {
-        public OpenTradeViewModel TradeViewModel { get;}
+        public OpenTradeViewModel TradeViewModel { get; }
         OpenTradeUserControl openTradeUserControl;
         public OpenPositionDlg(OpenTradeViewModel tradeLogViewModel)
         {
@@ -18,6 +18,21 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         internal void Ok()
         {
+            if (string.IsNullOrEmpty(this.TradeViewModel.Portfolio.SaxoAccountId))
+            {
+                MessageBox.Show("Portfolio is not conected to SAXO");
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
+            }
+            if (this.TradeViewModel.MarketOrder)
+            {
+            }
+            else if (this.TradeViewModel.LimitOrder)
+            {
+            }
+            else if (this.TradeViewModel.ThresholdOrder)
+            {
+            }
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

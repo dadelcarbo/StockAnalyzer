@@ -16,6 +16,8 @@ using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
+using static StockAnalyzerApp.CustomControl.IndicatorDlgs.StockIndicatorSelectorDlg;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -2357,6 +2359,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var addAlertDlg = new AddStockAlertDlg(viewModel);
             addAlertDlg.ShowDialog();
         }
+        float FindStopValueFromTheme()
+        {
+            if (CurveList?.TrailStop?.Series[0] != null)
+            {
+                if (CurveList.TrailStop.Series[0].Count > 0 && !float.IsNaN(CurveList.TrailStop.Series[0][this.EndIndex]))
+                {
+                    return CurveList.TrailStop.Series[0][this.EndIndex];
+                }
+            }
+            return 0;
+        }
         void buyMenu_Click(object sender, System.EventArgs e)
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
@@ -2372,10 +2385,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var openTradeViewModel = new OpenTradeViewModel
             {
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
-                EntryValue = this.closeCurveType.DataSerie[lastMouseIndex],
+                EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 EntryQty = (int)(portfolioValue / 10f / this.closeCurveType.DataSerie[lastMouseIndex]),
-                EntryDate = this.dateSerie[lastMouseIndex],
-                StopValue = this.closeCurveType.DataSerie[lastMouseIndex] * 0.9f,
+                StopValue = FindStopValueFromTheme(),
                 StockName = this.serie.StockName,
                 Portfolio = this.Portfolio,
                 Themes = StockAnalyzerForm.MainFrame.Themes,
@@ -2388,28 +2400,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             openPositionDlg.Show(this);
             openPositionDlg.FormClosed += (a, b) =>
             {
-                this.IsBuying = true;
+                this.IsBuying = false;
                 this.OnMouseDateChanged -= openTradeViewModel.OnStopValueChanged;
                 if (openPositionDlg.DialogResult == DialogResult.OK)
                 {
-                    var amount = openTradeViewModel.EntryValue * openTradeViewModel.EntryQty + openTradeViewModel.Fee;
-                    if (StockAnalyzerForm.MainFrame.Portfolio.Balance < amount)
-                    {
-                        MessageBox.Show("You have insufficient cash to make this trade", "Invalid Operation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    StockAnalyzerForm.MainFrame.Portfolio.BuyTradeOperation(openTradeViewModel.StockName,
-                    openTradeViewModel.EntryDate,
-                    openTradeViewModel.EntryQty,
-                    openTradeViewModel.EntryValue,
-                    openTradeViewModel.Fee,
-                    openTradeViewModel.StopValue,
-                    openTradeViewModel.EntryComment,
-                    openTradeViewModel.BarDuration,
-                    openTradeViewModel.Theme
-                    );
-                    StockAnalyzerForm.MainFrame.Portfolio.Serialize();
-
                     this.BackgroundDirty = true;
                     PaintGraph();
                 }

@@ -22,7 +22,7 @@ using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses
 {
-    public partial class StockSerie : StockSortedDictionary, IXmlSerializable
+    public class StockSerie : StockSortedDictionary, IXmlSerializable
     {
         #region Type Definition
         public enum Groups
@@ -172,6 +172,7 @@ namespace StockAnalyzer.StockClasses
         public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2; } }
 
         public StockSerie SecondarySerie { get; set; }
+        public StockDailyValue LastValue { get; private set; }
         public bool HasVolume { get; private set; }
         /// <summary>
         /// Indicates if a stock has good liquitiy by on the last 10 bars by average a exchange in million of Euro.
@@ -689,6 +690,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 previousValue = dailyValue;
             }
+            this.LastValue = previousValue;
 
             // Check if has volume on the last 10 bars, othewise, disable it
             this.HasVolume = this.Values.Any(d => d.VOLUME > 0);

@@ -2,7 +2,9 @@
 using Saxo.OpenAPI.TradingServices;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
@@ -35,7 +37,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             }
         }
 
-        public static LoginSession Login(string clientId, string appPath)
+        public static LoginSession Login(string clientId, string appFolder, bool isSimu)
         {
             try
             {
@@ -43,6 +45,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 var session = Sessions.FirstOrDefault(s => s.ClientId == clientId);
                 if (session == null)
                 {
+                    string appPath = Path.Combine(appFolder, isSimu ? "App_sim.json" : "App_live.json");
                     session = new LoginSession
                     {
                         App = App.GetApp(appPath),
@@ -69,6 +72,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 }
 
                 // Establish Session
+                Clipboard.SetText(clientId);
                 var token = LoginHelpers.GoLogin(session.App);
                 if (token != null)
                 {

@@ -6,10 +6,22 @@
        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs"
        xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
-       mc:Ignorable="d" d:Background="LightYellow"
-       d:DesignHeight="381" d:DesignWidth="630" Language="fr-FR"
-       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}">
-    <StackPanel>
+       mc:Ignorable="d" d:Background="LightYellow" Language="fr-FR"
+       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}" Width="450" Height="400">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <GroupBox Header="Portfolio">
+            <StackPanel Orientation="Horizontal">
+                <Label>Name:</Label>
+                <TextBox Width="110" Text="{Binding Portfolio.Name}" Padding="4" IsEnabled="False"></TextBox>
+                <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
+                    <Image Source="../../../Resources/Reload.png"/>
+                </Button>
+                <Label>Value:</Label>
+                <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="4" IsEnabled="False"></TextBox>
+                <Label >Cash:</Label>
+                <TextBox Width="80" Text="{Binding Portfolio.Balance, Mode=OneWay, StringFormat=C2}" Padding="4" IsEnabled="False"></TextBox>
+            </StackPanel>
+        </GroupBox>
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Trade Entry">
                 <StackPanel>
@@ -21,11 +33,12 @@
                         <Label Width="45">Qty:</Label>
                         <telerik:RadNumericUpDown Value="{Binding EntryQty}" NumberDecimalDigits="0" Width="50" HorizontalAlignment="Left"/>
                         <Label Width="45" Content="Value:" Margin="15,0,0,0"/>
-                        <TextBox Text="{Binding EntryValue}" IsEnabled="{Binding IsChecked, ElementName=limitOrderCbx}" Width="80" HorizontalAlignment="Left" Padding="4"/>
+                        <TextBox Text="{Binding EntryValue}" IsEnabled="{Binding IsValueEditable}" Width="80" HorizontalAlignment="Left" Padding="4"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <CheckBox x:Name="limitOrderCbx" Content="Limit Order" IsChecked="{Binding LimitOrder}" HorizontalAlignment="Left" Padding="4" VerticalContentAlignment="Center" Margin="10,0,20,0"/>
-                        <CheckBox x:Name="stopOrderCbx" Content="Stop Order" IsChecked="{Binding LimitOrder}" HorizontalAlignment="Left" Padding="4" VerticalContentAlignment="Center" Margin="10,0,20,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                        <RadioButton x:Name="marketOrderCbx" Content="Market" IsChecked="{Binding MarketOrder}" Padding="4" VerticalContentAlignment="Center" />
+                        <RadioButton x:Name="limitOrderCbx" Content="Limit" IsChecked="{Binding LimitOrder}" Padding="4" VerticalContentAlignment="Center"/>
+                        <RadioButton x:Name="stopOrderCbx" Content="Threshold" IsChecked="{Binding ThresholdOrder}" Padding="4" VerticalContentAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="44">Cost:</Label>
@@ -37,6 +50,11 @@
             </GroupBox>
             <GroupBox Header="Risk Management">
                 <StackPanel>
+                    <StackPanel Margin="1" Orientation="Horizontal">
+                        <Label Width="82">Stop:</Label>
+                        <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="80" HorizontalAlignment="Left" SmallChange="0.01"/>
+                    </StackPanel>
+
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Risk (R)</Label>
                         <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F2}" Padding="4" IsEnabled="False"></TextBox>
@@ -55,52 +73,26 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Portfolio">
-                <StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="52">Name:</Label>
-                        <TextBox Width="110" Text="{Binding Portfolio.Name}" Padding="4" IsEnabled="False"></TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Initial Value:</Label>
-                        <TextBox Width="80" Text="{Binding Portfolio.InitialBalance, StringFormat=C2}" Padding="4" IsEnabled="False"></TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Value:</Label>
-                        <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="4" IsEnabled="False"></TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Return:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioReturn, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <GroupBox Header="Exit Management" VerticalAlignment="Top" >
-                <StackPanel Margin="1" Orientation="Horizontal">
-                    <Label Width="82">Stop:</Label>
-                    <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="50" HorizontalAlignment="Left" SmallChange="0.01"/>
-                </StackPanel>
-            </GroupBox>
             <GroupBox Header="Trade Log" >
                 <StackPanel>
-                    <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="70">Indicator:</Label>
-                        <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="325"></ComboBox>
+                        <Label Width="70">Theme:</Label>
+                        <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="150"></ComboBox>
+                        <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="70">Comment:</Label>
                         <telerik:RadWatermarkTextBox WatermarkContent="Entry comment" Text="{Binding EntryComment}" VerticalContentAlignment="Top"
-                                                 Padding="4" MaxLines="5" MinLines="5" HorizontalAlignment="Stretch" Width="325"></telerik:RadWatermarkTextBox>
+                                                 Padding="4" MaxLines="5" MinLines="5" Width="350" />
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Content="Ok" Margin="2" Click="okButton_Click" IsDefault="True"></Button>
-            <Button Content="Cancel" Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>
+            <Button Content=" Ok " Margin="2" Click="okButton_Click" IsDefault="True"></Button>
+            <Button Content=" Cancel " Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

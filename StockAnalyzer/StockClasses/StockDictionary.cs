@@ -1983,12 +1983,7 @@ namespace StockAnalyzer.StockClasses
                 var stockSerie = this[stockName];
                 if (stockSerie.Initialise())
                 {
-                    stockSerie.BarDuration = StockBarDuration.Daily;
-                    var index = stockSerie.LastIndex;
-                    if (index != -1)
-                    {
-                        return stockSerie.ValueArray[index].CLOSE;
-                    }
+                    return stockSerie.LastValue.CLOSE;
                 }
             }
             return 0f;

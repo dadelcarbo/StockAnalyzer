@@ -11,6 +11,7 @@ using Telerik.Windows.Controls.GridView;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -175,6 +176,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             viewModel.Portfolio.Refresh();
 
             this.openedPositionGridView.Rebind();
+            var bindingExpression = this.lastSyncTextBox.GetBindingExpression(TextBox.TextProperty);
+            bindingExpression.UpdateTarget();
             this.Cursor = cursor;
         }
     }

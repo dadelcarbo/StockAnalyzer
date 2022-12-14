@@ -31,7 +31,7 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
             <Label VerticalAlignment="Center">Sync Date:</Label>
-            <TextBox Text="{Binding Portfolio.LastSyncDate, Converter={StaticResource StockDateConverter}}" VerticalAlignment="Center" Margin="2"/>
+            <TextBox x:Name="lastSyncTextBox" Text="{Binding Portfolio.LastSyncDate, Converter={StaticResource StockDateConverter}}" VerticalAlignment="Center" Margin="2"/>
             <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
                 <Image Source="../../Resources/Reload.png"/>
             </Button>

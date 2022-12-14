@@ -24,7 +24,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             this.position = pos;
             this.portfolio = portfolio;
-            float value = StockPortfolio.PriceProvider.GetClosingPrice(pos.StockName, DateTime.Now, StockAnalyzer.StockClasses.BarDuration.Daily);
+            float value = StockPortfolio.PriceProvider.GetLastClosingPrice(pos.StockName);
             if (value == 0.0f) // if price is not found use open price
             {
                 this.LastValue = pos.EntryValue;
