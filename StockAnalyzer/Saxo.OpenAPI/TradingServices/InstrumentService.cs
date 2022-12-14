@@ -1,10 +1,7 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
 {
@@ -42,7 +39,7 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        private static SortedDictionary<long,Instrument> InstrumentCache = new SortedDictionary<long, Instrument>();
+        private static SortedDictionary<long, Instrument> InstrumentCache = new SortedDictionary<long, Instrument>();
         public Instrument GetInstrumentById(long uic)
         {
             var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CFxSpot";
@@ -109,28 +106,50 @@ namespace Saxo.OpenAPI.TradingServices
         public string DefaultSlippageType { get; set; }
         public string Description { get; set; }
         public Exchange Exchange { get; set; }
-        public string ExerciseCutOffTime { get; set; }
-        public DateTime FxForwardMaxForwardDate { get; set; }
-        public DateTime FxForwardMinForwardDate { get; set; }
+        public Format Format { get; set; }
         public int GroupId { get; set; }
         public float IncrementSize { get; set; }
+        public Ipodetails IpoDetails { get; set; }
+        public bool IsBarrierEqualsStrike { get; set; }
+        public bool IsComplex { get; set; }
+        public bool IsExtendedTradingHoursEnabled { get; set; }
+        public bool IsPEAEligible { get; set; }
+        public bool IsPEASMEEligible { get; set; }
         public bool IsRedemptionByAmounts { get; set; }
+        public bool IsSwitchBySameCurrency { get; set; }
         public bool IsTradable { get; set; }
+        public string LotSizeType { get; set; }
+        public float MinimumLotSize { get; set; }
         public float MinimumTradeSize { get; set; }
         public string NonTradableReason { get; set; }
         public Orderdistances OrderDistances { get; set; }
-        public string SettlementStyle { get; set; }
-        public bool ShortTradeDisabled { get; set; }
+        public string PriceCurrency { get; set; }
+        public float PriceToContractFactor { get; set; }
+        public int PrimaryListing { get; set; }
+        public object[] RelatedInstruments { get; set; }
         public float[] StandardAmounts { get; set; }
         public string[] SupportedOrderTriggerPriceTypes { get; set; }
         public string[] SupportedOrderTypes { get; set; }
+        public string[] SupportedStrategies { get; set; }
         public string Symbol { get; set; }
-        public float TickSize { get; set; }
+        public Ticksizescheme TickSizeScheme { get; set; }
         public string[] TradableAs { get; set; }
         public string[] TradableOn { get; set; }
         public string TradingSignals { get; set; }
         public string TradingStatus { get; set; }
         public int Uic { get; set; }
+    }
+
+    public class Format
+    {
+        public int Decimals { get; set; }
+        public int OrderDecimals { get; set; }
+    }
+
+    public class Ipodetails
+    {
+        public int MaxLeveragePct { get; set; }
+        public int MaxLotSize { get; set; }
     }
 
     public class Orderdistances
@@ -148,6 +167,18 @@ namespace Saxo.OpenAPI.TradingServices
         public float TakeProfitDefaultDistance { get; set; }
         public string TakeProfitDefaultDistanceType { get; set; }
         public bool TakeProfitDefaultEnabled { get; set; }
+    }
+
+    public class Ticksizescheme
+    {
+        public float DefaultTickSize { get; set; }
+        public TickSizeElement[] Elements { get; set; }
+    }
+
+    public class TickSizeElement
+    {
+        public float HighPrice { get; set; }
+        public decimal TickSize { get; set; }
     }
 
 }

@@ -84,16 +84,17 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     var actualClientId = new ClientService().GetClient().ClientId;
                     if (actualClientId != clientId)
                     {
-                        throw new SaxoAPIException("Client ID mistmach");
+                        MessageBox.Show("Client ID mistmach, check portfolio file configuration", "Saxo Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 return session;
             }
             catch (Exception ex)
             {
-                LoginService.CurrentSession = null;
-                throw new SaxoAPIException("Login exception", ex);
+                MessageBox.Show(ex.ToString(), "Saxo connection exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            LoginService.CurrentSession = null;
+            return CurrentSession;
         }
     }
 }

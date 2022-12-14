@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Tweetinvi.Core.Extensions;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -18,20 +19,28 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         internal void Ok()
         {
-            if (string.IsNullOrEmpty(this.TradeViewModel.Portfolio.SaxoAccountId))
+            if (!this.TradeViewModel.Portfolio.SaxoLogin())
             {
-                MessageBox.Show("Portfolio is not conected to SAXO");
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                return;
             }
+
+            string orderId = null;
             if (this.TradeViewModel.MarketOrder)
             {
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
             }
             else if (this.TradeViewModel.LimitOrder)
             {
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Limit, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
             }
             else if (this.TradeViewModel.ThresholdOrder)
             {
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Threshold, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
+            }
+            if (string.IsNullOrEmpty(orderId))
+            {
+                MessageBox.Show("Order non executed !", "Saxo Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             this.DialogResult = DialogResult.OK;
             this.Close();

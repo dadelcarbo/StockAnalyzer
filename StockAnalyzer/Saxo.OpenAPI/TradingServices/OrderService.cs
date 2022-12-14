@@ -1,30 +1,27 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
-using System.Security.Principal;
-using System.Text;
 
 namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
-
-        public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, float stopValue)
+        public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, decimal stopValue)
         {
-
             var orderRequest = new OrderRequest
             {
                 AccountKey = account.AccountKey,
                 Uic = instrument.Identifier,
                 AssetType = instrument.AssetType,
-                OrderType = OrderType.Market.ToString(),
+                OrderType = SaxoOrderType.Market.ToString(),
                 BuySell = "Buy",
                 Amount = qty,
-                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
-                Orders = new OrderReq[]
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() }
+            };
+            if (stopValue > 0)
+            {
+                orderRequest.Orders = new OrderRequest[]
                 {
-                    new OrderReq
+                    new OrderRequest
                     {
                         AccountKey = account.AccountKey,
                         Uic = instrument.Identifier,
@@ -33,26 +30,84 @@ namespace Saxo.OpenAPI.TradingServices
                         BuySell =   "Sell",
                         OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
                         OrderPrice = stopValue,
-                        OrderType = OrderType.StopIfTraded.ToString(),
+                        OrderType = SaxoOrderType.StopIfTraded.ToString(),
                         ManualOrder = false
                     }
-                }
-            };
-
+                };
+            }
             return PostOrder(orderRequest);
-
-
-            //    AccountKey = accounts[0].AccountKey,
-            //    AssetType = smcpInstrument.AssetType,
-            //    Amount = 1,
-            //    BuySell = "Buy",
-            //    Uic = smcpInstrument.Uic,
-            //    ManualOrder = true,
-            //    OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
-            //    OrderType = OrderType.Market.ToString()
         }
 
-        public OrderResponse PostOrder(OrderRequest order)
+        public OrderResponse BuyLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue, decimal stopValue)
+        {
+            var orderRequest = new OrderRequest
+            {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = SaxoOrderType.Limit.ToString(),
+                BuySell = "Buy",
+                Amount = qty,
+                OrderPrice = limitValue,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+            };
+            if (stopValue > 0)
+            {
+                orderRequest.Orders = new OrderRequest[]
+                {
+                    new OrderRequest
+                    {
+                        AccountKey = account.AccountKey,
+                        Uic = instrument.Identifier,
+                        AssetType = instrument.AssetType,
+                        Amount = qty,
+                        BuySell =   "Sell",
+                        OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
+                        OrderPrice = stopValue,
+                        OrderType = SaxoOrderType.StopIfTraded.ToString(),
+                        ManualOrder = false
+                    }
+                };
+            }
+            return PostOrder(orderRequest);
+        }
+
+
+        public OrderResponse BuyTresholdOrder(Account account, Instrument instrument, int qty, decimal thresholdValue, decimal stopValue)
+        {
+            var orderRequest = new OrderRequest
+            {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = SaxoOrderType.StopIfTraded.ToString(),
+                BuySell = "Buy",
+                Amount = qty,
+                OrderPrice = thresholdValue,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+            };
+            if (stopValue > 0)
+            {
+                orderRequest.Orders = new OrderRequest[]
+                {
+                    new OrderRequest
+                    {
+                        AccountKey = account.AccountKey,
+                        Uic = instrument.Identifier,
+                        AssetType = instrument.AssetType,
+                        Amount = qty,
+                        BuySell =   "Sell",
+                        OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
+                        OrderPrice = stopValue,
+                        OrderType = SaxoOrderType.StopIfTraded.ToString(),
+                        ManualOrder = false
+                    }
+                };
+            }
+            return PostOrder(orderRequest);
+        }
+
+        private OrderResponse PostOrder(OrderRequest order)
         {
             try
             {
@@ -104,24 +159,24 @@ namespace Saxo.OpenAPI.TradingServices
         }
     }
 
-    public enum OrderType
+    public enum SaxoOrderType
     {
-        Algorithmic, // Algo order.
-        DealCapture, // Deal Capture Order. Specify to capture trades, which are already registered on Exchange, into Saxo System. Currently supported for selected partners only.
-        GuaranteedStop, //  Order Type currently not supported.
-        Limit, //   Limit Order.
-        Market, //  Market Order.
-        Stop, //    Stop Order.
-        StopIfTraded, //    Stop if traded.
-        StopLimit, //   Stop Limit Order.
-        Switch, //  Switch order, Sell X and Buy Y with one order.
-        TrailingStop, //    Trailing stop.
-        TrailingStopIfTraded, //    Trailing stop if traded.
-        Traspaso, //    Traspaso. Specific type of switch order. Only available on select MutualFunds.
-        TraspasoIn, //  TraspasoIn. Specific type of switch order
-        TriggerBreakout, // Trigger breakout order. Specific type for trigger orders.
-        TriggerLimit, //    Trigger limit order. Specific type for trigger orders.
-        TriggerStop, // Trigger stop order. Specific type for trigger orders.
+        Algorithmic,            // Algo order.
+        DealCapture,            // Deal Capture Order. Specify to capture trades, which are already registered on Exchange, into Saxo System. Currently supported for selected partners only.
+        GuaranteedStop,         // Order Type currently not supported.
+        Limit,                  // Limit Order.
+        Market,                 // Market Order.
+        Stop,                   // Stop Order.
+        StopIfTraded,           // Stop if traded.
+        StopLimit,              // Stop Limit Order.
+        Switch,                 // Switch order, Sell X and Buy Y with one order.
+        TrailingStop,           // Trailing stop.
+        TrailingStopIfTraded,   // Trailing stop if traded.
+        Traspaso,               // Traspaso. Specific type of switch order. Only available on select MutualFunds.
+        TraspasoIn,             // TraspasoIn. Specific type of switch order
+        TriggerBreakout,        // Trigger breakout order. Specific type for trigger orders.
+        TriggerLimit,           // Trigger limit order. Specific type for trigger orders.
+        TriggerStop,            // Trigger stop order. Specific type for trigger orders.
     }
 
     public class OrderRequest
@@ -134,22 +189,9 @@ namespace Saxo.OpenAPI.TradingServices
         public int Amount { get; set; }
         public OrderDuration OrderDuration { get; set; }
         public string OrderRelation { get; set; }
-        public float OrderPrice { get; set; }
-        public OrderReq[] Orders { get; set; }
+        public decimal OrderPrice { get; set; }
+        public OrderRequest[] Orders { get; set; }
         public bool ManualOrder { get; set; }
-    }
-
-    public class OrderReq
-    {
-        public string AccountKey { get; set; }
-        public long Uic { get; set; }
-        public string AssetType { get; set; }
-        public int Amount { get; set; }
-        public string BuySell { get; set; }
-        public OrderDuration OrderDuration { get; set; }
-        public float OrderPrice { get; set; }
-        public string OrderType { get; set; }
-        public bool ManualOrder { get; internal set; }
     }
 
     public class OrderResponse

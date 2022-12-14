@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using Saxo.OpenAPI.TradingServices;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -12,12 +13,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         private int entryQty;
         private float entryValue;
         private float stopValue;
-        private DateTime entryDate;
         private bool marketOrder = true;
         private bool limitOrder;
         private bool thresholdOrder;
 
-        public string StockName { get; set; }
+        public StockSerie StockSerie { get; set; }
 
         private void OnEntryChanged()
         {
@@ -98,6 +98,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         {
             this.Portfolio.Refresh();
             this.OnPropertyChanged("Portfolio");
+
+            // Recalculate Entry Qty
+            this.EntryQty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
         }
     }
 }

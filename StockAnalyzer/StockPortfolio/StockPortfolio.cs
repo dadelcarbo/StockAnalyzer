@@ -2,23 +2,26 @@
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
 {
+    public enum OrderType
+    {
+        Market,
+        Limit,
+        Threshold
+    }
     public class StockPortfolio
     {
         public const string SIMU_P = "Simu_P";
@@ -168,7 +171,7 @@ namespace StockAnalyzer.StockPortfolio
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Error loading portfolio file", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error loading portfolio file", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
         }
@@ -255,7 +258,7 @@ namespace StockAnalyzer.StockPortfolio
                                                 break;
                                             default:
                                                 StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
-                                                System.Windows.Forms.MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                                                 break;
                                         }
                                     }
@@ -276,7 +279,7 @@ namespace StockAnalyzer.StockPortfolio
                                     break;
                                 default:
                                     StockLog.Write($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}");
-                                    System.Windows.Forms.MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show($"Not processed:  {row.TradeDate}\t{row.Instrument}\t{row.Type}\t{row.Event}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                                     break;
                             }
 
@@ -1051,6 +1054,21 @@ namespace StockAnalyzer.StockPortfolio
             return StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol == symbol || s.StockName == stockName);
         }
 
+        public bool SaxoLogin()
+        {
+            if (string.IsNullOrEmpty(SaxoAccountId))
+            {
+                MessageBox.Show("Missing Saxo Account Id, check portfolio file", "Saxo connection exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            if (string.IsNullOrEmpty(SaxoClientId))
+            {
+                MessageBox.Show("Missing Saxo Client Id, check portfolio file", "Saxo connection exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            return LoginService.Login(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu) != null;
+        }
+
         public void Refresh()
         {
             if (string.IsNullOrEmpty(this.SaxoClientId))
@@ -1061,12 +1079,13 @@ namespace StockAnalyzer.StockPortfolio
 
             try
             {
-                LoginService.Login(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu);
+                if (!this.SaxoLogin())
+                    return;
                 var accountService = new AccountService();
                 var account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
                 if (account == null)
                 {
-                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -1077,16 +1096,6 @@ namespace StockAnalyzer.StockPortfolio
                     this.Balance = balance.CashAvailableForTrading;
                 }
 
-                //{
-                //    var instrument = new InstrumentService().GetInstrumentByIsin("FR0000120073");
-                //    var orderService = new OrderService();
-                //    var orderResponse = orderService.BuyMarketOrder(account, instrument, 100, 25);
-                //    Console.WriteLine(orderResponse.OrderId);
-                //    foreach (var o in orderResponse.Orders)
-                //    {
-                //        Console.WriteLine(o.OrderId);
-                //    }
-                //}
                 // Review opened Orders
                 var openedOrders = new OrderService().GetOpenedOrders(account);
                 foreach (var openedOrder in openedOrders.Data)
@@ -1113,7 +1122,7 @@ namespace StockAnalyzer.StockPortfolio
                         StockSerie stockSerie = GetStockSerieFromUic(saxoPosition.PositionBase.Uic);
                         if (stockSerie == null)
                         {
-                            MessageBox.Show($"Serie symbol: {saxoPosition.PositionBase.Uic} not found !", "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Serie symbol: {saxoPosition.PositionBase.Uic} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
                             continue;
                         }
                         stockSerie.Initialise();
@@ -1174,8 +1183,75 @@ namespace StockAnalyzer.StockPortfolio
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public string SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
+        {
+            try
+            {
+                var accountService = new AccountService();
+                var account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
+                if (account == null)
+                {
+                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN);
+                if (instrument == null)
+                {
+                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrumentDetail = new InstrumentService().GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
+                if (instrumentDetail == null)
+                {
+                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+                decimal stop = RoundToTickSize(stopValue, instrumentDetail);
+
+                var orderService = new OrderService();
+                OrderResponse orderResponse = null;
+                switch (orderType)
+                {
+                    case OrderType.Market:
+                        orderResponse = orderService.BuyMarketOrder(account, instrument, qty, stop);
+                        break;
+                    case OrderType.Limit:
+                        decimal limit = RoundToTickSize(orderValue, instrumentDetail);
+                        orderResponse = orderService.BuyLimitOrder(account, instrument, qty, limit, stop);
+                        break;
+                    case OrderType.Threshold:
+                        decimal threshold = RoundToTickSize(orderValue, instrumentDetail);
+                        orderResponse = orderService.BuyTresholdOrder(account, instrument, qty, threshold, stop);
+                        break;
+                    default:
+                        break;
+                }
+                return orderResponse.OrderId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+
+        private decimal RoundToTickSize(float value, InstrumentDetails instrumentDetail)
+        {
+            var tickSize = instrumentDetail.TickSizeScheme.Elements[0].TickSize;
+            int i = 1;
+            while (i < instrumentDetail.TickSizeScheme.Elements.Length && value > instrumentDetail.TickSizeScheme.Elements[i - 1].HighPrice)
+            {
+                tickSize = instrumentDetail.TickSizeScheme.Elements[i].TickSize;
+                i++;
+            }
+
+            return decimal.Round((decimal)value / tickSize) * tickSize;
         }
     }
 }

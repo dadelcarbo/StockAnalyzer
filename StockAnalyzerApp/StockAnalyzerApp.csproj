@@ -33,7 +33,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>134</ApplicationRevision>
+    <ApplicationRevision>135</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -947,7 +947,6 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\DataSources\StockAnalyzer.Portofolio.StockOrder+OrderStatus.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.Portofolio.StockPortofolio.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.Properties.Settings.datasource" />
     <None Include="Properties\DataSources\StockAnalyzer.StockPortofolio.StockPortofolio.datasource" />

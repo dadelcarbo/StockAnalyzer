@@ -27,7 +27,7 @@
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="45">Name:</Label>
-                        <TextBox Text="{Binding StockName}" Padding="4" IsEnabled="False" Width="200"></TextBox>
+                        <TextBox Text="{Binding StockSerie.StockName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>
@@ -52,7 +52,7 @@
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Stop:</Label>
-                        <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="80" HorizontalAlignment="Left" SmallChange="0.01"/>
+                        <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="80" HorizontalAlignment="Left" SmallChange="0.01" Minimum="0"/>
                     </StackPanel>
 
                     <StackPanel Margin="1" Orientation="Horizontal">
