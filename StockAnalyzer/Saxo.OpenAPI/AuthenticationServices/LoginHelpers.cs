@@ -1,4 +1,5 @@
 ﻿using Saxo.OpenAPI.Models;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -102,7 +103,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 httpContext = listener.GetContext();
                 foreach (var item in httpContext.Request.QueryString)
                 {
-                    Console.WriteLine($"Key: {item} Value:{httpContext.Request.QueryString[item.ToString()]}");
+                    StockLog.Write($"Key: {item} Value:{httpContext.Request.QueryString[item.ToString()]}");
                 }
                 var authCode = httpContext.Request.QueryString["code"];
                 using (var writer = new StreamWriter(httpContext.Response.OutputStream))

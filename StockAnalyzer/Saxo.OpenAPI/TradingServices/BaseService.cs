@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.Models;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -56,7 +57,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}\r\n${content}");
+                StockLog.Write($"Exception: {ex.Message}\r\n${content}");
                 throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
             }
         }
@@ -71,7 +72,6 @@ namespace Saxo.OpenAPI.TradingServices
             try
             {
                 var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
-                //Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url)
                 {
                     Version = new Version(1, 1)  // Make sure HTTP/2 is used, once available
@@ -96,7 +96,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}\r\n${content}");
+                StockLog.Write($"Exception: {ex.Message}\r\n${content}");
                 throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
             }
         }
@@ -111,7 +111,6 @@ namespace Saxo.OpenAPI.TradingServices
             try
             {
                 var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
-                Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
                 {
                     //Version = new Version(2, 0)  // Make sure HTTP/2 is used, once available
@@ -136,7 +135,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}\r\n${content}");
+                StockLog.Write($"Exception: {ex.Message}\r\n${content}");
                 throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
             }
         }
@@ -152,7 +151,6 @@ namespace Saxo.OpenAPI.TradingServices
             try
             {
                 var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
-                Console.WriteLine($"Get<{typeof(T).Name}>(${url})");
                 HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), url)
                 {
                     //Version = new Version(2, 0)  // Make sure HTTP/2 is used, once available
@@ -177,7 +175,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}\r\n${content}");
+                StockLog.Write($"Exception: {ex.Message}\r\n${content}");
                 throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
             }
         }

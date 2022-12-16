@@ -75,7 +75,7 @@
 
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Risk (R)</Label>
-                        <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyPortfolioStyle}"></TextBox>
+                        <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F3}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyTradeStyle}"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Portfolio %</Label>
@@ -87,7 +87,7 @@
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Portfolio Risk:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyPortfolioStyle}"></TextBox>
+                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyTradeStyle}"></TextBox>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

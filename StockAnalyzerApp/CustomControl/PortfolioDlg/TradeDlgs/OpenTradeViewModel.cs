@@ -91,8 +91,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }
 
-        public bool IsTradeRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
-        public bool IsPortfolioRisky => PortfolioRisk > this.Portfolio.MaxRisk;
+        public bool IsTradeRisky => PortfolioRisk > this.Portfolio.MaxRisk;
+        public bool IsPortfolioRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
 
         public void OnStopValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
         {

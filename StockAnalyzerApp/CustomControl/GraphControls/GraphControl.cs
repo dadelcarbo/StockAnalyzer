@@ -175,7 +175,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
         static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Brush orderAreaBrush => new SolidBrush(Color.LightGray);
+        static protected Brush orderAreaBrush => new SolidBrush(Color.AliceBlue);
 
         protected bool mouseDown = false;
 
@@ -393,7 +393,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         tmpMaxValue = maxValue;
                     }
 
-                    float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
+                    float coefX = (this.GraphRectangle.Width - this.XMargin) / (EndIndex - StartIndex + 1);
                     float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
 
                     matrixValueToScreen = new Matrix();
@@ -450,7 +450,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     this.graphic = this.CreateGraphics();
                     RectangleF rect = this.graphic.VisibleClipBounds;
-                    rect.Inflate(new SizeF(-this.XMargin, -this.YMargin));
+                    rect.Inflate(new SizeF(-this.XMargin * 1.5f, -this.YMargin));
+                    rect.Offset(new PointF(this.XMargin * -.5f, 0));
                     this.GraphRectangle = rect;
 
                     // Initialise transformation Matrix

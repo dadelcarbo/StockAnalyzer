@@ -41,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     this.GraphRectangle = rect;
                 }
 
-                float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
+                float coefX = (this.GraphRectangle.Width - this.XMargin) / (EndIndex - StartIndex + 1);
                 float coefY = this.GraphRectangle.Height * 0.96f / maxValue;
 
                 matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();

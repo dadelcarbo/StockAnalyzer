@@ -487,49 +487,20 @@ namespace StockAnalyzerApp
             //}
 
 
-#if DEBUG
-            bool fastStart = false;
-#else
-            bool fastStart = false;
-#endif
-            if (!fastStart)
-            {
-                var cac40 = this.StockDictionary["CAC40"];
-                cac40.Initialise();
+            var cac40 = this.StockDictionary["CAC40"];
+            cac40.Initialise();
 
-                // Generate breadth 
-                if (Settings.Default.GenerateBreadth)
+            // Generate breadth 
+            if (Settings.Default.GenerateBreadth)
+            {
+                foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                 {
-                    foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
-                    {
-                        StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
-                        stockserie.Initialise();
-                        if (!BreadthDataProvider.NeedGenerate)
-                            break;
-                    }
+                    StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
+                    stockserie.Initialise();
+                    if (!BreadthDataProvider.NeedGenerate)
+                        break;
                 }
             }
-
-#if DEBUG
-            // Testing best breadth
-            //var str = "NbStock\tFilter\tValue" + Environment.NewLine;
-            //Console.WriteLine(str);
-            //foreach (int nbStocks in new int[] { 10, 15, 20 })
-            //{
-            //    foreach (int i in new int[] { 50, 75, 100, 125, 150 })
-            //    {
-            //        var filter = $"OSC({i},{i * 2},True,EMA)";
-
-            //        StockSplashScreen.ProgressText = $"Generating PTF {nbStocks}-{filter}";
-
-            //        var value = StockDictionary.GeneratePTFBestFilter(StockSerie.Groups.EURO_A, StockBarDuration.Daily, filter, nbStocks);
-            //        var line = $"{nbStocks}\t{filter}\t{value}";
-            //        Console.WriteLine(line);
-            //        str += line + Environment.NewLine;
-            //    }
-            //}
-            //Clipboard.SetText(str);
-#endif
 
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
@@ -604,8 +575,6 @@ namespace StockAnalyzerApp
                 {
                     reportDate = DateTime.Parse(File.ReadAllText(fileName));
                 }
-                var cac40 = this.StockDictionary["CAC40"];
-                cac40.Initialise();
                 cac40.BarDuration = StockBarDuration.Daily;
                 if (reportDate < cac40.Keys.Last())
                 {
@@ -632,7 +601,6 @@ namespace StockAnalyzerApp
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
-
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
             allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
@@ -2947,7 +2915,7 @@ namespace StockAnalyzerApp
             if (!string.IsNullOrEmpty(report))
             {
                 var htmlReport = reportTemplate.Replace("%HTML_BODY%", report);
-                string fileName = Path.Combine(Folders.Portfolio, $@"Report\{ portfolio.Name }.html");
+                string fileName = Path.Combine(Folders.Portfolio, $@"Report\{portfolio.Name}.html");
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
                     sw.Write(htmlReport);

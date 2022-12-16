@@ -124,7 +124,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     minValue -= (maxValue - minValue) * 0.05f;
                     maxValue += (maxValue - minValue) * 0.05f;
 
-                    float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
+                    float coefX = (this.GraphRectangle.Width - this.XMargin) / (EndIndex - StartIndex + 1);
                     float coefY = this.GraphRectangle.Height / (maxValue - minValue);
 
                     matrixSecondaryValueToScreen = new System.Drawing.Drawing2D.Matrix();

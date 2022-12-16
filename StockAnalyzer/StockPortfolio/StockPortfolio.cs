@@ -427,123 +427,6 @@ namespace StockAnalyzer.StockPortfolio
                     break;
             }
         }
-        public void AddClosedOrder(ClosedOrder closedOrder)
-        {
-            var orderId = long.Parse(closedOrder.OrderId);
-            if (this.TradeOperations.Any(o => o.Id == orderId))
-                return;
-            var qty = Math.Abs((int)closedOrder.Amount);
-            var stockSerie = GetStockSerieFromUic(closedOrder.Uic);
-            string stockName = closedOrder.InstrumentSymbol;
-            string isin = string.Empty;
-            var tradeId = long.Parse(closedOrder.TradeId);
-            var executionTime = new DateTime((closedOrder.TradeExecutionTime.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
-            if (stockSerie == null)
-            {
-                StockLog.Write($"Serie symbol: {closedOrder.Uic} {closedOrder.InstrumentSymbol} not found !");
-            }
-            else
-            {
-                stockName = stockSerie.StockName;
-                isin = stockSerie.ISIN;
-            }
-            StockLog.Write($"{closedOrder.TradeEventType} {stockName} Id:{closedOrder.OrderId} TradeId:{closedOrder.TradeId} {executionTime}");
-            switch (closedOrder.TradeEventType.ToLower())
-            {
-                case SaxoOperation.TRANSFER_IN:
-                case SaxoOperation.BUY:
-                    {
-                        var tradeOperation = new StockTradeOperation
-                        {
-                            OperationType = TradeOperationType.Buy,
-                            Date = executionTime,
-                            Id = orderId,
-                            TradeId = tradeId,
-                            Qty = qty,
-                            StockName = stockName,
-                            Value = closedOrder.Price,
-                            ISIN = isin,
-                            Fee = Math.Abs(closedOrder.BookedAmountClientCurrency - closedOrder.TradedValue)
-                        };
-                        this.TradeOperations.Add(tradeOperation);
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
-                        if (position != null) // Position on this stock already exists, add new values
-                        {
-                            if (position.EntryDate == executionTime)
-                                return;
-                            var openValue = (position.EntryValue * position.EntryQty + closedOrder.Price * qty) / (position.EntryQty + qty);
-                            position.ExitDate = executionTime;
-                            position.ExitValue = openValue;
-                            this.Positions.Add(new StockPosition
-                            {
-                                Id = 0,
-                                OrderId = tradeId,
-                                EntryDate = executionTime,
-                                EntryQty = position.EntryQty + qty,
-                                StockName = tradeOperation.StockName,
-                                ISIN = tradeOperation.ISIN,
-                                EntryValue = openValue
-                            });
-                        }
-                        else // Position on this stock doen't exists, create a new one
-                        {
-                            this.Positions.Add(new StockPosition
-                            {
-                                Id = tradeId,
-                                OrderId = tradeId,
-                                EntryDate = executionTime,
-                                EntryQty = qty,
-                                StockName = tradeOperation.StockName,
-                                ISIN = tradeOperation.ISIN,
-                                EntryValue = closedOrder.Price
-                            });
-                        }
-                    }
-                    break;
-                case SaxoOperation.SELL:
-                    {
-                        var tradeOperation = new StockTradeOperation
-                        {
-                            OperationType = TradeOperationType.Sell,
-                            Date = executionTime,
-                            Id = orderId,
-                            TradeId = tradeId,
-                            Qty = qty,
-                            StockName = stockName,
-                            Value = closedOrder.Price,
-                            ISIN = isin,
-                            Fee = Math.Abs(closedOrder.BookedAmountClientCurrency - closedOrder.TradedValue)
-                        };
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
-                        if (position != null)
-                        {
-                            position.ExitDate = executionTime;
-                            position.ExitValue = closedOrder.Price;
-                            if (position.EntryQty != qty)
-                            {
-                                this.Positions.Add(new StockPosition
-                                {
-                                    Id = 0,
-                                    OrderId = tradeId,
-                                    EntryDate = executionTime,
-                                    EntryQty = position.EntryQty - qty,
-                                    StockName = tradeOperation.StockName,
-                                    ISIN = tradeOperation.ISIN,
-                                    EntryValue = position.EntryValue
-                                });
-                            }
-
-                            this.TradeOperations.Add(tradeOperation);
-                        }
-                        else
-                        {
-                            StockLog.Write($"Selling not opened position: {tradeOperation.StockName} qty:{qty}");
-                        }
-                    }
-                    break;
-            }
-        }
-
         public void AddOperation(SaxoOperation operation)
         {
             if (this.TradeOperations.Any(o => o.Id == operation.Id))
@@ -898,7 +781,7 @@ namespace StockAnalyzer.StockPortfolio
                 foreach (var openedOrder in openedOrders.Data)
                 {
                     var instrument = new InstrumentService().GetInstrumentById(openedOrder.Uic);
-                    Console.WriteLine($"OrderId:{openedOrder.OrderId} {openedOrder.OpenOrderType} {instrument?.Symbol} {openedOrder.RelatedPositionId} {openedOrder.Status}");
+                    StockLog.Write($"OrderId:{openedOrder.OrderId} {openedOrder.OpenOrderType} {instrument?.Symbol} {openedOrder.RelatedPositionId} {openedOrder.Status}");
                 }
 
                 // Review opened Positions
@@ -910,7 +793,7 @@ namespace StockAnalyzer.StockPortfolio
                 foreach (var saxoPosition in saxoPositions)
                 {
                     var instrument = new InstrumentService().GetInstrumentById(saxoPosition.PositionBase.Uic);
-                    Console.WriteLine($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {saxoPosition.PositionBase.SourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
+                    StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {saxoPosition.PositionBase.SourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
                     var posId = long.Parse(saxoPosition.PositionId);
                     var orderId = long.Parse(saxoPosition.PositionBase.SourceOrderId);
                     var position = this.OpenedPositions.FirstOrDefault(p => p.Id == posId || p.OrderId == orderId);
@@ -951,6 +834,7 @@ namespace StockAnalyzer.StockPortfolio
                     }
                     else
                     {
+                        untreatedPositions.Remove(position);
                         // Update trailing stop
                         var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
                         if (stopOrder != null)
@@ -964,8 +848,17 @@ namespace StockAnalyzer.StockPortfolio
                         }
                     }
                 }
+                foreach (var position in untreatedPositions)
+                {
+                    if (!string.IsNullOrEmpty(position.TrailStopId))
+                    {
+                        StockLog.Write($"UntreatedPosition on {position.StockName}");
+                        // 
+                       // var order = new OrderService().GetOrder(long.Parse(position.TrailStopId), account.ClientKey);
+                    }
+                }
 
-                // Check executedOrders (One day dalay)
+                // Check executedOrders (One day delay)
                 var closedOrders = new OrderService().GetClosedOrders(account, this.LastSyncDate.AddDays(-1), DateTime.Now);
                 foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime))
                 {
@@ -973,7 +866,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
                 foreach (var pos in accountService.GetHistoricalClosedPositions(account, LastSyncDate).Data)
                 {
-                    Console.WriteLine($"{pos.InstrumentSymbol} OpenPosId: {pos.OpenPositionId} ClosePosId:{pos.ClosePositionId} {pos.TradeDateOpen}");
+                    StockLog.Write($"{pos.InstrumentSymbol} OpenPosId: {pos.OpenPositionId} ClosePosId:{pos.ClosePositionId} {pos.TradeDateOpen}");
                 }
 
                 this.LastSyncDate = DateTime.Today;
@@ -982,6 +875,122 @@ namespace StockAnalyzer.StockPortfolio
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public void AddClosedOrder(ClosedOrder closedOrder)
+        {
+            var orderId = long.Parse(closedOrder.OrderId);
+            if (this.TradeOperations.Any(o => o.Id == orderId))
+                return;
+            var qty = Math.Abs((int)closedOrder.Amount);
+            var stockSerie = GetStockSerieFromUic(closedOrder.Uic);
+            string stockName = closedOrder.InstrumentSymbol;
+            string isin = string.Empty;
+            var tradeId = long.Parse(closedOrder.TradeId);
+            var executionTime = new DateTime((closedOrder.TradeExecutionTime.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
+            if (stockSerie == null)
+            {
+                StockLog.Write($"Serie symbol: {closedOrder.Uic} {closedOrder.InstrumentSymbol} not found !");
+            }
+            else
+            {
+                stockName = stockSerie.StockName;
+                isin = stockSerie.ISIN;
+            }
+            StockLog.Write($"{closedOrder.TradeEventType} {stockName} Id:{closedOrder.OrderId} TradeId:{closedOrder.TradeId} {executionTime}");
+            switch (closedOrder.TradeEventType.ToLower())
+            {
+                case SaxoOperation.TRANSFER_IN:
+                case SaxoOperation.BUY:
+                    {
+                        var tradeOperation = new StockTradeOperation
+                        {
+                            OperationType = TradeOperationType.Buy,
+                            Date = executionTime,
+                            Id = orderId,
+                            TradeId = tradeId,
+                            Qty = qty,
+                            StockName = stockName,
+                            Value = closedOrder.Price,
+                            ISIN = isin,
+                            Fee = Math.Abs(closedOrder.BookedAmountClientCurrency - closedOrder.TradedValue)
+                        };
+                        this.TradeOperations.Add(tradeOperation);
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
+                        if (position != null) // Position on this stock already exists, add new values
+                        {
+                            if (position.EntryDate == executionTime)
+                                return;
+                            var openValue = (position.EntryValue * position.EntryQty + closedOrder.Price * qty) / (position.EntryQty + qty);
+                            position.ExitDate = executionTime;
+                            position.ExitValue = openValue;
+                            this.Positions.Add(new StockPosition
+                            {
+                                Id = 0,
+                                OrderId = tradeId,
+                                EntryDate = executionTime,
+                                EntryQty = position.EntryQty + qty,
+                                StockName = tradeOperation.StockName,
+                                ISIN = tradeOperation.ISIN,
+                                EntryValue = openValue
+                            });
+                        }
+                        else // Position on this stock doen't exists, create a new one
+                        {
+                            this.Positions.Add(new StockPosition
+                            {
+                                Id = tradeId,
+                                OrderId = tradeId,
+                                EntryDate = executionTime,
+                                EntryQty = qty,
+                                StockName = tradeOperation.StockName,
+                                ISIN = tradeOperation.ISIN,
+                                EntryValue = closedOrder.Price
+                            });
+                        }
+                    }
+                    break;
+                case SaxoOperation.SELL:
+                    {
+                        var tradeOperation = new StockTradeOperation
+                        {
+                            OperationType = TradeOperationType.Sell,
+                            Date = executionTime,
+                            Id = orderId,
+                            TradeId = tradeId,
+                            Qty = qty,
+                            StockName = stockName,
+                            Value = closedOrder.Price,
+                            ISIN = isin,
+                            Fee = Math.Abs(closedOrder.BookedAmountClientCurrency - closedOrder.TradedValue)
+                        };
+                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
+                        if (position != null)
+                        {
+                            position.ExitDate = executionTime;
+                            position.ExitValue = closedOrder.Price;
+                            if (position.EntryQty != qty)
+                            {
+                                this.Positions.Add(new StockPosition
+                                {
+                                    Id = 0,
+                                    OrderId = tradeId,
+                                    EntryDate = executionTime,
+                                    EntryQty = position.EntryQty - qty,
+                                    StockName = tradeOperation.StockName,
+                                    ISIN = tradeOperation.ISIN,
+                                    EntryValue = position.EntryValue
+                                });
+                            }
+
+                            this.TradeOperations.Add(tradeOperation);
+                        }
+                        else
+                        {
+                            StockLog.Write($"Selling not opened position: {tradeOperation.StockName} qty:{qty}");
+                        }
+                    }
+                    break;
             }
         }
         public string SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)

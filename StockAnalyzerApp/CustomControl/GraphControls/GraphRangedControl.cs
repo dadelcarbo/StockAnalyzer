@@ -35,8 +35,8 @@
          if (this.GraphRectangle.Height > 0)
          {
             float minValue = this.RangeMin, maxValue = this.RangeMax;
-            float coefX = (this.GraphRectangle.Width * 0.96f) / (EndIndex - StartIndex);
-            float coefY = this.GraphRectangle.Height *0.90f  / (maxValue - minValue);
+                float coefX = (this.GraphRectangle.Width - this.XMargin) / (EndIndex - StartIndex + 1);
+                float coefY = this.GraphRectangle.Height *0.90f  / (maxValue - minValue);
 
             matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
             matrixValueToScreen.Translate(this.GraphRectangle.X - (StartIndex - 0.5f) * coefX, maxValue * coefY + this.GraphRectangle.Y);
