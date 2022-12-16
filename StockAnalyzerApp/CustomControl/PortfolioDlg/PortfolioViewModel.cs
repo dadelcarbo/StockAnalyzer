@@ -35,6 +35,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property]
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
+        [Property]
+        public bool IsSaxoSimu { get => Portfolio.IsSaxoSimu; set => Portfolio.IsSaxoSimu = value; }
+        [Property]
+        public string SaxoAccountId { get => Portfolio.SaxoAccountId; set => Portfolio.SaxoAccountId = value; }
+        [Property]
+        public string SaxoClientId { get => Portfolio.SaxoClientId; set => Portfolio.SaxoClientId = value; }
+
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
         public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));

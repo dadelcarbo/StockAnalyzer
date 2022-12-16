@@ -56,7 +56,6 @@
                         <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
                     </telerik:RadGridView.ColumnGroups>
                     <telerik:RadGridView.Columns>
-                        <!--<telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>-->
                         <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
@@ -143,7 +142,8 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Portfolio">
-                <telerik:RadPropertyGrid Item="{Binding PortfolioViewModel}" AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"></telerik:RadPropertyGrid>
+                <telerik:RadPropertyGrid Item="{Binding PortfolioViewModel}" AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
+                                       DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed"  ></telerik:RadPropertyGrid>
             </TabItem>
         </TabControl>
     </Grid>

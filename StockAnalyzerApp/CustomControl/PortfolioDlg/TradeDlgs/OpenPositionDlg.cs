@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using Tweetinvi.Core.Extensions;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {

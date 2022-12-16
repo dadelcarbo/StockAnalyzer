@@ -41,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         private void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
-            StockAnalyzerForm.MainFrame.GraphCloseControl.StopChanged += GraphCloseControl_StopChanged;
+            StockAnalyzerForm.MainFrame.GraphCloseControl.StopChanged -= GraphCloseControl_StopChanged;
         }
 
         private void GraphCloseControl_StopChanged(float stopValue)

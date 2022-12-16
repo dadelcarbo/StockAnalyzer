@@ -7,32 +7,23 @@ namespace Saxo.OpenAPI.TradingServices
 {
     public class InstrumentService : BaseService
     {
-        /// <summary>
-        /// Get Instrument by keywords
-        /// </summary>
-        /// <param name="keywords"></param>
-        /// <returns></returns>
-        public Instrument[] GetInstruments(string keywords)
-        {
-            var method = $"ref/v1/instruments/?$top=201&$skip=0&includeNonTradable=true&AssetTypes=Stock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CWarrant%2CMiniFuture%2CWarrantSpread%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CSrdOnStock%2CSrdOnEtf%2CIpoOnStock%2CCompanyWarrant%2CStockIndex&keywords={keywords}&MarketDataProvider=Factset";
-            try
-            {
-                return Get<Instruments>(method).Data;
-            }
-            catch (Exception ex)
-            {
-                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
-            }
-        }
+        private static SortedDictionary<string, Instrument> InstrumentIsinCache = new SortedDictionary<string, Instrument>();
         public Instrument GetInstrumentByIsin(string isin)
         {
             var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut";
             try
             {
-                var instruments = Get<Instruments>(method);
-                if (instruments.Data.Length > 0)
-                    return instruments.Data.First();
-                return null;
+                if (!InstrumentIsinCache.ContainsKey(isin))
+                {
+                    Instrument instrument = null;
+                    var instruments = Get<Instruments>(method);
+                    if (instruments.Data.Length > 0)
+                    {
+                        instrument = instruments.Data.First();
+                    }
+                    InstrumentIsinCache.Add(isin, instrument);
+                }
+                return InstrumentIsinCache[isin];
             }
             catch (Exception ex)
             {
@@ -48,7 +39,6 @@ namespace Saxo.OpenAPI.TradingServices
                 if (!InstrumentCache.ContainsKey(uic))
                 {
                     Instrument instrument = null;
-                    //Task.Delay(2000).Wait();
                     var instruments = Get<Instruments>(method);
                     if (instruments.Data.Length > 0)
                     {
@@ -63,12 +53,20 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
+
+        private static SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();
         public InstrumentDetails GetInstrumentDetailsById(long uic, string assetType, Account account)
         {
             var method = $"ref/v1/instruments/details/{uic}/{assetType}/?AccountKey={account.AccountKey}";
             try
             {
-                return Get<InstrumentDetails>(method);
+                if (!InstrumentDetailsCache.ContainsKey(uic))
+                {
+                    InstrumentDetails instrumentDetail = Get<InstrumentDetails>(method);
+
+                    InstrumentDetailsCache.Add(uic, instrumentDetail);
+                }
+                return InstrumentDetailsCache[uic];
             }
             catch (Exception ex)
             {

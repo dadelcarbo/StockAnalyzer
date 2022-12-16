@@ -23,5 +23,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         {
             this.ParentDlg.Cancel();
         }
+
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ParentDlg.TradeViewModel.Refresh();
+        }
     }
 }

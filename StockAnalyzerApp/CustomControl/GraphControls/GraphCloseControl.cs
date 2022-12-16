@@ -16,8 +16,6 @@ using StockAnalyzerSettings.Properties;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
-using static StockAnalyzerApp.CustomControl.IndicatorDlgs.StockIndicatorSelectorDlg;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -1205,17 +1203,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var position = positions.FirstOrDefault(p => !p.IsClosed);
                 if (position != null)
                 {
-                    int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
-                    this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
-                    if (position.Stop != 0)
-                    {
-                        this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
-                    }
-                    if (position.TrailStop != 0 && position.TrailStop != position.Stop)
-                    {
-                        this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
-                    }
+                    PaintOpenedPosition(graphic, position);
                 }
+            }
+        }
+
+        private void PaintOpenedPosition(Graphics graphic, StockPosition position)
+        {
+            int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+            this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
+            if (position.Stop != 0)
+            {
+                this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
+            }
+            if (position.TrailStop != 0 && position.TrailStop != position.Stop)
+            {
+                this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
             }
         }
 
@@ -1285,6 +1288,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             marqueePoints[0] = new PointF(basePoint.X - EVENT_MARQUEE_SIZE, this.GraphRectangle.Top);
             marqueePoints[1] = new PointF(basePoint.X + EVENT_MARQUEE_SIZE, this.GraphRectangle.Top);
             marqueePoints[2] = new PointF(basePoint.X, basePoint.Y);
+
+            return marqueePoints;
+        }
+        private PointF[] GetStopMarqueePoints(float value)
+        {
+            PointF[] marqueePoints = new PointF[3];
+
+            PointF basePoint = this.GetScreenPointFromValuePoint(new PointF(0, value));
+            basePoint.X = this.GraphRectangle.Right;
+
+            marqueePoints[0] = new PointF(basePoint.X, basePoint.Y);
+            marqueePoints[1] = new PointF(basePoint.X - STOP_MARQUEE_SIZE * 4, basePoint.Y - STOP_MARQUEE_SIZE * 2);
+            marqueePoints[2] = new PointF(basePoint.X - STOP_MARQUEE_SIZE * 4, basePoint.Y + STOP_MARQUEE_SIZE * 2);
 
             return marqueePoints;
         }
@@ -1511,24 +1527,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             PointF mousePoint = new PointF(e.X, e.Y);
-            if (this.ShowPositions && this.Portfolio != null && mousePoint.X + 15 >= this.GraphRectangle.Right)
+            if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + 15 >= this.GraphRectangle.Right)
             {
                 var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
                 if (position != null)
                 {
-                    var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                    if (position.Stop == 0)
+                    if (DialogResult.Yes == MessageBox.Show("Do you want to sent order to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
-                        position.Stop = mouseValuePoint.Y;
+                        var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
+                        var orderId = this.Portfolio.SaxoUpdateStopOrder(position, mouseValuePoint.Y);
+                        this.ForceRefresh();
+                        if (StopChanged != null)
+                        {
+                            this.StopChanged(mouseValuePoint.Y);
+                        }
+                        return;
                     }
-                    position.TrailStop = mouseValuePoint.Y;
-                    Portfolio.Serialize();
-                    this.ForceRefresh();
-                    if (StopChanged != null)
-                    {
-                        this.StopChanged(mouseValuePoint.Y);
-                    }
-                    return;
                 }
             }
 
@@ -2260,6 +2274,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var p1 = this.GetScreenPointFromValuePoint(index, stop);
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
+            var points = GetStopMarqueePoints(stop);
+            graph.FillPolygon(new SolidBrush(pen.Color), points);
             if (showText)
                 this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
@@ -2414,11 +2430,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
-                MessageBox.Show("Please select a valid simu portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
-                return;
             var pos = StockAnalyzerForm.MainFrame.Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
             if (pos == null)
             {
@@ -2428,10 +2442,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             var tradeViewModel = new CloseTradeViewModel
             {
+                StockSerie = this.serie,
                 Position = pos,
-                ExitValue = this.closeCurveType.DataSerie[lastMouseIndex],
+                ExitValue = this.serie.LastValue.CLOSE,
                 ExitQty = pos.EntryQty,
-                ExitDate = this.dateSerie[lastMouseIndex],
                 StockName = this.serie.StockName,
                 Portfolio = this.Portfolio
             };
@@ -2439,14 +2453,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var positionDlg = new ClosePositionDlg(tradeViewModel);
             if (positionDlg.ShowDialog() == DialogResult.OK)
             {
-                StockAnalyzerForm.MainFrame.Portfolio.SellTradeOperation(tradeViewModel.StockName,
-                    tradeViewModel.ExitDate,
-                    tradeViewModel.ExitQty,
-                    tradeViewModel.ExitValue,
-                    tradeViewModel.Fee,
-                    tradeViewModel.ExitComment
-                    );
-                StockAnalyzerForm.MainFrame.Portfolio.Serialize();
             }
             this.BackgroundDirty = true;
             PaintGraph();

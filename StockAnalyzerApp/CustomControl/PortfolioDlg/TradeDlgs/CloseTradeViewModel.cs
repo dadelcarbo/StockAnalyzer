@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using System;
 
@@ -6,7 +7,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public class CloseTradeViewModel : NotifyPropertyChangedBase
     {
-        private int entryQty;
+        private int exitQty;
         private float entryValue;
 
         public string StockName { get; set; }
@@ -23,14 +24,23 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.OnPropertyChanged("PortfolioReturnPercent");
         }
 
+        internal void Refresh()
+        {
+            this.Portfolio.Refresh();
+            this.OnPropertyChanged("Portfolio");
+            this.OnExitChanged();
+        }
+
+        public StockSerie StockSerie { get; set; }
+
         public int ExitQty
         {
-            get => entryQty;
+            get => exitQty;
             set
             {
-                if (entryQty != value)
+                if (exitQty != value)
                 {
-                    entryQty = value;
+                    exitQty = value;
                     OnExitChanged();
                 }
             }
@@ -55,7 +65,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public float ReturnPercent => (this.ExitAmount - this.Position.EntryCost) / this.Position.EntryCost;
         public float PortfolioReturnPercent => this.Return / this.Portfolio.TotalValue;
 
-        public DateTime ExitDate { get; set; }
         public string ExitComment { get; set; }
         public StockPortfolio Portfolio { get; set; }
         public StockPosition Position { get; set; }

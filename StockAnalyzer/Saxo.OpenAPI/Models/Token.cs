@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Saxo.OpenAPI.TradingServices;
 using System;
 using System.IO;
-using System.Text.Json.Serialization;
 
 namespace Saxo.OpenAPI.Models
 {

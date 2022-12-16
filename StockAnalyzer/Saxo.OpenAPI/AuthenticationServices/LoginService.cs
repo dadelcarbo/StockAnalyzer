@@ -20,7 +20,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             {
                 if (CurrentSession == null)
                 {
-                    throw new SaxoAPIException("Session now intialized, log in first");
+                    throw new SaxoAPIException("Session not intialized, log in first");
                 }
                 return CurrentSession.App;
             }
@@ -76,18 +76,21 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 var token = LoginHelpers.GoLogin(session.App);
                 if (token != null)
                 {
-                    token.Serialize(clientId);
-                    session.Token = token;
                     CurrentSession = session;
+                    session.Token = token;
 
                     // Verify clientId
                     var actualClientId = new ClientService().GetClient().ClientId;
                     if (actualClientId != clientId)
                     {
-                        MessageBox.Show("Client ID mistmach, check portfolio file configuration", "Saxo Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Client ID mistmach, Are connection the right SAXO account ?", "Saxo Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        Sessions.Remove(session);
+                        CurrentSession = null;
                     }
+                    token.Serialize(actualClientId);
                 }
-                return session;
+                return CurrentSession;
             }
             catch (Exception ex)
             {

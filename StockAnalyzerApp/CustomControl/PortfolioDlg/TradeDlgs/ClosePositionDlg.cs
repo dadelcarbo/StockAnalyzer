@@ -4,7 +4,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public partial class ClosePositionDlg : Form
     {
-        public CloseTradeViewModel TradeViewModel { get;}
+        public CloseTradeViewModel TradeViewModel { get; }
         CloseTradeUserControl closeTradeUserControl;
         public ClosePositionDlg(CloseTradeViewModel tradeLogViewModel)
         {
@@ -16,15 +16,30 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.TradeViewModel = tradeLogViewModel;
         }
 
-        internal void Ok()
-        {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
         internal void Cancel()
         {
             this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        internal void Ok()
+        {
+            if (!this.TradeViewModel.Portfolio.SaxoLogin())
+            {
+                return;
+            }
+
+            string orderId = null; // this.TradeViewModel.Portfolio.SaxoUpdateStopOrder(this.TradeViewModel.Position, this.TradeViewModel.ExitValue);
+            if (string.IsNullOrEmpty(this.TradeViewModel.Position?.TrailStopId))
+            {
+                orderId = this.TradeViewModel.Portfolio.SaxoSellOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.ExitQty);
+            }
+            if (string.IsNullOrEmpty(orderId))
+            {
+                MessageBox.Show("Order non executed !", "Saxo Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }

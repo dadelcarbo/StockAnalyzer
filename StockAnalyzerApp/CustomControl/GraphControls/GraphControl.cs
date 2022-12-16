@@ -63,6 +63,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected const int WIDTH_MARGIN_SIZE = 30;
         protected const int MOUSE_MARQUEE_SIZE = 3;
         protected const int EVENT_MARQUEE_SIZE = 4;
+        protected const int STOP_MARQUEE_SIZE = 4;
 
         virtual public GraphDrawMode DrawingMode { get; set; }
         public GraphDrawingStep DrawingStep { get; set; }

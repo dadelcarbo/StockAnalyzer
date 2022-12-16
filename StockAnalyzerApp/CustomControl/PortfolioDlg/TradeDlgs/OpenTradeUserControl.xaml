@@ -12,14 +12,14 @@
         <GroupBox Header="Portfolio">
             <StackPanel Orientation="Horizontal">
                 <Label>Name:</Label>
-                <TextBox Width="110" Text="{Binding Portfolio.Name}" Padding="4" IsEnabled="False"></TextBox>
+                <TextBox Width="110" Text="{Binding Portfolio.Name}" Padding="2" IsEnabled="False" Height="20"></TextBox>
                 <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
                     <Image Source="../../../Resources/Reload.png"/>
                 </Button>
                 <Label>Value:</Label>
-                <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="4" IsEnabled="False"></TextBox>
+                <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="2" IsEnabled="False" Height="20"></TextBox>
                 <Label >Cash:</Label>
-                <TextBox Width="80" Text="{Binding Portfolio.Balance, Mode=OneWay, StringFormat=C2}" Padding="4" IsEnabled="False"></TextBox>
+                <TextBox Width="80" Text="{Binding Portfolio.Balance, Mode=OneWay, StringFormat=C2}" Padding="2" IsEnabled="False" Height="20"></TextBox>
             </StackPanel>
         </GroupBox>
         <StackPanel Orientation="Horizontal">

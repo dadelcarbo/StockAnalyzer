@@ -5,6 +5,29 @@ namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
+        public OrderResponse PatchOrder(Account account, Instrument instrument, string orderId, SaxoOrderType orderType, string buySell, int qty, decimal value)
+        {
+            try
+            {
+                var patchOrder = new PatchOrder
+                {
+                    AccountKey = account.AccountKey,
+                    Uic = instrument.Identifier,
+                    AssetType = instrument.AssetType,
+                    OrderType = orderType.ToString(),
+                    BuySell = buySell,
+                    Amount = qty,
+                    OrderPrice = value,
+                    OrderId= orderId,
+                    OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+                };
+                return Patch<OrderResponse>("trade/v2/orders", patchOrder);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
         public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, decimal stopValue)
         {
             var orderRequest = new OrderRequest
@@ -72,7 +95,6 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-
         public OrderResponse BuyTresholdOrder(Account account, Instrument instrument, int qty, decimal thresholdValue, decimal stopValue)
         {
             var orderRequest = new OrderRequest
@@ -104,6 +126,53 @@ namespace Saxo.OpenAPI.TradingServices
                     }
                 };
             }
+            return PostOrder(orderRequest);
+        }
+
+        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty)
+        {
+            var orderRequest = new OrderRequest
+            {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = SaxoOrderType.Market.ToString(),
+                BuySell = "Sell",
+                Amount = qty,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() }
+            };
+            return PostOrder(orderRequest);
+        }
+
+        public OrderResponse SellLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue)
+        {
+            var orderRequest = new OrderRequest
+            {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = SaxoOrderType.Limit.ToString(),
+                BuySell = "Sell",
+                Amount = qty,
+                OrderPrice = limitValue,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+            };
+            return PostOrder(orderRequest);
+        }
+
+        public OrderResponse SellStopOrder(Account account, Instrument instrument, int qty, decimal stopValue)
+        {
+            var orderRequest = new OrderRequest
+            {
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = SaxoOrderType.StopIfTraded.ToString(),
+                BuySell = "Sell",
+                Amount = qty,
+                OrderPrice = stopValue,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+            };
             return PostOrder(orderRequest);
         }
 
@@ -216,7 +285,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string DurationType { get; set; }
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////// Opend Orders ////////////////////////////////////////////////////////
 
     public class OpenedOrders
     {
@@ -335,5 +404,18 @@ namespace Saxo.OpenAPI.TradingServices
         public string Venue { get; set; }
     }
 
+    ////////////////////////// Patch orders  ///////////////////////
 
+    public class PatchOrder
+    {
+        public string AccountKey { get; set; }
+        public long Uic { get; set; }
+        public string AssetType { get; set; }
+        public int Amount { get; set; }
+        public string BuySell { get; set; }
+        public OrderDuration OrderDuration { get; set; }
+        public decimal OrderPrice { get; set; }
+        public string OrderType { get; set; }
+        public string OrderId { get; set; }
+    }
 }

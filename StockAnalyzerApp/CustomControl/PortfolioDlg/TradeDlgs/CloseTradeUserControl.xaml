@@ -7,13 +7,26 @@
        mc:Ignorable="d" Background="LightYellow"
        d:DesignHeight="300" d:DesignWidth="450" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:CloseTradeViewModel, IsDesignTimeCreatable=False}">
-    <StackPanel>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <GroupBox Header="Portfolio">
+            <StackPanel Orientation="Horizontal">
+                <Label>Name:</Label>
+                <TextBox Width="110" Text="{Binding Portfolio.Name}" Padding="2" IsEnabled="False" Height="20"></TextBox>
+                <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
+                    <Image Source="../../../Resources/Reload.png"/>
+                </Button>
+                <Label>Value:</Label>
+                <TextBox Width="80" Text="{Binding Portfolio.TotalValue, StringFormat=C2, Mode=OneWay}" Padding="2" IsEnabled="False" Height="20"></TextBox>
+                <Label >Cash:</Label>
+                <TextBox Width="80" Text="{Binding Portfolio.Balance, Mode=OneWay, StringFormat=C2}" Padding="2" IsEnabled="False" Height="20"></TextBox>
+            </StackPanel>
+        </GroupBox>
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Trade Exit">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Name:</Label>
-                        <TextBox Text="{Binding StockName}" Padding="4" Width="185" IsEnabled="False"></TextBox>
+                        <TextBox Text="{Binding StockName}" Padding="4" Width="200" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>
@@ -26,13 +39,6 @@
                         <TextBox Text="{Binding ExitValue}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
                         <Label Width="60">Amount:</Label>
                         <TextBox Text="{Binding ExitAmount, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4"></TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="45">Date:</Label>
-                        <StackPanel Orientation="Horizontal">
-                            <DatePicker SelectedDate="{Binding ExitDate}" HorizontalAlignment="Left" Padding="4"/>
-                            <TextBox Margin="34,0,0,0" Text="{Binding ExitDate, StringFormat=t}" Padding="4" Width="60"/>
-                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
