@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
@@ -6,16 +7,15 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
+using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-using StockAnalyzerSettings.Properties;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
-using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -1343,12 +1343,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
             if ((key & Keys.Control) != 0)
             {
-                if (mouseOverThis && this.ShowPositions && this.Portfolio != null &&
-                    (Portfolio.OpenedPositions.Any(p => p.StockName == this.serie.StockName) || this.IsBuying) &&
-                    (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                if (mouseOverThis && this.ShowPositions && this.Portfolio != null && (mousePoint.X + 15 >= this.GraphRectangle.Right))
                 {
-                    this.DrawStop(foregroundGraphic, trailStopPen, EndIndex - 15, mouseValuePoint.Y, true);
-                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
+                    var pen = trailStopPen;
+                    var trailStopValue = mouseValuePoint.Y;
+                    var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                    if (position != null)
+                    {
+                        trailStopValue = Math.Max(trailStopValue, position.Stop);
+                    }
+                    else
+                    {
+                        if (!this.IsBuying)
+                        {
+                            return;
+                        }
+                        pen = stopPen;
+                    }
+
+                    this.DrawStop(foregroundGraphic, pen, this.StartIndex, trailStopValue, true);
+                    this.RaiseDateChangedEvent(null, this.dateSerie[index], trailStopValue, true);
                 }
                 else
                 {
@@ -1535,11 +1549,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (DialogResult.Yes == MessageBox.Show("Do you want to sent order to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                        var orderId = this.Portfolio.SaxoUpdateStopOrder(position, mouseValuePoint.Y);
+                        var trailStopValue = Math.Max(mouseValuePoint.Y, position.Stop);
+
+                        var orderId = this.Portfolio.SaxoUpdateStopOrder(position, trailStopValue);
                         this.ForceRefresh();
                         if (StopChanged != null)
                         {
-                            this.StopChanged(mouseValuePoint.Y);
+                            this.StopChanged(trailStopValue);
                         }
                         return;
                     }
