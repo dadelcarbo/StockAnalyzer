@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockMath;
-using System.Reflection;
+﻿using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockAgent
 {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {

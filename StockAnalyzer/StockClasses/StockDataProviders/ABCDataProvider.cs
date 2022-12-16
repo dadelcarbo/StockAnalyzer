@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
@@ -12,7 +11,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders

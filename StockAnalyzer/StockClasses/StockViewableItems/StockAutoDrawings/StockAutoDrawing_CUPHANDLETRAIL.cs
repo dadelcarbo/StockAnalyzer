@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 

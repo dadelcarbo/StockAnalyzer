@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using System;
-using StockAnalyzer;
 using System.ComponentModel;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg

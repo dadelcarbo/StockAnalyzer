@@ -4,7 +4,6 @@ using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using Saxo.OpenAPI.TradingServices;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {

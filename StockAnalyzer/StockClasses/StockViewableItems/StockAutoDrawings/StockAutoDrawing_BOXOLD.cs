@@ -2,7 +2,6 @@
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
-using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 {

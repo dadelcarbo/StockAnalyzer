@@ -3,13 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using Saxo.OpenAPI.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {

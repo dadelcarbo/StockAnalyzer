@@ -2,7 +2,6 @@
 using StockAnalyzer;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

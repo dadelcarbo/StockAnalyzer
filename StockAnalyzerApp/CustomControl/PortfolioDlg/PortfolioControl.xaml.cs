@@ -1,15 +1,10 @@
 ﻿using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzerSettings.Properties;
 using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
-using System.Linq;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using StockAnalyzer.StockMath;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

@@ -1,5 +1,4 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
-using System;
+﻿using System;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices

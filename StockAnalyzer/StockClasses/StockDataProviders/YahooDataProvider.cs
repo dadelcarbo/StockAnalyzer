@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.IO;
 using System.Linq;

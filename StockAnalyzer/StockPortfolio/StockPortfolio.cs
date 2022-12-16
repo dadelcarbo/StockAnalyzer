@@ -7,12 +7,9 @@ using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -865,6 +862,7 @@ namespace StockAnalyzer.StockPortfolio
         }
 
         Account account = null;
+        AccountService accountService = new AccountService();
         public bool SaxoLogin()
         {
             if (string.IsNullOrEmpty(SaxoAccountId))
@@ -880,7 +878,7 @@ namespace StockAnalyzer.StockPortfolio
             var saxoSession = LoginService.Login(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu);
             if (saxoSession == null)
                 return false;
-            var accountService = new AccountService();
+
             account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
             if (account == null)
             {
@@ -895,7 +893,6 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (!this.SaxoLogin())
                     return;
-                var accountService = new AccountService();
 
                 // Update portfolio balance
                 var balance = accountService.GetBalance(account);
@@ -1050,14 +1047,6 @@ namespace StockAnalyzer.StockPortfolio
                 if (!this.SaxoLogin())
                     return null;
 
-                var accountService = new AccountService();
-                var account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
-                if (account == null)
-                {
-                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
-                }
-
                 var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN);
                 if (instrument == null)
                 {
@@ -1104,14 +1093,6 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (!this.SaxoLogin())
                     return null;
-
-                var accountService = new AccountService();
-                var account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
-                if (account == null)
-                {
-                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
-                }
 
                 var instrument = new InstrumentService().GetInstrumentById(position.Uic);
                 if (instrument == null)

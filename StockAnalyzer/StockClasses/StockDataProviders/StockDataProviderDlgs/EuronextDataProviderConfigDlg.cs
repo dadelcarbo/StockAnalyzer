@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
-   public partial class EuronextDataProviderConfigDlg : Form
+    public partial class EuronextDataProviderConfigDlg : Form
    {
       ABCDataProvider dataProvider = null;
       StockDictionary stockDictionary = null;

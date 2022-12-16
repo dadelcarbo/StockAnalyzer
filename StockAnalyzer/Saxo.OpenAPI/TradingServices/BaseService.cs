@@ -2,13 +2,9 @@
 using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
 {

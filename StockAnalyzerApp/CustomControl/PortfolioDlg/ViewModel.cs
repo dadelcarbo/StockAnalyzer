@@ -1,10 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzerSettings.Properties;
 using System.Collections.Generic;
-using System.IO;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {

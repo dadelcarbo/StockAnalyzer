@@ -1,9 +1,5 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
-using Saxo.OpenAPI.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
-using static Saxo.OpenAPI.TradingServices.AccountService;
 
 namespace Saxo.OpenAPI.TradingServices
 {
