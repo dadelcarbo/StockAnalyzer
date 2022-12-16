@@ -47,7 +47,7 @@
                 <telerik:RadGridView Name="openedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" IsReadOnly="True">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
@@ -56,12 +56,12 @@
                         <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
                     </telerik:RadGridView.ColumnGroups>
                     <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Trade"/>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade"/>
                         <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
-                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
-                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=F2}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=F2}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" ColumnGroupName="Risk"/>
                         <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop}" ColumnGroupName="Risk"/>
@@ -70,7 +70,7 @@
                         <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Variation, StringFormat=P2}" ColumnGroupName="Current"/>
                         <telerik:GridViewDataColumn Header="Portfolio&#x0a;Return" DataMemberBinding="{Binding PortfolioVariation, StringFormat=P2}" ColumnGroupName="Current"/>
-                        <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=\{0:F\}}" ColumnGroupName="Current" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=\{0:F\}}" ColumnGroupName="Current"/>
                         <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" ColumnGroupName="Technical"/>
 

@@ -1,4 +1,5 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
+﻿using Newtonsoft.Json;
+using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -44,6 +46,7 @@ namespace StockAnalyzer.StockPortfolio
             this.TradeOperations = new List<StockTradeOperation>();
             this.Positions = new List<StockPosition>();
             this.MaxRisk = 0.02f;
+            this.MaxPositionSize = 0.2f;
         }
         public List<StockTradeOperation> TradeOperations { get; set; }
         public List<StockPosition> Positions { get; }
@@ -62,10 +65,13 @@ namespace StockAnalyzer.StockPortfolio
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
         public float MaxRisk { get; set; }
+        public float MaxPositionSize { get; set; }
         public DateTime CreationDate { get; set; }
-        [XmlIgnore]
+        [JsonIgnore]
         public float PositionValue { get; set; }
+        [JsonIgnore]
         public float TotalValue => this.Balance + this.PositionValue;
+        [JsonIgnore]
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
         public bool IsSimu { get; set; }
         public bool IsSaxoSimu { get; set; }
@@ -74,25 +80,11 @@ namespace StockAnalyzer.StockPortfolio
         public void Serialize()
         {
             string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
-            using (FileStream fs = new FileStream(filepath, FileMode.Create))
-            {
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
-                {
-                    Indent = true,
-                    NewLineOnAttributes = true
-                };
-                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                var serializer = new XmlSerializer(this.GetType());
-                serializer.Serialize(xmlWriter, this);
-            }
+            File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
         public static StockPortfolio Deserialize(string filepath)
         {
-            using (FileStream fs = new FileStream(filepath, FileMode.Open))
-            {
-                var serializer = new XmlSerializer(typeof(StockPortfolio));
-                return serializer.Deserialize(fs) as StockPortfolio;
-            }
+            return JsonConvert.DeserializeObject<StockPortfolio>(File.ReadAllText(filepath));
         }
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
@@ -985,6 +977,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 this.LastSyncDate = DateTime.Today;
+                this.Serialize();
             }
             catch (Exception ex)
             {
@@ -998,7 +991,7 @@ namespace StockAnalyzer.StockPortfolio
                 if (!this.SaxoLogin())
                     return null;
 
-                var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol: stockSerie.ISIN);
+                var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
                     MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -1079,6 +1072,7 @@ namespace StockAnalyzer.StockPortfolio
                     default:
                         break;
                 }
+                this.Refresh();
                 return orderResponse.OrderId;
             }
             catch (Exception ex)
@@ -1122,7 +1116,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
                 position.TrailStop = (float)value;
                 if (position.Stop == 0) { position.Stop = (float)value; }
-
+                this.Serialize();
 
                 return orderResponse?.OrderId;
             }

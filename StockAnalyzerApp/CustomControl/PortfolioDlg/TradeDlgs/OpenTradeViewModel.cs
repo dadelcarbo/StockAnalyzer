@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -30,6 +31,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.OnPropertyChanged("TradeRisk");
             this.OnPropertyChanged("PortfolioRisk");
             this.OnPropertyChanged("PortfolioPercent");
+
+            this.OnPropertyChanged("IsTradeRisky");
+            this.OnPropertyChanged("IsPortfolioRisky");
         }
         public int EntryQty
         {
@@ -87,19 +91,27 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }
 
+        public bool IsTradeRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
+        public bool IsPortfolioRisky => PortfolioRisk > this.Portfolio.MaxRisk;
+
         public void OnStopValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
         {
             if (crossMode)
                 this.StopValue = value;
+        }
+        public void CalculatePositionSize()
+        {
+            // Calculate position size according to money management
+            var qty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
+            qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
+            this.EntryQty = qty;
         }
 
         public void Refresh()
         {
             this.Portfolio.Refresh();
             this.OnPropertyChanged("Portfolio");
-
-            // Recalculate Entry Qty
-            this.EntryQty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
+            this.CalculatePositionSize();
         }
     }
 }

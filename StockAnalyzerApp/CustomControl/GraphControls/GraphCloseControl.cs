@@ -159,6 +159,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
+                // Draw order management area
+                var area = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
+                aGraphic.FillRectangle(orderAreaBrush, area);
+
                 #region Draw Grid
 
                 // Draw grid
@@ -640,13 +644,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 #region Draw frame, axis and axis values
 
                 // Draw main frame
-                aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width,
-                   GraphRectangle.Height);
+                aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
+                aGraphic.DrawLine(framePen, area.X, area.Y, area.X, area.Bottom);
 
                 // Display values and dates
                 string lastValue = closeCurveType.DataSerie[EndIndex].ToString();
-                aGraphic.DrawString(lastValue, axisFont, Brushes.Black, GraphRectangle.Right + 1,
-                   tmpPoints[tmpPoints.Count() - 1].Y - 8);
+                aGraphic.DrawString(lastValue, axisFont, Brushes.Black, GraphRectangle.Right + 1, tmpPoints[tmpPoints.Count() - 1].Y - 8);
 
                 #endregion
 
@@ -1298,9 +1301,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF basePoint = this.GetScreenPointFromValuePoint(new PointF(0, value));
             basePoint.X = this.GraphRectangle.Right;
 
-            marqueePoints[0] = new PointF(basePoint.X, basePoint.Y);
-            marqueePoints[1] = new PointF(basePoint.X - STOP_MARQUEE_SIZE * 4, basePoint.Y - STOP_MARQUEE_SIZE * 2);
-            marqueePoints[2] = new PointF(basePoint.X - STOP_MARQUEE_SIZE * 4, basePoint.Y + STOP_MARQUEE_SIZE * 2);
+            marqueePoints[0] = new PointF(basePoint.X - ORDER_AREA_WITDH + 5, basePoint.Y);
+            marqueePoints[1] = new PointF(basePoint.X, basePoint.Y - EVENT_MARQUEE_SIZE);
+            marqueePoints[2] = new PointF(basePoint.X, basePoint.Y + EVENT_MARQUEE_SIZE);
 
             return marqueePoints;
         }
@@ -1343,7 +1346,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
             if ((key & Keys.Control) != 0)
             {
-                if (mouseOverThis && this.ShowPositions && this.Portfolio != null && (mousePoint.X + 15 >= this.GraphRectangle.Right))
+                if (mouseOverThis && this.ShowPositions && this.Portfolio != null && (mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right))
                 {
                     var pen = trailStopPen;
                     var trailStopValue = mouseValuePoint.Y;
@@ -1360,6 +1363,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                         pen = stopPen;
                     }
+                    trailStopValue = Math.Min(trailStopValue, serie.LastValue.LOW);
 
                     this.DrawStop(foregroundGraphic, pen, this.StartIndex, trailStopValue, true);
                     this.RaiseDateChangedEvent(null, this.dateSerie[index], trailStopValue, true);
@@ -1541,7 +1545,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             PointF mousePoint = new PointF(e.X, e.Y);
-            if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + 15 >= this.GraphRectangle.Right)
+            if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
                 var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
                 if (position != null)
@@ -1550,6 +1554,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                         var trailStopValue = Math.Max(mouseValuePoint.Y, position.Stop);
+                        trailStopValue = Math.Min(trailStopValue, serie.LastValue.LOW);
 
                         var orderId = this.Portfolio.SaxoUpdateStopOrder(position, trailStopValue);
                         this.ForceRefresh();
@@ -2424,7 +2429,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Themes = StockAnalyzerForm.MainFrame.Themes,
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
-            openTradeViewModel.EntryQty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (openTradeViewModel.EntryValue - openTradeViewModel.StopValue));
+            openTradeViewModel.CalculatePositionSize();
 
             this.IsBuying = true;
             this.OnMouseDateChanged += openTradeViewModel.OnStopValueChanged;

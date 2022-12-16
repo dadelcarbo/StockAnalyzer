@@ -63,7 +63,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected const int WIDTH_MARGIN_SIZE = 30;
         protected const int MOUSE_MARQUEE_SIZE = 3;
         protected const int EVENT_MARQUEE_SIZE = 4;
-        protected const int STOP_MARQUEE_SIZE = 4;
+        protected const int ORDER_AREA_WITDH = 20;
 
         virtual public GraphDrawMode DrawingMode { get; set; }
         public GraphDrawingStep DrawingStep { get; set; }
@@ -175,6 +175,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
         static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static protected Brush orderAreaBrush => new SolidBrush(Color.LightGray);
 
         protected bool mouseDown = false;
 
@@ -587,7 +588,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using (MethodLogger ml = new MethodLogger(this))
             {
-
                 #region Draw vertical lines
                 if (this.ShowGrid && this.matrixValueToScreen != null)
                 {

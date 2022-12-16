@@ -28,6 +28,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         [Property]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
+        [Property]
+        public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }
 
         [Property]
         public DateTime CreationDate { get => Portfolio.CreationDate; set => Portfolio.CreationDate = value; }

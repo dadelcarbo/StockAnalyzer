@@ -8,6 +8,24 @@
        xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
        mc:Ignorable="d" d:Background="LightYellow" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}" Width="450" Height="400">
+    <UserControl.Resources>
+        <Style  x:Key="RiskyPortfolioStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPortfolioRisky}" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style  x:Key="RiskyTradeStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsTradeRisky}" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <GroupBox Header="Portfolio">
             <StackPanel Orientation="Horizontal">
@@ -57,19 +75,19 @@
 
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Risk (R)</Label>
-                        <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F2}" Padding="4" IsEnabled="False"></TextBox>
+                        <TextBox Width="80" Text="{Binding Risk, Mode=OneWay, StringFormat=F2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyPortfolioStyle}"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Portfolio %</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioPercent, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
+                        <TextBox Width="80" Text="{Binding PortfolioPercent, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyPortfolioStyle}"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Trade Risk:</Label>
-                        <TextBox Width="80" Text="{Binding TradeRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
+                        <TextBox Width="80" Text="{Binding TradeRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyTradeStyle}"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Portfolio Risk:</Label>
-                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False"></TextBox>
+                        <TextBox Width="80" Text="{Binding PortfolioRisk, Mode=OneWay, StringFormat=P2}" Padding="4" IsEnabled="False" Style="{DynamicResource RiskyPortfolioStyle}"></TextBox>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
