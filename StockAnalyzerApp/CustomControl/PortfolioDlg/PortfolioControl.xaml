@@ -106,17 +106,6 @@
                         <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
                         <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" ColumnGroupName="Technical"/>
 
-                        <!--
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" />
-                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding Type}" />
-                        <telerik:GridViewDataColumn Header="Nb" DataMemberBinding="{Binding Qty}" />
-                        <telerik:GridViewDataColumn Header="Open Value" DataMemberBinding="{Binding OpenValue}" />
-                        <telerik:GridViewDataColumn Header="Last Value" DataMemberBinding="{Binding LastValue}" />
-                        <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation}" DataFormatString="{}{0:P}"/>
-                        <telerik:GridViewDataColumn Header="Portfolio %" DataMemberBinding="{Binding PortfolioPercent}" DataFormatString="{}{0:P}"/>
-                        <telerik:GridViewDataColumn Header="Open Date" DataMemberBinding="{Binding StartDate, Converter={StaticResource StockDateConverter}}"/>
-                        <telerik:GridViewDataColumn Header="Valid Name" DataMemberBinding="{Binding IsValidName}" />
-                        -->
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>

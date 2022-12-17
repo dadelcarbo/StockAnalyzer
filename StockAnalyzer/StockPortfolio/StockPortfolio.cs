@@ -127,7 +127,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             return this.TradeOperations.Count == 0 ? 0 : this.TradeOperations.Max(o => o.Id) + 1;
         }
-        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, StockBarDuration barDuration, string theme, long id = -1)
+        public void BuyTradeOperation(string stockName, DateTime date, int qty, float value, float fee, float stop, string entryComment, BarDuration barDuration, string theme, long id = -1)
         {
             var amount = value * qty + fee;
             if (this.Balance < amount)

@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockPosition()
         {
-            BarDuration = StockBarDuration.Daily;
+            BarDuration = BarDuration.Daily;
             this.TrailStopHistory = new List<TrailStopHistory>();
         }
         public long Id { get; set; }
@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockPortfolio
         public string TrailStopId { get; set; }
         public float Stop { get; set; }
 
-        public StockBarDuration BarDuration { get; set; }
+        public BarDuration BarDuration { get; set; }
 
         public string EntryComment { get; set; }
         public string Theme { get; set; }

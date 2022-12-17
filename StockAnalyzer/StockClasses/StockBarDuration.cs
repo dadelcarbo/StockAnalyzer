@@ -90,6 +90,18 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.M_15,
             StockBarDuration.M_30
         };
+        public static IList<BarDuration> BarDurations = new List<BarDuration>() {
+            BarDuration.Daily,
+            BarDuration.Weekly,
+            BarDuration.Monthly,
+            BarDuration.H_1,
+            BarDuration.H_2,
+            BarDuration.H_4,
+            BarDuration.M_5,
+            BarDuration.M_10,
+            BarDuration.M_15,
+            BarDuration.M_30
+        };
 
         public static IList<StockBarDuration> DailyValues = new List<StockBarDuration>() {
             StockBarDuration.Daily,
