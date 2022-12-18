@@ -3415,6 +3415,11 @@ namespace StockAnalyzerApp
                 try
                 {
                     GraphControl graphControl = (GraphControl)sender;
+                    if (!graphControl.GraphRectangle.Contains(e.Location) && graphControl != this.graphScrollerControl)
+                    {
+                        graphControl.DrawMouseCursor(e.Location);
+                        return;
+                    }
                     //if (graphControl.GraphRectangle.Contains(e.Location) && e.Location.X > graphControl.GraphRectangle.X)
                     if (e.Location.X > graphControl.GraphRectangle.X)
                     {

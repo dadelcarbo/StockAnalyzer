@@ -1332,21 +1332,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             }
             PointF mousePoint = new PointF(e.X, e.Y);
-            PointF mouseValuePoint;
+            PointF mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
             if (this.Magnetism)
-            {
-                mouseValuePoint = FindClosestExtremum(GetValuePointFromScreenPoint(mousePoint));
-            }
-            else
-            {
-                mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-            }
+                mouseValuePoint = FindClosestExtremum(mouseValuePoint);
 
-            int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
-            bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
-            if ((key & Keys.Control) != 0)
+            // Check Order area
+            if (mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
-                if (mouseOverThis && this.ShowPositions && this.Portfolio != null && (mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right))
+                if (mouseOverThis && (key & Keys.Control) != 0 && this.ShowPositions && this.Portfolio != null)
                 {
                     var pen = trailStopPen;
                     var trailStopValue = mouseValuePoint.Y;
@@ -1366,16 +1359,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     trailStopValue = Math.Min(trailStopValue, serie.LastValue.LOW);
 
                     this.DrawStop(foregroundGraphic, pen, this.StartIndex, trailStopValue, true);
-                    this.RaiseDateChangedEvent(null, this.dateSerie[index], trailStopValue, true);
+                    this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, trailStopValue, true);
+                    this.PaintForeground();
                 }
                 else
                 {
-                    DrawMouseCross(mouseValuePoint, drawHorizontalLine, false, this.DrawingPen, true);
+                    DrawMouseCross(mousePoint, true, true, this.axisDashPen);
+                    this.PaintForeground();
                 }
+                return;
+            }
+            int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
+            bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
+            if ((key & Keys.Control) != 0)
+            {
+                DrawMouseValueCross(mouseValuePoint, drawHorizontalLine, false, this.DrawingPen, true);
             }
             else
             {
-                DrawMouseCross(mouseValuePoint, drawHorizontalLine, true, this.axisDashPen, false);
+                DrawMouseValueCross(mouseValuePoint, drawHorizontalLine, true, this.axisDashPen, false);
             }
             if (this.DrawingMode == GraphDrawMode.Normal)
             {
@@ -1733,7 +1735,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
             }
         }
-
         private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
             if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X]))
@@ -1850,7 +1851,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             return null;
         }
-
         protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
         {
             // Fill the area in green if bullish

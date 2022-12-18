@@ -227,6 +227,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
         public Pen DrawingPen { get; set; }
+        static public Pen MouseCursorPen => new Pen(Brushes.Black, 2);
 
         public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(32, Color.LightGreen));
         public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(32, Color.LightCoral));
@@ -958,7 +959,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                     if (mousePoint.X > this.GraphRectangle.Left && mousePoint.X < this.GraphRectangle.Right)
                     {
-                        DrawMouseCross(valuePoint, crossMode, true, this.axisDashPen, false);
+                        DrawMouseValueCross(valuePoint, crossMode, true, this.axisDashPen, false);
                         PaintForeground();
                     }
                 }
@@ -983,7 +984,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                         {
                             var valuePoint = GetValuePointFromScreenPoint(mousePoint);
-                            DrawMouseCross(valuePoint, mouseOverThis, true, this.axisPen, mouseOverThis);
+                            DrawMouseValueCross(valuePoint, mouseOverThis, true, this.axisPen, mouseOverThis);
                             PaintForeground();
 
                             if (mouseOverThis && this.OnMouseDateChanged != null)
@@ -1070,6 +1071,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (string.IsNullOrEmpty(this.alternateString))
                 Cursor.Show();
+            this.PaintForeground();
             if (mouseDown)
             {
                 mouseDown = false;
@@ -1122,7 +1124,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         PointF point = new PointF(mouseIndex, y);
                         PointF point2 = GetScreenPointFromValuePoint(point);
 
-                        DrawMouseCross(point, y != 0, true, this.axisDashPen, false);
+                        DrawMouseValueCross(point, y != 0, true, this.axisDashPen, false);
 
                         string valueString;
                         if (value > 100000000)
@@ -1545,7 +1547,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
 
         }
-        protected void DrawMouseCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen, bool printValue)
+        protected void DrawMouseValueCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen, bool printValue)
         {
             // Draw straight Line
             PointF screenPoint = RoundToIndexValue(GetScreenPointFromValuePoint(mouseValuePoint));
@@ -1559,6 +1561,27 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (drawVerticalLine)
             {
                 this.foregroundGraphic.DrawLine(pen, screenPoint.X, GraphRectangle.Bottom, screenPoint.X, GraphRectangle.Top);
+            }
+        }
+        protected void DrawMouseCross(PointF mousePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen)
+        {
+            // Draw straight Line
+            if (drawHorizontalLine)
+            {
+                this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, mousePoint.Y, GraphRectangle.Right, mousePoint.Y);
+            }
+            if (drawVerticalLine)
+            {
+                this.foregroundGraphic.DrawLine(pen, mousePoint.X, GraphRectangle.Bottom, mousePoint.X, GraphRectangle.Top);
+            }
+        }
+        public void DrawMouseCursor(Point mousePoint)
+        {
+            if (this.foregroundGraphic != null)
+            {
+                this.foregroundGraphic.DrawLine(MouseCursorPen, mousePoint.X - 8, mousePoint.Y, mousePoint.X + 8, mousePoint.Y);
+                this.foregroundGraphic.DrawLine(MouseCursorPen, mousePoint.X, mousePoint.Y - 8, mousePoint.X, mousePoint.Y + 8);
+                this.PaintForeground();
             }
         }
         #endregion
