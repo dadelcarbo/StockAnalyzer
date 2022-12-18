@@ -1211,12 +1211,13 @@ namespace StockAnalyzerApp
                         {
                             this.selectedGroup = newGroup;
 
+
                             foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
                             {
                                 groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
                             }
 
-                            InitialiseStockCombo(true);
+                            InitialiseStockCombo(false);
                             SetDurationForStockGroup(newGroup);
                         }
                     }

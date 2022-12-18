@@ -518,7 +518,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     tmpPoints = GetScreenPoints(StartIndex, EndIndex, closeCurveType.DataSerie);
 
                     // Store in member for future use (Display mouse marquee)
-                    //this.points = tmpPoints;
                     switch (this.ChartMode)
                     {
                         case GraphChartMode.Line:
@@ -648,8 +647,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 aGraphic.DrawLine(framePen, area.X, area.Y, area.X, area.Bottom);
 
                 // Display values and dates
-                string lastValue = closeCurveType.DataSerie[EndIndex].ToString();
-                aGraphic.DrawString(lastValue, axisFont, Brushes.Black, GraphRectangle.Right + 1, tmpPoints[tmpPoints.Count() - 1].Y - 8);
+                var lastValue = closeCurveType.DataSerie[EndIndex];
+                var lastValuepoint = GetScreenPointFromValuePoint(EndIndex, lastValue);
+                aGraphic.DrawString(lastValue.ToString(), axisFont, Brushes.Black, GraphRectangle.Right + 1, lastValuepoint.Y - 8);
 
                 #endregion
 
