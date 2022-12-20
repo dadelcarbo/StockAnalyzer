@@ -54,6 +54,7 @@ using Telerik.Windows.Data;
 using StockAnalyzerSettings;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
+using Saxo.OpenAPI.AuthenticationServices;
 
 namespace StockAnalyzerApp
 {
@@ -579,10 +580,6 @@ namespace StockAnalyzerApp
                 if (reportDate < cac40.Keys.Last())
                 {
                     generateDailyReportToolStripBtn_Click(null, null);
-                    foreach (var portfolio in this.Portfolios.Where(p => p.IsSimu == false))
-                    {
-                        GeneratePortfolioReportFile(portfolio);
-                    }
                     File.WriteAllText(fileName, cac40.Keys.Last().ToString());
                 }
             }
@@ -738,8 +735,14 @@ namespace StockAnalyzerApp
         #endregion
         #region TIMER MANAGEMENT
 
+        static bool refreshing = false;
         private void RefreshTimer_Tick()
         {
+            if (refreshing)
+                return;
+            refreshing = true;
+            LoginService.RefreshSessions();
+
             using (new MethodLogger(this, showTimerDebug))
             {
                 using (new StockSerieLocker(this.currentStockSerie))
@@ -753,11 +756,15 @@ namespace StockAnalyzerApp
                         }
                         if (this.currentStockSerie != null)
                         {
+                            var lastValue = this.CurrentStockSerie.LastValue;
                             if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
                             {
                                 if (this.currentStockSerie.Initialise())
                                 {
-                                    this.BeginInvoke(new Action(() => this.ApplyTheme()));
+                                    if (lastValue != this.currentStockSerie.LastValue)
+                                    {
+                                        this.BeginInvoke(new Action(() => this.ApplyTheme()));
+                                    }
                                 }
                                 else
                                 {
@@ -774,6 +781,7 @@ namespace StockAnalyzerApp
                     }
                     finally
                     {
+                        refreshing = false;
                     }
                 }
             }

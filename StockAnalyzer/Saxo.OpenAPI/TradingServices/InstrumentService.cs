@@ -10,7 +10,7 @@ namespace Saxo.OpenAPI.TradingServices
         private static SortedDictionary<string, Instrument> InstrumentIsinCache = new SortedDictionary<string, Instrument>();
         public Instrument GetInstrumentByIsin(string isin)
         {
-            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut";
+            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf";
             try
             {
                 if (!InstrumentIsinCache.ContainsKey(isin))
@@ -33,7 +33,7 @@ namespace Saxo.OpenAPI.TradingServices
         private static SortedDictionary<long, Instrument> InstrumentCache = new SortedDictionary<long, Instrument>();
         public Instrument GetInstrumentById(long uic)
         {
-            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CFxSpot";
+            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf";
             try
             {
                 if (!InstrumentCache.ContainsKey(uic))
@@ -130,6 +130,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string[] SupportedOrderTypes { get; set; }
         public string[] SupportedStrategies { get; set; }
         public string Symbol { get; set; }
+        public decimal TickSize { get; set; }
         public Ticksizescheme TickSizeScheme { get; set; }
         public string[] TradableAs { get; set; }
         public string[] TradableOn { get; set; }

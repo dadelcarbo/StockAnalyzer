@@ -231,9 +231,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var sr = new StreamReader(fileName))
                 {
                     var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
-                    if (!string.IsNullOrEmpty(yahooJson?.chart?.error))
+                    if (yahooJson == null || !string.IsNullOrEmpty(yahooJson?.chart?.error))
                     {
                         StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
+                        return false;
                     }
 
                     int i = 0;

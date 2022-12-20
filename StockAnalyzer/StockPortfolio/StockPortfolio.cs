@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -50,13 +49,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public List<StockTradeOperation> TradeOperations { get; set; }
         public List<StockPosition> Positions { get; }
-        public IEnumerable<StockPosition> SummaryPositions
-        {
-            get
-            {
-                return this.Positions.Where(p => !p.IsClosed);
-            }
-        }
+        [JsonIgnore]
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
         public string Name { get; set; }
         public string SaxoAccountId { get; set; }
@@ -733,7 +726,7 @@ namespace StockAnalyzer.StockPortfolio
             // Find instrument in stock Dictionnary
             var symbol = instrument.Symbol.Split(':')[0];
             var stockName = instrument.Description.ToUpper();
-            return StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol == symbol || s.StockName == stockName);
+            return StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName);
         }
 
         Account account = null;
@@ -854,7 +847,7 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         StockLog.Write($"UntreatedPosition on {position.StockName}");
                         // 
-                       // var order = new OrderService().GetOrder(long.Parse(position.TrailStopId), account.ClientKey);
+                        // var order = new OrderService().GetOrder(long.Parse(position.TrailStopId), account.ClientKey);
                     }
                 }
 
@@ -862,7 +855,7 @@ namespace StockAnalyzer.StockPortfolio
                 var closedOrders = new OrderService().GetClosedOrders(account, this.LastSyncDate.AddDays(-1), DateTime.Now);
                 foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime))
                 {
-                    this.AddClosedOrder(op);
+                    this.AddSaxoClosedOrder(op);
                 }
                 foreach (var pos in accountService.GetHistoricalClosedPositions(account, LastSyncDate).Data)
                 {
@@ -877,7 +870,7 @@ namespace StockAnalyzer.StockPortfolio
                 MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        public void AddClosedOrder(ClosedOrder closedOrder)
+        public void AddSaxoClosedOrder(ClosedOrder closedOrder)
         {
             var orderId = long.Parse(closedOrder.OrderId);
             if (this.TradeOperations.Any(o => o.Id == orderId))
@@ -982,13 +975,12 @@ namespace StockAnalyzer.StockPortfolio
                                     EntryValue = position.EntryValue
                                 });
                             }
-
-                            this.TradeOperations.Add(tradeOperation);
                         }
                         else
                         {
                             StockLog.Write($"Selling not opened position: {tradeOperation.StockName} qty:{qty}");
                         }
+                        this.TradeOperations.Add(tradeOperation);
                     }
                     break;
             }
@@ -1137,12 +1129,16 @@ namespace StockAnalyzer.StockPortfolio
         }
         private decimal RoundToTickSize(float value, InstrumentDetails instrumentDetail)
         {
-            var tickSize = instrumentDetail.TickSizeScheme.Elements[0].TickSize;
-            int i = 1;
-            while (i < instrumentDetail.TickSizeScheme.Elements.Length && value > instrumentDetail.TickSizeScheme.Elements[i - 1].HighPrice)
+            var tickSize = instrumentDetail.TickSize;
+            if (instrumentDetail.TickSizeScheme != null)
             {
-                tickSize = instrumentDetail.TickSizeScheme.Elements[i].TickSize;
-                i++;
+                tickSize = instrumentDetail.TickSizeScheme.Elements[0].TickSize;
+                int i = 1;
+                while (i < instrumentDetail.TickSizeScheme.Elements.Length && value > instrumentDetail.TickSizeScheme.Elements[i - 1].HighPrice)
+                {
+                    tickSize = instrumentDetail.TickSizeScheme.Elements[i].TickSize;
+                    i++;
+                }
             }
 
             return decimal.Round((decimal)value / tickSize) * tickSize;

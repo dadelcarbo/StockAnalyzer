@@ -3672,7 +3672,7 @@ namespace StockAnalyzer.StockClasses
                 bool lockTaken = false;
                 while (!lockTaken)
                 {
-                    StockLog.Write("Trying to lock");
+                    StockLog.Write($"Trying to lock {this.StockName}");
                     Monitor.TryEnter(__lockObj, 500, ref lockTaken);
                 }
                 StockLog.Write("Lock taken");

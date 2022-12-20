@@ -36,7 +36,21 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 return CurrentSession.Token;
             }
         }
-
+        public static void RefreshSessions()
+        {
+            foreach(var session in Sessions)
+            {
+                if (session.HasTokenExpired() && !session.HasRefreshTokenExpired())
+                {
+                    var refreshToken = LoginHelpers.RefreshToken(session);
+                    if (refreshToken != null)
+                    {
+                        refreshToken.Serialize(session.ClientId);
+                        session.Token = refreshToken;
+                    }
+                }
+            }
+        }
         public static LoginSession Login(string clientId, string appFolder, bool isSimu)
         {
             try
