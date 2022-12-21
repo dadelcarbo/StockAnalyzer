@@ -334,7 +334,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string RelatedPositionId { get; set; }
         public string Status { get; set; }
         public string TradingStatus { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
     }
 
     public class Duration
@@ -397,7 +397,7 @@ namespace Saxo.OpenAPI.TradingServices
         public DateTime TradeExecutionTime { get; set; }
         public string TradeId { get; set; }
         public string TradeType { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
         public string UnderlyingInstrumentDescription { get; set; }
         public string UnderlyingInstrumentSymbol { get; set; }
         public string ValueDate { get; set; }

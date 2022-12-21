@@ -136,7 +136,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string[] TradableOn { get; set; }
         public string TradingSignals { get; set; }
         public string TradingStatus { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
     }
 
     public class Format

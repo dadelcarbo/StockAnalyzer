@@ -24,6 +24,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public long Id { get; set; }
         public long TradeId { get; set; }
+        public long Uic { get; set; }
         public DateTime Date { get; set; }
         public TradeOperationType OperationType { get; set; }
         public string StockName { get; set; }

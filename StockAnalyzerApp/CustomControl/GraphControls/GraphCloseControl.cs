@@ -1203,7 +1203,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             if (this.EndIndex == this.dateSerie.Length - 1)
             {
-                var position = positions.FirstOrDefault(p => !p.IsClosed);
+                var position = positions.FirstOrDefault(p => !p.IsClosed && p.IsVisible);
                 if (position != null)
                 {
                     PaintOpenedPosition(graphic, position);

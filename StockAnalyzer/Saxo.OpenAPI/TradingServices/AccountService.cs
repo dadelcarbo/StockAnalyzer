@@ -334,7 +334,7 @@ namespace Saxo.OpenAPI.TradingServices
         public float ProfitLossCurrencyConversion { get; set; }
         public float ProfitLossOnTrade { get; set; }
         public float ProfitLossOnTradeInBaseCurrency { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
     }
 
 }

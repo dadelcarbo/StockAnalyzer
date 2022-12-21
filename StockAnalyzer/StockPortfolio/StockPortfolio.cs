@@ -435,101 +435,6 @@ namespace StockAnalyzer.StockPortfolio
                     break;
             }
         }
-        public void AddOperation(SaxoOperation operation)
-        {
-            if (this.TradeOperations.Any(o => o.Id == operation.Id))
-                return;
-            StockLog.Write($"Id:{operation.Id} {operation.OperationType} {operation.Instrument}");
-            switch (operation.OperationType.ToLower())
-            {
-                case SaxoOperation.TRANSFER_IN:
-                case SaxoOperation.BUY:
-                    {
-                        this.Balance += operation.GrossAmount;
-                        var tradeOperation = new StockTradeOperation
-                        {
-                            OperationType = TradeOperationType.Buy,
-                            Date = operation.Date,
-                            Id = operation.Id,
-                            Qty = operation.Qty,
-                            StockName = operation.GetStockName(),
-                            Value = operation.Value,
-                            ISIN = operation.GetISIN(),
-                            Fee = Math.Abs(operation.GrossAmount - operation.NetAmount)
-                        };
-                        this.TradeOperations.Add(tradeOperation);
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
-                        if (position != null) // Position on this stock already exists, add new values
-                        {
-                            var openValue = (position.EntryValue * position.EntryQty + operation.Value * operation.Qty) / (position.EntryQty + operation.Qty);
-
-                            position.ExitDate = operation.Date;
-                            position.ExitValue = openValue;
-                            this.Positions.Add(new StockPosition
-                            {
-                                EntryDate = operation.Date,
-                                EntryQty = position.EntryQty + operation.Qty,
-                                StockName = tradeOperation.StockName,
-                                ISIN = tradeOperation.ISIN,
-                                EntryValue = openValue
-                            });
-                        }
-                        else // Position on this stock doen't exists, create a new one
-                        {
-                            this.Positions.Add(new StockPosition
-                            {
-                                EntryDate = operation.Date,
-                                EntryQty = operation.Qty,
-                                StockName = tradeOperation.StockName,
-                                ISIN = tradeOperation.ISIN,
-                                EntryValue = operation.Value
-                            });
-                        }
-                    }
-                    break;
-                case SaxoOperation.SELL:
-                    {
-                        this.Balance += operation.GrossAmount;
-                        var tradeOperation = new StockTradeOperation
-                        {
-                            OperationType = TradeOperationType.Sell,
-                            Date = operation.Date,
-                            Id = operation.Id,
-                            Qty = operation.Qty,
-                            StockName = operation.GetStockName(),
-                            Value = operation.Value,
-                            ISIN = operation.GetISIN(),
-                            Fee = Math.Abs(operation.GrossAmount - operation.NetAmount)
-                        };
-                        var qty = operation.Qty;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.ISIN == tradeOperation.ISIN);
-                        if (position != null)
-                        {
-                            position.ExitDate = operation.Date;
-                            position.ExitValue = operation.Value;
-                            if (position.EntryQty != qty)
-                            {
-                                this.Positions.Add(new StockPosition
-                                {
-                                    EntryDate = operation.Date,
-                                    EntryQty = position.EntryQty - qty,
-                                    StockName = tradeOperation.StockName,
-                                    ISIN = tradeOperation.ISIN,
-                                    EntryValue = position.EntryValue
-                                });
-                            }
-
-                            this.TradeOperations.Add(tradeOperation);
-                        }
-                        else
-                        {
-                            StockLog.Write($"Selling not opened position: {tradeOperation.StockName} qty:{qty}");
-                        }
-                    }
-                    break;
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -901,6 +806,7 @@ namespace StockAnalyzer.StockPortfolio
                             OperationType = TradeOperationType.Buy,
                             Date = executionTime,
                             Id = orderId,
+                            Uic = closedOrder.Uic,
                             TradeId = tradeId,
                             Qty = qty,
                             StockName = stockName,
@@ -920,6 +826,7 @@ namespace StockAnalyzer.StockPortfolio
                             this.Positions.Add(new StockPosition
                             {
                                 Id = position.Id,
+                                Uic = position.Uic,
                                 EntryDate = executionTime,
                                 EntryQty = position.EntryQty + qty,
                                 StockName = tradeOperation.StockName,
@@ -931,7 +838,8 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             this.Positions.Add(new StockPosition
                             {
-                                Id = orderId,          // Is it right position ID ?
+                                Id = orderId,
+                                Uic = closedOrder.Uic,
                                 EntryDate = executionTime,
                                 EntryQty = qty,
                                 StockName = tradeOperation.StockName,
@@ -947,6 +855,7 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             OperationType = TradeOperationType.Sell,
                             Date = executionTime,
+                            Uic = closedOrder.Uic,
                             Id = orderId,
                             TradeId = tradeId,
                             Qty = qty,
@@ -965,6 +874,7 @@ namespace StockAnalyzer.StockPortfolio
                                 this.Positions.Add(new StockPosition
                                 {
                                     Id = position.Id,
+                                    Uic = position.Uic,
                                     EntryDate = executionTime,
                                     EntryQty = position.EntryQty - qty,
                                     StockName = tradeOperation.StockName,

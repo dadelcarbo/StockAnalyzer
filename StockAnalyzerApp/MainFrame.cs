@@ -742,7 +742,7 @@ namespace StockAnalyzerApp
                 return;
             refreshing = true;
             LoginService.RefreshSessions();
-            return;
+
             using (new MethodLogger(this, showTimerDebug))
             {
                 using (new StockSerieLocker(this.currentStockSerie))
