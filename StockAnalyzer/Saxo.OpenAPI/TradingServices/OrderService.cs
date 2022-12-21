@@ -216,7 +216,7 @@ namespace Saxo.OpenAPI.TradingServices
         {
             try
             {
-                if (fromDate.Year == 1)
+                if (fromDate.Year == 1 || fromDate.Day == toDate.Day)
                     return null;
                 var res = Get<ClosedOrders>($"cs/v1/reports/trades/{account.ClientKey}/?$top=1000&AccountKey={account.AccountKey}&FromDate={fromDate.ToString("yyyy-MM-dd")}&ToDate={toDate.ToString("yyyy-MM-dd")}");
                 return res;

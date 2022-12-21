@@ -1343,7 +1343,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     var pen = trailStopPen;
                     var trailStopValue = mouseValuePoint.Y;
-                    var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                    var position = Portfolio.OpenedPositions.Where(p => p.IsVisible).FirstOrDefault(p => p.StockName == this.serie.StockName);
                     if (position != null)
                     {
                         trailStopValue = Math.Max(trailStopValue, position.Stop);
@@ -1549,7 +1549,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF mousePoint = new PointF(e.X, e.Y);
             if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
-                var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                var position = Portfolio.OpenedPositions.Where(p => p.IsVisible).FirstOrDefault(p => p.StockName == this.serie.StockName);
                 if (position != null)
                 {
                     if (DialogResult.Yes == MessageBox.Show("Do you want to sent order to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))

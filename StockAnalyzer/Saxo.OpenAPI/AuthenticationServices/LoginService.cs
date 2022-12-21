@@ -1,5 +1,6 @@
 ﻿using Saxo.OpenAPI.Models;
 using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,16 +39,21 @@ namespace Saxo.OpenAPI.AuthenticationServices
         }
         public static void RefreshSessions()
         {
-            foreach(var session in Sessions)
+            foreach(var session in Sessions.Where(s=>s.HasTokenExpired()))
             {
-                if (session.HasTokenExpired() && !session.HasRefreshTokenExpired())
+                if (!session.HasRefreshTokenExpired())
                 {
+                    StockLog.Write($"Refreshing token for session {session.ClientId}");
                     var refreshToken = LoginHelpers.RefreshToken(session);
                     if (refreshToken != null)
                     {
                         refreshToken.Serialize(session.ClientId);
                         session.Token = refreshToken;
                     }
+                }
+                else
+                {
+                    StockLog.Write($"Refresh token for session {session.ClientId} expired !!!");
                 }
             }
         }

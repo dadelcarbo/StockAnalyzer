@@ -9,14 +9,12 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockPosition()
         {
-            BarDuration = BarDuration.Daily;
-            this.TrailStopHistory = new List<TrailStopHistory>();
         }
         public long Id { get; set; }
-        public long OrderId { get; set; }
         public string StockName { get; set; }
         public string ISIN { get; set; }
         public long Uic { get; set; }
+        public bool IsVisible { get; set; } = true;
 
         public int EntryQty { get; set; }
         public float EntryValue { get; set; } // This doesn't include transaction fees
@@ -24,12 +22,12 @@ namespace StockAnalyzer.StockPortfolio
         public float EntryCost => EntryValue * EntryQty;
         public DateTime EntryDate { get; set; }
 
-        public List<TrailStopHistory> TrailStopHistory { get; set; }
+        public List<TrailStopHistory> TrailStopHistory { get; set; } = new List<TrailStopHistory>();
         public float TrailStop { get; set; }
         public string TrailStopId { get; set; }
         public float Stop { get; set; }
 
-        public BarDuration BarDuration { get; set; }
+        public BarDuration BarDuration { get; set; } = BarDuration.Daily;
 
         public string EntryComment { get; set; }
         public string Theme { get; set; }

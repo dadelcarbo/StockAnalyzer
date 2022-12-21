@@ -58,7 +58,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public long Id => position.Id;
         public string StockName => position.StockName;
         public string ISIN => position.ISIN;
-
         #region TRADE ENTRY
         public DateTime EntryDate => position.EntryDate;
         public int EntryQty => position.EntryQty;

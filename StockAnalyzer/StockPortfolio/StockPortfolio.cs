@@ -73,6 +73,21 @@ namespace StockAnalyzer.StockPortfolio
         public void Serialize()
         {
             string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
+
+            // Archive PTF files
+            string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
+            if (!Directory.Exists(archiveDirectory))
+                Directory.CreateDirectory(archiveDirectory);
+            if (File.Exists(filepath))
+            {
+                var fileDate = File.GetLastWriteTime(filepath);
+                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd hh_mm") + PORTFOLIO_FILE_EXT);
+                if (!File.Exists(archiveFilePath))
+                {
+                    File.Move(filepath, archiveFilePath);
+                }
+            }
+
             File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
         public static StockPortfolio Deserialize(string filepath)
@@ -769,6 +784,16 @@ namespace StockAnalyzer.StockPortfolio
                     this.Balance = balance.CashAvailableForTrading;
                 }
 
+                // Check executedOrders (One day delay)
+                var closedOrders = new OrderService().GetClosedOrders(account, this.LastSyncDate, DateTime.Today);
+                if (closedOrders != null)
+                {
+                    foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime).ToList())
+                    {
+                        this.AddSaxoClosedOrder(op);
+                    }
+                }
+
                 // Review opened Orders
                 var openedOrders = new OrderService().GetOpenedOrders(account);
                 foreach (var openedOrder in openedOrders.Data)
@@ -785,11 +810,12 @@ namespace StockAnalyzer.StockPortfolio
                 this.PositionValue = 0;
                 foreach (var saxoPosition in saxoPositions)
                 {
+                    var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
+
                     var instrument = new InstrumentService().GetInstrumentById(saxoPosition.PositionBase.Uic);
                     StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {saxoPosition.PositionBase.SourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
                     var posId = long.Parse(saxoPosition.PositionId);
-                    var orderId = long.Parse(saxoPosition.PositionBase.SourceOrderId);
-                    var position = this.OpenedPositions.FirstOrDefault(p => p.Id == posId || p.OrderId == orderId);
+                    var position = this.OpenedPositions.FirstOrDefault(p => p.Id == posId);
                     if (position == null)
                     {
                         StockSerie stockSerie = GetStockSerieFromUic(saxoPosition.PositionBase.Uic);
@@ -798,69 +824,43 @@ namespace StockAnalyzer.StockPortfolio
                             MessageBox.Show($"Serie symbol: {saxoPosition.PositionBase.Uic} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
                             continue;
                         }
-                        stockSerie.Initialise();
-                        var executionTime = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
-
-                        var newStockPosition = new StockPosition()
+                        position = new StockPosition()
                         {
                             Id = posId,
                             EntryQty = (int)saxoPosition.PositionBase.Amount,
-                            EntryDate = executionTime,
+                            EntryDate = entryDate,
                             EntryValue = saxoPosition.PositionBase.OpenPrice,
                             ISIN = stockSerie.ISIN,
                             Uic = saxoPosition.PositionBase.Uic,
                             StockName = stockSerie.StockName,
                             BarDuration = stockSerie.StockGroup == StockSerie.Groups.INTRADAY ? BarDuration.H_1 : BarDuration.Daily,
                         };
-                        this.Positions.Add(newStockPosition);
-
-                        // Find Stop orders
-                        var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
-                        if (stopOrder != null)
-                        {
-                            newStockPosition.Stop = stopOrder.Price;
-                            newStockPosition.TrailStop = stopOrder.Price;
-                            newStockPosition.TrailStopId = stopOrder.OrderId;
-                        }
-
-                        this.PositionValue += saxoPosition.PositionView.MarketValue != 0 ? saxoPosition.PositionView.MarketValue : stockSerie.LastValue.CLOSE * saxoPosition.PositionBase.Amount;
+                        this.Positions.Add(position);
                     }
                     else
                     {
                         untreatedPositions.Remove(position);
-                        // Update trailing stop
-                        var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
-                        if (stopOrder != null)
-                        {
-                            if (position.Stop == 0)
-                            {
-                                position.Stop = stopOrder.Price;
-                            }
-                            position.TrailStop = stopOrder.Price;
-                            position.TrailStopId = stopOrder.OrderId;
-                        }
                     }
-                }
-                foreach (var position in untreatedPositions)
-                {
-                    if (!string.IsNullOrEmpty(position.TrailStopId))
+                    // Update trailing stop
+                    var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
+                    if (stopOrder != null)
                     {
-                        StockLog.Write($"UntreatedPosition on {position.StockName}");
-                        // 
-                        // var order = new OrderService().GetOrder(long.Parse(position.TrailStopId), account.ClientKey);
+                        if (position.Stop == 0)
+                        {
+                            position.Stop = stopOrder.Price;
+                        }
+                        position.TrailStop = stopOrder.Price;
+                        position.TrailStopId = stopOrder.OrderId;
                     }
+                    else
+                    {
+                        position.Stop = 0;
+                        position.TrailStop = 0;
+                        position.TrailStopId = null;
+                    }
+                    position.EntryQty = (int)saxoPosition.PositionBase.Amount;
                 }
-
-                // Check executedOrders (One day delay)
-                var closedOrders = new OrderService().GetClosedOrders(account, this.LastSyncDate.AddDays(-1), DateTime.Now);
-                foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime))
-                {
-                    this.AddSaxoClosedOrder(op);
-                }
-                foreach (var pos in accountService.GetHistoricalClosedPositions(account, LastSyncDate).Data)
-                {
-                    StockLog.Write($"{pos.InstrumentSymbol} OpenPosId: {pos.OpenPositionId} ClosePosId:{pos.ClosePositionId} {pos.TradeDateOpen}");
-                }
+                untreatedPositions.ForEach(p => p.IsVisible = false);
 
                 this.LastSyncDate = DateTime.Today;
                 this.Serialize();
@@ -890,7 +890,7 @@ namespace StockAnalyzer.StockPortfolio
                 stockName = stockSerie.StockName;
                 isin = stockSerie.ISIN;
             }
-            StockLog.Write($"{closedOrder.TradeEventType} {stockName} Id:{closedOrder.OrderId} TradeId:{closedOrder.TradeId} {executionTime}");
+            StockLog.Write($"{closedOrder.TradeEventType} {stockName} Qty:{closedOrder.Amount} Id:{closedOrder.OrderId} TradeId:{closedOrder.TradeId} {executionTime}");
             switch (closedOrder.TradeEventType.ToLower())
             {
                 case SaxoOperation.TRANSFER_IN:
@@ -919,8 +919,7 @@ namespace StockAnalyzer.StockPortfolio
                             position.ExitValue = openValue;
                             this.Positions.Add(new StockPosition
                             {
-                                Id = 0,
-                                OrderId = tradeId,
+                                Id = position.Id,
                                 EntryDate = executionTime,
                                 EntryQty = position.EntryQty + qty,
                                 StockName = tradeOperation.StockName,
@@ -932,8 +931,7 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             this.Positions.Add(new StockPosition
                             {
-                                Id = tradeId,
-                                OrderId = tradeId,
+                                Id = orderId,          // Is it right position ID ?
                                 EntryDate = executionTime,
                                 EntryQty = qty,
                                 StockName = tradeOperation.StockName,
@@ -966,8 +964,7 @@ namespace StockAnalyzer.StockPortfolio
                             {
                                 this.Positions.Add(new StockPosition
                                 {
-                                    Id = 0,
-                                    OrderId = tradeId,
+                                    Id = position.Id,
                                     EntryDate = executionTime,
                                     EntryQty = position.EntryQty - qty,
                                     StockName = tradeOperation.StockName,

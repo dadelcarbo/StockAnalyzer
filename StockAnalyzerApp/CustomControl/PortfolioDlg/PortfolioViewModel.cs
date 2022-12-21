@@ -46,7 +46,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 
-        public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
+        public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.Where(p => p.IsVisible).OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
 
         public IEnumerable<StockPositionViewModel> ClosedPositions
         {
