@@ -167,7 +167,12 @@ namespace StockAnalyzerApp
                     else
                     {
                         portfolio = value;
+                        this.graphCloseControl.ForceRefresh();
                     }
+                }
+                else
+                {
+                    this.graphCloseControl.ForceRefresh();
                 }
             }
         }

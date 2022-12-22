@@ -83,10 +83,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
         public float PortfolioRisk => (EntryValue - StopValue) * EntryQty / this.Portfolio.TotalValue;
         public float PortfolioReturn => (this.Portfolio.TotalValue - this.Portfolio.InitialBalance) / this.Portfolio.TotalValue;
-        public StockBarDuration BarDuration { get; set; }
+        public BarDuration BarDuration { get; set; }
         public string Theme { get; set; }
         public string EntryComment { get; set; }
-        public static Array BarDurations => Enum.GetValues(typeof(BarDuration));
+        public static IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
         public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }

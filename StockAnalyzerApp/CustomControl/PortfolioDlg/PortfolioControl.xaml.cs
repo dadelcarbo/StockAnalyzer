@@ -150,11 +150,17 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)
         {
-            var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)];
+            var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)] as PropertyAttribute;
             if (attribute == null)
                 e.Cancel = true;
             else
+            {
                 e.Cancel = false;
+                if(!string.IsNullOrEmpty(attribute.Format))
+                {
+                    e.PropertyDefinition.Binding.StringFormat = attribute.Format;
+                }
+            }
         }
 
         private void reportButton_Click(object sender, RoutedEventArgs e)
@@ -170,9 +176,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             var viewModel = this.DataContext as ViewModel;
             viewModel.Portfolio.Refresh();
 
-            this.openedPositionGridView.Rebind();
-            var bindingExpression = this.lastSyncTextBox.GetBindingExpression(TextBox.TextProperty);
-            bindingExpression.UpdateTarget();
+            viewModel.Portfolio = viewModel.Portfolio;
             this.Cursor = cursor;
         }
     }

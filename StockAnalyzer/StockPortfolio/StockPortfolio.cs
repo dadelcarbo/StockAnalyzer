@@ -920,6 +920,10 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     case OrderType.Market:
                         orderResponse = orderService.BuyMarketOrder(account, instrument, qty, stop);
+                        if (!string.IsNullOrEmpty(orderResponse?.OrderId))
+                        {
+                            this.Refresh();
+                        }
                         break;
                     case OrderType.Limit:
                         decimal limit = RoundToTickSize(orderValue, instrumentDetail);
@@ -932,8 +936,7 @@ namespace StockAnalyzer.StockPortfolio
                     default:
                         break;
                 }
-                this.Refresh();
-                return orderResponse.OrderId;
+                return orderResponse?.OrderId;
             }
             catch (Exception ex)
             {
@@ -948,7 +951,7 @@ namespace StockAnalyzer.StockPortfolio
                 if (!this.SaxoLogin())
                     return null;
 
-                var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN);
+                var instrument = new InstrumentService().GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
                     MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);

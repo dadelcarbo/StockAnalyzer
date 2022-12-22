@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     var underlyingFile = File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList();
                     var ids = underlyingFile.Select(l => l.Split(',')[0]).ToList();
 
-                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value).ToList();
+                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value.ToUpper()).ToList();
                     if (newIds.Count > 0)
                     {
                         underlyingFile.AddRange(newIds);

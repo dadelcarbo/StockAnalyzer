@@ -4,9 +4,9 @@ namespace StockAnalyzerApp.CustomControl
 {
     public class PropertyAttribute : Attribute
     {
-        public PropertyAttribute()
+        public PropertyAttribute(string format = null)
         {
-
+            this.Format = format;
         }
         public PropertyAttribute(string propertyGroup, int order)
         {
@@ -15,5 +15,6 @@ namespace StockAnalyzerApp.CustomControl
         }
         public string PropertyGroup { get; set; }
         public int Order { get; set; }
+        public string Format { get; set; }
     }
 }

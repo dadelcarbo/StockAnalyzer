@@ -23,10 +23,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
 
-        [Property]
+        [Property("P2")]
         public float Balance { get => Portfolio.Balance; set => Portfolio.Balance = value; }
 
-        [Property]
+        [Property("P2")]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
         [Property]
         public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }

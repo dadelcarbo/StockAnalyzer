@@ -2421,7 +2421,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var portfolioValue = Portfolio.TotalValue;
             var openTradeViewModel = new OpenTradeViewModel
             {
-                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
+                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration.Duration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
                 StockSerie = this.serie,

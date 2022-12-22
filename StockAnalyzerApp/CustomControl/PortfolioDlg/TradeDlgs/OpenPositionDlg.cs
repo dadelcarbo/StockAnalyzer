@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using StockAnalyzer.StockClasses;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -27,6 +29,17 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             if (this.TradeViewModel.MarketOrder)
             {
                 orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
+                if (orderId != null)
+                {
+                    var position = this.TradeViewModel.Portfolio.OpenedPositions.OrderByDescending(p=>p.EntryDate).FirstOrDefault();
+                    if (position != null && position.StockName == this.TradeViewModel.StockSerie.StockName)
+                    {
+                        position.EntryComment = this.TradeViewModel.EntryComment;
+                        position.Theme = this.TradeViewModel.Theme;
+                        position.BarDuration = this.TradeViewModel.BarDuration;
+                        this.TradeViewModel.Portfolio.Serialize();
+                    }
+                }
             }
             else if (this.TradeViewModel.LimitOrder)
             {

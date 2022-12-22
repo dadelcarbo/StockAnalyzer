@@ -45,7 +45,7 @@
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Opened Positions">
                 <telerik:RadGridView Name="openedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
-                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     SelectionMode="Single" SelectionUnit="Mixed" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="True">
                     <telerik:RadGridView.ColumnGroups>

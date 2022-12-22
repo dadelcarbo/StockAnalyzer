@@ -19,6 +19,7 @@
                                         ItemsSource="{Binding Underlyings}"      
                                         DisplayMemberPath="value"  
                                         TextSearchPath="value"
+                                        TextSearchMode="Contains"
                                         WatermarkContent="Search underlying"
                                         NoResultsContent="No results found"
                                         Width="160" SelectionChanged="RadAutoCompleteBox_SelectionChanged"
