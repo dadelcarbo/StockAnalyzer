@@ -39,7 +39,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
         }
         public static void RefreshSessions()
         {
-            foreach(var session in Sessions.Where(s=>s.HasTokenExpired()))
+            foreach (var session in Sessions.Where(s => s.HasTokenExpired()))
             {
                 if (!session.HasRefreshTokenExpired())
                 {
@@ -118,6 +118,48 @@ namespace Saxo.OpenAPI.AuthenticationServices
             }
             LoginService.CurrentSession = null;
             return CurrentSession;
+        }
+
+        public static LoginSession SilentLogin(string clientId, string appFolder, bool isSimu)
+        {
+            try
+            {
+                // Check if session already exists
+                var session = Sessions.FirstOrDefault(s => s.ClientId == clientId);
+                if (session == null)
+                {
+                    string appPath = Path.Combine(appFolder, isSimu ? "App_sim.json" : "App_live.json");
+                    session = new LoginSession
+                    {
+                        App = App.GetApp(appPath),
+                        ClientId = clientId,
+                        Token = Token.Deserialize(clientId)
+                    };
+                    if (!session.HasTokenExpired())
+                    {
+                        Sessions.Add(session);
+                        CurrentSession = session;
+                        return session;
+                    }
+                    if (!session.HasRefreshTokenExpired())
+                    {
+                        var refreshToken = LoginHelpers.RefreshToken(session);
+                        if (refreshToken != null)
+                        {
+                            refreshToken.Serialize(clientId);
+                            session.Token = refreshToken;
+                            Sessions.Add(session);
+                            CurrentSession = session;
+                            return session;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            return null;
         }
     }
 }

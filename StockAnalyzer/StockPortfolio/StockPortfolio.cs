@@ -675,6 +675,29 @@ namespace StockAnalyzer.StockPortfolio
             }
             return true;
         }
+        public bool SaxoSilentLogin()
+        {
+            if (string.IsNullOrEmpty(SaxoAccountId))
+            {
+                return false;
+            }
+            if (string.IsNullOrEmpty(SaxoClientId))
+            {
+                return false;
+            }
+            var saxoSession = LoginService.SilentLogin(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu);
+            if (saxoSession == null)
+                return false;
+
+            account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
+            if (account == null)
+            {
+                return false;
+            }
+            this.Refresh();
+            return true;
+        }
+
         public void Refresh()
         {
             try

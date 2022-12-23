@@ -568,6 +568,11 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
+            foreach (var portfolio in this.Portfolios)
+            {
+                portfolio.SaxoSilentLogin();
+            }
+
             if (Settings.Default.GenerateDailyReport)
             {
                 if (!Directory.Exists(Folders.Log))
@@ -613,6 +618,7 @@ namespace StockAnalyzerApp
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
+
         }
 
         private bool showTimerDebug = true;
