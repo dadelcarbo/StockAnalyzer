@@ -163,6 +163,7 @@ namespace StockAnalyzerApp
                     if (portfolioComboBox.SelectedItem != value)
                     {
                         portfolioComboBox.SelectedIndex = portfolioComboBox.Items.IndexOf(value);
+                        portfolio.SaxoSilentLogin();
                     }
                     else
                     {

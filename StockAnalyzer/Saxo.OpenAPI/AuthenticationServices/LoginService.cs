@@ -154,6 +154,25 @@ namespace Saxo.OpenAPI.AuthenticationServices
                         }
                     }
                 }
+                else
+                {
+                    if (!session.HasTokenExpired())
+                    {
+                        CurrentSession = session;
+                        return session;
+                    }
+                    if (!session.HasRefreshTokenExpired())
+                    {
+                        var refreshToken = LoginHelpers.RefreshToken(session);
+                        if (refreshToken != null)
+                        {
+                            refreshToken.Serialize(clientId);
+                            session.Token = refreshToken;
+                            CurrentSession = session;
+                            return session;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

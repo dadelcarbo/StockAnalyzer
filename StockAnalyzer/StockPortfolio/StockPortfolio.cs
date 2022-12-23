@@ -689,6 +689,8 @@ namespace StockAnalyzer.StockPortfolio
             if (saxoSession == null)
                 return false;
 
+            StockLog.Write($"Silent login success for portfolio: {this.Name}");
+
             account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
             if (account == null)
             {
