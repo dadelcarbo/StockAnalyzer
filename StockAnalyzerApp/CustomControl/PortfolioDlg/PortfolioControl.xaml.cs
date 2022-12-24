@@ -28,6 +28,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
+            this.openedOrdersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.closedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
 
             StockAnalyzerForm.MainFrame.GraphCloseControl.StopChanged += GraphCloseControl_StopChanged;
@@ -55,15 +56,21 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 {
                     case "StockTradeOperation":
                         {
-                            StockTradeOperation item = row.Item as StockTradeOperation;
+                            var item = row.Item as StockTradeOperation;
                             SelectionChanged(item.StockName, item.ISIN);
                         }
                         break;
                     case "StockPositionViewModel":
                         {
-                            StockPositionViewModel item = row.Item as StockPositionViewModel;
+                            var item = row.Item as StockPositionViewModel;
                             SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
                             item.PropertyChanged += Position_PropertyChanged;
+                        }
+                        break;
+                    case "StockOpenedOrder":
+                        {
+                            var item = row.Item as StockOpenedOrder;
+                            SelectionChanged(item.StockName, item.ISIN);
                         }
                         break;
                     default:

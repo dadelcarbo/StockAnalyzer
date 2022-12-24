@@ -3,10 +3,10 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILEMACD : StockTrailStopBase
+    public class StockTrailStop_TRAILSTOKS : StockTrailStopBase
     {
         public override string Definition => base.Definition + Environment.NewLine +
-            "Draw a trail stop that is calculated as a EMACD from a HIGHEST and trailing according to Financial Wisdom EMACD style.";
+            "Draw a trail stop that starts and trails at each STOKS Bulling cross.";
 
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -15,12 +15,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override bool RequiresVolumeData { get { return false; } }
         public override string[] ParameterNames
         {
-            get { return new string[] { "LongPeriod", "ShortPeriod", "SignalPeriod" }; }
+            get { return new string[] { "StokPeriod", "SmoothPeriod", "SignalPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 26, 12, 9 }; }
+            get { return new Object[] { 35, 3, 3 }; }
         }
         public override ParamRange[] ParameterRanges
         {
@@ -36,39 +36,46 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             int shortPeriod = (int)this.parameters[1];
             int signalPeriod = (int)this.parameters[2];
 
-            var emacd = stockSerie.GetIndicator($"EMACD({longPeriod},{shortPeriod},{signalPeriod})");
+            var stokTrend = stockSerie.GetIndicator($"STOKSTREND({longPeriod},{shortPeriod},{signalPeriod})");
             var highest = stockSerie.GetIndicator($"HIGHEST({longPeriod})").Series[0];
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            var positiveEvents = emacd.GetEvents("Positive");
-            var firstBelowSignalEvents = emacd.GetEvents("FirstBelowSignal");
+            var positiveEvents = stokTrend.GetEvents("Bullish");
+            var bullishCrossingEvents = stokTrend.GetEvents("BullishCrossing");
+            var bearishCrossingEvents = stokTrend.GetEvents("BearishCrossing");
             float trailStop = float.NaN;
 
             bool upTrend = false;
+            int previousTurnIndex = 0;
             for (int i = longPeriod; i < stockSerie.Count; i++)
             {
                 if (upTrend)
                 {
                     if (closeSerie[i] < trailStop)
                     {
-                        upTrend = false;
+                        upTrend = false; 
+                        previousTurnIndex = i;
                     }
                     else
                     {
-                        if (firstBelowSignalEvents[i])
+                        if (bearishCrossingEvents[i])
                         {
-                            trailStop = Math.Min(lowSerie[i], lowSerie[i - 1]);
+                            previousTurnIndex = i;
+                        }
+                        else if (bullishCrossingEvents[i])
+                        {
+                            trailStop = Math.Max(trailStop, lowSerie.GetMin(previousTurnIndex, i));
                         }
                         longStopSerie[i] = trailStop;
                     }
                 }
                 else
                 {
-                    if (positiveEvents[i] && highest[i] > longPeriod)
+                    if (positiveEvents[i])
                     {
                         upTrend = true;
-                        trailStop = lowSerie.GetMin(i - shortPeriod, i);
+                        trailStop = lowSerie.GetMin(previousTurnIndex, i);
                         longStopSerie[i] = trailStop;
                     }
                 }

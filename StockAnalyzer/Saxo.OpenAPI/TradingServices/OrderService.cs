@@ -18,7 +18,7 @@ namespace Saxo.OpenAPI.TradingServices
                     BuySell = buySell,
                     Amount = qty,
                     OrderPrice = value,
-                    OrderId= orderId,
+                    OrderId = orderId,
                     OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
                 };
                 return Patch<OrderResponse>("trade/v2/orders", patchOrder);
@@ -293,6 +293,7 @@ namespace Saxo.OpenAPI.TradingServices
         public OpenedOrder[] Data { get; set; }
     }
 
+
     public class OpenedOrder
     {
         public string AccountId { get; set; }
@@ -330,7 +331,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string OrderRelation { get; set; }
         public DateTime OrderTime { get; set; }
         public float Price { get; set; }
-        public object[] RelatedOpenOrders { get; set; }
+        public RelatedOpenOrder[] RelatedOpenOrders { get; set; }
         public string RelatedPositionId { get; set; }
         public string Status { get; set; }
         public string TradingStatus { get; set; }
@@ -348,6 +349,16 @@ namespace Saxo.OpenAPI.TradingServices
         public string ExchangeId { get; set; }
         public bool IsOpen { get; set; }
         public string TimeZoneId { get; set; }
+    }
+
+    public class RelatedOpenOrder
+    {
+        public float Amount { get; set; }
+        public Duration Duration { get; set; }
+        public string OpenOrderType { get; set; }
+        public string OrderId { get; set; }
+        public float OrderPrice { get; set; }
+        public string Status { get; set; }
     }
 
 

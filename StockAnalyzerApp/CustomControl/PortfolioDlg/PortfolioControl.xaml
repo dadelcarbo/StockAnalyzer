@@ -76,6 +76,23 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
+            <TabItem Header="Opened Orders">
+                <telerik:RadGridView Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.Portfolio.OpenOrders}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" IsReadOnly="True">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>
+                        <telerik:GridViewDataColumn Header="Direction" DataMemberBinding="{Binding BuySell}" />
+                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding OrderType}" />
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding Qty}"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}"/>
+                        <telerik:GridViewDataColumn Header="Status" DataMemberBinding="{Binding Status}"/>
+                        <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding CreationDate, Converter={StaticResource StockDateConverter}}"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding StopValue}"/>
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
             <TabItem Header="Closed Positions">
                 <telerik:RadGridView Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"

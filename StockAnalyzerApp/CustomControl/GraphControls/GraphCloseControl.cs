@@ -1209,6 +1209,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     PaintOpenedPosition(graphic, position);
                 }
             }
+            var openedOrder = this.Portfolio.OpenOrders?.Where(o => o.StockName.ToUpper() == name && o.BuySell == "Buy").FirstOrDefault();
+            if (openedOrder != null)
+            {
+                this.DrawOpenedOrder(graphic, entryPen, openedOrder.Value, openedOrder.OrderType == "Limit", true);
+            }
         }
 
         private void PaintOpenedPosition(Graphics graphic, StockPosition position)
@@ -2299,6 +2304,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             graph.FillPolygon(new SolidBrush(pen.Color), points);
             if (showText)
                 this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+        }
+        protected void DrawOpenedOrder(Graphics graph, Pen pen, float value, bool isLimit, bool showText)
+        {
+            var p1 = this.GetScreenPointFromValuePoint(this.EndIndex, value);
+            var p2 = new PointF(GraphRectangle.Right, p1.Y);
+            graph.DrawLine(pen, p1, p2);
+            var points = GetStopMarqueePoints(value);
+            graph.FillPolygon(new SolidBrush(pen.Color), points);
+            if (showText)
+                this.DrawString(graph, value.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         #region Geometric Functions
         private PointF FindClosestExtremum(PointF mouseValuePoint)
