@@ -27,7 +27,7 @@
             <Label>Risk free value:</Label>
             <TextBlock Text="{Binding PortfolioViewModel.RiskFreeValue}" VerticalAlignment="Center"/>
             <Label>Max Risk:</Label>
-            <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" VerticalAlignment="Center" Width="50"/>
+            <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" IsReadOnly="True" VerticalAlignment="Center" Width="50"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
             <Label VerticalAlignment="Center">Sync Date:</Label>
@@ -119,8 +119,10 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Portfolio">
-                <telerik:RadPropertyGrid Item="{Binding PortfolioViewModel}" AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
-                                       DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed"  ></telerik:RadPropertyGrid>
+                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}"
+                                         AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
+                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" 
+                                         SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>
             </TabItem>
         </TabControl>
     </Grid>

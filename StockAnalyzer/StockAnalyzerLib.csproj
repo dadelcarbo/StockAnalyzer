@@ -272,6 +272,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
@@ -459,7 +460,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ACCEL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKRSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />

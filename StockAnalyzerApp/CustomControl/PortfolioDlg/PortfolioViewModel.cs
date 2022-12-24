@@ -14,35 +14,34 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             Portfolio = p;
         }
 
-        [Property]
-        public string Name { get => Portfolio.Name; set => Portfolio.Name = value; }
-
-        [Property]
+        [Property(null, "1-General")]
+        public DateTime CreationDate { get => Portfolio.CreationDate; set => Portfolio.CreationDate = value; }
+        [Property(null, "1-General")]
         public float StartBalance { get => Portfolio.InitialBalance; set => Portfolio.InitialBalance = value; }
+        [Property(null, "1-General")]
+        public string Name { get => Portfolio.Name; set => Portfolio.Name = value; }
+        [Property(null, "1-General")]
+        public float Balance => Portfolio.Balance;
 
-        [Property]
+        [Property(null, "2-Risk")]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
-
-        [Property("P2")]
-        public float Balance { get => Portfolio.Balance; set => Portfolio.Balance = value; }
-
-        [Property("P2")]
+        [Property("P2", "2-Risk")]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
-        [Property]
+        [Property("P2", "2-Risk")]
         public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }
 
-        [Property]
-        public DateTime CreationDate { get => Portfolio.CreationDate; set => Portfolio.CreationDate = value; }
 
-        [Property]
-        public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
-
-        [Property]
+        [Property(null, "3-Saxo")]
         public bool IsSaxoSimu { get => Portfolio.IsSaxoSimu; set => Portfolio.IsSaxoSimu = value; }
-        [Property]
+        [Property(null, "3-Saxo")]
         public string SaxoAccountId { get => Portfolio.SaxoAccountId; set => Portfolio.SaxoAccountId = value; }
-        [Property]
+        [Property(null, "3-Saxo")]
         public string SaxoClientId { get => Portfolio.SaxoClientId; set => Portfolio.SaxoClientId = value; }
+        [Property(null, "3-Saxo")]
+        public DateTime SyncDate => Portfolio.LastSyncDate;
+
+        [Property(null, "4-Extra")]
+        public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
         public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
 

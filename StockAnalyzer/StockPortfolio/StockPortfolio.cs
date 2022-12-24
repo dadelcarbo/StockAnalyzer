@@ -51,7 +51,26 @@ namespace StockAnalyzer.StockPortfolio
         public List<StockPosition> Positions { get; }
         [JsonIgnore]
         public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
-        public string Name { get; set; }
+        public string Name
+        {
+            get => name;
+            set
+            {
+                if (name == null)
+                {
+                    name = value;
+                }
+                else
+                {
+                    if (name != value)
+                    {
+                        RenameFile(value);
+                        name = value;
+                        this.Serialize();
+                    }
+                }
+            }
+        }
         public string SaxoAccountId { get; set; }
         public string SaxoClientId { get; set; }
         public DateTime LastSyncDate { get; set; }
@@ -70,6 +89,20 @@ namespace StockAnalyzer.StockPortfolio
         public bool IsSaxoSimu { get; set; }
 
         #region PERSISTENCY
+        public void RenameFile(string newName)
+        {
+            string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
+            string newFilepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
+            if (File.Exists(filepath))
+            {
+                File.Move(filepath, newFilepath);
+            }
+            if (File.Exists(filepath))
+            {
+                File.Delete(filepath);
+            }
+
+        }
         public void Serialize()
         {
             string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
@@ -651,6 +684,8 @@ namespace StockAnalyzer.StockPortfolio
 
         Account account = null;
         AccountService accountService = new AccountService();
+        private string name;
+
         public bool SaxoLogin()
         {
             if (string.IsNullOrEmpty(SaxoAccountId))

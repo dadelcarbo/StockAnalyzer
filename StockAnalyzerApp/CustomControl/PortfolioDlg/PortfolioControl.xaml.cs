@@ -148,6 +148,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.Cursor = cursor;
         }
 
+        static int index = 0;
         private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)
         {
             var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)] as PropertyAttribute;
@@ -156,10 +157,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             else
             {
                 e.Cancel = false;
-                if(!string.IsNullOrEmpty(attribute.Format))
+                if (!string.IsNullOrEmpty(attribute.Format))
                 {
                     e.PropertyDefinition.Binding.StringFormat = attribute.Format;
                 }
+                if (!string.IsNullOrEmpty(attribute.Group))
+                {
+                    e.PropertyDefinition.GroupName = attribute.Group;
+                }
+                e.PropertyDefinition.OrderIndex = index++;
             }
         }
 
