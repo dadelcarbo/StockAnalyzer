@@ -14,7 +14,6 @@ namespace StockAnalyzer.StockPortfolio
         public string StockName { get; set; }
         public string ISIN { get; set; }
         public long Uic { get; set; }
-        public bool IsVisible { get; set; } = true;
 
         public int EntryQty { get; set; }
         public float EntryValue { get; set; } // This doesn't include transaction fees
@@ -28,7 +27,6 @@ namespace StockAnalyzer.StockPortfolio
         public float Stop { get; set; }
 
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
-
         public string EntryComment { get; set; }
         public string Theme { get; set; }
         public DateTime? ExitDate { get; set; }

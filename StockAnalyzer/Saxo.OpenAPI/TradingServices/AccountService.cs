@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices
@@ -27,7 +28,7 @@ namespace Saxo.OpenAPI.TradingServices
             {
                 return Get<Balance>($"port/v1/balances/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FieldGroups=CalculateCashForTrading");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -56,31 +57,20 @@ namespace Saxo.OpenAPI.TradingServices
                 return null;
             }
         }
-        public HistoricalClosedPositions GetHistoricalClosedPositions(Account account, DateTime fromDate)
+        public ClosedPositions GetClosedPositions(Account account)
         {
             try
             {
-                if (fromDate.Year == 1)
+                var content = Get($"port/v1/closedpositions/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
+                if (content == "[]")
                     return null;
-                return Get<HistoricalClosedPositions>($"cs/v1/reports/closedPositions/{account.ClientKey}/{fromDate.ToString("yyyy-MM-dd")}/{DateTime.Today.ToString("yyyy-MM-dd")}/?&AccountGroupKey={account.AccountGroupKey}&AccountKey={account.AccountKey}");
+                return JsonConvert.DeserializeObject<ClosedPositions>(content);
             }
             catch (Exception)
             {
                 return null;
             }
         }
-        public DailyClosedPositions GetDailyClosedPositions(Account account)
-        {
-            try
-            {
-                return Get<DailyClosedPositions>($"port/v1/closedpositions/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
     }
 
     public class Accounts
@@ -120,7 +110,6 @@ namespace Saxo.OpenAPI.TradingServices
         public bool SupportsAccountValueProtectionLimit { get; set; }
         public bool UseCashPositionsAsMarginCollateral { get; set; }
     }
-
     public class Balance
     {
         public string CalculationReliability { get; set; }
@@ -165,7 +154,6 @@ namespace Saxo.OpenAPI.TradingServices
         public float UnrealizedMarginProfitLoss { get; set; }
         public float UnrealizedPositionsValue { get; set; }
     }
-
     public class Initialmargin
     {
         public float CollateralAvailable { get; set; }
@@ -176,7 +164,6 @@ namespace Saxo.OpenAPI.TradingServices
         public float NetEquityForMargin { get; set; }
         public float OtherCollateralDeduction { get; set; }
     }
-
     public class Spendingpowerdetail
     {
         public float Current { get; set; }
@@ -256,62 +243,21 @@ namespace Saxo.OpenAPI.TradingServices
     }
 
 
-    public class HistoricalClosedPositions
-    {
-        public int __count { get; set; }
-        public ClosedPositions[] Data { get; set; }
-    }
 
     public class ClosedPositions
     {
-        public string AccountCurrency { get; set; }
-        public int AccountCurrencyDecimals { get; set; }
-        public string AccountId { get; set; }
-        public float Amount { get; set; }
-        public float AmountClose { get; set; }
-        public float AmountOpen { get; set; }
-        public string AssetType { get; set; }
-        public string ClientCurrency { get; set; }
-        public string ClosePositionId { get; set; }
-        public float ClosePrice { get; set; }
-        public string CloseType { get; set; }
-        public string ExchangeDescription { get; set; }
-        public string InstrumentCurrency { get; set; }
-        public string InstrumentDescription { get; set; }
-        public string InstrumentSymbol { get; set; }
-        public string OpenPositionId { get; set; }
-        public float OpenPrice { get; set; }
-        public float PnLAccountCurrency { get; set; }
-        public float PnLClientCurrency { get; set; }
-        public float PnLUSD { get; set; }
-        public float TotalBookedOnClosingLegAccountCurrency { get; set; }
-        public float TotalBookedOnClosingLegClientCurrency { get; set; }
-        public float TotalBookedOnClosingLegUSD { get; set; }
-        public float TotalBookedOnOpeningLegAccountCurrency { get; set; }
-        public float TotalBookedOnOpeningLegClientCurrency { get; set; }
-        public float TotalBookedOnOpeningLegUSD { get; set; }
-        public DateTime TradeDate { get; set; }
-        public DateTime TradeDateClose { get; set; }
-        public DateTime TradeDateOpen { get; set; }
-        public string UnderlyingInstrumentDescription { get; set; }
-        public string UnderlyingInstrumentSymbol { get; set; }
-    }
-
-
-    public class DailyClosedPositions
-    {
         public int __count { get; set; }
-        public DailyClosedPosition[] Data { get; set; }
+        public Datum[] Data { get; set; }
     }
 
-    public class DailyClosedPosition
+    public class Datum
     {
-        public Closedposition ClosedPosition { get; set; }
+        public ClosedPosition ClosedPosition { get; set; }
         public string ClosedPositionUniqueId { get; set; }
         public string NetPositionId { get; set; }
     }
 
-    public class Closedposition
+    public class ClosedPosition
     {
         public string AccountId { get; set; }
         public float Amount { get; set; }
@@ -329,12 +275,12 @@ namespace Saxo.OpenAPI.TradingServices
         public bool ConversionRateInstrumentToBaseSettledOpening { get; set; }
         public DateTime ExecutionTimeClose { get; set; }
         public DateTime ExecutionTimeOpen { get; set; }
-        public string OpeningPositionId { get; set; }
+        public long OpeningPositionId { get; set; }
         public float OpenPrice { get; set; }
         public float ProfitLossCurrencyConversion { get; set; }
         public float ProfitLossOnTrade { get; set; }
         public float ProfitLossOnTradeInBaseCurrency { get; set; }
-        public long Uic { get; set; }
+        public int Uic { get; set; }
     }
 
 }

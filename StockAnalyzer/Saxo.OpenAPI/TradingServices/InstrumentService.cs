@@ -170,7 +170,7 @@ namespace Saxo.OpenAPI.TradingServices
 
     public class Ticksizescheme
     {
-        public float DefaultTickSize { get; set; }
+        public decimal DefaultTickSize { get; set; }
         public TickSizeElement[] Elements { get; set; }
     }
 

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Forms.VisualStyles;
@@ -31,6 +32,11 @@ namespace StockAnalyzer.StockPortfolio
 
         const string PORTFOLIO_FILE_EXT = ".ucptf";
 
+        #region EVENTS
+        public delegate void RefreshedHandler(StockPortfolio sender);
+        public event RefreshedHandler Refreshed;
+        #endregion
+
         #region STATIC METHODS/PROPERTIES
         static int instanceCount = 0;
         public static StockPortfolio SimulationPortfolio { get; private set; }
@@ -47,6 +53,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             this.TradeOperations = new List<StockTradeOperation>();
             this.Positions = new List<StockPosition>();
+            this.OpenOrders = new List<StockOpenedOrder>();
             this.MaxRisk = 0.02f;
             this.MaxPositionSize = 0.2f;
         }
@@ -112,7 +119,7 @@ namespace StockAnalyzer.StockPortfolio
             if (File.Exists(filepath))
             {
                 var fileDate = File.GetLastWriteTime(filepath);
-                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd hh_mm") + PORTFOLIO_FILE_EXT);
+                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd hh_mm_ss_fff") + PORTFOLIO_FILE_EXT);
                 if (!File.Exists(archiveFilePath))
                 {
                     File.Move(filepath, archiveFilePath);
@@ -678,7 +685,7 @@ namespace StockAnalyzer.StockPortfolio
             }
             // Find instrument in stock Dictionnary
             var symbol = instrument.Symbol.Split(':')[0];
-            var stockName = instrument.Description.ToUpper();
+            var stockName = instrument.Description.ToUpper().Trim();
             return StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName);
         }
 
@@ -762,9 +769,11 @@ namespace StockAnalyzer.StockPortfolio
 
                 // Review opened Orders
                 var openedOrders = new OrderService().GetOpenedOrders(account);
-                this.OpenOrders = new List<StockOpenedOrder>();
                 foreach (var openedOrder in openedOrders.Data.Where(o => o.BuySell == "Buy"))
                 {
+                    long orderId = long.Parse(openedOrder.OrderId);
+                    if (this.OpenOrders.Any(o => o.Id == orderId))
+                        continue;
                     StockSerie stockSerie = GetStockSerieFromUic(openedOrder.Uic);
                     if (stockSerie == null)
                     {
@@ -775,7 +784,7 @@ namespace StockAnalyzer.StockPortfolio
                     StockLog.Write($"OrderId:{openedOrder.OrderId} {openedOrder.OpenOrderType} {instrument?.Symbol} {openedOrder.RelatedPositionId} {openedOrder.Status}");
                     var order = new StockOpenedOrder
                     {
-                        Id = long.Parse(openedOrder.OrderId),
+                        Id = orderId,
                         StockName = stockSerie.StockName,
                         ISIN = stockSerie.ISIN,
                         Uic = openedOrder.Uic,
@@ -828,6 +837,16 @@ namespace StockAnalyzer.StockPortfolio
                             BarDuration = stockSerie.StockGroup == StockSerie.Groups.INTRADAY ? BarDuration.H_1 : BarDuration.Daily,
                         };
                         this.Positions.Add(position);
+
+                        // Check if in the OpenedOrers
+                        var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Id == long.Parse(saxoPosition.PositionBase.SourceOrderId));
+                        if (openedOrder != null)
+                        {
+                            position.BarDuration = openedOrder.BarDuration;
+                            position.EntryComment = openedOrder.EntryComment;
+                            position.Theme = openedOrder.Theme;
+                            this.OpenOrders.Remove(openedOrder);
+                        }
                     }
                     else
                     {
@@ -852,10 +871,27 @@ namespace StockAnalyzer.StockPortfolio
                     }
                     position.EntryQty = (int)saxoPosition.PositionBase.Amount;
                 }
-                untreatedPositions.ForEach(p => p.IsVisible = false);
+
+                if (untreatedPositions.Count > 0)
+                {
+                    var closedPositions = accountService.GetClosedPositions(account)?.Data;
+                    if (closedPositions != null)
+                    {
+                        foreach (var closedPosition in closedPositions)
+                        {
+                            var position = untreatedPositions.FirstOrDefault(p => p.Id == closedPosition.ClosedPosition.OpeningPositionId);
+                            if (position == null) { continue; }
+                            position.ExitDate = closedPosition.ClosedPosition.ExecutionTimeClose.ToLocalTime();
+                            position.ExitValue = closedPosition.ClosedPosition.ClosingPrice;
+                            untreatedPositions.Remove(position);
+                        }
+                    }
+                }
 
                 this.LastSyncDate = DateTime.Today;
                 this.Serialize();
+
+                this.Refreshed?.Invoke(this);
             }
             catch (Exception ex)
             {
@@ -1007,10 +1043,6 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     case OrderType.Market:
                         orderResponse = orderService.BuyMarketOrder(account, instrument, qty, stop);
-                        if (!string.IsNullOrEmpty(orderResponse?.OrderId))
-                        {
-                            this.Refresh();
-                        }
                         break;
                     case OrderType.Limit:
                         decimal limit = RoundToTickSize(orderValue, instrumentDetail);
@@ -1022,6 +1054,10 @@ namespace StockAnalyzer.StockPortfolio
                         break;
                     default:
                         break;
+                }
+                if (!string.IsNullOrEmpty(orderResponse?.OrderId))
+                {
+                    this.Refresh();
                 }
                 return orderResponse?.OrderId;
             }
@@ -1135,6 +1171,10 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     tickSize = instrumentDetail.TickSizeScheme.Elements[i].TickSize;
                     i++;
+                }
+                if (i == 1)
+                {
+                    tickSize = instrumentDetail.TickSizeScheme.DefaultTickSize;
                 }
             }
 

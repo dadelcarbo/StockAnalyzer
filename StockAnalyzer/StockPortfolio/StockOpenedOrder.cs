@@ -25,5 +25,9 @@ namespace StockAnalyzer.StockPortfolio
         public float StopValue { get; set; }
         public DateTime CreationDate { get; set; }
         public string Status { get; set; }
+
+        public BarDuration BarDuration { get; set; } = BarDuration.Daily;
+        public string EntryComment { get; set; }
+        public string Theme { get; set; }
     }
 }

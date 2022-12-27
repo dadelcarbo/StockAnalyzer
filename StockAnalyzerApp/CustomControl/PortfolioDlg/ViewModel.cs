@@ -24,13 +24,25 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 {
                     portfolioViewModel.Portfolio.Serialize();
                 }
-
+                if (StockAnalyzerForm.MainFrame.Portfolio != value)
+                {
+                    StockAnalyzerForm.MainFrame.Portfolio.Refreshed -= Portfolio_Refreshed;
+                    value.Refreshed += Portfolio_Refreshed;
+                }
                 StockAnalyzerForm.MainFrame.Portfolio = value;
                 portfolioViewModel = null;
                 OnPropertyChanged(nameof(Portfolio));
                 OnPropertyChanged(nameof(PortfolioViewModel));
             }
         }
+
+        private void Portfolio_Refreshed(StockPortfolio sender)
+        {
+            portfolioViewModel = null;
+            OnPropertyChanged(nameof(Portfolio));
+            OnPropertyChanged(nameof(PortfolioViewModel));
+        }
+
         private PortfolioViewModel portfolioViewModel;
         public PortfolioViewModel PortfolioViewModel => portfolioViewModel == null ? portfolioViewModel = new PortfolioViewModel(Portfolio) : portfolioViewModel;
         static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;

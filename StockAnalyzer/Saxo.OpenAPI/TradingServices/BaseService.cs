@@ -90,7 +90,6 @@ namespace Saxo.OpenAPI.TradingServices
                     var res = httpClient.SendAsync(request).Result;
                     content = res.Content.ReadAsStringAsync().Result;
                     res.EnsureSuccessStatusCode();
-
                     return JsonConvert.DeserializeObject<T>(content);
                 }
             }
@@ -100,6 +99,40 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
             }
         }
+        protected string Get(string method)
+        {
+            string content = string.Empty;
+            try
+            {
+                var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url)
+                {
+                    Version = new Version(1, 1)  // Make sure HTTP/2 is used, once available
+                };
+                request.Headers.Authorization = GetAuthorizationHeader(LoginService.Token);
+
+                using (var httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, UseCookies = false }))
+                {
+                    // Disable Expect: 100 Continue according to https://www.developer.saxo/openapi/learn/openapi-request-response
+                    // In our experience the same two-step process has been difficult to get to work reliable, especially as we support clients world wide, 
+                    // who connect to us through a multitude of network gateways and proxies.We also find that the actual bandwidth savings for the majority of API requests are limited, 
+                    // since most requests are quite small.
+                    // We therefore strongly recommend against using the Expect:100 - Continue header, and expect you to make sure your client library does not rely on this mechanism.
+                    httpClient.DefaultRequestHeaders.ExpectContinue = false;
+
+                    var res = httpClient.SendAsync(request).Result;
+                    content = res.Content.ReadAsStringAsync().Result;
+                    res.EnsureSuccessStatusCode();
+                    return content;
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write($"Exception: {ex.Message}\r\n${content}");
+                throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
+            }
+        }
+
         /// <summary>
         /// Send out POST request
         /// </summary>

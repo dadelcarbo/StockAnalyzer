@@ -90,6 +90,10 @@
                         <telerik:GridViewDataColumn Header="Status" DataMemberBinding="{Binding Status}"/>
                         <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding CreationDate, Converter={StaticResource StockDateConverter}}"/>
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding StopValue}"/>
+                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration}"/>
+                        <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" />
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" />
+
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
