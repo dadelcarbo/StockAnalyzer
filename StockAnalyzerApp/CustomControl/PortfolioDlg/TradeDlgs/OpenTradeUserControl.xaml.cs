@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                     {
                         position.EntryComment = this.TradeViewModel.EntryComment;
                         position.Theme = this.TradeViewModel.Theme;
-                        position.BarDuration = this.TradeViewModel.BarDuration;
+                        position.BarDuration = this.TradeViewModel.BarDuration.Duration;
                         this.TradeViewModel.Portfolio.Serialize();
                     }
                 }
@@ -67,7 +67,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             var openedOrder = this.TradeViewModel.Portfolio.OpenOrders.FirstOrDefault(o => o.Id == long.Parse(orderId));
             if (openedOrder != null)
             {
-                openedOrder.BarDuration = this.TradeViewModel.BarDuration;
+                openedOrder.BarDuration = this.TradeViewModel.BarDuration.Duration;
                 openedOrder.Theme = this.TradeViewModel.Theme;
                 openedOrder.EntryComment = this.TradeViewModel.EntryComment;
                 this.TradeViewModel.Portfolio.Serialize();
@@ -83,7 +83,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            this.ParentDlg.TradeViewModel.Refresh();
+            this.TradeViewModel.Refresh();
         }
     }
 }

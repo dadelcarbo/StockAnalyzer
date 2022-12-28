@@ -10,6 +10,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
     public class OpenTradeViewModel : NotifyPropertyChangedBase
     {
+        #region EVENTS
+        public delegate void OrdersChangedHandler();
+        public event OrdersChangedHandler OrdersChanged;
+        public void RaiseOrdersChanged() { this.OrdersChanged?.Invoke(); }
+        #endregion
+
         private int entryQty;
         private float entryValue;
         private float stopValue;
@@ -56,6 +62,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 {
                     entryValue = value;
                     OnEntryChanged();
+                    this.OrdersChanged?.Invoke();
                 }
             }
         }
@@ -75,6 +82,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 {
                     stopValue = value;
                     OnEntryChanged();
+                    this.OrdersChanged?.Invoke();
                 }
             }
         }
@@ -83,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
         public float PortfolioRisk => (EntryValue - StopValue) * EntryQty / this.Portfolio.TotalValue;
         public float PortfolioReturn => (this.Portfolio.TotalValue - this.Portfolio.InitialBalance) / this.Portfolio.TotalValue;
-        public BarDuration BarDuration { get; set; }
+        public StockBarDuration BarDuration { get; set; }
         public string Theme { get; set; }
         public string EntryComment { get; set; }
         public static IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
@@ -106,7 +114,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
             this.EntryQty = qty;
         }
-
         public void Refresh()
         {
             this.Portfolio.Refresh();

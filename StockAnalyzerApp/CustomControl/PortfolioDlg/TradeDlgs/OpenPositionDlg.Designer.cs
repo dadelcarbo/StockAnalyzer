@@ -40,6 +40,7 @@
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.openTradeUserControl1;
+            this.elementHost1.Child.MouseEnter += Child_MouseEnter;
             // 
             // OpenPositionDlg
             // 

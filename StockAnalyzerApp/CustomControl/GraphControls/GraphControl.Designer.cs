@@ -32,7 +32,7 @@
          // 
          // GraphControl
          // 
-         this.Cursor = System.Windows.Forms.Cursors.Cross;
+         this.Cursor = null;
          this.Name = "GraphControl";
          this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
          this.MouseEnter += new System.EventHandler(this.Form1_MouseEnter);

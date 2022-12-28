@@ -172,7 +172,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Brush redBrush = new SolidBrush(Color.FromArgb(30, Color.Red));
         static protected Brush textBrush = Brushes.Black;
 
-        static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Solid, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static protected Pen entryOrderPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
         static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Brush orderAreaBrush => new SolidBrush(Color.AliceBlue);

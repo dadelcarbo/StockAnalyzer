@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
@@ -160,8 +161,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             using (MethodLogger ml = new MethodLogger(this))
             {
                 // Draw order management area
-                var area = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
-                aGraphic.FillRectangle(orderAreaBrush, area);
+                var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
+                aGraphic.FillRectangle(orderAreaBrush, orderArea);
 
                 #region Draw Grid
 
@@ -644,7 +645,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 // Draw main frame
                 aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
-                aGraphic.DrawLine(framePen, area.X, area.Y, area.X, area.Bottom);
+                aGraphic.DrawLine(framePen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
 
                 // Display values and dates
                 var lastValue = closeCurveType.DataSerie[EndIndex];
@@ -1212,7 +1213,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var openedOrder = this.Portfolio.OpenOrders?.Where(o => o.StockName.ToUpper() == name && o.BuySell == "Buy").FirstOrDefault();
             if (openedOrder != null)
             {
-                this.DrawOpenedOrder(graphic, entryPen, openedOrder.Value, openedOrder.OrderType == "Limit", true);
+                this.DrawOpenedOrder(graphic, entryOrderPen, this.EndIndex, openedOrder.Value, true);
+                if (openedOrder.StopValue != 0)
+                    this.DrawOpenedOrder(graphic, stopPen, this.EndIndex - 10, openedOrder.StopValue, true);
             }
         }
 
@@ -1342,37 +1345,45 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 mouseValuePoint = FindClosestExtremum(mouseValuePoint);
 
             // Check Order area
-            if (mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
+            if (mouseOverThis && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
-                if (mouseOverThis && (key & Keys.Control) != 0 && this.ShowPositions && this.Portfolio != null)
+                if ((key & Keys.Control) != 0)
                 {
-                    var pen = trailStopPen;
                     var trailStopValue = mouseValuePoint.Y;
-                    var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
-                    if (position != null)
+                    if (IsBuying)
                     {
-                        trailStopValue = Math.Max(trailStopValue, position.Stop);
+                        this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, trailStopValue, true);
                     }
                     else
                     {
-                        if (!this.IsBuying)
+                        var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                        if (position != null)
                         {
-                            return;
+                            this.DrawStop(foregroundGraphic, trailStopPen, this.StartIndex, trailStopValue, true);
+                            this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, trailStopValue, true);
+                            this.PaintForeground();
                         }
-                        pen = stopPen;
                     }
-                    trailStopValue = Math.Min(trailStopValue, serie.LastValue.LOW);
-
-                    this.DrawStop(foregroundGraphic, pen, this.StartIndex, trailStopValue, true);
-                    this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, trailStopValue, true);
-                    this.PaintForeground();
                 }
                 else
                 {
+                    if (this.IsBuying && openTradeViewModel != null)
+                    {
+                        if (openTradeViewModel.StopValue != 0)
+                            this.DrawOpenedOrder(this.foregroundGraphic, stopPen, this.EndIndex - 10, openTradeViewModel.StopValue, true);
+                        this.DrawOpenedOrder(this.foregroundGraphic, entryOrderPen, this.EndIndex, openTradeViewModel.EntryValue, true);
+                    }
                     DrawMouseCross(mousePoint, true, true, this.axisDashPen);
                     this.PaintForeground();
                 }
                 return;
+            }
+
+            if (this.IsBuying && openTradeViewModel != null)
+            {
+                if (openTradeViewModel.StopValue != 0)
+                    this.DrawOpenedOrder(this.foregroundGraphic, stopPen, this.EndIndex - 10, openTradeViewModel.StopValue, true);
+                this.DrawOpenedOrder(this.foregroundGraphic, entryOrderPen, this.EndIndex, openTradeViewModel.EntryValue, true);
             }
             int index = Math.Max(Math.Min((int)Math.Round(mouseValuePoint.X), this.EndIndex), this.StartIndex);
             bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
@@ -1388,7 +1399,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if ((key & Keys.Control) != 0)
                 {
-                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, true);
+                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, !this.IsBuying);
                 }
                 else
                 {
@@ -1532,7 +1543,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             #endregion
-            #endregion
 
             this.PaintForeground();
         }
@@ -1569,9 +1579,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         {
                             this.StopChanged(trailStopValue);
                         }
-                        return;
                     }
                 }
+                return;
             }
 
             // Allow clicking in the margin for usability purpose
@@ -2305,9 +2315,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (showText)
                 this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
-        protected void DrawOpenedOrder(Graphics graph, Pen pen, float value, bool isLimit, bool showText)
+        protected void DrawOpenedOrder(Graphics graph, Pen pen, float index, float value, bool showText)
         {
-            var p1 = this.GetScreenPointFromValuePoint(this.EndIndex, value);
+            var p1 = this.GetScreenPointFromValuePoint(index, value);
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
             graph.DrawLine(pen, p1, p2);
             var points = GetStopMarqueePoints(value);
@@ -2315,6 +2325,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (showText)
                 this.DrawString(graph, value.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
+        #endregion
         #region Geometric Functions
         private PointF FindClosestExtremum(PointF mouseValuePoint)
         {
@@ -2422,6 +2433,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             return 0;
         }
+        private OpenTradeViewModel openTradeViewModel = null;
         void buyMenu_Click(object sender, System.EventArgs e)
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
@@ -2434,7 +2446,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             StockAnalyzerForm.MainFrame.Portfolio.EvaluateOpenedPositions();
             var portfolioValue = Portfolio.TotalValue;
-            var openTradeViewModel = new OpenTradeViewModel
+            openTradeViewModel = new OpenTradeViewModel
             {
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration.Duration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
@@ -2444,6 +2456,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Themes = StockAnalyzerForm.MainFrame.Themes,
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
+            openTradeViewModel.OrdersChanged += OpenTradeViewModel_OrdersChanged;
             openTradeViewModel.CalculatePositionSize();
 
             this.IsBuying = true;
@@ -2459,7 +2472,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     this.BackgroundDirty = true;
                     PaintGraph();
                 }
+                this.openTradeViewModel.OrdersChanged -= OpenTradeViewModel_OrdersChanged;
+                this.openTradeViewModel = null;
             };
+        }
+
+        private void OpenTradeViewModel_OrdersChanged()
+        {
+            if (openTradeViewModel.StopValue != 0)
+                this.DrawOpenedOrder(this.foregroundGraphic, stopPen, this.StartIndex, openTradeViewModel.StopValue, true);
+            this.DrawOpenedOrder(this.foregroundGraphic, entryOrderPen, this.EndIndex, openTradeViewModel.EntryValue, true);
+
+            this.PaintForeground();
         }
 
         void sellMenu_Click(object sender, System.EventArgs e)
