@@ -1035,7 +1035,7 @@ namespace StockAnalyzer.StockPortfolio
                     MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
-                decimal stop = RoundToTickSize(stopValue, instrumentDetail);
+                decimal stop = instrumentDetail.RoundToTickSize(stopValue);
 
                 var orderService = new OrderService();
                 OrderResponse orderResponse = null;
@@ -1045,11 +1045,11 @@ namespace StockAnalyzer.StockPortfolio
                         orderResponse = orderService.BuyMarketOrder(account, instrument, qty, stop);
                         break;
                     case OrderType.Limit:
-                        decimal limit = RoundToTickSize(orderValue, instrumentDetail);
+                        decimal limit = instrumentDetail.RoundToTickSize(orderValue);
                         orderResponse = orderService.BuyLimitOrder(account, instrument, qty, limit, stop);
                         break;
                     case OrderType.Threshold:
-                        decimal threshold = RoundToTickSize(orderValue, instrumentDetail);
+                        decimal threshold = instrumentDetail.RoundToTickSize(orderValue);
                         orderResponse = orderService.BuyTresholdOrder(account, instrument, qty, threshold, stop);
                         break;
                     default:
@@ -1096,11 +1096,11 @@ namespace StockAnalyzer.StockPortfolio
                         orderResponse = orderService.SellMarketOrder(account, instrument, qty);
                         break;
                     case OrderType.Limit:
-                        decimal limit = RoundToTickSize(orderValue, instrumentDetail);
+                        decimal limit = instrumentDetail.RoundToTickSize(orderValue);
                         orderResponse = orderService.SellLimitOrder(account, instrument, qty, limit);
                         break;
                     case OrderType.Threshold:
-                        decimal threshold = RoundToTickSize(orderValue, instrumentDetail);
+                        decimal threshold = instrumentDetail.RoundToTickSize(orderValue);
                         orderResponse = orderService.SellStopOrder(account, instrument, qty, threshold);
                         break;
                     default:
@@ -1137,7 +1137,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 var orderService = new OrderService();
-                decimal value = RoundToTickSize(exitValue, instrumentDetail);
+                decimal value = instrumentDetail.RoundToTickSize(exitValue);
                 OrderResponse orderResponse = null;
                 if (string.IsNullOrEmpty(position.TrailStopId))
                 {
@@ -1148,10 +1148,12 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     orderResponse = orderService.PatchOrder(account, instrument, position.TrailStopId, SaxoOrderType.StopIfTraded, "Sell", position.EntryQty, value);
                 }
-                position.TrailStop = (float)value;
-                if (position.Stop == 0) { position.Stop = (float)value; }
-                this.Serialize();
-
+                if (!string.IsNullOrEmpty(orderResponse?.OrderId))
+                {
+                    position.TrailStop = (float)value;
+                    if (position.Stop == 0) { position.Stop = (float)value; }
+                    this.Serialize();
+                }
                 return orderResponse?.OrderId;
             }
             catch (Exception ex)
@@ -1160,26 +1162,35 @@ namespace StockAnalyzer.StockPortfolio
             }
             return null;
         }
-        private decimal RoundToTickSize(float value, InstrumentDetails instrumentDetail)
+        public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
         {
-            var tickSize = instrumentDetail.TickSize;
-            if (instrumentDetail.TickSizeScheme != null)
+            try
             {
-                tickSize = instrumentDetail.TickSizeScheme.Elements[0].TickSize;
-                int i = 1;
-                while (i < instrumentDetail.TickSizeScheme.Elements.Length && value > instrumentDetail.TickSizeScheme.Elements[i - 1].HighPrice)
-                {
-                    tickSize = instrumentDetail.TickSizeScheme.Elements[i].TickSize;
-                    i++;
-                }
-                if (i == 1)
-                {
-                    tickSize = instrumentDetail.TickSizeScheme.DefaultTickSize;
-                }
-            }
+                if (!this.SaxoLogin())
+                    return null;
 
-            return decimal.Round((decimal)value / tickSize) * tickSize;
+                var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
+                if (instrument == null)
+                {
+                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
+                if (instrumentDetail == null)
+                {
+                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+                return instrumentDetail;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
         }
+
         #endregion
     }
 }

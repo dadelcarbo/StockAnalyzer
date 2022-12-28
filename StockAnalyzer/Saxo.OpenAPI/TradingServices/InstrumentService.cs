@@ -137,6 +137,30 @@ namespace Saxo.OpenAPI.TradingServices
         public string TradingSignals { get; set; }
         public string TradingStatus { get; set; }
         public long Uic { get; set; }
+        public decimal RoundToTickSize(float value)
+        {
+            var tickSize = this.GetTickSize(value);
+            return decimal.Round((decimal)value / tickSize) * tickSize;
+        }
+        public decimal GetTickSize(float value)
+        {
+            var tickSize = this.TickSize;
+            if (this.TickSizeScheme != null)
+            {
+                tickSize = this.TickSizeScheme.Elements[0].TickSize;
+                int i = 1;
+                while (i < this.TickSizeScheme.Elements.Length && value > this.TickSizeScheme.Elements[i - 1].HighPrice)
+                {
+                    tickSize = this.TickSizeScheme.Elements[i].TickSize;
+                    i++;
+                }
+                if (i == 1 && this.TickSizeScheme.Elements.Length == 1)
+                {
+                    tickSize = this.TickSizeScheme.DefaultTickSize;
+                }
+            }
+            return tickSize;
+        }
     }
 
     public class Format

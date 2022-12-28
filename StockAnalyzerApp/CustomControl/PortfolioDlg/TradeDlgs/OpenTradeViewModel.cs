@@ -4,7 +4,6 @@ using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -94,10 +93,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public StockBarDuration BarDuration { get; set; }
         public string Theme { get; set; }
         public string EntryComment { get; set; }
-        public static IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
-        public static IList<int> LineBreaks => new List<int> { 0, 1, 2, 3, 4, 5 };
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }
+
+        #region Tick Size Management
+        private float smallChange = 0.01f;
+        public float SmallChange { get { return smallChange; } set { smallChange = value; this.OnPropertyChanged("SmallChange"); this.OnPropertyChanged("LargeChange"); this.OnPropertyChanged("NbDecimals"); } }
+        public float LargeChange => smallChange * 10;
+        public int NbDecimals => Math.Max(0, (int)Math.Ceiling(Math.Round(-Math.Log10(this.SmallChange), 4)));
+        #endregion
 
         public bool IsTradeRisky => PortfolioRisk > this.Portfolio.MaxRisk;
         public bool IsPortfolioRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
@@ -114,11 +118,24 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
             this.EntryQty = qty;
         }
+        private void CalulcateTickSize()
+        {
+            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockSerie);
+            if (instrumentDetails == null)
+            {
+                return;
+            }
+
+            this.SmallChange = (float)instrumentDetails.GetTickSize(this.StopValue);
+            this.StopValue = (float)instrumentDetails.RoundToTickSize(this.StopValue);
+            this.EntryValue = (float)instrumentDetails.RoundToTickSize(this.EntryValue);
+        }
         public void Refresh()
         {
             this.Portfolio.Refresh();
             this.OnPropertyChanged("Portfolio");
             this.CalculatePositionSize();
+            this.CalulcateTickSize();
         }
     }
 }

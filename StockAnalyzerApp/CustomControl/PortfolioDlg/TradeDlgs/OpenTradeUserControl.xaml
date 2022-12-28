@@ -49,9 +49,10 @@
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>
-                        <telerik:RadNumericUpDown Value="{Binding EntryQty}" NumberDecimalDigits="0" Width="50" HorizontalAlignment="Left"/>
+                        <telerik:RadNumericUpDown Value="{Binding EntryQty}" NumberDecimalDigits="0" Width="50" HorizontalAlignment="Left" SmallChange="1" LargeChange="10"/>
                         <Label Width="45" Content="Value:" Margin="15,0,0,0"/>
-                        <TextBox Text="{Binding EntryValue}" IsEnabled="{Binding IsValueEditable}" Width="80" HorizontalAlignment="Left" Padding="4"/>
+                        <telerik:RadNumericUpDown Value="{Binding EntryValue}" IsEnabled="{Binding IsValueEditable}" Width="80" HorizontalAlignment="Left" Padding="4"
+                                                  NumberDecimalDigits="{Binding NbDecimals}" SmallChange="{Binding SmallChange}" LargeChange="{Binding LargeChange}" Minimum="0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
                         <RadioButton x:Name="marketOrderCbx" Content="Market" IsChecked="{Binding MarketOrder}" Padding="4" VerticalContentAlignment="Center" />
@@ -70,7 +71,8 @@
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="82">Stop:</Label>
-                        <telerik:RadNumericUpDown Value="{Binding StopValue}" NumberDecimalDigits="2" Width="80" HorizontalAlignment="Left" SmallChange="0.01" Minimum="0"/>
+                        <telerik:RadNumericUpDown Value="{Binding StopValue}" Width="80" HorizontalAlignment="Left" 
+                                                  NumberDecimalDigits="{Binding NbDecimals}" SmallChange="{Binding SmallChange}" LargeChange="{Binding LargeChange}" Minimum="0"/>
                     </StackPanel>
 
                     <StackPanel Margin="1" Orientation="Horizontal">

@@ -29,10 +29,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 return;
             }
 
-            string orderId = null; // this.TradeViewModel.Portfolio.SaxoUpdateStopOrder(this.TradeViewModel.Position, this.TradeViewModel.ExitValue);
+            string orderId = null;
             if (string.IsNullOrEmpty(this.TradeViewModel.Position?.TrailStopId))
             {
                 orderId = this.TradeViewModel.Portfolio.SaxoSellOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.ExitQty);
+            }
+            else
+            {
+                orderId = this.TradeViewModel.Portfolio.SaxoUpdateStopOrder(this.TradeViewModel.Position, this.TradeViewModel.ExitValue);
             }
             if (string.IsNullOrEmpty(orderId))
             {
