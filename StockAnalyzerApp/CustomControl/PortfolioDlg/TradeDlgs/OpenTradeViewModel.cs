@@ -59,15 +59,29 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             {
                 if (entryValue != value)
                 {
-                    entryValue = value;
+                    if (LimitOrder)
+                    {
+                        entryValue = Math.Min(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                    }
+                    else
+                    {
+                        if (ThresholdOrder)
+                        {
+                            entryValue = Math.Max(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                        }
+                        else
+                        {
+                            this.entryValue = this.StockSerie.LastValue.CLOSE;
+                        }
+                    }
                     OnEntryChanged();
                     this.OrdersChanged?.Invoke();
                 }
             }
         }
-        public bool MarketOrder { get => marketOrder; set { marketOrder = value; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool LimitOrder { get => limitOrder; set { limitOrder = value; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool MarketOrder { get => marketOrder; set { marketOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.CLOSE; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool LimitOrder { get => limitOrder; set { limitOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.LOW; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
         public bool IsValueEditable => !this.marketOrder;
 
         public float EntryCost => EntryQty * EntryValue + Fee;
@@ -79,7 +93,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             {
                 if (stopValue != value)
                 {
-                    stopValue = value;
+                    stopValue = Math.Min(value, this.stopValue = this.StockSerie.LastValue.CLOSE);
                     OnEntryChanged();
                     this.OrdersChanged?.Invoke();
                 }

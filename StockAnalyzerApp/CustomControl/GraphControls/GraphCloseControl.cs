@@ -2448,10 +2448,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var portfolioValue = Portfolio.TotalValue;
             openTradeViewModel = new OpenTradeViewModel
             {
+                StockSerie = this.serie,
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration.Duration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
-                StockSerie = this.serie,
                 Portfolio = this.Portfolio,
                 Themes = StockAnalyzerForm.MainFrame.Themes,
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
