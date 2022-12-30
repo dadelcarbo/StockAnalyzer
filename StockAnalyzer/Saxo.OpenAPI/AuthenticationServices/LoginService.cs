@@ -21,7 +21,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             {
                 if (CurrentSession == null)
                 {
-                    throw new SaxoAPIException("Session not intialized, log in first");
+                    throw new LoginException("Session not intialized, log in first");
                 }
                 return CurrentSession.App;
             }
@@ -32,7 +32,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             {
                 if (CurrentSession == null)
                 {
-                    throw new SaxoAPIException("Session now intialized, log in first");
+                    throw new LoginException("Session now intialized, log in first");
                 }
                 return CurrentSession.Token;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using System;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices

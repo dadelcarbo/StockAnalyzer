@@ -32,12 +32,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         }
         protected override void OnMouseEnter(EventArgs e)
         {
-            Console.WriteLine("override void OnMouseEnter");
             this.TradeViewModel.RaiseOrdersChanged();
         }
         private void Child_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Console.WriteLine("override void Child_MouseEnter");
             this.TradeViewModel.RaiseOrdersChanged();
         }
     }

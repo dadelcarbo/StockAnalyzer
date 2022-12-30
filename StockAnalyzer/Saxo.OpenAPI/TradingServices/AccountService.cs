@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using System;
 using System.Net.Http;
 
@@ -66,7 +67,7 @@ namespace Saxo.OpenAPI.TradingServices
                     return null;
                 return JsonConvert.DeserializeObject<ClosedPositions>(content);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }

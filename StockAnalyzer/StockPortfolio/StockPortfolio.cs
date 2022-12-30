@@ -872,7 +872,7 @@ namespace StockAnalyzer.StockPortfolio
                     position.EntryQty = (int)saxoPosition.PositionBase.Amount;
                 }
 
-                if (untreatedPositions.Count > 0)
+                if (untreatedPositions.Count > 0 && !this.IsSaxoSimu)
                 {
                     var closedPositions = accountService.GetClosedPositions(account)?.Data;
                     if (closedPositions != null)

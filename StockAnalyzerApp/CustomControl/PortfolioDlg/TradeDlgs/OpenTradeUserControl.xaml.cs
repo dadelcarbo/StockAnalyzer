@@ -61,7 +61,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             }
             if (string.IsNullOrEmpty(orderId))
             {
-                MessageBox.Show("Order non executed !", "Saxo Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             var openedOrder = this.TradeViewModel.Portfolio.OpenOrders.FirstOrDefault(o => o.Id == long.Parse(orderId));

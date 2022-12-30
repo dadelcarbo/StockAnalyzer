@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using System;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices
@@ -178,14 +179,7 @@ namespace Saxo.OpenAPI.TradingServices
 
         private OrderResponse PostOrder(OrderRequest order)
         {
-            try
-            {
-                return Post<OrderResponse>("trade/v2/orders", order);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
-            }
+            return Post<OrderResponse>("trade/v2/orders", order);
         }
 
         public dynamic GetOrder(long orderId, string clientKey)

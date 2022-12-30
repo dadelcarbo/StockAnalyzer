@@ -27,7 +27,6 @@ namespace Saxo.OpenAPI.AuthenticationServices
         protected T Send<T>(HttpRequestMessage request)
         {
             string content = string.Empty;
-
             try
             {
                 using (var httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, UseCookies = false }))

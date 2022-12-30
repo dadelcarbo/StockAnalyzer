@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Saxo.OpenAPI\AuthenticationServices\BaseService.cs" />
+    <Compile Include="Saxo.OpenAPI\AuthenticationServices\LoginException.cs" />
     <Compile Include="Saxo.OpenAPI\AuthenticationServices\LoginHelpers.cs" />
     <Compile Include="Saxo.OpenAPI\AuthenticationServices\LoginService.cs" />
     <Compile Include="Saxo.OpenAPI\AuthenticationServices\LoginSession.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Saxo.OpenAPI\TradingServices\ClientService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\InstrumentService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\OrderService.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\SaxoApiException.cs" />
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAAgent.cs" />
     <Compile Include="StockAgent\Agents\PortfolioAgent.cs" />

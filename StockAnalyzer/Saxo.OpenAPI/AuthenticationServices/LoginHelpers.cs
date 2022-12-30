@@ -8,12 +8,6 @@ using System.Net.Sockets;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
-    class SaxoAPIException : Exception
-    {
-        public SaxoAPIException(string msg, Exception ex = null) : base(msg, ex)
-        {
-        }
-    }
     public static class LoginHelpers
     {
         public static Token GoLogin(App app)
@@ -50,7 +44,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             }
             catch (Exception ex)
             {
-                throw new SaxoAPIException("Exception occured while loging in", ex);
+                throw new LoginException("Exception occured while loging in", ex);
             }
         }
 
