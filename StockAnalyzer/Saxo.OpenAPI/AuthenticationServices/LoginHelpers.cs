@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
@@ -94,7 +95,20 @@ namespace Saxo.OpenAPI.AuthenticationServices
             HttpListenerContext httpContext = null;
             try
             {
-                httpContext = listener.GetContext();
+                int timeout = 30000;
+                var task = listener.GetContextAsync();
+                if (Task.WhenAny(task, Task.Delay(timeout)).Result == task)
+                {
+                    // task completed within timeout
+                    httpContext = task.Result;
+                }
+                else
+                {
+                    // timeout logic
+                    return null;
+                }
+
+                //httpContext = listener.GetContextAsync().Result;
                 foreach (var item in httpContext.Request.QueryString)
                 {
                     StockLog.Write($"Key: {item} Value:{httpContext.Request.QueryString[item.ToString()]}");

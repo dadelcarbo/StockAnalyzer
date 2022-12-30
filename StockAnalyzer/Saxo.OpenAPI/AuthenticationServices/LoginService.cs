@@ -110,6 +110,13 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     }
                     token.Serialize(actualClientId);
                 }
+                else
+                {
+                    MessageBox.Show("Saxo connection timeout", "Saxo Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    Sessions.Remove(session);
+                    CurrentSession = null;
+                }
                 return CurrentSession;
             }
             catch (Exception ex)
