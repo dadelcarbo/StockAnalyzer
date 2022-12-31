@@ -116,6 +116,14 @@ namespace StockAnalyzer.StockPortfolio
             string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
             if (!Directory.Exists(archiveDirectory))
                 Directory.CreateDirectory(archiveDirectory);
+            else
+            {
+                var dateLimit = DateTime.Today.AddDays(-5);
+                foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
+                {
+                    File.Delete(file);
+                }
+            }
             if (File.Exists(filepath))
             {
                 var fileDate = File.GetLastWriteTime(filepath);
