@@ -39,6 +39,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
             this.OnPropertyChanged("IsTradeRisky");
             this.OnPropertyChanged("IsPortfolioRisky");
+            this.OnPropertyChanged("IsExceedingCash");
         }
         public int EntryQty
         {
@@ -67,7 +68,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                     {
                         if (ThresholdOrder)
                         {
-                            entryValue = Math.Max(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                            // Find long reentry
+                            entryValue = this.LongReentry != 0 ? this.LongReentry : entryValue = Math.Max(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                            this.LongReentry = 0;
                         }
                         else
                         {
@@ -99,6 +102,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 }
             }
         }
+        public float LongReentry { get; set; }
         public float Risk => 1 + (this.PortfolioRisk - this.Portfolio.MaxRisk) / this.Portfolio.MaxRisk;
         public float TradeRisk => (EntryValue - StopValue) / EntryValue;
         public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
@@ -119,6 +123,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         public bool IsTradeRisky => PortfolioRisk > this.Portfolio.MaxRisk;
         public bool IsPortfolioRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
+        public bool IsExceedingCash => this.Portfolio.Balance < this.EntryCost;
 
         public void OnStopValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
         {

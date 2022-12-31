@@ -25,6 +25,14 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style  x:Key="ExceedingCashStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsExceedingCash}" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <GroupBox Header="Portfolio">
@@ -61,7 +69,7 @@
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="44">Cost:</Label>
-                        <TextBox Text="{Binding EntryCost, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"></TextBox>
+                        <TextBox Text="{Binding EntryCost, Mode=OneWay, StringFormat=C2}" Style="{DynamicResource ExceedingCashStyle}" Width="70" HorizontalAlignment="Left" Padding="4" IsEnabled="False"></TextBox>
                         <Label Width="44">Fee:</Label>
                         <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"/>
                     </StackPanel>

@@ -2433,6 +2433,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             return 0;
         }
+        float FindLongReentryValueFromTheme()
+        {
+            if (CurveList?.TrailStop?.Series[0] != null && CurveList.TrailStop.Series[0].Count > 1)
+            {
+
+                if (!float.IsNaN(CurveList.TrailStop.Series[2][this.EndIndex]))
+                {
+                    return CurveList.TrailStop.Series[2][this.EndIndex];
+                }
+            }
+            return 0;
+        }
         private OpenTradeViewModel openTradeViewModel = null;
         void buyMenu_Click(object sender, System.EventArgs e)
         {
@@ -2452,6 +2464,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration.Duration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
+                LongReentry = FindLongReentryValueFromTheme(),
                 Portfolio = this.Portfolio,
                 Themes = StockAnalyzerForm.MainFrame.Themes,
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme

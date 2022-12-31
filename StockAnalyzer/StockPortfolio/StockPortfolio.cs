@@ -959,7 +959,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else // Position on this stock doen't exists, create a new one
                         {
-                            this.Positions.Add(new StockPosition
+                            position = new StockPosition
                             {
                                 Id = orderId,
                                 Uic = closedOrder.Uic,
@@ -968,7 +968,16 @@ namespace StockAnalyzer.StockPortfolio
                                 StockName = tradeOperation.StockName,
                                 ISIN = tradeOperation.ISIN,
                                 EntryValue = closedOrder.Price
-                            });
+                            };
+                            this.Positions.Add(position);
+                            var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Uic == closedOrder.Uic);
+                            if (openedOrder != null)
+                            {
+                                position.BarDuration = openedOrder.BarDuration;
+                                position.Theme = openedOrder.Theme;
+                                position.EntryComment = openedOrder.EntryComment;
+                                this.OpenOrders.Remove(openedOrder);
+                            }
                         }
                     }
                     break;
