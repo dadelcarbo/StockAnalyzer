@@ -6,7 +6,6 @@ using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {

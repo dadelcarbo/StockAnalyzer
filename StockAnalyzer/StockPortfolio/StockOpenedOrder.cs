@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
 using System;
-using System.Collections.Generic;
 
 namespace StockAnalyzer.StockPortfolio
 {
@@ -22,6 +20,8 @@ namespace StockAnalyzer.StockPortfolio
 
         public int Qty { get; set; }
         public float Value { get; set; }
+        [JsonIgnore]
+        public float Amount => Qty * Value;
         public float StopValue { get; set; }
         public DateTime CreationDate { get; set; }
         public string Status { get; set; }

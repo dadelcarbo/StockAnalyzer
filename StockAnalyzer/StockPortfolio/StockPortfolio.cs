@@ -3,7 +3,6 @@ using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -11,10 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -780,8 +776,13 @@ namespace StockAnalyzer.StockPortfolio
                 foreach (var openedOrder in openedOrders.Data.Where(o => o.BuySell == "Buy"))
                 {
                     long orderId = long.Parse(openedOrder.OrderId);
-                    if (this.OpenOrders.Any(o => o.Id == orderId))
+                    StockOpenedOrder order = this.OpenOrders.FirstOrDefault(o => o.Id == orderId);
+                    if (order != null)
+                    {
+                        order.Value = openedOrder.Price;
+                        order.Qty = (int)openedOrder.Amount;
                         continue;
+                    }
                     StockSerie stockSerie = GetStockSerieFromUic(openedOrder.Uic);
                     if (stockSerie == null)
                     {
@@ -790,7 +791,7 @@ namespace StockAnalyzer.StockPortfolio
                     }
                     var instrument = instrumentService.GetInstrumentById(openedOrder.Uic);
                     StockLog.Write($"OrderId:{openedOrder.OrderId} {openedOrder.OpenOrderType} {instrument?.Symbol} {openedOrder.RelatedPositionId} {openedOrder.Status}");
-                    var order = new StockOpenedOrder
+                    order = new StockOpenedOrder
                     {
                         Id = orderId,
                         StockName = stockSerie.StockName,
