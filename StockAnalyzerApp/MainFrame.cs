@@ -588,10 +588,10 @@ namespace StockAnalyzerApp
                     reportDate = DateTime.Parse(File.ReadAllText(fileName));
                 }
                 cac40.BarDuration = StockBarDuration.Daily;
-                if (reportDate < cac40.Keys.Last())
+                if (reportDate < cac40.LastValue.DATE)
                 {
                     generateDailyReportToolStripBtn_Click(null, null);
-                    File.WriteAllText(fileName, cac40.Keys.Last().ToString());
+                    File.WriteAllText(fileName, cac40.LastValue.DATE.ToString());
                 }
             }
 
@@ -993,7 +993,7 @@ namespace StockAnalyzerApp
                                 }
                                 else
                                 {
-                                    if (stockSerie.Values.Last().CLOSE < 1.0f)
+                                    if (stockSerie.LastValue.CLOSE < 1.0f)
                                     {
                                         continue;
                                     }
@@ -3084,13 +3084,13 @@ namespace StockAnalyzerApp
 
                 var indexSerie = this.StockDictionary["CAC40"];
                 indexSerie.BarDuration = alertDef.BarDuration;
-                DateTime lastDate = indexSerie.Keys.Last();
+                DateTime lastDate = indexSerie.LastValue.DATE;
                 indexSerie.BarDuration = StockBarDuration.Daily;
 
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
-                    if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.Values.Last().CLOSE > 1.0f)
+                    if (stockSerie.Initialise() && stockSerie.Count > 100 && stockSerie.LastValue.CLOSE > 1.0f)
                     {
                         stockSerie.BarDuration = alertDef.BarDuration;
                         if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
@@ -3100,7 +3100,7 @@ namespace StockAnalyzerApp
                                 continue;
                             }
                         }
-                        if (stockSerie.Keys.Last() != lastDate && !stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
+                        if (stockSerie.LastValue.DATE != lastDate && !stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
                             continue;
 
                         var values = stockSerie.GetValues(alertDef.BarDuration);

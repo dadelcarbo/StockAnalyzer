@@ -139,7 +139,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -152,7 +152,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -246,7 +246,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -259,7 +259,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -348,7 +348,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -361,7 +361,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -450,7 +450,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -463,7 +463,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -558,7 +558,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -571,7 +571,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -665,7 +665,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -678,7 +678,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -766,8 +766,8 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                val = breadthSerie.Values.Last().CLOSE;
+                lastBreadthDate = breadthSerie.LastValue.DATE;
+                val = breadthSerie.LastValue.CLOSE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -780,7 +780,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -862,8 +862,8 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                val = breadthSerie.Values.Last().CLOSE;
+                lastBreadthDate = breadthSerie.LastValue.DATE;
+                val = breadthSerie.LastValue.CLOSE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -876,7 +876,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -986,8 +986,8 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                val = breadthSerie.Values.Last().CLOSE;
+                lastBreadthDate = breadthSerie.LastValue.DATE;
+                val = breadthSerie.LastValue.CLOSE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1000,7 +1000,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1186,8 +1186,8 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                val = breadthSerie.Values.Last().CLOSE;
+                lastBreadthDate = breadthSerie.LastValue.DATE;
+                val = breadthSerie.LastValue.CLOSE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1200,7 +1200,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1302,8 +1302,8 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
-                val = breadthSerie.Values.Last().CLOSE;
+                lastBreadthDate = breadthSerie.LastValue.DATE;
+                val = breadthSerie.LastValue.CLOSE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1316,7 +1316,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1405,7 +1405,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1418,7 +1418,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1508,7 +1508,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1521,7 +1521,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1617,7 +1617,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1630,7 +1630,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1727,7 +1727,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1740,7 +1740,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }
@@ -1836,7 +1836,7 @@ namespace StockAnalyzer.StockClasses
             // Check if serie has been already generated
             if (breadthSerie.Count > 0)
             {
-                lastBreadthDate = breadthSerie.Keys.Last();
+                lastBreadthDate = breadthSerie.LastValue.DATE;
                 if (lastIndiceDate <= lastBreadthDate)
                 {
                     // The breadth serie is up to date
@@ -1849,7 +1849,7 @@ namespace StockAnalyzer.StockClasses
                     if (lastIndiceDate.Date == lastBreadthDate.Date)
                     {
                         breadthSerie.RemoveLast();
-                        lastBreadthDate = breadthSerie.Keys.Last();
+                        lastBreadthDate = breadthSerie.LastValue.DATE;
                     }
                 }
             }

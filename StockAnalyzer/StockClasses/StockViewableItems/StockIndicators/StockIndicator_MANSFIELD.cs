@@ -28,7 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var indexSerie = StockDictionary.Instance[this.parameters[1] as string];
             if (!indexSerie.Initialise())
                 return;
-            this.eventSeries[2][this.eventSeries[2].Count - 1] = (stockSerie.BarDuration == BarDuration.Daily && indexSerie.Keys.Last() != stockSerie.Keys.Last());
+            this.eventSeries[2][this.eventSeries[2].Count - 1] = (stockSerie.BarDuration == BarDuration.Daily && indexSerie.LastValue.DATE != stockSerie.LastValue.DATE);
             var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(indexSerie, stockSerie.BarDuration);
 
             var rpSerie = (closeSerie / indexCloseSerie) * 100f;

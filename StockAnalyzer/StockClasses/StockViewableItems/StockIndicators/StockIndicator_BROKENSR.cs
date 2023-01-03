@@ -62,9 +62,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
          {
             this.eventSeries[2][i] = true;
          }
-         this.eventSeries[2][closeSerie.Count - 1] = stockSerie.Values.Last().IsComplete;
+         this.eventSeries[2][closeSerie.Count - 1] = stockSerie.LastValue.IsComplete;
 
-         if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration)) return;
+         if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+                return;
 
          // Detecting events
          for (int i = 2; i < closeSerie.Count; i++)

@@ -268,7 +268,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         this.BuyEnabled = false;
                         this.SellEnabled = true;
 
-                        var date = replaySerie.Keys.Last();
+                        var date = replaySerie.LastValue.DATE;
                         int qty = 2;
                         var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
                         var value = Math.Max(this.Stop, lastValue.OPEN);
@@ -356,7 +356,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.BuyEnabled = false;
             this.SellEnabled = true;
 
-            var date = replaySerie.Keys.Last();
+            var date = replaySerie.LastValue.DATE;
             int qty = 2;
             var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
             StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));

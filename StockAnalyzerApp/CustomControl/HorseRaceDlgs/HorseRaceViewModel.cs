@@ -230,7 +230,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
                 if (stockSerie.Initialise())
                 {
                     stockSerie.BarDuration = this.barDuration;
-                    positions.Add(new StockPosition() { Variation = stockSerie.Values.Last().VARIATION * 100f, StockSerie = stockSerie });
+                    positions.Add(new StockPosition() { Variation = stockSerie.LastValue.VARIATION * 100f, StockSerie = stockSerie });
                 }
             }
             this.StockPositions = positions.OrderByDescending(p => p.Indicator2);

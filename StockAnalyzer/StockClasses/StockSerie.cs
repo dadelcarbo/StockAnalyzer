@@ -3522,7 +3522,7 @@ namespace StockAnalyzer.StockClasses
             FloatSerie otherFloatSerie = otherSerie.GetSerie(StockDataType.CLOSE);
             float previousValue = otherFloatSerie[0];
             DateTime startDate = otherSerie.Keys.First();
-            DateTime lastDate = otherSerie.Keys.Last();
+            DateTime lastDate = otherSerie.LastValue.DATE;
 
             int i = 0;
             foreach (StockDailyValue dailyValue in this.Values)
@@ -3567,7 +3567,7 @@ namespace StockAnalyzer.StockClasses
             FloatSerie otherCloseSerie = otherSerie.GetSerie(StockDataType.CLOSE);
             float previousValue = otherCloseSerie[0];
             DateTime startDate = otherSerie.Keys.First();
-            DateTime lastDate = otherSerie.Keys.Last();
+            DateTime lastDate = otherSerie.LastValue.DATE;
 
             int i = 0;
             foreach (StockDailyValue dailyValue in this.Values)

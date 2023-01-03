@@ -3,6 +3,7 @@ using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -687,10 +688,20 @@ namespace StockAnalyzer.StockPortfolio
                 StockLog.Write($"Instrument: {uic} not found !");
                 return null;
             }
+
             // Find instrument in stock Dictionnary
             var symbol = instrument.Symbol.Split(':')[0];
             var stockName = instrument.Description.ToUpper().Trim();
-            return StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName);
+            var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName);
+            if (stockSerie == null)
+            {
+                if (instrument.ExchangeId == "CATS_SAXO")
+                {
+                    stockSerie = new StockSerie(instrument.Description,symbol, StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                    stockSerie.ISIN = symbol;
+                }
+            }
+            return stockSerie;
         }
 
         Account account = null;
