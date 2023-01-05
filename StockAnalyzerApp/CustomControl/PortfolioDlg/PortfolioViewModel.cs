@@ -43,7 +43,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property(null, "4-Extra")]
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
-        public List<StockTradeOperation> TradeOperations => Portfolio.TradeOperations;
+        public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.OrderByDescending(o => o.CreationDate);
+        public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
         public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
 

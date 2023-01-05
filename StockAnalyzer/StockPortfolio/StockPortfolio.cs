@@ -124,7 +124,7 @@ namespace StockAnalyzer.StockPortfolio
             if (File.Exists(filepath))
             {
                 var fileDate = File.GetLastWriteTime(filepath);
-                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd hh_mm_ss_fff") + PORTFOLIO_FILE_EXT);
+                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss_fff") + PORTFOLIO_FILE_EXT);
                 if (!File.Exists(archiveFilePath))
                 {
                     File.Move(filepath, archiveFilePath);
@@ -697,7 +697,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (instrument.ExchangeId == "CATS_SAXO")
                 {
-                    stockSerie = new StockSerie(instrument.Description,symbol, StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                    stockSerie = new StockSerie(instrument.Description, symbol, StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                     stockSerie.ISIN = symbol;
                 }
             }
@@ -812,7 +812,7 @@ namespace StockAnalyzer.StockPortfolio
                         OrderType = openedOrder.OpenOrderType,
                         Qty = (int)openedOrder.Amount,
                         Value = openedOrder.Price,
-                        CreationDate = openedOrder.OrderTime,
+                        CreationDate = openedOrder.OrderTime.ToLocalTime(),
                         Status = openedOrder.Status,
                     };
                     this.OpenOrders.Add(order);
@@ -963,6 +963,7 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             if (position.EntryDate == executionTime)
                                 return;
+
                             var openValue = (position.EntryValue * position.EntryQty + closedOrder.Price * qty) / (position.EntryQty + qty);
                             position.ExitDate = executionTime;
                             position.ExitValue = openValue;
