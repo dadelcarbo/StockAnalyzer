@@ -8,26 +8,19 @@ namespace Saxo.OpenAPI.TradingServices
     {
         public OrderResponse PatchOrder(Account account, Instrument instrument, string orderId, SaxoOrderType orderType, string buySell, int qty, decimal value)
         {
-            try
+            var patchOrder = new PatchOrder
             {
-                var patchOrder = new PatchOrder
-                {
-                    AccountKey = account.AccountKey,
-                    Uic = instrument.Identifier,
-                    AssetType = instrument.AssetType,
-                    OrderType = orderType.ToString(),
-                    BuySell = buySell,
-                    Amount = qty,
-                    OrderPrice = value,
-                    OrderId = orderId,
-                    OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
-                };
-                return Patch<OrderResponse>("trade/v2/orders", patchOrder);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
-            }
+                AccountKey = account.AccountKey,
+                Uic = instrument.Identifier,
+                AssetType = instrument.AssetType,
+                OrderType = orderType.ToString(),
+                BuySell = buySell,
+                Amount = qty,
+                OrderPrice = value,
+                OrderId = orderId,
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
+            };
+            return Patch<OrderResponse>("trade/v2/orders", patchOrder);
         }
         public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, decimal stopValue)
         {

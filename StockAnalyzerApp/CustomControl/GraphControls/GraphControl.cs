@@ -297,7 +297,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public void Deactivate(string msg, bool setInitialisedTo)
         {
-            using (MethodLogger ml = new MethodLogger(this, true, $"{msg},{setInitialisedTo}"))
+            using (MethodLogger ml = new MethodLogger(this, false, $"{msg},{setInitialisedTo}"))
             {
                 //StockLog.Write(msg);
                 this.alternateString = msg;
@@ -428,7 +428,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            using (MethodLogger ml = new MethodLogger(this, true))
+            using (MethodLogger ml = new MethodLogger(this, false))
             {
                 if (this.GetType().ToString() == "StockAnalyzerApp.CustomControl.GraphControls.GraphCloseControl")
                 {

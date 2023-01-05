@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.IdentityModel.Tokens;
 using Saxo.OpenAPI.Models;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Saxo.OpenAPI.AuthenticationServices
 {
-    public class PkceAuthService: BaseService
+    public class PkceAuthService : BaseService
     {
         private RandomStringBuilder _randomService = new RandomStringBuilder();
 
@@ -28,7 +29,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             var codeChallengeMethod = "S256";
             var codeChallenge = GetCodeChallenge(app.CodeVerifier);
 
-            return string.Format("{0}?response_type=code&client_id={1}&code_verifier={2}&redirect_uri={3}&code_challenge_method={4}&code_challenge={5}&state={6}", 
+            return string.Format("{0}?response_type=code&client_id={1}&code_verifier={2}&redirect_uri={3}&code_challenge_method={4}&code_challenge={5}&state={6}",
                             authUrl, app.AppKey, app.CodeVerifier, redirectUri, codeChallengeMethod, codeChallenge, state);
         }
 
@@ -41,12 +42,14 @@ namespace Saxo.OpenAPI.AuthenticationServices
         /// <returns></returns>
         public Token GetToken(App app, string authCode)
         {
-            // Create request
-            var tokenUrl = app.TokenEndpoint;
-            var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
+            using (MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true))
+            {
+                // Create request
+                var tokenUrl = app.TokenEndpoint;
+                var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
 
-            // https://www.developer.saxo/openapi/learn/oauth-authorization-code-grant-pkce
-            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                // https://www.developer.saxo/openapi/learn/oauth-authorization-code-grant-pkce
+                request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
                 { "code", authCode },
@@ -55,18 +58,19 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 { "redirect_uri", app.RedirectUrls[0]}
             });
 
-            try
-            {
-                var token = Send<Token>(request);
-                token.CreationDate = DateTime.Now;
-                return token;
-            }
-            catch (Exception ex)
-            {
-                throw new HttpRequestException("Error requesting access token using:" + authCode, ex);
+                try
+                {
+                    var token = Send<Token>(request);
+                    token.CreationDate = DateTime.Now;
+                    return token;
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
+                    throw new HttpRequestException("Error requesting access token using:" + authCode, ex);
+                }
             }
         }
-
         /// <summary>
         /// Refresh token before expiration
         /// </summary>
@@ -88,7 +92,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             {
                 return Send<Token>(request);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new HttpRequestException("Error requesting access token using refresh token" + refreshToken, ex);
             }

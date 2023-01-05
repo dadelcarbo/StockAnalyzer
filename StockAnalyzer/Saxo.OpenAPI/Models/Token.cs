@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StockAnalyzerSettings;
 using System;
 using System.IO;
 
@@ -26,12 +27,12 @@ namespace Saxo.OpenAPI.Models
 
         public void Serialize(string clientId)
         {
-            var tokenFileName = Path.Combine(Path.GetTempPath(), $"{clientId}.json");
+            var tokenFileName = Path.Combine(Folders.Saxo, $"{clientId}.json");
             File.WriteAllText(tokenFileName, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
         static public Token Deserialize(string clientId)
         {
-            var tokenFileName = Path.Combine(Path.GetTempPath(), $"{clientId}.json");
+            var tokenFileName = Path.Combine(Folders.Saxo, $"{clientId}.json");
             if (File.Exists(tokenFileName))
             {
                 return JsonConvert.DeserializeObject<Token>(File.ReadAllText(tokenFileName));

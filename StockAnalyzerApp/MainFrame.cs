@@ -386,7 +386,7 @@ namespace StockAnalyzerApp
         }
         protected void OnWindowStateChanged(EventArgs e)
         {
-            using (MethodLogger ml = new MethodLogger(this, true, $"{this.WindowState}"))
+            using (MethodLogger ml = new MethodLogger(this, false, $"{this.WindowState}"))
             {
                 if (this.WindowState != FormWindowState.Minimized)
                 {
@@ -464,6 +464,11 @@ namespace StockAnalyzerApp
                 Directory.Delete(folderName, true);
             }
             Directory.CreateDirectory(folderName);
+            folderName = Folders.Saxo;
+            if (!Directory.Exists(folderName))
+            {
+                Directory.CreateDirectory(folderName);
+            }
 
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;

@@ -13,39 +13,43 @@ namespace Saxo.OpenAPI.AuthenticationServices
     {
         public static Token GoLogin(App app)
         {
-            try
+            using (MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true))
             {
-                Token token = null;
-                if (string.IsNullOrEmpty(app._24hToken))
+                try
                 {
-                    // Open Listener for Redirect
-                    var listener = LoginHelpers.BeginListening(app);
-                    var authService = new PkceAuthService();
-                    var authUrl = authService.GetAuthenticationRequest(app);
-
-                    //System.Diagnostics.Process.Start(authUrl);
-                    authUrl = authUrl.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
-
-                    var authCode = GetAuthCode(app, listener);
-                    if (authCode == null)
+                    Token token = null;
+                    if (string.IsNullOrEmpty(app._24hToken))
                     {
-                        return null;
-                    }
+                        // Open Listener for Redirect
+                        var listener = LoginHelpers.BeginListening(app);
+                        var authService = new PkceAuthService();
+                        var authUrl = authService.GetAuthenticationRequest(app);
 
-                    // Get Token
-                    token = authService.GetToken(app, authCode);
+                        //System.Diagnostics.Process.Start(authUrl);
+                        authUrl = authUrl.Replace("&", "^&");
+                        Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
+
+                        var authCode = GetAuthCode(app, listener);
+                        if (authCode == null)
+                        {
+                            return null;
+                        }
+
+                        // Get Token
+                        token = authService.GetToken(app, authCode);
+                    }
+                    else
+                    {
+                        // Reuse 24h Token
+                        token = new Token { AccessToken = app._24hToken, TokenType = "Bearer" };
+                    }
+                    return token;
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Reuse 24h Token
-                    token = new Token { AccessToken = app._24hToken, TokenType = "Bearer" };
+                    StockLog.Write(ex);
+                    throw new LoginException("Exception occured while loging in", ex);
                 }
-                return token;
-            }
-            catch (Exception ex)
-            {
-                throw new LoginException("Exception occured while loging in", ex);
             }
         }
 
@@ -91,52 +95,55 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
         private static string GetAuthCode(App app, HttpListener listener)
         {
-            // Listening
-            HttpListenerContext httpContext = null;
-            try
+            using (MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true))
             {
-                int timeout = 30000;
-                var task = listener.GetContextAsync();
-                if (Task.WhenAny(task, Task.Delay(timeout)).Result == task)
+                // Listening
+                HttpListenerContext httpContext = null;
+                try
                 {
-                    // task completed within timeout
-                    httpContext = task.Result;
-                }
-                else
-                {
-                    // timeout logic
-                    return null;
-                }
-
-                //httpContext = listener.GetContextAsync().Result;
-                foreach (var item in httpContext.Request.QueryString)
-                {
-                    StockLog.Write($"Key: {item} Value:{httpContext.Request.QueryString[item.ToString()]}");
-                }
-                var authCode = httpContext.Request.QueryString["code"];
-                using (var writer = new StreamWriter(httpContext.Response.OutputStream))
-                {
-                    if (authCode == null)
+                    int timeout = 30000;
+                    var task = listener.GetContextAsync();
+                    if (Task.WhenAny(task, Task.Delay(timeout)).Result == task)
                     {
-                        writer.WriteLine("Authentication failure, retry later...");
+                        // task completed within timeout
+                        httpContext = task.Result;
                     }
                     else
                     {
-                        writer.WriteLine("Authentication success. Please close the browser.");
+                        // timeout logic
+                        return null;
                     }
-                    writer.Close();
-                }
 
-                return authCode;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get the authCode from URL", ex);
-            }
-            finally
-            {
-                if (httpContext != null)
-                    httpContext.Response.Close();
+                    foreach (var item in httpContext.Request.QueryString)
+                    {
+                        StockLog.Write($"Key: {item} Value:{httpContext.Request.QueryString[item.ToString()]}");
+                    }
+                    var authCode = httpContext.Request.QueryString["code"];
+                    using (var writer = new StreamWriter(httpContext.Response.OutputStream))
+                    {
+                        if (authCode == null)
+                        {
+                            writer.WriteLine("Authentication failure, retry later...");
+                        }
+                        else
+                        {
+                            writer.WriteLine("Authentication success. Please close the browser.");
+                        }
+                        writer.Close();
+                    }
+
+                    return authCode;
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
+                    throw new Exception("Failed to get the authCode from URL", ex);
+                }
+                finally
+                {
+                    if (httpContext != null)
+                        httpContext.Response.Close();
+                }
             }
         }
     }

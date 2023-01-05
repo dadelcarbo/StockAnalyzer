@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerSettings;
+using Saxo.OpenAPI.AuthenticationServices;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -316,19 +317,21 @@ namespace StockAnalyzer.StockClasses
 
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
-            StockLog.Write($"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}");
-            if (!this.Initialise() || (newBarDuration == this.barDuration))
+            using (MethodLogger ml = new MethodLogger(typeof(StockSerie), true, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}"))
             {
+                if (!this.Initialise() || (newBarDuration == this.barDuration))
+                {
+                    this.barDuration = newBarDuration;
+                    return;
+                }
+                this.ResetIndicatorCache();
+                this.InitRange(this.GetSmoothedValues(newBarDuration));
                 this.barDuration = newBarDuration;
+                this.PreInitialise();
+                valueArray = StockDailyValuesAsArray();
+                dateArray = null;
                 return;
             }
-            this.ResetIndicatorCache();
-            this.InitRange(this.GetSmoothedValues(newBarDuration));
-            this.barDuration = newBarDuration;
-            this.PreInitialise();
-            valueArray = StockDailyValuesAsArray();
-            dateArray = null;
-            return;
         }
         public void ClearBarDurationCache()
         {
@@ -3667,7 +3670,7 @@ namespace StockAnalyzer.StockClasses
         object __lockObj = new object();
         public void Lock()
         {
-            using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
+            using (MethodLogger ml = new MethodLogger(this, false, this.StockName))
             {
                 bool lockTaken = false;
                 while (!lockTaken)
@@ -3681,7 +3684,7 @@ namespace StockAnalyzer.StockClasses
 
         public void UnLock()
         {
-            using (MethodLogger ml = new MethodLogger(this, true, this.StockName))
+            using (MethodLogger ml = new MethodLogger(this, false, this.StockName))
             {
                 Monitor.Exit(__lockObj);
             }
