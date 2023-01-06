@@ -27,7 +27,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
                         //System.Diagnostics.Process.Start(authUrl);
                         authUrl = authUrl.Replace("&", "^&");
-                        Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
+                        Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = false });
 
                         var authCode = GetAuthCode(app, listener);
                         if (authCode == null)

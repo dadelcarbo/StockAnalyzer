@@ -3667,24 +3667,26 @@ namespace StockAnalyzer.StockClasses
 
         #region Multithread Lock/Unlock
 
+        static bool lockLoggingActive = false;
+
         object __lockObj = new object();
         public void Lock()
         {
-            using (MethodLogger ml = new MethodLogger(this, false, this.StockName))
+            using (MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName))
             {
                 bool lockTaken = false;
                 while (!lockTaken)
                 {
-                    StockLog.Write($"Trying to lock {this.StockName}");
+                    StockLog.Write($"Trying to lock {this.StockName}", lockLoggingActive);
                     Monitor.TryEnter(__lockObj, 500, ref lockTaken);
                 }
-                StockLog.Write("Lock taken");
+                StockLog.Write("Lock taken", lockLoggingActive);
             }
         }
 
         public void UnLock()
         {
-            using (MethodLogger ml = new MethodLogger(this, false, this.StockName))
+            using (MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName))
             {
                 Monitor.Exit(__lockObj);
             }

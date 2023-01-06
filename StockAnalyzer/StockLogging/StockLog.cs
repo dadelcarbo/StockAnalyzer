@@ -95,9 +95,9 @@ namespace StockAnalyzer.StockLogging
             }
         }
 
-        static public void Write(string logText)
+        static public void Write(string logText, bool isActive = true)
         {
-            if (StockLog.Logger.isEnabled)
+            if (isActive && StockLog.Logger.isEnabled)
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
