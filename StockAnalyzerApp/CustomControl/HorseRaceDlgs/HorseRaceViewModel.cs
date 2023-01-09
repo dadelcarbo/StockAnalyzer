@@ -131,7 +131,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             this.indicator1Name = "STOKF(100,20,75,25)";
             this.indicator2Name = "ROR(100)";
 
-            this.stockPositions = new ObservableCollection<StockPosition>();
+            this.stockPositions = new ObservableCollection<StockRankViewModel>();
         }
 
         private void CalculatePositions()
@@ -141,7 +141,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             float max1 = float.MinValue;
             float max2 = float.MinValue;
 
-            foreach (StockPosition stockPosition in this.StockPositions)
+            foreach (StockRankViewModel stockPosition in this.StockPositions)
             {
                 if (!stockPosition.StockSerie.Initialise()) continue;
 
@@ -215,7 +215,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
                 return;
             }
 
-            List<StockPosition> positions = new List<StockPosition>();
+            List<StockRankViewModel> positions = new List<StockRankViewModel>();
 
             var series = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group));
 
@@ -230,7 +230,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
                 if (stockSerie.Initialise())
                 {
                     stockSerie.BarDuration = this.barDuration;
-                    positions.Add(new StockPosition() { Variation = stockSerie.LastValue.VARIATION * 100f, StockSerie = stockSerie });
+                    positions.Add(new StockRankViewModel() { Variation = stockSerie.LastValue.VARIATION * 100f, StockSerie = stockSerie });
                 }
             }
             this.StockPositions = positions.OrderByDescending(p => p.Indicator2);
@@ -254,9 +254,9 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
         }
 
-        private IEnumerable<StockPosition> stockPositions;
+        private IEnumerable<StockRankViewModel> stockPositions;
 
-        public IEnumerable<StockPosition> StockPositions
+        public IEnumerable<StockRankViewModel> StockPositions
         {
             get { return stockPositions; }
             set
@@ -270,7 +270,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
         }
     }
 
-    public class StockPosition : INotifyPropertyChanged
+    public class StockRankViewModel : INotifyPropertyChanged
     {
         public string Name
         {

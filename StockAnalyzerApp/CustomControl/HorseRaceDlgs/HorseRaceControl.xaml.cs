@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 
         private void positionGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
         {
-            var viewModel = this.positionGridView?.SelectedItem as StockPosition;
+            var viewModel = this.positionGridView?.SelectedItem as StockRankViewModel;
             if (viewModel == null) return;
 
             if (SelectedStockChanged != null)

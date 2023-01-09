@@ -19,10 +19,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 return null;
 
             PropertyInfo property = item.GetType().GetProperty(gridCell?.DataColumn.DataMemberBinding.Path.Path);
-            if (property == null)
-                return null;
-            var value = (float)property.GetValue(item);
-            if (value <= 0.0f)
+            if (property == null) return null;
+
+            var propValue = property.GetValue(item);
+            if (propValue == null) return null;
+
+            var value = (float)propValue;
+            if (value < 0.0f)
             {
                 return RedCellStyle;
             }
