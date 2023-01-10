@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace StockAnalyzer.StockPortfolio
 {
-    public class StockPosition
+    public class StockNetPosition
     {
         public long Id { get; set; }
         public long OrderId { get; set; }
@@ -17,6 +17,7 @@ namespace StockAnalyzer.StockPortfolio
         public float EntryValue { get; set; } // This doesn't include transaction fees
         [JsonIgnore]
         public float EntryCost => EntryValue * EntryQty;
+        public DateTime FirstEntryDate { get; set; }
         public DateTime EntryDate { get; set; }
 
         public List<long> OrderIds { get; set; } = new List<long>();
@@ -49,11 +50,5 @@ namespace StockAnalyzer.StockPortfolio
             return this.IsClosed ? $"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.Value.ToShortDateString()} ExitValue:{ExitValue.Value}"
                 : $"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} Opened";
         }
-    }
-    public class TrailStopHistory
-    {
-        DateTime StartDate { get; set; }
-        DateTime? Endate { get; set; }
-        float Value { get; set; }
     }
 }

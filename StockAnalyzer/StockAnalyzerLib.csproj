@@ -312,6 +312,7 @@
     <Compile Include="StockPortfolio\SaxoOperation.cs" />
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
+    <Compile Include="StockPortfolio\StockNetPosition.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
