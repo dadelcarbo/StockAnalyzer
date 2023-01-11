@@ -137,10 +137,10 @@ namespace StockAnalyzer.StockPortfolio
 
             File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
             var fileDate = File.GetLastWriteTime(filepath);
-            var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss_fff") + PORTFOLIO_FILE_EXT);
+            var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss") + PORTFOLIO_FILE_EXT);
             File.Copy(filepath, archiveFilePath);
         }
-        static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffK" };
+        static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss" };
         public static StockPortfolio Deserialize(string filepath)
         {
             return JsonConvert.DeserializeObject<StockPortfolio>(File.ReadAllText(filepath), jsonSerializerSettings);
@@ -665,7 +665,7 @@ namespace StockAnalyzer.StockPortfolio
                 this.PositionValue = 0;
                 foreach (var saxoPosition in saxoPositions)
                 {
-                    var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerMillisecond) * TimeSpan.TicksPerMillisecond);
+                    var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
                     var instrument = instrumentService.GetInstrumentById(saxoPosition.PositionBase.Uic);
                     StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {saxoPosition.PositionBase.SourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
                     var posId = long.Parse(saxoPosition.PositionId);
@@ -689,7 +689,11 @@ namespace StockAnalyzer.StockPortfolio
                     };
                     this.Positions.Add(position);
 
-                    var netPosition = this.OpenedNetPositions.FirstOrDefault(p => p.Uic == saxoPosition.PositionBase.Uic && p.EntryDate == entryDate);
+                    var netPosition = this.OpenedNetPositions.FirstOrDefault(p => p.Uic == saxoPosition.PositionBase.Uic);
+                    if (netPosition?.EntryDate != entryDate)
+                    {
+                        netPosition = null;
+                    }
                     if (netPosition != null)
                     {
                         position.BarDuration = netPosition.BarDuration;
@@ -763,7 +767,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 #region BUILD TRADE OPERATION
                 var tradeId = long.Parse(excecutedOrder.TradeId);
-                var executionTime = new DateTime((excecutedOrder.TradeExecutionTime.ToLocalTime().Ticks / TimeSpan.TicksPerMillisecond) * TimeSpan.TicksPerMillisecond);
+                var executionTime = new DateTime((excecutedOrder.TradeExecutionTime.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
                 var qty = Math.Abs((int)excecutedOrder.Amount);
                 var operationType = excecutedOrder.TradeEventType.ToLower() == SaxoOperation.BUY ? TradeOperationType.Buy : TradeOperationType.Sell;
 
