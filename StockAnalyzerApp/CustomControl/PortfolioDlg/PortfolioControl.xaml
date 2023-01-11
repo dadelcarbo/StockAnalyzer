@@ -182,8 +182,7 @@
                 <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding PortfolioViewModel.TradeOperations}" 
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" 
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"
-                                     AutoGeneratingColumn="OperationGridView_AutoGeneratingColumn">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False">
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Portfolio">

@@ -26,6 +26,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
+            this.openedNetPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedOrdersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.closedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
@@ -66,10 +67,17 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                             item.PropertyChanged += Position_PropertyChanged;
                         }
                         break;
+                    case "StockNetPositionViewModel":
+                        {
+                            var item = row.Item as StockNetPositionViewModel;
+                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
+                            item.PropertyChanged += Position_PropertyChanged;
+                        }
+                        break;
                     case "StockOpenedOrder":
                         {
                             var item = row.Item as StockOpenedOrder;
-                            SelectionChanged(item.StockName, item.ISIN);
+                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
                         }
                         break;
                     default:
@@ -105,20 +113,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
-            }
-        }
-        private void OperationGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
-        {
-            if (e.Column.Header.ToString() == "NameMapping")
-            {
-                e.Cancel = true;
-            }
-        }
-        private void tradeLogGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
-        {
-            if (e.Column.Header.ToString() == "NameMapping")
-            {
-                e.Cancel = true;
             }
         }
         private void SelectionChanged(string stockName, string isin, StockBarDuration duration = null, string theme = null)
