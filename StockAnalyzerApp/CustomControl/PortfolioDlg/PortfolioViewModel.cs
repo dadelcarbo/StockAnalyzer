@@ -49,14 +49,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
         public IEnumerable<StockNetPositionViewModel> OpenedNetPositions => Portfolio.OpenedNetPositions.OrderBy(p => p.StockName).Select(p => new StockNetPositionViewModel(p, this));
 
-        public IEnumerable<StockPositionViewModel> ClosedPositions
-        {
-            get
-            {
-                var positions = Portfolio.Positions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionViewModel(p, this));
-                return positions;
-            }
-        }
+        public IEnumerable<StockNetPositionViewModel> ClosedPositions => Portfolio.NetPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockNetPositionViewModel(p, this));
 
         public float Value => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.LastValue).Sum();
 

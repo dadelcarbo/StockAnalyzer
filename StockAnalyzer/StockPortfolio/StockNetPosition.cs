@@ -31,6 +31,7 @@ namespace StockAnalyzer.StockPortfolio
         public string Theme { get; set; }
         public DateTime? ExitDate { get; set; }
         public float? ExitValue { get; set; }
+        [JsonIgnore]
         public bool IsClosed => ExitDate != null;
 
         internal void Dump()
