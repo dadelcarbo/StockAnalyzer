@@ -3,10 +3,11 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+       xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs"
-       mc:Ignorable="d" Background="LightYellow"
-       d:DesignHeight="300" d:DesignWidth="450" Language="fr-FR"
-       d:DataContext="{d:DesignInstance Type=tradedlgs:CloseTradeViewModel, IsDesignTimeCreatable=False}">
+       mc:Ignorable="d" Background="WhiteSmoke" Language="fr-FR"
+       d:DataContext="{d:DesignInstance Type=tradedlgs:CloseTradeViewModel, IsDesignTimeCreatable=False}"
+       Width="450" Height="400">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <GroupBox Header="Portfolio">
             <StackPanel Orientation="Horizontal">
@@ -24,28 +25,34 @@
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Trade Exit">
                 <StackPanel>
-                    <StackPanel Margin="1" Orientation="Horizontal">
+                    <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="45">Name:</Label>
-                        <TextBox Text="{Binding StockName}" Padding="4" Width="200" IsEnabled="False"></TextBox>
+                        <TextBox Text="{Binding StockSerie.StockName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>
-                        <TextBox Text="{Binding ExitQty}" Width="80" HorizontalAlignment="Left" Padding="4"/>
-                        <Label Width="60">Fee:</Label>
-                        <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4"/>
+                        <telerik:RadNumericUpDown Value="{Binding ExitQty}" NumberDecimalDigits="0" IsEnabled="False" Width="50" HorizontalAlignment="Left" SmallChange="1" LargeChange="10"/>
+                        <Label Width="45" Content="Value:" Margin="15,0,0,0"/>
+                        <telerik:RadNumericUpDown Value="{Binding ExitValue}" IsEnabled="{Binding IsValueEditable}" Width="80" HorizontalAlignment="Left" Padding="4"
+                                                  NumberDecimalDigits="{Binding NbDecimals}" SmallChange="{Binding SmallChange}" LargeChange="{Binding LargeChange}" Minimum="0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                        <RadioButton x:Name="marketOrderCbx" Content="Market" IsChecked="{Binding MarketOrder}" Padding="4" VerticalContentAlignment="Center" />
+                        <RadioButton x:Name="limitOrderCbx" Content="Limit" IsChecked="{Binding LimitOrder}" Padding="4" VerticalContentAlignment="Center"/>
+                        <RadioButton x:Name="stopOrderCbx" Content="Threshold" IsChecked="{Binding ThresholdOrder}" Padding="4" VerticalContentAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="45">Value:</Label>
-                        <TextBox Text="{Binding ExitValue}" Width="80" HorizontalAlignment="Left" Padding="4"></TextBox>
-                        <Label Width="60">Amount:</Label>
-                        <TextBox Text="{Binding ExitAmount, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4"></TextBox>
+                        <Label Width="55">Amount:</Label>
+                        <TextBox Text="{Binding ExitAmount, Mode=OneWay, StringFormat=C2}" Width="70" HorizontalAlignment="Left" Padding="4" IsEnabled="False"></TextBox>
+                        <Label Width="44">Fee:</Label>
+                        <TextBox Text="{Binding Fee, Mode=OneWay, StringFormat=C2}" Width="60" HorizontalAlignment="Left" Padding="4" IsEnabled="False"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Profit/Loss">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="82">Return: </Label>
+                        <Label Width="82">Return:</Label>
                         <TextBox Width="80" Text="{Binding Return, Mode=OneWay, StringFormat=C2}" Padding="4" IsEnabled="False"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
@@ -63,14 +70,14 @@
             <StackPanel>
                 <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Label Width="70">Comment:</Label>
-                    <TextBox Text="{Binding EntryComment}" Padding="4" MaxLines="5" MinLines="5" HorizontalAlignment="Stretch" Width="325"></TextBox>
+                    <TextBox Text="{Binding ExitComment}" Padding="4" MaxLines="5" MinLines="5" HorizontalAlignment="Stretch" Width="325"></TextBox>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
 
         <StackPanel Grid.Column="2" Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Content="Ok" Margin="2" Click="okButton_Click" IsDefault="True"></Button>
-            <Button Content="Cancel" Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>
+            <Button Content=" Ok " Margin="2" Click="okButton_Click" IsDefault="True"></Button>
+            <Button Content=" Cancel " Margin="2" Click="cancelButton_Click" IsCancel="True"></Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

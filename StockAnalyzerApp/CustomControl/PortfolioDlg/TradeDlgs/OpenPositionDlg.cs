@@ -28,10 +28,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            this.TradeViewModel.RaiseOrdersChanged();
-        }
         private void Child_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             this.TradeViewModel.RaiseOrdersChanged();

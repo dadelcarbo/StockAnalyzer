@@ -25,6 +25,8 @@ namespace StockAnalyzer.StockPortfolio
         public string TrailStopId { get; set; }
         public float Stop { get; set; }
 
+        public string LimitOrderId { get; set; }
+
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
         public string EntryComment { get; set; }
         public string Theme { get; set; }

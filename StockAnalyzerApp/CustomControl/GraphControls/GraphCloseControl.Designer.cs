@@ -18,6 +18,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.addAlertMenu = new System.Windows.Forms.MenuItem();
             this.buyMenu = new System.Windows.Forms.MenuItem();
             this.sellMenu = new System.Windows.Forms.MenuItem();
+            this.cancelMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
             this.openInABCMenu = new MenuItem();
             this.openInTradingViewMenu = new MenuItem();
@@ -31,10 +32,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // contextMenu
             // 
             this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.addAlertMenu,
-            this.separator1,
             this.buyMenu,
             this.sellMenu,
+            this.cancelMenu,
+            this.separator1,
+            this.addAlertMenu,
             this.separator2,
             this.agendaMenu,
             this.separator3,
@@ -44,72 +46,78 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInZBMenu,
             this.openInSocGenMenu});
             // 
-            // addAlertMenu
-            // 
-            this.addAlertMenu.Index = 0;
-            this.addAlertMenu.Text = "Add Alert";
-            this.addAlertMenu.Click += new System.EventHandler(this.addAlertMenu_Click);
-            // 
-            // separator1
-            // 
-            this.separator1.Index = 1;
-            this.separator1.Text = "-";
-            // 
             // buyMenu
             // 
-            this.buyMenu.Index = 2;
+            this.buyMenu.Index = 0;
             this.buyMenu.Text = "Buy";
             this.buyMenu.Click += new System.EventHandler(this.buyMenu_Click);
             // 
             // sellMenu
             // 
-            this.sellMenu.Index = 3;
+            this.sellMenu.Index = 1;
             this.sellMenu.Text = "Sell";
             this.sellMenu.Click += new System.EventHandler(this.sellMenu_Click);
             // 
+            // cancelMenu
+            // 
+            this.cancelMenu.Index = 2;
+            this.cancelMenu.Text = "Cancel Order";
+            this.cancelMenu.Click += new System.EventHandler(this.cancelMenu_Click);
+            // 
+            // separator1
+            // 
+            this.separator1.Index = 3;
+            this.separator1.Text = "-";
+            // 
+            // addAlertMenu
+            // 
+            this.addAlertMenu.Index = 4;
+            this.addAlertMenu.Text = "Add Alert";
+            this.addAlertMenu.Click += new System.EventHandler(this.addAlertMenu_Click);
+            // 
             // separator2
             // 
-            this.separator2.Index = 4;
+            this.separator2.Index = 5;
             this.separator2.Text = "-";
             // 
             // agendaMenu
             // 
-            this.agendaMenu.Index = 5;
+            this.agendaMenu.Index = 6;
             this.agendaMenu.Text = "Agenda";
             this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
             // 
             // separator3
             // 
-            this.separator3.Index = 6;
+            this.separator3.Index = 7;
             this.separator3.Text = "-";
             // 
             // openInABCMenu
             // 
-            this.openInABCMenu.Index = 7;
+            this.openInABCMenu.Index = 8;
             this.openInABCMenu.Text = "Open in ABCBourse";
             this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
             // 
             // openInTradingViewMenu
             // 
-            this.openInTradingViewMenu.Index = 7;
+            this.openInTradingViewMenu.Index = 9;
             this.openInTradingViewMenu.Text = "Open in TradingView";
             this.openInTradingViewMenu.Click += new System.EventHandler(this.openInTradingView_Click);
             // 
             // openInPEAPerf
             // 
-            this.openInPEAPerfMenu.Index = 8;
+            this.openInPEAPerfMenu.Index = 10;
             this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
             this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
             // 
             // openInZBMenu
             // 
-            this.openInZBMenu.Index = 9;
+            this.openInZBMenu.Index = 11;
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
             // openInSocGenMenu
             // 
-            this.openInSocGenMenu.Index = 10;
+            this.openInSocGenMenu.Index = 12;
             this.openInSocGenMenu.Text = "Open in Data Provider";
             this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
             // 
@@ -117,13 +125,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // 
             this.Name = "GraphCloseControl";
             this.ResumeLayout(false);
-
         }
 
         private ContextMenu contextMenu;
         private MenuItem addAlertMenu;
         private MenuItem buyMenu;
         private MenuItem sellMenu;
+        private MenuItem cancelMenu;
         private MenuItem separator1;
         private MenuItem separator2;
         private MenuItem separator3;

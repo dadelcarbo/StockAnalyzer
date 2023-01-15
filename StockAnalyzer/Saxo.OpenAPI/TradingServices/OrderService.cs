@@ -6,14 +6,14 @@ namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
-        public OrderResponse PatchOrder(Account account, Instrument instrument, string orderId, SaxoOrderType orderType, string buySell, int qty, decimal value)
+        public OrderResponse PatchOrder(Account account, Instrument instrument, string orderId, string orderType, string buySell, int qty, decimal value)
         {
             var patchOrder = new PatchOrder
             {
                 AccountKey = account.AccountKey,
                 Uic = instrument.Identifier,
                 AssetType = instrument.AssetType,
-                OrderType = orderType.ToString(),
+                OrderType = orderType,
                 BuySell = buySell,
                 Amount = qty,
                 OrderPrice = value,
@@ -168,6 +168,12 @@ namespace Saxo.OpenAPI.TradingServices
                 OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
             };
             return PostOrder(orderRequest);
+        }
+
+        public bool CancelOrder(Account account, string orderId)
+        {
+            var res = this.Delete($"trade/v2/orders/{orderId}/?AccountKey={account.AccountKey}");
+            return res.Contains(orderId);
         }
 
         private OrderResponse PostOrder(OrderRequest order)

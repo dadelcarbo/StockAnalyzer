@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockPortfolio;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {
@@ -24,27 +26,25 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         internal void Ok()
         {
-            if (!this.TradeViewModel.Portfolio.SaxoLogin())
+            string orderId;
+            if (this.TradeViewModel.MarketOrder)
             {
-                return;
-            }
-
-            string orderId = null;
-            if (string.IsNullOrEmpty(this.TradeViewModel.Position?.TrailStopId))
-            {
-                orderId = this.TradeViewModel.Portfolio.SaxoSellOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.ExitQty);
+                orderId = this.TradeViewModel.Portfolio.SaxoClosePosition(this.TradeViewModel.Position, OrderType.Market);
             }
             else
             {
-                orderId = this.TradeViewModel.Portfolio.SaxoUpdateStopOrder(this.TradeViewModel.Position, this.TradeViewModel.ExitValue);
+                orderId = this.TradeViewModel.Portfolio.SaxoClosePosition(this.TradeViewModel.Position, this.TradeViewModel.LimitOrder ? OrderType.Limit : OrderType.Threshold, this.TradeViewModel.ExitValue);
             }
             if (string.IsNullOrEmpty(orderId))
             {
-                MessageBox.Show("Order non executed !", "Saxo Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+        private void Child_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.TradeViewModel.RaiseOrdersChanged();
         }
     }
 }

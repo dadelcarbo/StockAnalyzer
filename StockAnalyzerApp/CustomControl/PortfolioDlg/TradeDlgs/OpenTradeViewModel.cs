@@ -125,7 +125,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public bool IsPortfolioRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
         public bool IsExceedingCash => this.Portfolio.Balance < this.EntryCost;
 
-        public void OnStopValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
+        public void OnOrderValueChanged(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
         {
             if (crossMode)
                 this.StopValue = value;

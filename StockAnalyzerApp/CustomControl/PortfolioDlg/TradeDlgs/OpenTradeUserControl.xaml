@@ -6,8 +6,9 @@
        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs"
        xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
-       mc:Ignorable="d" d:Background="LightYellow" Language="fr-FR"
-       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}" Width="450" Height="400">
+       mc:Ignorable="d" Background="WhiteSmoke" Language="fr-FR"
+       d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}"
+       Width="450" Height="400">
     <UserControl.Resources>
         <Style  x:Key="RiskyPortfolioStyle" TargetType="TextBox">
             <Style.Triggers>

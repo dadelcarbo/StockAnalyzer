@@ -137,7 +137,7 @@ namespace StockAnalyzer.StockPortfolio
 
             File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
             var fileDate = File.GetLastWriteTime(filepath);
-            var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss") + PORTFOLIO_FILE_EXT);
+            var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
             File.Copy(filepath, archiveFilePath);
         }
         static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss" };
@@ -542,6 +542,7 @@ namespace StockAnalyzer.StockPortfolio
         Account account = null;
         AccountService accountService = new AccountService();
         InstrumentService instrumentService = new InstrumentService();
+        OrderService orderService = new OrderService();
         private string name;
 
         public bool SaxoLogin()
@@ -608,7 +609,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // Check executedOrders (One day delay)
-                var closedOrders = new OrderService().GetClosedOrders(account, this.LastSyncDate, DateTime.Today);
+                var closedOrders = orderService.GetClosedOrders(account, this.LastSyncDate, DateTime.Today);
                 if (closedOrders != null)
                 {
                     foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime).ToList())
@@ -618,8 +619,8 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // Review opened Orders
-                var openedOrders = new OrderService().GetOpenedOrders(account);
-                foreach (var openedOrder in openedOrders.Data.Where(o => o.BuySell == "Buy"))
+                var openedOrders = orderService.GetOpenedOrders(account);
+                foreach (var openedOrder in openedOrders.Data)
                 {
                     long orderId = long.Parse(openedOrder.OrderId);
                     StockOpenedOrder order = this.OpenOrders.FirstOrDefault(o => o.Id == orderId);
@@ -667,7 +668,8 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
                     var instrument = instrumentService.GetInstrumentById(saxoPosition.PositionBase.Uic);
-                    StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {saxoPosition.PositionBase.SourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
+                    var sourceOrderId = long.Parse(saxoPosition.PositionBase.SourceOrderId);
+                    StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {sourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
                     var posId = long.Parse(saxoPosition.PositionId);
                     StockSerie stockSerie = GetStockSerieFromUic(saxoPosition.PositionBase.Uic);
                     if (stockSerie == null)
@@ -703,7 +705,7 @@ namespace StockAnalyzer.StockPortfolio
                     else
                     {
                         // Check if in the OpenedOrders
-                        var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Id == long.Parse(saxoPosition.PositionBase.SourceOrderId));
+                        var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Id == sourceOrderId);
                         if (openedOrder != null)
                         {
                             position.BarDuration = openedOrder.BarDuration;
@@ -712,7 +714,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                     }
                     // Update trailing stop
-                    var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
+                    var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.BuySell == "Sell" && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
                     if (stopOrder != null)
                     {
                         if (position.Stop == 0)
@@ -830,7 +832,7 @@ namespace StockAnalyzer.StockPortfolio
                                 this.NetPositions.Add(position);
 
                                 // What to do with opened orders ???
-                                var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Uic == excecutedOrder.Uic);
+                                var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Uic == excecutedOrder.Uic && o.BuySell == "Buy");
                                 if (openedOrder != null)
                                 {
                                     position.BarDuration = openedOrder.BarDuration;
@@ -896,7 +898,6 @@ namespace StockAnalyzer.StockPortfolio
                 }
                 decimal stop = instrumentDetail.RoundToTickSize(stopValue);
 
-                var orderService = new OrderService();
                 OrderResponse orderResponse = null;
                 switch (orderType)
                 {
@@ -947,7 +948,6 @@ namespace StockAnalyzer.StockPortfolio
                     return null;
                 }
 
-                var orderService = new OrderService();
                 OrderResponse orderResponse = null;
                 switch (orderType)
                 {
@@ -995,7 +995,6 @@ namespace StockAnalyzer.StockPortfolio
                     return null;
                 }
 
-                var orderService = new OrderService();
                 decimal value = instrumentDetail.RoundToTickSize(exitValue);
                 OrderResponse orderResponse = null;
                 if (string.IsNullOrEmpty(position.TrailStopId))
@@ -1005,7 +1004,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
                 else
                 {
-                    orderResponse = orderService.PatchOrder(account, instrument, position.TrailStopId, SaxoOrderType.StopIfTraded, "Sell", position.EntryQty, value);
+                    orderResponse = orderService.PatchOrder(account, instrument, position.TrailStopId, SaxoOrderType.StopIfTraded.ToString(), "Sell", position.EntryQty, value);
                 }
                 if (!string.IsNullOrEmpty(orderResponse?.OrderId))
                 {
@@ -1021,6 +1020,129 @@ namespace StockAnalyzer.StockPortfolio
             }
             return null;
         }
+        public string SaxoClosePosition(StockPosition position, OrderType orderType, float exitValue = 0.0f)
+        {
+            try
+            {
+                if (!this.SaxoLogin())
+                    return null;
+
+                var instrument = instrumentService.GetInstrumentById(position.Uic);
+                if (instrument == null)
+                {
+                    MessageBox.Show($"Instrument:{position.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
+                if (instrumentDetail == null)
+                {
+                    MessageBox.Show($"InstrumentDetails: {position.StockName}:{instrument.Symbol} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                OrderResponse orderResponse = null;
+                switch (orderType)
+                {
+                    case OrderType.Market:
+                        if (!string.IsNullOrEmpty(position.TrailStopId))
+                        {
+                            if (!orderService.CancelOrder(account, position.TrailStopId))
+                                return null;
+                        }
+                        if (!string.IsNullOrEmpty(position.LimitOrderId))
+                        {
+                            if (!orderService.CancelOrder(account, position.LimitOrderId))
+                                return null;
+                        }
+                        orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
+                        position.TrailStopId = null;
+                        break;
+                    case OrderType.Limit:
+                        decimal value = instrumentDetail.RoundToTickSize(exitValue);
+                        if (!string.IsNullOrEmpty(position.LimitOrderId))
+                        {
+                            orderResponse = orderService.PatchOrder(account, instrument, position.LimitOrderId, SaxoOrderType.Market.ToString(), "Sell", position.EntryQty, 0);
+                        }
+                        else
+                        {
+                            orderResponse = orderService.SellLimitOrder(account, instrument, position.EntryQty, instrumentDetail.RoundToTickSize(exitValue));
+                            position.LimitOrderId = orderResponse.OrderId;
+                        }
+                        break;
+                    case OrderType.Threshold:
+                        break;
+                }
+                //if (string.IsNullOrEmpty(position.TrailStopId))
+                //{
+                //    orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
+                //    position.TrailStopId = orderResponse.OrderId;
+                //}
+                //else
+                //{
+                //    orderResponse = orderService.PatchOrder(account, instrument, position.TrailStopId, SaxoOrderType.Market.ToString(), "Sell", position.EntryQty, 0);
+                //}
+                return orderResponse?.OrderId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+        public string SaxoUpdateOpenOrder(StockOpenedOrder openOrder, float newValue)
+        {
+            try
+            {
+                if (!this.SaxoLogin())
+                    return null;
+
+                var instrument = instrumentService.GetInstrumentById(openOrder.Uic);
+                if (instrument == null)
+                {
+                    MessageBox.Show($"Instrument:{openOrder.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
+                if (instrumentDetail == null)
+                {
+                    MessageBox.Show($"InstrumentDetails: {openOrder.StockName}:{instrument.Symbol} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                decimal value = instrumentDetail.RoundToTickSize(newValue);
+                OrderResponse orderResponse = null;
+                orderResponse = orderService.PatchOrder(account, instrument, openOrder.Id.ToString(), openOrder.OrderType, openOrder.BuySell, openOrder.Qty, value);
+                if (!string.IsNullOrEmpty(orderResponse?.OrderId))
+                {
+                    openOrder.Value = (float)value;
+                    this.Serialize();
+                }
+                return orderResponse?.OrderId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+        public void SaxoCancelOpenOrder(string orderId)
+        {
+            try
+            {
+                if (!this.SaxoLogin())
+                    return;
+
+                orderService.CancelOrder(account, orderId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return;
+        }
+
         public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
         {
             try

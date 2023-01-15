@@ -20,7 +20,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 {
     public partial class FullGraphUserControl : UserControl
     {
-        public event MouseDateChangedHandler OnMouseDateChanged;
+        public event MouseValueChangedHandler OnMouseDateChanged;
 
         public FullGraphUserControl(StockBarDuration duration)
         {
@@ -53,7 +53,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 if (graph != this.graphScrollerControl)
                 {
-                    graph.OnMouseDateChanged += graph_OnMouseDateChanged;
+                    graph.OnMouseValueChanged += graph_OnMouseDateChanged;
                 }
             }
         }

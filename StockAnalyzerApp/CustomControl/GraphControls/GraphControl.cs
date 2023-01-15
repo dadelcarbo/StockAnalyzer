@@ -24,8 +24,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
     }
 
-    public delegate void MouseDateChangedHandler(FullGraphUserControl sender, DateTime date, float value, bool crossMode);
-
     public enum GraphChartMode
     {
         Line,
@@ -53,10 +51,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     }
 
     public delegate void OnZoomChangedHandler(int startIndex, int endIndex);
+    public delegate void MouseValueChangedHandler(FullGraphUserControl sender, DateTime date, float value, bool crossMode);
 
     public partial class GraphControl : Panel
     {
-        public event MouseDateChangedHandler OnMouseDateChanged;
+        public event MouseValueChangedHandler OnMouseValueChanged;
 
         // Constants
         protected const int HEIGHT_MARGIN_SIZE = 18;
@@ -968,9 +967,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected void RaiseDateChangedEvent(FullGraphUserControl sender, DateTime date, float value, bool crossMode)
         {
-            if (this.OnMouseDateChanged != null)
+            if (this.OnMouseValueChanged != null)
             {
-                this.OnMouseDateChanged(sender, date, value, crossMode);
+                this.OnMouseValueChanged(sender, date, value, crossMode);
             }
         }
         virtual public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
@@ -988,10 +987,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             DrawMouseValueCross(valuePoint, mouseOverThis, true, this.axisPen, mouseOverThis);
                             PaintForeground();
 
-                            if (mouseOverThis && this.OnMouseDateChanged != null)
+                            if (mouseOverThis && this.OnMouseValueChanged != null)
                             {
                                 int index = RoundToIndex(mousePoint);
-                                this.OnMouseDateChanged(null, this.dateSerie[index], 0, true);
+                                this.OnMouseValueChanged(null, this.dateSerie[index], 0, true);
                             }
                         }
                         return;
@@ -1029,9 +1028,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                             lastMouseIndex = index;
 
-                            if (this.OnMouseDateChanged != null)
+                            if (this.OnMouseValueChanged != null)
                             {
-                                this.OnMouseDateChanged(null, this.dateSerie[index], 0, false);
+                                this.OnMouseValueChanged(null, this.dateSerie[index], 0, false);
                             }
                         }
                     }

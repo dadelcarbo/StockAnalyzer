@@ -40,12 +40,13 @@
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.closeTradeUserControl1;
+            this.elementHost1.Child.MouseEnter += Child_MouseEnter;
             // 
             // ClosePositionDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 260);
+            this.ClientSize = new System.Drawing.Size(450, 340);
             this.Controls.Add(this.elementHost1);
             this.Name = "ClosePositionDlg";
             this.Text = "Close Position";
