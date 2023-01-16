@@ -666,6 +666,7 @@ namespace StockAnalyzer.StockPortfolio
                 this.PositionValue = 0;
                 foreach (var saxoPosition in saxoPositions)
                 {
+                    this.PositionValue += saxoPosition.PositionView.MarketValue;
                     var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
                     var instrument = instrumentService.GetInstrumentById(saxoPosition.PositionBase.Uic);
                     var sourceOrderId = long.Parse(saxoPosition.PositionBase.SourceOrderId);
@@ -691,16 +692,13 @@ namespace StockAnalyzer.StockPortfolio
                     };
                     this.Positions.Add(position);
 
-                    var netPosition = this.OpenedNetPositions.FirstOrDefault(p => p.Uic == saxoPosition.PositionBase.Uic);
-                    if (netPosition?.EntryDate != entryDate)
-                    {
-                        netPosition = null;
-                    }
+                    var netPosition = this.OpenedNetPositions.FirstOrDefault(p => p.Uic == saxoPosition.PositionBase.Uic && p.EntryDate == entryDate);
                     if (netPosition != null)
                     {
                         position.BarDuration = netPosition.BarDuration;
                         position.EntryComment = netPosition.EntryComment;
                         position.Theme = netPosition.Theme;
+                        position.Stop = netPosition.Stop;
                     }
                     else
                     {
@@ -729,6 +727,12 @@ namespace StockAnalyzer.StockPortfolio
                         position.Stop = 0;
                         position.TrailStop = 0;
                         position.TrailStopId = null;
+                    }
+                    if (netPosition != null)
+                    {
+                        netPosition.Stop = position.Stop;
+                        netPosition.TrailStop = position.TrailStop;
+                        netPosition.TrailStopId = position.TrailStopId;
                     }
                 }
 
