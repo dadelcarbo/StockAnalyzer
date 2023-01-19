@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
                 if (orderId != null)
                 {
-                    var position = this.TradeViewModel.Portfolio.OpenedPositions.OrderByDescending(p => p.EntryDate).FirstOrDefault();
+                    var position = this.TradeViewModel.Portfolio.Positions.OrderByDescending(p => p.EntryDate).FirstOrDefault();
                     if (position != null && position.StockName == this.TradeViewModel.StockSerie.StockName)
                     {
                         position.EntryComment = this.TradeViewModel.EntryComment;

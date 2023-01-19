@@ -54,22 +54,12 @@ namespace StockAnalyzer.StockPortfolio
             this.MaxRisk = 0.02f;
             this.MaxPositionSize = 0.2f;
         }
-        public List<StockTradeOperation> TradeOperations { get; set; }
 
-        /// <summary>
-        /// Net Position represents the full historical position on a instrument. It opens at the first buy of the instrument, and closes when qty reaches 0.
-        /// Position increase or reduction do not create a new position.
-        /// </summary>
-        public List<StockNetPosition> NetPositions { get; } = new List<StockNetPosition>();
-        [JsonIgnore]
-        public IEnumerable<StockNetPosition> OpenedNetPositions => NetPositions.Where(p => !p.IsClosed);
-
+        public List<StockOpenedOrder> OpenOrders { get; private set; }
         public List<StockPosition> Positions { get; }
-        /// <summary>
-        /// Opened positions synchronized from Saxo
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<StockPosition> OpenedPositions => Positions.Where(p => !p.IsClosed);
+        public List<StockNetPosition> OpenedNetPositions { get; } = new List<StockNetPosition>();
+        public List<StockNetPosition> ClosedNetPositions { get; } = new List<StockNetPosition>();
+        public List<StockTradeOperation> TradeOperations { get; set; }
 
         public string Name
         {
@@ -99,7 +89,6 @@ namespace StockAnalyzer.StockPortfolio
         public float MaxRisk { get; set; }
         public float MaxPositionSize { get; set; }
         public DateTime CreationDate { get; set; }
-        [JsonIgnore]
         public float PositionValue { get; set; }
         [JsonIgnore]
         public float TotalValue => this.Balance + this.PositionValue;
@@ -193,48 +182,6 @@ namespace StockAnalyzer.StockPortfolio
                 return;
             switch (operation.OperationType.ToLower())
             {
-                case StockOperation.DEPOSIT:
-                    {
-                        if (!operation.BinckName.StartsWith("DIVIDEND"))
-                        {
-                            this.Positions.Add(new StockPosition
-                            {
-                                EntryDate = operation.Date,
-                                EntryQty = operation.Qty,
-                                StockName = operation.StockName
-                            });
-                        }
-                    }
-                    break;
-                case StockOperation.TRANSFER:
-                    {
-                        if (!operation.BinckName.StartsWith("DIVIDEND") && !operation.BinckName.StartsWith("DROITS"))
-                        {
-                            var qty = operation.Qty;
-                            var stockName = operation.StockName;
-                            var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
-                            if (position != null)
-                            {
-                                position.ExitDate = operation.Date;
-                                position.ExitValue = position.EntryValue;
-                                if (position.EntryQty != qty)
-                                {
-                                    this.Positions.Add(new StockPosition
-                                    {
-                                        EntryDate = operation.Date,
-                                        EntryQty = position.EntryQty - qty,
-                                        StockName = operation.StockName,
-                                        EntryValue = position.EntryValue
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                StockLog.Write($"Selling not opened position: {stockName} qty:{qty}");
-                            }
-                        }
-                    }
-                    break;
                 case StockOperation.BUY:
                     {
                         this.TradeOperations.Add(new StockTradeOperation
@@ -248,7 +195,7 @@ namespace StockAnalyzer.StockPortfolio
                         });
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+                        var position = this.Positions.FirstOrDefault(p => p.StockName == stockName);
                         if (position != null) // Position on this stock already exists, add new values
                         {
 
@@ -289,7 +236,7 @@ namespace StockAnalyzer.StockPortfolio
                         });
                         var qty = operation.Qty;
                         var stockName = operation.StockName;
-                        var position = this.OpenedPositions.FirstOrDefault(p => p.StockName == stockName);
+                        var position = this.Positions.FirstOrDefault(p => p.StockName == stockName);
                         if (position != null)
                         {
                             position.ExitDate = operation.Date;
@@ -351,7 +298,7 @@ namespace StockAnalyzer.StockPortfolio
                 // Sell completed trades
                 foreach (var trade in trades.Where(t => t.ExitDate == date))
                 {
-                    var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
+                    var pos = this.Positions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                     if (pos == null)
                         continue;
                     var amount = pos.EntryQty * trade.ExitValue;
@@ -368,7 +315,7 @@ namespace StockAnalyzer.StockPortfolio
             this.PositionValue = 0;
             foreach (var trade in trades.Where(t => !t.IsClosed))
             {
-                var pos = this.OpenedPositions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
+                var pos = this.Positions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
                 if (pos == null)
                     continue;
                 this.PositionValue += pos.EntryQty * trade.Serie.Values.Last().CLOSE;
@@ -385,9 +332,9 @@ namespace StockAnalyzer.StockPortfolio
         public void Dump()
         {
             StockLog.Write($"All Positions: {this.Positions.Count}");
-            StockLog.Write($"Opened Positions: {this.OpenedPositions.Count()}");
+            StockLog.Write($"Opened Positions: {this.Positions.Count()}");
 
-            foreach (var p in this.OpenedPositions.OrderBy(p => p.StockName))
+            foreach (var p in this.Positions.OrderBy(p => p.StockName))
             {
                 p.Dump();
             }
@@ -396,7 +343,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             StockLog.Write($"Dump for date:{date.ToShortDateString()}");
             StockLog.Write($"All Positions: {this.Positions.Count}");
-            StockLog.Write($"Opened Positions: {this.OpenedPositions.Count()}");
+            StockLog.Write($"Opened Positions: {this.Positions.Count()}");
 
             foreach (var p in this.Positions.Where(p => p.EntryDate < date && p.ExitDate > date).OrderBy(p => p.StockName))
             {
@@ -448,8 +395,6 @@ namespace StockAnalyzer.StockPortfolio
         #region SAXO Name Mapping
         private static List<StockNameMapping> mappings;
         public static List<StockNameMapping> Mappings => LoadMappings();
-
-        public List<StockOpenedOrder> OpenOrders { get; private set; }
 
         public static void ResetMappings()
         {
@@ -618,6 +563,13 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
 
+                //Sync newly created OpenNetPosition
+                foreach (var netOpenedPosition in this.OpenedNetPositions.Where(p => p.TrailStop == 0 || string.IsNullOrEmpty(p.Theme)))
+                {
+                    // Check a position match
+                    var position = this.Positions.Where(p => p.Uic == netOpenedPosition.Uic && p.EntryDate == netOpenedPosition.EntryDate);
+                }
+
                 // Review opened Orders
                 var openedOrders = orderService.GetOpenedOrders(account);
                 foreach (var openedOrder in openedOrders.Data)
@@ -669,7 +621,7 @@ namespace StockAnalyzer.StockPortfolio
                     this.PositionValue += saxoPosition.PositionView.MarketValue;
                     var entryDate = new DateTime((saxoPosition.PositionBase.ExecutionTimeOpen.ToLocalTime().Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond);
                     var instrument = instrumentService.GetInstrumentById(saxoPosition.PositionBase.Uic);
-                    var sourceOrderId = long.Parse(saxoPosition.PositionBase.SourceOrderId);
+                    var sourceOrderId = saxoPosition.PositionBase.SourceOrderId != null ? long.Parse(saxoPosition.PositionBase.SourceOrderId) : -1;
                     StockLog.Write($"{instrument.Symbol} PositionId: {saxoPosition.PositionId} OrderId: {sourceOrderId} OpenDate:{saxoPosition.PositionBase.ExecutionTimeOpen}");
                     var posId = long.Parse(saxoPosition.PositionId);
                     StockSerie stockSerie = GetStockSerieFromUic(saxoPosition.PositionBase.Uic);
@@ -711,7 +663,7 @@ namespace StockAnalyzer.StockPortfolio
                             position.Theme = openedOrder.Theme;
                         }
                     }
-                    // Update trailing stop
+                    // Update trailing stop (@@@@ need to manage multiple stops)
                     var stopOrder = openedOrders.Data.Where(o => o.Uic == saxoPosition.PositionBase.Uic && o.BuySell == "Sell" && o.OpenOrderType == "StopIfTraded").FirstOrDefault();
                     if (stopOrder != null)
                     {
@@ -736,7 +688,7 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
 
-                var closedPositions = accountService.GetClosedPositions(account)?.Data;
+                //var closedPositions = accountService.GetClosedPositions(account)?.Data;
                 //if (untreatedPositions.Count > 0 && !this.IsSaxoSimu)
                 //{
                 //    if (closedPositions != null)
@@ -804,6 +756,7 @@ namespace StockAnalyzer.StockPortfolio
                     ISIN = isin,
                     Fee = Math.Abs(excecutedOrder.BookedAmountClientCurrency - excecutedOrder.TradedValue)
                 };
+                this.TradeOperations.Add(tradeOperation);
                 #endregion
                 var position = this.OpenedNetPositions.FirstOrDefault(p => p.Uic == tradeOperation.Uic);
                 switch (operationType)
@@ -815,25 +768,22 @@ namespace StockAnalyzer.StockPortfolio
                             // 2 - order and exisiting opened position for instrument
                             if (position != null) // Position on this stock already exists, add new values
                             {
-                                position.EntryDate = executionTime;
                                 position.EntryValue = (position.EntryValue * position.EntryQty + excecutedOrder.Price * qty) / (position.EntryQty + qty);
                                 position.EntryQty += qty;
                             }
-                            else // Position on this stock doen't exists, create a new one
+                            else // Position on this stock doesn't exists, create a new one
                             {
                                 position = new StockNetPosition
                                 {
                                     Id = orderId,
-                                    OrderId = orderId,
                                     Uic = excecutedOrder.Uic,
                                     EntryDate = executionTime,
-                                    FirstEntryDate = executionTime,
                                     EntryQty = qty,
                                     StockName = tradeOperation.StockName,
                                     ISIN = tradeOperation.ISIN,
                                     EntryValue = excecutedOrder.Price
                                 };
-                                this.NetPositions.Add(position);
+                                this.OpenedNetPositions.Add(position);
 
                                 // What to do with opened orders ???
                                 var openedOrder = this.OpenOrders.FirstOrDefault(o => o.Uic == excecutedOrder.Uic && o.BuySell == "Buy");
@@ -845,23 +795,26 @@ namespace StockAnalyzer.StockPortfolio
                                     this.OpenOrders.Remove(openedOrder);
                                 }
                             }
-                            position.OrderIds.Add(long.Parse(excecutedOrder.OrderId));
+                            position.EntryOrderIds.Add(long.Parse(excecutedOrder.OrderId));
                         }
                         break;
                     case TradeOperationType.Sell:
                         {
                             if (position != null)
                             {
+                                position.ExitOrderIds.Add(long.Parse(excecutedOrder.OrderId));
                                 if (position.EntryQty == qty)
                                 {
                                     position.ExitDate = executionTime;
-                                    position.ExitValue = excecutedOrder.Price;
+                                    var exitOperations = this.TradeOperations.Where(t => position.ExitOrderIds.Contains(t.Id)).ToList();
+                                    position.ExitValue = exitOperations.Sum(o => o.Qty * o.Value) / exitOperations.Sum(o => o.Qty);
+                                    this.OpenedNetPositions.Remove(position);
+                                    this.ClosedNetPositions.Add(position);
                                 }
                                 else
                                 {
                                     position.EntryQty -= qty;
                                 }
-                                position.OrderIds.Add(long.Parse(excecutedOrder.OrderId));
                             }
                             else
                             {
@@ -874,10 +827,6 @@ namespace StockAnalyzer.StockPortfolio
             catch (Exception ex)
             {
                 StockLog.Write(ex.ToString());
-            }
-            finally
-            {
-                this.TradeOperations.Add(tradeOperation);
             }
         }
         public string SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)

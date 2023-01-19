@@ -274,7 +274,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         var value = Math.Max(this.Stop, lastValue.OPEN);
                         StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -value * qty));
 
-                        var position = StockPortfolio.ReplayPortfolio.OpenedPositions.FirstOrDefault();
+                        var position = StockPortfolio.ReplayPortfolio.Positions.FirstOrDefault();
                         this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
                         openPosition.SetValue(lastValue.CLOSE);
                         openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, value);
@@ -361,7 +361,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             var id = StockPortfolio.ReplayPortfolio.GetNextOperationId();
             StockPortfolio.ReplayPortfolio.AddOperation(StockOperation.FromSimu(id, date, replaySerie.StockName, StockOperation.BUY, qty, -this.Value * qty));
 
-            var position = StockPortfolio.ReplayPortfolio.OpenedPositions.FirstOrDefault();
+            var position = StockPortfolio.ReplayPortfolio.Positions.FirstOrDefault();
             this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
             openPosition.Stop = this.Stop;
             openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, this.Value);

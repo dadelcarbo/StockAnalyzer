@@ -313,6 +313,7 @@
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\StockNetPosition.cs" />
+    <Compile Include="StockPortfolio\StockPositionBase.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
@@ -649,6 +650,7 @@
     <Compile Include="StockPortfolio\StockOperation.cs" />
     <Compile Include="StockPortfolio\StockPortfolio.cs" />
     <Compile Include="StockPortfolio\StockPosition.cs" />
+    <Compile Include="StockPortfolio\TrailStopHistory.cs" />
     <Compile Include="StockScripting\ScriptDlg.cs">
       <SubType>Form</SubType>
     </Compile>

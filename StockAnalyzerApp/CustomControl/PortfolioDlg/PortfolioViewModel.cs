@@ -9,9 +9,24 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
     public class PortfolioViewModel : NotifyPropertyChangedBase
     {
         public StockPortfolio Portfolio { get; set; }
-        public PortfolioViewModel(StockPortfolio p)
+        public PortfolioViewModel(StockPortfolio portfolio)
         {
-            Portfolio = p;
+            Portfolio = portfolio;
+
+            this.MixedOpenedPositions = new List<StockPositionBaseViewModel>();
+
+            foreach (var pos in portfolio.Positions)
+            {
+                var netPos = portfolio.OpenedNetPositions.FirstOrDefault(p=> p.Uic == pos.Uic && p.EntryDate == pos.EntryDate);
+                if (netPos != null)
+                {
+                    this.MixedOpenedPositions.Add(new StockPositionBaseViewModel(netPos, this));
+                }
+                else
+                {
+                    this.MixedOpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
+                }
+            }
         }
 
         [Property(null, "1-General")]
@@ -46,12 +61,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
-        public IEnumerable<StockPositionViewModel> OpenedPositions => Portfolio.OpenedPositions.OrderBy(p => p.StockName).Select(p => new StockPositionViewModel(p, this));
-        public IEnumerable<StockNetPositionViewModel> OpenedNetPositions => Portfolio.OpenedNetPositions.OrderBy(p => p.StockName).Select(p => new StockNetPositionViewModel(p, this));
+        public IEnumerable<StockPositionBaseViewModel> OpenedPositions => Portfolio.Positions.OrderBy(p => p.StockName).Select(p => new StockPositionBaseViewModel(p, this));
 
-        public IEnumerable<StockNetPositionViewModel> ClosedPositions => Portfolio.NetPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockNetPositionViewModel(p, this));
 
-        public float Value => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.LastValue).Sum();
+        public IList<StockPositionBaseViewModel> MixedOpenedPositions { get; private set; }
+        public IEnumerable<StockPositionBaseViewModel> OpenedNetPositions => Portfolio.OpenedNetPositions.OrderBy(p => p.StockName).Select(p => new StockPositionBaseViewModel(p, this));
+
+        public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedNetPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
+
+        public float Value => Portfolio.TotalValue;
 
         public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 

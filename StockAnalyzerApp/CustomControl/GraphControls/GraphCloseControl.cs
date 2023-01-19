@@ -1357,7 +1357,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                     {
-                        var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                        var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName);
                         if (position != null)
                         {
                             this.DrawStop(foregroundGraphic, trailStopPen, this.StartIndex, mouseValuePoint.Y, true);
@@ -1574,7 +1574,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF mousePoint = new PointF(e.X, e.Y);
             if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
-                var position = Portfolio.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName);
                 if (position != null)
                 {
                     if (DialogResult.Yes == MessageBox.Show("Do you want to sent order to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -1675,7 +1675,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                     {
-                        this.sellMenu.Visible = Portfolio?.OpenedPositions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
+                        this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
                         this.cancelMenu.Visible = Portfolio?.OpenOrders.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
                         this.contextMenu.Show(this, e.Location);

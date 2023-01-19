@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
-    public class StockNetPositionViewModel : INotifyPropertyChanged
+    public class StockPositionBaseViewModel : INotifyPropertyChanged
     {
         #region Notify Property Changed and Dirty management
         public void OnPropertyChanged(string name)
@@ -18,8 +18,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         #endregion
 
         PortfolioViewModel portfolio;
-        StockNetPosition position;
-        public StockNetPositionViewModel(StockNetPosition pos, PortfolioViewModel portfolio)
+        StockPositionBase position;
+        public StockPositionBaseViewModel(StockPositionBase pos, PortfolioViewModel portfolio)
         {
             this.position = pos;
             this.portfolio = portfolio;

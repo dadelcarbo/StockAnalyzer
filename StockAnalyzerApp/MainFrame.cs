@@ -2858,7 +2858,7 @@ namespace StockAnalyzerApp
                 <tbody>
 <br/>";
 
-            var positions = portfolio?.OpenedPositions.OrderBy(p => p.StockName).ToList();
+            var positions = portfolio?.Positions.OrderBy(p => p.StockName).ToList();
             if (positions == null || positions.Count == 0)
             {
                 return string.Empty;

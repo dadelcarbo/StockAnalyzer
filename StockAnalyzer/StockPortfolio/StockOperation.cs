@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockPortfolio
             operation.OperationType = type;
             operation.IsShort = isShort;
 
-            operation.Description = $"{qty} {name}";
+            operation.Qty = qty;
             operation.BinckName = name;
             operation.StockName = name;
             operation.IsShort = isShort;
@@ -33,8 +33,7 @@ namespace StockAnalyzer.StockPortfolio
 
 
         public string StockName { get; set; }
-        public string Description { get; set; }
-        public int Qty => this.IsOrder ? int.Parse(new string(this.Description.TakeWhile(c => !Char.IsLetter(c)).ToArray()).Replace(" ", "")) : 0;
+        public int Qty { get; set; }
 
 
 
@@ -51,12 +50,9 @@ namespace StockAnalyzer.StockPortfolio
 
         public float Amount { get; set; }
         public float Balance { get; set; }
-        public bool IsOrder => this.OperationType == BUY || this.OperationType == SELL || this.OperationType == DEPOSIT || this.OperationType == TRANSFER;
 
         public const string BUY = "achat";
         public const string SELL = "vente";
-        public const string DEPOSIT = "dépôt";
-        public const string TRANSFER = "transfert de titres";
 
         public string ToFileString()
         {
