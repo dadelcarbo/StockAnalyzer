@@ -2599,6 +2599,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             }
             StockAnalyzerForm.MainFrame.Portfolio.SaxoCancelOpenOrder(order.Id.ToString());
+            this.BackgroundDirty = true;
+            PaintGraph();
         }
         void agendaMenu_Click(object sender, System.EventArgs e)
         {
@@ -2622,7 +2624,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void openInSocGenMenu_Click(object sender, System.EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.OpenInSocGenMenu();
+            StockAnalyzerForm.MainFrame.OpenInDataProvider();
         }
         #endregion
     }

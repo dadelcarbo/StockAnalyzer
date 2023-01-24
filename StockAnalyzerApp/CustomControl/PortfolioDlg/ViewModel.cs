@@ -20,19 +20,20 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             get { return StockAnalyzerForm.MainFrame.Portfolio; }
             set
             {
-                if (portfolioViewModel!= null && portfolioViewModel.IsDirty)
+                if (StockAnalyzerForm.MainFrame.Portfolio == value)
+                    return;
+                StockAnalyzerForm.MainFrame.Portfolio.Refreshed -= Portfolio_Refreshed;
+
+                if (portfolioViewModel != null && portfolioViewModel.IsDirty)
                 {
                     portfolioViewModel.Portfolio.Serialize();
-                }
-                if (StockAnalyzerForm.MainFrame.Portfolio != value)
-                {
-                    StockAnalyzerForm.MainFrame.Portfolio.Refreshed -= Portfolio_Refreshed;
-                    value.Refreshed += Portfolio_Refreshed;
                 }
                 StockAnalyzerForm.MainFrame.Portfolio = value;
                 portfolioViewModel = null;
                 OnPropertyChanged(nameof(Portfolio));
                 OnPropertyChanged(nameof(PortfolioViewModel));
+
+                value.Refreshed += Portfolio_Refreshed;
             }
         }
 

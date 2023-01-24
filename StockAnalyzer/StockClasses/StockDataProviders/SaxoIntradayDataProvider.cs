@@ -87,6 +87,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockSerie.Count > 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ticker"></param>
+        /// <param name="period">1D - 1 minute bars from begining of the current day<br/>
+        /// 2D - 5 minutes bars from the last 24 Hours<br/>
+        /// 1W - 1 hour bar for 1 week period</param>
+        /// <returns></returns>
         public string FormatIntradayURL(string ticker, string period)
         {
             return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{ticker}/?timespan={period}&type=ohlc&benchmarks=";
@@ -204,7 +212,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (DownloadHistory.ContainsKey(stockSerie.Symbol) && DownloadHistory[stockSerie.Symbol] > DateTime.Now.AddSeconds(-30))
                 {
-                    return false;  // Do not download more than every 2 minutes.
+                    return false;  // Do not download more than every xx seconds
                 }
                 var lastDate = stockSerie.Keys.Last();
                 if (lastDate.Date == DateTime.Today && lastDate.TimeOfDay == new TimeSpan(21, 55, 00))
@@ -220,10 +228,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.ISIN, "1W");
 
                     try
                     {
+                        string url = FormatIntradayURL(stockSerie.ISIN, "1W");
                         if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                         {
                             DownloadHistory[stockSerie.Symbol] = DateTime.Now;

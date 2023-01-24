@@ -355,5 +355,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return stockValue;
         }
         #endregion
+
+
+        public virtual void OpenInDataProvider(StockSerie stockSerie)
+        {
+        }
     }
 }

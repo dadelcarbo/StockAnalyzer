@@ -61,17 +61,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
-        public IEnumerable<StockPositionBaseViewModel> OpenedPositions => Portfolio.Positions.OrderBy(p => p.StockName).Select(p => new StockPositionBaseViewModel(p, this));
-
-
         public IList<StockPositionBaseViewModel> MixedOpenedPositions { get; private set; }
-        public IEnumerable<StockPositionBaseViewModel> OpenedNetPositions => Portfolio.OpenedNetPositions.OrderBy(p => p.StockName).Select(p => new StockPositionBaseViewModel(p, this));
 
         public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedNetPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
 
         public float Value => Portfolio.TotalValue;
 
-        public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
+        public float RiskFreeValue => Portfolio.Balance + this.MixedOpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 
         public bool IsDirty { get; set; }
     }

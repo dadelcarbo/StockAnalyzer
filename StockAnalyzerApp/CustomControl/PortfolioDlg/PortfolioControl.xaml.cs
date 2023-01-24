@@ -27,8 +27,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
             this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.mixedOpenedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
-            this.openedNetPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
-            this.openedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedOrdersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.closedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
 
@@ -43,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         private void GraphCloseControl_StopChanged(float stopValue)
         {
-            this.openedPositionGridView.Rebind();
+            this.mixedOpenedPositionGridView.Rebind();
         }
 
         private void MouseDownOnCell(object sender, MouseButtonEventArgs e)
@@ -61,18 +59,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                             SelectionChanged(item.StockName, item.ISIN);
                         }
                         break;
-                    case "StockPositionViewModel":
+                    case "StockPositionBaseViewModel":
                         {
-                            var item = row.Item as StockPositionViewModel;
+                            var item = row.Item as StockPositionBaseViewModel;
                             SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
-                            item.PropertyChanged += Position_PropertyChanged;
-                        }
-                        break;
-                    case "StockNetPositionViewModel":
-                        {
-                            var item = row.Item as StockNetPositionViewModel;
-                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
-                            item.PropertyChanged += Position_PropertyChanged;
+                            //item.PropertyChanged += Position_PropertyChanged;
                         }
                         break;
                     case "StockOpenedOrder":
@@ -92,18 +83,18 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
         }
 
-        private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Stop":
-                case "TrailStop":
-                    StockAnalyzerForm.MainFrame.RefreshGraphCloseControl();
-                    break;
-                default:
-                    break;
-            }
-        }
+        //private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    switch (e.PropertyName)
+        //    {
+        //        case "Stop":
+        //        case "TrailStop":
+        //            StockAnalyzerForm.MainFrame.RefreshGraphCloseControl();
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
 
         private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
         {

@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -88,7 +89,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        public override bool SupportsIntradayDownload => false;
+        public override bool SupportsIntradayDownload => true;
+
+        public override bool DownloadIntradayData(StockSerie stockSerie)
+        {
+            var url = this.FormatQuoteURL(stockSerie.Symbol);
+            var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.Symbol);
+            if (!string.IsNullOrEmpty(response))
+            {
+                if (response.StartsWith("{"))
+                {
+                    var fileName = DataFolder + FOLDER + "\\Quote_" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                    File.WriteAllText(fileName, response);
+                    stockSerie.IsInitialised = false;
+                    return true;
+                }
+                StockLog.Write(response);
+                return false;
+            }
+            return true;
+        }
 
         public override bool LoadData(StockSerie stockSerie)
         {
@@ -118,16 +138,54 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 res = true;
             }
+
+            fileName = DataFolder + FOLDER + "\\Quote_" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            if (File.Exists(fileName))
+            {
+                try
+                {
+                    var yahooQuoteResult = YahooQuoteResult.FromJson(File.ReadAllText(fileName));
+                    if (!string.IsNullOrEmpty(yahooQuoteResult?.quoteResponse?.error))
+                    {
+                        StockLog.Write($"Error loading {stockSerie.StockName}: {yahooQuoteResult?.quoteResponse?.error}");
+                    }
+                    var quote = yahooQuoteResult.quoteResponse.result[0];
+                    var openDate = refDate.AddSeconds(quote.regularMarketTime).AddMilliseconds(quote.gmtOffSetMilliseconds).ToLocalTime();
+                    if (!stockSerie.ContainsKey(openDate.Date))
+                    {
+                        long vol = quote.regularMarketVolume;
+                        var dailyValue = new StockDailyValue(
+                               (float)Math.Round(quote.regularMarketOpen, quote.priceHint),
+                               (float)Math.Round(quote.regularMarketDayHigh, quote.priceHint),
+                               (float)Math.Round(quote.regularMarketDayLow, quote.priceHint),
+                               (float)Math.Round(quote.regularMarketPrice, quote.priceHint),
+                               vol,
+                               openDate);
+
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write($"Exception loading Quote for {stockSerie.StockName}: {ex.Message}");
+                }
+                File.Delete(fileName);
+            }
             return res;
         }
 
         static DateTime refDate = new DateTime(1970, 01, 01);
-        public string FormatURL(string ticker, DateTime startDate, DateTime endDate, string interval)
+        public string FormatURL(string symbol, DateTime startDate, DateTime endDate, string interval)
         {
             var startTime = (int)(startDate - refDate).TotalSeconds;
             var endTime = (int)(endDate - refDate).TotalSeconds;
 
-            return $"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?symbol={ticker}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
+            return $"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?symbol={symbol}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
+        }
+        public string FormatQuoteURL(string symbol)
+        {
+            return $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}";
         }
 
         public override bool ForceDownloadData(StockSerie stockSerie)
@@ -246,7 +304,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
                     request.Headers.TryAddWithoutValidation("cookie", "GUC=AQABBwFjUTNjgUIjOQUK&s=AQAAAHQwhHqy&g=Y0_klA; A1=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; A3=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; EuConsent=CPP_3gAPP_3gAAOACBFRClCoAP_AAH_AACiQIjNd_Hf_bX9n-f596ft0eY1f9_r3ruQzDhfNk-8F2L_W_LwX_2E7NB36pq4KmR4ku1LBIQNtHMnUDUmxaokVrzHsak2MpyNKJ7BkknsZe2dYGFtPm5lD-QKZ7_5_d3f52T_9_9v-39z33913v3d93-_12LjdV591H_v9fR_bc_Kdt_5-AAAAAAAAEEEQCTDEvIAuxLHAk0DSqFECMKwkKgFABBQDC0TWADA4KdlYBHqCFgAhNQEYEQIMQUYEAgAEAgCQiACQAsEACAIgEAAIAUICEABAwCCwAsDAIAAQDQMQAoABAkIMjgqOUwICIFogJbKwBKKqY0wgDLLACgERkVEAiAIAEgICAsHEMASAlADDQAYAAgkEIgAwABBIIVABgACCQQA; thamba=2; cmp=t=1666643858&j=1&u=1---&v=56; A1S=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o&j=GDPR; PRF=t^%^3DTSLA^%^252BAAPL^%^252B^%^255EFCHI^%^252BMC.PA^%^252BES^%^253DF^%^252BNQ^%^253DF^%^252BSI^%^253DF^%^252BCC^%^253DF^%^252BADYEN.AS^%^252BAVT.PA^%^252BAC.PA");
                     request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
-                    request.Headers.TryAddWithoutValidation("referer", "https://finance.yahoo.com/quote/{ticker}/chart?p={ticker}");
+                    request.Headers.TryAddWithoutValidation("referer", $"https://finance.yahoo.com/quote/{ticker}/chart?p={ticker}");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
@@ -334,5 +392,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public string DisplayName => "Yahoo";
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+        }
     }
 }

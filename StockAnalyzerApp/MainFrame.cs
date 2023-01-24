@@ -4874,24 +4874,14 @@ namespace StockAnalyzerApp
             url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
             Process.Start(url);
         }
-        internal void OpenInSocGenMenu()
+        internal void OpenInDataProvider()
         {
-            if (!this.currentStockSerie.StockName.StartsWith("TURBO_"))
-                return;
-            string url;
-            if (this.currentStockSerie.Ticker != 0)
-            {
-                url = $"https://sgbourse.fr/product-detail?productId={this.currentStockSerie.Ticker}";
-            }
-            else if (!string.IsNullOrEmpty(this.currentStockSerie.ISIN))
-            {
-                url = $"https://fr-be.structured-products.saxo/products/{this.currentStockSerie.ISIN}";
-            }
-            else
+            IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(this.CurrentStockSerie.DataProvider);
+            if (dataProvider == null)
             {
                 return;
             }
-            Process.Start(url);
+            dataProvider.OpenInDataProvider(this.CurrentStockSerie);
         }
     }
 }

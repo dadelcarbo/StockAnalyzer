@@ -1087,7 +1087,12 @@ namespace StockAnalyzer.StockPortfolio
                 if (!this.SaxoLogin())
                     return;
 
-                orderService.CancelOrder(account, orderId);
+                if (orderService.CancelOrder(account, orderId))
+                {
+                    var id = long.Parse(orderId);
+                    this.OpenOrders.RemoveAll(o => o.Id == id);
+                    this.Serialize();
+                }
             }
             catch (Exception ex)
             {
