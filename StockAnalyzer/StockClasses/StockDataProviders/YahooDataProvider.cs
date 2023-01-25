@@ -150,7 +150,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         StockLog.Write($"Error loading {stockSerie.StockName}: {yahooQuoteResult?.quoteResponse?.error}");
                     }
                     var quote = yahooQuoteResult.quoteResponse.result[0];
-                    var openDate = refDate.AddSeconds(quote.regularMarketTime).AddMilliseconds(quote.gmtOffSetMilliseconds).ToLocalTime();
+                    var openDate = refDate.AddSeconds(quote.regularMarketTime).AddMilliseconds(quote.gmtOffSetMilliseconds);
                     if (!stockSerie.ContainsKey(openDate.Date))
                     {
                         long vol = quote.regularMarketVolume;
@@ -164,7 +164,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         stockSerie.Add(dailyValue.DATE, dailyValue);
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -285,7 +284,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         static private HttpClient httpClient = null;
-        public static string HttpGetFromYahoo(string url, string ticker)
+        public static string HttpGetFromYahoo(string url, string symbol)
         {
             try
             {
@@ -304,7 +303,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
                     request.Headers.TryAddWithoutValidation("cookie", "GUC=AQABBwFjUTNjgUIjOQUK&s=AQAAAHQwhHqy&g=Y0_klA; A1=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; A3=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; EuConsent=CPP_3gAPP_3gAAOACBFRClCoAP_AAH_AACiQIjNd_Hf_bX9n-f596ft0eY1f9_r3ruQzDhfNk-8F2L_W_LwX_2E7NB36pq4KmR4ku1LBIQNtHMnUDUmxaokVrzHsak2MpyNKJ7BkknsZe2dYGFtPm5lD-QKZ7_5_d3f52T_9_9v-39z33913v3d93-_12LjdV591H_v9fR_bc_Kdt_5-AAAAAAAAEEEQCTDEvIAuxLHAk0DSqFECMKwkKgFABBQDC0TWADA4KdlYBHqCFgAhNQEYEQIMQUYEAgAEAgCQiACQAsEACAIgEAAIAUICEABAwCCwAsDAIAAQDQMQAoABAkIMjgqOUwICIFogJbKwBKKqY0wgDLLACgERkVEAiAIAEgICAsHEMASAlADDQAYAAgkEIgAwABBIIVABgACCQQA; thamba=2; cmp=t=1666643858&j=1&u=1---&v=56; A1S=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o&j=GDPR; PRF=t^%^3DTSLA^%^252BAAPL^%^252B^%^255EFCHI^%^252BMC.PA^%^252BES^%^253DF^%^252BNQ^%^253DF^%^252BSI^%^253DF^%^252BCC^%^253DF^%^252BADYEN.AS^%^252BAVT.PA^%^252BAC.PA");
                     request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
-                    request.Headers.TryAddWithoutValidation("referer", $"https://finance.yahoo.com/quote/{ticker}/chart?p={ticker}");
+                    request.Headers.TryAddWithoutValidation("referer", $"https://finance.yahoo.com/quote/{symbol}/chart?p={symbol}");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
                     request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
@@ -347,7 +346,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
 
                     int i = 0;
-                    var priceInt = yahooJson.chart.result[0].meta.priceHint;
+                    var priceHint = yahooJson.chart.result[0].meta.priceHint;
                     var quote = yahooJson.chart.result[0].indicators.quote[0];
                     foreach (var timestamp in yahooJson.chart.result[0].timestamp)
                     {
@@ -361,10 +360,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
                             var dailyValue = new StockDailyValue(
-                                   (float)Math.Round(quote.open[i].Value, priceInt),
-                                   (float)Math.Round(quote.high[i].Value, priceInt),
-                                   (float)Math.Round(quote.low[i].Value, priceInt),
-                                   (float)Math.Round(quote.close[i].Value, priceInt),
+                                   (float)Math.Round(quote.open[i].Value, priceHint),
+                                   (float)Math.Round(quote.high[i].Value, priceHint),
+                                   (float)Math.Round(quote.low[i].Value, priceHint),
+                                   (float)Math.Round(quote.close[i].Value, priceHint),
                                    vol,
                                    openDate);
 

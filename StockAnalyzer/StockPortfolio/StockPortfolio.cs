@@ -55,12 +55,6 @@ namespace StockAnalyzer.StockPortfolio
             this.MaxPositionSize = 0.2f;
         }
 
-        public List<StockOpenedOrder> OpenOrders { get; private set; }
-        public List<StockPosition> Positions { get; }
-        public List<StockNetPosition> OpenedNetPositions { get; } = new List<StockNetPosition>();
-        public List<StockNetPosition> ClosedNetPositions { get; } = new List<StockNetPosition>();
-        public List<StockTradeOperation> TradeOperations { get; set; }
-
         public string Name
         {
             get => name;
@@ -83,19 +77,25 @@ namespace StockAnalyzer.StockPortfolio
         }
         public string SaxoAccountId { get; set; }
         public string SaxoClientId { get; set; }
+        public DateTime CreationDate { get; set; }
         public DateTime LastSyncDate { get; set; }
         public float InitialBalance { get; set; }
         public float Balance { get; set; }
-        public float MaxRisk { get; set; }
-        public float MaxPositionSize { get; set; }
-        public DateTime CreationDate { get; set; }
         public float PositionValue { get; set; }
         [JsonIgnore]
         public float TotalValue => this.Balance + this.PositionValue;
+        public float MaxRisk { get; set; }
+        public float MaxPositionSize { get; set; }
         [JsonIgnore]
         public float Return => (TotalValue - InitialBalance) / InitialBalance;
         public bool IsSimu { get; set; }
         public bool IsSaxoSimu { get; set; }
+
+        public List<StockOpenedOrder> OpenOrders { get; private set; }
+        public List<StockPosition> Positions { get; }
+        public List<StockNetPosition> OpenedNetPositions { get; } = new List<StockNetPosition>();
+        public List<StockNetPosition> ClosedNetPositions { get; } = new List<StockNetPosition>();
+        public List<StockTradeOperation> TradeOperations { get; set; }
 
         #region PERSISTENCY
         public void RenameFile(string newName)

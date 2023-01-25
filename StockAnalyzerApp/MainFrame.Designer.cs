@@ -118,6 +118,7 @@ namespace StockAnalyzerApp
             this.deleteThemeStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.portfolioComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.refreshPortfolioBtn = new System.Windows.Forms.ToolStripButton();
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -823,7 +824,8 @@ namespace StockAnalyzerApp
             this.deleteThemeStripButton,
             this.saveThemeStripButton,
             this.toolStripSeparator1,
-            this.portfolioComboBox});
+            this.portfolioComboBox,
+            this.refreshPortfolioBtn});
             this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
             this.themeToolStrip.Name = "themeToolStrip";
             this.themeToolStrip.Size = new System.Drawing.Size(455, 25);
@@ -921,6 +923,18 @@ namespace StockAnalyzerApp
             this.portfolioComboBox.Size = new System.Drawing.Size(220, 25);
             this.portfolioComboBox.SelectedIndexChanged += new System.EventHandler(this.portfolioComboBox_SelectedIndexChanged);
             // 
+            // refreshPortfolioBtn
+            // 
+            this.refreshPortfolioBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshPortfolioBtn.Image = global::StockAnalyzerApp.Properties.Resources.Reload;
+            this.refreshPortfolioBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshPortfolioBtn.Name = "refreshPortfolioBtn";
+            this.refreshPortfolioBtn.Size = new System.Drawing.Size(23, 20);
+            this.refreshPortfolioBtn.Text = "Refresh Portfolio";
+            this.refreshPortfolioBtn.ToolTipText = "Refresh Portfolio";
+            this.refreshPortfolioBtn.Click += new System.EventHandler(this.refreshPortfolioBtn_Click);
+
+            // 
             // browseToolStrip
             // 
             this.browseToolStrip.Dock = System.Windows.Forms.DockStyle.None;
@@ -997,7 +1011,6 @@ namespace StockAnalyzerApp
             this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(50, 23);
             this.barHeikinAshiCheckBox.ToolTipText = "Heikin Ashi";
             this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
-
             // 
             // downloadBtn
             // 
@@ -1626,6 +1639,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;
         private ToolStripComboBox portfolioComboBox;
+        private ToolStripButton refreshPortfolioBtn;
         private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;
         private ToolStripButton defaultThemeStripButton;

@@ -109,21 +109,20 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
         private void SelectionChanged(string stockName, string isin, StockBarDuration duration = null, string theme = null)
         {
-            var mapping = StockPortfolio.GetMapping(stockName, isin);
-            if (mapping != null)
-                stockName = mapping.StockName;
             if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName)
                 return;
-            if (StockDictionary.Instance.ContainsKey(stockName) && SelectedStockChanged != null)
+
+            var stockSerie = StockDictionary.GetSerie(stockName, isin);
+            if (stockSerie != null && SelectedStockChanged != null)
             {
                 StockAnalyzerForm.MainFrame.Activate();
                 if (!string.IsNullOrEmpty(theme) && duration != null)
                 {
-                    this.SelectedStockAndDurationChanged(stockName, duration, theme, true);
+                    this.SelectedStockAndDurationChanged(stockSerie.StockName, duration, theme, true);
                 }
                 else
                 {
-                    this.SelectedStockChanged(stockName, true);
+                    this.SelectedStockChanged(stockSerie.StockName, true);
                 }
                 this.Form.TopMost = true;
                 this.Form.TopMost = false;

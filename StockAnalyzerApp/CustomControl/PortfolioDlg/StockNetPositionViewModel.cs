@@ -33,25 +33,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 this.LastValue = value;
             }
 
-            if (!StockDictionary.Instance.ContainsKey(position.StockName))
-            {
-                var mapping = StockPortfolio.GetMapping(position.StockName, position.ISIN);
-                if (mapping != null)
-                {
-                    position.StockName = mapping.StockName;
-                }
-            }
+            var stockSerie = StockDictionary.GetSerie(position.StockName, position.ISIN);
+            position.StockName = stockSerie.StockName;
+            position.ISIN = stockSerie.ISIN;
         }
         public bool IsValidName
         {
             get
             {
-                var mapping = StockPortfolio.GetMapping(StockName, position.ISIN);
-                if (mapping == null)
-                {
-                    return StockDictionary.Instance.ContainsKey(position.StockName);
-                }
-                return StockDictionary.Instance.ContainsKey(mapping.StockName);
+                return StockDictionary.GetSerie(position.StockName, position.ISIN) != null;
             }
         }
 

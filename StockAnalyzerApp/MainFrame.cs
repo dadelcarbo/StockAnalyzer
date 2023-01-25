@@ -4374,6 +4374,14 @@ namespace StockAnalyzerApp
                 this.graphCloseControl.ForceRefresh();
             }
         }
+        void refreshPortfolioBtn_Click(object sender, EventArgs e)
+        {
+            if (this.portfolio != null)
+            {
+                this.portfolio.Refresh();
+                this.graphCloseControl.ForceRefresh();
+            }
+        }
 
         void themeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {

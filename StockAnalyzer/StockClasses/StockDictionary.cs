@@ -2023,5 +2023,14 @@ namespace StockAnalyzer.StockClasses
             portfolioSerie.IsInitialised = true;
             return portfolioSerie;
         }
+
+        public static StockSerie GetSerie(string stockName, string isin = null)
+        {
+            if (Instance.ContainsKey(stockName))
+            {
+                return Instance[stockName];
+            }
+            return Instance.Values.FirstOrDefault(s => s.ISIN == isin);
+        }
     }
 }
