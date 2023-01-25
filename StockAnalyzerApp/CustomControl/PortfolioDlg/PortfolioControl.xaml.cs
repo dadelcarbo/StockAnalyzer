@@ -172,8 +172,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             var viewModel = this.DataContext as ViewModel;
             viewModel.Portfolio.Refresh();
-
-            viewModel.Portfolio = viewModel.Portfolio;
+            viewModel.Portfolio_Refreshed(viewModel.Portfolio);
             this.Cursor = cursor;
         }
     }

@@ -471,7 +471,7 @@ namespace StockAnalyzer.StockPortfolio
 
             // Find instrument in stock Dictionnary
             var symbol = instrument.Symbol.Split(':')[0];
-            var stockName = instrument.Description.ToUpper().Trim();
+            var stockName = instrument.Description.ToUpper().Replace("SA", "").Trim();
             var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName);
             if (stockSerie == null)
             {
@@ -571,6 +571,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // Review opened Orders
+                this.OpenOrders.ForEach(o => o.IsActive = false);
                 var openedOrders = orderService.GetOpenedOrders(account);
                 foreach (var openedOrder in openedOrders.Data)
                 {
@@ -578,6 +579,7 @@ namespace StockAnalyzer.StockPortfolio
                     StockOpenedOrder order = this.OpenOrders.FirstOrDefault(o => o.Id == orderId);
                     if (order != null)
                     {
+                        order.IsActive = true;
                         order.Value = openedOrder.Price;
                         order.Qty = (int)openedOrder.Amount;
                         continue;
@@ -611,7 +613,7 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
 
-                // Review opened Positions
+                // Review opened Positions                
                 var saxoPositions = accountService.GetPositions(account).Where(p => p.PositionBase.CanBeClosed).OrderBy(p => p.PositionId).ToList();
 
                 this.Positions.Clear();

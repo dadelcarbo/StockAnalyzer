@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
         }
 
-        private void Portfolio_Refreshed(StockPortfolio sender)
+        public void Portfolio_Refreshed(StockPortfolio sender)
         {
             portfolioViewModel = null;
             OnPropertyChanged(nameof(Portfolio));

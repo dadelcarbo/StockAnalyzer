@@ -8,6 +8,7 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockOpenedOrder()
         {
+            this.IsActive = true;
         }
 
         public long Id { get; set; }
@@ -25,6 +26,8 @@ namespace StockAnalyzer.StockPortfolio
         public float StopValue { get; set; }
         public DateTime CreationDate { get; set; }
         public string Status { get; set; }
+
+        public bool IsActive { get; set; }
 
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
         public string EntryComment { get; set; }

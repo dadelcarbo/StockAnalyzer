@@ -17,7 +17,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             foreach (var pos in portfolio.Positions)
             {
-                var netPos = portfolio.OpenedNetPositions.FirstOrDefault(p=> p.Uic == pos.Uic && p.EntryDate == pos.EntryDate);
+                var netPos = portfolio.OpenedNetPositions.FirstOrDefault(p => p.Uic == pos.Uic && p.EntryDate == pos.EntryDate);
                 if (netPos != null)
                 {
                     this.MixedOpenedPositions.Add(new StockPositionBaseViewModel(netPos, this));
@@ -58,7 +58,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property(null, "4-Extra")]
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
-        public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.OrderByDescending(o => o.CreationDate);
+        public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.Where(o => o.IsActive).OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
         public IList<StockPositionBaseViewModel> MixedOpenedPositions { get; private set; }
