@@ -390,7 +390,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName => "Yahoo";
+        public override string DisplayName => "Yahoo";
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {

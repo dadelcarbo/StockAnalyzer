@@ -247,6 +247,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             //return configDlg.ShowDialog();
         }
 
-        public string DisplayName => "SocGen Intraday";
+        public override string DisplayName => "SocGen Intraday";
     }
 }

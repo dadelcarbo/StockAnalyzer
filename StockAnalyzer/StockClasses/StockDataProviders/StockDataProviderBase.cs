@@ -1,11 +1,15 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -28,6 +32,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public static bool IntradayDownloadSuspended { get; set; } = false;
 
         protected StockSerie RefSerie { get; set; }
+
+        public abstract string DisplayName {get;}
 
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\daily";
@@ -359,6 +365,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public virtual void OpenInDataProvider(StockSerie stockSerie)
         {
+            MessageBox.Show($"Open in {this.GetType().Name.Replace("DataProvider", "")} not implemeted", "Error", MessageBoxButton.OK);
         }
     }
 }

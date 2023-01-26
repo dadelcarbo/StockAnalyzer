@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -310,6 +311,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName => "Yahoo Intraday";
+        public override string DisplayName => "Yahoo Intraday";
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+        }
     }
 }

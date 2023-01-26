@@ -4837,22 +4837,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        internal void OpenInABCMenu()
-        {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
-                return;
-            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={this.currentStockSerie.ABCName}";
-            Process.Start(url);
-        }
-        internal void OpenInTradingView()
-        {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie?.ABCName))
-                return;
-            //string url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.ShortName}/financials-statistics-and-ratios/";
-            string url = $"https://fr.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.Symbol}/financials-statistics-and-ratios/";
-            Process.Start(url);
-        }
-
         internal void OpenInPEAPerf()
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))

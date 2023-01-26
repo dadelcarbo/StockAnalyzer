@@ -5,6 +5,7 @@ using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -1225,10 +1226,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName
-        {
-            get { return "Euronext"; }
-        }
+        public override string DisplayName => "ABCBourse";
         #endregion
 
         private static List<string> cac40List = null;
@@ -1540,5 +1538,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return result;
         }
         #endregion
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockSerie.ABCName}";
+            Process.Start(url);
+        }
     }
 }

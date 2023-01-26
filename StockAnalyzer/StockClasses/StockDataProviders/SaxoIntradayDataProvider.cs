@@ -12,6 +12,7 @@ using System.Net;
 using System.Windows.Forms;
 using System.Net.Http;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using System.Diagnostics;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -383,6 +384,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return DialogResult.OK;
         }
 
-        public string DisplayName => "Saxo Intraday";
+        public override string DisplayName => "Saxo Intraday";
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+        }
     }
 }

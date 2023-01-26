@@ -258,6 +258,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName => "Investing";
+        public override string DisplayName => "Investing";
     }
 }

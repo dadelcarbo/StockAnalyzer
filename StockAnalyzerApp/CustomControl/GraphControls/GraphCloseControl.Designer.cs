@@ -20,11 +20,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.sellMenu = new System.Windows.Forms.MenuItem();
             this.cancelMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
-            this.openInABCMenu = new MenuItem();
-            this.openInTradingViewMenu = new MenuItem();
             this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
-            this.openInSocGenMenu = new MenuItem();
+            this.openInDataProvider = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
             this.separator3 = new MenuItem();
@@ -40,11 +38,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator2,
             this.agendaMenu,
             this.separator3,
-            this.openInABCMenu,
-            this.openInTradingViewMenu,
             this.openInPEAPerfMenu,
             this.openInZBMenu,
-            this.openInSocGenMenu});
+            this.openInDataProvider});
             // 
             // buyMenu
             // 
@@ -91,18 +87,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator3.Index = 7;
             this.separator3.Text = "-";
             // 
-            // openInABCMenu
-            // 
-            this.openInABCMenu.Index = 8;
-            this.openInABCMenu.Text = "Open in ABCBourse";
-            this.openInABCMenu.Click += new System.EventHandler(this.openInABCMenu_Click);
-            // 
-            // openInTradingViewMenu
-            // 
-            this.openInTradingViewMenu.Index = 9;
-            this.openInTradingViewMenu.Text = "Open in TradingView";
-            this.openInTradingViewMenu.Click += new System.EventHandler(this.openInTradingView_Click);
-            // 
             // openInPEAPerf
             // 
             this.openInPEAPerfMenu.Index = 10;
@@ -117,9 +101,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // 
             // openInSocGenMenu
             // 
-            this.openInSocGenMenu.Index = 12;
-            this.openInSocGenMenu.Text = "Open in Data Provider";
-            this.openInSocGenMenu.Click += new System.EventHandler(this.openInSocGenMenu_Click);
+            this.openInDataProvider.Index = 12;
+            this.openInDataProvider.Text = "Open in Data Provider";
+            this.openInDataProvider.Click += new System.EventHandler(this.openInDataProvider_Click);
             // 
             // GraphCloseControl
             // 
@@ -136,11 +120,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem separator2;
         private MenuItem separator3;
         private MenuItem agendaMenu;
-        private MenuItem openInABCMenu;
         private MenuItem openInPEAPerfMenu;
-        private MenuItem openInTradingViewMenu;
         private MenuItem openInZBMenu;
-        private MenuItem openInSocGenMenu;
+        private MenuItem openInDataProvider;
         #endregion
     }
 }

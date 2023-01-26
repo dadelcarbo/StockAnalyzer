@@ -54,5 +54,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public static List<StockPortfolio.StockPortfolio> Portfolios { get; set; }
 
+        public override string DisplayName => "SocGen Intraday";
     }
 }

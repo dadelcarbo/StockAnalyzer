@@ -8,6 +8,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class BreadthDataProvider : StockDataProviderBase
     {
+        public override string DisplayName => "Breadth";
+
         static private string FOLDER = @"\daily\Breadth";
         static private string ARCHIVE_FOLDER = @"\archive\daily\Breadth";
 
@@ -29,7 +31,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 Directory.CreateDirectory(DataFolder + ARCHIVE_FOLDER);
             }
-
             string line;
             string fileName = Path.Combine(Folders.PersonalFolder, "Breadth.cfg");
             if (File.Exists(fileName))

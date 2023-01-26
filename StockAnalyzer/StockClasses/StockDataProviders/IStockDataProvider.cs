@@ -22,6 +22,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         event DownloadingStockEventHandler DownloadStarted;
 
+        string DisplayName { get; }
+
         bool SupportsIntradayDownload { get; }
 
         bool LoadData(StockSerie stockSerie);

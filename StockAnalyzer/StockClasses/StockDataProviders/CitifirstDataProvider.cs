@@ -383,6 +383,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return DialogResult.OK;
         }
 
-        public string DisplayName => "Citifirst";
+        public override string DisplayName => "Citifirst";
     }
 }

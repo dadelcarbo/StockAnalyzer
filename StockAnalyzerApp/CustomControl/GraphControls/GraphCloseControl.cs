@@ -2606,14 +2606,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
         }
-        void openInABCMenu_Click(object sender, System.EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.OpenInABCMenu();
-        }
-        void openInTradingView_Click(object sender, System.EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.OpenInTradingView();
-        }
         void openInPEAPerf_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInPEAPerf();
@@ -2622,7 +2614,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInZBMenu();
         }
-        void openInSocGenMenu_Click(object sender, System.EventArgs e)
+        void openInDataProvider_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInDataProvider();
         }

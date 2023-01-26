@@ -400,6 +400,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return configDlg.ShowDialog();
         }
 
-        public string DisplayName => "Investing Intraday";
+        public override string DisplayName => "Investing Intraday";
     }
 }
