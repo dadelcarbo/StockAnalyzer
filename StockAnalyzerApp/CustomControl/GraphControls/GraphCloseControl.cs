@@ -2565,6 +2565,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 StockName = this.serie.StockName,
                 Portfolio = this.Portfolio
             };
+            closeTradeViewModel.CalculateTickSize();
 
             this.IsSelling = true;
             this.OnMouseValueChanged += closeTradeViewModel.OnOrderValueChanged;

@@ -132,12 +132,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         }
         public void CalculatePositionSize()
         {
+            CalculateTickSize();
+
             // Calculate position size according to money management
             var qty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
             qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
             this.EntryQty = qty;
         }
-        private void CalulcateTickSize()
+        private void CalculateTickSize()
         {
             var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockSerie);
             if (instrumentDetails == null)
@@ -154,7 +156,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.Portfolio.Refresh();
             this.OnPropertyChanged("Portfolio");
             this.CalculatePositionSize();
-            this.CalulcateTickSize();
+            this.CalculateTickSize();
         }
     }
 }

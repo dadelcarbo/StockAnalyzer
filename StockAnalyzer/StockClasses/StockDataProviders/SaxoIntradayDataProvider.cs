@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using System.Net.Http;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using System.Diagnostics;
+using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -209,6 +211,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
+            //if (stockSerie.Uic != 0)
+            //{
+            //    var chartService = new ChartService();
+            //    var dailyValues = chartService.GetData(stockSerie.Uic, BarDuration.M_5);
+            //    if (dailyValues != null)
+            //    {
+            //        stockSerie.IsInitialised = false;
+            //        foreach (var newBar in dailyValues)
+            //        {
+            //            stockSerie.Add(newBar.DATE, newBar);
+            //        }
+            //        stockSerie.Initialise();
+            //        return true;
+            //    }
+            //}
+
             if (stockSerie.Count > 0)
             {
                 if (DownloadHistory.ContainsKey(stockSerie.Symbol) && DownloadHistory[stockSerie.Symbol] > DateTime.Now.AddSeconds(-30))
@@ -338,6 +356,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                             stockSerie.ISIN = row[0];
                             stockDictionary.Add(row[1], stockSerie);
+                            if (row.Length == 3)
+                            {
+                                stockSerie.Uic = long.Parse(row[2]);
+                            }
 
                             if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                             {
@@ -388,7 +410,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {
-            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+            Process.Start($"https://fr-be.structured-products.saxo/products/{stockSerie.ISIN}");
         }
     }
 }

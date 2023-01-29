@@ -19,7 +19,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerSettings;
-using Saxo.OpenAPI.AuthenticationServices;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -71,32 +70,8 @@ namespace StockAnalyzer.StockClasses
         #region public properties
         public string StockName { get; private set; }
         public string Symbol { get; private set; }
-        public string ABCName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ISIN)) return null;
-                switch (this.ISIN.Substring(0, 2))
-                {
-                    case "FR":
-                    case "QS":
-                        return this.Symbol + "p";
-                    case "BE":
-                        return this.Symbol + "g";
-                    case "NL":
-                        return this.Symbol + "n";
-                    case "DE":
-                        return this.Symbol + "f";
-                    case "IT":
-                        return this.Symbol + "i";
-                    case "ES":
-                        return this.Symbol + "m";
-                    case "PT":
-                        return this.Symbol + "I";
-                }
-                return null;
-            }
-        }
+        public string ABCName { get; set; }
+
         public StockDataProvider DataProvider { get; private set; }
         public string ISIN { get; set; }
         /// <summary>
@@ -104,6 +79,11 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         public long Ticker { get; set; }
         public long SaxoId { get; set; }
+        /// <summary>
+        /// SAXO OpenAPI instrument ID
+        /// </summary>
+        public long Uic{ get; set; }
+
         public int SectorId { get; set; }
 
         public string ProductType { get; set; }
@@ -2963,59 +2943,59 @@ namespace StockAnalyzer.StockClasses
             }
             return index;
         }
-        public int IndexOf(DateTime date)
-        {
-            if (dateArray == null)
-            {
-                if (this.Count > 0)
-                {
-                    dateArray = this.Keys.ToArray();
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-            if (date < dateArray[0]) { return -1; }
-            if (date > dateArray[dateArray.Length - 1]) { return -1; }
-            return IndexOfRec(date, 0, dateArray.Length - 1);
-        }
-        private int IndexOfRec(DateTime date, int startIndex, int endIndex)
-        {
-            if (startIndex < endIndex)
-            {
-                if (dateArray[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                if (dateArray[endIndex] == date)
-                {
-                    return endIndex;
-                }
-                int midIndex = (startIndex + endIndex) / 2;
-                int comp = date.CompareTo(dateArray[midIndex]);
-                if (comp == 0)
-                {
-                    return midIndex;
-                }
-                else if (comp < 0)
-                {// 
-                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
-                }
-                else
-                {
-                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
-                }
-            }
-            else
-            {
-                if (startIndex == endIndex && dateArray[startIndex] == date)
-                {
-                    return startIndex;
-                }
-                return -1;
-            }
-        }
+        //public int IndexOf(DateTime date)
+        //{
+        //    if (dateArray == null)
+        //    {
+        //        if (this.Count > 0)
+        //        {
+        //            dateArray = this.Keys.ToArray();
+        //        }
+        //        else
+        //        {
+        //            return -1;
+        //        }
+        //    }
+        //    if (date < dateArray[0]) { return -1; }
+        //    if (date > dateArray[dateArray.Length - 1]) { return -1; }
+        //    return IndexOfRec(date, 0, dateArray.Length - 1);
+        //}
+        //private int IndexOfRec(DateTime date, int startIndex, int endIndex)
+        //{
+        //    if (startIndex < endIndex)
+        //    {
+        //        if (dateArray[startIndex] == date)
+        //        {
+        //            return startIndex;
+        //        }
+        //        if (dateArray[endIndex] == date)
+        //        {
+        //            return endIndex;
+        //        }
+        //        int midIndex = (startIndex + endIndex) / 2;
+        //        int comp = date.CompareTo(dateArray[midIndex]);
+        //        if (comp == 0)
+        //        {
+        //            return midIndex;
+        //        }
+        //        else if (comp < 0)
+        //        {// 
+        //            return IndexOfRec(date, startIndex + 1, midIndex - 1);
+        //        }
+        //        else
+        //        {
+        //            return IndexOfRec(date, midIndex + 1, endIndex - 1);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (startIndex == endIndex && dateArray[startIndex] == date)
+        //        {
+        //            return startIndex;
+        //        }
+        //        return -1;
+        //    }
+        //}
         #endregion
         #region IXmlSerializable Members
         public System.Xml.Schema.XmlSchema GetSchema()

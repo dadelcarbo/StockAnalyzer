@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace Saxo.OpenAPI.AuthenticationServices
@@ -14,6 +15,8 @@ namespace Saxo.OpenAPI.AuthenticationServices
         public static List<LoginSession> Sessions = new List<LoginSession>();
 
         public static LoginSession CurrentSession { get; set; }
+
+        public static bool IsConnected => CurrentSession!= null && !CurrentSession.HasTokenExpired();
 
         public static App App
         {

@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -179,6 +180,7 @@
     <Compile Include="Saxo.OpenAPI\Models\Token.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\AccountService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\BaseService.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\ChartService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\ClientService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\InstrumentService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\OrderService.cs" />

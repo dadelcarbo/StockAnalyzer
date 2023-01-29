@@ -101,7 +101,6 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-
         public int IndexOf(DateTime date)
         {
             if (size == 0)

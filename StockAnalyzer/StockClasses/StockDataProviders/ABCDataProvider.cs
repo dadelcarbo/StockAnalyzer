@@ -467,6 +467,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockDictionary.ContainsKey(stockName))
                             {
                                 StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
+
+                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN switch
+                                {
+                                    null => string.Empty,
+                                    "FR" => "p",
+                                    "QS" => "p",
+                                    "BE" => "g",
+                                    "NL" => "n",
+                                    "DE" => "f",
+                                    "IT" => "i",
+                                    "ES" => "m",
+                                    "PT" => "I",
+                                    _ => string.Empty
+                                };
                                 stockDictionary.Add(stockName, stockSerie);
                             }
                             else
@@ -526,7 +540,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
-                            StockSerie stockSerie = new StockSerie(row[1], row[3], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
+                            StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
+                            stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
+                            {
+                                null => string.Empty,
+                                "FR" => "p",
+                                "QS" => "p",
+                                "BE" => "g",
+                                "NL" => "n",
+                                "DE" => "f",
+                                "IT" => "i",
+                                "ES" => "m",
+                                "PT" => "I",
+                                _ => string.Empty
+                            };
                             if (!stockDictionary.ContainsKey(row[1]))
                             {
                                 stockDictionary.Add(row[1], stockSerie);
@@ -1541,8 +1568,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {
-            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockSerie.ABCName}";
-            Process.Start(url);
+            if (stockSerie.ABCName != null)
+            {
+                string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockSerie.ABCName}";
+                Process.Start(url);
+            }
         }
     }
 }

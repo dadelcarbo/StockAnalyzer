@@ -1767,19 +1767,15 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
                         StockDataProviderBase.ForceDownloadSerieData(stockSerie);
 
-                        if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                        try
                         {
-                            try
-                            {
-                                StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                StockLog.Write(ex);
-                            }
+                            StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
                         }
-
+                        catch (Exception ex)
+                        {
+                            StockLog.Write(ex);
+                        }
                         StockSplashScreen.ProgressVal++;
                     }
 
@@ -1869,18 +1865,14 @@ namespace StockAnalyzerApp
                         {
                             StockDataProviderBase.DownloadSerieData(stockSerie);
                         }
-
-                        if (stockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                        try
                         {
-                            try
-                            {
-                                StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                                this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
-                            }
-                            catch (Exception ex)
-                            {
-                                StockLog.Write(ex);
-                            }
+                            StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
+                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
+                        }
+                        catch (Exception ex)
+                        {
+                            StockLog.Write(ex);
                         }
 
                         StockSplashScreen.ProgressVal++;

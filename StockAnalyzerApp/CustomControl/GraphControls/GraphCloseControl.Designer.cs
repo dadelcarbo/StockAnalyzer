@@ -11,6 +11,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         /// </summary>
         protected override void InitializeComponent()
         {
+            int index = 0;
             this.SuspendLayout();
             base.InitializeComponent();
 
@@ -44,64 +45,64 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // 
             // buyMenu
             // 
-            this.buyMenu.Index = 0;
+            this.buyMenu.Index = index++;
             this.buyMenu.Text = "Buy";
             this.buyMenu.Click += new System.EventHandler(this.buyMenu_Click);
             // 
             // sellMenu
             // 
-            this.sellMenu.Index = 1;
+            this.sellMenu.Index = index++;
             this.sellMenu.Text = "Sell";
             this.sellMenu.Click += new System.EventHandler(this.sellMenu_Click);
             // 
             // cancelMenu
             // 
-            this.cancelMenu.Index = 2;
+            this.cancelMenu.Index = index++;
             this.cancelMenu.Text = "Cancel Order";
             this.cancelMenu.Click += new System.EventHandler(this.cancelMenu_Click);
             // 
             // separator1
             // 
-            this.separator1.Index = 3;
+            this.separator1.Index = index++;
             this.separator1.Text = "-";
             // 
             // addAlertMenu
             // 
-            this.addAlertMenu.Index = 4;
+            this.addAlertMenu.Index = index++;
             this.addAlertMenu.Text = "Add Alert";
             this.addAlertMenu.Click += new System.EventHandler(this.addAlertMenu_Click);
             // 
             // separator2
             // 
-            this.separator2.Index = 5;
+            this.separator2.Index = index++;
             this.separator2.Text = "-";
             // 
             // agendaMenu
             // 
-            this.agendaMenu.Index = 6;
+            this.agendaMenu.Index = index++;
             this.agendaMenu.Text = "Agenda";
             this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
             // 
             // separator3
             // 
-            this.separator3.Index = 7;
+            this.separator3.Index = index++;
             this.separator3.Text = "-";
             // 
             // openInPEAPerf
             // 
-            this.openInPEAPerfMenu.Index = 10;
+            this.openInPEAPerfMenu.Index = index++;
             this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
             this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
             // 
             // openInZBMenu
             // 
-            this.openInZBMenu.Index = 11;
+            this.openInZBMenu.Index = index++;
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
             // openInSocGenMenu
             // 
-            this.openInDataProvider.Index = 12;
+            this.openInDataProvider.Index = index++;
             this.openInDataProvider.Text = "Open in Data Provider";
             this.openInDataProvider.Click += new System.EventHandler(this.openInDataProvider_Click);
             // 

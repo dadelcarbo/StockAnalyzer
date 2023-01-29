@@ -85,6 +85,19 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public StockPosition Position { get; set; }
 
         #region Tick Size Management
+
+        public void CalculateTickSize()
+        {
+            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockSerie);
+            if (instrumentDetails == null)
+            {
+                return;
+            }
+
+            this.SmallChange = (float)instrumentDetails.GetTickSize(this.ExitValue);
+            this.ExitValue = (float)instrumentDetails.RoundToTickSize(this.ExitValue);
+        }
+
         private float smallChange = 0.01f;
         public float SmallChange { get { return smallChange; } set { smallChange = value; this.OnPropertyChanged("SmallChange"); this.OnPropertyChanged("LargeChange"); this.OnPropertyChanged("NbDecimals"); } }
         public float LargeChange => smallChange * 10;

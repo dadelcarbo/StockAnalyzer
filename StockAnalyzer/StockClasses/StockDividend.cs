@@ -84,7 +84,7 @@ namespace StockAnalyzer.StockClasses
                     shortName += ".PA";
                 }
             }
-            else
+            else if (stockSerie.DataProvider != StockDataProvider.Yahoo)
             {
                 return false;
             }
