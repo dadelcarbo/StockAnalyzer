@@ -45,9 +45,11 @@
   <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\Instrument.cs" />
+  <Compile Include="DataModels\StockRange.cs" />
   <Compile Include="DataModels\StockBar.cs" />
   <Compile Include="Helpers\Folders.cs" />
   <Compile Include="Helpers\StockLog.cs" />
+  <Compile Include="Indicators\MathExtensions.cs" />
   <Compile Include="MainWindow.xaml.cs">
     <DependentUpon>MainWindow.xaml</DependentUpon>
     <SubType>Code</SubType>

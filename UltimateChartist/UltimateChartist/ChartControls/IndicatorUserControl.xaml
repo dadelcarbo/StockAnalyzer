@@ -19,9 +19,9 @@
 
         <TextBlock Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-5,40,0"
                    Text="{Binding Name}" Foreground="#767676" FontFamily="Segoe UI" FontSize="11" />
-        <telerik:RadCartesianChart Grid.Row="1" Margin="10,11,10,0"
-                                   Zoom="{Binding ChartViewModel.Zoom, Mode=TwoWay}" 
-                                   PanOffset="{Binding  ChartViewModel.PanOffset, Mode=TwoWay}"
+        <telerik:RadCartesianChart Grid.Row="1" Margin="10,11,10,0"    
+                                   HorizontalZoomRangeStart="{Binding ChartViewModel.HorizontalZoomRangeStart}" 
+                                   HorizontalZoomRangeEnd="{Binding ChartViewModel.HorizontalZoomRangeEnd}"
                                    PlotAreaStyle="{StaticResource plotAreaStyle}">
             <telerik:RadCartesianChart.Behaviors>
                 <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan" />

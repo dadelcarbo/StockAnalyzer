@@ -44,30 +44,22 @@
                 <TextBlock Margin="10,0,0,0"><Run Text="VOLUME:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="volume" Text="5,976,129" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
             </StackPanel>
             <telerik:RadCartesianChart x:Name="Chart" Grid.Row="1" Margin="10,0,10,30" Palette="{Binding Source={x:Static telerik:ChartPalettes.VisualStudio2019}}"
-                                   Zoom="{Binding Zoom, Mode=TwoWay}" 
-                                   PanOffset="{Binding PanOffset, Mode=TwoWay}"
+                                   HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}" 
+                                   HorizontalZoomRangeEnd="{Binding HorizontalZoomRangeEnd, Mode=TwoWay}"
                                    TrackBallLineStyle="{StaticResource trackBallLineStyle}"
                                    TrackBallInfoStyle="{StaticResource trackBallInfoStyle}"
                                    PlotAreaStyle="{StaticResource plotAreaStyle}">
-
-                <telerik:RadCartesianChart.Indicators>
-                    <telerik:ExponentialMovingAverageIndicator ItemsSource="{Binding Data}"
-                                                ValueBinding="Close"
-                                                CategoryBinding="Date"
-                                                Stroke="Red"
-                                                StrokeThickness="1"
-                                                Period="9" >
-                    </telerik:ExponentialMovingAverageIndicator>
-                </telerik:RadCartesianChart.Indicators>
                 
                 <telerik:RadCartesianChart.Behaviors>
-                    <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan"/>
+                    <telerik:ChartPanAndZoomBehavior ZoomMode="Both" DragMode="Pan" PanMode="Both"/>
                     <telerik:ChartTrackBallBehavior ShowIntersectionPoints="True" TrackInfoUpdated="ChartTrackBallBehavior_TrackInfoUpdated" />
                 </telerik:RadCartesianChart.Behaviors>
+                
                 <telerik:RadCartesianChart.HorizontalAxis>
                     <telerik:DateTimeCategoricalAxis DateTimeComponent="Date" PlotMode="BetweenTicks" MajorTickInterval="30" MajorTickStyle="{StaticResource tickStyle}"
                                                      LabelTemplate="{Binding AxisLabelTemplate}"/>
                 </telerik:RadCartesianChart.HorizontalAxis>
+                
                 <telerik:RadCartesianChart.VerticalAxis>
                     <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
                 </telerik:RadCartesianChart.VerticalAxis>

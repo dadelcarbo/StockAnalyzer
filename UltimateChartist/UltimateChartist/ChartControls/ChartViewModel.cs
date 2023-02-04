@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Telerik.Windows.Controls;
 using UltimateChartist.DataModels;
 using UltimateChartist.DataModels.DataProviders;
+using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls
 {
@@ -20,10 +15,6 @@ namespace UltimateChartist.ChartControls
         public ChartViewModel()
         {
             this.name = "Chart" + count++;
-
-            this.Zoom = new Size(3, 1);
-            this.PanOffset = new Point();
-
             this.Instrument = MainWindowViewModel.Instance.Instruments.FirstOrDefault();
         }
         private string name;
@@ -54,9 +45,37 @@ namespace UltimateChartist.ChartControls
                     instrument = value;
                     this.Name = instrument.Name;
                     this.Data = DataProviderHelper.LoadData(instrument, BarDuration.Daily);
+
+                    var closeArray = this.Data.Select(b => b.Close).ToArray();
+                    var fastMA = closeArray.CalculateEMA(10);
+                    var slowMA = closeArray.CalculateEMA(20);
+
+                    this.BullRange = new List<StockRange>();
+                    this.BearRange = new List<StockRange>();
+                    for (int i = 0; i < closeArray.Length; i++)
+                    {
+                        if (fastMA[i] > slowMA[i])
+                        {
+                            this.BullRange.Add(new StockRange(Data.ElementAt(i).Date, fastMA[i], slowMA[i]));
+                            this.BearRange.Add(new StockRange(Data.ElementAt(i).Date, double.NaN, double.NaN));
+                        }
+                        else
+                        {
+                            this.BullRange.Add(new StockRange(Data.ElementAt(i).Date, double.NaN, double.NaN));
+                            this.BearRange.Add(new StockRange(Data.ElementAt(i).Date, slowMA[i], fastMA[i]));
+                        }
+                    }
+                    ResetZoom();
                     RaisePropertyChanged();
                 }
             }
+        }
+
+        private int nbBar = 100;
+        private void ResetZoom()
+        {
+            this.HorizontalZoomRangeEnd = 1;
+            this.HorizontalZoomRangeStart = 1 - ((double)nbBar / Data.Count);
         }
 
         private BarDuration barDuration = BarDuration.Daily;
@@ -80,11 +99,17 @@ namespace UltimateChartist.ChartControls
         private List<StockBar> data;
         public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
 
-        private Point panOffset;
-        public Point PanOffset { get => panOffset; set { if (panOffset != value) { panOffset = value; RaisePropertyChanged(); } } }
+        private List<StockRange> bearRange;
+        public List<StockRange> BearRange { get => bearRange; set { if (bearRange != value) { bearRange = value; RaisePropertyChanged(); } } }
 
-        private Size zoom;
-        public Size Zoom { get => zoom; set { if (zoom != value) { zoom = value; RaisePropertyChanged(); } } }
+        private List<StockRange> bullRange;
+        public List<StockRange> BullRange { get => bullRange; set { if (bullRange != value) { bullRange = value; RaisePropertyChanged(); } } }
+
+        private double horizontalZoomRangeStart;
+        public double HorizontalZoomRangeStart { get => horizontalZoomRangeStart; set { if (horizontalZoomRangeStart != value) { horizontalZoomRangeStart = value; RaisePropertyChanged(); } } }
+
+        private double horizontalZoomRangeEnd;
+        public double HorizontalZoomRangeEnd { get => horizontalZoomRangeEnd; set { if (horizontalZoomRangeEnd != value) { horizontalZoomRangeEnd = value; RaisePropertyChanged(); } } }
 
         private SeriesType seriesType;
         public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }

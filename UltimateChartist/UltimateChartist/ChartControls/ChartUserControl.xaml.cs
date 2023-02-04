@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.DataModels;
@@ -99,7 +100,7 @@ namespace UltimateChartist.ChartControls
         private void ChartTrackBallBehavior_TrackInfoUpdated(object sender, TrackBallInfoEventArgs e)
         {
             var closestDataPoint = e.Context.ClosestDataPoint;
-            if (closestDataPoint != null)
+            if (closestDataPoint?.DataPoint?.DataItem is StockBar)
             {
                 StockBar data = closestDataPoint.DataPoint.DataItem as StockBar;
                 this.volume.Text = data.Volume.ToString("##,#");
@@ -133,6 +134,24 @@ namespace UltimateChartist.ChartControls
             SetSourceBinding(series);
             SetTrackBallInfoTemplate(series);
             this.Chart.Series.Add(series);
+
+            var rangeSerie = new RangeSeries();
+            rangeSerie.Fill = Brushes.DarkGreen;
+            rangeSerie.Stroke = Brushes.DarkGreen;
+            SetBindings(rangeSerie);
+            Binding sourceBinding = new Binding("BullRange");
+            sourceBinding.Mode = BindingMode.TwoWay;
+            rangeSerie.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
+            this.Chart.Series.Add(rangeSerie);
+
+            rangeSerie = new RangeSeries();
+            rangeSerie.Fill = Brushes.Red; 
+            rangeSerie.Stroke = Brushes.Red;
+            SetBindings(rangeSerie);
+            sourceBinding = new Binding("BearRange");
+            sourceBinding.Mode = BindingMode.TwoWay;
+            rangeSerie.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
+            this.Chart.Series.Add(rangeSerie);
         }
 
         private static void SetTrackBallInfoTemplate(CategoricalSeriesBase series)
@@ -153,6 +172,12 @@ namespace UltimateChartist.ChartControls
                 ohlcSeries.HighBinding = new PropertyNameDataPointBinding("High");
                 ohlcSeries.LowBinding = new PropertyNameDataPointBinding("Low");
                 ohlcSeries.CloseBinding = new PropertyNameDataPointBinding("Close");
+            }
+            else if (series is RangeSeriesBase)
+            {
+                var rangeSeries = (RangeSeriesBase)series;
+                rangeSeries.HighBinding = new PropertyNameDataPointBinding("High");
+                rangeSeries.LowBinding = new PropertyNameDataPointBinding("Low");
             }
             else if (series is CategoricalStrokedSeries)
             {
