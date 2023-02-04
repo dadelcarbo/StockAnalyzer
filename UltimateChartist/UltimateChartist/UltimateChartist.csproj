@@ -1,0 +1,76 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>UltimateChartist</RootNamespace>
+    <EnableDefaultItems>False</EnableDefaultItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Telerik.UI.for.Wpf.70.Xaml" Version="2023.1.117" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  <ApplicationDefinition Include="App.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </ApplicationDefinition>
+  <Page Include="ChartControls\ChartUserControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="ChartControls\IndicatorUserControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="MainWindow.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </Page>
+  <Compile Include="App.xaml.cs">
+    <DependentUpon>App.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="ChartControls\ChartUserControl.xaml.cs" />
+  <Compile Include="ChartControls\ChartViewModel.cs" />
+  <Compile Include="ChartControls\Converters\AxisDateLabelConverter.cs" />
+  <Compile Include="ChartControls\Converters\EnumToValuesConverter.cs" />
+  <Compile Include="ChartControls\CustomIndicatorSeries\TrailStopSeries.cs" />
+  <Compile Include="ChartControls\IndicatorUserControl.xaml.cs" />
+  <Compile Include="ChartControls\IndicatorViewModel.cs" />
+  <Compile Include="DataModels\BarDuration.cs" />
+  <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
+  <Compile Include="DataModels\DataProviders\DataProviderHelper.cs" />
+  <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
+  <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
+  <Compile Include="DataModels\Instrument.cs" />
+  <Compile Include="DataModels\StockBar.cs" />
+  <Compile Include="Helpers\Folders.cs" />
+  <Compile Include="Helpers\StockLog.cs" />
+  <Compile Include="MainWindow.xaml.cs">
+    <DependentUpon>MainWindow.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="MainWindowViewModel.cs" />
+  <Compile Include="Settings.Designer.cs">
+    <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>Settings.settings</DependentUpon>
+  </Compile>
+</ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="ChartControls\Selectors\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
