@@ -9,7 +9,6 @@ namespace UltimateChartist.Indicators
 {
     public static class MathExtensions
     {
-
         public static double[] CalculateEMA(this double[] values, int emaPeriod)
         {
             var ema = new double[values.Length];

@@ -18,7 +18,7 @@ namespace UltimateChartist
             this.Instruments = new ObservableCollection<Instrument>();
         }
         static private MainWindowViewModel instance = null;
-        static public MainWindowViewModel Instance => instance = instance ?? new MainWindowViewModel();
+        static public MainWindowViewModel Instance => instance ??= new MainWindowViewModel();
         #endregion
 
         #region Chart Views

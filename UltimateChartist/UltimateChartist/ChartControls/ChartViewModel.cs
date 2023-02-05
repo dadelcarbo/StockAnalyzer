@@ -46,25 +46,6 @@ namespace UltimateChartist.ChartControls
                     this.Name = instrument.Name;
                     this.Data = DataProviderHelper.LoadData(instrument, BarDuration.Daily);
 
-                    var closeArray = this.Data.Select(b => b.Close).ToArray();
-                    var fastMA = closeArray.CalculateEMA(10);
-                    var slowMA = closeArray.CalculateEMA(20);
-
-                    this.BullRange = new List<StockRange>();
-                    this.BearRange = new List<StockRange>();
-                    for (int i = 0; i < closeArray.Length; i++)
-                    {
-                        if (fastMA[i] > slowMA[i])
-                        {
-                            this.BullRange.Add(new StockRange(Data.ElementAt(i).Date, fastMA[i], slowMA[i]));
-                            this.BearRange.Add(new StockRange(Data.ElementAt(i).Date, double.NaN, double.NaN));
-                        }
-                        else
-                        {
-                            this.BullRange.Add(new StockRange(Data.ElementAt(i).Date, double.NaN, double.NaN));
-                            this.BearRange.Add(new StockRange(Data.ElementAt(i).Date, slowMA[i], fastMA[i]));
-                        }
-                    }
                     ResetZoom();
                     RaisePropertyChanged();
                 }
@@ -99,11 +80,7 @@ namespace UltimateChartist.ChartControls
         private List<StockBar> data;
         public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
 
-        private List<StockRange> bearRange;
-        public List<StockRange> BearRange { get => bearRange; set { if (bearRange != value) { bearRange = value; RaisePropertyChanged(); } } }
-
-        private List<StockRange> bullRange;
-        public List<StockRange> BullRange { get => bullRange; set { if (bullRange != value) { bullRange = value; RaisePropertyChanged(); } } }
+        public List<IIndicator> indicators;
 
         private double horizontalZoomRangeStart;
         public double HorizontalZoomRangeStart { get => horizontalZoomRangeStart; set { if (horizontalZoomRangeStart != value) { horizontalZoomRangeStart = value; RaisePropertyChanged(); } } }

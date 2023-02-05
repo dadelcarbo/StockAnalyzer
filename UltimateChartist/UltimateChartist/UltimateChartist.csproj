@@ -44,12 +44,18 @@
   <Compile Include="DataModels\DataProviders\DataProviderHelper.cs" />
   <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
+  <Compile Include="DataModels\StockSerie.cs" />
+  <Compile Include="Indicators\Indicator_EMA.cs" />
+  <Compile Include="Indicators\IIndicator.cs" />
   <Compile Include="DataModels\Instrument.cs" />
-  <Compile Include="DataModels\StockRange.cs" />
+  <Compile Include="Indicators\IRangeSerie.cs" />
   <Compile Include="DataModels\StockBar.cs" />
   <Compile Include="Helpers\Folders.cs" />
   <Compile Include="Helpers\StockLog.cs" />
   <Compile Include="Indicators\MathExtensions.cs" />
+  <Compile Include="Indicators\MovingAverageBase.cs" />
+  <Compile Include="Indicators\ParamRange.cs" />
+  <Compile Include="Indicators\IndicatorBase.cs" />
   <Compile Include="MainWindow.xaml.cs">
     <DependentUpon>MainWindow.xaml</DependentUpon>
     <SubType>Code</SubType>

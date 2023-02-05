@@ -2,17 +2,16 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using UltimateChartist.Helpers;
 using UltimateChartist;
 
-namespace StockAnalyzer.StockLogging
+namespace UltimateChartist.Helpers
 {
     public class MethodLogger : IDisposable
     {
         private StackFrame sf;
         private Type callerType;
         private bool isActive = false;
-        public MethodLogger(Object caller, bool activated = false, string text = "")
+        public MethodLogger(object caller, bool activated = false, string text = "")
         {
             isActive = activated;
             if (activated && StockLog.Logger.isMethodLoggingEnabled)
@@ -97,34 +96,34 @@ namespace StockAnalyzer.StockLogging
 
         static public void Write(string logText, bool isActive = true)
         {
-            if (isActive && StockLog.Logger.isEnabled)
+            if (isActive && Logger.isEnabled)
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
                 var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {sf.GetMethod().Name}";
-                StockLog.Logger.sw.WriteLine($"{prefix}: {logText}");
+                Logger.sw.WriteLine($"{prefix}: {logText}");
             }
         }
         static public void WriteMethodEntry(Type type, StackFrame sf, string text)
         {
-            if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
+            if (Logger.isEnabled && Logger.isMethodLoggingEnabled)
             {
                 var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
-                StockLog.Logger.sw.WriteLine($"{prefix}: Entry {text}");
+                Logger.sw.WriteLine($"{prefix}: Entry {text}");
             }
         }
         static public void WriteMethodExit(Type type, StackFrame sf)
         {
-            if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
+            if (Logger.isEnabled && Logger.isMethodLoggingEnabled)
             {
                 var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
-                StockLog.Logger.sw.WriteLine($"{prefix}: Exit");
+                Logger.sw.WriteLine($"{prefix}: Exit");
             }
         }
 
         static public void Write(Exception objException)
         {
-            if (StockLog.Logger.isEnabled)
+            if (Logger.isEnabled)
             {
                 string strException = objException.Message;
                 var innerException = objException.InnerException;
@@ -135,7 +134,7 @@ namespace StockAnalyzer.StockLogging
                     padding += "  ";
                     innerException = innerException.InnerException;
                 }
-                StreamWriter sw = StockLog.Logger.sw;
+                StreamWriter sw = Logger.sw;
                 if (objException.Source != null)
                 {
                     sw.WriteLine("Source      : " + objException.Source.ToString().Trim());

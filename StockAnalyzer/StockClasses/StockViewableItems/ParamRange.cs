@@ -121,27 +121,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return bool.TryParse(valueString, out boolValue);
         }
     }
-    //public class ParamRangeStringList : ParamRange
-    //{
-    //    private List<string> stringList;
-
-    //    public ParamRangeStringList(List<string> list)
-    //    {
-    //        this.MinValue = String.Empty;
-    //        this.MaxValue = String.Empty;
-    //        this.stringList = list;
-    //    }
-
-    //    public override bool isInRange(Object value)
-    //    {
-    //        return true;
-    //    }
-
-    //    public override bool isValidString(string valueString)
-    //    {
-    //        return stringList.Contains(valueString.ToUpper());
-    //    }
-    //}
     public class ParamRangeMA : ParamRange
     {
         public ParamRangeMA()
@@ -229,7 +208,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return typeof(string);
         }
     }
-
     public class ParamRangeString : ParamRange
     {
         public ParamRangeString()
