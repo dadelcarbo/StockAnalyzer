@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Telerik.Windows.Controls.ChartView;
+using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators;
 
@@ -84,9 +85,27 @@ namespace UltimateChartist.ChartControls
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     {
-                        if (this.viewModel.Indicators.Count > 3)
-                            return;
+                        var indicator = new StockIndicator_EMA() { Period = 69 };
 
+                        var indicatorSeries = new LineSeries()
+                        {
+                            Stroke = indicator.Series.Brush,
+                            StrokeThickness = indicator.Series.Thickness,
+                            CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                            ValueBinding = new PropertyNameDataPointBinding("Value")
+                        };
+
+                        Binding sourceBinding = new Binding($"PriceIndicators[0].Series.Values");
+                        sourceBinding.Mode = BindingMode.OneWay;
+                        indicatorSeries.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
+                        this.Chart.Series.Add(indicatorSeries);
+
+                        indicator.LineSeries = indicatorSeries;
+                        indicator.Initialize(this.viewModel.StockSerie);
+                        indicator.PropertyChanged += Indicator_PropertyChanged;
+
+                        var dlg = new IndicatorConfigWindow(indicator);
+                        dlg.ShowDialog();
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
@@ -95,6 +114,15 @@ namespace UltimateChartist.ChartControls
                     break;
                 default:
                     throw new NotImplementedException("ChartViews_CollectionChanged: " + e.Action + " Not Yet Implement");
+            }
+        }
+
+        private void Indicator_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var indicator = sender as IIndicator; 
+            if (indicator != null)
+            {
+                indicator.Initialize(this.viewModel.StockSerie);
             }
         }
 
@@ -129,8 +157,6 @@ namespace UltimateChartist.ChartControls
         }
 
         #region Series Type 
-
-
         private void OnSeriesTypeChanged()
         {
             CategoricalSeriesBase series = null;
@@ -153,19 +179,6 @@ namespace UltimateChartist.ChartControls
             SetSourceBinding(series);
             SetTrackBallInfoTemplate(series);
             this.Chart.Series.Add(series);
-
-            var indicator = new StockIndicator_EMA() { Period = 69 };
-            indicator.Initialize(this.viewModel.StockSerie);
-
-            var indicatorSeries = new LineSeries()
-            {
-                Stroke = indicator.Series.Brush,
-                StrokeThickness = indicator.Series.Thickness,
-                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                ValueBinding = new PropertyNameDataPointBinding("Value"),
-                ItemsSource = indicator.Series.Values
-            };
-            this.Chart.Series.Add(indicatorSeries);
         }
         private static void SetTrackBallInfoTemplate(CategoricalSeriesBase series)
         {

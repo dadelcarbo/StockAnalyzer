@@ -24,6 +24,8 @@ namespace UltimateChartist.Indicators
                 ema += alpha * (bar.Close - ema);
                 this.Series.Values[i++] = new IndicatorLineValue() { Date = bar.Date, Value = ema };
             }
+
+            this.LineSeries.ItemsSource = this.Series.Values;
         }
     }
 }

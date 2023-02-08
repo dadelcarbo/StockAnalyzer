@@ -11,17 +11,14 @@ namespace UltimateChartist.Indicators
     }
     public abstract class MovingAverageBase : IndicatorBase
     {
-        public MovingAverageBase()
-        {
-        }
-
         public override string DisplayName => $"{ShortName}({Period})";
 
-        [IndicatorParameter]
-        public int Period { get; set; } = 20;
+        private int period = 20;
+        [IndicatorParameterInt("Period", 1, 500)]
+        public int Period { get => period; set { if (period != value) { period = value; RaisePropertyChanged(); } } }
 
-        public  IndicatorLineSeries Series { get; protected set; } = new IndicatorLineSeries { Brush = new SolidColorBrush(Colors.Red) };
+        public IndicatorLineSeries Series { get; protected set; } = new IndicatorLineSeries { Brush = new SolidColorBrush(Colors.Red) };
 
-        public abstract void Initialize(StockSerie bars);
+
     }
 }

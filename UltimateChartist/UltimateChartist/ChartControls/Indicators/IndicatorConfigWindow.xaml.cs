@@ -1,14 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.BulletGraph;
-using Telerik.Windows.Controls.Charting;
-using Telerik.Windows.Controls.ChartView;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls.Indicators
@@ -39,19 +34,6 @@ namespace UltimateChartist.ChartControls.Indicators
                     stackPanel.Children.Add(upDown);
                     this.ParameterPanel.Children.Add(stackPanel);
                 }
-                //else if (prop.GetCustomAttributes(typeof(IndicatorDisplayAttribute), true).Any())
-                //{
-                //    var label = new System.Windows.Controls.Label() { Content = prop.Name };
-                //    var colorPicker = new RadColorPicker();
-
-                //    //var binding = new Binding(prop.Name + ".Brush") { Mode = BindingMode.TwoWay, Converter = new ColorToBrushConverter() };
-                //    //colorPicker.SetBinding(RadColorPicker.SelectedColorProperty, binding);
-
-                //    var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-                //    stackPanel.Children.Add(label);
-                //    stackPanel.Children.Add(colorPicker);
-                //    this.DisplayPanel.Children.Add(stackPanel);
-                //}
             }
         }
 

@@ -1,4 +1,7 @@
-﻿namespace UltimateChartist.Indicators
+﻿using Telerik.Windows.Controls.ChartView;
+using UltimateChartist.DataModels;
+
+namespace UltimateChartist.Indicators
 {
     public enum DisplayType
     {
@@ -17,6 +20,10 @@
         string DisplayName { get; }
         string Description { get; }
         DisplayType DisplayType { get; }
+
+        void Initialize(StockSerie bars);
+
+        public LineSeries LineSeries { get; }
     }
 
 }

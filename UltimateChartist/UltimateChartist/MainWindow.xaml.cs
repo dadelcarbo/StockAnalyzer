@@ -74,8 +74,6 @@ namespace UltimateChartist
                 IIndicator indicator = new StockIndicator_EMA();
                 
                 this.viewModel.CurrentChartView.PriceIndicators.Add(indicator);
-                //var dlg = new IndicatorConfigWindow(indicator);
-                //dlg.ShowDialog();
             }
         }
         private void AddEmaCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
