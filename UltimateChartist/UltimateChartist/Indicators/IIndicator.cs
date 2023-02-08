@@ -19,32 +19,4 @@
         DisplayType DisplayType { get; }
     }
 
-    /// <summary>
-    /// Interface for all one line indicator
-    /// </summary>
-    public interface ILineIndicator : IIndicator
-    {
-        ValueSerie Values { get; }
-    }
-
-    /// <summary>
-    /// Interface for all one line indicator
-    /// </summary>
-    public interface ISignalLineIndicator : IIndicator
-    {
-        ValueSerie Values { get; }
-        ValueSerie Signal { get; }
-    }
-
-    public interface ICloud : IIndicator
-    {
-        IRangeSerie Range { get; }
-    }
-
-    public interface ITrailStop : IIndicator
-    {
-        IRangeReentrySerie BullTrailStop { get; }
-
-        IRangeReentrySerie BearTrailStop { get; }
-    }
 }

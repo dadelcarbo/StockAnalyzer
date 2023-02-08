@@ -40,7 +40,7 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
                 <Button Content="Duration" Margin="2"></Button>
                 <ComboBox Margin="2" ItemsSource="{Binding SeriesType, Converter={StaticResource EnumToValuesConverter}}" SelectedItem="{Binding SeriesType}"/>
-                <TextBlock><Run Text="DATE:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="date" Text="Mar 18, 2012" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
+                <TextBlock><Run Text="DATE:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="date" Text="Mar 18, 2012" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC"/></TextBlock>
                 <TextBlock Margin="10,0,0,0"><Run Text="PRICE:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="price" Text="600.40" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
                 <TextBlock Margin="10,0,0,0"><Run Text="VOLUME:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="volume" Text="5,976,129" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
             </StackPanel>
@@ -62,7 +62,7 @@
                 </telerik:RadCartesianChart.HorizontalAxis>
 
                 <telerik:RadCartesianChart.VerticalAxis>
-                    <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
+                    <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}"/>
                 </telerik:RadCartesianChart.VerticalAxis>
                 <telerik:RadCartesianChart.Grid>
                     <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="XY">

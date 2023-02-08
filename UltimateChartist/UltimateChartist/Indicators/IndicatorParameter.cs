@@ -9,12 +9,6 @@ namespace UltimateChartist.Indicators
         {
         }
     }
-    public class IndicatorDisplayAttribute : Attribute
-    {
-        public IndicatorDisplayAttribute()
-        {
-        }
-    }
 
     public class IndicatorParameter
     {

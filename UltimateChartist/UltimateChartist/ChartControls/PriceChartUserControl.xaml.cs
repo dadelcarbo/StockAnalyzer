@@ -87,15 +87,6 @@ namespace UltimateChartist.ChartControls
                         if (this.viewModel.Indicators.Count > 3)
                             return;
 
-                        var indicator = e.NewItems[0] as StockIndicator_EMA;
-                        indicator.Initialize(this.viewModel.StockSerie);
-                        viewModel.EMA = indicator.EMA.Values;
-
-                        var series = new LineSeries();
-                        series.Stroke = indicator.EMA.Brush;
-                        series.CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" };
-                        series.ValueBinding = new PropertyNameDataPointBinding("EMA2");
-                        this.Chart.Series.Add(series);
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
@@ -142,56 +133,40 @@ namespace UltimateChartist.ChartControls
 
         private void OnSeriesTypeChanged()
         {
+            CategoricalSeriesBase series = null;
+            switch (this.viewModel.SeriesType)
             {
-                CategoricalSeriesBase series = null;
-                switch (this.viewModel.SeriesType)
-                {
-                    case SeriesType.Candle:
-                        series = new CandlestickSeries();
-                        break;
-                    case SeriesType.BarChart:
-                        series = new OhlcSeries();
-                        break;
-                    case SeriesType.Line:
-                        series = new LineSeries();
-                        break;
-                    default:
-                        return;
-                }
-                this.Chart.Series.Clear();
-                SetBindings(series);
-                SetSourceBinding(series);
-                SetTrackBallInfoTemplate(series);
-                this.Chart.Series.Add(series);
+                case SeriesType.Candle:
+                    series = new CandlestickSeries();
+                    break;
+                case SeriesType.BarChart:
+                    series = new OhlcSeries();
+                    break;
+                case SeriesType.Line:
+                    series = new LineSeries();
+                    break;
+                default:
+                    return;
             }
+            this.Chart.Series.Clear();
+            SetBindings(series);
+            SetSourceBinding(series);
+            SetTrackBallInfoTemplate(series);
+            this.Chart.Series.Add(series);
 
-            var indicator = new StockIndicator_EMA();
+            var indicator = new StockIndicator_EMA() { Period = 69 };
             indicator.Initialize(this.viewModel.StockSerie);
-            viewModel.EMA = indicator.EMA.Values;
+
+            var indicatorSeries = new LineSeries()
             {
-                //var series = new LineSeries();
-                //series.Stroke = indicator.EMA.Brush;
-                //series.CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" };
-                //series.ValueBinding = new PropertyNameDataPointBinding("EMA");
-                //Binding sourceBinding = new Binding("EMA");
-                //sourceBinding.Mode = BindingMode.OneWay;
-                //series.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
-                //this.Chart.Series.Add(series);
-
-
-                var indicatorSeries = new MovingAverageIndicator()
-                {
-                    Period = 8,
-                    Stroke = indicator.EMA.Brush,
-                    CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                    ValueBinding = new PropertyNameDataPointBinding("Close")
-                };
-                SetSourceBinding(indicatorSeries);
-
-                this.Chart.Indicators.Add(indicatorSeries);
-            }
+                Stroke = indicator.Series.Brush,
+                StrokeThickness = indicator.Series.Thickness,
+                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                ValueBinding = new PropertyNameDataPointBinding("Value"),
+                ItemsSource = indicator.Series.Values
+            };
+            this.Chart.Series.Add(indicatorSeries);
         }
-
         private static void SetTrackBallInfoTemplate(CategoricalSeriesBase series)
         {
             //ResourceDictionary exampleResources = new ResourceDictionary();

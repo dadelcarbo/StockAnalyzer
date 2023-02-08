@@ -79,8 +79,6 @@ namespace UltimateChartist.ChartControls
 
         public StockSerie StockSerie { get; set; }
 
-        public double[] EMA { get; set; }
-
         private List<StockBar> data;
         public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
 

@@ -3,22 +3,29 @@ using System.Windows.Media;
 
 namespace UltimateChartist.Indicators
 {
-    public interface IRangeReentrySerie
+    public abstract class IndicatorValueBase
     {
-        double[] High { get; }
-        double[] Low { get; }
-        double[] Reentry { get; }
+        public DateTime Date { get; set; }
     }
-    public interface IRangeSerie
+    public class IndicatorLineValue : IndicatorValueBase
     {
-        double[] High { get; }
-        double[] Low { get; }
+        public double Value { get; set; }
     }
-    public class ValueSerie
+    public class IndicatorRangeValue : IndicatorValueBase
     {
-        public DateTime[] Dates { get; set; }
+        public double Low { get; set; }
+
+        public double High { get; set; }
+    }
+
+    public class IndicatorLineSeries
+    {
         public string Name { get; set; }
-        public double[] Values { get; set; }
+
+        public IndicatorLineValue[] Values { get; set; }
+
         public Brush Brush { get; set; }
+
+        public double Thickness { get; set; }
     }
 }

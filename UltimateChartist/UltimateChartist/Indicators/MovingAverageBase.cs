@@ -20,6 +20,8 @@ namespace UltimateChartist.Indicators
         [IndicatorParameter]
         public int Period { get; set; } = 20;
 
+        public  IndicatorLineSeries Series { get; protected set; } = new IndicatorLineSeries { Brush = new SolidColorBrush(Colors.Red) };
+
         public abstract void Initialize(StockSerie bars);
     }
 }
