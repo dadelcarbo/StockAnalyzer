@@ -8,14 +8,14 @@
         mc:Ignorable="d"
         Title="Indicator Configuration" Height="250" Width="400">
     <Window.Resources>
-        <converters:BrushToColorConverter x:Key="colorToBrushConverter" />
+        <telerik:BrushToColorConverter x:Key="brushToColorConverter" />
         <DataTemplate x:Key="curveTemplate" >
             <Grid Width="45">
                 <telerik:RadNumericUpDown></telerik:RadNumericUpDown>
                 <Line
     X1="10" Y1="5"
     X2="50" Y2="5"
-    Stroke="{Binding Converter={StaticResource colorToBrushConverter}}"
+    Stroke="{Binding Converter={StaticResource brushToColorConverter}}"
     StrokeThickness="4" />
             </Grid>
         </DataTemplate>
@@ -35,7 +35,8 @@
 
         <GroupBox Grid.Row="0" Grid.Column="1" Header="Display">
             <StackPanel x:Name="DisplayPanel">
-                <telerik:RadColorPicker  Width="100" SelectedColor="{Binding LineSeries.Stroke, Converter={StaticResource colorToBrushConverter}, Mode=TwoWay}">
+                <telerik:RadColorPicker  Width="100"
+                                         SelectedColor="{Binding LineSeries.Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                 </telerik:RadColorPicker>
             </StackPanel>
         </GroupBox>

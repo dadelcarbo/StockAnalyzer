@@ -38,8 +38,6 @@
     <DependentUpon>App.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
-  <Compile Include="ChartControls\Converters\BrushToColorConverter.cs" />
-  <Compile Include="ChartControls\Converters\ColorToBrushConverter.cs" />
   <Compile Include="ChartControls\PriceChartUserControl.xaml.cs" />
   <Compile Include="ChartControls\ChartViewModel.cs" />
   <Compile Include="ChartControls\Converters\AxisDateLabelConverter.cs" />
