@@ -4,7 +4,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using UltimateChartist.ChartControls;
-using UltimateChartist.DataModels.DataProviders;
+using UltimateChartist.ChartControls.Indicators;
+using UltimateChartist.Indicators;
 
 namespace UltimateChartist
 {
@@ -49,7 +50,7 @@ namespace UltimateChartist
             binding.Path = new PropertyPath("Name");
             BindingOperations.SetBinding(tabItem, RadTabItem.HeaderProperty, binding);
 
-            tabItem.Content = new ChartUserControl(chartViewModel);
+            tabItem.Content = new PriceChartUserControl(chartViewModel);
             this.MainTabControl.Items.Add(tabItem);
             this.MainTabControl.SelectedItem = tabItem;
         }
@@ -70,6 +71,11 @@ namespace UltimateChartist
         {
             if (this.MainTabControl.SelectedItem != null)
             {
+                IIndicator indicator = new StockIndicator_EMA();
+                
+                this.viewModel.CurrentChartView.PriceIndicators.Add(indicator);
+                //var dlg = new IndicatorConfigWindow(indicator);
+                //dlg.ShowDialog();
             }
         }
         private void AddEmaCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)

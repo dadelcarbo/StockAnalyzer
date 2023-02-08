@@ -1,0 +1,46 @@
+﻿<Window x:Class="UltimateChartist.ChartControls.Indicators.IndicatorConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UltimateChartist.ChartControls.Indicators" 
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        mc:Ignorable="d"
+        Title="Indicator Configuration" Height="250" Width="400">
+    <Window.Resources>
+        <telerik:ColorToBrushConverter x:Key="colorToBrushConverter" />
+        <DataTemplate x:Key="curveTemplate" >
+            <Grid Width="45">
+                <telerik:RadNumericUpDown></telerik:RadNumericUpDown>
+                <Line
+    X1="10" Y1="5"
+    X2="50" Y2="5"
+    Stroke="{Binding Converter={StaticResource colorToBrushConverter}}"
+    StrokeThickness="4" />
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <telerik:RadColorPicker ContentTemplate="{StaticResource curveTemplate}" Width="100">
+        </telerik:RadColorPicker>
+        <GroupBox Grid.Row="0" Grid.Column="0" Header="Parameters">
+            <StackPanel x:Name="ParameterPanel"/>
+        </GroupBox>
+
+        <GroupBox Grid.Row="0" Grid.Column="1" Header="Display">
+            <StackPanel x:Name="DisplayPanel"/>
+        </GroupBox>
+        <StackPanel  VerticalAlignment="Top"/>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2"  Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="okButton" Content="Ok" Click="okButton_Click" IsDefault="True" Margin="2"/>
+        </StackPanel>
+    </Grid>
+</Window>

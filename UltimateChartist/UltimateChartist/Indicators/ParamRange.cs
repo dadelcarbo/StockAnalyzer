@@ -1,34 +1,44 @@
 ﻿using System;
+using System.Globalization;
 
 namespace UltimateChartist.Indicators
 {
-    public abstract class ParamRange
+    public interface IParamRange
     {
-        public object MinValue { get; protected set; }
-        public object MaxValue { get; protected set; }
+        Type GetParamType();
+        bool isValidString(string value);
+        bool isInRange(object valueString);
+        string ValueToString(CultureInfo cultureInfo);
 
-        public ParamRange()
-        {
-        }
+        object MinValue { get; }
+        object MaxValue { get; }
+        object Value { get; }
 
-        public ParamRange(object minValue, object maxValue)
+    }
+    public abstract class ParamRange : IParamRange
+    {
+        public ParamRange(object minValue, object maxValue, object value)
         {
             MinValue = minValue;
             MaxValue = maxValue;
+            Value = value;
         }
-
+        public object MinValue { get; protected set; }
+        public object MaxValue { get; protected set; }
+        public object Value { get; protected set; }
         public abstract bool isValidString(string value);
         public abstract bool isInRange(object valueString);
-
         virtual public Type GetParamType()
         {
-            return MinValue == null ? null : MinValue.GetType();
+            return Value == null ? null : Value.GetType();
         }
+
+        public abstract string ValueToString(CultureInfo cultureInfo);
     }
     public class ParamRangeInt : ParamRange
     {
-        public ParamRangeInt(object minValue, object maxValue)
-           : base(minValue, maxValue)
+        public ParamRangeInt(int minValue, int maxValue, int value)
+           : base(minValue, maxValue, value)
         {
         }
 
@@ -46,15 +56,15 @@ namespace UltimateChartist.Indicators
             }
             return isInRange(intValue);
         }
+        public override string ValueToString(CultureInfo cultureInfo)
+        {
+            return ((int)Value).ToString(cultureInfo);
+        }
     }
     public class ParamRangeDouble : ParamRange
     {
-        public ParamRangeDouble()
-           : base(double.MinValue, double.MaxValue)
-        {
-        }
-        public ParamRangeDouble(object minValue, object maxValue)
-           : base(minValue, maxValue)
+        public ParamRangeDouble(double minValue, double maxValue, double value)
+           : base(minValue, maxValue, value)
         {
         }
 
@@ -72,15 +82,15 @@ namespace UltimateChartist.Indicators
             }
             return isInRange(doubleValue);
         }
+        public override string ValueToString(CultureInfo cultureInfo)
+        {
+            return ((double)Value).ToString(cultureInfo);
+        }
     }
     public class ParamRangeDateTime : ParamRange
     {
-        public ParamRangeDateTime()
-           : base(DateTime.MinValue, DateTime.MaxValue)
-        {
-        }
-        public ParamRangeDateTime(object minValue, object maxValue)
-           : base(minValue, maxValue)
+        public ParamRangeDateTime(DateTime minValue, DateTime maxValue, DateTime value)
+           : base(minValue, maxValue, value)
         {
         }
 
@@ -98,13 +108,15 @@ namespace UltimateChartist.Indicators
             }
             return isInRange(dateValue);
         }
+        public override string ValueToString(CultureInfo cultureInfo)
+        {
+            return ((DateTime)Value).ToString(cultureInfo);
+        }
     }
     public class ParamRangeBool : ParamRange
     {
-        public ParamRangeBool()
+        public ParamRangeBool(bool value) : base(false, true, true)
         {
-            MinValue = false;
-            MaxValue = true;
         }
 
         public override bool isInRange(object value)
@@ -117,23 +129,29 @@ namespace UltimateChartist.Indicators
             bool boolValue;
             return bool.TryParse(valueString, out boolValue);
         }
+        public override string ValueToString(CultureInfo cultureInfo)
+        {
+            return ((bool)Value).ToString(cultureInfo);
+        }
     }
     public class ParamRangeMA : ParamRange
     {
-        public ParamRangeMA()
+        public ParamRangeMA(EmaType value) : base(EmaType.EMA, EmaType.MA, value)
         {
-            MinValue = string.Empty;
-            MaxValue = string.Empty;
         }
 
         public override bool isInRange(object value)
         {
-            return true;
+            return value is EmaType;
         }
 
         public override bool isValidString(string valueString)
         {
-            return MovingAverageBase.MaTypes.Contains(valueString.ToUpper());
+            return Enum.TryParse<EmaType>(valueString, out EmaType value);
+        }
+        public override string ValueToString(CultureInfo cultureInfo)
+        {
+            return Value.ToString();
         }
     }
 }

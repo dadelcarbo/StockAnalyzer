@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UltimateChartist.DataModels
 {
@@ -17,6 +15,9 @@ namespace UltimateChartist.DataModels
         public Instrument Instrument { get; }
         public BarDuration BarDuration { get; } = BarDuration.Daily;
         public List<StockBar> Bars { get; }
+
+        private DateTime[] dateValues;
+        public DateTime[] DateValues => dateValues ??= this.Bars.Select(b => b.Date).ToArray();
 
         private double[] closeValues;
         public double[] CloseValues => closeValues ??= this.Bars.Select(b => b.Close).ToArray();

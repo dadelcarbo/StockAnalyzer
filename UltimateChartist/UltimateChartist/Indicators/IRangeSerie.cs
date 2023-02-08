@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace UltimateChartist.Indicators
@@ -23,6 +16,7 @@ namespace UltimateChartist.Indicators
     }
     public class ValueSerie
     {
+        public DateTime[] Dates { get; set; }
         public string Name { get; set; }
         public double[] Values { get; set; }
         public Brush Brush { get; set; }

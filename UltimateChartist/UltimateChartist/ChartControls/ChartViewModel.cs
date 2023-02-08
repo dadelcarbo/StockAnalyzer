@@ -20,16 +20,15 @@ namespace UltimateChartist.ChartControls
         private string name;
         public string Name { get => name; set { if (name != value) { name = value; RaisePropertyChanged(); } } }
 
-        public ObservableCollection<IndicatorViewModel> Indicators { get; } = new ObservableCollection<IndicatorViewModel>();
-
+        public ObservableCollection<IndicatorChartViewModel> Indicators { get; } = new ObservableCollection<IndicatorChartViewModel>();
 
         static int indicatorCount = 1;
         public void AddIndicator()
         {
-            this.Indicators.Add(new IndicatorViewModel(this) { Name = "Indicator" + indicatorCount++ });
+            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMA()) { Name = "Indicator" + indicatorCount++ });
         }
 
-        public void RemoveIndicator(IndicatorViewModel indicatorViewModel)
+        public void RemoveIndicator(IndicatorChartViewModel indicatorViewModel)
         {
             this.Indicators.Remove(indicatorViewModel);
         }
@@ -45,6 +44,7 @@ namespace UltimateChartist.ChartControls
                     instrument = value;
                     this.Name = instrument.Name;
                     this.Data = DataProviderHelper.LoadData(instrument, BarDuration.Daily);
+                    this.StockSerie = new StockSerie (value, BarDuration.Daily, this.Data);
 
                     ResetZoom();
                     RaisePropertyChanged();
@@ -75,12 +75,14 @@ namespace UltimateChartist.ChartControls
             }
         }
 
-
         #region Chart Data
+
+        public StockSerie StockSerie { get; set; }
+
+        public double[] EMA { get; set; }
+
         private List<StockBar> data;
         public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
-
-        public List<IIndicator> indicators;
 
         private double horizontalZoomRangeStart;
         public double HorizontalZoomRangeStart { get => horizontalZoomRangeStart; set { if (horizontalZoomRangeStart != value) { horizontalZoomRangeStart = value; RaisePropertyChanged(); } } }
@@ -92,6 +94,8 @@ namespace UltimateChartist.ChartControls
         public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }
 
         public DataTemplate AxisLabelTemplate => App.AppInstance.FindResource($"axis{BarDuration}LabelTemplate") as DataTemplate;
+
+        public ObservableCollection<IIndicator> PriceIndicators { get; set; } = new ObservableCollection<IIndicator>();
         #endregion
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UltimateChartist.DataModels.DataProviders;
+﻿using UltimateChartist.DataModels.DataProviders;
 
 namespace UltimateChartist.DataModels
 {

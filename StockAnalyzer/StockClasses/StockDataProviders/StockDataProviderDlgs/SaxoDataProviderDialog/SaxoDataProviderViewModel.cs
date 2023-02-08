@@ -176,6 +176,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             if (this.Entries.Any(e => e.ISIN == this.selectedProduct.ISIN))
                 return;
             var stockName = "TURBO_" + this.selectedProduct.StockName.Split(' ')[0].ToUpper() + " " + (this.selectedProduct.Type.ToLower().Contains("short") ? "SHORT" : "LONG");
+            stockName = stockName.Replace("  ", " ");
             this.Entries.Insert(0, new SaxoConfigEntry { ISIN = this.selectedProduct.ISIN, StockName = stockName });
         }
 

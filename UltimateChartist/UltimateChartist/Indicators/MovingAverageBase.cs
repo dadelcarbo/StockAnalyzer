@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Documents;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using UltimateChartist.DataModels;
 
 namespace UltimateChartist.Indicators
 {
-    public abstract class MovingAverageBase : IndicatorBase, ILineIndicator
+    public enum EmaType
     {
-        public static List<string> MaTypes => new List<string> { "EMA", "HMA", "MA", "XMA", "MID" };
+        EMA,
+        MA,
+        MID
+    }
+    public abstract class MovingAverageBase : IndicatorBase
+    {
+        public MovingAverageBase()
+        {
+        }
 
-        public override string[] ParameterNames => new string[] { "Period" };
+        public override string DisplayName => $"{ShortName}({Period})";
 
-        public override object[] ParameterDefaultValues => new object[] { 20 };
-
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 1000) };
-
-        public Brush DefaultBrush = new SolidColorBrush(Colors.Red);
-
-
-        public ValueSerie Values { get; protected set; }
+        [IndicatorParameter]
+        public int Period { get; set; } = 20;
 
         public abstract void Initialize(StockSerie bars);
     }

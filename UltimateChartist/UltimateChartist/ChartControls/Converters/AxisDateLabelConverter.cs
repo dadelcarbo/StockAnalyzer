@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Data;
-using UltimateChartist.DataModels;
 
 namespace UltimateChartist.ChartControls.Converters
 {

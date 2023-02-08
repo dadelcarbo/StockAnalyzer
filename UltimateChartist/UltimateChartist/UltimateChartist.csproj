@@ -18,10 +18,16 @@
     <Generator>MSBuild:Compile</Generator>
     <SubType>Designer</SubType>
   </ApplicationDefinition>
-  <Page Include="ChartControls\ChartUserControl.xaml">
+  <Page Include="ChartControls\PriceChartUserControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
-  <Page Include="ChartControls\IndicatorUserControl.xaml">
+  <Page Include="ChartControls\Indicators\CurveConfigUserControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="ChartControls\Indicators\IndicatorConfigWindow.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="ChartControls\IndicatorChartUserControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
   <Page Include="MainWindow.xaml">
@@ -32,20 +38,22 @@
     <DependentUpon>App.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
-  <Compile Include="ChartControls\ChartUserControl.xaml.cs" />
+  <Compile Include="ChartControls\PriceChartUserControl.xaml.cs" />
   <Compile Include="ChartControls\ChartViewModel.cs" />
   <Compile Include="ChartControls\Converters\AxisDateLabelConverter.cs" />
   <Compile Include="ChartControls\Converters\EnumToValuesConverter.cs" />
-  <Compile Include="ChartControls\CustomIndicatorSeries\TrailStopSeries.cs" />
-  <Compile Include="ChartControls\IndicatorUserControl.xaml.cs" />
-  <Compile Include="ChartControls\IndicatorViewModel.cs" />
+  <Compile Include="ChartControls\Indicators\CurveConfigUserControl.xaml.cs" />
+  <Compile Include="ChartControls\Indicators\IndicatorConfigWindow.xaml.cs" />
+  <Compile Include="ChartControls\IndicatorChartUserControl.xaml.cs" />
+  <Compile Include="ChartControls\IndicatorChartViewModel.cs" />
   <Compile Include="DataModels\BarDuration.cs" />
   <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\DataProviderHelper.cs" />
   <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\StockSerie.cs" />
-  <Compile Include="Indicators\Indicator_EMA.cs" />
+  <Compile Include="Indicators\IndicatorParameter.cs" />
+  <Compile Include="Indicators\StockIndicator_EMA.cs" />
   <Compile Include="Indicators\IIndicator.cs" />
   <Compile Include="DataModels\Instrument.cs" />
   <Compile Include="Indicators\IRangeSerie.cs" />
