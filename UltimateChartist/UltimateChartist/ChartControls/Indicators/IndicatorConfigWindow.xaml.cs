@@ -36,6 +36,12 @@ namespace UltimateChartist.ChartControls.Indicators
                 }
             }
 
+            switch(indicatorViewModel.Indicator.Series.GetType().Name)
+            {
+                case "":
+                    break;
+            }
+
             IndicatorViewModel = indicatorViewModel;
         }
 

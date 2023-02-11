@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -25,7 +26,7 @@ namespace UltimateChartist.ChartControls
         static int indicatorCount = 1;
         public void AddIndicator()
         {
-            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMABand()) { Name = "Indicator" + indicatorCount++ });
+            throw new NotImplementedException("ChartViewModel.AddIndicator not implemented");
         }
 
         public void RemoveIndicator(IndicatorChartViewModel indicatorViewModel)

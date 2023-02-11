@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Windows.Data;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.Indicators;
@@ -55,21 +57,24 @@ namespace UltimateChartist.ChartControls.Indicators
             }
 
             // Create GraphSeries from instrospection
-            foreach (PropertyInfo prop in indicator.GetType().GetProperties().Where(p => p.Name == "Series"))
+            var indicatorSeries = indicator.GetType().GetProperty("Series")?.GetValue(indicator);
+            if (indicatorSeries != null)
             {
-                var s = prop.GetValue(indicator).GetType();
-                switch (s.Name)
+                switch (indicatorSeries.GetType().Name)
                 {
                     case "IndicatorLineSeries":
                         {
-                            var series = (IndicatorLineSeries)prop.GetValue(indicator);
+                            var series = (IndicatorLineSeries)indicatorSeries;
+
                             var lineSeries = new LineSeries()
                             {
-                                Stroke = series.Brush,
                                 StrokeThickness = series.Thickness,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Value")
                             };
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Brush");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+
                             this.CartesianSeries.Add(lineSeries);
                         }
                         break;
@@ -77,7 +82,7 @@ namespace UltimateChartist.ChartControls.Indicators
                         break;
                     case "IndicatorBandSeries":
                         {
-                            var series = (IndicatorBandSeries)prop.GetValue(indicator);
+                            var series = (IndicatorBandSeries)indicatorSeries;
                             //var lineSeries = new LineSeries()
                             //{
                             //    Stroke = series.DownBrush,
@@ -98,9 +103,9 @@ namespace UltimateChartist.ChartControls.Indicators
                             var rangeSeries = new RangeSeries()
                             {
                                 StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowAndHighPoints,
-                                Stroke =series.Stroke,
+                                Stroke = series.Stroke,
                                 StrokeThickness = 1,
-                                Fill= series.Fill,
+                                Fill = series.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 HighBinding = new PropertyNameDataPointBinding("Up"),
                                 LowBinding = new PropertyNameDataPointBinding("Down")
@@ -118,7 +123,7 @@ namespace UltimateChartist.ChartControls.Indicators
                         }
                         break;
                     default:
-                        throw new NotImplementedException($"Series type not implemented {prop.PropertyType.Name} in IndicatorViewModel");
+                        throw new NotImplementedException($"Series type not implemented {indicatorSeries.GetType().Name} in IndicatorViewModel");
                 }
             }
 
