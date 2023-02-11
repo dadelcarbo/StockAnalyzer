@@ -26,22 +26,27 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Grid.Column="0" Header="Parameters">
+        <StackPanel Orientation="Horizontal">
+            <Label Margin="2">Indicator </Label>
+            <TextBox Text="{Binding Indicator.DisplayName, Mode=OneWay}" Margin="2"></TextBox>
+        </StackPanel>
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Parameters" Margin="2">
             <StackPanel x:Name="ParameterPanel"/>
         </GroupBox>
 
-        <GroupBox Grid.Row="0" Grid.Column="1" Header="Display">
-            <StackPanel x:Name="DisplayPanel">
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Display" Margin="2">
+            <!--<StackPanel x:Name="DisplayPanel">
                 <telerik:RadColorPicker  Width="100"
-                                         SelectedColor="{Binding LineSeries.Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
+                                         SelectedColor="{Binding Indicator.Series.Brush, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                 </telerik:RadColorPicker>
-            </StackPanel>
+            </StackPanel>-->
         </GroupBox>
         <StackPanel  VerticalAlignment="Top"/>
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="2"  Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2"  Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Name="okButton" Content="Ok" Click="okButton_Click" IsDefault="True" Margin="2"/>
         </StackPanel>
     </Grid>

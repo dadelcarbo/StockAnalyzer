@@ -1,4 +1,5 @@
-﻿using Telerik.Windows.Controls.ChartView;
+﻿using System.ComponentModel;
+using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.DataModels;
 
 namespace UltimateChartist.Indicators
@@ -16,14 +17,15 @@ namespace UltimateChartist.Indicators
     /// </summary>
     public interface IIndicator
     {
+        event PropertyChangedEventHandler ParameterChanged;
+
         string ShortName { get; }
         string DisplayName { get; }
         string Description { get; }
         DisplayType DisplayType { get; }
 
+        IIndicatorSeries Series { get; }
+
         void Initialize(StockSerie bars);
-
-        public LineSeries LineSeries { get; }
     }
-
 }

@@ -9,16 +9,18 @@ namespace UltimateChartist.Indicators
         MA,
         MID
     }
+
     public abstract class MovingAverageBase : IndicatorBase
     {
+        public MovingAverageBase()
+        {
+            this.Series = new IndicatorLineSeries();
+        }
+        public override DisplayType DisplayType => DisplayType.Price;
         public override string DisplayName => $"{ShortName}({Period})";
 
         private int period = 20;
         [IndicatorParameterInt("Period", 1, 500)]
-        public int Period { get => period; set { if (period != value) { period = value; RaisePropertyChanged(); } } }
-
-        public IndicatorLineSeries Series { get; protected set; } = new IndicatorLineSeries { Brush = new SolidColorBrush(Colors.Red) };
-
-
+        public int Period { get => period; set { if (period != value) { period = value; RaiseParameterChanged(); } } }
     }
 }

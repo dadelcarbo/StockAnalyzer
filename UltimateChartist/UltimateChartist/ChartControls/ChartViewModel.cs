@@ -25,7 +25,7 @@ namespace UltimateChartist.ChartControls
         static int indicatorCount = 1;
         public void AddIndicator()
         {
-            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMA()) { Name = "Indicator" + indicatorCount++ });
+            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMABand()) { Name = "Indicator" + indicatorCount++ });
         }
 
         public void RemoveIndicator(IndicatorChartViewModel indicatorViewModel)
@@ -52,7 +52,7 @@ namespace UltimateChartist.ChartControls
             }
         }
 
-        private int nbBar = 100;
+        private int nbBar = 200;
         private void ResetZoom()
         {
             this.HorizontalZoomRangeEnd = 1;

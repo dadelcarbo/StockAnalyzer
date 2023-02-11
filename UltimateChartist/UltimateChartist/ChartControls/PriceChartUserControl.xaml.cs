@@ -85,26 +85,14 @@ namespace UltimateChartist.ChartControls
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     {
-                        var indicator = new StockIndicator_EMA() { Period = 69 };
+                        var indicatorViewModel = new IndicatorViewModel(e.NewItems[0] as IIndicator, this.viewModel);
 
-                        var indicatorSeries = new LineSeries()
+                        foreach (var series in indicatorViewModel.CartesianSeries)
                         {
-                            Stroke = indicator.Series.Brush,
-                            StrokeThickness = indicator.Series.Thickness,
-                            CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                            ValueBinding = new PropertyNameDataPointBinding("Value")
-                        };
+                            this.Chart.Series.Add(series);
+                        }
 
-                        Binding sourceBinding = new Binding($"PriceIndicators[0].Series.Values");
-                        sourceBinding.Mode = BindingMode.OneWay;
-                        indicatorSeries.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
-                        this.Chart.Series.Add(indicatorSeries);
-
-                        indicator.LineSeries = indicatorSeries;
-                        indicator.Initialize(this.viewModel.StockSerie);
-                        indicator.PropertyChanged += Indicator_PropertyChanged;
-
-                        var dlg = new IndicatorConfigWindow(indicator);
+                        var dlg = new IndicatorConfigWindow(indicatorViewModel);
                         dlg.ShowDialog();
                     }
                     break;
@@ -114,15 +102,6 @@ namespace UltimateChartist.ChartControls
                     break;
                 default:
                     throw new NotImplementedException("ChartViews_CollectionChanged: " + e.Action + " Not Yet Implement");
-            }
-        }
-
-        private void Indicator_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            var indicator = sender as IIndicator; 
-            if (indicator != null)
-            {
-                indicator.Initialize(this.viewModel.StockSerie);
             }
         }
 

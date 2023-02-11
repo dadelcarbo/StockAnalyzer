@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using SharpDX.Direct2D1.Effects;
+using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,28 +15,71 @@ namespace UltimateChartist.ChartControls.Indicators
     /// </summary>
     public partial class IndicatorConfigWindow : Window
     {
-        public IndicatorConfigWindow(IIndicator indicator)
+        public IndicatorViewModel IndicatorViewModel { get; }
+        public IndicatorConfigWindow(IndicatorViewModel indicatorViewModel)
         {
             InitializeComponent();
 
-            this.DataContext = indicator;
-
-            foreach (PropertyInfo prop in indicator.GetType().GetProperties())
+            this.DataContext = indicatorViewModel;
+            foreach (var parameter in indicatorViewModel.Parameters)
             {
-                if (prop.GetCustomAttributes(typeof(IndicatorParameterAttribute), true).Any())
+                switch (parameter.Parameter.Type.Name)
                 {
-                    var label = new System.Windows.Controls.Label() { Content = prop.Name };
-                    var upDown = new RadNumericUpDown() { Minimum = 1, Maximum = 500 };
-
-                    var binding = new Binding(prop.Name) { Mode = BindingMode.TwoWay };
-                    upDown.SetBinding(RadNumericUpDown.ValueProperty, binding);
-
-                    var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-                    stackPanel.Children.Add(label);
-                    stackPanel.Children.Add(upDown);
-                    this.ParameterPanel.Children.Add(stackPanel);
+                    case "Double":
+                        CreateDoubleParameter(parameter);
+                        break;
+                    case "Int32":
+                        CreateIntParameter(parameter);
+                        break;
+                    default:
+                        throw new NotImplementedException($"Parameter type not implemented {parameter.Parameter.Type.Name} in IndicatorConfigWindow");
                 }
             }
+
+            IndicatorViewModel = indicatorViewModel;
+        }
+
+        private void CreateIntParameter(IIndicatorParameterViewModel parameter)
+        {
+            var intParameter = parameter.Parameter as IndicatorParameterIntAttribute;
+            var label = new System.Windows.Controls.Label() { Content = parameter.Parameter.Name, Width = 80, Margin = new Thickness(2) };
+            var upDown = new RadNumericUpDown()
+            {
+                Minimum = intParameter.Min,
+                Maximum = intParameter.Max,
+                Margin = new Thickness(2),
+                NumberDecimalDigits = 0
+            };
+
+            var binding = new Binding("Indicator." + parameter.Parameter.Name) { Mode = BindingMode.TwoWay };
+            upDown.SetBinding(RadNumericUpDown.ValueProperty, binding);
+
+            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(label);
+            stackPanel.Children.Add(upDown);
+            this.ParameterPanel.Children.Add(stackPanel);
+        }
+        private void CreateDoubleParameter(IIndicatorParameterViewModel parameter)
+        {
+            var doubleParameter = parameter.Parameter as IndicatorParameterDoubleAttribute;
+            var label = new System.Windows.Controls.Label() { Content = parameter.Parameter.Name, Width = 80, Margin = new Thickness(2) };
+            var upDown = new RadNumericUpDown()
+            {
+                Minimum = doubleParameter.Min,
+                Maximum = doubleParameter.Max,
+                SmallChange = doubleParameter.Step,
+                LargeChange = doubleParameter.Step * 10,
+                Margin = new Thickness(2),
+                NumberDecimalDigits = -(int)Math.Round((Math.Log10(doubleParameter.Step)))
+            };
+
+            var binding = new Binding("Indicator." + parameter.Parameter.Name) { Mode = BindingMode.TwoWay, StringFormat = doubleParameter.Format };
+            upDown.SetBinding(RadNumericUpDown.ValueProperty, binding);
+
+            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(label);
+            stackPanel.Children.Add(upDown);
+            this.ParameterPanel.Children.Add(stackPanel);
         }
 
         private void okButton_Click(object sender, RoutedEventArgs e)

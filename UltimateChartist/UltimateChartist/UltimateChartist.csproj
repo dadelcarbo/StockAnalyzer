@@ -38,6 +38,7 @@
     <DependentUpon>App.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
+  <Compile Include="ChartControls\Indicators\IndicatorViewModel.cs" />
   <Compile Include="ChartControls\PriceChartUserControl.xaml.cs" />
   <Compile Include="ChartControls\ChartViewModel.cs" />
   <Compile Include="ChartControls\Converters\AxisDateLabelConverter.cs" />
@@ -53,6 +54,8 @@
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\StockSerie.cs" />
   <Compile Include="Indicators\IndicatorParameter.cs" />
+  <Compile Include="Indicators\StockIndicator_EMABand.cs" />
+  <Compile Include="Indicators\StockIndicator_MA.cs" />
   <Compile Include="Indicators\StockIndicator_EMA.cs" />
   <Compile Include="Indicators\IIndicator.cs" />
   <Compile Include="DataModels\Instrument.cs" />

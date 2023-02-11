@@ -7,16 +7,30 @@ using Telerik.Windows.Controls.ChartView;
 
 namespace UltimateChartist.Indicators
 {
-    public abstract class IndicatorBase : INotifyPropertyChanged, IIndicator
+    public abstract class IndicatorBase : IIndicator
     {
         public abstract string DisplayName { get; }
         public virtual string Description => DisplayName;
         public string ShortName { get { return this.GetType().Name.Split('_')[1]; } }
         public abstract DisplayType DisplayType { get; }
 
-        public LineSeries LineSeries { get; set; }
+        /// <summary>
+        /// Contains the indicator calculated data 
+        /// </summary>
+        private IIndicatorSeries series;
+        public IIndicatorSeries Series { get { return series; } protected set { if (value != series) { series = value; RaisePropertyChanged(); } } }
 
         public abstract void Initialize(StockSerie bars);
+
+        public event PropertyChangedEventHandler ParameterChanged;
+        protected internal void RaiseParameterChanged([CallerMemberName] string propertyName = null)
+        {
+            if (this.ParameterChanged != null)
+            {
+                PropertyChangedEventArgs e = new PropertyChangedEventArgs(propertyName);
+                this.ParameterChanged(this, e);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected internal void RaisePropertyChanged([CallerMemberName] string propertyName = null)
