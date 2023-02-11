@@ -89,7 +89,7 @@ namespace UltimateChartist.ChartControls
 
                         foreach (var series in indicatorViewModel.CartesianSeries)
                         {
-                            this.Chart.Series.Add(series);
+                            this.Chart.Series.Insert(0,series);
                         }
 
                         var dlg = new IndicatorConfigWindow(indicatorViewModel);

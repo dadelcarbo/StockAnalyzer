@@ -17,8 +17,7 @@ namespace UltimateChartist.Indicators
         /// <summary>
         /// Contains the indicator calculated data 
         /// </summary>
-        private IIndicatorSeries series;
-        public IIndicatorSeries Series { get { return series; } protected set { if (value != series) { series = value; RaisePropertyChanged(); } } }
+        public IIndicatorSeries Series { get; set; }
 
         public abstract void Initialize(StockSerie bars);
 

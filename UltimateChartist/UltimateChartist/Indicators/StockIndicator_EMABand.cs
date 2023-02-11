@@ -9,6 +9,10 @@ namespace UltimateChartist.Indicators
 {
     public class StockIndicator_EMABand : IndicatorBase
     {
+        public StockIndicator_EMABand()
+        {
+            this.Series = new IndicatorBandSeries();
+        }
         public override DisplayType DisplayType => DisplayType.Price;
 
         public override string DisplayName => $"{ShortName}({Period},{Percent})";

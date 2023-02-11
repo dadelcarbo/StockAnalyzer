@@ -71,7 +71,7 @@ namespace UltimateChartist
         {
             if (this.MainTabControl.SelectedItem != null)
             {
-                IIndicator indicator = new StockIndicator_EMA();
+                IIndicator indicator = new StockIndicator_EMABand();
                 
                 this.viewModel.CurrentChartView.PriceIndicators.Add(indicator);
             }

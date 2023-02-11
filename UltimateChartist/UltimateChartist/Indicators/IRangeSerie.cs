@@ -49,7 +49,8 @@ namespace UltimateChartist.Indicators
     {
         public IndicatorRangeSeries()
         {
-            this.RangeBrush = new SolidColorBrush(Color.FromArgb(127, Colors.LightGreen.R, Colors.LightGreen.G, Colors.LightGreen.B));
+            this.Fill = new SolidColorBrush(Color.FromArgb(90, Colors.LightGreen.R, Colors.LightGreen.G, Colors.LightGreen.B));
+            this.Stroke = Brushes.Green;
         }
         public string UpName { get; set; }
         public Brush UpBrush { get; set; }
@@ -59,7 +60,8 @@ namespace UltimateChartist.Indicators
         public Brush DownBrush { get; set; }
         public double DownThickness { get; set; }
 
-        public Brush RangeBrush { get; set; }
+        public Brush Fill { get; set; }
+        public Brush Stroke { get; set; }
 
         public IEnumerable<IndicatorValueBase> Values { get; set; }
     }
@@ -69,7 +71,7 @@ namespace UltimateChartist.Indicators
         public IndicatorBandSeries()
         {
             this.MidThickness = 1;
-            this.MidBrush = Brushes.LightGreen;
+            this.MidBrush = Brushes.Green;
         }
         public string MidName { get; set; }
         public Brush MidBrush { get; set; }

@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
-using Telerik.Windows.Controls.FieldList;
 using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls.Indicators
@@ -100,6 +94,19 @@ namespace UltimateChartist.ChartControls.Indicators
                             //    ValueBinding = new PropertyNameDataPointBinding("Up")
                             //};
                             //this.CartesianSeries.Add(lineSeries);
+
+                            var rangeSeries = new RangeSeries()
+                            {
+                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowAndHighPoints,
+                                Stroke =series.Stroke,
+                                StrokeThickness = 1,
+                                Fill= series.Fill,
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                HighBinding = new PropertyNameDataPointBinding("Up"),
+                                LowBinding = new PropertyNameDataPointBinding("Down")
+                            };
+                            this.CartesianSeries.Add(rangeSeries);
+
                             var lineSeries = new LineSeries()
                             {
                                 Stroke = series.MidBrush,
@@ -108,17 +115,6 @@ namespace UltimateChartist.ChartControls.Indicators
                                 ValueBinding = new PropertyNameDataPointBinding("Mid")
                             };
                             this.CartesianSeries.Add(lineSeries);
-
-                            var rangeSeries = new RangeSeries()
-                            {
-                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowAndHighPoints,
-                                Stroke = series.RangeBrush,
-                                StrokeThickness = 1,
-                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                                HighBinding = new PropertyNameDataPointBinding("Up"),
-                                LowBinding = new PropertyNameDataPointBinding("Down")
-                            };
-                            this.CartesianSeries.Add(rangeSeries);
                         }
                         break;
                     default:
