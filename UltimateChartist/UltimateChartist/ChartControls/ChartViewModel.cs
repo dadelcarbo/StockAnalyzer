@@ -23,7 +23,6 @@ namespace UltimateChartist.ChartControls
 
         public ObservableCollection<IndicatorChartViewModel> Indicators { get; } = new ObservableCollection<IndicatorChartViewModel>();
 
-        static int indicatorCount = 1;
         public void AddIndicator()
         {
             throw new NotImplementedException("ChartViewModel.AddIndicator not implemented");

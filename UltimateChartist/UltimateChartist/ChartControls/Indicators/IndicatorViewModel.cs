@@ -68,12 +68,13 @@ namespace UltimateChartist.ChartControls.Indicators
 
                             var lineSeries = new LineSeries()
                             {
-                                StrokeThickness = series.Thickness,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Value")
                             };
                             var binding = new Binding($"PriceIndicators[{index}].Series.Brush");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
 
                             this.CartesianSeries.Add(lineSeries);
                         }

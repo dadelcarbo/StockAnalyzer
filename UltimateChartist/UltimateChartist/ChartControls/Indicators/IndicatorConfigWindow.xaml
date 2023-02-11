@@ -4,7 +4,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-        xmlns:converters="clr-namespace:UltimateChartist.ChartControls.Converters" xmlns:indicators="clr-namespace:UltimateChartist.ChartControls.Indicators"
         mc:Ignorable="d"
         Title="Indicator Configuration" Height="250" Width="400">
     <Window.Resources>
@@ -30,19 +29,21 @@
         </GroupBox>
 
         <GroupBox Grid.Row="1" Grid.Column="1" Header="Display" Margin="2">
-            <StackPanel x:Name="DisplayPanel">
-                <telerik:RadColorPicker  Width="100" Name="titleBorderBrushPicker"
+            <StackPanel>
+                <StackPanel x:Name="DisplayPanel" Orientation="Horizontal">
+                    <Line X1="0" X2="50" Y1="10" Y2="10" StrokeThickness="{Binding Value, ElementName=thicknessUpDown}" Margin="2"
+									Stroke="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}"/>
+                    <telerik:RadUpDown Name="thicknessUpDown" VerticalAlignment="Center" HorizontalAlignment="Left" Width="15" MinWidth="15" Minimum="1" Maximum="5" Margin="1"
+                                       Value="{Binding Indicator.Series.Thickness,Mode=TwoWay}"/>
+                    <telerik:RadColorPicker  Name="titleBorderBrushPicker" Margin="1" 
                                          SelectedColor="{Binding Indicator.Series.Brush, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
-                    <telerik:RadColorPicker.ContentTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <Rectangle Height="2" Width="25"
-									Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}"
-                                           />
-                            </StackPanel>
-                        </DataTemplate>
-                    </telerik:RadColorPicker.ContentTemplate>
-                </telerik:RadColorPicker>
+                        <telerik:RadColorPicker.ContentTemplate>
+                            <DataTemplate>
+                                <Rectangle Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
+                            </DataTemplate>
+                        </telerik:RadColorPicker.ContentTemplate>
+                    </telerik:RadColorPicker>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         <StackPanel  VerticalAlignment="Top"/>
