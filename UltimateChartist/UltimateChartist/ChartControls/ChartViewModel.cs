@@ -52,7 +52,7 @@ namespace UltimateChartist.ChartControls
             }
         }
 
-        private int nbBar = 200;
+        private int nbBar = 100;
         private void ResetZoom()
         {
             this.HorizontalZoomRangeEnd = 1;

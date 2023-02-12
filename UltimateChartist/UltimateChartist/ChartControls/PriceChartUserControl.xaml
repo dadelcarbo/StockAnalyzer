@@ -44,7 +44,7 @@
                 <TextBlock Margin="10,0,0,0"><Run Text="PRICE:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="price" Text="600.40" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
                 <TextBlock Margin="10,0,0,0"><Run Text="VOLUME:" FontFamily="Segoe UI" FontSize="12" /><Run Text=" "/><Run x:Name="volume" Text="5,976,129" FontFamily="Segoe UI" FontSize="16" Foreground="#FF0099BC" /></TextBlock>
             </StackPanel>
-            <telerik:RadCartesianChart x:Name="Chart" Grid.Row="1" Margin="10,0,10,30" Palette="{Binding Source={x:Static telerik:ChartPalettes.VisualStudio2019}}"
+            <telerik:RadCartesianChart x:Name="Chart" Grid.Row="1" Margin="10,0,10,30"
                                    HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}" 
                                    HorizontalZoomRangeEnd="{Binding HorizontalZoomRangeEnd, Mode=TwoWay}"
                                    TrackBallLineStyle="{StaticResource trackBallLineStyle}"
@@ -58,11 +58,11 @@
 
                 <telerik:RadCartesianChart.HorizontalAxis>
                     <telerik:DateTimeCategoricalAxis DateTimeComponent="Date" PlotMode="BetweenTicks" MajorTickInterval="30" MajorTickStyle="{StaticResource tickStyle}"
-                                                     LabelTemplate="{Binding AxisLabelTemplate}"/>
+                                                     LabelTemplate="{Binding AxisLabelTemplate}" SmartLabelsMode="SmartStep"/>
                 </telerik:RadCartesianChart.HorizontalAxis>
 
                 <telerik:RadCartesianChart.VerticalAxis>
-                    <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}"/>
+                    <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" SmartLabelsMode="SmartStepAndRange"/>
                 </telerik:RadCartesianChart.VerticalAxis>
                 <telerik:RadCartesianChart.Grid>
                     <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="XY">

@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.DataModels;
@@ -89,7 +91,7 @@ namespace UltimateChartist.ChartControls
 
                         foreach (var series in indicatorViewModel.CartesianSeries)
                         {
-                            this.Chart.Series.Insert(0,series);
+                            this.Chart.Series.Insert(0, series);
                         }
 
                         var dlg = new IndicatorConfigWindow(indicatorViewModel);
@@ -177,6 +179,23 @@ namespace UltimateChartist.ChartControls
                 ohlcSeries.HighBinding = new PropertyNameDataPointBinding("High");
                 ohlcSeries.LowBinding = new PropertyNameDataPointBinding("Low");
                 ohlcSeries.CloseBinding = new PropertyNameDataPointBinding("Close");
+
+                var style = new Style();
+                if (series is CandlestickSeries)
+                {
+                    style.TargetType = typeof(Candlestick);
+                    style.Setters.Add(new Setter(Candlestick.UpFillProperty, Brushes.Green));
+                    style.Setters.Add(new Setter(Candlestick.DownFillProperty, Brushes.Red));
+                    style.Setters.Add(new Setter(OhlcShape.UpStrokeProperty, Brushes.DarkGreen));
+                    style.Setters.Add(new Setter(OhlcShape.DownStrokeProperty, Brushes.DarkRed));
+                }
+                else
+                {
+                    style.TargetType = typeof(OhlcStick);
+                    style.Setters.Add(new Setter(OhlcStick.UpStrokeProperty, Brushes.DarkGreen));
+                    style.Setters.Add(new Setter(OhlcStick.DownStrokeProperty, Brushes.DarkRed));
+                }
+                ohlcSeries.DefaultVisualStyle = style;
             }
             else if (series is RangeSeriesBase)
             {
@@ -188,6 +207,7 @@ namespace UltimateChartist.ChartControls
             {
                 var strokedSeries = (CategoricalStrokedSeries)series;
                 strokedSeries.ValueBinding = new PropertyNameDataPointBinding("Close");
+                strokedSeries.Stroke = Brushes.Blue;
             }
         }
 
