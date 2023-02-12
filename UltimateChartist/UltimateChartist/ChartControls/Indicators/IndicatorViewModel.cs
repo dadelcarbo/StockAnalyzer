@@ -13,10 +13,17 @@ namespace UltimateChartist.ChartControls.Indicators
     public interface IIndicatorParameterViewModel
     {
         IndicatorParameterAttribute Parameter { get; }
+        string PropertyName { get; }
     }
     public class IndicatorParameterViewModel<T> : ViewModelBase, IIndicatorParameterViewModel
     {
+        public IndicatorParameterViewModel(string propertyName)
+        {
+            this.PropertyName = propertyName;
+        }
         public T Value { get; set; }
+
+        public string PropertyName { get; }
 
         public IndicatorParameterAttribute Parameter { get; set; }
     }
@@ -38,14 +45,14 @@ namespace UltimateChartist.ChartControls.Indicators
                 switch (attribute.Type.Name)
                 {
                     case "Double":
-                        this.Parameters.Add(new IndicatorParameterViewModel<double>()
+                        this.Parameters.Add(new IndicatorParameterViewModel<double>(prop.Name)
                         {
                             Value = (double)prop.GetValue(indicator),
                             Parameter = attribute
                         });
                         break;
                     case "Int32":
-                        this.Parameters.Add(new IndicatorParameterViewModel<int>()
+                        this.Parameters.Add(new IndicatorParameterViewModel<int>(prop.Name)
                         {
                             Value = (int)prop.GetValue(indicator),
                             Parameter = attribute
@@ -65,16 +72,17 @@ namespace UltimateChartist.ChartControls.Indicators
                     case "IndicatorLineSeries":
                         {
                             var series = (IndicatorLineSeries)indicatorSeries;
-
                             var lineSeries = new LineSeries()
                             {
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Value")
                             };
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Brush");
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Curve.Brush");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Thickness");
+                            binding = new Binding($"PriceIndicators[{index}].Series.Curve.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
 
                             this.CartesianSeries.Add(lineSeries);
                         }
@@ -84,22 +92,6 @@ namespace UltimateChartist.ChartControls.Indicators
                     case "IndicatorBandSeries":
                         {
                             var series = (IndicatorBandSeries)indicatorSeries;
-                            //var lineSeries = new LineSeries()
-                            //{
-                            //    Stroke = series.DownBrush,
-                            //    StrokeThickness = series.DownThickness,
-                            //    CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                            //    ValueBinding = new PropertyNameDataPointBinding("Down")
-                            //};
-                            //this.CartesianSeries.Add(lineSeries);
-                            //lineSeries = new LineSeries()
-                            //{
-                            //    Stroke = series.UpBrush,
-                            //    StrokeThickness = series.UpThickness,
-                            //    CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                            //    ValueBinding = new PropertyNameDataPointBinding("Up")
-                            //};
-                            //this.CartesianSeries.Add(lineSeries);
 
                             var rangeSeries = new RangeSeries()
                             {
@@ -111,6 +103,8 @@ namespace UltimateChartist.ChartControls.Indicators
                                 HighBinding = new PropertyNameDataPointBinding("Up"),
                                 LowBinding = new PropertyNameDataPointBinding("Down")
                             };
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
                             this.CartesianSeries.Add(rangeSeries);
 
                             var lineSeries = new LineSeries()
@@ -120,7 +114,43 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Mid")
                             };
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
                             this.CartesianSeries.Add(lineSeries);
+                        }
+                        break;
+
+                    case "IndicatorTrailSeries":
+                        {
+                            var series = (IndicatorTrailSeries)indicatorSeries;
+
+                            var rangeSeries = new RangeSeries()
+                            {
+                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowPoints,
+                                Stroke = series.LongStroke,
+                                StrokeThickness = 1,
+                                Fill = series.LongFill,
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                HighBinding = new PropertyNameDataPointBinding("High"),
+                                LowBinding = new PropertyNameDataPointBinding("Long")
+                            };
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            this.CartesianSeries.Add(rangeSeries);
+
+                            rangeSeries = new RangeSeries()
+                            {
+                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowPoints,
+                                Stroke = series.ShortStroke,
+                                StrokeThickness = 1,
+                                Fill = series.ShortFill,
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                HighBinding = new PropertyNameDataPointBinding("Short"),
+                                LowBinding = new PropertyNameDataPointBinding("Low")
+                            };
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            this.CartesianSeries.Add(rangeSeries);
                         }
                         break;
                     default:
@@ -128,7 +158,6 @@ namespace UltimateChartist.ChartControls.Indicators
                 }
             }
 
-            this.CartesianSeries.ForEach(cs => cs.ItemsSource = indicator.Series.Values);
             indicator.ParameterChanged += Indicator_ParameterChanged;
         }
 
@@ -141,7 +170,6 @@ namespace UltimateChartist.ChartControls.Indicators
             if (indicator != null)
             {
                 indicator.Initialize(ChartViewModel.StockSerie);
-                this.CartesianSeries.ForEach(cs => cs.ItemsSource = indicator.Series.Values);
             }
         }
 

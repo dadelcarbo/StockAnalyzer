@@ -1742,7 +1742,7 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
-        public void CalculateBandTrailStop(FloatSerie lowerBB, FloatSerie upperBB, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        public void CalculateBandTrailStop(FloatSerie lowerBand, FloatSerie upperBand, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             longStopSerie = new FloatSerie(this.Count, "TRAILBB.S");
             shortStopSerie = new FloatSerie(this.Count, "TRAILBB.R");
@@ -1770,12 +1770,12 @@ namespace StockAnalyzer.StockClasses
                         { // Trailing stop has been broken => reverse trend
                             upTrend = false;
                             longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = upperBB[i];
+                            shortStopSerie[i] = upperBand[i];
                         }
                         else
                         {
                             // UpTrend still in place
-                            longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowerBB[i]);
+                            longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowerBand[i]);
                             shortStopSerie[i] = float.NaN;
                         }
                     }
@@ -1784,14 +1784,14 @@ namespace StockAnalyzer.StockClasses
                         if (currentValue.CLOSE > shortStopSerie[i - 1])
                         {  // Trailing stop has been broken => reverse trend
                             upTrend = true;
-                            longStopSerie[i] = lowerBB[i];
+                            longStopSerie[i] = lowerBand[i];
                             shortStopSerie[i] = float.NaN;
                         }
                         else
                         {
                             // Down trend still in place
                             longStopSerie[i] = float.NaN;
-                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], upperBB[i]);
+                            shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], upperBand[i]);
                         }
                     }
                 }

@@ -6,7 +6,7 @@
       <Value Profile="(Default)">C:\Users\David\OneDrive\UltimateChartistDev_new</Value>
     </Setting>
     <Setting Name="DataFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ProgramData\UltimateChartist_new\Data</Value>
+      <Value Profile="(Default)">C:\ProgramData\UltimateChartist\Data</Value>
     </Setting>
     <Setting Name="LoggingEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,9 +37,12 @@ namespace UltimateChartist.ChartControls.Indicators
                 }
             }
 
-            switch(indicatorViewModel.Indicator.Series.GetType().Name)
+            switch (indicatorViewModel.Indicator.Series.GetType().Name)
             {
-                case "":
+                case "IndicatorLineSeries":
+                    var curveConfig = new CurveConfigUserControl();
+                    curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorLineSeries).Curve;
+                    this.curvePanel.Children.Add(curveConfig);
                     break;
             }
 
@@ -57,13 +61,13 @@ namespace UltimateChartist.ChartControls.Indicators
                 NumberDecimalDigits = 0
             };
 
-            var binding = new Binding("Indicator." + parameter.Parameter.Name) { Mode = BindingMode.TwoWay };
+            var binding = new Binding("Indicator." + parameter.PropertyName) { Mode = BindingMode.TwoWay };
             upDown.SetBinding(RadNumericUpDown.ValueProperty, binding);
 
             var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             stackPanel.Children.Add(label);
             stackPanel.Children.Add(upDown);
-            this.ParameterPanel.Children.Add(stackPanel);
+            this.parameterPanel.Children.Add(stackPanel);
         }
         private void CreateDoubleParameter(IIndicatorParameterViewModel parameter)
         {
@@ -79,13 +83,13 @@ namespace UltimateChartist.ChartControls.Indicators
                 NumberDecimalDigits = -(int)Math.Round((Math.Log10(doubleParameter.Step)))
             };
 
-            var binding = new Binding("Indicator." + parameter.Parameter.Name) { Mode = BindingMode.TwoWay, StringFormat = doubleParameter.Format };
+            var binding = new Binding("Indicator." + parameter.PropertyName) { Mode = BindingMode.TwoWay, StringFormat = doubleParameter.Format };
             upDown.SetBinding(RadNumericUpDown.ValueProperty, binding);
 
             var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             stackPanel.Children.Add(label);
             stackPanel.Children.Add(upDown);
-            this.ParameterPanel.Children.Add(stackPanel);
+            this.parameterPanel.Children.Add(stackPanel);
         }
 
         private void okButton_Click(object sender, RoutedEventArgs e)

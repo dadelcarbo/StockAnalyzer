@@ -131,8 +131,7 @@ namespace UltimateChartist.ChartControls
             if (closestDataPoint?.DataPoint?.DataItem is StockBar)
             {
                 StockBar data = closestDataPoint.DataPoint.DataItem as StockBar;
-                this.volume.Text = data.Volume.ToString("##,#");
-                this.date.Text = data.Date.ToString("MMM dd, yyyy");
+                this.date.Text = data.Date.ToString("dd/MM/yyyy");
                 this.price.Text = data.Close.ToString("0,0.00");
             }
         }

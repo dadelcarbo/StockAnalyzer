@@ -14,8 +14,14 @@ namespace UltimateChartist.Indicators
     {
         public MovingAverageBase()
         {
-            this.Series = new IndicatorLineSeries();
+            var series = new IndicatorLineSeries();
+            series.Curve.Brush = Brushes.Blue;
+            series.Curve.Thickness = 1;
+            series.Curve.Name= "Moving Average";
+
+            this.Series = series;
         }
+
         public override DisplayType DisplayType => DisplayType.Price;
         public override string DisplayName => $"{ShortName}({Period})";
 

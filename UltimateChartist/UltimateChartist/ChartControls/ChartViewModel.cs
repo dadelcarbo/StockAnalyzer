@@ -25,7 +25,7 @@ namespace UltimateChartist.ChartControls
 
         public void AddIndicator()
         {
-            throw new NotImplementedException("ChartViewModel.AddIndicator not implemented");
+            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMACD()));
         }
 
         public void RemoveIndicator(IndicatorChartViewModel indicatorViewModel)

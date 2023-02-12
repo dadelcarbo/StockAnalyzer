@@ -37,7 +37,7 @@ namespace UltimateChartist {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ProgramData\\UltimateChartist_new\\Data")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ProgramData\\UltimateChartist\\Data")]
         public string DataFolder {
             get {
                 return ((string)(this["DataFolder"]));

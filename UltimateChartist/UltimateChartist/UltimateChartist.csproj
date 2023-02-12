@@ -54,6 +54,9 @@
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\StockSerie.cs" />
   <Compile Include="Indicators\IndicatorParameter.cs" />
+  <Compile Include="Indicators\StockIndicator_ATRBand.cs" />
+  <Compile Include="Indicators\StockIndicator_EMACD.cs" />
+  <Compile Include="Indicators\StockIndicator_TRAILATR.cs" />
   <Compile Include="Indicators\StockIndicator_EMABand.cs" />
   <Compile Include="Indicators\StockIndicator_MA.cs" />
   <Compile Include="Indicators\StockIndicator_EMA.cs" />

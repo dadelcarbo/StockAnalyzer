@@ -6,22 +6,23 @@
              xmlns:local="clr-namespace:UltimateChartist.ChartControls.Indicators"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="100" d:DesignWidth="300" d:Background="White">
     <UserControl.Resources>
         <telerik:BrushToColorConverter x:Key="brushToColorConverter" />
         <telerik:ColorToBrushConverter x:Key="colorToBrushConverter" />
     </UserControl.Resources>
     <Grid>
-        <Border BorderThickness="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <telerik:RadColorPicker x:Name="titleBorderBrushPicker" SelectedColor="{Binding CurrentColor, Mode=TwoWay}" IsRecentColorsActive="True" Width="60">
+        <Border BorderThickness="1" BorderBrush="Black">
+            <StackPanel x:Name="DisplayPanel" Orientation="Horizontal">
+                <Label Content="{Binding Name}" Width="100"/>
+                <Line X1="0" X2="50" Y1="10" Y2="10" StrokeThickness="{Binding Thickness}" Margin="2" Stroke="{Binding Brush}"/>
+                <telerik:RadUpDown Name="thicknessUpDown" VerticalAlignment="Center" HorizontalAlignment="Left" Width="15" MinWidth="15" Minimum="1" Maximum="5" Margin="1"
+                                       Value="{Binding Thickness,Mode=TwoWay}"/>
+                <telerik:RadColorPicker  Name="titleBorderBrushPicker" Margin="1" 
+                                         SelectedColor="{Binding Brush, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                     <telerik:RadColorPicker.ContentTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <Rectangle Height="2" Width="25"
-									Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}"
-                                           />
-                            </StackPanel>
+                            <Rectangle Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
                         </DataTemplate>
                     </telerik:RadColorPicker.ContentTemplate>
                 </telerik:RadColorPicker>
