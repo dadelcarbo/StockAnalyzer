@@ -49,17 +49,37 @@ namespace UltimateChartist.ChartControls.Indicators
                 case "IndicatorRangeSeries":
                     {
                         var rangeConfig = new RangeConfigUserControl();
-                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorRangeSeries);
+                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorRangeSeries).Area;
                         this.curvePanel.Children.Add(rangeConfig);
                     }
                     break;
                 case "IndicatorBandSeries":
                     {
                         var rangeConfig = new RangeConfigUserControl();
-                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorBandSeries);
+                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorBandSeries).Area;
                         this.curvePanel.Children.Add(rangeConfig);
                         var curveConfig = new CurveConfigUserControl();
                         curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorBandSeries).MidLine;
+                        this.curvePanel.Children.Add(curveConfig);
+                    }
+                    break;
+                case "IndicatorTrailSeries":
+                    {
+                        var trailSerie = indicatorViewModel.Indicator.Series as IndicatorTrailSeries;
+                        var rangeConfig = new RangeConfigUserControl();
+                        rangeConfig.DataContext = trailSerie.Long;
+                        this.curvePanel.Children.Add(rangeConfig);
+
+                        rangeConfig = new RangeConfigUserControl();
+                        rangeConfig.DataContext = trailSerie.Short;
+                        this.curvePanel.Children.Add(rangeConfig);
+
+                        var curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = trailSerie.LongReentry;
+                        this.curvePanel.Children.Add(curveConfig);
+
+                        curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = trailSerie.ShortReentry;
                         this.curvePanel.Children.Add(curveConfig);
                     }
                     break;

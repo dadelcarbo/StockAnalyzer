@@ -99,11 +99,11 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
                             };
 
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Fill");
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Area.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Thickness");
+                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Stroke");
+                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
                             binding = new Binding($"PriceIndicators[{index}].Series.Values");
@@ -122,11 +122,11 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
                             };
 
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Fill");
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Area.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Thickness");
+                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Stroke");
+                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
                             binding = new Binding($"PriceIndicators[{index}].Series.Values");
@@ -151,35 +151,73 @@ namespace UltimateChartist.ChartControls.Indicators
                         break;
                     case "IndicatorTrailSeries":
                         {
-                            var series = (IndicatorTrailSeries)indicatorSeries;
-
                             var rangeSeries = new RangeSeries()
                             {
-                                StrokeMode = RangeSeriesStrokeMode.LowPoints,
-                                Stroke = series.Long.Stroke,
-                                StrokeThickness = 1,
-                                Fill = series.Long.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 HighBinding = new PropertyNameDataPointBinding("High"),
-                                LowBinding = new PropertyNameDataPointBinding("Long")
+                                LowBinding = new PropertyNameDataPointBinding("Long"),
+                                StrokeMode = RangeSeriesStrokeMode.LowPoints
                             };
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Values");
+
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Long.Fill");
+                            rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Long.Thickness");
+                            rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Long.Stroke");
+                            rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
+
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+
                             this.CartesianSeries.Add(rangeSeries);
 
                             rangeSeries = new RangeSeries()
                             {
-                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowPoints,
-                                Stroke = series.Short.Stroke,
-                                StrokeThickness = 1,
-                                Fill = series.Short.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 HighBinding = new PropertyNameDataPointBinding("Short"),
-                                LowBinding = new PropertyNameDataPointBinding("Low")
+                                LowBinding = new PropertyNameDataPointBinding("Low"),
+                                StrokeMode = RangeSeriesStrokeMode.HighPoints
                             };
+
+                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Fill");
+                            rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Thickness");
+                            rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Stroke");
+                            rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
+
                             binding = new Binding($"PriceIndicators[{index}].Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+
                             this.CartesianSeries.Add(rangeSeries);
+
+                            var lineSeries = new LineSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                ValueBinding = new PropertyNameDataPointBinding("LongReentry")
+                            };
+                            binding = new Binding($"PriceIndicators[{index}].Series.LongReentry.Stroke");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.LongReentry.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+
+                            this.CartesianSeries.Add(lineSeries);
+
+                            lineSeries = new LineSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                ValueBinding = new PropertyNameDataPointBinding("ShortReentry")
+                            };
+                            binding = new Binding($"PriceIndicators[{index}].Series.ShortReentry.Stroke");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.ShortReentry.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+
+                            this.CartesianSeries.Add(lineSeries);
                         }
                         break;
                     default:

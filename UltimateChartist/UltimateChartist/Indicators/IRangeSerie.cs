@@ -83,20 +83,17 @@ namespace UltimateChartist.Indicators
     {
         public IndicatorRangeSeries()
         {
-            this.Fill = new SolidColorBrush(Color.FromArgb(90, Colors.LightGray.R, Colors.LightGray.G, Colors.LightGray.B));
-            this.Line = new Curve
+            this.Area = new Area()
             {
+                Fill = new SolidColorBrush(Color.FromArgb(90, Colors.LightGray.R, Colors.LightGray.G, Colors.LightGray.B)),
                 Stroke = Brushes.Black,
                 Thickness = 1,
                 Name = string.Empty
             };
         }
 
-        Curve upperLine;
-        public Curve Line { get => upperLine; set { if (upperLine != value) { upperLine = value; RaisePropertyChanged(); } } }
-
-        Brush fill;
-        public Brush Fill { get => fill; set { if (fill != value) { fill = value; RaisePropertyChanged(); } } }
+        Area area;
+        public Area Area { get => area; set { if (area != value) { area = value; RaisePropertyChanged(); } } }
     }
 
     public class IndicatorBandSeries : IndicatorRangeSeries
@@ -120,8 +117,8 @@ namespace UltimateChartist.Indicators
         public double LongReentry { get; set; }
         public double Short { get; set; }
         public double ShortReentry { get; set; }
-        public double High { get; set; }
-        public double Low { get; set; }
+        public double High { get; set; } // Higher band for Long stop
+        public double Low { get; set; } // // Lower band for Short stop
     }
 
     public class IndicatorTrailSeries : IndicatorSeriesBase

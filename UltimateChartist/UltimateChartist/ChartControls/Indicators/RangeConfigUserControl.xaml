@@ -6,7 +6,7 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:indicators="clr-namespace:UltimateChartist.Indicators"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=indicators:IndicatorRangeSeries}"
+             d:DataContext="{d:DesignInstance Type=indicators:Area}"
              d:DesignHeight="100" d:DesignWidth="300" d:Background="White">
     <UserControl.Resources>
         <telerik:BrushToColorConverter x:Key="brushToColorConverter" />
@@ -25,14 +25,14 @@
             </telerik:RadColorPicker>
             <Label Content="Border"/>
             <telerik:RadColorPicker  Name="titleBorderBrushPicker" Margin="1" 
-                                         SelectedColor="{Binding Line.Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
+                                         SelectedColor="{Binding Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                 <telerik:RadColorPicker.ContentTemplate>
                     <DataTemplate>
                         <Rectangle Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
                     </DataTemplate>
                 </telerik:RadColorPicker.ContentTemplate>
             </telerik:RadColorPicker>
-            <Ellipse Width="50" Height="20" StrokeThickness="{Binding Line.Thickness}" Margin="2" Stroke="{Binding Line.Stroke}" Fill="{Binding Fill}"/>
+            <Ellipse Width="50" Height="20" StrokeThickness="{Binding Thickness}" Margin="2" Stroke="{Binding Line.Stroke}" Fill="{Binding Fill}"/>
         </StackPanel>
     </Grid>
 </UserControl>
