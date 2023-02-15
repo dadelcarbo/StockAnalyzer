@@ -18,6 +18,10 @@
     <Generator>MSBuild:Compile</Generator>
     <SubType>Designer</SubType>
   </ApplicationDefinition>
+  <Page Include="ChartControls\Indicators\RangeConfigUserControl.xaml">
+    <SubType>Designer</SubType>
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="ChartControls\PriceChartUserControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -36,6 +40,9 @@
   </Page>
   <Compile Include="App.xaml.cs">
     <DependentUpon>App.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="ChartControls\Indicators\RangeConfigUserControl.xaml.cs">
     <SubType>Code</SubType>
   </Compile>
   <Compile Include="ChartControls\Indicators\IndicatorViewModel.cs" />
@@ -84,6 +91,7 @@
   
   <ItemGroup>
     <Folder Include="ChartControls\Selectors\" />
+    <Folder Include="Indicators\Display\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   

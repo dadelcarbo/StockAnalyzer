@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Windows;
 using System.Windows.Media;
+using System.Xml.Linq;
 using Telerik.Windows.Controls;
 
 namespace UltimateChartist.Indicators
@@ -15,9 +18,9 @@ namespace UltimateChartist.Indicators
     }
     public class IndicatorRangeValue : IndicatorValueBase
     {
-        public double Down { get; set; }
+        public double Low { get; set; }
 
-        public double Up { get; set; }
+        public double High { get; set; }
     }
     public class IndicatorBandValue : IndicatorRangeValue
     {
@@ -31,9 +34,7 @@ namespace UltimateChartist.Indicators
     public abstract class IndicatorSeriesBase : ViewModelBase, IIndicatorSeries
     {
         private IEnumerable<IndicatorValueBase> values;
-
         public IEnumerable<IndicatorValueBase> Values { get => values; set { if (values != value) { values = value; RaisePropertyChanged(); } } }
-
     }
 
     public class Curve : ViewModelBase
@@ -41,56 +42,76 @@ namespace UltimateChartist.Indicators
         private string name;
         public string Name { get => name; set { if (name != value) { name = value; RaisePropertyChanged(); } } }
 
-        private Brush brush;
-        public Brush Brush { get => brush; set { if (brush != value) { brush = value; RaisePropertyChanged(); } } }
+        private Brush stroke;
+        public Brush Stroke { get => stroke; set { if (stroke != value) { stroke = value; RaisePropertyChanged(); } } }
 
         private double thickness;
         public double Thickness { get => thickness; set { if (thickness != value) { thickness = value; RaisePropertyChanged(); } } }
+    }
+    public class Area : ViewModelBase
+    {
+        private string name;
+        public string Name { get => name; set { if (name != value) { name = value; RaisePropertyChanged(); } } }
+
+        private Brush stroke;
+        public Brush Stroke { get => stroke; set { if (stroke != value) { stroke = value; RaisePropertyChanged(); } } }
+
+        private double thickness;
+        public double Thickness { get => thickness; set { if (thickness != value) { thickness = value; RaisePropertyChanged(); } } }
+
+        private Brush fill;
+        public Brush Fill { get => fill; set { if (fill != value) { fill = value; RaisePropertyChanged(); } } }
     }
 
     public class IndicatorLineSeries : IndicatorSeriesBase
     {
         private Curve curve;
-
         public IndicatorLineSeries()
         {
-            this.curve = new Curve() { };
+            this.curve = new Curve()
+            {
+                Stroke = Brushes.Black,
+                Thickness = 1,
+                Name = string.Empty
+            };
         }
 
         public Curve Curve { get => curve; set { if (curve != value) { curve = value; RaisePropertyChanged(); } } }
     }
 
-    public class IndicatorRangeSeries : IIndicatorSeries
+    public class IndicatorRangeSeries : IndicatorSeriesBase
     {
         public IndicatorRangeSeries()
         {
-            this.Fill = new SolidColorBrush(Color.FromArgb(90, Colors.LightGreen.R, Colors.LightGreen.G, Colors.LightGreen.B));
-            this.Stroke = Brushes.Green;
+            this.Fill = new SolidColorBrush(Color.FromArgb(90, Colors.LightGray.R, Colors.LightGray.G, Colors.LightGray.B));
+            this.Line = new Curve
+            {
+                Stroke = Brushes.Black,
+                Thickness = 1,
+                Name = string.Empty
+            };
         }
-        public string UpName { get; set; }
-        public Brush UpBrush { get; set; }
-        public double UpThickness { get; set; }
 
-        public string DownName { get; set; }
-        public Brush DownBrush { get; set; }
-        public double DownThickness { get; set; }
+        Curve upperLine;
+        public Curve Line { get => upperLine; set { if (upperLine != value) { upperLine = value; RaisePropertyChanged(); } } }
 
-        public Brush Fill { get; set; }
-        public Brush Stroke { get; set; }
-
-        public IEnumerable<IndicatorValueBase> Values { get; set; }
+        Brush fill;
+        public Brush Fill { get => fill; set { if (fill != value) { fill = value; RaisePropertyChanged(); } } }
     }
 
     public class IndicatorBandSeries : IndicatorRangeSeries
     {
         public IndicatorBandSeries()
         {
-            this.MidThickness = 1;
-            this.MidBrush = Brushes.Green;
+            this.MidLine = new Curve
+            {
+                Stroke = Brushes.Black,
+                Thickness = 1,
+                Name = string.Empty
+            };
         }
-        public string MidName { get; set; }
-        public Brush MidBrush { get; set; }
-        public double MidThickness { get; set; }
+        Curve midLine;
+        public Curve MidLine { get => midLine; set { if (midLine != value) { midLine = value; RaisePropertyChanged(); } } }
     }
 
     public class IndicatorTrailValue : IndicatorValueBase
@@ -103,40 +124,53 @@ namespace UltimateChartist.Indicators
         public double Low { get; set; }
     }
 
-    public class IndicatorTrailSeries : IIndicatorSeries
+    public class IndicatorTrailSeries : IndicatorSeriesBase
     {
         public IndicatorTrailSeries()
         {
             Color color = Colors.Green;
-            this.LongStroke = new SolidColorBrush(color);
-            color = Color.FromArgb(150, color.R, color.G, color.B);
-            this.LongFill = new SolidColorBrush(color);
+            this.Long = new Area
+            {
+                Name = "Long",
+                Stroke = new SolidColorBrush(color),
+                Thickness = 1,
+                Fill = new SolidColorBrush(Color.FromArgb(150, color.R, color.G, color.B))
+            };
 
             color = Colors.Red;
-            this.ShortStroke = new SolidColorBrush(color);
-            color = Color.FromArgb(150, color.R, color.G, color.B);
-            this.ShortFill = new SolidColorBrush(color);
+            this.Short = new Area
+            {
+                Name = "Long",
+                Stroke = new SolidColorBrush(color),
+                Thickness = 1,
+                Fill = new SolidColorBrush(Color.FromArgb(150, color.R, color.G, color.B))
+            };
 
+            this.LongReentry = new Curve
+            {
+                Name = "LongReentry",
+                Stroke = Brushes.DarkRed,
+                Thickness = 1
+            };
 
-            this.LongReentryThickness = 1;
-            this.LongReentryStroke = Brushes.DarkRed;
-
-            this.ShortReentryThickness = 1;
-            this.ShortReentryStroke = Brushes.DarkGreen;
+            this.ShortReentry = new Curve
+            {
+                Name = "ShortReentry",
+                Stroke = Brushes.DarkGreen,
+                Thickness = 1
+            };
         }
 
-        public Brush LongFill { get; set; }
-        public Brush LongStroke { get; set; }
+        private Area @long;
+        public Area Long { get => @long; set { if (@long != value) { @long = value; RaisePropertyChanged(); } } }
 
-        public Brush ShortFill { get; set; }
-        public Brush ShortStroke { get; set; }
+        private Area @short;
+        public Area Short { get => @short; set { if (@short != value) { @short = value; RaisePropertyChanged(); } } }
 
-        public Brush LongReentryStroke { get; set; }
-        public double LongReentryThickness { get; set; }
+        private Curve longReentry;
+        public Curve LongReentry { get => longReentry; set { if (longReentry != value) { longReentry = value; RaisePropertyChanged(); } } }
 
-        public Brush ShortReentryStroke { get; set; }
-        public double ShortReentryThickness { get; set; }
-
-        public IEnumerable<IndicatorValueBase> Values { get; set; }
+        private Curve shortReentry;
+        public Curve ShortReentry { get => shortReentry; set { if (shortReentry != value) { shortReentry = value; RaisePropertyChanged(); } } }
     }
 }

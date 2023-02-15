@@ -15,7 +15,7 @@ namespace UltimateChartist.Indicators
         public MovingAverageBase()
         {
             var series = new IndicatorLineSeries();
-            series.Curve.Brush = Brushes.Blue;
+            series.Curve.Stroke = Brushes.Blue;
             series.Curve.Thickness = 1;
             series.Curve.Name= "Moving Average";
 

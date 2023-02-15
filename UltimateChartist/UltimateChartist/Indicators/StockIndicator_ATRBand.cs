@@ -36,14 +36,14 @@ namespace UltimateChartist.Indicators
 
             double alpha = 2.0 / (Period + 1.0);
             var firstBar = stockSerie.Bars.First();
-            values[0] = new IndicatorBandValue() { Date = firstBar.Date, Up = firstBar.Close + upWidth * atrSerie[0], Mid = firstBar.Close, Down = firstBar.Close - downWidth * atrSerie[0] };
+            values[0] = new IndicatorBandValue() { Date = firstBar.Date, High = firstBar.Close + upWidth * atrSerie[0], Mid = firstBar.Close, Low = firstBar.Close - downWidth * atrSerie[0] };
             double ema = firstBar.Close;
 
             int i = 1;
             foreach (var bar in stockSerie.Bars.Skip(1))
             {
                 ema += alpha * (bar.Close - ema);
-                values[i] = new IndicatorBandValue() { Date = bar.Date, Up = ema + upWidth * atrSerie[i], Mid = ema, Down = ema - downWidth * atrSerie[i] };
+                values[i] = new IndicatorBandValue() { Date = bar.Date, High = ema + upWidth * atrSerie[i], Mid = ema, Low = ema - downWidth * atrSerie[i] };
                 i++;
             }
 

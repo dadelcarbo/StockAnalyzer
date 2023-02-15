@@ -11,7 +11,7 @@ namespace UltimateChartist.Indicators
     {
         public StockIndicator_EMABand()
         {
-            this.Series = new IndicatorBandSeries();
+            this.Series = new IndicatorRangeSeries();
         }
         public override DisplayType DisplayType => DisplayType.Price;
 
@@ -28,11 +28,11 @@ namespace UltimateChartist.Indicators
 
         public override void Initialize(StockSerie stockSerie)
         {
-            var values = new IndicatorBandValue[stockSerie.Bars.Count];
+            var values = new IndicatorRangeValue[stockSerie.Bars.Count];
 
             double alpha = 2.0 / (Period + 1.0);
             var firstBar = stockSerie.Bars.First();
-            values[0] = new IndicatorBandValue() { Date = firstBar.Date, Up = firstBar.Close, Mid = firstBar.Close, Down = firstBar.Close };
+            values[0] = new IndicatorRangeValue() { Date = firstBar.Date, High = firstBar.Close, Low = firstBar.Close };
             double ema = firstBar.Close;
 
             int i = 1;
@@ -41,7 +41,7 @@ namespace UltimateChartist.Indicators
             foreach (var bar in stockSerie.Bars.Skip(1))
             {
                 ema += alpha * (bar.Close - ema);
-                values[i++] = new IndicatorBandValue() { Date = bar.Date, Mid = ema, Up = ema * upRatio, Down = ema * downRatio };
+                values[i++] = new IndicatorRangeValue() { Date = bar.Date, High = ema * upRatio, Low = ema * downRatio };
             }
 
             this.Series.Values = values;

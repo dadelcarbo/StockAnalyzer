@@ -4,6 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Windows.Data;
+using System.Windows.Ink;
+using Telerik.Charting;
+using Telerik.Documents.Common.Model;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.Indicators;
@@ -77,7 +80,7 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Value")
                             };
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Curve.Brush");
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Curve.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
                             binding = new Binding($"PriceIndicators[{index}].Series.Curve.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
@@ -88,48 +91,63 @@ namespace UltimateChartist.ChartControls.Indicators
                         }
                         break;
                     case "IndicatorRangeSeries":
+                        {
+                            var series = (IndicatorRangeSeries)indicatorSeries;
+                            var rangeSeries = new RangeSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                HighBinding = new PropertyNameDataPointBinding("High"),
+                                LowBinding = new PropertyNameDataPointBinding("Low"),
+                                StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
+                            };
+
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Fill");
+                            rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Thickness");
+                            rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Stroke");
+                            rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
+
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+
+                            this.CartesianSeries.Add(rangeSeries);
+                        }
                         break;
                     case "IndicatorBandSeries":
                         {
-                            var series = (IndicatorBandSeries)indicatorSeries;
-
+                            var series = (IndicatorRangeSeries)indicatorSeries;
                             var rangeSeries = new RangeSeries()
                             {
-                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowAndHighPoints,
-                                Stroke = series.Stroke,
-                                StrokeThickness = 1,
-                                Fill = series.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                                HighBinding = new PropertyNameDataPointBinding("Up"),
-                                LowBinding = new PropertyNameDataPointBinding("Down")
+                                HighBinding = new PropertyNameDataPointBinding("High"),
+                                LowBinding = new PropertyNameDataPointBinding("Low"),
+                                StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
                             };
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Values");
-                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
-                            this.CartesianSeries.Add(rangeSeries);
 
-                            var lineSeries = new LineSeries()
-                            {
-                                Stroke = series.MidBrush,
-                                StrokeThickness = series.MidThickness,
-                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
-                                ValueBinding = new PropertyNameDataPointBinding("Mid")
-                            };
+                            var binding = new Binding($"PriceIndicators[{index}].Series.Fill");
+                            rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Thickness");
+                            rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Line.Stroke");
+                            rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
+
                             binding = new Binding($"PriceIndicators[{index}].Series.Values");
-                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
-                            this.CartesianSeries.Add(lineSeries);
+                            rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+
+                            this.CartesianSeries.Add(rangeSeries);
                         }
                         break;
-
                     case "IndicatorTrailSeries":
                         {
                             var series = (IndicatorTrailSeries)indicatorSeries;
 
                             var rangeSeries = new RangeSeries()
                             {
-                                StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowPoints,
-                                Stroke = series.LongStroke,
+                                StrokeMode = RangeSeriesStrokeMode.LowPoints,
+                                Stroke = series.Long.Stroke,
                                 StrokeThickness = 1,
-                                Fill = series.LongFill,
+                                Fill = series.Long.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 HighBinding = new PropertyNameDataPointBinding("High"),
                                 LowBinding = new PropertyNameDataPointBinding("Long")
@@ -141,9 +159,9 @@ namespace UltimateChartist.ChartControls.Indicators
                             rangeSeries = new RangeSeries()
                             {
                                 StrokeMode = Telerik.Charting.RangeSeriesStrokeMode.LowPoints,
-                                Stroke = series.ShortStroke,
+                                Stroke = series.Short.Stroke,
                                 StrokeThickness = 1,
-                                Fill = series.ShortFill,
+                                Fill = series.Short.Fill,
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 HighBinding = new PropertyNameDataPointBinding("Short"),
                                 LowBinding = new PropertyNameDataPointBinding("Low")

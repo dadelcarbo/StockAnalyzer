@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" xmlns:indicators="clr-namespace:UltimateChartist.ChartControls.Indicators"
         mc:Ignorable="d"
-        Title="Indicator Configuration" Height="250" Width="400">
+        Title="Indicator Configuration" Height="250" Width="500">
     <Window.Resources>
         <telerik:BrushToColorConverter x:Key="brushToColorConverter" />
         <telerik:ColorToBrushConverter x:Key="colorToBrushConverter" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="0.8*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
