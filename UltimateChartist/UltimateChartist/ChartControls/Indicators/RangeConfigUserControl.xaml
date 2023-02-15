@@ -14,25 +14,28 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel x:Name="DisplayPanel" Orientation="Horizontal">
-            <Label Content="Fill"/>
-            <telerik:RadColorPicker  Name="titleFillBrushPicker" Margin="1" 
-                                         SelectedColor="{Binding Fill, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
-                <telerik:RadColorPicker.ContentTemplate>
-                    <DataTemplate>
-                        <Rectangle Fill="{Binding SelectedColor, ElementName=titleFillBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
-                    </DataTemplate>
-                </telerik:RadColorPicker.ContentTemplate>
-            </telerik:RadColorPicker>
-            <Label Content="Border"/>
-            <telerik:RadColorPicker  Name="titleBorderBrushPicker" Margin="1" 
+            <Label Content="{Binding Name}" Width="100"/>
+            <telerik:RadColorPicker  Name="borderBrushPicker" Margin="1" 
                                          SelectedColor="{Binding Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                 <telerik:RadColorPicker.ContentTemplate>
                     <DataTemplate>
-                        <Rectangle Fill="{Binding SelectedColor, ElementName=titleBorderBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
+                        <Rectangle Fill="{Binding SelectedColor, ElementName=borderBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
                     </DataTemplate>
                 </telerik:RadColorPicker.ContentTemplate>
             </telerik:RadColorPicker>
-            <Ellipse Width="50" Height="20" StrokeThickness="{Binding Thickness}" Margin="2" Stroke="{Binding Line.Stroke}" Fill="{Binding Fill}"/>
+            <telerik:RadUpDown Name="thicknessUpDown" VerticalAlignment="Center" HorizontalAlignment="Left" Width="15" MinWidth="15" Minimum="1" Maximum="5" Margin="1"
+                                       Value="{Binding Thickness,Mode=TwoWay}"/>
+            <Border BorderThickness="1" BorderBrush="LightGray" Width="50" Margin="2">
+                <Ellipse Width="40" Height="20" StrokeThickness="{Binding Thickness}" Stroke="{Binding Stroke}" Fill="{Binding Fill}"/>
+            </Border>
+            <telerik:RadColorPicker  Name="fillBrushPicker" Margin="1" 
+                                         SelectedColor="{Binding Fill, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
+                <telerik:RadColorPicker.ContentTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="{Binding SelectedColor, ElementName=fillBrushPicker, Converter={StaticResource colorToBrushConverter}}" Width="10" Height="10"></Rectangle>
+                    </DataTemplate>
+                </telerik:RadColorPicker.ContentTemplate>
+            </telerik:RadColorPicker>
         </StackPanel>
     </Grid>
 </UserControl>

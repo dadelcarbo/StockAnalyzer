@@ -15,9 +15,6 @@
     <Grid>
         <StackPanel x:Name="DisplayPanel" Orientation="Horizontal">
             <Label Content="{Binding Name}" Width="100"/>
-            <Line X1="0" X2="50" Y1="10" Y2="10" StrokeThickness="{Binding Thickness}" Margin="2" Stroke="{Binding Stroke}"/>
-            <telerik:RadUpDown Name="thicknessUpDown" VerticalAlignment="Center" HorizontalAlignment="Left" Width="15" MinWidth="15" Minimum="1" Maximum="5" Margin="1"
-                                       Value="{Binding Thickness,Mode=TwoWay}"/>
             <telerik:RadColorPicker  Name="titleBorderBrushPicker" Margin="1" 
                                          SelectedColor="{Binding Stroke, Converter={StaticResource brushToColorConverter}, Mode=TwoWay}">
                 <telerik:RadColorPicker.ContentTemplate>
@@ -26,6 +23,11 @@
                     </DataTemplate>
                 </telerik:RadColorPicker.ContentTemplate>
             </telerik:RadColorPicker>
+            <telerik:RadUpDown Name="thicknessUpDown" VerticalAlignment="Center" HorizontalAlignment="Left" Width="15" MinWidth="15" Minimum="1" Maximum="5" Margin="1"
+                                       Value="{Binding Thickness,Mode=TwoWay}"/>
+            <Border BorderThickness="1" BorderBrush="LightGray" Width="50" Margin="2">
+                <Line X1="0" X2="40" Y1="10" Y2="10" StrokeThickness="{Binding Thickness}" Stroke="{Binding Stroke}" HorizontalAlignment="Center"/>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

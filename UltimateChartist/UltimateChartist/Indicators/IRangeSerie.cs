@@ -137,7 +137,7 @@ namespace UltimateChartist.Indicators
             color = Colors.Red;
             this.Short = new Area
             {
-                Name = "Long",
+                Name = "Short",
                 Stroke = new SolidColorBrush(color),
                 Thickness = 1,
                 Fill = new SolidColorBrush(Color.FromArgb(150, color.R, color.G, color.B))
@@ -145,14 +145,14 @@ namespace UltimateChartist.Indicators
 
             this.LongReentry = new Curve
             {
-                Name = "LongReentry",
+                Name = "Long Reentry",
                 Stroke = Brushes.DarkRed,
                 Thickness = 1
             };
 
             this.ShortReentry = new Curve
             {
-                Name = "ShortReentry",
+                Name = "Short Reentry",
                 Stroke = Brushes.DarkGreen,
                 Thickness = 1
             };
