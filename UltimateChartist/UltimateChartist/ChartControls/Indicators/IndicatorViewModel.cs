@@ -74,7 +74,6 @@ namespace UltimateChartist.ChartControls.Indicators
                 {
                     case "IndicatorLineSeries":
                         {
-                            var series = (IndicatorLineSeries)indicatorSeries;
                             var lineSeries = new LineSeries()
                             {
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
@@ -92,7 +91,6 @@ namespace UltimateChartist.ChartControls.Indicators
                         break;
                     case "IndicatorRangeSeries":
                         {
-                            var series = (IndicatorRangeSeries)indicatorSeries;
                             var rangeSeries = new RangeSeries()
                             {
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
@@ -116,7 +114,6 @@ namespace UltimateChartist.ChartControls.Indicators
                         break;
                     case "IndicatorBandSeries":
                         {
-                            var series = (IndicatorRangeSeries)indicatorSeries;
                             var rangeSeries = new RangeSeries()
                             {
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
@@ -136,6 +133,20 @@ namespace UltimateChartist.ChartControls.Indicators
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
 
                             this.CartesianSeries.Add(rangeSeries);
+
+                            var lineSeries = new LineSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                ValueBinding = new PropertyNameDataPointBinding("Mid")
+                            };
+                            binding = new Binding($"PriceIndicators[{index}].Series.MidLine.Stroke");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.MidLine.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+
+                            this.CartesianSeries.Add(lineSeries);
                         }
                         break;
                     case "IndicatorTrailSeries":

@@ -40,14 +40,28 @@ namespace UltimateChartist.ChartControls.Indicators
             switch (indicatorViewModel.Indicator.Series.GetType().Name)
             {
                 case "IndicatorLineSeries":
-                    var curveConfig = new CurveConfigUserControl();
-                    curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorLineSeries).Curve;
-                    this.curvePanel.Children.Add(curveConfig);
+                    {
+                        var curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorLineSeries).Curve;
+                        this.curvePanel.Children.Add(curveConfig);
+                    }
                     break;
                 case "IndicatorRangeSeries":
-                    var rangeConfig = new RangeConfigUserControl();
-                    rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorRangeSeries);
-                    this.curvePanel.Children.Add(rangeConfig);
+                    {
+                        var rangeConfig = new RangeConfigUserControl();
+                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorRangeSeries);
+                        this.curvePanel.Children.Add(rangeConfig);
+                    }
+                    break;
+                case "IndicatorBandSeries":
+                    {
+                        var rangeConfig = new RangeConfigUserControl();
+                        rangeConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorBandSeries);
+                        this.curvePanel.Children.Add(rangeConfig);
+                        var curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorBandSeries).MidLine;
+                        this.curvePanel.Children.Add(curveConfig);
+                    }
                     break;
             }
 
