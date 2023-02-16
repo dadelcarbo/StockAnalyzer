@@ -33,7 +33,7 @@ namespace UltimateChartist.ChartControls.Indicators
 
     public class IndicatorViewModel : ViewModelBase
     {
-        public IndicatorViewModel(IIndicator indicator, ChartViewModel chartViewModel, int index = 0)
+        public IndicatorViewModel(IIndicator indicator, ChartViewModel chartViewModel)
         {
             Indicator = indicator;
             ChartViewModel = chartViewModel;
@@ -79,12 +79,13 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Value")
                             };
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Curve.Stroke");
+                            var binding = new Binding($"Series.Curve.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Curve.Thickness");
+                            binding = new Binding($"Series.Curve.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(lineSeries);
                         }
@@ -99,15 +100,16 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
                             };
 
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Area.Fill");
+                            var binding = new Binding($"Series.Area.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Thickness");
+                            binding = new Binding($"Series.Area.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Stroke");
+                            binding = new Binding($"Series.Area.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            rangeSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(rangeSeries);
                         }
@@ -122,15 +124,16 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.LowAndHighPoints,
                             };
 
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Area.Fill");
+                            var binding = new Binding($"Series.Area.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Thickness");
+                            binding = new Binding($"Series.Area.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Area.Stroke");
+                            binding = new Binding($"Series.Area.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            rangeSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(rangeSeries);
 
@@ -139,12 +142,13 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("Mid")
                             };
-                            binding = new Binding($"PriceIndicators[{index}].Series.MidLine.Stroke");
+                            binding = new Binding($"Series.MidLine.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.MidLine.Thickness");
+                            binding = new Binding($"Series.MidLine.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(lineSeries);
                         }
@@ -159,15 +163,16 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.LowPoints
                             };
 
-                            var binding = new Binding($"PriceIndicators[{index}].Series.Long.Fill");
+                            var binding = new Binding($"Series.Long.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Long.Thickness");
+                            binding = new Binding($"Series.Long.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Long.Stroke");
+                            binding = new Binding($"Series.Long.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            rangeSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(rangeSeries);
 
@@ -179,15 +184,16 @@ namespace UltimateChartist.ChartControls.Indicators
                                 StrokeMode = RangeSeriesStrokeMode.HighPoints
                             };
 
-                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Fill");
+                            binding = new Binding($"Series.Short.Fill");
                             rangeSeries.SetBinding(RangeSeries.FillProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Thickness");
+                            binding = new Binding($"Series.Short.Thickness");
                             rangeSeries.SetBinding(RangeSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Short.Stroke");
+                            binding = new Binding($"Series.Short.Stroke");
                             rangeSeries.SetBinding(RangeSeries.StrokeProperty, binding);
 
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             rangeSeries.SetBinding(RangeSeries.ItemsSourceProperty, binding);
+                            rangeSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(rangeSeries);
 
@@ -196,12 +202,13 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("LongReentry")
                             };
-                            binding = new Binding($"PriceIndicators[{index}].Series.LongReentry.Stroke");
+                            binding = new Binding($"Series.LongReentry.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.LongReentry.Thickness");
+                            binding = new Binding($"Series.LongReentry.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(lineSeries);
 
@@ -210,12 +217,13 @@ namespace UltimateChartist.ChartControls.Indicators
                                 CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
                                 ValueBinding = new PropertyNameDataPointBinding("ShortReentry")
                             };
-                            binding = new Binding($"PriceIndicators[{index}].Series.ShortReentry.Stroke");
+                            binding = new Binding($"Series.ShortReentry.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.ShortReentry.Thickness");
+                            binding = new Binding($"Series.ShortReentry.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
-                            binding = new Binding($"PriceIndicators[{index}].Series.Values");
+                            binding = new Binding($"Series.Values");
                             lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
 
                             this.CartesianSeries.Add(lineSeries);
                         }
