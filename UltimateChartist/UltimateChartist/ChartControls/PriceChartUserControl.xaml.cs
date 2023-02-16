@@ -41,8 +41,6 @@ namespace UltimateChartist.ChartControls
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     {
-                        if (this.viewModel.Indicators.Count > 3)
-                            return;
                         IndicatorChartViewModel indicatorChartViewModel = e.NewItems[0] as IndicatorChartViewModel;
 
                         this.ChartGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
@@ -87,11 +85,11 @@ namespace UltimateChartist.ChartControls
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     {
-                        var indicatorViewModel = new IndicatorViewModel(e.NewItems[0] as IIndicator, this.viewModel);
+                        var indicatorViewModel = new IndicatorViewModel(e.NewItems[0] as IIndicator, this.viewModel.StockSerie);
 
                         foreach (var series in indicatorViewModel.CartesianSeries)
                         {
-                            this.Chart.Series.Insert(0, series);
+                            this.priceChart.Series.Insert(0, series);
                         }
 
                         var dlg = new IndicatorConfigWindow(indicatorViewModel);
@@ -154,11 +152,11 @@ namespace UltimateChartist.ChartControls
                 default:
                     return;
             }
-            this.Chart.Series.Clear();
+            this.priceChart.Series.Clear();
             SetBindings(series);
             SetSourceBinding(series);
             SetTrackBallInfoTemplate(series);
-            this.Chart.Series.Add(series);
+            this.priceChart.Series.Add(series);
         }
         private static void SetTrackBallInfoTemplate(CategoricalSeriesBase series)
         {

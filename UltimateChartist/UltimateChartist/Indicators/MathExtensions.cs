@@ -7,7 +7,42 @@ namespace UltimateChartist.Indicators
 {
     public static class MathExtensions
     {
-        #region StockBars extensions
+        #region StockBars extensions 
+        public static double[] CalculateFastOscillator(this StockSerie stockSerie, int period, bool useBody)
+
+        {
+            //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
+            //  %D = MA3(%K)
+            var closeSerie = stockSerie.CloseValues;
+            var lowSerie = useBody ? stockSerie.BodyLowValues : stockSerie.LowValues;
+            var highSerie = stockSerie.HighValues;
+
+            int count = closeSerie.Length;
+            var fastOscillatorSerie = new double[count];
+
+            double lowestLow, highestHigh;
+
+            int i = 0;
+            for (; i < period; i++)
+            {
+                fastOscillatorSerie[i] = 50;
+            }
+            for (i = period; i < count; i++)
+            {
+                lowestLow = lowSerie.Min(i - period, i);
+                highestHigh = highSerie.Max(i - period, i);
+                if (highestHigh == lowestLow)
+                {
+                    fastOscillatorSerie[i] = 50;
+                }
+                else
+                {
+                    fastOscillatorSerie[i] = 100.0 * (closeSerie[i] - lowestLow) / (highestHigh - lowestLow);
+                }
+            }
+            return fastOscillatorSerie;
+        }
+
         public static double[] CalculateATR(this List<StockBar> bars)
         {
             var serie = new double[bars.Count];
@@ -43,11 +78,11 @@ namespace UltimateChartist.Indicators
             if (upTrend)
             {
                 longStopSerie[0] = previousBar.Low;
-                shortStopSerie[0] = float.NaN;
+                shortStopSerie[0] = double.NaN;
             }
             else
             {
-                longStopSerie[0] = float.NaN;
+                longStopSerie[0] = double.NaN;
                 shortStopSerie[0] = previousBar.High;
             }
             int i = 0;
@@ -60,14 +95,14 @@ namespace UltimateChartist.Indicators
                         if (currentBar.Close < longStopSerie[i - 1])
                         { // Trailing stop has been broken => reverse trend
                             upTrend = false;
-                            longStopSerie[i] = float.NaN;
+                            longStopSerie[i] = double.NaN;
                             shortStopSerie[i] = upperBand[i];
                         }
                         else
                         {
                             // UpTrend still in place
                             longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowerBand[i]);
-                            shortStopSerie[i] = float.NaN;
+                            shortStopSerie[i] = double.NaN;
                         }
                     }
                     else
@@ -76,12 +111,12 @@ namespace UltimateChartist.Indicators
                         {  // Trailing stop has been broken => reverse trend
                             upTrend = true;
                             longStopSerie[i] = lowerBand[i];
-                            shortStopSerie[i] = float.NaN;
+                            shortStopSerie[i] = double.NaN;
                         }
                         else
                         {
                             // Down trend still in place
-                            longStopSerie[i] = float.NaN;
+                            longStopSerie[i] = double.NaN;
                             shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], upperBand[i]);
                         }
                     }
@@ -91,7 +126,7 @@ namespace UltimateChartist.Indicators
             }
         }
         #endregion
-        #region Double[] extensions
+        #region double[] extensions
         public static double[] Mult(this double[] s1, double a)
         {
             var multSerie = new double[s1.Length];
@@ -120,6 +155,25 @@ namespace UltimateChartist.Indicators
             return multSerie;
         }
 
+        public static double Min(this double[] values, int startIndex, int endIndex)
+        {
+            double min = double.MaxValue;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                if (min > values[i]) min = values[i];
+            }
+            return min;
+        }
+        public static double Max(this double[] values, int startIndex, int endIndex)
+        {
+            double max = double.MinValue;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                if (max < values[i]) max = values[i];
+            }
+            return max;
+        }
+
         public static double[] CalculateEMA(this double[] values, int period)
         {
             var ema = new double[values.Length];
@@ -132,7 +186,7 @@ namespace UltimateChartist.Indicators
             }
             else
             {
-                float alpha = 2.0f / (float)(period + 1);
+                double alpha = 2.0f / (double)(period + 1);
 
                 ema[0] = values[0];
                 for (int i = 1; i < values.Count(); i++)

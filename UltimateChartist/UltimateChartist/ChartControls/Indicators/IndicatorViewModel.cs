@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Windows.Data;
-using System.Windows.Ink;
 using Telerik.Charting;
-using Telerik.Documents.Common.Model;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
+using UltimateChartist.DataModels;
 using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls.Indicators
@@ -33,11 +31,12 @@ namespace UltimateChartist.ChartControls.Indicators
 
     public class IndicatorViewModel : ViewModelBase
     {
-        public IndicatorViewModel(IIndicator indicator, ChartViewModel chartViewModel)
+        private StockSerie stockSerie;
+        public IndicatorViewModel(IIndicator indicator, StockSerie stockSerie)
         {
             Indicator = indicator;
-            ChartViewModel = chartViewModel;
-            indicator.Initialize(ChartViewModel.StockSerie);
+            this.stockSerie = stockSerie;
+            indicator.Initialize(stockSerie);
 
             // Get Parameters from instrospection
             foreach (PropertyInfo prop in indicator.GetType().GetProperties())
@@ -82,6 +81,39 @@ namespace UltimateChartist.ChartControls.Indicators
                             var binding = new Binding($"Series.Curve.Stroke");
                             lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
                             binding = new Binding($"Series.Curve.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
+
+                            this.CartesianSeries.Add(lineSeries);
+                        }
+                        break;
+                    case "IndicatorLineSignalSeries":
+                        {
+                            var lineSeries = new LineSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                ValueBinding = new PropertyNameDataPointBinding("Value")
+                            };
+                            var binding = new Binding($"Series.Curve.Stroke");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"Series.Curve.Thickness");
+                            lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
+                            binding = new Binding($"Series.Values");
+                            lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
+                            lineSeries.DataContext = indicator;
+
+                            this.CartesianSeries.Add(lineSeries);
+
+                            lineSeries = new LineSeries()
+                            {
+                                CategoryBinding = new PropertyNameDataPointBinding() { PropertyName = "Date" },
+                                ValueBinding = new PropertyNameDataPointBinding("Signal")
+                            };
+                            binding = new Binding($"Series.Signal.Stroke");
+                            lineSeries.SetBinding(LineSeries.StrokeProperty, binding);
+                            binding = new Binding($"Series.Signal.Thickness");
                             lineSeries.SetBinding(LineSeries.StrokeThicknessProperty, binding);
                             binding = new Binding($"Series.Values");
                             lineSeries.SetBinding(LineSeries.ItemsSourceProperty, binding);
@@ -237,14 +269,13 @@ namespace UltimateChartist.ChartControls.Indicators
         }
 
         public IIndicator Indicator { get; }
-        public ChartViewModel ChartViewModel { get; }
 
         private void Indicator_ParameterChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var indicator = sender as UltimateChartist.Indicators.IndicatorBase;
             if (indicator != null)
             {
-                indicator.Initialize(ChartViewModel.StockSerie);
+                indicator.Initialize(this.stockSerie);
             }
         }
 

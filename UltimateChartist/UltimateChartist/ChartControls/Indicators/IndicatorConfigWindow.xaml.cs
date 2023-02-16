@@ -46,6 +46,17 @@ namespace UltimateChartist.ChartControls.Indicators
                         this.curvePanel.Children.Add(curveConfig);
                     }
                     break;
+                case "IndicatorLineSignalSeries":
+                    {
+                        var curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorLineSignalSeries).Curve;
+                        this.curvePanel.Children.Add(curveConfig);
+
+                        curveConfig = new CurveConfigUserControl();
+                        curveConfig.DataContext = (indicatorViewModel.Indicator.Series as IndicatorLineSignalSeries).Signal;
+                        this.curvePanel.Children.Add(curveConfig);
+                    }
+                    break;
                 case "IndicatorRangeSeries":
                     {
                         var rangeConfig = new RangeConfigUserControl();

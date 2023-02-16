@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Telerik.Windows.Controls;
+using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.DataModels;
 using UltimateChartist.DataModels.DataProviders;
 using UltimateChartist.Indicators;
@@ -25,7 +26,8 @@ namespace UltimateChartist.ChartControls
 
         public void AddIndicator()
         {
-            this.Indicators.Add(new IndicatorChartViewModel(this, new StockIndicator_EMACD()));
+            var indicatorChartViewModel = new IndicatorChartViewModel(this, new StockIndicator_STOCK());
+            this.Indicators.Add(indicatorChartViewModel);
         }
 
         public void RemoveIndicator(IndicatorChartViewModel indicatorViewModel)
@@ -44,7 +46,11 @@ namespace UltimateChartist.ChartControls
                     instrument = value;
                     this.Name = instrument.Name;
                     this.Data = DataProviderHelper.LoadData(instrument, BarDuration.Daily);
-                    this.StockSerie = new StockSerie (value, BarDuration.Daily, this.Data);
+                    this.StockSerie = new StockSerie(value, BarDuration.Daily, this.Data);
+                    foreach (var indicator in this.PriceIndicators)
+                    {
+                        indicator.Initialize(this.StockSerie);
+                    }
 
                     ResetZoom();
                     RaisePropertyChanged();

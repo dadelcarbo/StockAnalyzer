@@ -26,6 +26,12 @@ namespace UltimateChartist.Indicators
 
         IIndicatorSeries Series { get; }
 
-        void Initialize(StockSerie bars);
+        void Initialize(StockSerie stockSerie);
+    }
+
+    public interface IRangedIndicator
+    {
+        double Minimum { get; }
+        double Maximum { get; }
     }
 }

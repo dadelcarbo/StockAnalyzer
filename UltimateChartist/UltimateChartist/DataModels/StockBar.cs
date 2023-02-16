@@ -15,6 +15,8 @@ namespace UltimateChartist.DataModels
         public double Close { get; }
         public long Volume { get; }
 
+        public double BodyHigh => Math.Max(Open, Close);
+        public double BodyLow => Math.Min(Open, Close);
         public double Exchanged => (High + Low) * Volume / 2.0;
 
         public StockBar(DateTime date, double open, double high, double low, double close, long volume)

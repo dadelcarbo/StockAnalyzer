@@ -20,31 +20,20 @@
 
         <TextBlock Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-5,40,0"
                    Text="{Binding Name}" Foreground="#767676" FontFamily="Segoe UI" FontSize="11" />
-        <telerik:RadCartesianChart Grid.Row="1" Margin="10,11,10,0"    
+        <telerik:RadCartesianChart Name="indicatorChart" Grid.Row="1" Margin="10,11,10,0"    
                                    HorizontalZoomRangeStart="{Binding ChartViewModel.HorizontalZoomRangeStart}" 
                                    HorizontalZoomRangeEnd="{Binding ChartViewModel.HorizontalZoomRangeEnd}"
                                    PlotAreaStyle="{StaticResource plotAreaStyle}">
             <telerik:RadCartesianChart.Behaviors>
                 <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan" />
             </telerik:RadCartesianChart.Behaviors>
-            <telerik:BarSeries ItemsSource="{Binding ChartViewModel.Data}"
-                               CategoryBinding="Date" ValueBinding="Volume"
-                               Cursor="Cross">
-                <telerik:BarSeries.PointTemplate>
-                    <DataTemplate>
-                        <Border Background="#FF0099BC" />
-                    </DataTemplate>
-                </telerik:BarSeries.PointTemplate>
-                <telerik:BarSeries.VerticalAxis>
-                    <telerik:LinearAxis LabelFormat="0,,"  HorizontalLocation="Right" LabelStyle="{StaticResource rightLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
-                </telerik:BarSeries.VerticalAxis>
-            </telerik:BarSeries>
+
             <telerik:RadCartesianChart.HorizontalAxis>
                 <telerik:DateTimeCategoricalAxis DateTimeComponent="Ticks" PlotMode="OnTicks" MajorTickInterval="30" ShowLabels="False" MajorTickStyle="{StaticResource tickStyle}"  PanZoomBarStyle="{StaticResource hiddenPanZoomBarStyle}"  />
             </telerik:RadCartesianChart.HorizontalAxis>
             <telerik:RadCartesianChart.VerticalAxis>
-                <telerik:LinearAxis LabelFormat="0,," MajorStep="5000000" Minimum="0" Maximum="15000000"
-                                      LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
+                <telerik:LinearAxis Name="verticalAxis"
+                                    LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
             </telerik:RadCartesianChart.VerticalAxis>
             <telerik:RadCartesianChart.Grid>
                 <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="XY">

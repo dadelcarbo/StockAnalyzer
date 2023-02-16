@@ -12,13 +12,21 @@ namespace UltimateChartist.Indicators
         public abstract Type Type { get; }
     }
 
+    public class IndicatorParameterBoolAttribute : IndicatorParameterAttribute
+    {
+        public override Type Type => typeof(bool);
+
+        public IndicatorParameterBoolAttribute(string name) : base(name)
+        {
+        }
+    }
+
     public class IndicatorParameterIntAttribute : IndicatorParameterAttribute
     {
         public override Type Type => typeof(int);
 
         public IndicatorParameterIntAttribute(string name, int min, int max) : base(name)
         {
-            Name = name;
             Min = min;
             Max = max;
         }
@@ -31,7 +39,6 @@ namespace UltimateChartist.Indicators
         public override Type Type => typeof(double);
         public IndicatorParameterDoubleAttribute(string name, double min, double max, double step, string format) : base(name)
         {
-            Name = name;
             Min = min;
             Max = max;
             Step = step;

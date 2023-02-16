@@ -16,6 +16,11 @@ namespace UltimateChartist.Indicators
     {
         public double Value { get; set; }
     }
+    public class IndicatorLineSignalValue : IndicatorValueBase
+    {
+        public double Value { get; set; }
+        public double Signal { get; set; }
+    }
     public class IndicatorRangeValue : IndicatorValueBase
     {
         public double Low { get; set; }
@@ -77,6 +82,22 @@ namespace UltimateChartist.Indicators
         }
 
         public Curve Curve { get => curve; set { if (curve != value) { curve = value; RaisePropertyChanged(); } } }
+    }
+
+    public class IndicatorLineSignalSeries : IndicatorLineSeries
+    {
+        private Curve signal;
+        public IndicatorLineSignalSeries()
+        {
+            this.signal = new Curve()
+            {
+                Stroke = Brushes.DarkRed,
+                Thickness = 1,
+                Name = "Signal"
+            };
+        }
+
+        public Curve Signal { get => signal; set { if (signal != value) { signal = value; RaisePropertyChanged(); } } }
     }
 
     public class IndicatorRangeSeries : IndicatorSeriesBase

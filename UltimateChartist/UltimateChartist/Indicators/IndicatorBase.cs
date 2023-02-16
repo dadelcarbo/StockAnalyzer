@@ -19,7 +19,7 @@ namespace UltimateChartist.Indicators
         /// </summary>
         public IIndicatorSeries Series { get; set; }
 
-        public abstract void Initialize(StockSerie bars);
+        public abstract void Initialize(StockSerie stockSerie);
 
         public event PropertyChangedEventHandler ParameterChanged;
         protected internal void RaiseParameterChanged([CallerMemberName] string propertyName = null)

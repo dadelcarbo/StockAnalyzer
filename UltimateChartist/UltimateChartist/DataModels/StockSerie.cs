@@ -25,8 +25,14 @@ namespace UltimateChartist.DataModels
         private double[] highValues;
         public double[] HighValues => highValues ??= this.Bars.Select(b => b.High).ToArray();
 
+        private double[] bodyHighValues;
+        public double[] BodyHighValues => bodyHighValues ??= this.Bars.Select(b => b.BodyHigh).ToArray();
+
         private double[] lowValues;
         public double[] LowValues => lowValues ??= this.Bars.Select(b => b.Low).ToArray();
+
+        private double[] bodyLowValues;
+        public double[] BodyLowValues => bodyLowValues ??= this.Bars.Select(b => b.BodyLow).ToArray();
 
         private double[] openValues;
         public double[] OpenValues => openValues ??= this.Bars.Select(b => b.Open).ToArray();

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using Telerik.Windows.Controls;
+using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls
@@ -7,18 +8,16 @@ namespace UltimateChartist.ChartControls
     public class IndicatorChartViewModel : ViewModelBase
     {
         public ChartViewModel ChartViewModel { get; }
-        public IIndicator Indicator { get; }
+        public IndicatorViewModel Indicator { get; }
 
         public IndicatorChartViewModel(ChartViewModel chartViewModel, IIndicator indicator)
         {
             this.ChartViewModel = chartViewModel;
-            Indicator = indicator;
+            Indicator = new IndicatorViewModel(indicator, chartViewModel.StockSerie);
         }
 
         private string name;
         public string Name { get => name; set { if (name != value) { name = value; RaisePropertyChanged(); } } }
-
-
 
 
         #region Commands

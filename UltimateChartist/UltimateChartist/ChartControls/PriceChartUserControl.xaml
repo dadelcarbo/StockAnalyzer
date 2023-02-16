@@ -43,7 +43,7 @@
                 <TextBlock><Run Text="Date:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run x:Name="date" Text="Mar 18, 2012" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
                 <TextBlock Margin="10,0,0,0"><Run Text="Price:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run x:Name="price" Text="600.40" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC" /></TextBlock>
             </StackPanel>
-            <telerik:RadCartesianChart x:Name="Chart" Grid.Row="1" Margin="10,0,10,30"
+            <telerik:RadCartesianChart x:Name="priceChart" Grid.Row="1" Margin="10,0,10,30"
                                    HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}" 
                                    HorizontalZoomRangeEnd="{Binding HorizontalZoomRangeEnd, Mode=TwoWay}"
                                    TrackBallLineStyle="{StaticResource trackBallLineStyle}"
