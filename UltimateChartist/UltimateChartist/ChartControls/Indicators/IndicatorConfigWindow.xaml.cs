@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Telerik.Windows.Controls;
 using UltimateChartist.Indicators;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.ChartControls.Indicators
 {
@@ -31,6 +32,9 @@ namespace UltimateChartist.ChartControls.Indicators
                         break;
                     case "Int32":
                         CreateIntParameter(parameter);
+                        break;
+                    case "Boolean":
+                        CreateBoolParameter(parameter);
                         break;
                     default:
                         throw new NotImplementedException($"Parameter type not implemented {parameter.Parameter.Type.Name} in IndicatorConfigWindow");
@@ -97,6 +101,21 @@ namespace UltimateChartist.ChartControls.Indicators
             }
 
             IndicatorViewModel = indicatorViewModel;
+        }
+
+        private void CreateBoolParameter(IIndicatorParameterViewModel parameter)
+        {
+            var boolParameter = parameter.Parameter as IndicatorParameterBoolAttribute;
+            var label = new System.Windows.Controls.Label() { Content = parameter.Parameter.Name, Width = 80, Margin = new Thickness(2) };
+            var upDown = new CheckBox() { VerticalAlignment = VerticalAlignment.Center };
+
+            var binding = new Binding("Indicator." + parameter.PropertyName) { Mode = BindingMode.TwoWay };
+            upDown.SetBinding(CheckBox.IsCheckedProperty, binding);
+
+            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(label);
+            stackPanel.Children.Add(upDown);
+            this.parameterPanel.Children.Add(stackPanel);
         }
 
         private void CreateIntParameter(IIndicatorParameterViewModel parameter)

@@ -60,6 +60,14 @@
   <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\StockSerie.cs" />
+  <Compile Include="Indicators\Display\Area.cs" />
+  <Compile Include="Indicators\Display\Curve.cs" />
+  <Compile Include="Indicators\Display\IndicatorBandSeries.cs" />
+  <Compile Include="Indicators\Display\IndicatorLineSeries.cs" />
+  <Compile Include="Indicators\Display\IndicatorLineSignalSeries.cs" />
+  <Compile Include="Indicators\Display\IndicatorRangeSeries.cs" />
+  <Compile Include="Indicators\Display\IndicatorSeriesBase.cs" />
+  <Compile Include="Indicators\Display\IndicatorTrailSeries.cs" />
   <Compile Include="Indicators\IndicatorParameter.cs" />
   <Compile Include="Indicators\StockIndicator_ATRBand.cs" />
   <Compile Include="Indicators\StockIndicator_STOCK.cs" />
@@ -70,7 +78,7 @@
   <Compile Include="Indicators\StockIndicator_EMA.cs" />
   <Compile Include="Indicators\IIndicator.cs" />
   <Compile Include="DataModels\Instrument.cs" />
-  <Compile Include="Indicators\IRangeSerie.cs" />
+  <Compile Include="Indicators\Display\IIndicatorSeries.cs" />
   <Compile Include="DataModels\StockBar.cs" />
   <Compile Include="Helpers\Folders.cs" />
   <Compile Include="Helpers\StockLog.cs" />
@@ -92,7 +100,6 @@
   
   <ItemGroup>
     <Folder Include="ChartControls\Selectors\" />
-    <Folder Include="Indicators\Display\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.DataModels;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.Indicators
 {

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UltimateChartist.DataModels;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.Indicators
 {
@@ -24,6 +25,10 @@ namespace UltimateChartist.Indicators
         private int signalPeriod = 3;
         [IndicatorParameterInt("Slow %D", 1, 500)]
         public int SignalPeriod { get => signalPeriod; set { if (signalPeriod != value) { signalPeriod = value; RaiseParameterChanged(); } } }
+
+        private bool useBody = false;
+        [IndicatorParameterBool("Use Body")]
+        public bool UseBody { get => useBody; set { if (useBody != value) { useBody = value; RaiseParameterChanged(); } } }
 
         public override void Initialize(StockSerie stockSerie)
         {

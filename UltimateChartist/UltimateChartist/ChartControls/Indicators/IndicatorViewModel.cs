@@ -60,6 +60,13 @@ namespace UltimateChartist.ChartControls.Indicators
                             Parameter = attribute
                         });
                         break;
+                    case "Boolean":
+                        this.Parameters.Add(new IndicatorParameterViewModel<bool>(prop.Name)
+                        {
+                            Value = (bool)prop.GetValue(indicator),
+                            Parameter = attribute
+                        });
+                        break;
                     default:
                         throw new NotImplementedException($"Attribute type not implemented {attribute.Type.Name} in IndicatorViewModel");
                 }

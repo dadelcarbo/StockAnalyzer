@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UltimateChartist.DataModels;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.Indicators
 {

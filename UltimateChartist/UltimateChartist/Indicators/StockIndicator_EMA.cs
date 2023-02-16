@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using Telerik.Windows.Controls.Charting;
 using UltimateChartist.DataModels;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.Indicators
 {

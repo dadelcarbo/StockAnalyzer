@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UltimateChartist.DataModels;
 using Telerik.Windows.Controls.ChartView;
+using UltimateChartist.Indicators.Display;
 
 namespace UltimateChartist.Indicators
 {
