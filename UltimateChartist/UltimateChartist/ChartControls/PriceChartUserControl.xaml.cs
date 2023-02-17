@@ -91,9 +91,6 @@ namespace UltimateChartist.ChartControls
                         {
                             this.priceChart.Series.Insert(0, series);
                         }
-
-                        var dlg = new IndicatorConfigWindow(indicatorViewModel);
-                        dlg.ShowDialog();
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
@@ -215,5 +212,16 @@ namespace UltimateChartist.ChartControls
             series.SetBinding(ChartSeries.ItemsSourceProperty, sourceBinding);
         }
         #endregion
+
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            var radioButton = sender as RadioButton;
+            if (radioButton?.Tag == null)
+                return;
+            
+            if (radioButton.Tag is SeriesType)
+                this.viewModel.SeriesType = (SeriesType)radioButton.Tag;
+
+        }
     }
 }

@@ -14,6 +14,9 @@ namespace UltimateChartist.DataModels
         }
         public Instrument Instrument { get; }
         public BarDuration BarDuration { get; } = BarDuration.Daily;
+
+        public BarDuration[] SupportedBarDurations { get; } = { BarDuration.M_5, BarDuration.H_1, BarDuration.Daily, BarDuration.Weekly };
+
         public List<StockBar> Bars { get; }
 
         private DateTime[] dateValues;

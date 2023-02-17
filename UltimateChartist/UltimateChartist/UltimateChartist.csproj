@@ -42,6 +42,7 @@
     <DependentUpon>App.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
+  <Compile Include="ChartControls\Converters\BarDurationsToVisibilityConverter.cs" />
   <Compile Include="ChartControls\Indicators\RangeConfigUserControl.xaml.cs">
     <SubType>Code</SubType>
   </Compile>
@@ -97,6 +98,27 @@
     <DependentUpon>Settings.settings</DependentUpon>
   </Compile>
 </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\bartchart.png" />
+    <Resource Include="Resources\curve.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\candlestick.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\back.png" />
+    <Resource Include="Resources\cancel.png" />
+    <Resource Include="Resources\copy.png" />
+    <Resource Include="Resources\garbage.png" />
+    <Resource Include="Resources\next.png" />
+    <Resource Include="Resources\preference.png" />
+    <Resource Include="Resources\reload.png" />
+    <Resource Include="Resources\settings.png" />
+    <Resource Include="Resources\star.png" />
+  </ItemGroup>
   
   <ItemGroup>
     <Folder Include="ChartControls\Selectors\" />

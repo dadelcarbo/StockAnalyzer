@@ -31,9 +31,6 @@ namespace UltimateChartist.ChartControls
                 verticalAxis.Minimum = rangedIndicator.Minimum;
                 verticalAxis.Maximum = rangedIndicator.Maximum;
             }
-
-            var dlg = new IndicatorConfigWindow(viewModel.Indicator);
-            dlg.ShowDialog();
         }
     }
 }
