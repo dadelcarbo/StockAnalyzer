@@ -1,24 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UltimateChartist.DataModels.DataProviders;
+using UltimateChartist.Helpers;
 
 namespace UltimateChartist.DataModels
 {
     public class StockSerie
     {
-        public StockSerie(Instrument instrument, BarDuration barDuration, List<StockBar> bars)
+        public StockSerie(Instrument instrument, BarDuration barDuration)
         {
             Instrument = instrument;
             BarDuration = barDuration;
-            Bars = bars;
         }
         public Instrument Instrument { get; }
         public BarDuration BarDuration { get; } = BarDuration.Daily;
 
-        public BarDuration[] SupportedBarDurations { get; } = { BarDuration.M_5, BarDuration.H_1, BarDuration.Daily, BarDuration.Weekly };
+        public List<StockBar> Bars { get; private set; }
 
-        public List<StockBar> Bars { get; }
+        public void LoadData(IStockDataProvider dataProvider, Instrument instrument, BarDuration barDuration)
+        {
+            if (barDuration == BarDuration.Weekly)
+            {
+                this.Bars = StockBar.GenerateWeeklyBarsFomDaily(instrument.GetStockSerie(BarDuration.Daily).Bars);
+                return;
+            }
+            else if (barDuration == BarDuration.Monthly)
+            {
+                this.Bars = StockBar.GenerateMonthlyBarsFomDaily(instrument.GetStockSerie(BarDuration.Daily).Bars);
+                return;
+            }
+            this.Bars = dataProvider.LoadData(instrument, barDuration);
+        }
 
+        #region Bar value series
         private DateTime[] dateValues;
         public DateTime[] DateValues => dateValues ??= this.Bars.Select(b => b.Date).ToArray();
 
@@ -42,5 +57,6 @@ namespace UltimateChartist.DataModels
 
         private long[] volumeValues;
         public long[] VolumeValues => volumeValues ??= this.Bars.Select(b => b.Volume).ToArray();
+        #endregion
     }
 }

@@ -11,7 +11,9 @@ namespace UltimateChartist.DataModels.DataProviders
     public abstract class StockDataProviderBase : IStockDataProvider
     {
         public List<Instrument> Instruments { get; } = new List<Instrument>();
+        public abstract string Name { get; }
         public abstract string DisplayName { get; }
+        public abstract BarDuration[] BarDurations { get; }
 
         protected Instrument RefInstrument { get; set; }
 
@@ -27,26 +29,14 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public const int ARCHIVE_START_YEAR = 2000;
         public static int LOAD_START_YEAR => Settings.Default.LoadStartYear;
+
         #endregion
 
         #region IStockDataProvider default implementation
 
-        virtual public List<StockBar> LoadData(Instrument instrument, BarDuration duration)
-        {
-            // Read archive first
-            string fileName = instrument.Symbol + "_" + instrument.Name + "_" + instrument.Group.ToString() + ".csv";
-            string fullFileName = Path.Combine(Folders.DataFolder, DAILY_ARCHIVE_SUBFOLDER, instrument.DataProvider.ToString(), fileName);
-            var archiveBars = StockBar.Load(fullFileName, new DateTime(LOAD_START_YEAR, 1, 1));
+        abstract public List<StockBar> LoadData(Instrument instrument, BarDuration duration);
 
-            fullFileName = Path.Combine(Folders.DataFolder, DAILY_SUBFOLDER, instrument.DataProvider.ToString(), fileName);
-            var bars = StockBar.Load(fullFileName, new DateTime(LOAD_START_YEAR, 1, 1));
-            if (archiveBars != null)
-            {
-                if (bars != null) archiveBars.AddRange(bars);
-                return archiveBars;
-            }
-            else { return bars; }
-        }
+        abstract public List<StockBar> DownloadData(Instrument instrument, BarDuration duration);
 
         public abstract void InitDictionary();
 

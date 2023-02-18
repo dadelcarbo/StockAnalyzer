@@ -275,7 +275,9 @@ namespace UltimateChartist.DataModels.DataProviders
             return true;
         }
         #endregion
+        public override string Name => "ABC";
         public override string DisplayName => "ABC Bourse";
+        public override BarDuration[] BarDurations { get; } = { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly };
 
         public override void InitDictionary()
         {
@@ -502,7 +504,7 @@ namespace UltimateChartist.DataModels.DataProviders
                                     Symbol = row[2],
                                     ISIN = row[0],
                                     Group = group,
-                                    DataProvider = StockDataProvider.ABC
+                                    DataProvider = this
                                 };
                                 this.Instruments.Add(instrument);
                             }
@@ -540,7 +542,7 @@ namespace UltimateChartist.DataModels.DataProviders
                                 Symbol = row[3],
                                 ISIN = row[0],
                                 Group = (StockGroup)Enum.Parse(typeof(StockGroup), row[4]),
-                                DataProvider = StockDataProvider.ABC
+                                DataProvider = this
                             };
                             this.Instruments.Add(instrument);
                         }
@@ -553,10 +555,10 @@ namespace UltimateChartist.DataModels.DataProviders
         {
             // Read archive first
             string fileName = instrument.ISIN + "_" + instrument.Symbol + ".csv";
-            string fullFileName = Path.Combine(Folders.DataFolder, DAILY_ARCHIVE_SUBFOLDER, instrument.DataProvider.ToString(), fileName);
+            string fullFileName = Path.Combine(Folders.DataFolder, DAILY_ARCHIVE_SUBFOLDER, instrument.DataProvider.Name, fileName);
             var archiveBars = StockBar.Load(fullFileName, new DateTime(LOAD_START_YEAR, 1, 1));
 
-            fullFileName = Path.Combine(Folders.DataFolder, DAILY_SUBFOLDER, instrument.DataProvider.ToString(), fileName);
+            fullFileName = Path.Combine(Folders.DataFolder, DAILY_SUBFOLDER, instrument.DataProvider.Name, fileName);
             var bars = StockBar.Load(fullFileName, new DateTime(LOAD_START_YEAR, 1, 1));
             if (archiveBars != null)
             {
@@ -564,6 +566,11 @@ namespace UltimateChartist.DataModels.DataProviders
                 return archiveBars;
             }
             else { return bars; }
+        }
+
+        public override List<StockBar> DownloadData(Instrument instrument, BarDuration duration)
+        {
+            throw new NotImplementedException("ABCDataProvider.DownloadData");
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.DataModels;
@@ -222,6 +221,8 @@ namespace UltimateChartist.ChartControls
             if (radioButton.Tag is SeriesType)
                 this.viewModel.SeriesType = (SeriesType)radioButton.Tag;
 
+            if (radioButton.Tag is BarDuration)
+                this.viewModel.BarDuration = (BarDuration)radioButton.Tag;
         }
     }
 }

@@ -56,8 +56,8 @@
   <Compile Include="ChartControls\IndicatorChartUserControl.xaml.cs" />
   <Compile Include="ChartControls\IndicatorChartViewModel.cs" />
   <Compile Include="DataModels\BarDuration.cs" />
+  <Compile Include="DataModels\DataProviders\BoursoramaDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
-  <Compile Include="DataModels\DataProviders\DataProviderHelper.cs" />
   <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
   <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
   <Compile Include="DataModels\StockSerie.cs" />

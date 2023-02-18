@@ -4,9 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Telerik.Windows.Controls;
-using UltimateChartist.ChartControls.Indicators;
 using UltimateChartist.DataModels;
-using UltimateChartist.DataModels.DataProviders;
 using UltimateChartist.Indicators;
 
 namespace UltimateChartist.ChartControls
@@ -44,9 +42,10 @@ namespace UltimateChartist.ChartControls
                 if (value != null && instrument != value)
                 {
                     instrument = value;
+                    this.StockSerie = instrument.GetStockSerie(this.barDuration);
+                    this.Data = StockSerie.Bars;
+
                     this.Name = instrument.Name;
-                    this.Data = DataProviderHelper.LoadData(instrument, BarDuration.Daily);
-                    this.StockSerie = new StockSerie(value, BarDuration.Daily, this.Data);
                     foreach (var indicator in this.PriceIndicators)
                     {
                         indicator.Initialize(this.StockSerie);
@@ -66,7 +65,6 @@ namespace UltimateChartist.ChartControls
         }
 
         private BarDuration barDuration = BarDuration.Daily;
-
         public BarDuration BarDuration
         {
             get => barDuration;
@@ -75,6 +73,9 @@ namespace UltimateChartist.ChartControls
                 if (barDuration != value)
                 {
                     barDuration = value;
+                    this.StockSerie = instrument.GetStockSerie(this.barDuration);
+                    this.Data = StockSerie.Bars;
+
                     this.OnPropertyChanged(nameof(AxisLabelTemplate));
                     RaisePropertyChanged();
                 }

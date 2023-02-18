@@ -5,6 +5,7 @@ namespace UltimateChartist.DataModels.DataProviders
     public enum StockDataProvider
     {
         ABC,
+        Boursorama,
         Yahoo,
         YahooIntraday,
         InvestingIntraday,
@@ -22,18 +23,26 @@ namespace UltimateChartist.DataModels.DataProviders
 
     public interface IStockDataProvider
     {
+        /// <summary>
+        /// Used in folder structure
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// Used in UIs
+        /// </summary>
         string DisplayName { get; }
 
         List<Instrument> Instruments { get; }
 
+        BarDuration[] BarDurations { get; }
+
         void InitDictionary();
         List<StockBar> LoadData(Instrument instrument, BarDuration duration);
+
+        List<StockBar> DownloadData(Instrument instrument, BarDuration duration);
 
         event DownloadingStockEventHandler DownloadStarted;
 
         void OpenInDataProvider(Instrument instrument);
-
-        //bool DownloadDailyData(Instrument instrument, BarDuration duration);
-        //bool ForceDownloadData(Instrument instrument, BarDuration duration);
     }
 }

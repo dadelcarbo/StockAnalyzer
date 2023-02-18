@@ -1,4 +1,6 @@
-﻿using UltimateChartist.DataModels.DataProviders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UltimateChartist.DataModels.DataProviders;
 
 namespace UltimateChartist.DataModels
 {
@@ -50,12 +52,53 @@ namespace UltimateChartist.DataModels
         public string Ticker { get; set; }
         public string Exchange { get; set; }
         public long Uic { get; set; }
+        public string Symbol { get; set; }
 
         public StockGroup Group { get; set; }
 
         public string SearchText => $"{Name} {Ticker} {ISIN}";
 
-        public string Symbol { get; internal set; }
-        public StockDataProvider DataProvider { get; internal set; }
+        SortedDictionary<BarDuration, StockSerie> Series { get; set; } = new SortedDictionary<BarDuration, StockSerie>();
+
+        public IStockDataProvider DataProvider { get; set; }
+        public IStockDataProvider RealTimeDataProvider { get; set; }
+
+        public BarDuration[] SupportedBarDurations
+        {
+            get
+            {
+                var barDurations = DataProvider.BarDurations;
+                if (RealTimeDataProvider != null)
+                {
+                    barDurations = barDurations.Union(RealTimeDataProvider.BarDurations).ToArray();
+                }
+                return barDurations;
+            }
+        }
+
+        public StockSerie GetStockSerie(BarDuration barDuration)
+        {
+            if (Series.ContainsKey(barDuration))
+                return Series[barDuration];
+
+            StockSerie stockSerie = null;
+            if (DataProvider.BarDurations.Contains(barDuration))
+            {
+                stockSerie = new StockSerie(this, barDuration);
+                stockSerie.LoadData(DataProvider, this, barDuration);
+                Series.Add(barDuration, stockSerie);
+                return Series[barDuration];
+            }
+
+            if (RealTimeDataProvider != null && RealTimeDataProvider.BarDurations.Contains(barDuration))
+            {
+                stockSerie = new StockSerie(this, barDuration);
+                stockSerie.LoadData(RealTimeDataProvider, this, barDuration);
+                Series.Add(barDuration, stockSerie);
+                return Series[barDuration];
+            }
+
+            return null;
+        }
     }
 }
