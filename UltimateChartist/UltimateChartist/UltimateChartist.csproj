@@ -34,6 +34,12 @@
     <Page Include="UserControls\InstrumentControls\InstrumentWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\InstrumentControls\PalmaresWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\InstrumentControls\ScreenerWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -94,6 +100,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="UserControls\InstrumentControls\InstrumentWindow.xaml.cs" />
+    <Compile Include="UserControls\InstrumentControls\PalmaresWindow.xaml.cs" />
+    <Compile Include="UserControls\InstrumentControls\ScreenerWindow.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bartchart.png" />

@@ -483,6 +483,7 @@ public class ABCDataProvider : StockDataProviderBase
         StockLog.Write(fileName);
         if (File.Exists(fileName))
         {
+            var boursoramaDataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.Boursorama);
             StockGroup group = (StockGroup)Enum.Parse(typeof(StockGroup), Path.GetFileNameWithoutExtension(fileName));
             using (StreamReader sr = new StreamReader(fileName, true))
             {
@@ -504,8 +505,11 @@ public class ABCDataProvider : StockDataProviderBase
                                 Symbol = row[2],
                                 ISIN = row[0],
                                 Group = group,
-                                DataProvider = this
+                                Country = row[0].Substring(0, 2),
+                                DataProvider = this,
+                                RealTimeDataProvider = boursoramaDataProvider
                             };
+
                             this.Instruments.Add(instrument);
                         }
                         else
@@ -526,6 +530,7 @@ public class ABCDataProvider : StockDataProviderBase
 
         if (File.Exists(fileName))
         {
+            var boursoramaDataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.Boursorama);
             using (StreamReader sr = new StreamReader(fileName, true))
             {
                 string line;
@@ -541,8 +546,10 @@ public class ABCDataProvider : StockDataProviderBase
                             Name = row[1],
                             Symbol = row[3],
                             ISIN = row[0],
+                            Country = row[0].Substring(0, 2),
                             Group = (StockGroup)Enum.Parse(typeof(StockGroup), row[4]),
-                            DataProvider = this
+                            DataProvider = this,
+                            RealTimeDataProvider = boursoramaDataProvider
                         };
                         this.Instruments.Add(instrument);
                     }

@@ -8,6 +8,13 @@ namespace UltimateChartist.DataModels.DataProviders;
 
 public abstract class StockDataProviderBase : IStockDataProvider
 {
+    List<Type> instanceTypes = new List<Type>();
+    public StockDataProviderBase()
+    {
+        if (instanceTypes.Contains(this.GetType()))
+            throw new InvalidOperationException($"Instance of {this.GetType().Name} already exists");
+        this.instanceTypes.Add(this.GetType());
+    }
     public List<Instrument> Instruments { get; } = new List<Instrument>();
     public abstract string Name { get; }
     public abstract string DisplayName { get; }
@@ -63,6 +70,9 @@ public abstract class StockDataProviderBase : IStockDataProvider
                 case StockDataProvider.ABC:
                     dataProvider = new ABCDataProvider();
                     break;
+                case StockDataProvider.Boursorama:
+                    dataProvider = new BoursoramaDataProvider();
+                    break;
                 //case StockDataProvider.Portfolio:
                 //    dataProvider = new PortfolioDataProvider();
                 //    break;
@@ -91,7 +101,7 @@ public abstract class StockDataProviderBase : IStockDataProvider
                 //    dataProvider = new YahooIntradayDataProvider();
                 // break;
                 default:
-                    break;
+                    throw new ArgumentException($"DataProvider {dataProviderType} not supported");
             }
             dataProviders.Add(dataProviderType, dataProvider);
         }

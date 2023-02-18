@@ -40,20 +40,40 @@ public partial class MainWindow : Window
 
     #region Instruments
 
+    InstrumentWindow instrumentBrowseWindow;
     private void InstrumentBrowseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
     {
-        var instrumentWindow= new InstrumentWindow();
-        _ = instrumentWindow.ShowDialog();
+        instrumentBrowseWindow = new InstrumentWindow();
+        instrumentBrowseWindow.Closed += (s, e) => { instrumentBrowseWindow = null; };
+        instrumentBrowseWindow.Show();
+    }
+    private void InstrumentBrowseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = instrumentBrowseWindow == null;
     }
 
+    PalmaresWindow instrumentPalmaresWindow;
     private void InstrumentPalmaresCommand_Executed(object sender, ExecutedRoutedEventArgs e)
     {
-
+        instrumentPalmaresWindow = new PalmaresWindow();
+        instrumentPalmaresWindow.Closed += (s, e) => { instrumentPalmaresWindow = null; };
+        instrumentPalmaresWindow.Show();
+    }
+    private void InstrumentPalmaresCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = instrumentPalmaresWindow == null;
     }
 
+    ScreenerWindow instrumentScreenerWindow;
     private void InstrumentScreenerCommand_Executed(object sender, ExecutedRoutedEventArgs e)
     {
-
+        instrumentScreenerWindow = new ScreenerWindow();
+        instrumentScreenerWindow.Closed += (s, e) => { instrumentScreenerWindow = null; };
+        instrumentScreenerWindow.Show();
+    }
+    private void InstrumentScreenerCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = instrumentScreenerWindow == null;
     }
     #endregion
     private void NewChartCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -90,7 +110,7 @@ public partial class MainWindow : Window
         if (this.MainTabControl.SelectedItem != null)
         {
             IIndicator indicator = new StockIndicator_TrailATR();
-            
+
             this.viewModel.CurrentChartView.PriceIndicators.Add(indicator);
         }
     }

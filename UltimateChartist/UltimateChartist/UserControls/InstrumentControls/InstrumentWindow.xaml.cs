@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Instrument = UltimateChartist.DataModels.Instrument;
 
 namespace UltimateChartist.UserControls.InstrumentControls
 {
@@ -22,6 +18,11 @@ namespace UltimateChartist.UserControls.InstrumentControls
         public InstrumentWindow()
         {
             InitializeComponent();
+        }
+
+        private void RadGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        {
+            MainWindowViewModel.Instance.CurrentChartView.Instrument = e.AddedItems[0] as Instrument;
         }
     }
 }

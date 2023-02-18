@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using UltimateChartist.DataModels.DataProviders;
 
 namespace UltimateChartist.DataModels;
@@ -53,6 +54,8 @@ public class Instrument
     public string Exchange { get; set; }
     public long Uic { get; set; }
     public string Symbol { get; set; }
+
+    public string Country { get; set; }
 
     public StockGroup Group { get; set; }
 
