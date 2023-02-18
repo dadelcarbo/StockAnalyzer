@@ -5,6 +5,21 @@
                 xmlns:local="clr-namespace:UltimateChartist"
                 Title="MainWindow" Height="500" Width="800">
     <Window.Resources>
+        <RoutedUICommand x:Key="InstrumentBrowseCommand" Text="View All" >
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>CTRL+V</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="InstrumentPalmaresCommand" Text="Palmares" >
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>CTRL+P</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="InstrumentScreenerCommand" Text="Screener" >
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>CTRL+S</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
         <RoutedUICommand x:Key="NewChartViewCommand" Text="New Chart" >
             <RoutedUICommand.InputGestures>
                 <KeyGesture>CTRL+N</KeyGesture>
@@ -22,6 +37,10 @@
         </RoutedUICommand>
     </Window.Resources>
     <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource InstrumentBrowseCommand}" Executed="InstrumentBrowseCommand_Executed"/>
+        <CommandBinding Command="{StaticResource InstrumentPalmaresCommand}" Executed="InstrumentPalmaresCommand_Executed"/>
+        <CommandBinding Command="{StaticResource InstrumentScreenerCommand}" Executed="InstrumentScreenerCommand_Executed"/>
+        <CommandBinding Command="{StaticResource NewChartViewCommand}" Executed="NewChartCommand_Executed"/>
         <CommandBinding Command="{StaticResource NewChartViewCommand}" Executed="NewChartCommand_Executed"/>
         <CommandBinding Command="{StaticResource CloseChartViewCommand}" Executed="CloseChartCommand_Executed" CanExecute="CloseChartCommand_CanExecute"/>
         <CommandBinding Command="{StaticResource AddEmaCommand}" Executed="AddEmaCommand_Executed" CanExecute="AddEmaCommand_CanExecute"/>
@@ -32,7 +51,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <telerik:RadMenu Grid.Row="0">
-            <telerik:RadMenuItem Header="File"></telerik:RadMenuItem>
+            <telerik:RadMenuItem Header="Instruments">
+                <telerik:RadMenuItem Command="{StaticResource InstrumentBrowseCommand}"></telerik:RadMenuItem>
+            </telerik:RadMenuItem>
             <telerik:RadMenuItem Header="Portfolio"></telerik:RadMenuItem>
             <telerik:RadMenuItem Header="Screener"></telerik:RadMenuItem>
             <telerik:RadMenuItem Header="Analysis"></telerik:RadMenuItem>

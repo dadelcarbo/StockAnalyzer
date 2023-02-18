@@ -1,38 +1,36 @@
 ﻿using System.ComponentModel;
-using Telerik.Windows.Controls.ChartView;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators.Display;
 
-namespace UltimateChartist.Indicators
+namespace UltimateChartist.Indicators;
+
+public enum DisplayType
 {
-    public enum DisplayType
-    {
-        Price,
-        Ranged,
-        NonRanged,
-        Volume
-    }
+    Price,
+    Ranged,
+    NonRanged,
+    Volume
+}
 
-    /// <summary>
-    /// Base interface for all indicators. It contains mainly meta data
-    /// </summary>
-    public interface IIndicator
-    {
-        event PropertyChangedEventHandler ParameterChanged;
+/// <summary>
+/// Base interface for all indicators. It contains mainly meta data
+/// </summary>
+public interface IIndicator
+{
+    event PropertyChangedEventHandler ParameterChanged;
 
-        string ShortName { get; }
-        string DisplayName { get; }
-        string Description { get; }
-        DisplayType DisplayType { get; }
+    string ShortName { get; }
+    string DisplayName { get; }
+    string Description { get; }
+    DisplayType DisplayType { get; }
 
-        IIndicatorSeries Series { get; }
+    IIndicatorSeries Series { get; }
 
-        void Initialize(StockSerie stockSerie);
-    }
+    void Initialize(StockSerie stockSerie);
+}
 
-    public interface IRangedIndicator
-    {
-        double Minimum { get; }
-        double Maximum { get; }
-    }
+public interface IRangedIndicator
+{
+    double Minimum { get; }
+    double Maximum { get; }
 }

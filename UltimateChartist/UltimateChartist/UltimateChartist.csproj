@@ -1,113 +1,107 @@
-﻿
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>UltimateChartist</RootNamespace>
     <EnableDefaultItems>False</EnableDefaultItems>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Telerik.UI.for.Wpf.70.Xaml" Version="2023.1.117" />
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="UserControls\ChartControls\Indicators\RangeConfigUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ChartControls\PriceChartUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ChartControls\Indicators\CurveConfigUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ChartControls\Indicators\IndicatorConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ChartControls\IndicatorChartUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\InstrumentControls\InstrumentWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UserControls\Converters\BarDurationsToVisibilityConverter.cs" />
+    <Compile Include="UserControls\ChartControls\Indicators\RangeConfigUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UserControls\ChartControls\Indicators\IndicatorViewModel.cs" />
+    <Compile Include="UserControls\ChartControls\PriceChartUserControl.xaml.cs" />
+    <Compile Include="UserControls\ChartControls\ChartViewModel.cs" />
+    <Compile Include="UserControls\Converters\AxisDateLabelConverter.cs" />
+    <Compile Include="UserControls\Converters\EnumToValuesConverter.cs" />
+    <Compile Include="UserControls\ChartControls\Indicators\CurveConfigUserControl.xaml.cs" />
+    <Compile Include="UserControls\ChartControls\Indicators\IndicatorConfigWindow.xaml.cs" />
+    <Compile Include="UserControls\ChartControls\IndicatorChartUserControl.xaml.cs" />
+    <Compile Include="UserControls\ChartControls\IndicatorChartViewModel.cs" />
+    <Compile Include="DataModels\BarDuration.cs" />
+    <Compile Include="DataModels\DataProviders\BoursoramaDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
+    <Compile Include="DataModels\StockSerie.cs" />
+    <Compile Include="Indicators\Display\Area.cs" />
+    <Compile Include="Indicators\Display\Curve.cs" />
+    <Compile Include="Indicators\Display\IndicatorBandSeries.cs" />
+    <Compile Include="Indicators\Display\IndicatorLineSeries.cs" />
+    <Compile Include="Indicators\Display\IndicatorLineSignalSeries.cs" />
+    <Compile Include="Indicators\Display\IndicatorRangeSeries.cs" />
+    <Compile Include="Indicators\Display\IndicatorSeriesBase.cs" />
+    <Compile Include="Indicators\Display\IndicatorTrailSeries.cs" />
+    <Compile Include="Indicators\IndicatorParameter.cs" />
+    <Compile Include="Indicators\StockIndicator_ATRBand.cs" />
+    <Compile Include="Indicators\StockIndicator_STOCK.cs" />
+    <Compile Include="Indicators\StockIndicator_MACD.cs" />
+    <Compile Include="Indicators\StockIndicator_TRAILATR.cs" />
+    <Compile Include="Indicators\StockIndicator_EMABand.cs" />
+    <Compile Include="Indicators\StockIndicator_MA.cs" />
+    <Compile Include="Indicators\StockIndicator_EMA.cs" />
+    <Compile Include="Indicators\IIndicator.cs" />
+    <Compile Include="DataModels\Instrument.cs" />
+    <Compile Include="Indicators\Display\IIndicatorSeries.cs" />
+    <Compile Include="DataModels\StockBar.cs" />
+    <Compile Include="Helpers\Folders.cs" />
+    <Compile Include="Helpers\StockLog.cs" />
+    <Compile Include="Indicators\MathExtensions.cs" />
+    <Compile Include="Indicators\MovingAverageBase.cs" />
+    <Compile Include="Indicators\ParamRange.cs" />
+    <Compile Include="Indicators\IndicatorBase.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\InstrumentControls\InstrumentWindow.xaml.cs" />
   </ItemGroup>
-  
-  <ItemGroup>
-  <ApplicationDefinition Include="App.xaml">
-    <Generator>MSBuild:Compile</Generator>
-    <SubType>Designer</SubType>
-  </ApplicationDefinition>
-  <Page Include="ChartControls\Indicators\RangeConfigUserControl.xaml">
-    <SubType>Designer</SubType>
-    <Generator>MSBuild:Compile</Generator>
-  </Page>
-  <Page Include="ChartControls\PriceChartUserControl.xaml">
-    <Generator>MSBuild:Compile</Generator>
-  </Page>
-  <Page Include="ChartControls\Indicators\CurveConfigUserControl.xaml">
-    <Generator>MSBuild:Compile</Generator>
-  </Page>
-  <Page Include="ChartControls\Indicators\IndicatorConfigWindow.xaml">
-    <Generator>MSBuild:Compile</Generator>
-  </Page>
-  <Page Include="ChartControls\IndicatorChartUserControl.xaml">
-    <Generator>MSBuild:Compile</Generator>
-  </Page>
-  <Page Include="MainWindow.xaml">
-    <Generator>MSBuild:Compile</Generator>
-    <SubType>Designer</SubType>
-  </Page>
-  <Compile Include="App.xaml.cs">
-    <DependentUpon>App.xaml</DependentUpon>
-    <SubType>Code</SubType>
-  </Compile>
-  <Compile Include="ChartControls\Converters\BarDurationsToVisibilityConverter.cs" />
-  <Compile Include="ChartControls\Indicators\RangeConfigUserControl.xaml.cs">
-    <SubType>Code</SubType>
-  </Compile>
-  <Compile Include="ChartControls\Indicators\IndicatorViewModel.cs" />
-  <Compile Include="ChartControls\PriceChartUserControl.xaml.cs" />
-  <Compile Include="ChartControls\ChartViewModel.cs" />
-  <Compile Include="ChartControls\Converters\AxisDateLabelConverter.cs" />
-  <Compile Include="ChartControls\Converters\EnumToValuesConverter.cs" />
-  <Compile Include="ChartControls\Indicators\CurveConfigUserControl.xaml.cs" />
-  <Compile Include="ChartControls\Indicators\IndicatorConfigWindow.xaml.cs" />
-  <Compile Include="ChartControls\IndicatorChartUserControl.xaml.cs" />
-  <Compile Include="ChartControls\IndicatorChartViewModel.cs" />
-  <Compile Include="DataModels\BarDuration.cs" />
-  <Compile Include="DataModels\DataProviders\BoursoramaDataProvider.cs" />
-  <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
-  <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
-  <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
-  <Compile Include="DataModels\StockSerie.cs" />
-  <Compile Include="Indicators\Display\Area.cs" />
-  <Compile Include="Indicators\Display\Curve.cs" />
-  <Compile Include="Indicators\Display\IndicatorBandSeries.cs" />
-  <Compile Include="Indicators\Display\IndicatorLineSeries.cs" />
-  <Compile Include="Indicators\Display\IndicatorLineSignalSeries.cs" />
-  <Compile Include="Indicators\Display\IndicatorRangeSeries.cs" />
-  <Compile Include="Indicators\Display\IndicatorSeriesBase.cs" />
-  <Compile Include="Indicators\Display\IndicatorTrailSeries.cs" />
-  <Compile Include="Indicators\IndicatorParameter.cs" />
-  <Compile Include="Indicators\StockIndicator_ATRBand.cs" />
-  <Compile Include="Indicators\StockIndicator_STOCK.cs" />
-  <Compile Include="Indicators\StockIndicator_MACD.cs" />
-  <Compile Include="Indicators\StockIndicator_TRAILATR.cs" />
-  <Compile Include="Indicators\StockIndicator_EMABand.cs" />
-  <Compile Include="Indicators\StockIndicator_MA.cs" />
-  <Compile Include="Indicators\StockIndicator_EMA.cs" />
-  <Compile Include="Indicators\IIndicator.cs" />
-  <Compile Include="DataModels\Instrument.cs" />
-  <Compile Include="Indicators\Display\IIndicatorSeries.cs" />
-  <Compile Include="DataModels\StockBar.cs" />
-  <Compile Include="Helpers\Folders.cs" />
-  <Compile Include="Helpers\StockLog.cs" />
-  <Compile Include="Indicators\MathExtensions.cs" />
-  <Compile Include="Indicators\MovingAverageBase.cs" />
-  <Compile Include="Indicators\ParamRange.cs" />
-  <Compile Include="Indicators\IndicatorBase.cs" />
-  <Compile Include="MainWindow.xaml.cs">
-    <DependentUpon>MainWindow.xaml</DependentUpon>
-    <SubType>Code</SubType>
-  </Compile>
-  <Compile Include="MainWindowViewModel.cs" />
-  <Compile Include="Settings.Designer.cs">
-    <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    <AutoGen>True</AutoGen>
-    <DependentUpon>Settings.settings</DependentUpon>
-  </Compile>
-</ItemGroup>
-  
   <ItemGroup>
     <Resource Include="Resources\bartchart.png" />
     <Resource Include="Resources\curve.png" />
   </ItemGroup>
-  
   <ItemGroup>
     <Resource Include="Resources\candlestick.png" />
   </ItemGroup>
-  
   <ItemGroup>
     <Resource Include="Resources\back.png" />
     <Resource Include="Resources\cancel.png" />
@@ -119,12 +113,10 @@
     <Resource Include="Resources\settings.png" />
     <Resource Include="Resources\star.png" />
   </ItemGroup>
-  
   <ItemGroup>
-    <Folder Include="ChartControls\Selectors\" />
+    <Folder Include="UserControls\ChartControls\Selectors\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
-  
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Settings.settings">
@@ -132,5 +124,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Telerik.UI.for.Wpf.70.Xaml">
+      <Version>2023.1.117</Version>
+    </PackageReference>
+  </ItemGroup>
 </Project>

@@ -1,33 +1,31 @@
 ﻿using System.Windows.Media;
-using UltimateChartist.DataModels;
 using UltimateChartist.Indicators.Display;
 
-namespace UltimateChartist.Indicators
+namespace UltimateChartist.Indicators;
+
+public enum EmaType
 {
-    public enum EmaType
+    EMA,
+    MA,
+    MID
+}
+
+public abstract class MovingAverageBase : IndicatorBase
+{
+    public MovingAverageBase()
     {
-        EMA,
-        MA,
-        MID
+        var series = new IndicatorLineSeries();
+        series.Curve.Stroke = Brushes.Blue;
+        series.Curve.Thickness = 1;
+        series.Curve.Name= "Moving Average";
+
+        this.Series = series;
     }
 
-    public abstract class MovingAverageBase : IndicatorBase
-    {
-        public MovingAverageBase()
-        {
-            var series = new IndicatorLineSeries();
-            series.Curve.Stroke = Brushes.Blue;
-            series.Curve.Thickness = 1;
-            series.Curve.Name= "Moving Average";
+    public override DisplayType DisplayType => DisplayType.Price;
+    public override string DisplayName => $"{ShortName}({Period})";
 
-            this.Series = series;
-        }
-
-        public override DisplayType DisplayType => DisplayType.Price;
-        public override string DisplayName => $"{ShortName}({Period})";
-
-        private int period = 20;
-        [IndicatorParameterInt("Period", 1, 500)]
-        public int Period { get => period; set { if (period != value) { period = value; RaiseParameterChanged(); } } }
-    }
+    private int period = 20;
+    [IndicatorParameterInt("Period", 1, 500)]
+    public int Period { get => period; set { if (period != value) { period = value; RaiseParameterChanged(); } } }
 }

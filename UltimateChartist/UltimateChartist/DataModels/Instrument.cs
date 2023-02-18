@@ -2,103 +2,102 @@
 using System.Linq;
 using UltimateChartist.DataModels.DataProviders;
 
-namespace UltimateChartist.DataModels
+namespace UltimateChartist.DataModels;
+
+public enum StockGroup
 {
-    public enum StockGroup
+    NONE = 0,
+    COUNTRY,
+    PEA,
+    CAC40,
+    SBF120,
+    CACALL,
+    EURO_A,
+    EURO_A_B,
+    EURO_B,
+    EURO_A_B_C,
+    EURO_C,
+    ALTERNEXT,
+    BELGIUM,
+    HOLLAND,
+    PORTUGAL,
+    EUROPE,
+    //ITALIA,
+    //SPAIN,
+    USA,
+    SAXO,
+    INDICES,
+    INDICATOR,
+    SECTORS,
+    SECTORS_CAC,
+    SECTORS_CALC,
+    CURRENCY,
+    COMMODITY,
+    FOREX,
+    FUND,
+    RATIO,
+    BREADTH,
+    PTF,
+    BOND,
+    INTRADAY,
+    Portfolio,
+    Replay,
+    ALL
+}
+
+public class Instrument
+{
+    public string Name { get; set; }
+    public string ISIN { get; set; }
+    public string Ticker { get; set; }
+    public string Exchange { get; set; }
+    public long Uic { get; set; }
+    public string Symbol { get; set; }
+
+    public StockGroup Group { get; set; }
+
+    public string SearchText => $"{Name} {Ticker} {ISIN}";
+
+    SortedDictionary<BarDuration, StockSerie> Series { get; set; } = new SortedDictionary<BarDuration, StockSerie>();
+
+    public IStockDataProvider DataProvider { get; set; }
+    public IStockDataProvider RealTimeDataProvider { get; set; }
+
+    public BarDuration[] SupportedBarDurations
     {
-        NONE = 0,
-        COUNTRY,
-        PEA,
-        CAC40,
-        SBF120,
-        CACALL,
-        EURO_A,
-        EURO_A_B,
-        EURO_B,
-        EURO_A_B_C,
-        EURO_C,
-        ALTERNEXT,
-        BELGIUM,
-        HOLLAND,
-        PORTUGAL,
-        EUROPE,
-        //ITALIA,
-        //SPAIN,
-        USA,
-        SAXO,
-        INDICES,
-        INDICATOR,
-        SECTORS,
-        SECTORS_CAC,
-        SECTORS_CALC,
-        CURRENCY,
-        COMMODITY,
-        FOREX,
-        FUND,
-        RATIO,
-        BREADTH,
-        PTF,
-        BOND,
-        INTRADAY,
-        Portfolio,
-        Replay,
-        ALL
+        get
+        {
+            var barDurations = DataProvider.BarDurations;
+            if (RealTimeDataProvider != null)
+            {
+                barDurations = barDurations.Union(RealTimeDataProvider.BarDurations).ToArray();
+            }
+            return barDurations;
+        }
     }
 
-    public class Instrument
+    public StockSerie GetStockSerie(BarDuration barDuration)
     {
-        public string Name { get; set; }
-        public string ISIN { get; set; }
-        public string Ticker { get; set; }
-        public string Exchange { get; set; }
-        public long Uic { get; set; }
-        public string Symbol { get; set; }
+        if (Series.ContainsKey(barDuration))
+            return Series[barDuration];
 
-        public StockGroup Group { get; set; }
-
-        public string SearchText => $"{Name} {Ticker} {ISIN}";
-
-        SortedDictionary<BarDuration, StockSerie> Series { get; set; } = new SortedDictionary<BarDuration, StockSerie>();
-
-        public IStockDataProvider DataProvider { get; set; }
-        public IStockDataProvider RealTimeDataProvider { get; set; }
-
-        public BarDuration[] SupportedBarDurations
+        StockSerie stockSerie = null;
+        if (DataProvider.BarDurations.Contains(barDuration))
         {
-            get
-            {
-                var barDurations = DataProvider.BarDurations;
-                if (RealTimeDataProvider != null)
-                {
-                    barDurations = barDurations.Union(RealTimeDataProvider.BarDurations).ToArray();
-                }
-                return barDurations;
-            }
+            stockSerie = new StockSerie(this, barDuration);
+            stockSerie.LoadData(DataProvider, this, barDuration);
+            Series.Add(barDuration, stockSerie);
+            return Series[barDuration];
         }
 
-        public StockSerie GetStockSerie(BarDuration barDuration)
+        if (RealTimeDataProvider != null && RealTimeDataProvider.BarDurations.Contains(barDuration))
         {
-            if (Series.ContainsKey(barDuration))
-                return Series[barDuration];
-
-            StockSerie stockSerie = null;
-            if (DataProvider.BarDurations.Contains(barDuration))
-            {
-                stockSerie = new StockSerie(this, barDuration);
-                stockSerie.LoadData(DataProvider, this, barDuration);
-                Series.Add(barDuration, stockSerie);
-                return Series[barDuration];
-            }
-
-            if (RealTimeDataProvider != null && RealTimeDataProvider.BarDurations.Contains(barDuration))
-            {
-                stockSerie = new StockSerie(this, barDuration);
-                stockSerie.LoadData(RealTimeDataProvider, this, barDuration);
-                Series.Add(barDuration, stockSerie);
-                return Series[barDuration];
-            }
-
-            return null;
+            stockSerie = new StockSerie(this, barDuration);
+            stockSerie.LoadData(RealTimeDataProvider, this, barDuration);
+            Series.Add(barDuration, stockSerie);
+            return Series[barDuration];
         }
+
+        return null;
     }
 }

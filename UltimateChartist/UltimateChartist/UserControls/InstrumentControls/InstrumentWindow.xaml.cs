@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace UltimateChartist.ChartControls.Indicators
+namespace UltimateChartist.UserControls.InstrumentControls
 {
     /// <summary>
-    /// Interaction logic for CurveConfigUserControl.xaml
+    /// Interaction logic for InstrumentWindow.xaml
     /// </summary>
-    public partial class CurveConfigUserControl : UserControl
+    public partial class InstrumentWindow : Window
     {
-        public CurveConfigUserControl()
+        public InstrumentWindow()
         {
             InitializeComponent();
         }

@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="UltimateChartist.ChartControls.PriceChartUserControl"
+﻿<UserControl x:Class="UltimateChartist.UserControls.ChartControls.PriceChartUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:UltimateChartist.ChartControls"
+             xmlns:local="clr-namespace:UltimateChartist.UserControls.ChartControls"
              xmlns:main="clr-namespace:UltimateChartist"
-             xmlns:converters="clr-namespace:UltimateChartist.ChartControls.Converters"
+             xmlns:converters="clr-namespace:UltimateChartist.UserControls.Converters"
              xmlns:dataModels="clr-namespace:UltimateChartist.DataModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type={x:Type local:ChartViewModel}}"
@@ -52,16 +52,16 @@
                 <Image Source="{Binding Source={StaticResource settingsImg}}"></Image>
             </Button>
             <StackPanel Margin="2,0,0,2" Orientation="Horizontal">
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="1" Tag="{x:Static dataModels:BarDuration.M_1}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_1}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="5" Tag="{x:Static dataModels:BarDuration.M_5}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_5}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="15" Tag="{x:Static dataModels:BarDuration.M_15}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_15}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="30" Tag="{x:Static dataModels:BarDuration.M_30}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_30}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H1" Tag="{x:Static dataModels:BarDuration.H_1}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_1}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H2" Tag="{x:Static dataModels:BarDuration.H_2}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_2}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H4" Tag="{x:Static dataModels:BarDuration.H_4}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_4}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="D" Tag="{x:Static dataModels:BarDuration.Daily}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Daily}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="W" Tag="{x:Static dataModels:BarDuration.Weekly}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Weekly}}"/>
-                <RadioButton Style="{StaticResource radioButtonStyle}" Content="M" Tag="{x:Static dataModels:BarDuration.Monthly}" Visibility="{Binding StockSerie.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Monthly}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="1" Tag="{x:Static dataModels:BarDuration.M_1}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_1}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="5" Tag="{x:Static dataModels:BarDuration.M_5}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_5}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="15" Tag="{x:Static dataModels:BarDuration.M_15}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_15}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="30" Tag="{x:Static dataModels:BarDuration.M_30}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.M_30}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H1" Tag="{x:Static dataModels:BarDuration.H_1}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_1}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H2" Tag="{x:Static dataModels:BarDuration.H_2}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_2}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="H4" Tag="{x:Static dataModels:BarDuration.H_4}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.H_4}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="D" Tag="{x:Static dataModels:BarDuration.Daily}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Daily}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="W" Tag="{x:Static dataModels:BarDuration.Weekly}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Weekly}}"/>
+                <RadioButton Style="{StaticResource radioButtonStyle}" Content="M" Tag="{x:Static dataModels:BarDuration.Monthly}" Visibility="{Binding StockSerie.Instrument.SupportedBarDurations, Converter={StaticResource barDurationsToVisibilityConverter},ConverterParameter={x:Static dataModels:BarDuration.Monthly}}"/>
             </StackPanel>
             <StackPanel Margin="2,0,0,2" Orientation="Horizontal">
                 <RadioButton Style="{StaticResource radioButtonStyle}" Tag="{x:Static local:SeriesType.Candle}">

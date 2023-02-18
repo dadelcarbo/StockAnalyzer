@@ -1,9 +1,9 @@
-﻿<Window x:Class="UltimateChartist.ChartControls.Indicators.IndicatorConfigWindow"
+﻿<Window x:Class="UltimateChartist.UserControls.ChartControls.Indicators.IndicatorConfigWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" xmlns:indicators="clr-namespace:UltimateChartist.ChartControls.Indicators"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" xmlns:indicators="clr-namespace:UltimateChartist.UserControls.ChartControls.Indicators"
         mc:Ignorable="d"
         Title="Indicator Configuration" Height="250" Width="500">
     <Window.Resources>

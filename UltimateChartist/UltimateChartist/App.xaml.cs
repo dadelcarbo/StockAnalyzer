@@ -1,17 +1,16 @@
 ﻿using System.Windows;
 
-namespace UltimateChartist
+namespace UltimateChartist;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    public static App AppInstance { get; private set; }
+    public App()
     {
-        public static App AppInstance { get; private set; }
-        public App()
-        {
-            AppInstance = this;
-            this.InitializeComponent();
-        }
+        AppInstance = this;
+        this.InitializeComponent();
     }
 }
