@@ -37,10 +37,6 @@
             <RowDefinition Height="*" MinHeight="100"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <!--<ComboBox Width="200" 
-                                       DisplayMemberPath="Name"
-                                       ItemsSource="{Binding Instruments, Source={x:Static main:MainWindowViewModel.Instance}}"
-                                       SelectedItem="{Binding Instrument}"/>-->
             <telerik:RadAutoCompleteBox Width="250" WatermarkContent="Search instrument..." VerticalContentAlignment="Center" VerticalAlignment="Top" FontSize="11"
                                         DisplayMemberPath="Name"
                                         TextSearchPath="Name"
@@ -86,12 +82,14 @@
             <telerik:RadCartesianChart x:Name="priceChart" Grid.Row="1" Margin="10,0,10,30"
                                    HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}" 
                                    HorizontalZoomRangeEnd="{Binding HorizontalZoomRangeEnd, Mode=TwoWay}"
+                                   VerticalZoomRangeStart="{Binding VerticalZoomRangeStart}" 
+                                   VerticalZoomRangeEnd="{Binding VerticalZoomRangeEnd}"
                                    TrackBallLineStyle="{StaticResource trackBallLineStyle}"
                                    TrackBallInfoStyle="{StaticResource trackBallInfoStyle}"
                                    PlotAreaStyle="{StaticResource plotAreaStyle}">
 
                 <telerik:RadCartesianChart.Behaviors>
-                    <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan" PanMode="Both"/>
+                    <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan" PanMode="Horizontal"/>
                     <telerik:ChartTrackBallBehavior ShowIntersectionPoints="True" TrackInfoUpdated="ChartTrackBallBehavior_TrackInfoUpdated" />
                 </telerik:RadCartesianChart.Behaviors>
 
@@ -101,7 +99,8 @@
                 </telerik:RadCartesianChart.HorizontalAxis>
 
                 <telerik:RadCartesianChart.VerticalAxis>
-                    <telerik:LinearAxis Minimum="0" LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" SmartLabelsMode="SmartStepAndRange"/>
+                    <telerik:LinearAxis Minimum="0" Maximum="{Binding Maximum}" 
+                                        LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" SmartLabelsMode="SmartStepAndRange"/>
                 </telerik:RadCartesianChart.VerticalAxis>
                 <telerik:RadCartesianChart.Grid>
                     <telerik:CartesianChartGrid StripLinesVisibility="None" MajorLinesVisibility="XY">

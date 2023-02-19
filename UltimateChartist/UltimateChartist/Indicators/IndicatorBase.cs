@@ -12,6 +12,8 @@ public abstract class IndicatorBase : IIndicator
     public string ShortName { get { return this.GetType().Name.Split('_')[1]; } }
     public abstract DisplayType DisplayType { get; }
 
+    public double Max { get; protected set; }
+
     /// <summary>
     /// Contains the indicator calculated data 
     /// </summary>

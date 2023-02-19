@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators.Display;
 
@@ -46,6 +47,7 @@ public class StockIndicator_MACD : IndicatorBase
             slowEma += slowAlpha * (bar.Close - slowEma);
             macd = fastEma - slowEma;
             signal += signalAlpha * (macd - signal);
+            Max = Math.Max(Max, macd);
             values[i++] = new IndicatorLineSignalValue() { Date = bar.Date, Value = macd, Signal = signal };
         }
 

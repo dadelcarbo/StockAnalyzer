@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators.Display;
 
@@ -10,6 +11,7 @@ public class StockIndicator_EMABand : IndicatorBase
     {
         this.Series = new IndicatorRangeSeries();
     }
+
     public override DisplayType DisplayType => DisplayType.Price;
 
     public override string DisplayName => $"{ShortName}({Period},{Percent})";
@@ -38,7 +40,9 @@ public class StockIndicator_EMABand : IndicatorBase
         foreach (var bar in stockSerie.Bars.Skip(1))
         {
             ema += alpha * (bar.Close - ema);
-            values[i++] = new IndicatorRangeValue() { Date = bar.Date, High = ema * upRatio, Low = ema * downRatio };
+            var high = ema * upRatio;
+            Max = Math.Max(Max, high);
+            values[i++] = new IndicatorRangeValue() { Date = bar.Date, High = high, Low = ema * downRatio };
         }
 
         this.Series.Values = values;

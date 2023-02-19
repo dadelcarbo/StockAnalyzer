@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators;
 
@@ -10,6 +12,7 @@ namespace UltimateChartist.UserControls.ChartControls;
 
 public class ChartViewModel : ViewModelBase
 {
+    const double ZOOM_MARGIN = 0.025; // %
     static int count = 1;
     public ChartViewModel()
     {
@@ -44,11 +47,19 @@ public class ChartViewModel : ViewModelBase
                 StockSerie = instrument.GetStockSerie(barDuration);
                 Data = StockSerie.Bars;
 
-                Name = instrument.Name;
-                foreach (var indicator in PriceIndicators)
+                double max = 0;
+                if (StockSerie?.Bars != null && StockSerie.Bars.Count > 0)
                 {
-                    indicator.Initialize(StockSerie);
+                    max = StockSerie.Bars.Max(d => d.High);
+
+                    Name = instrument.Name;
+                    foreach (var indicator in PriceIndicators)
+                    {
+                        indicator.Initialize(StockSerie);
+                        max = Math.Max(max, indicator.Max);
+                    }
                 }
+                this.Maximum = max * (1 + ZOOM_MARGIN);
 
                 ResetZoom();
                 RaisePropertyChanged();
@@ -88,11 +99,54 @@ public class ChartViewModel : ViewModelBase
     private List<StockBar> data;
     public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
 
+    private double maximum;
+    public double Maximum { get { return maximum; } set { if (maximum != value) { maximum = value; RaisePropertyChanged(); } } }
+
     private double horizontalZoomRangeStart;
-    public double HorizontalZoomRangeStart { get => horizontalZoomRangeStart; set { if (horizontalZoomRangeStart != value) { horizontalZoomRangeStart = value; RaisePropertyChanged(); } } }
+    public double HorizontalZoomRangeStart
+    {
+        get => horizontalZoomRangeStart; set
+        {
+            if (horizontalZoomRangeStart != value)
+            {
+                horizontalZoomRangeStart = value;
+                CalculateVerticalZoom();
+                RaisePropertyChanged();
+            }
+        }
+    }
 
     private double horizontalZoomRangeEnd;
-    public double HorizontalZoomRangeEnd { get => horizontalZoomRangeEnd; set { if (horizontalZoomRangeEnd != value) { horizontalZoomRangeEnd = value; RaisePropertyChanged(); } } }
+    public double HorizontalZoomRangeEnd
+    {
+        get => horizontalZoomRangeEnd; set
+        {
+            if (horizontalZoomRangeEnd != value)
+            {
+                horizontalZoomRangeEnd = value;
+                CalculateVerticalZoom();
+                RaisePropertyChanged();
+            }
+        }
+    }
+
+    private void CalculateVerticalZoom()
+    {
+        int startIndex = (int)Math.Floor(horizontalZoomRangeStart * Data.Count);
+        int endIndex = (int)Math.Ceiling(horizontalZoomRangeEnd * Data.Count) - 1;
+
+        var min = Data.Select(f => f.Low).Skip(startIndex).Take(endIndex - startIndex).Min();
+        var max = Data.Select(f => f.High).Skip(startIndex).Take(endIndex - startIndex).Max();
+        var margin = (max - min) * ZOOM_MARGIN;
+        this.VerticalZoomRangeStart = (min - margin) / Maximum;
+        this.VerticalZoomRangeEnd = (max + margin) / Maximum;
+    }
+
+    private double verticalZoomRangeStart;
+    public double VerticalZoomRangeStart { get => verticalZoomRangeStart; set { if (verticalZoomRangeStart != value) { verticalZoomRangeStart = value; RaisePropertyChanged(); } } }
+
+    private double verticalZoomRangeEnd;
+    public double VerticalZoomRangeEnd { get => verticalZoomRangeEnd; set { if (verticalZoomRangeEnd != value) { verticalZoomRangeEnd = value; RaisePropertyChanged(); } } }
 
     private SeriesType seriesType;
     public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }

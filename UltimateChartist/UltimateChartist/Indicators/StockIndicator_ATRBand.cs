@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using MediaFoundation;
+using System;
+using System.Linq;
 using UltimateChartist.DataModels;
 using UltimateChartist.Indicators.Display;
 
@@ -10,6 +12,7 @@ public class StockIndicator_ATRBand : IndicatorBase
     {
         this.Series = new IndicatorBandSeries();
     }
+
     public override DisplayType DisplayType => DisplayType.Price;
 
     public override string DisplayName => $"{ShortName}({Period},{AtrPeriod},{UpWidth},{downWidth})";
@@ -44,7 +47,9 @@ public class StockIndicator_ATRBand : IndicatorBase
         foreach (var bar in stockSerie.Bars.Skip(1))
         {
             ema += alpha * (bar.Close - ema);
-            values[i] = new IndicatorBandValue() { Date = bar.Date, High = ema + upWidth * atrSerie[i], Mid = ema, Low = ema - downWidth * atrSerie[i] };
+            var high = ema + upWidth * atrSerie[i];
+            Max = Math.Max(Max, high);
+            values[i] = new IndicatorBandValue() { Date = bar.Date, High = high, Mid = ema, Low = ema - downWidth * atrSerie[i] };
             i++;
         }
 

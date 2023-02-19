@@ -24,6 +24,8 @@ public interface IIndicator
     string Description { get; }
     DisplayType DisplayType { get; }
 
+    double Max { get; }
+
     IIndicatorSeries Series { get; }
 
     void Initialize(StockSerie stockSerie);
