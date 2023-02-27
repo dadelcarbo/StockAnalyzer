@@ -35,6 +35,7 @@ public interface IStockDataProvider
     List<Instrument> Instruments { get; }
 
     BarDuration[] BarDurations { get; }
+    BarDuration DefaultBarDuration { get; }
 
     void InitDictionary();
     List<StockBar> LoadData(Instrument instrument, BarDuration duration);

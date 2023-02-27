@@ -41,9 +41,13 @@ public class ChartViewModel : ViewModelBase
         get => instrument;
         set
         {
-            if (value != null && instrument != value)
+         if (value != null && instrument != value)
             {
                 instrument = value;
+                if (!instrument.SupportedBarDurations.Contains(barDuration))
+                {
+                    this.BarDuration = instrument.DataProvider.DefaultBarDuration;
+                }
                 StockSerie = instrument.GetStockSerie(barDuration);
                 Data = StockSerie.Bars;
 
@@ -100,7 +104,10 @@ public class ChartViewModel : ViewModelBase
             {
                 data = value;
                 if (data == null)
+                {
+                    RaisePropertyChanged();
                     return;
+                }
                 //MaxZoom = new Size(Math.Max(1, data.Count / nbBar), 100);
 
                 double max = 0;
@@ -180,13 +187,12 @@ public class ChartViewModel : ViewModelBase
     private SeriesType seriesType;
     public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }
 
-    public DataTemplate AxisLabelTemplate => BarDuration switch
+    public DataTemplate AxisLabelTemplate =>BarDuration switch
     {
         BarDuration.Daily => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,
-        BarDuration.Weekly => App.AppInstance.FindResource($"axisWeeklyLabelTemplate") as DataTemplate,
-        BarDuration.Monthly => App.AppInstance.FindResource($"axisMonthlyLabelTemplate") as DataTemplate,
-        _ => null,
-        //_ => App.AppInstance.FindResource($"axisIntradayLabelTemplate") as DataTemplate
+        BarDuration.Weekly => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,
+        BarDuration.Monthly => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,
+        _ => App.AppInstance.FindResource($"axisIntradayLabelTemplate") as DataTemplate
     };
 
     public ObservableCollection<IIndicator> PriceIndicators { get; set; } = new ObservableCollection<IIndicator>();

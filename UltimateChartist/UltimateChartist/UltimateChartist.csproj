@@ -47,8 +47,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataModels\DataProviders\ABCDataProvider.cs" />
-    <Compile Include="DataModels\DataProviders\SaxoTurboDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\ABC\ABCDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\SaxoTurbo\SaxoTurboDataProvider.cs" />
     <Compile Include="Indicators\IndicatorManager.cs" />
     <Compile Include="UserControls\ChartControls\Indicators\IndicatorSelectorViewModel.cs" />
     <Compile Include="UserControls\ChartControls\Indicators\IndicatorSelectorWindow.xaml.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="UserControls\ChartControls\IndicatorChartUserControl.xaml.cs" />
     <Compile Include="UserControls\ChartControls\IndicatorChartViewModel.cs" />
     <Compile Include="DataModels\BarDuration.cs" />
-    <Compile Include="DataModels\DataProviders\BoursoramaDataProvider.cs" />
+    <Compile Include="DataModels\DataProviders\Boursorama\BoursoramaDataProvider.cs" />
     <Compile Include="DataModels\DataProviders\IStockDataProvider.cs" />
     <Compile Include="DataModels\DataProviders\StockDataProviderBase.cs" />
     <Compile Include="DataModels\StockSerie.cs" />
@@ -130,8 +130,6 @@
     <Resource Include="Resources\star.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataModels\DataProviders\NewFolder\" />
-    <Folder Include="DataModels\DataProviders\SaxoTurbo\" />
     <Folder Include="UserControls\ChartControls\Selectors\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>

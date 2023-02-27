@@ -9,7 +9,7 @@ using System.Net.NetworkInformation;
 using System.Text.Json;
 using UltimateChartist.Helpers;
 
-namespace UltimateChartist.DataModels.DataProviders
+namespace UltimateChartist.DataModels.DataProviders.SaxoTurbo
 {
     public class SaxoTurboDataProvider : StockDataProviderBase
     {
@@ -24,7 +24,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public override void InitDictionary()
         {
-            this.InitCacheFolders();
+            InitCacheFolders();
 
             // Parse SaxoIntradayDownload.cfg file
             InitFromFile(Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
@@ -32,14 +32,14 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public override List<StockBar> LoadData(Instrument instrument, BarDuration duration)
         {
-            var archiveFileName = Path.Combine(this.CACHE_FOLDER, duration.ToString(), instrument.Symbol.Replace(':', '_') + "_" + instrument.Name + ".txt");
+            var archiveFileName = Path.Combine(CACHE_FOLDER, duration.ToString(), instrument.Symbol.Replace(':', '_') + "_" + instrument.Name + ".txt");
             if (File.Exists(archiveFileName))
             {
                 return StockBar.Load(archiveFileName);
             }
             else
             {
-                return this.DownloadData(instrument, duration);
+                return DownloadData(instrument, duration);
             }
         }
 
@@ -72,12 +72,14 @@ namespace UltimateChartist.DataModels.DataProviders
                     BarDuration.M_1 => FormatIntradayURL(instrument.ISIN, "1D"),
                     BarDuration.M_5 => FormatIntradayURL(instrument.ISIN, "2D"),
                     BarDuration.H_1 => FormatIntradayURL(instrument.ISIN, "1W"),
-                    BarDuration.Daily => FormatIntradayURL(instrument.ISIN, "30Y"),
+                    BarDuration.Daily => FormatIntradayURL(instrument.ISIN, "5Y"),
                     _ => null
                 };
                 if (url == null)
                     return null;
-                var jsonData = SaxoTurboDataProvider.HttpGetFromSaxo(url);
+                var jsonData = HttpGetFromSaxo(url);
+                if (string.IsNullOrEmpty(jsonData))
+                    return null;
                 var saxoData = JsonSerializer.Deserialize<SaxoTurboJSon>(jsonData);
                 if (saxoData?.series?[0]?.data == null)
                     return null;
@@ -161,7 +163,7 @@ namespace UltimateChartist.DataModels.DataProviders
                             DataProvider = this,
                             RealTimeDataProvider = this
                         };
-                        this.Instruments.Add(instrument);
+                        Instruments.Add(instrument);
                     }
                 }
             }

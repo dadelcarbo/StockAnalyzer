@@ -24,16 +24,10 @@
 
         <converters:AxisDateLabelConverter x:Key="axisDateLabelConverter"/>
         <DataTemplate x:Key="axisDailyLabelTemplate">
-            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.Daily}" TextAlignment="Center"/>
-        </DataTemplate>
-        <DataTemplate x:Key="axisWeeklyLabelTemplate">
-            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.Weekly}" TextAlignment="Center"/>
-        </DataTemplate>
-        <DataTemplate x:Key="axisMonthlyLabelTemplate">
-            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.Monthly}" TextAlignment="Center"/>
+            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=Daily}" TextAlignment="Center"/>
         </DataTemplate>
         <DataTemplate x:Key="axisIntradayLabelTemplate">
-            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.H_1}" TextAlignment="Center"/>
+            <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=Intraday}" TextAlignment="Center"/>
         </DataTemplate>
 
         <Style x:Key="trackBallLineStyle" TargetType="Polyline">

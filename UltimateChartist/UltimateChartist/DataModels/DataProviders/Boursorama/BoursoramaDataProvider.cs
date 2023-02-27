@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
 
-namespace UltimateChartist.DataModels.DataProviders;
+namespace UltimateChartist.DataModels.DataProviders.Boursorama;
 
 public class BoursoramaDataProvider : StockDataProviderBase
 {
@@ -18,7 +18,7 @@ public class BoursoramaDataProvider : StockDataProviderBase
 
     public override void InitDictionary()
     {
-        this.InitCacheFolders();
+        InitCacheFolders();
     }
 
     public override List<StockBar> LoadData(Instrument instrument, BarDuration duration)

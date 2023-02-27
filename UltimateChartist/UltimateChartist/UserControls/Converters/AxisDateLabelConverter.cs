@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
+using Telerik.Windows.Persistence.Core;
 using UltimateChartist.DataModels;
 
 namespace UltimateChartist.UserControls.Converters;
@@ -10,19 +11,14 @@ public class AxisDateLabelConverter : IValueConverter
     {
         try
         {
-            return value.ToString();
             var date = (DateTime)value;
-            var duration = (BarDuration)parameter;
-            if (duration < BarDuration.Daily)
+            if (parameter.ToString() == "Daily")
             {
-                return string.Format("{H:mm}" + Environment.NewLine + "{MM/dd/yy}", date);
+                return date.ToString("d");
             }
             else
             {
-                if (date.Month == 1)
-                    return string.Format("{0:MMM}" + Environment.NewLine + "{0:yyyy}", date);
-                else
-                    return string.Format("{0:MMM}", date);
+                return date.ToString("G");
             }
         }
         catch (Exception ex)

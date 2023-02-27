@@ -10,7 +10,7 @@ using System.Windows;
 using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using UltimateChartist.Helpers;
 
-namespace UltimateChartist.DataModels.DataProviders
+namespace UltimateChartist.DataModels.DataProviders.ABC
 {
     public class ABCDataProvider : StockDataProviderBase
     {
@@ -57,7 +57,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public void CreateDirectories()
         {
-            this.InitCacheFolders();
+            InitCacheFolders();
 
             if (!Directory.Exists(Path.Combine(Folders.DataFolder, CFG_FOLDER)))
             {
@@ -93,7 +93,7 @@ namespace UltimateChartist.DataModels.DataProviders
                 {
                     try
                     {
-                        this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
+                        DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
                     }
                     catch (Exception ex)
                     {
@@ -109,7 +109,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
             if (download && needDownload)
             {
-                this.DownloadGroupData(group);
+                DownloadGroupData(group);
             }
         }
 
@@ -118,7 +118,7 @@ namespace UltimateChartist.DataModels.DataProviders
             StockLog.Write(fileName);
             if (File.Exists(fileName))
             {
-                var boursoramaDataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.Boursorama);
+                var boursoramaDataProvider = GetDataProvider(StockDataProvider.Boursorama);
                 StockGroup group = (StockGroup)Enum.Parse(typeof(StockGroup), Path.GetFileNameWithoutExtension(fileName));
                 using (StreamReader sr = new StreamReader(fileName, true))
                 {
@@ -132,7 +132,7 @@ namespace UltimateChartist.DataModels.DataProviders
                             string[] row = line.Split(';');
                             string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
 
-                            if (!this.Instruments.Any(i => i.Name == stockName))
+                            if (!Instruments.Any(i => i.Name == stockName))
                             {
                                 var instrument = new Instrument
                                 {
@@ -145,7 +145,7 @@ namespace UltimateChartist.DataModels.DataProviders
                                     RealTimeDataProvider = boursoramaDataProvider
                                 };
 
-                                this.Instruments.Add(instrument);
+                                Instruments.Add(instrument);
                             }
                             else
                             {
@@ -165,7 +165,7 @@ namespace UltimateChartist.DataModels.DataProviders
         bool needDownload = false;
         private void InitFromConfigFile(string fileName)
         {
-            var boursoramaDataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.Boursorama);
+            var boursoramaDataProvider = GetDataProvider(StockDataProvider.Boursorama);
             using (StreamReader sr = new StreamReader(fileName, true))
             {
                 string line;
@@ -186,7 +186,7 @@ namespace UltimateChartist.DataModels.DataProviders
                             DataProvider = this,
                             RealTimeDataProvider = boursoramaDataProvider
                         };
-                        this.Instruments.Add(instrument);
+                        Instruments.Add(instrument);
                         if (instrument.Name == "CAC40")
                         {
                             var serie = instrument.GetStockSerie(BarDuration.Daily);
@@ -194,9 +194,9 @@ namespace UltimateChartist.DataModels.DataProviders
                             if (bars != null && bars.Count > 0)
                             {
                                 lastLoadedCAC40Date = bars.Last().Date;
-                                if (this.DownloadISIN(TEMP_FOLDER, "CAC40.csv", lastLoadedCAC40Date.AddDays(1), DateTime.Today, instrument.ISIN))
+                                if (DownloadISIN(TEMP_FOLDER, "CAC40.csv", lastLoadedCAC40Date.AddDays(1), DateTime.Today, instrument.ISIN))
                                 {
-                                    var newBars = this.ReadABCFile(Path.Combine(TEMP_FOLDER, "CAC40.csv"));
+                                    var newBars = ReadABCFile(Path.Combine(TEMP_FOLDER, "CAC40.csv"));
                                     if (newBars != null && newBars.Count > 0)
                                     {
                                         needDownload = newBars.Max(b => b.Date) > lastLoadedCAC40Date;
@@ -204,14 +204,14 @@ namespace UltimateChartist.DataModels.DataProviders
                                         {
                                             bars.Add(newBar);
                                         }
-                                        string cacFileName = Path.Combine(CACHE_FOLDER, BarDuration.Daily.ToString(), this.GetFileName(instrument));
+                                        string cacFileName = Path.Combine(CACHE_FOLDER, BarDuration.Daily.ToString(), GetFileName(instrument));
                                         StockBar.SaveCsv(bars, cacFileName, new DateTime(LOAD_START_YEAR, 1, 1));
                                     }
                                 }
                             }
                             else
                             {
-                                this.ForceDownloadData(serie);
+                                ForceDownloadData(serie);
                                 needDownload = true;
                             }
                         }
@@ -311,9 +311,9 @@ namespace UltimateChartist.DataModels.DataProviders
         public override List<StockBar> LoadData(Instrument instrument, BarDuration duration)
         {
             // Read Data from Cache
-            string fileName = Path.Combine(CACHE_FOLDER, duration.ToString(), this.GetFileName(instrument));
+            string fileName = Path.Combine(CACHE_FOLDER, duration.ToString(), GetFileName(instrument));
             var archiveBars = StockBar.Load(fileName, new DateTime(LOAD_START_YEAR, 1, 1));
-            var tmpFileName = Path.Combine(TEMP_FOLDER, "Stock", this.GetFileName(instrument));
+            var tmpFileName = Path.Combine(TEMP_FOLDER, "Stock", GetFileName(instrument));
             if (archiveBars == null)
             {
                 var bars = StockBar.Load(tmpFileName);
@@ -363,7 +363,7 @@ namespace UltimateChartist.DataModels.DataProviders
             for (int i = DateTime.Today.Year - 1; i >= LOAD_START_YEAR; i--)
             {
                 fileName = filePattern.Replace("*", i.ToString());
-                if (!this.DownloadISIN(folder, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.Instrument.ISIN))
+                if (!DownloadISIN(folder, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.Instrument.ISIN))
                 {
                     break;
                 }
@@ -371,7 +371,7 @@ namespace UltimateChartist.DataModels.DataProviders
             }
             int year = DateTime.Today.Year;
             fileName = filePattern.Replace("*", year.ToString());
-            if (this.DownloadISIN(folder, fileName, new DateTime(year, 1, 1), DateTime.Today, stockSerie.Instrument.ISIN))
+            if (DownloadISIN(folder, fileName, new DateTime(year, 1, 1), DateTime.Today, stockSerie.Instrument.ISIN))
             {
                 nbFile++;
             }
@@ -397,7 +397,7 @@ namespace UltimateChartist.DataModels.DataProviders
                 var bars = new List<StockBar>();
                 while (!sr.EndOfStream)
                 {
-                    var readValue = this.ReadABCLine(sr);
+                    var readValue = ReadABCLine(sr);
                     if (readValue != null)
                     {
                         bars.Add(readValue);
@@ -412,7 +412,7 @@ namespace UltimateChartist.DataModels.DataProviders
             if (!NetworkInterface.GetIsNetworkAvailable())
                 return false;
 
-            if (this.DownloadMonthlyFileFromABC(Path.Combine(TEMP_FOLDER, "Group"), lastLoadedCAC40Date.AddDays(1), DateTime.Today, group))
+            if (DownloadMonthlyFileFromABC(Path.Combine(TEMP_FOLDER, "Group"), lastLoadedCAC40Date.AddDays(1), DateTime.Today, group))
             {
                 LoadGroupData(group);
             }
@@ -434,7 +434,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
                 string fileName = destFolder + @"\" + group + "_" + endDate.Year + "_" + endDate.Month + ".csv";
 
-                success |= this.DownloadGroup(destFolder, fileName, startDate, endDate, group);
+                success |= DownloadGroup(destFolder, fileName, startDate, endDate, group);
             }
             catch (Exception ex)
             {
@@ -471,10 +471,10 @@ namespace UltimateChartist.DataModels.DataProviders
                     var isinBars = ParseABCGroupCSVFile(lines.SelectMany(l => l));
                     foreach (var isinBar in isinBars)
                     {
-                        var instrument = this.Instruments.FirstOrDefault(i => i.ISIN == isinBar.Key);
+                        var instrument = Instruments.FirstOrDefault(i => i.ISIN == isinBar.Key);
                         if (instrument != null)
                         {
-                            StockBar.SaveCsv(isinBar.Value, Path.Combine(TEMP_FOLDER, "Stock", this.GetFileName(instrument)));
+                            StockBar.SaveCsv(isinBar.Value, Path.Combine(TEMP_FOLDER, "Stock", GetFileName(instrument)));
                             instrument.GetStockSerie(BarDuration.Daily);
                         }
                     }
@@ -548,7 +548,7 @@ namespace UltimateChartist.DataModels.DataProviders
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
                 return false;
-            if (this.httpClient == null)
+            if (httpClient == null)
             {
                 try
                 {
@@ -599,7 +599,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public bool DownloadISIN(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
         {
-            if (!this.Initialize())
+            if (!Initialize())
                 return false;
 
             try
@@ -644,7 +644,7 @@ namespace UltimateChartist.DataModels.DataProviders
             + "cbYes=false";
         public bool DownloadGroup(string destFolder, string fileName, DateTime startDate, DateTime endDate, StockGroup group)
         {
-            if (!this.Initialize())
+            if (!Initialize())
                 return false;
 
             try
@@ -689,7 +689,7 @@ namespace UltimateChartist.DataModels.DataProviders
         public bool DownloadIntradayGroup(string destFolder, string fileName, string group)
         {
             StockLog.Write(group);
-            if (!this.Initialize())
+            if (!Initialize())
                 return false;
 
             var now = DateTime.Now.TimeOfDay;
@@ -729,7 +729,7 @@ namespace UltimateChartist.DataModels.DataProviders
             "cbPlace=false";
         public bool DownloadLabels(string destFolder, string fileName, string group)
         {
-            if (!this.Initialize())
+            if (!Initialize())
                 return false;
 
             try
@@ -766,7 +766,7 @@ namespace UltimateChartist.DataModels.DataProviders
 
         public bool DownloadGroupIntraday(string destFolder, string fileName, string group)
         {
-            if (!this.Initialize()) return false;
+            if (!Initialize()) return false;
 
             try
             {
