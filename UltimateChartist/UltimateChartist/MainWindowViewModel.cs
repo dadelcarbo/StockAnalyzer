@@ -4,6 +4,7 @@ using Telerik.Windows.Controls;
 using UltimateChartist.DataModels;
 using UltimateChartist.DataModels.DataProviders;
 using UltimateChartist.UserControls.ChartControls;
+using UltimateChartist.UserControls.ChartControls.Indicators;
 
 namespace UltimateChartist;
 
@@ -27,9 +28,13 @@ public class MainWindowViewModel : ViewModelBase
 
     private void AddIndicator(object commandParameter)
     {
-        if (this.CurrentChartView == null)
-            return;
-        this.currentChartView.AddIndicator();
+        var indicatorSelectorWindow = new IndicatorSelectorWindow();
+        indicatorSelectorWindow.DataContext = new IndicatorSelectorViewModel();
+        indicatorSelectorWindow.Show();
+
+        //if (this.CurrentChartView == null)
+        //    return;
+        //this.currentChartView.AddIndicator();
     }
     #endregion
 

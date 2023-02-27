@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
 namespace UltimateChartist.DataModels;
 
+[DebuggerDisplay("Date={Date}")]
 public class StockBar
 {
     public DateTime Date { get; private set; }
@@ -17,7 +19,7 @@ public class StockBar
 
     public double BodyHigh => Math.Max(Open, Close);
     public double BodyLow => Math.Min(Open, Close);
-    public double Exchanged => (High + Low) * Volume / 2.0;
+    public double Exchanged => 0.5 * (High + Low) * Volume;
 
     public bool IsComplete { get; set; } = true;
 
@@ -33,6 +35,8 @@ public class StockBar
 
     public static List<StockBar> GenerateWeeklyBarsFomDaily(List<StockBar> dailyBars)
     {
+        if (dailyBars == null)
+            return null;
         var newBars = new List<StockBar>();
         StockBar newBar = null;
         DayOfWeek previousDayOfWeek = DayOfWeek.Sunday;
@@ -78,6 +82,9 @@ public class StockBar
     }
     public static List<StockBar> GenerateMonthlyBarsFomDaily(List<StockBar> dailyBars)
     {
+        if (dailyBars == null)
+            return null;
+
         var newBars = new List<StockBar>();
         StockBar newValue = null;
 
@@ -119,10 +126,8 @@ public class StockBar
         return newBars;
     }
 
-
     #region CSV FILE IO
 
-    static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
     const char SEPARATOR = ';';
     const string Header = "Date;Open;High;Low;Close;Volume";
 
@@ -135,11 +140,11 @@ public class StockBar
             if (startDate != null && date < startDate)
                 return null;
             return new StockBar(date,
-               double.Parse(row[1], usCulture),
-               double.Parse(row[2], usCulture),
-               double.Parse(row[3], usCulture),
-               double.Parse(row[4], usCulture),
-               long.Parse(row[5], usCulture));
+               double.Parse(row[1]),
+               double.Parse(row[2]),
+               double.Parse(row[3]),
+               double.Parse(row[4]),
+               long.Parse(row[5]));
         }
         catch (Exception) { return null; }
     }
@@ -171,7 +176,7 @@ public class StockBar
         }
     }
 
-    public static void SaveCsv(List<StockBar> bars, string fileName, DateTime? startDate = null, DateTime? endDate = null)
+    public static void SaveCsv(IEnumerable<StockBar> bars, string fileName, DateTime? startDate = null, DateTime? endDate = null)
     {
         var selectedBars = bars.AsEnumerable();
         if (startDate != null)
@@ -194,7 +199,7 @@ public class StockBar
 
     public string ToCsvString()
     {
-        return $"{this.Date}{SEPARATOR}{this.Open.ToString(usCulture)}{SEPARATOR}{this.High.ToString(usCulture)}{SEPARATOR}{this.Low.ToString(usCulture)}{SEPARATOR}{this.Close.ToString(usCulture)}{SEPARATOR}{this.Volume}";
+        return $"{this.Date}{SEPARATOR}{this.Open}{SEPARATOR}{this.High}{SEPARATOR}{this.Low}{SEPARATOR}{this.Close}{SEPARATOR}{this.Volume}";
     }
 
     #endregion

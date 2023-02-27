@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using UltimateChartist.Helpers;
 
 namespace UltimateChartist.DataModels.DataProviders;
 
@@ -19,21 +21,44 @@ public abstract class StockDataProviderBase : IStockDataProvider
     public abstract string Name { get; }
     public abstract string DisplayName { get; }
     public abstract BarDuration[] BarDurations { get; }
+    public abstract BarDuration DefaultBarDuration { get; }
 
     protected Instrument RefInstrument { get; set; }
 
-    #region CONSTANTS
-    static protected string DAILY_SUBFOLDER = @"daily";
-    static protected string INTRADAY_SUBFOLDER = @"intraday";
-    static protected string WEEKLY_SUBFOLDER = @"weekly";
-    static protected string DAILY_ARCHIVE_SUBFOLDER = @"archive\daily";
-    static protected string INTRADAY_ARCHIVE_SUBFOLDER = @"archive\intraday";
+    #region Cache Management
 
     static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
     static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-    public const int ARCHIVE_START_YEAR = 2000;
     public static int LOAD_START_YEAR => Settings.Default.LoadStartYear;
+
+    protected string CACHE_FOLDER => Path.Combine(Folders.DataFolder, "Cache", Name);
+    protected string TEMP_FOLDER => Path.Combine(Folders.DataFolder, "Temp", Name);
+
+    protected string CONFIG_FILE => Path.Combine(Folders.PersonalFolder, $"{Name}.user.cfg");
+
+    protected void InitCacheFolders()
+    {
+        foreach (var barDuration in this.BarDurations)
+        {
+            var folder = Path.Combine(CACHE_FOLDER, barDuration.ToString());
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+        }
+
+        if (Directory.Exists(TEMP_FOLDER))
+        {
+            // Purge files at each start
+            Directory.Delete(TEMP_FOLDER, true);
+        }
+    }
+
+    protected virtual string GetFileName(Instrument instrument)
+    {
+        return $"{instrument.Symbol}_{instrument.ISIN}.csv";
+    }
 
     #endregion
 
@@ -73,6 +98,9 @@ public abstract class StockDataProviderBase : IStockDataProvider
                 case StockDataProvider.Boursorama:
                     dataProvider = new BoursoramaDataProvider();
                     break;
+                case StockDataProvider.SaxoTurbo:
+                    dataProvider = new SaxoTurboDataProvider();
+                    break;
                 //case StockDataProvider.Portfolio:
                 //    dataProvider = new PortfolioDataProvider();
                 //    break;
@@ -88,9 +116,6 @@ public abstract class StockDataProviderBase : IStockDataProvider
                 //case StockDataProvider.SocGenIntraday:
                 //    dataProvider = new SocGenIntradayDataProvider();
                 //    break;
-                //case StockDataProvider.SaxoIntraday:
-                //    dataProvider = new SaxoIntradayDataProvider();
-                //    break;
                 //case StockDataProvider.Citifirst:
                 //    dataProvider = new CitifirstDataProvider();
                 //    break;
@@ -101,7 +126,7 @@ public abstract class StockDataProviderBase : IStockDataProvider
                 //    dataProvider = new YahooIntradayDataProvider();
                 // break;
                 default:
-                    throw new ArgumentException($"DataProvider {dataProviderType} not supported");
+                    break;
             }
             dataProviders.Add(dataProviderType, dataProvider);
         }
@@ -121,9 +146,9 @@ public abstract class StockDataProviderBase : IStockDataProvider
                     dataProvider.InitDictionary();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
             }
         }
         return dataProviders.Values.Where(dp => dp != null).SelectMany(dp => dp.Instruments);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
+using UltimateChartist.DataModels;
 
 namespace UltimateChartist.UserControls.Converters;
 
@@ -9,11 +10,20 @@ public class AxisDateLabelConverter : IValueConverter
     {
         try
         {
+            return value.ToString();
             var date = (DateTime)value;
-            if (date.Month == 1)
-                return string.Format("{0:MMM}" + Environment.NewLine + "{0:yyyy}", date);
+            var duration = (BarDuration)parameter;
+            if (duration < BarDuration.Daily)
+            {
+                return string.Format("{H:mm}" + Environment.NewLine + "{MM/dd/yy}", date);
+            }
             else
-                return string.Format("{0:MMM}", date);
+            {
+                if (date.Month == 1)
+                    return string.Format("{0:MMM}" + Environment.NewLine + "{0:yyyy}", date);
+                else
+                    return string.Format("{0:MMM}", date);
+            }
         }
         catch (Exception ex)
         {

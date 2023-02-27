@@ -32,7 +32,7 @@
         <DataTemplate x:Key="axisMonthlyLabelTemplate">
             <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.Monthly}" TextAlignment="Center"/>
         </DataTemplate>
-        <DataTemplate x:Key="axisHourlyLabelTemplate">
+        <DataTemplate x:Key="axisIntradayLabelTemplate">
             <TextBlock Text="{Binding Converter={StaticResource axisDateLabelConverter},ConverterParameter=BarDuration.H_1}" TextAlignment="Center"/>
         </DataTemplate>
 

@@ -6,13 +6,13 @@
       <Value Profile="(Default)">C:\Users\David\OneDrive\UltimateChartistDev_new</Value>
     </Setting>
     <Setting Name="DataFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ProgramData\UltimateChartist\Data</Value>
+      <Value Profile="(Default)">C:\ProgramData\UltimateChartist_new\Data</Value>
     </Setting>
     <Setting Name="LoggingEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LoadStartYear" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2017</Value>
+      <Value Profile="(Default)">2020</Value>
     </Setting>
   </Settings>
 </SettingsFile>

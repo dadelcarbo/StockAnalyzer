@@ -70,7 +70,11 @@
                     <Image Source="{Binding Source={StaticResource curveImg}}" Height="14" Width="14"></Image>
                 </RadioButton>
             </StackPanel>
-
+            <TextBlock><Run Text="Zoom:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run x:Name="zoom" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
+            <TextBlock><Run Text="HStart:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run Text="{Binding HorizontalZoomRangeStart, StringFormat=\{0:F1\}}" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
+            <TextBlock><Run Text="HEnd:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run Text="{Binding HorizontalZoomRangeEnd, StringFormat=\{0:F1\}}" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
+            <TextBlock><Run Text="VStart:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run Text="{Binding VerticalZoomRangeStart, StringFormat=\{0:F1\}}" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
+            <TextBlock><Run Text="HEnd:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run Text="{Binding VerticalZoomRangeEnd, StringFormat=\{0:F1\}}" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
             <TextBlock><Run Text="Date:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run x:Name="date" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC"/></TextBlock>
             <TextBlock Margin="10,0,0,0"><Run Text="Price:" FontFamily="Segoe UI" FontSize="10" /><Run Text=" "/><Run x:Name="price" FontFamily="Segoe UI" FontSize="10" Foreground="#FF0099BC" /></TextBlock>
         </StackPanel>
@@ -79,8 +83,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <telerik:RadCartesianChart x:Name="priceChart" Grid.Row="1" Margin="10,0,10,30"
-                                   HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}" 
+            <telerik:RadCartesianChart x:Name="priceChart" Grid.Row="1" Margin="10,0,10,30" MaxZoom="{Binding MaxZoom}" MinZoom="1,1"
+                                   HorizontalZoomRangeStart="{Binding HorizontalZoomRangeStart, Mode=TwoWay}"
                                    HorizontalZoomRangeEnd="{Binding HorizontalZoomRangeEnd, Mode=TwoWay}"
                                    VerticalZoomRangeStart="{Binding VerticalZoomRangeStart}" 
                                    VerticalZoomRangeEnd="{Binding VerticalZoomRangeEnd}"
@@ -94,8 +98,9 @@
                 </telerik:RadCartesianChart.Behaviors>
 
                 <telerik:RadCartesianChart.HorizontalAxis>
-                    <telerik:DateTimeCategoricalAxis DateTimeComponent="Date" PlotMode="BetweenTicks" MajorTickInterval="30" MajorTickStyle="{StaticResource tickStyle}"
-                                                     LabelTemplate="{Binding AxisLabelTemplate}" SmartLabelsMode="SmartStep"/>
+
+                    <telerik:DateTimeCategoricalAxis DateTimeComponent="Minute" PlotMode="BetweenTicks" MajorTickInterval="30" MajorTickStyle="{StaticResource tickStyle}"
+                                                     LabelTemplate="{Binding AxisLabelTemplate}" SmartLabelsMode="SmartStep" IsStepRecalculationOnZoomEnabled="True"/>
                 </telerik:RadCartesianChart.HorizontalAxis>
 
                 <telerik:RadCartesianChart.VerticalAxis>

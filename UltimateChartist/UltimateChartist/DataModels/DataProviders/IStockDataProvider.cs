@@ -15,7 +15,7 @@ public enum StockDataProvider
     Replay,
     Breadth,
     Investing,
-    SaxoIntraday,
+    SaxoTurbo,
     Citifirst
 }
 

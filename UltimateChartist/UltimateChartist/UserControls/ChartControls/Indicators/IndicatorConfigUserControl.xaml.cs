@@ -9,12 +9,12 @@ using UltimateChartist.Indicators.Display;
 namespace UltimateChartist.UserControls.ChartControls.Indicators;
 
 /// <summary>
-/// Interaction logic for IndicatorConfigWindow.xaml
+/// Interaction logic for IndicatorConfigUserControl.xaml
 /// </summary>
-public partial class IndicatorConfigWindow : Window
+public partial class IndicatorConfigUserControl : Window
 {
     public IndicatorViewModel IndicatorViewModel { get; }
-    public IndicatorConfigWindow(IndicatorViewModel indicatorViewModel)
+    public IndicatorConfigUserControl(IndicatorViewModel indicatorViewModel)
     {
         InitializeComponent();
 
@@ -33,7 +33,7 @@ public partial class IndicatorConfigWindow : Window
                     CreateBoolParameter(parameter);
                     break;
                 default:
-                    throw new NotImplementedException($"Parameter type not implemented {parameter.Parameter.Type.Name} in IndicatorConfigWindow");
+                    throw new NotImplementedException($"Parameter type not implemented {parameter.Parameter.Type.Name} in IndicatorConfigUserControl");
             }
         }
 
@@ -123,7 +123,7 @@ public partial class IndicatorConfigWindow : Window
             Minimum = intParameter.Min,
             Maximum = intParameter.Max,
             Margin = new Thickness(2),
-            NumberDecimalDigits = 0
+            NumberDecimalDigits= 0
         };
 
         var binding = new Binding("Indicator." + parameter.PropertyName) { Mode = BindingMode.TwoWay };

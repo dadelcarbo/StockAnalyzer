@@ -125,6 +125,8 @@ public partial class PriceChartUserControl : UserControl
         if (closestDataPoint?.DataPoint?.DataItem is StockBar)
         {
             StockBar data = closestDataPoint.DataPoint.DataItem as StockBar;
+            this.zoom.Text = this.priceChart.Zoom.Width.ToString("0,0.0") + "-" + this.priceChart.Zoom.Height.ToString("0,0.0");
+            if (viewModel.BarDuration < BarDuration.Daily)
             this.date.Text = data.Date.ToString("dd/MM/yyyy");
             this.price.Text = data.Close.ToString("0,0.00");
         }

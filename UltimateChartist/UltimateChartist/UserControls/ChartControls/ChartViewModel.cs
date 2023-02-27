@@ -47,21 +47,6 @@ public class ChartViewModel : ViewModelBase
                 StockSerie = instrument.GetStockSerie(barDuration);
                 Data = StockSerie.Bars;
 
-                double max = 0;
-                if (StockSerie?.Bars != null && StockSerie.Bars.Count > 0)
-                {
-                    max = StockSerie.Bars.Max(d => d.High);
-
-                    Name = instrument.Name;
-                    foreach (var indicator in PriceIndicators)
-                    {
-                        indicator.Initialize(StockSerie);
-                        max = Math.Max(max, indicator.Max);
-                    }
-                }
-                this.Maximum = max * (1 + ZOOM_MARGIN);
-
-                ResetZoom();
                 RaisePropertyChanged();
             }
         }
@@ -70,9 +55,18 @@ public class ChartViewModel : ViewModelBase
     private int nbBar = 100;
     private void ResetZoom()
     {
-        HorizontalZoomRangeEnd = 1;
-        HorizontalZoomRangeStart = 1 - (double)nbBar / Data.Count;
+        horizontalZoomRangeEnd = 1;
+        HorizontalZoomRangeStart = Math.Max(0, 1 - (double)nbBar / Data.Count);
     }
+
+    private Size maxZoom = new Size(100, 100);
+
+    public Size MaxZoom
+    {
+        get { return maxZoom; }
+        set { if (value != maxZoom) { maxZoom = value; RaisePropertyChanged(); } }
+    }
+
 
     private BarDuration barDuration = BarDuration.Daily;
     public BarDuration BarDuration
@@ -84,7 +78,7 @@ public class ChartViewModel : ViewModelBase
             {
                 barDuration = value;
                 StockSerie = instrument.GetStockSerie(barDuration);
-                Data = StockSerie.Bars;
+                Data = StockSerie?.Bars;
 
                 OnPropertyChanged(nameof(AxisLabelTemplate));
                 RaisePropertyChanged();
@@ -97,7 +91,38 @@ public class ChartViewModel : ViewModelBase
     public StockSerie StockSerie { get; set; }
 
     private List<StockBar> data;
-    public List<StockBar> Data { get => data; set { if (data != value) { data = value; RaisePropertyChanged(); } } }
+    public List<StockBar> Data
+    {
+        get => data;
+        set
+        {
+            if (data != value)
+            {
+                data = value;
+                if (data == null)
+                    return;
+                //MaxZoom = new Size(Math.Max(1, data.Count / nbBar), 100);
+
+                double max = 0;
+                if (data != null && data.Count > 0)
+                {
+                    max = data.Max(d => d.High);
+
+                    Name = instrument.Name;
+                    foreach (var indicator in PriceIndicators)
+                    {
+                        indicator.Initialize(StockSerie);
+                        max = Math.Max(max, indicator.Max);
+                    }
+                }
+                this.Maximum = max * (1 + ZOOM_MARGIN);
+
+                ResetZoom();
+
+                RaisePropertyChanged();
+            }
+        }
+    }
 
     private double maximum;
     public double Maximum { get { return maximum; } set { if (maximum != value) { maximum = value; RaisePropertyChanged(); } } }
@@ -105,7 +130,8 @@ public class ChartViewModel : ViewModelBase
     private double horizontalZoomRangeStart;
     public double HorizontalZoomRangeStart
     {
-        get => horizontalZoomRangeStart; set
+        get => horizontalZoomRangeStart;
+        set
         {
             if (horizontalZoomRangeStart != value)
             {
@@ -119,7 +145,8 @@ public class ChartViewModel : ViewModelBase
     private double horizontalZoomRangeEnd;
     public double HorizontalZoomRangeEnd
     {
-        get => horizontalZoomRangeEnd; set
+        get => horizontalZoomRangeEnd;
+        set
         {
             if (horizontalZoomRangeEnd != value)
             {
@@ -134,9 +161,11 @@ public class ChartViewModel : ViewModelBase
     {
         int startIndex = (int)Math.Floor(horizontalZoomRangeStart * Data.Count);
         int endIndex = (int)Math.Ceiling(horizontalZoomRangeEnd * Data.Count) - 1;
-
-        var min = Data.Select(f => f.Low).Skip(startIndex).Take(endIndex - startIndex).Min();
-        var max = Data.Select(f => f.High).Skip(startIndex).Take(endIndex - startIndex).Max();
+        if (startIndex == endIndex)
+            return;
+        var visibleData = Data.Skip(startIndex).Take(endIndex - startIndex).ToList();
+        var min = visibleData.Min(f => f.Low);
+        var max = visibleData.Max(f => f.High);
         var margin = (max - min) * ZOOM_MARGIN;
         this.VerticalZoomRangeStart = (min - margin) / Maximum;
         this.VerticalZoomRangeEnd = (max + margin) / Maximum;
@@ -151,7 +180,14 @@ public class ChartViewModel : ViewModelBase
     private SeriesType seriesType;
     public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }
 
-    public DataTemplate AxisLabelTemplate => App.AppInstance.FindResource($"axis{BarDuration}LabelTemplate") as DataTemplate;
+    public DataTemplate AxisLabelTemplate => BarDuration switch
+    {
+        BarDuration.Daily => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,
+        BarDuration.Weekly => App.AppInstance.FindResource($"axisWeeklyLabelTemplate") as DataTemplate,
+        BarDuration.Monthly => App.AppInstance.FindResource($"axisMonthlyLabelTemplate") as DataTemplate,
+        _ => null,
+        //_ => App.AppInstance.FindResource($"axisIntradayLabelTemplate") as DataTemplate
+    };
 
     public ObservableCollection<IIndicator> PriceIndicators { get; set; } = new ObservableCollection<IIndicator>();
     #endregion

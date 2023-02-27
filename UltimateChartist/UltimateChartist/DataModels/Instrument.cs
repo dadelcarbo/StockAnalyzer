@@ -27,6 +27,7 @@ public enum StockGroup
     //SPAIN,
     USA,
     SAXO,
+    TURBO,
     INDICES,
     INDICATOR,
     SECTORS,

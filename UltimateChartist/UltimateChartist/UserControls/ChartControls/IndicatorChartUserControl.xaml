@@ -14,17 +14,17 @@
             <RowDefinition Height="*" MinHeight="100"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Button Content="Delete" Command="{Binding DeleteIndicatorCommand}"/>
-            <TextBlock Text="{Binding Name}" FontSize="24"/>
+            <Button Command="{Binding DeleteIndicatorCommand}" BorderThickness="0" Background="Transparent" Margin="1" Height="16">
+                <Image Source="{Binding Source={StaticResource cancelImg}}"></Image>
+            </Button>
+            <TextBlock Text="{Binding Indicator.Indicator.DisplayName}" FontSize="10" VerticalAlignment="Center" Margin="1" />
         </StackPanel>
 
         <TextBlock Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-5,40,0"
                    Text="{Binding Name}" Foreground="#767676" FontFamily="Segoe UI" FontSize="11" />
         <telerik:RadCartesianChart Name="indicatorChart" Grid.Row="1" Margin="10,11,10,0"
-                                   HorizontalZoomRangeStart="{Binding ChartViewModel.HorizontalZoomRangeStart, Mode=TwoWay}" 
-                                   HorizontalZoomRangeEnd="{Binding ChartViewModel.HorizontalZoomRangeEnd, Mode=TwoWay}"
-                                   VerticalZoomRangeStart="{Binding ChartViewModel.VerticalZoomRangeStart}" 
-                                   VerticalZoomRangeEnd="{Binding ChartViewModel.VerticalZoomRangeEnd}"
+                                   HorizontalZoomRangeStart="{Binding ChartViewModel.HorizontalZoomRangeStart}" 
+                                   HorizontalZoomRangeEnd="{Binding ChartViewModel.HorizontalZoomRangeEnd}"
                                    PlotAreaStyle="{StaticResource plotAreaStyle}">
             <telerik:RadCartesianChart.Behaviors>
                 <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" DragMode="Pan" />
@@ -37,7 +37,7 @@
             </telerik:RadCartesianChart.HorizontalAxis>
             <telerik:RadCartesianChart.VerticalAxis>
                 <telerik:LinearAxis Name="verticalAxis"
-                                    Minimum="{Binding Min}" Maximum="{Binding Max}"                                    
+                                    Minimum="{Binding Indicator.Indicator.Min}" Maximum="{Binding Indicator.Indicator.Max}"
                                     LabelStyle="{StaticResource leftLabelStyle}" MajorTickStyle="{StaticResource tickStyle}" />
             </telerik:RadCartesianChart.VerticalAxis>
             <telerik:RadCartesianChart.Grid>

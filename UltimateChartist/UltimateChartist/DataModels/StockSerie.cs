@@ -15,7 +15,7 @@ public class StockSerie
     public Instrument Instrument { get; }
     public BarDuration BarDuration { get; } = BarDuration.Daily;
 
-    public List<StockBar> Bars { get; private set; }
+    public List<StockBar> Bars { get; set; }
 
     public void LoadData(IStockDataProvider dataProvider, Instrument instrument, BarDuration barDuration)
     {
