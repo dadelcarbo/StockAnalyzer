@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -204,14 +205,14 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
                                         {
                                             bars.Add(newBar);
                                         }
-                                        string cacFileName = Path.Combine(CACHE_FOLDER, BarDuration.Daily.ToString(), GetFileName(instrument));
+                                        string cacFileName = GetCacheFilePath(instrument);
                                         StockBar.SaveCsv(bars, cacFileName, new DateTime(LOAD_START_YEAR, 1, 1));
                                     }
                                 }
                             }
                             else
                             {
-                                ForceDownloadData(serie);
+                                serie.Bars = ForceDownloadData(instrument);
                                 needDownload = true;
                             }
                         }
@@ -311,7 +312,7 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
         public override List<StockBar> LoadData(Instrument instrument, BarDuration duration)
         {
             // Read Data from Cache
-            string fileName = Path.Combine(CACHE_FOLDER, duration.ToString(), GetFileName(instrument));
+            string fileName = GetCacheFilePath(instrument); ;
             var archiveBars = StockBar.Load(fileName, new DateTime(LOAD_START_YEAR, 1, 1));
             var tmpFileName = Path.Combine(TEMP_FOLDER, "Stock", GetFileName(instrument));
             if (archiveBars == null)
@@ -350,20 +351,20 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
 
             return null;
         }
-        public List<StockBar> ForceDownloadData(StockSerie stockSerie)
+        public List<StockBar> ForceDownloadData(Instrument instrument)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
                 return null;
 
-            string filePattern = stockSerie.Instrument.ISIN + "_" + stockSerie.Instrument.Symbol + "_*.csv";
+            string filePattern = instrument.ISIN + "_" + instrument.Symbol + "_*.csv";
             string fileName;
-            StockLog.Write(stockSerie.Instrument.Name + " " + stockSerie.Instrument.ISIN);
+            StockLog.Write(instrument.Name + " " + instrument.ISIN);
             int nbFile = 0;
             var folder = TEMP_FOLDER;
             for (int i = DateTime.Today.Year - 1; i >= LOAD_START_YEAR; i--)
             {
                 fileName = filePattern.Replace("*", i.ToString());
-                if (!DownloadISIN(folder, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.Instrument.ISIN))
+                if (!DownloadISIN(folder, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), instrument.ISIN))
                 {
                     break;
                 }
@@ -371,7 +372,7 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
             }
             int year = DateTime.Today.Year;
             fileName = filePattern.Replace("*", year.ToString());
-            if (DownloadISIN(folder, fileName, new DateTime(year, 1, 1), DateTime.Today, stockSerie.Instrument.ISIN))
+            if (DownloadISIN(folder, fileName, new DateTime(year, 1, 1), DateTime.Today, instrument.ISIN))
             {
                 nbFile++;
             }
@@ -385,8 +386,7 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
                 bars.AddRange(ReadABCFile(csvFileName));
                 File.Delete(csvFileName);
             }
-            stockSerie.Bars = bars;
-            StockBar.SaveCsv(bars, Path.Combine(CACHE_FOLDER, BarDuration.Daily.ToString(), GetFileName(stockSerie.Instrument)));
+            StockBar.SaveCsv(bars, GetCacheFilePath(instrument));
             return bars;
         }
 
@@ -474,8 +474,16 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
                         var instrument = Instruments.FirstOrDefault(i => i.ISIN == isinBar.Key);
                         if (instrument != null)
                         {
-                            StockBar.SaveCsv(isinBar.Value, Path.Combine(TEMP_FOLDER, "Stock", GetFileName(instrument)));
-                            instrument.GetStockSerie(BarDuration.Daily);
+                            var stockSerie = instrument.GetStockSerie(BarDuration.Daily);
+                            if (stockSerie.Bars == null)
+                            {
+                                stockSerie.Bars = isinBar.Value.ToList();
+                            }
+                            else
+                            {
+                                stockSerie.Bars.AddRange(isinBar.Value);
+                            }
+                            StockBar.SaveCsv(isinBar.Value, GetCacheFilePath(instrument));
                         }
                     }
                 }

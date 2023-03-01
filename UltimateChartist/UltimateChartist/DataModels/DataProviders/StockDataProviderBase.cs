@@ -58,6 +58,10 @@ public abstract class StockDataProviderBase : IStockDataProvider
         }
     }
 
+    protected virtual string GetCacheFilePath(Instrument instrument)
+    {
+        return Path.Combine(CACHE_FOLDER, this.DefaultBarDuration.ToString(), GetFileName(instrument));
+    }
     protected virtual string GetFileName(Instrument instrument)
     {
         return $"{instrument.Symbol}_{instrument.ISIN}.csv";
