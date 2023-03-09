@@ -10,9 +10,9 @@ public class StockIndicator_STOCK : IndicatorBase, IRangedIndicator
         this.Series = new IndicatorLineSignalSeries();
     }
     public override DisplayType DisplayType => DisplayType.Ranged;
-    public double Minimum => 0;
+    public decimal Minimum => 0;
 
-    public double Maximum => 100;
+    public decimal Maximum => 100;
 
     public override string DisplayName => $"{ShortName}({Period},{SignalPeriod})";
 
@@ -34,10 +34,10 @@ public class StockIndicator_STOCK : IndicatorBase, IRangedIndicator
         var values = new IndicatorLineSignalValue[stockSerie.Bars.Count];
         var stockf = stockSerie.CalculateFastOscillator(this.period, false);
 
-        double signalAlpha = 2.0 / (SignalPeriod + 1.0);
+        var signalAlpha = 2.0m / (SignalPeriod + 1.0m);
 
         int i = 0;
-        double signal = stockf[0];
+        var signal = stockf[0];
         foreach (var bar in stockSerie.Bars)
         {
             signal += signalAlpha * (stockf[i] - signal);

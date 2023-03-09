@@ -113,10 +113,10 @@ public class Datum
 public class Quotetab
 {
     public long d { get; set; }
-    public double o { get; set; }
-    public double h { get; set; }
-    public double l { get; set; }
-    public double c { get; set; }
+    public decimal o { get; set; }
+    public decimal h { get; set; }
+    public decimal l { get; set; }
+    public decimal c { get; set; }
     public long v { get; set; }
 }
 

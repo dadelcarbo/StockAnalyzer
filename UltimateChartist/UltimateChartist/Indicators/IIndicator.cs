@@ -24,7 +24,7 @@ public interface IIndicator
     string Description { get; }
     DisplayType DisplayType { get; }
 
-    double Max { get; }
+    decimal Max { get; }
 
     IIndicatorSeries Series { get; }
 
@@ -33,6 +33,6 @@ public interface IIndicator
 
 public interface IRangedIndicator
 {
-    double Minimum { get; }
-    double Maximum { get; }
+    decimal Minimum { get; }
+    decimal Maximum { get; }
 }

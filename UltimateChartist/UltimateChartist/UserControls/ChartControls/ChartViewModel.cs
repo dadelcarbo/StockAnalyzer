@@ -41,7 +41,7 @@ public class ChartViewModel : ViewModelBase
         get => instrument;
         set
         {
-         if (value != null && instrument != value)
+            if (value != null && instrument != value)
             {
                 instrument = value;
                 if (!instrument.SupportedBarDurations.Contains(barDuration))
@@ -110,7 +110,7 @@ public class ChartViewModel : ViewModelBase
                 }
                 //MaxZoom = new Size(Math.Max(1, data.Count / nbBar), 100);
 
-                double max = 0;
+                var max = 0m;
                 if (data != null && data.Count > 0)
                 {
                     max = data.Max(d => d.High);
@@ -122,7 +122,7 @@ public class ChartViewModel : ViewModelBase
                         max = Math.Max(max, indicator.Max);
                     }
                 }
-                this.Maximum = max * (1 + ZOOM_MARGIN);
+                this.Maximum = (1 + ZOOM_MARGIN) * (double)max;
 
                 ResetZoom();
 
@@ -171,9 +171,9 @@ public class ChartViewModel : ViewModelBase
         if (startIndex == endIndex)
             return;
         var visibleData = Data.Skip(startIndex).Take(endIndex - startIndex).ToList();
-        var min = visibleData.Min(f => f.Low);
-        var max = visibleData.Max(f => f.High);
-        var margin = (max - min) * ZOOM_MARGIN;
+        var min = (double)visibleData.Min(f => f.Low);
+        var max = (double)visibleData.Max(f => f.High);
+        var margin = ZOOM_MARGIN * (max - min);
         this.VerticalZoomRangeStart = (min - margin) / Maximum;
         this.VerticalZoomRangeEnd = (max + margin) / Maximum;
     }
@@ -187,7 +187,7 @@ public class ChartViewModel : ViewModelBase
     private SeriesType seriesType;
     public SeriesType SeriesType { get => seriesType; set { if (seriesType != value) { seriesType = value; RaisePropertyChanged(); } } }
 
-    public DataTemplate AxisLabelTemplate =>BarDuration switch
+    public DataTemplate AxisLabelTemplate => BarDuration switch
     {
         BarDuration.Daily => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,
         BarDuration.Weekly => App.AppInstance.FindResource($"axisDailyLabelTemplate") as DataTemplate,

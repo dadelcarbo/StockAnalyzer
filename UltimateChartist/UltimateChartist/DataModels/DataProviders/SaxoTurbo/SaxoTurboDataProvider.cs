@@ -72,7 +72,7 @@ namespace UltimateChartist.DataModels.DataProviders.SaxoTurbo
                     BarDuration.M_1 => FormatIntradayURL(instrument.ISIN, "1D"),
                     BarDuration.M_5 => FormatIntradayURL(instrument.ISIN, "2D"),
                     BarDuration.H_1 => FormatIntradayURL(instrument.ISIN, "1W"),
-                    BarDuration.Daily => FormatIntradayURL(instrument.ISIN, "5Y"),
+                    BarDuration.Daily => FormatIntradayURL(instrument.ISIN, "6M"),
                     _ => null
                 };
                 if (url == null)
@@ -197,10 +197,10 @@ namespace UltimateChartist.DataModels.DataProviders.SaxoTurbo
     public class SaxoTurboDatum
     {
         public DateTime x { get; set; }
-        public double y { get; set; }
-        public double c { get; set; }
-        public double h { get; set; }
-        public double l { get; set; }
+        public decimal y { get; set; }
+        public decimal c { get; set; }
+        public decimal h { get; set; }
+        public decimal l { get; set; }
         public R r { get; set; }
     }
 
@@ -216,7 +216,7 @@ namespace UltimateChartist.DataModels.DataProviders.SaxoTurbo
     {
         public int sin { get; set; }
         public string id { get; set; }
-        public double value { get; set; }
+        public decimal value { get; set; }
     }
     public class SaxoTurboJSon
     {

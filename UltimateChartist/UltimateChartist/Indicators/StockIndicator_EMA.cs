@@ -10,10 +10,10 @@ public class StockIndicator_EMA : MovingAverageBase
     {
         var values = new IndicatorLineValue[stockSerie.Bars.Count];
 
-        double alpha = 2.0 / (Period + 1.0);
+        decimal alpha = 2.0m / (Period + 1.0m);
         var firstBar = stockSerie.Bars.First();
         values[0] = new IndicatorLineValue() { Date = firstBar.Date, Value = firstBar.Close };
-        double ema = firstBar.Close;
+        decimal ema = firstBar.Close;
 
         int i = 1;
         foreach (var bar in stockSerie.Bars.Skip(1))

@@ -27,8 +27,8 @@ public partial class IndicatorChartUserControl : UserControl
         var rangedIndicator = viewModel.Indicator.Indicator as IRangedIndicator;
         if (rangedIndicator != null)
         {
-            verticalAxis.Minimum = rangedIndicator.Minimum;
-            verticalAxis.Maximum = rangedIndicator.Maximum;
+            verticalAxis.Minimum = (double)rangedIndicator.Minimum;
+            verticalAxis.Maximum = (double)rangedIndicator.Maximum;
         }
     }
 }

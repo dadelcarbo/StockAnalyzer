@@ -136,16 +136,16 @@ public partial class IndicatorConfigUserControl : Window
     }
     private void CreateDoubleParameter(IIndicatorParameterViewModel parameter)
     {
-        var doubleParameter = parameter.Parameter as IndicatorParameterDoubleAttribute;
+        var doubleParameter = parameter.Parameter as IndicatorParameterDecimalAttribute;
         var label = new System.Windows.Controls.Label() { Content = parameter.Parameter.Name, Width = 80, Margin = new Thickness(2) };
         var upDown = new RadNumericUpDown()
         {
-            Minimum = doubleParameter.Min,
-            Maximum = doubleParameter.Max,
-            SmallChange = doubleParameter.Step,
-            LargeChange = doubleParameter.Step * 10,
+            Minimum = (double) doubleParameter.Min,
+            Maximum = (double)doubleParameter.Max,
+            SmallChange = (double)doubleParameter.Step,
+            LargeChange =  (double) doubleParameter.Step * 10,
             Margin = new Thickness(2),
-            NumberDecimalDigits = -(int)Math.Round((Math.Log10(doubleParameter.Step)))
+            NumberDecimalDigits = -(int)Math.Round((Math.Log10((double) doubleParameter.Step)))
         };
 
         var binding = new Binding("Indicator." + parameter.PropertyName) { Mode = BindingMode.TwoWay, StringFormat = doubleParameter.Format };

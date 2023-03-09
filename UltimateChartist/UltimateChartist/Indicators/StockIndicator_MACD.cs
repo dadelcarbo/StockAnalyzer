@@ -32,15 +32,15 @@ public class StockIndicator_MACD : IndicatorBase
     {
         var values = new IndicatorLineSignalValue[stockSerie.Bars.Count];
 
-        double fastAlpha = 2.0 / (FastPeriod + 1.0);
-        double slowAlpha = 2.0 / (SlowPeriod + 1.0);
-        double signalAlpha = 2.0 / (SignalPeriod + 1.0);
+        var fastAlpha = 2.0m / (FastPeriod + 1.0m);
+        var slowAlpha = 2.0m / (SlowPeriod + 1.0m);
+        var signalAlpha = 2.0m / (SignalPeriod + 1.0m);
         var firstBar = stockSerie.Bars.First();
         values[0] = new IndicatorLineSignalValue() { Date = firstBar.Date, Value = 0, Signal = 0 };
-        double fastEma = firstBar.Close, slowEma = firstBar.Close;
+        decimal fastEma = firstBar.Close, slowEma = firstBar.Close;
 
         int i = 1;
-        double signal = 0, macd;
+        decimal signal = 0, macd;
         foreach (var bar in stockSerie.Bars.Skip(1))
         {
             fastEma += fastAlpha * (bar.Close - fastEma);

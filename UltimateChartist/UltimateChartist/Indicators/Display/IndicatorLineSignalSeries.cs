@@ -4,8 +4,8 @@ namespace UltimateChartist.Indicators.Display;
 
 public class IndicatorLineSignalValue : IndicatorValueBase
 {
-    public double Value { get; set; }
-    public double Signal { get; set; }
+    public decimal Value { get; set; }
+    public decimal Signal { get; set; }
 }
 public class IndicatorLineSignalSeries : IndicatorLineSeries
 {

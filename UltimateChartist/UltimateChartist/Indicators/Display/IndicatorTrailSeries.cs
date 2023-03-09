@@ -4,12 +4,12 @@ namespace UltimateChartist.Indicators.Display;
 
 public class IndicatorTrailValue : IndicatorValueBase
 {
-    public double Long { get; set; }
-    public double LongReentry { get; set; }
-    public double Short { get; set; }
-    public double ShortReentry { get; set; }
-    public double High { get; set; } // Higher band for Long stop
-    public double Low { get; set; } // // Lower band for Short stop
+    public decimal? Long { get; set; }
+    public decimal? LongReentry { get; set; }
+    public decimal? Short { get; set; }
+    public decimal? ShortReentry { get; set; }
+    public decimal? High { get; set; } // Higher band for Long stop
+    public decimal? Low { get; set; } // // Lower band for Short stop
 }
 public class IndicatorTrailSeries : IndicatorSeriesBase
 {

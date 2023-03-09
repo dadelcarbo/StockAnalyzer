@@ -34,19 +34,19 @@ public class IndicatorParameterIntAttribute : IndicatorParameterAttribute
     public int Max { get; }
 }
 
-public class IndicatorParameterDoubleAttribute : IndicatorParameterAttribute
+public class IndicatorParameterDecimalAttribute : IndicatorParameterAttribute
 {
-    public override Type Type => typeof(double);
-    public IndicatorParameterDoubleAttribute(string name, double min, double max, double step, string format) : base(name)
+    public override Type Type => typeof(decimal);
+    public IndicatorParameterDecimalAttribute(string name, double min, double max, double step, string format) : base(name)
     {
-        Min = min;
-        Max = max;
-        Step = step;
+        Min = (decimal)min;
+        Max = (decimal)max;
+        Step = (decimal)step;
         Format = format;
     }
-    public double Min { get; }
-    public double Max { get; }
-    public double Step { get; }
+    public decimal Min { get; }
+    public decimal Max { get; }
+    public decimal Step { get; }
     public string Format { get; }
 }
 

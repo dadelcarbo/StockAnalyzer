@@ -475,7 +475,7 @@ namespace StockAnalyzer.StockPortfolio
             var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName || s.ISIN == symbol);
             if (stockSerie == null)
             {
-                if (instrument.ExchangeId == "CATS_SAXO")
+                if (instrument.ExchangeId == "CATS_SAXO" || instrument.AssetType == "WarrantOpenEndKnockOut")
                 {
                     stockSerie = new StockSerie(instrument.Description, symbol, StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                     stockSerie.ISIN = symbol;

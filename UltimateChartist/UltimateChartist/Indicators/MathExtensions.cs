@@ -8,7 +8,7 @@ namespace UltimateChartist.Indicators;
 public static class MathExtensions
 {
     #region StockBars extensions 
-    public static double[] CalculateFastOscillator(this StockSerie stockSerie, int period, bool useBody)
+    public static decimal[] CalculateFastOscillator(this StockSerie stockSerie, int period, bool useBody)
 
     {
         //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
@@ -18,9 +18,9 @@ public static class MathExtensions
         var highSerie = stockSerie.HighValues;
 
         int count = closeSerie.Length;
-        var fastOscillatorSerie = new double[count];
+        var fastOscillatorSerie = new decimal[count];
 
-        double lowestLow, highestHigh;
+        decimal lowestLow, highestHigh;
 
         int i = 0;
         for (; i < period; i++)
@@ -37,15 +37,15 @@ public static class MathExtensions
             }
             else
             {
-                fastOscillatorSerie[i] = 100.0 * (closeSerie[i] - lowestLow) / (highestHigh - lowestLow);
+                fastOscillatorSerie[i] = 100.0m * (closeSerie[i] - lowestLow) / (highestHigh - lowestLow);
             }
         }
         return fastOscillatorSerie;
     }
 
-    public static double[] CalculateATR(this List<StockBar> bars)
+    public static decimal[] CalculateATR(this List<StockBar> bars)
     {
-        var serie = new double[bars.Count];
+        var serie = new decimal[bars.Count];
         var previousBar = bars.FirstOrDefault();
         int i = 0;
         foreach (var bar in bars)
@@ -55,9 +55,9 @@ public static class MathExtensions
         }
         return serie;
     }
-    public static double[] NATR(this List<StockBar> bars)
+    public static decimal[] NATR(this List<StockBar> bars)
     {
-        var serie = new double[bars.Count];
+        var serie = new decimal[bars.Count];
         var previousBar = bars.FirstOrDefault();
         int i = 0;
         foreach (var bar in bars)
@@ -68,21 +68,21 @@ public static class MathExtensions
         return serie;
     }
 
-    public static void CalculateBandTrailStop(this List<StockBar> bars, double[] lowerBand, double[] upperBand, out double[] longStopSerie, out double[] shortStopSerie)
+    public static void CalculateBandTrailStop(this List<StockBar> bars, decimal[] lowerBand, decimal[] upperBand, out decimal?[] longStopSerie, out decimal?[] shortStopSerie)
     {
-        longStopSerie = new double[lowerBand.Length];
-        shortStopSerie = new double[lowerBand.Length];
+        longStopSerie = new decimal?[lowerBand.Length];
+        shortStopSerie = new decimal?[lowerBand.Length];
         var previousBar = bars.First();
 
         bool upTrend = true;
         if (upTrend)
         {
             longStopSerie[0] = previousBar.Low;
-            shortStopSerie[0] = double.NaN;
+            shortStopSerie[0] = null;
         }
         else
         {
-            longStopSerie[0] = double.NaN;
+            longStopSerie[0] = null;
             shortStopSerie[0] = previousBar.High;
         }
         int i = 0;
@@ -95,14 +95,14 @@ public static class MathExtensions
                     if (currentBar.Close < longStopSerie[i - 1])
                     { // Trailing stop has been broken => reverse trend
                         upTrend = false;
-                        longStopSerie[i] = double.NaN;
+                        longStopSerie[i] = null;
                         shortStopSerie[i] = upperBand[i];
                     }
                     else
                     {
                         // UpTrend still in place
-                        longStopSerie[i] = Math.Max(longStopSerie[i - 1], lowerBand[i]);
-                        shortStopSerie[i] = double.NaN;
+                        longStopSerie[i] = Math.Max(longStopSerie[i - 1].Value, lowerBand[i]);
+                        shortStopSerie[i] = null;
                     }
                 }
                 else
@@ -111,13 +111,13 @@ public static class MathExtensions
                     {  // Trailing stop has been broken => reverse trend
                         upTrend = true;
                         longStopSerie[i] = lowerBand[i];
-                        shortStopSerie[i] = double.NaN;
+                        shortStopSerie[i] = null;
                     }
                     else
                     {
                         // Down trend still in place
-                        longStopSerie[i] = double.NaN;
-                        shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], upperBand[i]);
+                        longStopSerie[i] = null;
+                        shortStopSerie[i] = Math.Min(shortStopSerie[i - 1].Value, upperBand[i]);
                     }
                 }
             }
@@ -126,28 +126,28 @@ public static class MathExtensions
         }
     }
     #endregion
-    #region double[] extensions
-    public static double[] Mult(this double[] s1, double a)
+    #region decimal[] extensions
+    public static decimal[] Mult(this decimal[] s1, decimal a)
     {
-        var multSerie = new double[s1.Length];
+        var multSerie = new decimal[s1.Length];
         for (int i = 0; i < s1.Length; i++)
         {
             multSerie[i] = s1[i] * a;
         }
         return multSerie;
     }
-    public static double[] Add(this double[] s1, double[] s2)
+    public static decimal[] Add(this decimal[] s1, decimal[] s2)
     {
-        var multSerie = new double[s1.Length];
+        var multSerie = new decimal[s1.Length];
         for (int i = 0; i < s1.Length; i++)
         {
             multSerie[i] = s1[i] + s2[i];
         }
         return multSerie;
     }
-    public static double[] Sub(this double[] s1, double[] s2)
+    public static decimal[] Sub(this decimal[] s1, decimal[] s2)
     {
-        var multSerie = new double[s1.Length];
+        var multSerie = new decimal[s1.Length];
         for (int i = 0; i < s1.Length; i++)
         {
             multSerie[i] = s1[i] - s2[i];
@@ -155,18 +155,18 @@ public static class MathExtensions
         return multSerie;
     }
 
-    public static double Min(this double[] values, int startIndex, int endIndex)
+    public static decimal Min(this decimal[] values, int startIndex, int endIndex)
     {
-        double min = double.MaxValue;
+        decimal min = decimal.MaxValue;
         for (int i = startIndex; i <= endIndex; i++)
         {
             if (min > values[i]) min = values[i];
         }
         return min;
     }
-    public static double Max(this double[] values, int startIndex, int endIndex)
+    public static decimal Max(this decimal[] values, int startIndex, int endIndex)
     {
-        double max = double.MinValue;
+        decimal max = decimal.MinValue;
         for (int i = startIndex; i <= endIndex; i++)
         {
             if (max < values[i]) max = values[i];
@@ -174,9 +174,9 @@ public static class MathExtensions
         return max;
     }
 
-    public static double[] CalculateEMA(this double[] values, int period)
+    public static decimal[] CalculateEMA(this decimal[] values, int period)
     {
-        var ema = new double[values.Length];
+        var ema = new decimal[values.Length];
         if (period <= 1)
         {
             for (int i = 0; i < values.Length; i++)
@@ -186,7 +186,7 @@ public static class MathExtensions
         }
         else
         {
-            double alpha = 2.0f / (double)(period + 1);
+            decimal alpha = 2.0m / (period + 1m);
 
             ema[0] = values[0];
             for (int i = 1; i < values.Count(); i++)
@@ -197,10 +197,10 @@ public static class MathExtensions
         return ema;
     }
 
-    public static double[] CalculateMA(this double[] values, int period)
+    public static decimal[] CalculateMA(this decimal[] values, int period)
     {
-        var ma = new double[values.Length];
-        var cumul = 0.0;
+        var ma = new decimal[values.Length];
+        var cumul = 0.0m;
         for (int i = 0; i < values.Length; i++)
         {
             if (i < period)

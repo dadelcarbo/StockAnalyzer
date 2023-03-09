@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,7 +7,6 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using UltimateChartist.Helpers;
 
 namespace UltimateChartist.DataModels.DataProviders.ABC
@@ -59,6 +57,15 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
         public void CreateDirectories()
         {
             InitCacheFolders();
+
+            foreach (var barDuration in this.BarDurations)
+            {
+                var folder = Path.Combine(ARCHIVE_FOLDER, barDuration.ToString());
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+            }
 
             if (!Directory.Exists(Path.Combine(Folders.DataFolder, CFG_FOLDER)))
             {
@@ -504,10 +511,10 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
                 {
                     bars.Add(l.Key, l.Select(v => new StockBar(
                                         DateTime.Parse(v[1]),
-                                      double.Parse(v[2]),
-                                      double.Parse(v[3]),
-                                      double.Parse(v[4]),
-                                      double.Parse(v[5]),
+                                      decimal.Parse(v[2]),
+                                      decimal.Parse(v[3]),
+                                      decimal.Parse(v[4]),
+                                      decimal.Parse(v[5]),
                                       long.Parse(v[6]))));
                 }
                 return bars;
@@ -533,10 +540,10 @@ namespace UltimateChartist.DataModels.DataProviders.ABC
                     return null;
                 stockValue = new StockBar(
                 DateTime.Parse(row[1], frenchCulture),
-                double.Parse(row[2], frenchCulture),
-                double.Parse(row[3], frenchCulture),
-                double.Parse(row[4], frenchCulture),
-                double.Parse(row[5], frenchCulture),
+                decimal.Parse(row[2], frenchCulture),
+                decimal.Parse(row[3], frenchCulture),
+                decimal.Parse(row[4], frenchCulture),
+                decimal.Parse(row[5], frenchCulture),
                 long.Parse(row[6], frenchCulture));
             }
             catch (Exception ex)

@@ -35,7 +35,10 @@ public abstract class StockDataProviderBase : IStockDataProvider
 
     public static int LOAD_START_YEAR => Settings.Default.LoadStartYear;
 
+    public static int ARCHIVE_END_YEAR => Settings.Default.LoadStartYear;
+
     protected string CACHE_FOLDER => Path.Combine(Folders.DataFolder, "Cache", Name);
+    protected string ARCHIVE_FOLDER => Path.Combine(Folders.DataFolder, "Archive", Name);
     protected string TEMP_FOLDER => Path.Combine(Folders.DataFolder, "Temp", Name);
 
     protected string CONFIG_FILE => Path.Combine(Folders.PersonalFolder, $"{Name}.user.cfg");
@@ -61,6 +64,10 @@ public abstract class StockDataProviderBase : IStockDataProvider
     protected virtual string GetCacheFilePath(Instrument instrument)
     {
         return Path.Combine(CACHE_FOLDER, this.DefaultBarDuration.ToString(), GetFileName(instrument));
+    }
+    protected virtual string GetArchiveFilePath(Instrument instrument)
+    {
+        return Path.Combine(ARCHIVE_FOLDER, this.DefaultBarDuration.ToString(), GetFileName(instrument));
     }
     protected virtual string GetFileName(Instrument instrument)
     {

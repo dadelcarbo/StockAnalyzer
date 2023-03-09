@@ -11,19 +11,19 @@ namespace UltimateChartist.DataModels;
 public class StockBar
 {
     public DateTime Date { get; private set; }
-    public double Open { get; private set; }
-    public double High { get; private set; }
-    public double Low { get; private set; }
-    public double Close { get; private set; }
+    public decimal Open { get; private set; }
+    public decimal High { get; private set; }
+    public decimal Low { get; private set; }
+    public decimal Close { get; private set; }
     public long Volume { get; private set; }
 
-    public double BodyHigh => Math.Max(Open, Close);
-    public double BodyLow => Math.Min(Open, Close);
-    public double Exchanged => 0.5 * (High + Low) * Volume;
+    public decimal BodyHigh => Math.Max(Open, Close);
+    public decimal BodyLow => Math.Min(Open, Close);
+    public decimal Exchanged => 0.5m * (High + Low) * Volume;
 
     public bool IsComplete { get; set; } = true;
 
-    public StockBar(DateTime date, double open, double high, double low, double close, long volume)
+    public StockBar(DateTime date, decimal open, decimal high, decimal low, decimal close, long volume)
     {
         Date = date;
         Open = open;
@@ -140,10 +140,10 @@ public class StockBar
             if (startDate != null && date < startDate)
                 return null;
             return new StockBar(date,
-               double.Parse(row[1]),
-               double.Parse(row[2]),
-               double.Parse(row[3]),
-               double.Parse(row[4]),
+               decimal.Parse(row[1]),
+               decimal.Parse(row[2]),
+               decimal.Parse(row[3]),
+               decimal.Parse(row[4]),
                long.Parse(row[5]));
         }
         catch (Exception) { return null; }

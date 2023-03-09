@@ -4,7 +4,7 @@ namespace UltimateChartist.Indicators.Display;
 
 public class IndicatorBandValue : IndicatorRangeValue
 {
-    public double Mid { get; set; }
+    public decimal Mid { get; set; }
 }
 public class IndicatorBandSeries : IndicatorRangeSeries
 {

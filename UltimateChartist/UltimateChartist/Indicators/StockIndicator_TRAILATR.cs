@@ -22,13 +22,13 @@ public class StockIndicator_TrailATR : IndicatorBase
     [IndicatorParameterInt("ATR Period", 1, 500)]
     public int AtrPeriod { get => atrPeriod; set { if (atrPeriod != value) { atrPeriod = value; RaiseParameterChanged(); } } }
 
-    private double upWidth = 1;
-    [IndicatorParameterDouble("Up Width", 0, 50, 0.1, "{0:F2}")]
-    public double UpWidth { get => upWidth; set { if (upWidth != value) { upWidth = value; RaiseParameterChanged(); } } }
+    private decimal upWidth = 1;
+    [IndicatorParameterDecimal("Up Width", 0, 50, 0.1, "{0:F2}")]
+    public decimal UpWidth { get => upWidth; set { if (upWidth != value) { upWidth = value; RaiseParameterChanged(); } } }
 
-    private double downWidth = 1;
-    [IndicatorParameterDouble("Down Width", 0, 50, 0.1, "{0:F2}")]
-    public double DownWidth { get => downWidth; set { if (downWidth != value) { downWidth = value; RaiseParameterChanged(); } } }
+    private decimal downWidth = 1;
+    [IndicatorParameterDecimal("Down Width", 0, 50, 0.1, "{0:F2}")]
+    public decimal DownWidth { get => downWidth; set { if (downWidth != value) { downWidth = value; RaiseParameterChanged(); } } }
 
     public override void Initialize(StockSerie stockSerie)
     {
@@ -38,7 +38,7 @@ public class StockIndicator_TrailATR : IndicatorBase
         var lowerBand = emaSerie.Sub(atrSerie.Mult(downWidth));
         var upperBand = emaSerie.Add(atrSerie.Mult(upWidth));
 
-        stockSerie.Bars.CalculateBandTrailStop(lowerBand, upperBand, out double[] longStop, out double[] shortStop);
+        stockSerie.Bars.CalculateBandTrailStop(lowerBand, upperBand, out decimal?[] longStop, out decimal?[] shortStop);
 
         int i = 0;
         foreach (var bar in stockSerie.Bars)
@@ -46,12 +46,12 @@ public class StockIndicator_TrailATR : IndicatorBase
             values[i] = new IndicatorTrailValue()
             {
                 Date = bar.Date,
-                High = double.IsNaN(longStop[i]) ? float.NaN: bar.Close,
-                Low = double.IsNaN(shortStop[i]) ? float.NaN : bar.Close,
+                High = longStop[i] == null ? null: bar.Close,
+                Low = shortStop[i] == null ? null : bar.Close,
                 Long = longStop[i],
                 Short = shortStop[i],
-                LongReentry = float.NaN,
-                ShortReentry = float.NaN
+                LongReentry = null,
+                ShortReentry = null
             };
             i++;
         }
