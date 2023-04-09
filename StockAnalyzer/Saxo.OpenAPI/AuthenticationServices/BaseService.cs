@@ -51,5 +51,4 @@ namespace Saxo.OpenAPI.AuthenticationServices
             }
         }
     }
-
 }
