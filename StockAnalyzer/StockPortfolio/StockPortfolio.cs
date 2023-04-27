@@ -684,22 +684,6 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
 
-                //var closedPositions = accountService.GetClosedPositions(account)?.Data;
-                //if (untreatedPositions.Count > 0 && !this.IsSaxoSimu)
-                //{
-                //    if (closedPositions != null)
-                //    {
-                //        foreach (var closedPosition in closedPositions)
-                //        {
-                //            var position = untreatedPositions.FirstOrDefault(p => p.Id == closedPosition.ClosedPosition.OpeningPositionId);
-                //            if (position == null) { continue; }
-                //            position.ExitDate = closedPosition.ClosedPosition.ExecutionTimeClose.ToLocalTime();
-                //            position.ExitValue = closedPosition.ClosedPosition.ClosingPrice;
-                //            untreatedPositions.Remove(position);
-                //        }
-                //    }
-                //}
-
                 this.LastSyncDate = DateTime.Today;
                 this.Serialize();
 
