@@ -468,7 +468,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             {
                                 StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
-                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN switch
+                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0,2) switch
                                 {
                                     null => string.Empty,
                                     "FR" => "p",
