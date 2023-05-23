@@ -1165,13 +1165,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private void PaintPositions(Graphics graphic)
         {
             if (this.Portfolio == null)
-            {
                 return;
-            }
+
             var name = this.serie.StockName.ToUpper();
+            var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).Cast<StockPositionBase>().Union(this.Portfolio.ClosedNetPositions.Where(p => p.StockName.ToUpper() == name)).ToList();
+
+            if (positions.Count == 0)
+                return;
+
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).ToList();
             var startDate = this.dateSerie[this.StartIndex];
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
 
@@ -1221,7 +1224,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        private void PaintOpenedPosition(Graphics graphic, StockPosition position)
+        private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
             int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
             this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
