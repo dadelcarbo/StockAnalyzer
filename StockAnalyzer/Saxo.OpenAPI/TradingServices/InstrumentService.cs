@@ -1,13 +1,35 @@
-﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+﻿using Newtonsoft.Json;
+using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 
 namespace Saxo.OpenAPI.TradingServices
 {
     public class InstrumentService : BaseService
     {
+        static InstrumentService()
+        {
+            if (File.Exists(Folders.SaxoInstruments))
+            {
+                InstrumentCache = JsonConvert.DeserializeObject<List<Instrument>>(File.ReadAllText(Folders.SaxoInstruments));
+                foreach (var instrumenent in InstrumentCache.Where(i=>!String.IsNullOrEmpty(i.Isin)))
+                {
+                    InstrumentIsinCache.Add(instrumenent.Isin, instrumenent);
+                    InstrumentUicCache.Add(instrumenent.Identifier, instrumenent);
+                }
+            }
+            else
+            {
+                InstrumentCache = new List<Instrument>();
+            }
+        }
+        private static List<Instrument> InstrumentCache;
+
         private static SortedDictionary<string, Instrument> InstrumentIsinCache = new SortedDictionary<string, Instrument>();
         public Instrument GetInstrumentByIsin(string isin)
         {
@@ -22,7 +44,16 @@ namespace Saxo.OpenAPI.TradingServices
                     {
                         instrument = instruments.Data.First();
                     }
+
                     InstrumentIsinCache.Add(isin, instrument);
+                    instrument.Isin = isin;
+
+                    if (instrument != null)
+                    {
+                        InstrumentCache.Add(instrument);
+                        // Save Cache
+                        File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
+                    }
                 }
                 return InstrumentIsinCache[isin];
             }
@@ -31,13 +62,13 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        private static SortedDictionary<long, Instrument> InstrumentCache = new SortedDictionary<long, Instrument>();
+        private static SortedDictionary<long, Instrument> InstrumentUicCache = new SortedDictionary<long, Instrument>();
         public Instrument GetInstrumentById(long uic)
         {
             var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf";
             try
             {
-                if (!InstrumentCache.ContainsKey(uic))
+                if (!InstrumentUicCache.ContainsKey(uic))
                 {
                     Instrument instrument = null;
                     var instruments = Get<Instruments>(method);
@@ -45,9 +76,9 @@ namespace Saxo.OpenAPI.TradingServices
                     {
                         instrument = instruments.Data.First();
                     }
-                    InstrumentCache.Add(uic, instrument);
+                    InstrumentUicCache.Add(uic, instrument);
                 }
-                return InstrumentCache[uic];
+                return InstrumentUicCache[uic];
             }
             catch (Exception ex)
             {
@@ -89,6 +120,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string ExchangeId { get; set; }
         public long GroupId { get; set; }
         public long Identifier { get; set; }
+        public string Isin { get; set; }
         public string SummaryType { get; set; }
         public string Symbol { get; set; }
         public string[] TradableAs { get; set; }

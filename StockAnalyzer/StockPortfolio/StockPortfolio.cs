@@ -472,7 +472,7 @@ namespace StockAnalyzer.StockPortfolio
             // Find instrument in stock Dictionnary
             var symbol = instrument.Symbol.Split(':')[0];
             var stockName = instrument.Description.ToUpper().Replace("SA", "").Trim();
-            var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName || s.ISIN == symbol);
+            var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol.Split('.')[0] == symbol || s.StockName == stockName || (instrument.Isin != null && s.ISIN == instrument.Isin));
             if (stockSerie == null)
             {
                 if (instrument.ExchangeId == "CATS_SAXO" || instrument.AssetType == "WarrantOpenEndKnockOut")
