@@ -1061,7 +1061,6 @@
     <Content Include="Resources\Reload.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\undo.ico" />
     <None Include="Resources\undo.png" />
     <Content Include="Resources\PortfolioTemplate.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

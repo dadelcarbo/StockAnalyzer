@@ -1301,11 +1301,13 @@ namespace StockAnalyzerApp
                 this.ViewModel.BarDuration = barDuration;
                 this.repaintSuspended = false;
 
-
-                this.themeComboBox.SelectedIndexChanged -= themeComboBox_SelectedIndexChanged;
-                this.currentTheme = theme;
-                this.themeComboBox.SelectedItem = theme;
-                this.themeComboBox.SelectedIndexChanged += themeComboBox_SelectedIndexChanged;
+                if (!string.IsNullOrEmpty(theme))
+                {
+                    this.themeComboBox.SelectedIndexChanged -= themeComboBox_SelectedIndexChanged;
+                    this.currentTheme = theme;
+                    this.themeComboBox.SelectedItem = theme;
+                    this.themeComboBox.SelectedIndexChanged += themeComboBox_SelectedIndexChanged;
+                }
 
                 StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
 

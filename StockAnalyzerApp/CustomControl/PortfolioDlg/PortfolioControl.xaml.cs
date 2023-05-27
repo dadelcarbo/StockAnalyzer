@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using System.Threading.Tasks;
+using Telerik.Windows.Controls.Data.PropertyGrid;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
@@ -83,22 +84,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
         }
 
-        //private void Position_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "Stop":
-        //        case "TrailStop":
-        //            StockAnalyzerForm.MainFrame.RefreshGraphCloseControl();
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
-
-        private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
+        private void FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
         {
-            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            var column = e.Column as GridViewBoundColumnBase;
             if (column == null)
                 return;
             if (column.DataType == typeof(string))
@@ -116,7 +104,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             if (stockSerie != null && SelectedStockChanged != null)
             {
                 StockAnalyzerForm.MainFrame.Activate();
-                if (!string.IsNullOrEmpty(theme) && duration != null)
+                if (duration != null)
                 {
                     this.SelectedStockAndDurationChanged(stockSerie.StockName, duration, theme, true);
                 }
@@ -140,7 +128,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
 
         static int index = 0;
-        private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, Telerik.Windows.Controls.Data.PropertyGrid.AutoGeneratingPropertyDefinitionEventArgs e)
+        private void RadPropertyGrid_AutoGeneratingPropertyDefinition(object sender, AutoGeneratingPropertyDefinitionEventArgs e)
         {
             var attribute = e.PropertyDefinition.PropertyDescriptor.Attributes[typeof(PropertyAttribute)] as PropertyAttribute;
             if (attribute == null)
