@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses
             INDICATOR,
             SECTORS,
             SECTORS_CAC,
-            SECTORS_CALC,
+            SECTORS_STOXX,
             CURRENCY,
             COMMODITY,
             FOREX,
@@ -82,7 +82,7 @@ namespace StockAnalyzer.StockClasses
         /// <summary>
         /// SAXO OpenAPI instrument ID
         /// </summary>
-        public long Uic{ get; set; }
+        public long Uic { get; set; }
 
         public int SectorId { get; set; }
 
@@ -276,7 +276,7 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                List<StockDailyValue> newList = this.GenerateSerieForTimeSpan(this.BarSmoothedDictionary[StockBarDuration.Daily.ToString()], newBarDuration);
+                List<StockDailyValue> newList = this.GenerateSerieForTimeSpan(this.BarSmoothedDictionary["Daily"], newBarDuration);
                 if (newBarDuration.Smoothing > 1)
                 {
                     newList = this.GenerateSmoothedBars(newList, newBarDuration.Smoothing);
@@ -630,13 +630,17 @@ namespace StockAnalyzer.StockClasses
                             {
                                 return false;
                             }
-                            this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                            if (this.BarSmoothedDictionary.ContainsKey("Daily"))
+                            {
+                                this.BarSmoothedDictionary.Remove("Daily");
+                            }
+                            this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
                         }
                         else
                         {
-                            if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+                            if (this.barDuration == StockBarDuration.Daily && !this.BarSmoothedDictionary.ContainsKey("Daily"))
                             {
-                                this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                                this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
                             }
                         }
                         // Force indicator,data,event and other to null;
@@ -656,9 +660,9 @@ namespace StockAnalyzer.StockClasses
 
         public void PreInitialise()
         {
-            if (!this.BarSmoothedDictionary.ContainsKey(StockBarDuration.Daily.ToString()))
+            if (!this.BarSmoothedDictionary.ContainsKey("Daily"))
             {
-                this.BarSmoothedDictionary.Add(StockBarDuration.Daily.ToString(), this.Values.ToList());
+                this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
             }
             StockDailyValue previousValue = null;
             foreach (StockDailyValue dailyValue in this.Values)

@@ -362,10 +362,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var longName = "_" + sector.Sector;
             if (!stockDictionary.ContainsKey(longName))
             {
-                // Create Sector serie
-                stockDictionary.Add(longName, new StockSerie(longName, sector.Code.ToString(), StockSerie.Groups.SECTORS_CALC, StockDataProvider.Breadth, BarDuration.Daily));
-                stockDictionary.Add(longName + "_SI", new StockSerie(longName + "_SI", sector.Code.ToString(), StockSerie.Groups.SECTORS_CALC, StockDataProvider.Breadth, BarDuration.Daily));
-
                 // Set SectorId to stock
                 string fileName = DataFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sector.Code.ToString() + ".txt";
                 if (File.Exists(fileName))
@@ -385,10 +381,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 {
                                     stockSerie.SectorId = sector.Code;
                                 }
-                                //else
-                                //{
-                                //    Console.WriteLine($"Sector Serie not found in dictionnary {line}");
-                                //}
                             }
                         }
                     }

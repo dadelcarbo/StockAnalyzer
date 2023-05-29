@@ -68,10 +68,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             fullFileName = DataFolder + FOLDER + "\\" + fileName;
             res = ParseCSVFile(stockSerie, fullFileName) || res;
+            if (stockSerie.Count > 0)
+            {
+                stockSerie.PreInitialise();
+            }
 
             var cac40 = StockDictionary.Instance["CAC40"];
             cac40.Initialise();
-            if (stockSerie.Count == 0 || cac40.Keys.Last() != stockSerie.Keys.Last())
+            if (stockSerie.Count == 0 || cac40.Keys.Last() != stockSerie.LastValue.DATE)
             {
                 res |= GenerateBreadthData(stockSerie);
             }
@@ -92,17 +96,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             StockLog.Write(stockSerie.StockName);
             var stockDictionary = StockDictionary.Instance;
-            if (stockSerie.StockGroup == StockSerie.Groups.SECTORS_CALC)
-            {
-                if (stockSerie.StockName.EndsWith("_SI"))
-                {
-                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, stockSerie.StockName, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                }
-                else
-                {
-                    return stockDictionary.GenerateABCSectorEqualWeight(stockSerie, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                }
-            }
             string[] row = stockSerie.Symbol.Split('.');
             StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
             switch (row[0].Split('_')[0])

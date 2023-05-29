@@ -117,7 +117,7 @@ namespace StockAnalyzer.StockPortfolio
                 Directory.CreateDirectory(archiveDirectory);
             else
             {
-                var dateLimit = DateTime.Today.AddDays(-5);
+                var dateLimit = DateTime.Today.AddDays(-50);
                 foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
                 {
                     File.Delete(file);
@@ -554,7 +554,8 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // Check executedOrders (One day delay)
-                var closedOrders = orderService.GetClosedOrders(account, this.LastSyncDate, DateTime.Today);
+                var upToDate = DateTime.Today;
+                var closedOrders = orderService.GetClosedOrders(account, this.LastSyncDate, upToDate);
                 if (closedOrders?.Data != null && closedOrders.Data.Length > 0)
                 {
                     foreach (var op in closedOrders.Data.OrderBy(o => o.TradeExecutionTime).ToList())
