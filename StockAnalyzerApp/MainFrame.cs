@@ -2953,7 +2953,8 @@ namespace StockAnalyzerApp
             this.ViewModel.IsHistoryActive = false;
             string timeFrame = duration.ToString();
             string folderName = Path.Combine(Folders.Report, timeFrame);
-            CleanReportFolder(folderName);
+
+            // @@@@ CleanReportFolder(folderName);
 
             if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active && a.Type == AlertType.Group) == 0)
                 return;
@@ -2963,7 +2964,7 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            string fileName = Path.Combine(folderName, "Report.html");
+            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             #region Report Alerts
