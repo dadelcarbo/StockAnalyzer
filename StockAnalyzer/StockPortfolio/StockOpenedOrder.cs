@@ -1,33 +1,33 @@
 ﻿using Newtonsoft.Json;
+using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
 using System;
 
 namespace StockAnalyzer.StockPortfolio
 {
-    public class StockOpenedOrder
+    public class StockOrder : StockOrderBase
+    {
+        public StockOrder(OrderActivity activityOrder)
+        {
+            this.ISIN = "";
+            this.Status = activityOrder.Status;
+            this.Value = activityOrder.Price.Value;
+            this.Uic = activityOrder.Uic;
+            this.BuySell = activityOrder.BuySell;
+            this.CreationDate = activityOrder.ActivityTime;
+            this.Id = activityOrder.OrderId;
+            this.OrderType = activityOrder.OrderType;
+            this.Qty = (int)activityOrder.Amount;
+        }
+    }
+    public class StockOpenedOrder : StockOrderBase
     {
         public StockOpenedOrder()
         {
             this.IsActive = true;
         }
 
-        public long Id { get; set; }
-        public string StockName { get; set; }
-        public string ISIN { get; set; }
-        public long Uic { get; set; }
-
-        public string BuySell { get; set; }
-        public string OrderType { get; set; }
-
-        public int Qty { get; set; }
-        public float Value { get; set; }
-        [JsonIgnore]
-        public float Amount => Qty * Value;
         public float StopValue { get; set; }
-        public DateTime CreationDate { get; set; }
-        public string Status { get; set; }
-
-        public bool IsActive { get; set; }
 
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
         public string EntryComment { get; set; }

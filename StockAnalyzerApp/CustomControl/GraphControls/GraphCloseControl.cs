@@ -1168,7 +1168,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
 
             var name = this.serie.StockName.ToUpper();
-            var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).Cast<StockPositionBase>().Union(this.Portfolio.ClosedNetPositions.Where(p => p.StockName.ToUpper() == name)).ToList();
+            var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).Cast<StockPositionBase>().Union(this.Portfolio.ClosedPositions.Where(p => p.StockName.ToUpper() == name)).ToList();
 
             if (positions.Count == 0)
                 return;

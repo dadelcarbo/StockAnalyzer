@@ -13,19 +13,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             Portfolio = portfolio;
 
-            this.MixedOpenedPositions = new List<StockPositionBaseViewModel>();
+            this.OpenedPositions = new List<StockPositionBaseViewModel>();
 
             foreach (var pos in portfolio.Positions)
             {
-                var netPos = portfolio.OpenedNetPositions.FirstOrDefault(p => p.Uic == pos.Uic && p.EntryDate == pos.EntryDate);
-                if (netPos != null)
-                {
-                    this.MixedOpenedPositions.Add(new StockPositionBaseViewModel(netPos, this));
-                }
-                else
-                {
-                    this.MixedOpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
-                }
+                this.OpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
             }
         }
 
@@ -61,13 +53,13 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.Where(o => o.IsActive).OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
-        public IList<StockPositionBaseViewModel> MixedOpenedPositions { get; private set; }
+        public IList<StockPositionBaseViewModel> OpenedPositions { get; private set; }
 
-        public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedNetPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
+        public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
 
         public float Value => Portfolio.TotalValue;
 
-        public float RiskFreeValue => Portfolio.Balance + this.MixedOpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
+        public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 
         public bool IsDirty { get; set; }
     }

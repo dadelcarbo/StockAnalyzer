@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices
@@ -219,6 +221,25 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
+
+        public OrderActivities GetOrderActivities(Account account, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                if (fromDate.Year == 1 || fromDate.Date == toDate.Date)
+                    return null;
+
+                //var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={fromDate.ToString("yyyy-MM-dd")}&ToDateTime={toDate.ToString("yyyy-MM-dd")}&Status=FinalFill";
+                var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={fromDate.ToString("yyyy-MM-dd")}&ToDateTime={toDate.ToString("yyyy-MM-dd")}";
+
+                var res = Get<OrderActivities>(method);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
     }
 
     public enum SaxoOrderType
@@ -284,6 +305,60 @@ namespace Saxo.OpenAPI.TradingServices
     {
         public int __count { get; set; }
         public OpenedOrder[] Data { get; set; }
+    }
+
+    public class OrderActivities
+    {
+        public int __count { get; set; }
+        public OrderActivity[] Data { get; set; }
+    }
+    public class OrderActivity
+    {
+        public DateTime ActivityTime { get; set; }
+        public float Amount { get; set; }
+        public string AssetType { get; set; }
+        public string BuySell { get; set; }
+        public Duration Duration { get; set; }
+        public long LogId { get; set; }
+        public long OrderId { get; set; }
+        public string OrderRelation { get; set; }
+        public string OrderType { get; set; }
+        public List<string> RelatedOrders { get; set; }
+        public string Status { get; set; }
+        public string SubStatus { get; set; }
+        public int Uic { get; set; }
+        public float? Price { get; set; }
+        public float? AveragePrice { get; set; }
+        public float? ExecutionPrice { get; set; }
+        public float? FillAmount { get; set; }
+        public float? FilledAmount { get; set; }
+        public long? PositionId { get; set; }
+
+        public void CopyFrom(OrderActivity orderActivity)
+        {
+            this.ActivityTime = orderActivity.ActivityTime;
+            this.Amount = orderActivity.Amount;
+            this.AssetType = orderActivity.AssetType;
+            this.BuySell = orderActivity.BuySell;
+            this.Duration = orderActivity.Duration;
+            this.LogId = orderActivity.LogId;
+            this.OrderId = orderActivity.OrderId;
+            this.OrderRelation = orderActivity.OrderRelation;
+            this.OrderType = orderActivity.OrderType;
+            this.RelatedOrders = orderActivity.RelatedOrders;
+            this.Status = orderActivity.Status;
+            this.SubStatus = orderActivity.Status;
+            this.Uic = orderActivity.Uic;
+            this.Price = orderActivity.Price;
+            this.AveragePrice = orderActivity.AveragePrice;
+            this.ExecutionPrice = orderActivity.AveragePrice;
+            this.FillAmount = orderActivity.FillAmount;
+            this.FilledAmount = orderActivity.FillAmount;
+            this.PositionId = orderActivity.PositionId;
+        }
+
+
+
     }
 
 

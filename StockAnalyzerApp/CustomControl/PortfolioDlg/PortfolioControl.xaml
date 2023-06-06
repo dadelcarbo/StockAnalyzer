@@ -58,10 +58,10 @@
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Opened Positions">
-                <telerik:RadGridView Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.MixedOpenedPositions}"
+                <telerik:RadGridView Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
                                      SelectionMode="Single" SelectionUnit="Mixed" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False" LeftFrozenColumnCount="1">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
@@ -94,7 +94,7 @@
                 <telerik:RadGridView Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Direction" DataMemberBinding="{Binding BuySell}"  IsReadOnly="True"/>
@@ -115,7 +115,7 @@
                 <telerik:RadGridView Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
