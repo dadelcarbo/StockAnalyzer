@@ -1215,7 +1215,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     PaintOpenedPosition(graphic, position);
                 }
             }
-            var openedOrder = this.Portfolio.OpenOrders?.Where(o => o.IsActive && o.StockName.ToUpper() == name && o.BuySell == "Buy").FirstOrDefault();
+            var openedOrder = this.Portfolio.GetOpenOrders(name).Where(o => o.BuySell == "Buy").FirstOrDefault();
             if (openedOrder != null)
             {
                 this.DrawOpenedOrder(graphic, entryOrderPen, this.EndIndex, openedOrder.Value, true);
@@ -1369,7 +1369,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                         else
                         {
-                            var openOrder = Portfolio.OpenOrders.FirstOrDefault(o => o.IsActive && o.StockName == this.serie.StockName);
+                            var openOrder = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault();
                             if (openOrder != null)
                             {
                                 this.DrawStop(foregroundGraphic, entryOrderPen, this.StartIndex, mouseValuePoint.Y, true);
@@ -1596,7 +1596,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    var openOrder = Portfolio.OpenOrders.FirstOrDefault(o => o.IsActive && o.StockName == this.serie.StockName);
+                    var openOrder = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault();
                     if (openOrder != null)
                     {
                         if (DialogResult.Yes == MessageBox.Show("Do you want to sent order update to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -1679,7 +1679,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     else
                     {
                         this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
-                        this.cancelMenu.Visible = Portfolio?.OpenOrders.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
+                        this.cancelMenu.Visible = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault()!= null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
                         this.contextMenu.Show(this, e.Location);
                     }
@@ -2596,7 +2596,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var order = StockAnalyzerForm.MainFrame.Portfolio.OpenOrders.FirstOrDefault(o => o.IsActive && o.StockName == this.serie.StockName && o.BuySell == "Buy");
+            var order = StockAnalyzerForm.MainFrame.Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault(o => o.BuySell == "Buy");
             if (order == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);

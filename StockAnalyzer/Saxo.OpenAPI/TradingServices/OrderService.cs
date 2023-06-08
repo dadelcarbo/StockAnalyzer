@@ -334,9 +334,12 @@ namespace Saxo.OpenAPI.TradingServices
         public float? FillAmount { get; set; }
         public float? FilledAmount { get; set; }
         public long? PositionId { get; set; }
+
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
         public string EntryComment { get; set; }
         public string Theme { get; set; }
+        public string StockName { get; set; }
+        public string Isin { get; set; }
 
         public void CopyFrom(OrderActivity orderActivity)
         {
@@ -367,10 +370,9 @@ namespace Saxo.OpenAPI.TradingServices
             this.BarDuration = orderActivity.BarDuration;
             this.EntryComment = orderActivity.EntryComment;
             this.Theme = orderActivity.Theme;
+            this.StockName = orderActivity.StockName;
+            this.Isin = orderActivity.Isin;
         }
-
-
-
     }
 
 

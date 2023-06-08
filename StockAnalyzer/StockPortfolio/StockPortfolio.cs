@@ -49,7 +49,6 @@ namespace StockAnalyzer.StockPortfolio
         public StockPortfolio()
         {
             this.TradeOperations = new List<StockTradeOperation>();
-            this.OpenOrders = new List<StockOpenedOrder>();
             this.MaxRisk = 0.02f;
             this.MaxPositionSize = 0.2f;
         }
@@ -93,7 +92,14 @@ namespace StockAnalyzer.StockPortfolio
         public List<OrderActivity> ActivityOrders { get; } = new List<OrderActivity>();
         public List<SaxoPosition> SaxoPositions { get; } = new List<SaxoPosition>();
 
-        public List<StockOpenedOrder> OpenOrders { get; }
+        public IEnumerable<StockOpenedOrder> GetOpenOrders(string stockName)
+        {
+            return this.ActivityOrders.Where(o => o.StockName == stockName && o.Status == "Working").Select(o => new StockOpenedOrder(o));
+        }
+        public IEnumerable<StockOpenedOrder> GetOpenOrders()
+        {
+            return this.ActivityOrders.Where(o => o.Status == "Working").Select(o => new StockOpenedOrder(o));
+        }
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
         public List<StockPosition> ClosedPositions { get; } = new List<StockPosition>();
 
@@ -620,6 +626,11 @@ namespace StockAnalyzer.StockPortfolio
             }
 
             var stockSerie = GetStockSerieFromUic(order.Uic);
+            if (stockSerie == null)
+            {
+                throw new InvalidOperationException($"StockSerie for UIC:{order.Uic} not found");
+            }
+            activityOrder.StockName = stockSerie.StockName;
 
             switch (activityOrder.Status)
             {
@@ -631,6 +642,7 @@ namespace StockAnalyzer.StockPortfolio
                             if (position != null)
                                 position.TrailStop = activityOrder.Price.Value;
                         }
+                        activityOrder.Status = "Working";
                     }
                     return;
                 case "FinalFill": // Order fully executed
@@ -688,8 +700,10 @@ namespace StockAnalyzer.StockPortfolio
                         }
                     }
                     break;
-                case "Placed": // Order sent to market
                 case "Fill": // Order partially executed
+                    activityOrder.Status = "Working";
+                    break;
+                case "Placed": // Order sent to market
                 case "Cancelled": // Order cancelled remove if it's a stop order.
                 case "Working": // Order waiting for execution ==> noting to do.
                 case "DoneForDay": // noting to do.
@@ -958,14 +972,12 @@ namespace StockAnalyzer.StockPortfolio
 
                 if (orderService.CancelOrder(account, orderId))
                 {
-                    var id = long.Parse(orderId);
-                    this.OpenOrders.RemoveAll(o => o.Id == id);
                     this.Serialize();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Cancel order exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return;
         }
