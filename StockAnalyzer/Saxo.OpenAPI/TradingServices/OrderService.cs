@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -229,7 +230,6 @@ namespace Saxo.OpenAPI.TradingServices
                 if (fromDate.Year == 1 || fromDate.Date == toDate.Date)
                     return null;
 
-                //var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={fromDate.ToString("yyyy-MM-dd")}&ToDateTime={toDate.ToString("yyyy-MM-dd")}&Status=FinalFill";
                 var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={fromDate.ToString("yyyy-MM-dd")}&ToDateTime={toDate.ToString("yyyy-MM-dd")}";
 
                 var res = Get<OrderActivities>(method);
@@ -314,6 +314,7 @@ namespace Saxo.OpenAPI.TradingServices
     }
     public class OrderActivity
     {
+        public DateTime CreationTime { get; set; }
         public DateTime ActivityTime { get; set; }
         public float Amount { get; set; }
         public string AssetType { get; set; }
@@ -326,16 +327,20 @@ namespace Saxo.OpenAPI.TradingServices
         public List<string> RelatedOrders { get; set; }
         public string Status { get; set; }
         public string SubStatus { get; set; }
-        public int Uic { get; set; }
+        public long Uic { get; set; }
         public float? Price { get; set; }
         public float? AveragePrice { get; set; }
         public float? ExecutionPrice { get; set; }
         public float? FillAmount { get; set; }
         public float? FilledAmount { get; set; }
         public long? PositionId { get; set; }
+        public BarDuration BarDuration { get; set; } = BarDuration.Daily;
+        public string EntryComment { get; set; }
+        public string Theme { get; set; }
 
         public void CopyFrom(OrderActivity orderActivity)
         {
+            this.CreationTime = orderActivity.CreationTime;
             this.ActivityTime = orderActivity.ActivityTime;
             this.Amount = orderActivity.Amount;
             this.AssetType = orderActivity.AssetType;
@@ -349,12 +354,19 @@ namespace Saxo.OpenAPI.TradingServices
             this.Status = orderActivity.Status;
             this.SubStatus = orderActivity.Status;
             this.Uic = orderActivity.Uic;
-            this.Price = orderActivity.Price;
+            if (orderActivity.Price.HasValue)
+            {
+                this.Price = orderActivity.Price;
+            }
             this.AveragePrice = orderActivity.AveragePrice;
             this.ExecutionPrice = orderActivity.AveragePrice;
             this.FillAmount = orderActivity.FillAmount;
             this.FilledAmount = orderActivity.FillAmount;
             this.PositionId = orderActivity.PositionId;
+
+            this.BarDuration = orderActivity.BarDuration;
+            this.EntryComment = orderActivity.EntryComment;
+            this.Theme = orderActivity.Theme;
         }
 
 

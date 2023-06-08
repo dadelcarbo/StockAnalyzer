@@ -19,6 +19,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 this.OpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
             }
+
+            this.Orders = portfolio.ActivityOrders.Select(o => new OrderViewModel(o, portfolio));
         }
 
         [Property(null, "1-General")]
@@ -50,6 +52,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property(null, "4-Extra")]
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
+
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.OpenOrders.Where(o => o.IsActive).OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 
@@ -62,5 +65,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 
         public bool IsDirty { get; set; }
+        public IEnumerable<OrderViewModel> Orders { get; private set; }
     }
 }

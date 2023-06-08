@@ -25,11 +25,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 return;
             }
 
-            string orderId = null;
+            long orderId = 0;
             if (this.TradeViewModel.MarketOrder)
             {
                 orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
-                if (orderId != null)
+                if (orderId != 0)
                 {
                     var position = this.TradeViewModel.Portfolio.Positions.OrderByDescending(p => p.EntryDate).FirstOrDefault();
                     if (position != null && position.StockName == this.TradeViewModel.StockSerie.StockName)
@@ -37,7 +37,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                         position.EntryComment = this.TradeViewModel.EntryComment;
                         position.Theme = this.TradeViewModel.Theme;
                         position.BarDuration = this.TradeViewModel.BarDuration.Duration;
-                        this.TradeViewModel.Portfolio.Serialize();
                     }
                 }
             }
@@ -59,18 +58,18 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 }
                 orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Threshold, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
             }
-            if (string.IsNullOrEmpty(orderId))
+            if (orderId == 0)
             {
                 return;
             }
-            var openedOrder = this.TradeViewModel.Portfolio.OpenOrders.FirstOrDefault(o => o.Id == long.Parse(orderId));
-            if (openedOrder != null)
+            var activityOrder = this.TradeViewModel.Portfolio.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
+            if (activityOrder != null)
             {
-                openedOrder.BarDuration = this.TradeViewModel.BarDuration.Duration;
-                openedOrder.Theme = this.TradeViewModel.Theme;
-                openedOrder.EntryComment = this.TradeViewModel.EntryComment;
-                this.TradeViewModel.Portfolio.Serialize();
+                activityOrder.BarDuration = this.TradeViewModel.BarDuration.Duration;
+                activityOrder.Theme = this.TradeViewModel.Theme;
+                activityOrder.EntryComment = this.TradeViewModel.EntryComment;
             }
+            this.TradeViewModel.Portfolio.Serialize();
 
             this.ParentDlg.Ok();
         }

@@ -465,7 +465,7 @@ namespace StockAnalyzer.StockPortfolio
 
         private static SortedDictionary<long, StockSerie> UicToSerieCache = new SortedDictionary<long, StockSerie>();
 
-        private StockSerie GetStockSerieFromUic(long uic)
+        public StockSerie GetStockSerieFromUic(long uic)
         {
             if (UicToSerieCache.ContainsKey(uic))
                 return UicToSerieCache[uic];
@@ -604,6 +604,7 @@ namespace StockAnalyzer.StockPortfolio
         public void AddSaxoActivityOrder(OrderActivity activityOrder)
         {
             // Check if order already treated
+            activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
             var order = this.ActivityOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
             if (order != null)
             {
@@ -615,6 +616,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 this.ActivityOrders.Add(activityOrder);
                 order = activityOrder;
+                activityOrder.CreationTime = activityOrder.ActivityTime;
             }
 
             var stockSerie = GetStockSerieFromUic(order.Uic);
@@ -696,25 +698,25 @@ namespace StockAnalyzer.StockPortfolio
                     throw new NotImplementedException($"AddSaxoActivityOrder Order Status:{activityOrder.Status} not implemented");
             }
         }
-        public string SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
+        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
         {
             try
             {
                 if (!this.SaxoLogin())
-                    return null;
+                    return 0;
 
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
                     MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return 0;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
                     MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return 0;
                 }
                 decimal stop = instrumentDetail.RoundToTickSize(stopValue);
 
@@ -738,14 +740,14 @@ namespace StockAnalyzer.StockPortfolio
                 if (!string.IsNullOrEmpty(orderResponse?.OrderId))
                 {
                     this.Refresh();
+                    return long.Parse(orderResponse?.OrderId);
                 }
-                return orderResponse?.OrderId;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return null;
+            return 0;
         }
         public string SaxoSellOrder(StockSerie stockSerie, OrderType orderType, int qty, float orderValue = 0)
         {

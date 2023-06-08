@@ -90,6 +90,28 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
+            <TabItem Header="Orders">
+                <telerik:RadGridView Name="ordersGridView" ItemsSource="{Binding PortfolioViewModel.Orders}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Direction" DataMemberBinding="{Binding BuySell}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding OrderType}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding Qty}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding Amount}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Status" DataMemberBinding="{Binding Status}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding CreationDate, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding StopValue}" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewComboBoxColumn Header="Theme" DataMemberBinding="{Binding Theme}" ItemsSource="{Binding Themes}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" />
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+
             <TabItem Header="Opened Orders">
                 <telerik:RadGridView Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"

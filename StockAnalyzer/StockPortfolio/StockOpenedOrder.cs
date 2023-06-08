@@ -1,25 +1,7 @@
-﻿using Newtonsoft.Json;
-using Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockClasses;
-using System;
+﻿using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzer.StockPortfolio
 {
-    public class StockOrder : StockOrderBase
-    {
-        public StockOrder(OrderActivity activityOrder)
-        {
-            this.ISIN = "";
-            this.Status = activityOrder.Status;
-            this.Value = activityOrder.Price.Value;
-            this.Uic = activityOrder.Uic;
-            this.BuySell = activityOrder.BuySell;
-            this.CreationDate = activityOrder.ActivityTime;
-            this.Id = activityOrder.OrderId;
-            this.OrderType = activityOrder.OrderType;
-            this.Qty = (int)activityOrder.Amount;
-        }
-    }
     public class StockOpenedOrder : StockOrderBase
     {
         public StockOpenedOrder()

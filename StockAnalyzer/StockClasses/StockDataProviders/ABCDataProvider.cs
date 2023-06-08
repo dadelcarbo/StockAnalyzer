@@ -328,6 +328,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
+            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
@@ -508,10 +509,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return line.StartsWith("QS");
                 case StockSerie.Groups.USA:
                     return line.StartsWith("US");
-                    //case StockSerie.Groups.GERMANY:
-                    //    return line.StartsWith("DE");
-                    //case StockSerie.Groups.ITALIA:
-                    //    return line.StartsWith("IT");
+                //case StockSerie.Groups.GERMANY:
+                //    return line.StartsWith("DE");
+                case StockSerie.Groups.ITALIA:
+                    return line.StartsWith("IT");
                     //case StockSerie.Groups.SPAIN:
                     //    return line.StartsWith("ES");
             }
@@ -702,9 +703,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 //case StockSerie.Groups.SPAIN:
                 //    abcGroup = "spainm";
                 //    break;
-                //case StockSerie.Groups.ITALIA:
-                //    abcGroup = "italiai";
-                //    break;
+                case StockSerie.Groups.ITALIA:
+                    abcGroup = "italiai";
+                    break;
                 default:
                     StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
                     break;
@@ -864,6 +865,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.BELGIUM);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.HOLLAND);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.PORTUGAL);
+                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.ITALIA);
                             return true;
                         }
                     }
@@ -909,6 +911,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.BELGIUM);
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.HOLLAND);
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.PORTUGAL);
+                                DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date.AddDays(1), lastDownloadedCAC40Date, StockSerie.Groups.ITALIA);
                             }
                         }
 
@@ -996,7 +999,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     nextDownload = TimeSpan.FromMinutes(minutes + 5);
 
                     downloadingGroups = "True";
-                    var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
+                    var groups = new StockSerie.Groups[] { StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL, StockSerie.Groups.ITALIA, StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
                     foreach (var group in groups)
                     {
                         string abcGroup = GetABCGroup(group);

@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses
             HOLLAND,
             PORTUGAL,
             EUROPE,
-            //ITALIA,
+            ITALIA,
             //SPAIN,
             USA,
             SAXO,
@@ -2889,7 +2889,7 @@ namespace StockAnalyzer.StockClasses
                 case Groups.CACALL:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.PEA:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL);
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL)|| (this.StockGroup == Groups.ITALIA);
                 // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
                     return this.SaxoId != 0;
