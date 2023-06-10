@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 
 namespace Saxo.OpenAPI.TradingServices
 {
@@ -223,17 +224,31 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public OrderActivities GetOrderActivities(Account account, DateTime fromDate, DateTime toDate)
+        public List<OrderActivity> GetOrderActivities(Account account, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 if (fromDate.Year == 1 || fromDate.Date == toDate.Date)
                     return null;
 
-                var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={fromDate.ToString("yyyy-MM-dd")}&ToDateTime={toDate.ToString("yyyy-MM-dd")}";
+                List<OrderActivity> orderActivities = new List<OrderActivity>();
+                var timeSpan = new TimeSpan(60, 0, 0, 0);
 
-                var res = Get<OrderActivities>(method);
-                return res;
+                var startDate = fromDate;
+                var upToDate = startDate + timeSpan;
+                upToDate = upToDate < toDate ? upToDate : toDate;
+                while (startDate < upToDate)
+                {
+                    var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FromDateTime={startDate.ToString("yyyy-MM-dd")}&ToDateTime={upToDate.ToString("yyyy-MM-dd")}";
+
+                    var res = Get<OrderActivities>(method);
+                    orderActivities.AddRange(res.Data);
+
+                    startDate += timeSpan;
+                    upToDate = startDate + timeSpan;
+                    upToDate = upToDate < toDate ? upToDate : toDate;
+                }
+                return orderActivities;
             }
             catch (Exception ex)
             {
@@ -340,6 +355,12 @@ namespace Saxo.OpenAPI.TradingServices
         public string Theme { get; set; }
         public string StockName { get; set; }
         public string Isin { get; set; }
+
+        [JsonIgnore]
+        public bool IsActive => (this.Status == "Working" || this.Status == "Placed") && this.SubStatus != "Rejected";
+
+        [JsonIgnore]
+        public bool IsExecuted => (this.Status == "FinalFill") && this.SubStatus != "Rejected";
 
         public void CopyFrom(OrderActivity orderActivity)
         {

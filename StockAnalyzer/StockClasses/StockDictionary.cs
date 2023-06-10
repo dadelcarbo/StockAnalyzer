@@ -1989,41 +1989,6 @@ namespace StockAnalyzer.StockClasses
             return 0f;
         }
 
-        public StockSerie GeneratePortfolioSerie(StockPortfolio.StockPortfolio portfolio)
-        {
-            var refStock = this["CAC40"];
-            StockSerie portfolioSerie = new StockSerie(portfolio.Name, portfolio.Name, refStock.StockGroup, StockDataProvider.Portfolio, refStock.DataSource.Duration);
-            portfolioSerie.IsPortfolioSerie = true;
-            try
-            {
-                refStock.BarDuration = BarDuration.Daily;
-                var operations = portfolio.TradeOperations.OrderBy(op => op.Date);
-                var startDate = operations.First().Date;
-
-                float balance = portfolio.InitialBalance;
-                foreach (var date in refStock.Keys.Where(d => d >= startDate))
-                {
-                    float value = balance;
-                    var dayOperations = operations.Where(o => o.Date == date).ToList();
-                    balance += dayOperations.Sum(o => o.Movement);
-
-                    // Evaluate opened positions
-                    long volume;
-                    value = balance + portfolio.EvaluateOpenedPositionsAt(date, BarDuration.Daily, out volume);
-                    portfolioSerie.Add(date, new StockDailyValue(value, value, value, value, volume, date));
-                }
-
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-            }
-            // Preinitialise the serie
-            portfolioSerie.PreInitialise();
-            portfolioSerie.IsInitialised = true;
-            return portfolioSerie;
-        }
-
         public static StockSerie GetSerie(string stockName, string isin = null)
         {
             if (Instance.ContainsKey(stockName))

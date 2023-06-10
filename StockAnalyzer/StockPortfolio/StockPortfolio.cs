@@ -90,19 +90,24 @@ namespace StockAnalyzer.StockPortfolio
         public bool IsSaxoSimu { get; set; }
 
         public List<OrderActivity> ActivityOrders { get; } = new List<OrderActivity>();
-        public List<SaxoPosition> SaxoPositions { get; } = new List<SaxoPosition>();
 
-        public IEnumerable<StockOpenedOrder> GetOpenOrders(string stockName)
+        public IEnumerable<OrderActivity> GetExecutedOrders(string stockName)
         {
-            return this.ActivityOrders.Where(o => o.StockName == stockName && o.Status == "Working").Select(o => new StockOpenedOrder(o));
+            return this.ActivityOrders.Where(o => o.StockName == stockName && o.IsExecuted);
         }
-        public IEnumerable<StockOpenedOrder> GetOpenOrders()
+        public IEnumerable<StockOpenedOrder> GetActiveOrders(string stockName)
         {
-            return this.ActivityOrders.Where(o => o.Status == "Working").Select(o => new StockOpenedOrder(o));
+            return this.ActivityOrders.Where(o => o.StockName == stockName && o.IsActive).Select(o => new StockOpenedOrder(o));
         }
+        public IEnumerable<StockOpenedOrder> GetActiveOrders()
+        {
+            return this.ActivityOrders.Where(o => o.IsActive).Select(o => new StockOpenedOrder(o));
+        }
+
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
         public List<StockPosition> ClosedPositions { get; } = new List<StockPosition>();
 
+        [JsonIgnore]
         public List<StockTradeOperation> TradeOperations { get; set; }
 
         #region PERSISTENCY
@@ -476,22 +481,25 @@ namespace StockAnalyzer.StockPortfolio
             if (UicToSerieCache.ContainsKey(uic))
                 return UicToSerieCache[uic];
 
+            StockSerie stockSerie = null;
             var instrument = instrumentService.GetInstrumentById(uic);
             if (instrument == null)
             {
-                UicToSerieCache.Add(uic, null);
+                stockSerie = new StockSerie(uic.ToString(), uic.ToString(), StockSerie.Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
+                UicToSerieCache.Add(uic, stockSerie);
                 StockLog.Write($"Instrument: {uic} not found !");
-                return null;
+                return stockSerie;
             }
 
             // Find StockSerie by ISIN
-            StockSerie stockSerie = null;
             if (!string.IsNullOrEmpty(instrument.Isin))
             {
                 stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin);
-                UicToSerieCache.Add(uic, stockSerie);
                 if (stockSerie != null)
+                {
+                    UicToSerieCache.Add(uic, stockSerie);
                     return stockSerie;
+                }
             }
 
             // Find instrument in stock Dictionnary
@@ -506,7 +514,7 @@ namespace StockAnalyzer.StockPortfolio
                     stockSerie.ISIN = symbol;
                 }
             }
-            if (string.IsNullOrEmpty(instrument.Isin) && !string.IsNullOrEmpty(stockSerie.ISIN))
+            if (string.IsNullOrEmpty(instrument.Isin) && !string.IsNullOrEmpty(stockSerie?.ISIN))
             {
                 instrument.Isin = stockSerie.ISIN;
                 instrumentService.GetInstrumentByIsin(instrument.Isin);
@@ -589,9 +597,9 @@ namespace StockAnalyzer.StockPortfolio
                 var fromDate = this.LastSyncDate;
                 var toDate = DateTime.Today.AddDays(1);
                 var orders = orderService.GetOrderActivities(account, fromDate, toDate);
-                if (orders?.Data != null && orders.Data.Length > 0)
+                if (orders != null && orders.Count > 0)
                 {
-                    foreach (var op in orders.Data.OrderBy(o => o.LogId).ToList())
+                    foreach (var op in orders.OrderBy(o => o.LogId).ToList())
                     {
                         this.AddSaxoActivityOrder(op);
                     }
@@ -622,15 +630,17 @@ namespace StockAnalyzer.StockPortfolio
             {
                 this.ActivityOrders.Add(activityOrder);
                 order = activityOrder;
-                activityOrder.CreationTime = activityOrder.ActivityTime;
+                order.CreationTime = activityOrder.ActivityTime;
             }
 
             var stockSerie = GetStockSerieFromUic(order.Uic);
             if (stockSerie == null)
             {
-                throw new InvalidOperationException($"StockSerie for UIC:{order.Uic} not found");
+                StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
+                return;
             }
-            activityOrder.StockName = stockSerie.StockName;
+            order.StockName = stockSerie.StockName;
+            order.Isin = stockSerie.ISIN;
 
             switch (activityOrder.Status)
             {
@@ -640,9 +650,9 @@ namespace StockAnalyzer.StockPortfolio
                         {
                             var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic && p.TrailStopId == activityOrder.OrderId.ToString());
                             if (position != null)
-                                position.TrailStop = activityOrder.Price.Value;
+                                position.TrailStop = order.Price.Value;
                         }
-                        activityOrder.Status = "Working";
+                        order.Status = "Working";
                     }
                     return;
                 case "FinalFill": // Order fully executed
@@ -665,7 +675,7 @@ namespace StockAnalyzer.StockPortfolio
                                 };
                                 this.Positions.Add(position);
 
-                                if (activityOrder.RelatedOrders != null)
+                                if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
                                 {
                                     foreach (var orderId in activityOrder.RelatedOrders)
                                     {
@@ -674,10 +684,9 @@ namespace StockAnalyzer.StockPortfolio
                                         {
                                             relatedOrder.Status = "Working";
                                             position.TrailStopId = orderId;
+                                            position.Stop = relatedOrder.Price.Value;
+                                            position.TrailStop = relatedOrder.Price.Value;
                                         }
-
-                                        position.Stop = relatedOrder.Price.Value;
-                                        position.TrailStop = relatedOrder.Price.Value;
                                     }
                                 }
                             }
@@ -701,10 +710,28 @@ namespace StockAnalyzer.StockPortfolio
                     }
                     break;
                 case "Fill": // Order partially executed
-                    activityOrder.Status = "Working";
+                    order.Status = "Working";
+                    break;
+                case "Expired":
+                case "Cancelled": // Order cancelled remove if it's a stop order.
+                    {
+                        if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
+                        {
+                            foreach (var orderId in activityOrder.RelatedOrders)
+                            {
+                                var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == long.Parse(orderId));
+                                if (relatedOrder != null)
+                                {
+                                    relatedOrder.Status = "Cancelled";
+                                }
+                            }
+                        }
+                    }
                     break;
                 case "Placed": // Order sent to market
-                case "Cancelled": // Order cancelled remove if it's a stop order.
+                    if (activityOrder.SubStatus == "Rejected")
+                        this.ActivityOrders.Remove(order);
+                        break;
                 case "Working": // Order waiting for execution ==> noting to do.
                 case "DoneForDay": // noting to do.
                     break;
@@ -972,7 +999,7 @@ namespace StockAnalyzer.StockPortfolio
 
                 if (orderService.CancelOrder(account, orderId))
                 {
-                    this.Serialize();
+                    this.Refresh();
                 }
             }
             catch (Exception ex)

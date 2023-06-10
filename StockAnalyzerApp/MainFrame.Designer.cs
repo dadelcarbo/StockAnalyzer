@@ -95,7 +95,6 @@ namespace StockAnalyzerApp
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showPortfolioSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -675,7 +674,6 @@ namespace StockAnalyzerApp
             // 
             this.portfolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.currentPortfolioMenuItem,
-            this.showPortfolioSerieMenuItem,
             this.nameMappingMenuItem});
             this.portfolioMenuItem.Name = "portfolioMenuItem";
             this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
@@ -688,14 +686,6 @@ namespace StockAnalyzerApp
             this.currentPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortfolioMenuItem.Text = "Show Current Portfolio";
             this.currentPortfolioMenuItem.Click += new System.EventHandler(this.currentPortfolioMenuItem_Click);
-            // 
-            // showPortfolioSerieMenuItem
-            // 
-            this.showPortfolioSerieMenuItem.Name = "showPortfolioSerieMenuItem";
-            this.showPortfolioSerieMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2;
-            this.showPortfolioSerieMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.showPortfolioSerieMenuItem.Text = "Show Portfolio Serie";
-            this.showPortfolioSerieMenuItem.Click += new System.EventHandler(this.showPortfolioSerieMenuItem_Click);
             // 
             // nameMappingMenuItem
             // 
@@ -1606,7 +1596,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripMenuItem currentPortfolioMenuItem;
-        private ToolStripMenuItem showPortfolioSerieMenuItem;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;

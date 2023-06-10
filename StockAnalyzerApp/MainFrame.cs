@@ -2751,14 +2751,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void showPortfolioSerieMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.Portfolio == null || this.Portfolio.TradeOperations.Count == 0)
-                return;
-
-            this.AddNewSerie(this.StockDictionary.GeneratePortfolioSerie(this.Portfolio));
-        }
-
         private void nameMappingMenuItem_Click(object sender, EventArgs e)
         {
             var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg();

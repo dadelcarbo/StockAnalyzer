@@ -1137,25 +1137,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 return;
             }
-            var name = this.serie.StockName.ToUpper();
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var operations = this.Portfolio.TradeOperations.Where(p => p.StockName.ToUpper() == name);
+            var operations = this.Portfolio.GetExecutedOrders(this.serie.StockName);
             var startDate = this.dateSerie[this.StartIndex];
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
-            foreach (var operation in operations.Where(p => p.Date >= startDate && p.Date < endDate && p.IsOrder))
+            foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? operation.Date : operation.Date.Date;
+                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
                 {
-                    StockLog.Write("Order date not found: " + operation.Date);
+                    StockLog.Write("Order date not found: " + operation.ActivityTime);
                     continue;
                 }
-                valuePoint2D.Y = operation.OperationType == TradeOperationType.Sell ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
+                valuePoint2D.Y = operation.BuySell == "Sell" ? this.highCurveType.DataSerie[index] : this.lowCurveType.DataSerie[index];
                 screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
-                this.DrawArrow(graphic, screenPoint2D, operation.OperationType == TradeOperationType.Buy, operation.IsShort);
+                this.DrawArrow(graphic, screenPoint2D, operation.BuySell == "Buy", false);
             }
         }
 
@@ -1215,7 +1214,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     PaintOpenedPosition(graphic, position);
                 }
             }
-            var openedOrder = this.Portfolio.GetOpenOrders(name).Where(o => o.BuySell == "Buy").FirstOrDefault();
+            var openedOrder = this.Portfolio.GetActiveOrders(name).Where(o => o.BuySell == "Buy").FirstOrDefault();
             if (openedOrder != null)
             {
                 this.DrawOpenedOrder(graphic, entryOrderPen, this.EndIndex, openedOrder.Value, true);
@@ -1369,7 +1368,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                         else
                         {
-                            var openOrder = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault();
+                            var openOrder = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault();
                             if (openOrder != null)
                             {
                                 this.DrawStop(foregroundGraphic, entryOrderPen, this.StartIndex, mouseValuePoint.Y, true);
@@ -1596,7 +1595,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    var openOrder = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault();
+                    var openOrder = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault();
                     if (openOrder != null)
                     {
                         if (DialogResult.Yes == MessageBox.Show("Do you want to sent order update to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -1679,7 +1678,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     else
                     {
                         this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
-                        this.cancelMenu.Visible = Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault()!= null;
+                        this.cancelMenu.Visible = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault() != null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
                         this.contextMenu.Show(this, e.Location);
                     }
@@ -2596,7 +2595,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var order = StockAnalyzerForm.MainFrame.Portfolio.GetOpenOrders(this.serie.StockName).FirstOrDefault(o => o.BuySell == "Buy");
+            var order = StockAnalyzerForm.MainFrame.Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault(o => o.BuySell == "Buy");
             if (order == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
