@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockPortfolio
             this.StockName = o.StockName;
             this.BarDuration = o.BarDuration;
             this.StopValue = 0;
-            this.Value = o.Price.Value;
+            this.Value = o.Price.HasValue ? o.Price.Value : 0;
             this.Uic = o.Uic;
             this.BarDuration = o.BarDuration;
             this.Theme = o.Theme;

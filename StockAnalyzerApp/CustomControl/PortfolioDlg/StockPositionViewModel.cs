@@ -17,8 +17,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
-        PortfolioViewModel portfolio;
         StockPosition position;
+        private PortfolioViewModel portfolio;
+
         public StockPositionViewModel(StockPosition pos, PortfolioViewModel portfolio)
         {
             this.position = pos;
@@ -32,32 +33,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 this.LastValue = value;
             }
-
-            if (!StockDictionary.Instance.ContainsKey(position.StockName))
-            {
-                var mapping = StockPortfolio.GetMapping(position.StockName, position.ISIN);
-                if (mapping != null)
-                {
-                    position.StockName = mapping.StockName;
-                }
-            }
-        }
-        public bool IsValidName
-        {
-            get
-            {
-                var mapping = StockPortfolio.GetMapping(StockName, position.ISIN);
-                if (mapping == null)
-                {
-                    return StockDictionary.Instance.ContainsKey(position.StockName);
-                }
-                return StockDictionary.Instance.ContainsKey(mapping.StockName);
-            }
         }
 
         public long Id => position.Id;
         public string StockName => position.StockName;
         public string ISIN => position.ISIN;
+
         #region TRADE ENTRY
         public DateTime EntryDate => position.EntryDate;
         public int EntryQty => position.EntryQty;
@@ -99,8 +80,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         public float LastValue { get; set; }
         public float Variation => (LastValue - EntryValue) / EntryValue;
+
         public float PortfolioVariation => PortfolioPercent * Variation;
-        // @@@@ Need to use the most accurate portfolio value (Position value or Risk free value ?
-        public float PortfolioPercent => this.portfolio.Value > 0 ? EntryValue * this.EntryQty / this.portfolio.Value : 0.0f;
+        public float PortfolioPercent => this.position.PortfolioValue > 0 ? EntryValue * this.EntryQty / this.position.PortfolioValue : 0.0f;
     }
 }

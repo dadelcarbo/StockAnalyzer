@@ -89,6 +89,8 @@ namespace StockAnalyzer.StockPortfolio
         public bool IsSimu { get; set; }
         public bool IsSaxoSimu { get; set; }
 
+        public long LastLogId { get; set; }
+
         public List<OrderActivity> ActivityOrders { get; } = new List<OrderActivity>();
 
         public IEnumerable<OrderActivity> GetExecutedOrders(string stockName)
@@ -590,6 +592,7 @@ namespace StockAnalyzer.StockPortfolio
                 if (balance != null)
                 {
                     this.Balance = balance.CashAvailableForTrading;
+                    this.PositionValue = balance.UnrealizedPositionsValue;
                 }
 
                 // Check activity Orders
@@ -617,6 +620,9 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void AddSaxoActivityOrder(OrderActivity activityOrder)
         {
+            if (activityOrder.LogId <= this.LastLogId)
+                return;
+
             // Check if order already treated
             activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
             var order = this.ActivityOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
@@ -648,7 +654,7 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         if (activityOrder.BuySell != "Buy")
                         {
-                            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic && p.TrailStopId == activityOrder.OrderId.ToString());
+                            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic && p.TrailStopId == activityOrder.OrderId);
                             if (position != null)
                                 position.TrailStop = order.Price.Value;
                         }
@@ -671,7 +677,8 @@ namespace StockAnalyzer.StockPortfolio
                                     EntryQty = (int)order.Amount,
                                     StockName = stockSerie.StockName,
                                     ISIN = stockSerie.ISIN,
-                                    EntryValue = order.AveragePrice.Value
+                                    EntryValue = order.AveragePrice.Value,
+                                    PortfolioValue = this.TotalValue
                                 };
                                 this.Positions.Add(position);
 
@@ -679,7 +686,7 @@ namespace StockAnalyzer.StockPortfolio
                                 {
                                     foreach (var orderId in activityOrder.RelatedOrders)
                                     {
-                                        var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == long.Parse(orderId));
+                                        var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
                                         if (relatedOrder != null)
                                         {
                                             relatedOrder.Status = "Working";
@@ -700,12 +707,19 @@ namespace StockAnalyzer.StockPortfolio
                             if (position == null)
                             {
                                 StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{(int)order.Amount}");
-                                return;
+                                break;
                             }
-                            position.ExitValue = order.AveragePrice.Value;
-                            position.ExitDate = order.ActivityTime;
-                            this.Positions.Remove(position);
-                            this.ClosedPositions.Add(position);
+                            if (position.EntryQty == (int)order.Amount)
+                            {
+                                position.ExitValue = order.AveragePrice.Value;
+                                position.ExitDate = order.ActivityTime;
+                                this.Positions.Remove(position);
+                                this.ClosedPositions.Add(position);
+                            }
+                            else
+                            {
+                                position.EntryQty -= (int)order.Amount;
+                            }
                         }
                     }
                     break;
@@ -715,29 +729,62 @@ namespace StockAnalyzer.StockPortfolio
                 case "Expired":
                 case "Cancelled": // Order cancelled remove if it's a stop order.
                     {
-                        if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
+                        if (activityOrder.OrderRelation == "IfDoneMaster")
                         {
-                            foreach (var orderId in activityOrder.RelatedOrders)
+                            if (activityOrder.RelatedOrders != null)
                             {
-                                var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == long.Parse(orderId));
-                                if (relatedOrder != null)
+                                foreach (var orderId in activityOrder.RelatedOrders)
                                 {
-                                    relatedOrder.Status = "Cancelled";
+                                    var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
+                                    if (relatedOrder != null)
+                                    {
+                                        relatedOrder.Status = "Cancelled";
+                                    }
                                 }
+                            }
+                        }
+                        else if (activityOrder.OrderRelation == "StandAlone" && activityOrder.BuySell == "Sell")
+                        {
+                            var position = this.Positions.FirstOrDefault(p => p.TrailStopId == activityOrder.OrderId);
+                            if (position != null)
+                            {
+                                position.TrailStopId = 0;
+                                position.TrailStop = 0;
                             }
                         }
                     }
                     break;
                 case "Placed": // Order sent to market
                     if (activityOrder.SubStatus == "Rejected")
+                    {
                         this.ActivityOrders.Remove(order);
                         break;
+                    }
+                    // Check if sell order on opened position.
+                    if (activityOrder.BuySell == "Sell" && activityOrder.OrderRelation == "StandAlone" && !(activityOrder.OrderType == "Market" || activityOrder.OrderType == "Limit"))
+                    {
+                        var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
+                        if (position != null)
+                        {
+                            position.TrailStopId = activityOrder.OrderId;
+                            position.TrailStop = activityOrder.Price.Value;
+                            if (position.Stop == 0)
+                                position.Stop = position.TrailStop;
+                        }
+                        else
+                        {
+                            StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{(int)order.Amount}");
+                        }
+                    }
+                    break;
                 case "Working": // Order waiting for execution ==> noting to do.
                 case "DoneForDay": // noting to do.
                     break;
                 default:
                     throw new NotImplementedException($"AddSaxoActivityOrder Order Status:{activityOrder.Status} not implemented");
             }
+
+            this.LastLogId = Math.Max(this.LastLogId, activityOrder.LogId);
         }
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
         {
@@ -790,25 +837,25 @@ namespace StockAnalyzer.StockPortfolio
             }
             return 0;
         }
-        public string SaxoSellOrder(StockSerie stockSerie, OrderType orderType, int qty, float orderValue = 0)
+        public long SaxoSellOrder(StockSerie stockSerie, OrderType orderType, int qty, float orderValue = 0)
         {
             try
             {
                 if (!this.SaxoLogin())
-                    return null;
+                    return 0;
 
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
                     MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return 0;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
                     MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    return 0;
                 }
 
                 OrderResponse orderResponse = null;
@@ -829,13 +876,13 @@ namespace StockAnalyzer.StockPortfolio
                         break;
                 }
                 this.Refresh();
-                return orderResponse.OrderId;
+                return long.Parse(orderResponse?.OrderId);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return null;
+            return 0;
         }
         public string SaxoUpdateStopOrder(StockPosition position, float exitValue)
         {
@@ -860,10 +907,10 @@ namespace StockAnalyzer.StockPortfolio
 
                 decimal value = instrumentDetail.RoundToTickSize(exitValue);
                 OrderResponse orderResponse = null;
-                if (string.IsNullOrEmpty(position.TrailStopId))
+                if (position.TrailStopId == 0)
                 {
                     orderResponse = orderService.SellStopOrder(account, instrument, position.EntryQty, value);
-                    position.TrailStopId = orderResponse.OrderId;
+                    position.TrailStopId = orderResponse?.OrderId == null ? 0 : long.Parse(orderResponse.OrderId);
                 }
                 else
                 {
@@ -908,43 +955,34 @@ namespace StockAnalyzer.StockPortfolio
                 switch (orderType)
                 {
                     case OrderType.Market:
-                        if (!string.IsNullOrEmpty(position.TrailStopId))
+                        if (position.TrailStopId != 0)
                         {
                             if (!orderService.CancelOrder(account, position.TrailStopId))
                                 return null;
                         }
-                        if (!string.IsNullOrEmpty(position.LimitOrderId))
+                        if (position.LimitOrderId != 0)
                         {
                             if (!orderService.CancelOrder(account, position.LimitOrderId))
                                 return null;
                         }
                         orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
-                        position.TrailStopId = null;
                         break;
                     case OrderType.Limit:
                         decimal value = instrumentDetail.RoundToTickSize(exitValue);
-                        if (!string.IsNullOrEmpty(position.LimitOrderId))
+                        if (position.LimitOrderId != 0)
                         {
                             orderResponse = orderService.PatchOrder(account, instrument, position.LimitOrderId, SaxoOrderType.Market.ToString(), "Sell", position.EntryQty, 0);
                         }
                         else
                         {
                             orderResponse = orderService.SellLimitOrder(account, instrument, position.EntryQty, instrumentDetail.RoundToTickSize(exitValue));
-                            position.LimitOrderId = orderResponse.OrderId;
+                            long.TryParse(orderResponse?.OrderId, out var id);
+                            position.LimitOrderId = id;
                         }
                         break;
                     case OrderType.Threshold:
                         break;
                 }
-                //if (string.IsNullOrEmpty(position.TrailStopId))
-                //{
-                //    orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
-                //    position.TrailStopId = orderResponse.OrderId;
-                //}
-                //else
-                //{
-                //    orderResponse = orderService.PatchOrder(account, instrument, position.TrailStopId, SaxoOrderType.Market.ToString(), "Sell", position.EntryQty, 0);
-                //}
                 return orderResponse?.OrderId;
             }
             catch (Exception ex)
@@ -976,7 +1014,7 @@ namespace StockAnalyzer.StockPortfolio
 
                 decimal value = instrumentDetail.RoundToTickSize(newValue);
                 OrderResponse orderResponse = null;
-                orderResponse = orderService.PatchOrder(account, instrument, openOrder.Id.ToString(), openOrder.OrderType, openOrder.BuySell, openOrder.Qty, value);
+                orderResponse = orderService.PatchOrder(account, instrument, openOrder.Id, openOrder.OrderType, openOrder.BuySell, openOrder.Qty, value);
                 if (!string.IsNullOrEmpty(orderResponse?.OrderId))
                 {
                     openOrder.Value = (float)value;
@@ -990,10 +1028,12 @@ namespace StockAnalyzer.StockPortfolio
             }
             return null;
         }
-        public void SaxoCancelOpenOrder(string orderId)
+        public void SaxoCancelOpenOrder(long orderId)
         {
             try
             {
+                if (orderId <= 0)
+                    return;
                 if (!this.SaxoLogin())
                     return;
 

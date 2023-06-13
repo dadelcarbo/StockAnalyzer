@@ -11,11 +11,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public OrderViewModel(OrderActivity order, StockPortfolio portfolio)
         {
             this.order = order;
-            this.StockName = portfolio.GetStockSerieFromUic(order.Uic)?.StockName;
         }
 
         public string BuySell => order.BuySell;
-        public string StockName { get; set; }
+        public string StockName => order.StockName;
 
         public string OrderType => order.OrderType;
         public string Status => order.Status;

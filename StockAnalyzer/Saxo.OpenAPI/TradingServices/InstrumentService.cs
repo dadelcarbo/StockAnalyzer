@@ -17,7 +17,7 @@ namespace Saxo.OpenAPI.TradingServices
             if (File.Exists(Folders.SaxoInstruments))
             {
                 InstrumentCache = JsonConvert.DeserializeObject<List<Instrument>>(File.ReadAllText(Folders.SaxoInstruments));
-                foreach (var instrumenent in InstrumentCache.Where(i=>!String.IsNullOrEmpty(i.Isin)))
+                foreach (var instrumenent in InstrumentCache.Where(i => !String.IsNullOrEmpty(i.Isin)))
                 {
                     InstrumentIsinCache.Add(instrumenent.Isin, instrumenent);
                     InstrumentUicCache.Add(instrumenent.Identifier, instrumenent);
@@ -43,10 +43,10 @@ namespace Saxo.OpenAPI.TradingServices
                     if (instruments.Data.Length > 0)
                     {
                         instrument = instruments.Data.First();
+                        instrument.Isin = isin;
                     }
 
                     InstrumentIsinCache.Add(isin, instrument);
-                    instrument.Isin = isin;
 
                     if (instrument != null)
                     {

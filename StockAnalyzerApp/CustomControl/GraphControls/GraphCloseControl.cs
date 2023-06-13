@@ -2601,7 +2601,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            StockAnalyzerForm.MainFrame.Portfolio.SaxoCancelOpenOrder(order.Id.ToString());
+            StockAnalyzerForm.MainFrame.Portfolio.SaxoCancelOpenOrder(order.Id);
             this.BackgroundDirty = true;
             PaintGraph();
         }

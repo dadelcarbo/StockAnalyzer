@@ -10,7 +10,7 @@ namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
-        public OrderResponse PatchOrder(Account account, Instrument instrument, string orderId, string orderType, string buySell, int qty, decimal value)
+        public OrderResponse PatchOrder(Account account, Instrument instrument, long orderId, string orderType, string buySell, int qty, decimal value)
         {
             var patchOrder = new PatchOrder
             {
@@ -174,10 +174,10 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public bool CancelOrder(Account account, string orderId)
+        public bool CancelOrder(Account account, long orderId)
         {
             var res = this.Delete($"trade/v2/orders/{orderId}/?AccountKey={account.AccountKey}");
-            return res.Contains(orderId);
+            return res.Contains(orderId.ToString());
         }
 
         private OrderResponse PostOrder(OrderRequest order)
@@ -339,7 +339,7 @@ namespace Saxo.OpenAPI.TradingServices
         public long OrderId { get; set; }
         public string OrderRelation { get; set; }
         public string OrderType { get; set; }
-        public List<string> RelatedOrders { get; set; }
+        public List<long> RelatedOrders { get; set; }
         public string Status { get; set; }
         public string SubStatus { get; set; }
         public long Uic { get; set; }
@@ -357,7 +357,7 @@ namespace Saxo.OpenAPI.TradingServices
         public string Isin { get; set; }
 
         [JsonIgnore]
-        public bool IsActive => (this.Status == "Working" || this.Status == "Placed") && this.SubStatus != "Rejected";
+        public bool IsActive => (this.Status == "Working" || this.Status == "Placed" || this.Status == "DoneForDay") && this.SubStatus != "Rejected";
 
         [JsonIgnore]
         public bool IsExecuted => (this.Status == "FinalFill") && this.SubStatus != "Rejected";
@@ -530,6 +530,6 @@ namespace Saxo.OpenAPI.TradingServices
         public OrderDuration OrderDuration { get; set; }
         public decimal OrderPrice { get; set; }
         public string OrderType { get; set; }
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
     }
 }

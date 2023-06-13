@@ -6,6 +6,6 @@ namespace StockAnalyzer.StockPortfolio
 {
     public class StockPosition : StockPositionBase
     {
-        public string LimitOrderId { get; set; }
+        public long LimitOrderId { get; set; }
     }
 }

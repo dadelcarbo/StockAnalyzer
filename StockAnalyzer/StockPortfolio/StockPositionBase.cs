@@ -27,9 +27,10 @@ namespace StockAnalyzer.StockPortfolio
         public bool IsClosed => ExitDate != null;
 
         // Risk Management
+        public float PortfolioValue {get;set;} // PortfolioValue at time of entry.
         public List<TrailStopHistory> TrailStopHistory { get; set; } = new List<TrailStopHistory>();
         public float TrailStop { get; set; }
-        public string TrailStopId { get; set; }
+        public long TrailStopId { get; set; }
         public float Stop { get; set; }
         public BarDuration BarDuration { get; set; } = BarDuration.Daily;
         public string EntryComment { get; set; }
