@@ -660,7 +660,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         order.Status = "Working";
                     }
-                    return;
+                    break;
                 case "FinalFill": // Order fully executed
                     {
                         var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
@@ -699,7 +699,7 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             else // Increase existing position
                             {
-
+                                position.EntryQty += (int)order.Amount;
                             }
                         }
                         else
