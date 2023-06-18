@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         protected StockSerie RefSerie { get; set; }
 
-        public abstract string DisplayName {get;}
+        public abstract string DisplayName { get; }
 
         #region CONSTANTS
         static protected string DAILY_SUBFOLDER = @"\daily";
@@ -125,6 +125,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.SaxoIntraday:
                         dataProvider = new SaxoIntradayDataProvider();
                         break;
+                    case StockDataProvider.Saxo:
+                        dataProvider = new SaxoDataProvider();
+                        break;
                     case StockDataProvider.Citifirst:
                         dataProvider = new CitifirstDataProvider();
                         break;
@@ -153,7 +156,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (new StockSerieLocker(serie))
                 {
                     StockBarDuration currentBarDuration = serie.BarDuration;
-                    serie.BarDuration = StockBarDuration.Daily;
+                    if (serie.DataProvider != StockDataProvider.Saxo)
+                        serie.BarDuration = StockBarDuration.Daily;
                     bool res = dataProvider.DownloadDailyData(serie);
                     if (dataProvider.SupportsIntradayDownload)
                     {

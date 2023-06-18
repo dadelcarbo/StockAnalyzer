@@ -92,18 +92,19 @@ namespace StockAnalyzer.StockPortfolio
         public long LastLogId { get; set; }
 
         public List<OrderActivity> ActivityOrders { get; } = new List<OrderActivity>();
+        public List<SaxoOrder> SaxoOrders { get; } = new List<SaxoOrder>();
 
-        public IEnumerable<OrderActivity> GetExecutedOrders(string stockName)
+        public IEnumerable<SaxoOrder> GetExecutedOrders(string stockName)
         {
-            return this.ActivityOrders.Where(o => o.StockName == stockName && o.IsExecuted);
+            return this.SaxoOrders.Where(o => o.StockName == stockName && o.IsExecuted);
         }
         public IEnumerable<StockOpenedOrder> GetActiveOrders(string stockName)
         {
-            return this.ActivityOrders.Where(o => o.StockName == stockName && o.IsActive).Select(o => new StockOpenedOrder(o));
+            return this.SaxoOrders.Where(o => o.StockName == stockName && o.IsActive).Select(o => new StockOpenedOrder(o));
         }
         public IEnumerable<StockOpenedOrder> GetActiveOrders()
         {
-            return this.ActivityOrders.Where(o => o.IsActive).Select(o => new StockOpenedOrder(o));
+            return this.SaxoOrders.Where(o => o.IsActive).Select(o => new StockOpenedOrder(o));
         }
 
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
@@ -579,7 +580,7 @@ namespace StockAnalyzer.StockPortfolio
             this.Refresh();
             return true;
         }
-
+        public Performance Performance { get; private set; }
         public void Refresh()
         {
             try
@@ -594,6 +595,9 @@ namespace StockAnalyzer.StockPortfolio
                     this.Balance = balance.CashAvailableForTrading;
                     this.PositionValue = balance.UnrealizedPositionsValue;
                 }
+
+                // 
+                this.Performance = accountService.GetPerformance(account);
 
                 // Check activity Orders
                 var upToDate = DateTime.Today;
@@ -623,9 +627,11 @@ namespace StockAnalyzer.StockPortfolio
             if (activityOrder.LogId <= this.LastLogId)
                 return;
 
-            // Check if order already treated
             activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
-            var order = this.ActivityOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
+            this.ActivityOrders.Add(activityOrder);
+
+            // Check if order already treated
+            var order = this.SaxoOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
             if (order != null)
             {
                 if (activityOrder.LogId <= order.LogId) // Order activity already managed
@@ -634,9 +640,8 @@ namespace StockAnalyzer.StockPortfolio
             }
             else
             {
-                this.ActivityOrders.Add(activityOrder);
-                order = activityOrder;
-                order.CreationTime = activityOrder.ActivityTime;
+                order = new SaxoOrder(activityOrder);
+                this.SaxoOrders.Add(order);
             }
 
             var stockSerie = GetStockSerieFromUic(order.Uic);
@@ -674,7 +679,7 @@ namespace StockAnalyzer.StockPortfolio
                                     Id = order.PositionId.Value,
                                     Uic = order.Uic,
                                     EntryDate = order.ActivityTime,
-                                    EntryQty = (int)order.Amount,
+                                    EntryQty = order.Qty,
                                     StockName = stockSerie.StockName,
                                     ISIN = stockSerie.ISIN,
                                     EntryValue = order.AveragePrice.Value,
@@ -699,17 +704,17 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             else // Increase existing position
                             {
-                                position.EntryQty += (int)order.Amount;
+                                position.EntryQty += order.Qty;
                             }
                         }
                         else
                         {
                             if (position == null)
                             {
-                                StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{(int)order.Amount}");
+                                StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
                                 break;
                             }
-                            if (position.EntryQty == (int)order.Amount)
+                            if (position.EntryQty == order.Qty)
                             {
                                 position.ExitValue = order.AveragePrice.Value;
                                 position.ExitDate = order.ActivityTime;
@@ -718,7 +723,7 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             else
                             {
-                                position.EntryQty -= (int)order.Amount;
+                                position.EntryQty -= order.Qty;
                             }
                         }
                     }
@@ -757,7 +762,6 @@ namespace StockAnalyzer.StockPortfolio
                 case "Placed": // Order sent to market
                     if (activityOrder.SubStatus == "Rejected")
                     {
-                        this.ActivityOrders.Remove(order);
                         break;
                     }
                     // Check if sell order on opened position.
@@ -773,7 +777,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else
                         {
-                            StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{(int)order.Amount}");
+                            StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
                         }
                     }
                     break;
@@ -1049,6 +1053,20 @@ namespace StockAnalyzer.StockPortfolio
             return;
         }
 
+        public Instrument GetInstrument(long uic)
+        {
+            try
+            {
+                if (!this.SaxoLogin())
+                    return null;
+
+                return instrumentService.GetInstrumentById(uic);
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
         public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
         {
             try

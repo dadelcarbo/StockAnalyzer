@@ -47,6 +47,7 @@ namespace StockAnalyzer.StockClasses
             //SPAIN,
             USA,
             SAXO,
+            SAXO2,
             INDICES,
             INDICATOR,
             SECTORS,
@@ -297,6 +298,20 @@ namespace StockAnalyzer.StockClasses
 
         private void SetBarDuration(StockBarDuration newBarDuration)
         {
+            if (this.DataProvider == StockDataProvider.Saxo)
+            {
+                if (newBarDuration != barDuration)
+                {
+                    barDuration = newBarDuration;
+                }
+                StockDataProviderBase.LoadSerieData(this);
+                this.Initialise();
+                if (newBarDuration != barDuration)
+                {
+                    barDuration = newBarDuration;
+                }
+                return;
+            }
             using (MethodLogger ml = new MethodLogger(typeof(StockSerie), true, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}"))
             {
                 if (!this.Initialise() || (newBarDuration == this.barDuration))
@@ -2893,6 +2908,8 @@ namespace StockAnalyzer.StockClasses
                 // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
                     return this.SaxoId != 0;
+                case Groups.SAXO2:
+                    return this.StockGroup == Groups.SAXO2;
                 default:
                     return this.StockGroup == group;
             }

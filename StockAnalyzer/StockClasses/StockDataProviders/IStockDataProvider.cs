@@ -13,6 +13,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Breadth,
         Investing,
         SaxoIntraday,
+        Saxo,
         Citifirst
     }
 

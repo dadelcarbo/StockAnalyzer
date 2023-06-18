@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockPortfolio
             this.IsActive = true;
         }
 
-        public StockOpenedOrder(OrderActivity o)
+        public StockOpenedOrder(SaxoOrder o)
         {
             this.ISIN = o.Isin;
             this.StockName = o.StockName;
@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockPortfolio
             this.BuySell = o.BuySell;
             this.Id = o.OrderId;
             this.OrderType = o.OrderType;
-            this.Qty = (int)o.Amount;
+            this.Qty = o.Qty;
             this.Status = o.Status;
         }
 

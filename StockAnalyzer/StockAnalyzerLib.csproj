@@ -245,6 +245,7 @@
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockClasses\StockDataProviders\CitifirstDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\CitifirstJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />

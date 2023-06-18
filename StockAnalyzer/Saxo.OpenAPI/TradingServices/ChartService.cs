@@ -1,10 +1,10 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 
 namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
 {
@@ -55,7 +55,8 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
                     horizon = 240;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException($"Duration: {duration} is not supported in Saxo OpenAPI");
+                    StockLog.Write($"Duration: {duration} is not supported in Saxo OpenAPI");
+                    return null;
             }
             string method;
             if (from == null)

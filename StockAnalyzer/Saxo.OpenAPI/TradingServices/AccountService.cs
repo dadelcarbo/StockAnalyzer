@@ -35,6 +35,19 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
+        public Performance GetPerformance(Account account)
+        {
+            try
+            {
+                var url = $"hist/v4/performance/timeseries/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&StandardPeriod=AllTime";
+                return Get<Performance>(url);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public Position[] GetPositions(Account account)
         {
             try
@@ -281,6 +294,92 @@ namespace Saxo.OpenAPI.TradingServices
         public float ProfitLossCurrencyConversion { get; set; }
         public float ProfitLossOnTrade { get; set; }
         public float ProfitLossOnTradeInBaseCurrency { get; set; }
+        public int Uic { get; set; }
+    }
+
+
+
+    public class Performance
+    {
+        public PerfBalance Balance { get; set; }
+        public Benchmark[] Benchmark { get; set; }
+        public Keyfigures KeyFigures { get; set; }
+        public Timeweighted TimeWeighted { get; set; }
+    }
+
+    public class PerfBalance
+    {
+        public TimeSeries[] AccountBalance { get; set; }
+        public TimeSeries[] AccountValue { get; set; }
+        public TimeSeries[] CashTransfer { get; set; }
+        public TimeSeries[] MonthlyProfitLoss { get; set; }
+        public TimeSeries[] SecurityTransfer { get; set; }
+        public TimeSeries[] YearlyProfitLoss { get; set; }
+    }
+
+    public class TimeSeries
+    {
+        public DateTime Date { get; set; }
+        public float Value { get; set; }
+    }
+
+    public class Keyfigures
+    {
+        public int ClosedTradesCount { get; set; }
+        public Drawdownreport DrawdownReport { get; set; }
+        public float LosingDaysFraction { get; set; }
+        public float MaxDrawDownFraction { get; set; }
+        public float PerformanceFraction { get; set; }
+        public float ReturnFraction { get; set; }
+        public float SampledStandardDeviation { get; set; }
+        public float SharpeRatio { get; set; }
+        public float SortinoRatio { get; set; }
+    }
+
+    public class Drawdownreport
+    {
+        public Drawdown[] Drawdowns { get; set; }
+        public int MaxDaysInDrawdownFromTop10Drawdowns { get; set; }
+    }
+
+    public class Drawdown
+    {
+        public int DaysCount { get; set; }
+        public float DepthInPercent { get; set; }
+        public DateTime FromDate { get; set; }
+        public int RecoveryDaysCount { get; set; }
+        public DateTime ThruDate { get; set; }
+    }
+
+    public class Timeweighted
+    {
+        public TimeSeries[] Accumulated { get; set; }
+        public TimeSeries[] MonthlyReturn { get; set; }
+        public TimeSeries[] YearlyReturn { get; set; }
+    }
+
+
+    public class Benchmark
+    {
+        public Allocation[] Allocations { get; set; }
+        public string Date { get; set; }
+        public float Value { get; set; }
+    }
+
+    public class Allocation
+    {
+        public Allocation1[] Allocations { get; set; }
+        public string CurrencyCode { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class Allocation1
+    {
+        public float AllocationPCT { get; set; }
+        public string AssetType { get; set; }
+        public string Description { get; set; }
+        public string DisplayHintType { get; set; }
         public int Uic { get; set; }
     }
 

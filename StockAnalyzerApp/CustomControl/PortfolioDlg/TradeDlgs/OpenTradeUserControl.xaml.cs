@@ -62,7 +62,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             {
                 return;
             }
-            var activityOrder = this.TradeViewModel.Portfolio.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
+            var activityOrder = this.TradeViewModel.Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
             if (activityOrder != null)
             {
                 activityOrder.BarDuration = this.TradeViewModel.BarDuration.Duration;

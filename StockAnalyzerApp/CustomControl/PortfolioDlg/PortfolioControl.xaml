@@ -111,7 +111,6 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
-
             <TabItem Header="Opened Orders">
                 <telerik:RadGridView Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
@@ -167,8 +166,8 @@
                 </telerik:RadGridView>
             </TabItem>
 
-            <TabItem Header="Operations">
-                <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding PortfolioViewModel.TradeOperations}" 
+            <TabItem Header="Order Activities">
+                <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding PortfolioViewModel.ActivityOrders}" 
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" 
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="False">

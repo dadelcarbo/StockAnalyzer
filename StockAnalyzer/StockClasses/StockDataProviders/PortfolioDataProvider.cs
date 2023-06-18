@@ -1,8 +1,10 @@
-﻿using StockAnalyzer.StockLogging;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -34,6 +36,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 NotifyProgress("Loading portfolio");
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(Folders.Portfolio);
+                foreach (var p in Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoClientId)))
+                {
+                    var stockSerie = new StockSerie(p.Name, p.SaxoClientId, StockSerie.Groups.Portfolio, StockDataProvider.Portfolio, BarDuration.Daily);
+                    stockDictionary.Add(p.Name, stockSerie);
+                }
+
             }
             catch (Exception ex)
             {
@@ -49,11 +57,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(StockSerie stockSerie)
         {
+            var p = Portfolios.FirstOrDefault(p => p.Name == stockSerie.StockName);
+            if (p?.Performance == null) 
+                return false;
+
+            stockSerie.IsInitialised = false;
+            foreach(var v in p.Performance.Balance.AccountValue)
+            {
+                stockSerie.Add(v.Date, new StockDailyValue(v.Value, v.Value, v.Value, v.Value, 0, v.Date));
+            }
             return true;
         }
 
         public static List<StockPortfolio.StockPortfolio> Portfolios { get; set; }
 
-        public override string DisplayName => "SocGen Intraday";
+        public override string DisplayName => "Portfolio";
     }
 }

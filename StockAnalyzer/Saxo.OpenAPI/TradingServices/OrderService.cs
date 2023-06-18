@@ -329,9 +329,31 @@ namespace Saxo.OpenAPI.TradingServices
     }
     public class OrderActivity
     {
-        public DateTime CreationTime { get; set; }
         public DateTime ActivityTime { get; set; }
         public float Amount { get; set; }
+        public string AssetType { get; set; }
+        public string BuySell { get; set; }
+        public Duration Duration { get; set; }
+        public long LogId { get; set; }
+        public long OrderId { get; set; }
+        public string OrderRelation { get; set; }
+        public string OrderType { get; set; }
+        public List<long> RelatedOrders { get; set; }
+        public string Status { get; set; }
+        public string SubStatus { get; set; }
+        public long Uic { get; set; }
+        public float? Price { get; set; }
+        public float? AveragePrice { get; set; }
+        public float? ExecutionPrice { get; set; }
+        public float? FillAmount { get; set; }
+        public float? FilledAmount { get; set; }
+        public long? PositionId { get; set; }
+    }
+    public class SaxoOrder
+    {
+        public DateTime CreationTime { get; set; }
+        public DateTime ActivityTime { get; set; }
+        public int Qty { get; set; }
         public string AssetType { get; set; }
         public string BuySell { get; set; }
         public Duration Duration { get; set; }
@@ -362,11 +384,19 @@ namespace Saxo.OpenAPI.TradingServices
         [JsonIgnore]
         public bool IsExecuted => (this.Status == "FinalFill") && this.SubStatus != "Rejected";
 
+        public SaxoOrder()
+        {
+            
+        }
+        public SaxoOrder(OrderActivity orderActivity)
+        {
+            this.CreationTime = orderActivity.ActivityTime;
+            this.CopyFrom(orderActivity);
+        }
         public void CopyFrom(OrderActivity orderActivity)
         {
-            this.CreationTime = orderActivity.CreationTime;
             this.ActivityTime = orderActivity.ActivityTime;
-            this.Amount = orderActivity.Amount;
+            this.Qty = (int)orderActivity.Amount;
             this.AssetType = orderActivity.AssetType;
             this.BuySell = orderActivity.BuySell;
             this.Duration = orderActivity.Duration;
@@ -387,12 +417,6 @@ namespace Saxo.OpenAPI.TradingServices
             this.FillAmount = orderActivity.FillAmount;
             this.FilledAmount = orderActivity.FillAmount;
             this.PositionId = orderActivity.PositionId;
-
-            this.BarDuration = orderActivity.BarDuration;
-            this.EntryComment = orderActivity.EntryComment;
-            this.Theme = orderActivity.Theme;
-            this.StockName = orderActivity.StockName;
-            this.Isin = orderActivity.Isin;
         }
     }
 

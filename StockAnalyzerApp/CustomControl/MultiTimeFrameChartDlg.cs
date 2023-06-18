@@ -36,8 +36,6 @@ namespace StockAnalyzerApp.CustomControl
             switch (this.selectedGroup)
             {
                 case StockSerie.Groups.INTRADAY:
-                    fullGraphUserControl1.SetDuration(StockBarDuration.Bar_24);
-                    fullGraphUserControl2.SetDuration(StockBarDuration.Bar_6);
                     fullGraphUserControl3.SetDuration(StockBarDuration.Daily);
                     break;
             }

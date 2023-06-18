@@ -14,15 +14,7 @@ namespace StockAnalyzer.StockClasses
         M_30,
         H_1,
         H_2,
-        H_4,
-        Bar_2,
-        Bar_3,
-        Bar_6,
-        Bar_9,
-        Bar_12,
-        Bar_24,
-        Bar_27,
-        Bar_48
+        H_4
     }
 
     public class StockBarDuration : IComparable
@@ -70,11 +62,6 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration M_10 = new StockBarDuration(BarDuration.M_10);
         public static StockBarDuration M_15 = new StockBarDuration(BarDuration.M_15);
         public static StockBarDuration M_30 = new StockBarDuration(BarDuration.M_30);
-        public static StockBarDuration Bar_3 = new StockBarDuration(BarDuration.Bar_3);
-        public static StockBarDuration Bar_6 = new StockBarDuration(BarDuration.Bar_6);
-        public static StockBarDuration Bar_12 = new StockBarDuration(BarDuration.Bar_12);
-        public static StockBarDuration Bar_24 = new StockBarDuration(BarDuration.Bar_24);
-        public static StockBarDuration Bar_48 = new StockBarDuration(BarDuration.Bar_48);
         public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
         public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
 
