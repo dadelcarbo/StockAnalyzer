@@ -321,6 +321,7 @@
     <Compile Include="StockPortfolio\StockNetPosition.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
+    <Compile Include="StockPortfolio\StockStrategy\StockStrategy.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />

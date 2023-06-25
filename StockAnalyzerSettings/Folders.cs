@@ -8,6 +8,7 @@ namespace StockAnalyzerSettings
     {
         public static string Theme => Path.Combine(Settings.Default.PersonalFolder, "Themes");
         public static string Portfolio => Path.Combine(Settings.Default.PersonalFolder, "Portfolio");
+        public static string Strategy => Path.Combine(Settings.Default.PersonalFolder, "Strategy");
         public static string Palmares => Path.Combine(Settings.Default.PersonalFolder, "Palmares");
         public static string Tweets => Path.Combine(Settings.Default.PersonalFolder, "Tweets");
         public static string Report => Path.Combine(Settings.Default.PersonalFolder, "Report");

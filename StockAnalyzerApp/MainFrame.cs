@@ -755,8 +755,6 @@ namespace StockAnalyzerApp
         static bool refreshing = false;
         private void RefreshTimer_Tick()
         {
-            if (this.currentStockSerie.DataProvider == StockDataProvider.Saxo)
-                return;
             if (refreshing)
                 return;
             refreshing = true;
