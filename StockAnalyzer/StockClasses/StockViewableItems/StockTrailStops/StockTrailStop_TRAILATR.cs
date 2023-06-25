@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 30, 10, 2f, -2f, "MA" }; }
+            get { return new Object[] { 30, 10, 2f, -2f, "EMA" }; }
         }
         public override ParamRange[] ParameterRanges
         {

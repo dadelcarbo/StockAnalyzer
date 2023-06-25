@@ -33,6 +33,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public string Name { get => Portfolio.Name; set => Portfolio.Name = value; }
         [Property(null, "1-General")]
         public float Balance => Portfolio.Balance;
+        [Property(null, "1-General")]
+        public float Value => Portfolio.TotalValue;
 
         [Property(null, "2-Risk")]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
@@ -61,8 +63,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IList<StockPositionBaseViewModel> OpenedPositions { get; private set; }
 
         public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
-
-        public float Value => Portfolio.TotalValue;
 
         public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 
