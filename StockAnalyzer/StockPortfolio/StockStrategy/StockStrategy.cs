@@ -27,6 +27,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
         public string StockName { get; set; }
         public string Portfolio { get; set; }
         public BarDuration BarDuration { get; set; }
+        public bool Active { get; set; }
 
         public List<StockStrategyEvent> EntryEvents { get; set; } = new List<StockStrategyEvent>();
         public List<StockStrategyEvent> ExitEvents { get; set; } = new List<StockStrategyEvent>();

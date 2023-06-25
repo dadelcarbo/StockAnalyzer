@@ -55,6 +55,7 @@ using StockAnalyzerSettings;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using Saxo.OpenAPI.AuthenticationServices;
+using StockAnalyzer.StockPortfolio.StockStrategy;
 
 namespace StockAnalyzerApp
 {
@@ -609,8 +610,7 @@ namespace StockAnalyzerApp
                 // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
                 {
-                    var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-                    StockTimer.CreateAlertTimer(startTime, endTime, GenerateIntradayAlert, alertConfig);
+                    StockTimer.CreateAlertTimer(startTime, endTime, GenerateIntradayAlert);
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
@@ -688,61 +688,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private bool CheckLicense()
-        {
-            return true;
-            //StockLicense stockLicense = null;
-
-            //// Check on local disk in license is found
-            //string licenseFileName = Path.Combine( Folders.PersonalFolder , @"\license.dat");
-            //if (File.Exists(licenseFileName))
-            //{
-            //    string fileName = licenseFileName;
-            //    using (StreamReader sr = new StreamReader(fileName))
-            //    {
-            //        try
-            //        {
-            //            stockLicense = new StockLicense(Settings.Default.UserId, sr.ReadLine());
-            //        }
-            //        catch
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseCorrupted);
-            //            return false;
-            //        }
-            //        if (stockLicense.UserID != Settings.Default.UserId)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidUserId);
-            //            return false;
-            //        }
-            //        if (Settings.Default.MachineID == string.Empty)
-            //        {
-            //            Settings.Default.MachineID = StockToolKit.GetMachineUID();
-            //            Settings.Default.Save();
-            //        }
-            //        if (stockLicense.MachineID != Settings.Default.MachineID)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseInvalidMachineId);
-            //            return false;
-            //        }
-            //        if (stockLicense.ExpiryDate < DateTime.Today)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseExpired);
-            //            return false;
-            //        }
-            //        if (Assembly.GetExecutingAssembly().GetName().Version.Major > stockLicense.MajorVerion)
-            //        {
-            //            this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseWrongVersion);
-            //            return false;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    this.DeactivateGraphControls(Localisation.UltimateChartistStrings.LicenseNoFile);
-            //}
-            //return true;
-        }
-
         private void graphScrollerControl_ZoomChanged(int startIndex, int endIndex)
         {
             this.startIndex = startIndex;
@@ -805,10 +750,77 @@ namespace StockAnalyzerApp
             }
         }
 
-        public void GenerateIntradayAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
+        public void ProcessStrategies(List<StockBarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
             {
+                this.ViewModel.IsHistoryActive = false;
+                bool alertFound = false;
+                StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
+                if (isGeneratingAlerts)
+                    return;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                try
+                {
+                    isGeneratingAlerts = true;
+
+                    var strategies = StockStrategy.Strategies.Where(a => a.Active && barDurations.Contains(a.BarDuration));
+
+                    var stockList = strategies.Where(s => this.StockDictionary.ContainsKey(s.StockName)).Select(s => this.StockDictionary[s.StockName]).Where(s => !s.StockAnalysis.Excluded);
+                    stockList.AsParallel().ForAll(s => StockDataProviderBase.DownloadSerieData(s));
+
+                    foreach (var strategy in strategies)
+                    {
+                        StockLog.Write($"Processing strategy : {strategy.Name}");
+                        var stockSerie = stockList.First(s => s.StockName == strategy.StockName);
+
+                        using (new StockSerieLocker(stockSerie))
+                        {
+                            if (!stockSerie.Initialise())
+                                continue;
+
+                            foreach (var entryEvent in strategy.EntryEvents)
+                            {
+                                if (stockSerie.MatchEvent(entryEvent, strategy.BarDuration))
+                                {
+                                    // Strategy Buy
+                                    StockLog.Write($"Processing strategy Buy: {strategy.StockName}");
+                                }
+                            }
+                            foreach (var entryEvent in strategy.ExitEvents)
+                            {
+                                if (stockSerie.MatchEvent(entryEvent, strategy.BarDuration))
+                                {
+                                    // Strategy Buy
+                                    StockLog.Write($"Processing strategy Sell: {strategy.StockName}");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    StockAnalyzerException.MessageBox(exception);
+                }
+                finally
+                {
+                    isGeneratingAlerts = false;
+                    sw.Stop();
+                    StockLog.Write($"GenerateIntradayAlert Duration {sw.Elapsed}");
+                    this.ViewModel.IsHistoryActive = true;
+                }
+            }
+        }
+        public void GenerateIntradayAlert(List<StockBarDuration> barDurations)
+        {
+            using (new MethodLogger(this, showTimerDebug))
+            {
+                // Process Strategies
+                ProcessStrategies(barDurations);
+
+                // Alerts
                 this.ViewModel.IsHistoryActive = false;
                 bool alertFound = false;
                 StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
@@ -825,6 +837,7 @@ namespace StockAnalyzerApp
                 {
                     isGeneratingAlerts = true;
 
+                    var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
                     var alertDefs = alertConfig.AlertDefs.Where(a => a.Active && barDurations.Contains(a.BarDuration)).ToList();
                     if (alertDefs.Count() == 0)
                         return;

@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerSettings;
+using StockAnalyzer.StockPortfolio.StockStrategy;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -829,6 +830,40 @@ namespace StockAnalyzer.StockClasses
 
             return false;
         }
+        public bool MatchEvent(StockStrategyEvent strategyEvent, BarDuration duration)
+        {
+            StockBarDuration currentBarDuration = this.BarDuration;
+            try
+            {
+                this.BarDuration = duration;
+                IStockEvent stockEvent = null;
+                IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(strategyEvent.IndicatorType + "|" + strategyEvent.Indicator);
+                if (this.HasVolume || !indicator.RequiresVolumeData)
+                {
+                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                }
+                else
+                {
+                    return false;
+                }
+
+                int index = LastCompleteIndex;
+
+                int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, strategyEvent.Event);
+                if (eventIndex == -1)
+                {
+                    StockLog.Write("Event " + strategyEvent.Event + " not found in " + indicator.Name);
+                }
+                return stockEvent.Events[eventIndex][index];
+            }
+            finally
+            {
+                this.BarDuration = currentBarDuration;
+            }
+
+            return false;
+        }
+
 
         public bool MatchEventsAnd(List<StockAlertDef> indicators)
         {
@@ -2904,7 +2939,7 @@ namespace StockAnalyzer.StockClasses
                 case Groups.CACALL:
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
                 case Groups.PEA:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL)|| (this.StockGroup == Groups.ITALIA);
+                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL) || (this.StockGroup == Groups.ITALIA);
                 // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
                     return this.SaxoId != 0;

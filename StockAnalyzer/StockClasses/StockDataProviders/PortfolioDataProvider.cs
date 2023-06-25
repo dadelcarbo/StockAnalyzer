@@ -46,27 +46,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var stockSerie = new StockSerie(p.Name, p.SaxoClientId, StockSerie.Groups.Portfolio, StockDataProvider.Portfolio, BarDuration.Daily);
                     stockDictionary.Add(p.Name, stockSerie);
                 }
-
-                StockStrategy strategy = new StockStrategy()
-                {
-                    BarDuration = BarDuration.Daily,
-                    Name = "Test",
-                    Portfolio = Portfolios.First().Name,
-                    StockName = "ERAMET"
-                };
-                strategy.EntryEvents.Add(new StockStrategyEvent
-                {
-                    IndicatorType = "TrailStop",
-                    Indicator = "TRAILATR(35,35,0.75,-0.75,EMA,6)",
-                    Event = "BrokenUp"
-                });
-                strategy.ExitEvents.Add(new StockStrategyEvent
-                {
-                    IndicatorType = "TrailStop",
-                    Indicator = "TRAILATR(35,35,0.75,-0.75,EMA,6)",
-                    Event = "BrokenDown"
-                });
-                strategy.Serialize();
             }
             catch (Exception ex)
             {

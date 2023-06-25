@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockHelpers
         public delegate void StockTimerCallback();
         public event StockTimerCallback TimerTick;
 
-        public delegate void StockAlertTimerCallback(StockAlertConfig alertConfig, List<StockBarDuration> barDurations);
+        public delegate void StockAlertTimerCallback(List<StockBarDuration> barDurations);
         public event StockAlertTimerCallback AlertTimerTick;
 
         public static bool TimerSuspended { get; set; }
@@ -81,18 +81,16 @@ namespace StockAnalyzer.StockHelpers
             { StockBarDuration.H_1, new PeriodTick { Tick = 0, PeriodSeconds = 60*60} },
             };
 
-        private readonly StockAlertConfig alertConfig;
-        public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback, StockAlertConfig alertConfig)
+        public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback)
         {
-            return new StockTimer(startTime, endTime, callback, alertConfig);
+            return new StockTimer(startTime, endTime, callback);
         }
 
 
-        private StockTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback, StockAlertConfig alertConfig)
+        private StockTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback)
         {
             this.startTime = startTime;
             this.endTime = endTime;
-            this.alertConfig = alertConfig;
 
             this.AlertTimerTick += callback;
             this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = true };
@@ -119,7 +117,7 @@ namespace StockAnalyzer.StockHelpers
             }
             if (barDurations.Count > 0)
             {
-                AlertTimerTick?.Invoke(this.alertConfig, barDurations);
+                AlertTimerTick?.Invoke(barDurations);
             }
         }
     }
