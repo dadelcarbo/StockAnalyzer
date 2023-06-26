@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
         }
 
         private static List<StockStrategy> strategies;
-        public static List<StockStrategy> Strategies  => strategies ??= LoadStrategies();
+        public static List<StockStrategy> Strategies => strategies ??= strategies = LoadStrategies();
         private static List<StockStrategy> LoadStrategies()
         {
             try
@@ -62,6 +62,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
                 {
                     strategies.Add(strategy);
                 }
+                return strategies;
             }
             catch (Exception ex)
             {

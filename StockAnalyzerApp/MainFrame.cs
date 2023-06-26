@@ -614,6 +614,7 @@ namespace StockAnalyzerApp
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
+            ProcessStrategies(new List<StockBarDuration> { StockBarDuration.H_1 });
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
             allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
