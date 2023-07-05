@@ -548,11 +548,15 @@ namespace StockAnalyzer.StockPortfolio
             if (saxoSession == null)
                 return false;
 
-            account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
             if (account == null)
             {
-                MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
+
+                if (account == null)
+                {
+                    MessageBox.Show($"Account: {this.SaxoAccountId} not found !", "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
             }
             return true;
         }
@@ -571,11 +575,13 @@ namespace StockAnalyzer.StockPortfolio
                 return false;
 
             StockLog.Write($"Silent login success for portfolio: {this.Name}");
-
-            account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
             if (account == null)
             {
-                return false;
+                account = accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == this.SaxoAccountId);
+                if (account == null)
+                {
+                    return false;
+                }
             }
             this.Refresh();
             return true;

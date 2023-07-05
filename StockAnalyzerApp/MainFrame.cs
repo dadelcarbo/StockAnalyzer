@@ -3887,7 +3887,6 @@ namespace StockAnalyzerApp
             addAlertDlg.ShowDialog();
         }
         #endregion
-
         #region DRAWING DIALOG
         DrawingDlg drawingDlg = null;
         void drawingDialogMenuItem_Click(object sender, EventArgs e)
