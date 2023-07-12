@@ -3125,7 +3125,7 @@ namespace StockAnalyzerApp
                                 }
                             }
                             var rankSerie = stockSerie.GetIndicator(rankIndicator).Series[0];
-                            var highest = stockSerie.GetSerie(StockDataType.BODYHIGH).GetHighestIn(lastIndex);
+                            var highest = stockSerie.GetSerie(StockDataType.BODYHIGH).GetHighestIn(lastIndex, dailyValue.CLOSE);
                             reportSeries.Add(new ReportSerie()
                             {
                                 rank = rankSerie[lastIndex],

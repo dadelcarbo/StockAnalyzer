@@ -1520,22 +1520,20 @@ namespace StockAnalyzer.StockMath
             return trailSerie;
         }
 
-        public int GetHighestIn(int index)
+        public int GetHighestIn(int index, float refValue)
         {
             int highest = 0;
-            float refValue = this[index];
-            for (int i = index - 1; i > 0; i--, highest++)
+            for (int i = index - 1; i >= 0; i--, highest++)
             {
                 if (refValue <= this[i])
                     break;
             }
             return highest;
         }
-        public int GetLowestIn(int index)
+        public int GetLowestIn(int index, float refValue)
         {
             int lowest = 0;
-            float refValue = this[index];
-            for (int i = index - 1; i > 0; i--, lowest++)
+            for (int i = index - 1; i >= 0; i--, lowest++)
             {
                 if (refValue >= this[i])
                     break;

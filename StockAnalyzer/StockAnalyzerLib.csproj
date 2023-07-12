@@ -267,6 +267,8 @@
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.Designer.cs">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooJson.cs" />

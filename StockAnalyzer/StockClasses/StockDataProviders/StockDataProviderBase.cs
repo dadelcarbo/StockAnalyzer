@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
@@ -124,6 +125,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         break;
                     case StockDataProvider.SaxoIntraday:
                         dataProvider = new SaxoIntradayDataProvider();
+                        break;
+                    case StockDataProvider.VontobelIntraday:
+                        dataProvider = new VontobelIntradayDataProvider();
                         break;
                     case StockDataProvider.Saxo:
                         dataProvider = new SaxoDataProvider();

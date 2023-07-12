@@ -946,29 +946,22 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.serie.Count == 0) return;
             if (lastMouseIndex == -1 || lastMouseIndex > this.serie.Count) return;
             string value = string.Empty;
-            value += BuildTabbedString("DATE", this.dateSerie[lastMouseIndex].ToString("dd/MM/yy"), 12) + "\r\n";
-            if (this.dateSerie[lastMouseIndex].Hour != 0)
+            var mouseDate = this.dateSerie[lastMouseIndex];
+            value += BuildTabbedString("DATE", mouseDate.ToString("dd/MM/yy"), 12) + "\r\n";
+            if (mouseDate.Hour != 0)
             {
-                value += BuildTabbedString("TIME", this.dateSerie[lastMouseIndex].ToShortTimeString(), 12) + "\r\n";
+                value += BuildTabbedString("TIME", mouseDate.ToShortTimeString(), 12) + "\r\n";
             }
             float closeValue = float.NaN;
             float var = float.NaN;
-            float atr = 0;
+            var mouseBar = this.serie[mouseDate];
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
-                    if (curveType.DataSerie.Name == "HIGH")
-                    {
-                        atr += curveType.DataSerie[this.lastMouseIndex];
-                    }
-                    if (curveType.DataSerie.Name == "LOW")
-                    {
-                        atr -= curveType.DataSerie[this.lastMouseIndex];
-                    }
                     if (curveType.DataSerie.Name == "CLOSE")
                     {
-                        closeValue = curveType.DataSerie[this.lastMouseIndex];
+                        closeValue = mouseBar.CLOSE;
                         var previousClose = curveType.DataSerie[Math.Max(0, this.lastMouseIndex - 1)];
                         var = (closeValue - previousClose) / previousClose;
                     }
@@ -984,8 +977,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (!float.IsNaN(var))
             {
-                value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n";
-                value += BuildTabbedString("ATR", atr.ToString("0.####"), 12) + "\r\n" + "\r\n";
+                value += BuildTabbedString("VAR", var.ToString("P2"), 12) + "\r\n" + "\r\n";
+                value += BuildTabbedString("ADR", mouseBar.ADR.ToString("0.####"), 12) + "\r\n";
+                value += BuildTabbedString("NADR", mouseBar.NADR.ToString("P2"), 12) + "\r\n" + "\r\n";
             }
             // Add indicators
             foreach (IStockIndicator stockIndicator in CurveList.Indicators)
@@ -1074,12 +1068,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.lastMouseIndex > 0)
             {
                 var bodyHighSerie = this.serie.GetSerie(StockDataType.BODYHIGH);
-                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex);
-                value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
-
+                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex, closeValue);
+                if (highest > 0)
+                {
+                    value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
+                }
                 var bodyLowSerie = this.serie.GetSerie(StockDataType.BODYLOW);
-                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex);
-                value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
+                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex, closeValue);
+                if (lowest > 0)
+                {
+                    value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
+                }
             }
 #if DEBUG
             if (StockAnalyzerForm.MainFrame.CurrentStockSerie != null && StockAnalyzerForm.MainFrame.CurrentStockSerie.IsInitialised && StockAnalyzerForm.MainFrame.CurrentStockSerie.LastIndex == this.lastMouseIndex)

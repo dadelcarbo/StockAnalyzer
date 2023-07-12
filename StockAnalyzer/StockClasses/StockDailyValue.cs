@@ -39,6 +39,8 @@ namespace StockAnalyzer.StockClasses
 
         public float ADR => BodyHigh - BodyLow;
         public float NADR => ADR / CLOSE;
+        public float ATR => HIGH - LOW;
+        public float NATR => ATR / CLOSE;
 
         private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
