@@ -582,9 +582,30 @@ namespace StockAnalyzerApp
 
             if (Settings.Default.GenerateDailyReport)
             {
-                if (!Directory.Exists(Folders.Log))
+                var folder = Folders.Log;
+                if (!Directory.Exists(folder))
                 {
-                    Directory.CreateDirectory(Folders.Log);
+                    Directory.CreateDirectory(folder);
+                }
+                folder = Folders.Report;
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                folder = Path.Combine(Folders.Report, "Daily");
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                folder = Path.Combine(Folders.Report, "Weekly");
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                folder = Path.Combine(Folders.Report, "Monthly");
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
                 }
                 // Daily report
                 var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
@@ -756,7 +777,6 @@ namespace StockAnalyzerApp
             using (new MethodLogger(this, showTimerDebug))
             {
                 this.ViewModel.IsHistoryActive = false;
-                bool alertFound = false;
                 StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
                 if (isGeneratingAlerts)
                     return;
