@@ -582,33 +582,13 @@ namespace StockAnalyzerApp
 
             if (Settings.Default.GenerateDailyReport)
             {
-                var folder = Folders.Log;
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                folder = Folders.Report;
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                folder = Path.Combine(Folders.Report, "Daily");
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                folder = Path.Combine(Folders.Report, "Weekly");
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                folder = Path.Combine(Folders.Report, "Monthly");
+                var folder = Folders.Report;
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
                 }
                 // Daily report
-                var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
+                var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
                 {
@@ -2981,7 +2961,7 @@ namespace StockAnalyzerApp
             string timeFrame = duration.ToString();
             string folderName = Path.Combine(Folders.Report, timeFrame);
 
-            // @@@@ CleanReportFolder(folderName);
+            CleanReportFolder(folderName);
 
             if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active && a.Type == AlertType.Group) == 0)
                 return;

@@ -30,10 +30,12 @@ namespace Saxo.OpenAPI.TradingServices
         }
         private static List<Instrument> InstrumentCache;
 
+        static string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
+
         private static SortedDictionary<string, Instrument> InstrumentIsinCache = new SortedDictionary<string, Instrument>();
         public Instrument GetInstrumentByIsin(string isin)
         {
-            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf";
+            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}";
             try
             {
                 if (!InstrumentIsinCache.ContainsKey(isin))
@@ -65,7 +67,7 @@ namespace Saxo.OpenAPI.TradingServices
         private static SortedDictionary<long, Instrument> InstrumentUicCache = new SortedDictionary<long, Instrument>();
         public Instrument GetInstrumentById(long uic)
         {
-            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes=Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf";
+            var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes={ASSET_TYPES}";
             try
             {
                 if (!InstrumentUicCache.ContainsKey(uic))
