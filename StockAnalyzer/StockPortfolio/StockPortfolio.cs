@@ -665,9 +665,12 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         if (activityOrder.BuySell != "Buy")
                         {
-                            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic && p.TrailStopId == activityOrder.OrderId);
+                            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
                             if (position != null)
+                            {
+                                position.TrailStopId = activityOrder.OrderId;
                                 position.TrailStop = order.Price.Value;
+                            }
                         }
                         order.Status = "Working";
                     }
@@ -710,6 +713,7 @@ namespace StockAnalyzer.StockPortfolio
                             }
                             else // Increase existing position
                             {
+                                position.EntryValue = (position.EntryValue * position.EntryQty + order.AveragePrice.Value * order.Qty) / (position.EntryQty + order.Qty);
                                 position.EntryQty += order.Qty;
                             }
                         }
