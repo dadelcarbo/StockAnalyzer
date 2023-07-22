@@ -4,15 +4,14 @@ using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio.StockStrategy;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -477,7 +476,6 @@ namespace StockAnalyzer.StockPortfolio
         {
             return this.Name;
         }
-
 
         #region SAXO Integration Management
 

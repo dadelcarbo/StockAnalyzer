@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace StockAnalyzer.StockPortfolio.StockStrategy
@@ -25,13 +22,17 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
     {
         public string Name { get; set; }
         public string StockName { get; set; }
+        public long Uic { get; set; }
         public string Portfolio { get; set; }
         public BarDuration BarDuration { get; set; }
+
         public bool Active { get; set; }
+        public string Theme { get; set; }
 
-        public List<StockStrategyEvent> EntryEvents { get; set; } = new List<StockStrategyEvent>();
-        public List<StockStrategyEvent> ExitEvents { get; set; } = new List<StockStrategyEvent>();
+        public StockStrategyEvent EntryEvent { get; set; }
+        public StockStrategyEvent ExitEvent { get; set; }
 
+        public string EntryStop { get; set; }
 
         #region PERSISTENCY
 
@@ -52,6 +53,8 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
 
         private static List<StockStrategy> strategies;
         public static List<StockStrategy> Strategies => strategies ??= strategies = LoadStrategies();
+
+
         private static List<StockStrategy> LoadStrategies()
         {
             try

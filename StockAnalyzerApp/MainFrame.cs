@@ -615,7 +615,7 @@ namespace StockAnalyzerApp
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
-            ProcessStrategies(new List<StockBarDuration> { StockBarDuration.H_1 });
+           //  ProcessStrategies(new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly });
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
             allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
@@ -754,73 +754,26 @@ namespace StockAnalyzerApp
 
         public void ProcessStrategies(List<StockBarDuration> barDurations)
         {
-            using (new MethodLogger(this, showTimerDebug))
+            var referenceSerie = StockDictionary["ERAMET"];
+            referenceSerie.Initialise();
+            foreach (var date in referenceSerie.Keys.Skip(100))
             {
-                this.ViewModel.IsHistoryActive = false;
-                StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
-                if (isGeneratingAlerts)
-                    return;
-
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                try
-                {
-                    isGeneratingAlerts = true;
-
-                    var strategies = StockStrategy.Strategies.Where(a => a.Active && barDurations.Contains(a.BarDuration));
-
-                    var stockList = strategies.Where(s => this.StockDictionary.ContainsKey(s.StockName)).Select(s => this.StockDictionary[s.StockName]).Where(s => !s.StockAnalysis.Excluded);
-                    stockList.AsParallel().ForAll(s => StockDataProviderBase.DownloadSerieData(s));
-
-                    foreach (var strategy in strategies)
-                    {
-                        StockLog.Write($"Processing strategy : {strategy.Name}");
-                        var stockSerie = stockList.First(s => s.StockName == strategy.StockName);
-
-                        using (new StockSerieLocker(stockSerie))
-                        {
-                            if (!stockSerie.Initialise())
-                                continue;
-
-                            foreach (var entryEvent in strategy.EntryEvents)
-                            {
-                                if (stockSerie.MatchEvent(entryEvent, strategy.BarDuration))
-                                {
-                                    // Strategy Buy
-                                    StockLog.Write($"Processing strategy Buy: {strategy.StockName}");
-                                }
-                            }
-                            foreach (var entryEvent in strategy.ExitEvents)
-                            {
-                                if (stockSerie.MatchEvent(entryEvent, strategy.BarDuration))
-                                {
-                                    // Strategy Buy
-                                    StockLog.Write($"Processing strategy Sell: {strategy.StockName}");
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    StockAnalyzerException.MessageBox(exception);
-                }
-                finally
-                {
-                    isGeneratingAlerts = false;
-                    sw.Stop();
-                    StockLog.Write($"GenerateIntradayAlert Duration {sw.Elapsed}");
-                    this.ViewModel.IsHistoryActive = true;
-                }
+                StockStrategyEngine.ProcessStrategies(barDurations, date);
             }
+            var portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "_StrategyTest");
+
+            var balance = 1000f;
+            foreach (var position in portfolio.ClosedPositions)
+            {
+                balance += (position.ExitValue.Value - position.EntryValue) * position.EntryQty;
+            }
+            StockLog.Write($"Balance: {balance}");
         }
+
         public void GenerateIntradayAlert(List<StockBarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
             {
-                // Process Strategies
-                ProcessStrategies(barDurations);
-
                 // Alerts
                 this.ViewModel.IsHistoryActive = false;
                 bool alertFound = false;

@@ -830,7 +830,7 @@ namespace StockAnalyzer.StockClasses
 
             return false;
         }
-        public bool MatchEvent(StockStrategyEvent strategyEvent, BarDuration duration)
+        public bool MatchEvent(StockStrategyEvent strategyEvent, BarDuration duration, int index = -1)
         {
             StockBarDuration currentBarDuration = this.BarDuration;
             try
@@ -847,7 +847,8 @@ namespace StockAnalyzer.StockClasses
                     return false;
                 }
 
-                int index = LastCompleteIndex;
+                if (index == -1) 
+                    index = LastCompleteIndex;
 
                 int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, strategyEvent.Event);
                 if (eventIndex == -1)
