@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>200</ApplicationRevision>
+    <ApplicationRevision>202</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -320,7 +320,6 @@
     <Compile Include="CustomControl\PortfolioDlg\PortfolioDlg.Designer.cs">
       <DependentUpon>PortfolioDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\PortfolioDlg\StockNetPositionViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionBaseViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockRedGreenStyleSelector.cs" />
     <Compile Include="CustomControl\PortfolioDlg\ViewModel.cs" />

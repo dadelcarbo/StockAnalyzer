@@ -2,11 +2,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace StockAnalyzer.StockPortfolio
 {
     public class SaxoPosition : StockPositionBase
     {
+        public SaxoPosition()
+        {
+        }
+        public SaxoPosition(OrderActivity order)
+        {
+            var qty = (int)order.Amount;
+            this.Entries.Add(new SaxoPositionChange { OrderId = order.OrderId, Date = order.ActivityTime, Value = order.AveragePrice.Value, Qty = qty });
+            this.EntryDate = order.ActivityTime;
+            this.EntryValue = order.AveragePrice.Value;
+            this.EntryQty = qty;
+            this.Id = order.PositionId.Value;
+            this.Uic = order.Uic;
+        }
         public List<SaxoPositionChange> Entries { get; set; } = new List<SaxoPositionChange>();
         public List<SaxoPositionChange> Exits { get; set; } = new List<SaxoPositionChange>();
 
@@ -15,16 +29,16 @@ namespace StockAnalyzer.StockPortfolio
         public void AddEntry(OrderActivity orderActivity)
         {
             var qty = (int)orderActivity.Amount;
-            this.Entries.Add(new SaxoPositionChange { OrderId = orderActivity.OrderId, Date = orderActivity.ActivityTime, Value = orderActivity.Price.Value, Qty = qty });
+            this.Entries.Add(new SaxoPositionChange { OrderId = orderActivity.OrderId, Date = orderActivity.ActivityTime, Value = orderActivity.AveragePrice.Value, Qty = qty });
             if (this.Entries.Count == 1)
             {
                 this.EntryDate = orderActivity.ActivityTime;
-                this.EntryValue = orderActivity.Price.Value;
+                this.EntryValue = orderActivity.AveragePrice.Value;
                 this.EntryQty = qty;
             }
             else
             {
-                this.EntryValue = (this.EntryValue * this.EntryQty + orderActivity.Price.Value * qty) / (this.EntryQty + qty);
+                this.EntryValue = (this.EntryValue * this.EntryQty + orderActivity.AveragePrice.Value * qty) / (this.EntryQty + qty);
                 this.EntryQty += qty;
             }
         }
@@ -35,12 +49,12 @@ namespace StockAnalyzer.StockPortfolio
             {
                 throw new InvalidOperationException("Closing more than position size");
             }
-            this.Exits.Add(new SaxoPositionChange { OrderId = orderActivity.OrderId, Date = orderActivity.ActivityTime, Value = orderActivity.Price.Value, Qty = qty });
+            this.Exits.Add(new SaxoPositionChange { OrderId = orderActivity.OrderId, Date = orderActivity.ActivityTime, Value = orderActivity.AveragePrice.Value, Qty = qty });
             this.EntryQty -= qty;
             if (this.EntryQty == 0)
             {
                 this.ExitDate = orderActivity.ActivityTime;
-                this.ExitValue = orderActivity.Price.Value;
+                this.ExitValue = orderActivity.AveragePrice.Value;
             }
         }
     }

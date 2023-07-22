@@ -298,7 +298,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.OnPropertyChanged("AlertDefs");
 
             StockAlertConfig.SaveConfig();
-            var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
+            var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);
         }
@@ -335,7 +335,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Clear();
 
             StockAlertConfig.SaveConfig();
-            var fileName = Path.Combine(Folders.Log, "LastGeneration.txt");
+            var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);
         }

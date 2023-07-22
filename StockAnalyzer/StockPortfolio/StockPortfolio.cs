@@ -4,6 +4,7 @@ using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -107,6 +109,8 @@ namespace StockAnalyzer.StockPortfolio
             return this.SaxoOrders.Where(o => o.IsActive).Select(o => new StockOpenedOrder(o));
         }
 
+        public List<SaxoPosition> SaxoPositions { get; } = new List<SaxoPosition>();
+        public List<SaxoPosition> SaxoClosedPositions { get; } = new List<SaxoPosition>();
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
         public List<StockPosition> ClosedPositions { get; } = new List<StockPosition>();
 
@@ -603,7 +607,7 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // 
-                this.Performance = accountService.GetPerformance(account);
+                this.Performance = null; //  accountService.GetPerformance(account);
 
                 // Check activity Orders
                 var upToDate = DateTime.Today;
@@ -661,6 +665,10 @@ namespace StockAnalyzer.StockPortfolio
 
             switch (activityOrder.Status)
             {
+                case "FinalFill": // Order fully executed
+                    ProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                    SaxoProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                    break;
                 case "Changed": // Update stop loss or buy order
                     {
                         if (activityOrder.BuySell != "Buy")
@@ -673,69 +681,6 @@ namespace StockAnalyzer.StockPortfolio
                             }
                         }
                         order.Status = "Working";
-                    }
-                    break;
-                case "FinalFill": // Order fully executed
-                    {
-                        var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
-                        if (activityOrder.BuySell == "Buy")
-                        {
-                            if (position == null)
-                            {
-                                // Create new Position
-                                position = new StockPosition
-                                {
-                                    Id = order.PositionId.Value,
-                                    Uic = order.Uic,
-                                    EntryDate = order.ActivityTime,
-                                    EntryQty = order.Qty,
-                                    StockName = stockSerie.StockName,
-                                    ISIN = stockSerie.ISIN,
-                                    EntryValue = order.AveragePrice.Value,
-                                    PortfolioValue = this.TotalValue
-                                };
-                                this.Positions.Add(position);
-
-                                if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
-                                {
-                                    foreach (var orderId in activityOrder.RelatedOrders)
-                                    {
-                                        var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
-                                        if (relatedOrder != null)
-                                        {
-                                            relatedOrder.Status = "Working";
-                                            position.TrailStopId = orderId;
-                                            position.Stop = relatedOrder.Price.Value;
-                                            position.TrailStop = relatedOrder.Price.Value;
-                                        }
-                                    }
-                                }
-                            }
-                            else // Increase existing position
-                            {
-                                position.EntryValue = (position.EntryValue * position.EntryQty + order.AveragePrice.Value * order.Qty) / (position.EntryQty + order.Qty);
-                                position.EntryQty += order.Qty;
-                            }
-                        }
-                        else
-                        {
-                            if (position == null)
-                            {
-                                StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
-                                break;
-                            }
-                            if (position.EntryQty == order.Qty)
-                            {
-                                position.ExitValue = order.AveragePrice.Value;
-                                position.ExitDate = order.ActivityTime;
-                                this.Positions.Remove(position);
-                                this.ClosedPositions.Add(position);
-                            }
-                            else
-                            {
-                                position.EntryQty -= order.Qty;
-                            }
-                        }
                     }
                     break;
                 case "Fill": // Order partially executed
@@ -800,6 +745,103 @@ namespace StockAnalyzer.StockPortfolio
 
             this.LastLogId = Math.Max(this.LastLogId, activityOrder.LogId);
         }
+        private void ProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order, StockSerie stockSerie)
+        {
+            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
+            if (activityOrder.BuySell == "Buy")
+            {
+                if (position == null)
+                {
+                    // Create new Position
+                    position = new StockPosition
+                    {
+                        Id = order.PositionId.Value,
+                        Uic = order.Uic,
+                        EntryDate = order.ActivityTime,
+                        EntryQty = order.Qty,
+                        StockName = stockSerie.StockName,
+                        ISIN = stockSerie.ISIN,
+                        EntryValue = order.AveragePrice.Value,
+                        PortfolioValue = this.TotalValue
+                    };
+                    this.Positions.Add(position);
+
+                    if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
+                    {
+                        foreach (var orderId in activityOrder.RelatedOrders)
+                        {
+                            var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
+                            if (relatedOrder != null)
+                            {
+                                relatedOrder.Status = "Working";
+                                position.TrailStopId = orderId;
+                                position.Stop = relatedOrder.Price.Value;
+                                position.TrailStop = relatedOrder.Price.Value;
+                            }
+                        }
+                    }
+                }
+                else // Increase existing position
+                {
+                    position.EntryValue = (position.EntryValue * position.EntryQty + order.AveragePrice.Value * order.Qty) / (position.EntryQty + order.Qty);
+                    position.EntryQty += order.Qty;
+                }
+            }
+            else
+            {
+                if (position == null)
+                {
+                    StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
+                    return;
+                }
+                if (position.EntryQty == order.Qty)
+                {
+                    position.ExitValue = order.AveragePrice.Value;
+                    position.ExitDate = order.ActivityTime;
+                    this.Positions.Remove(position);
+                    this.ClosedPositions.Add(position);
+                }
+                else
+                {
+                    position.EntryQty -= order.Qty;
+                }
+            }
+        }
+
+        private void SaxoProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order, StockSerie stockSerie)
+        {
+            var position = this.SaxoPositions.FirstOrDefault(p => p.Uic == order.Uic);
+            if (activityOrder.BuySell == "Buy")
+            {
+                if (position == null)
+                {
+                    this.SaxoPositions.Add(position = new SaxoPosition(activityOrder));
+
+                    position.StockName = stockSerie.StockName;
+                    position.ISIN = stockSerie.ISIN;
+                    position.PortfolioValue = this.TotalValue;
+                }
+                else // Increase existing position
+                {
+                    position.AddEntry(activityOrder);
+                }
+            }
+            else
+            {
+                if (position == null)
+                {
+                    StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
+                    return;
+                }
+                position.AddExit(activityOrder);
+                if (position.IsClosed)
+                {
+                    this.SaxoPositions.Remove(position);
+                    this.SaxoClosedPositions.Add(position);
+                }
+            }
+        }
+
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
         {
             try

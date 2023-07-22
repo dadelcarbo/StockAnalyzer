@@ -320,7 +320,7 @@
     <Compile Include="StockPortfolio\SaxoPosition.cs" />
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
-    <Compile Include="StockPortfolio\StockNetPosition.cs" />
+    <Compile Include="StockPortfolio\SaxoPositionChange.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
     <Compile Include="StockPortfolio\StockStrategy\StockStrategy.cs" />
