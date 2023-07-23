@@ -53,15 +53,6 @@
                     <telerik:RadGridView ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Trail Stop"  Grid.Column="2" >
-                <StackPanel Margin="2">
-                    <StackPanel Orientation="Horizontal" Margin="2">
-                        <Label>Trail Stop</Label>
-                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding TrailStops}" SelectedItem="{Binding TrailStop}" ToolTip="{Binding TrailStopDescription}"/>
-                    </StackPanel>
-                    <telerik:RadGridView ItemsSource="{Binding TrailStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
-                </StackPanel>
-            </GroupBox>
         </Grid>
         <TabControl Grid.Row="2">
             <TabItem Header="Report">

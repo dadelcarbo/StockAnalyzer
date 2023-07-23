@@ -280,6 +280,28 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
         #endregion
+        public void InitPositionFromTradeSummary(IList<StockTrade> trades)
+        {
+            this.Clear();
+
+            // Sell completed trades
+            foreach (var trade in trades)
+            {
+                this.ClosedPositions.Add(new StockPosition
+                {
+                    EntryDate = trade.EntryDate,
+                    EntryQty = trade.Qty,
+                    EntryValue = trade.EntryValue,
+                    ExitDate = trade.IsClosed ? (DateTime?)trade.ExitDate : null,
+                    ExitValue = trade.ExitValue,
+                    StockName = trade.Serie.StockName,
+
+                    Stop = trade.EntryStop,
+                    TrailStop = trade.EntryStop
+                });
+            }
+
+        }
 
         /// <summary>
         /// Converts from Trade list to portfolio operations. This function is limited to the MaxPosition variable

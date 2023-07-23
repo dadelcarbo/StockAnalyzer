@@ -11,19 +11,19 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             Period = 12;
             UpWidth = 2.0f;
-            DownWidth = 2.0f;
+            DownWidth = -2.0f;
         }
 
         [StockAgentParam(5, 80, 5)]
         public int Period { get; set; }
-        [StockAgentParam(0.5f, 4.0f, 0.5f)]
+        [StockAgentParam(0.0f, 4.0f, 0.25f)]
         public float UpWidth { get; set; }
-        [StockAgentParam(0.5f, 4.0f, 0.5f)]
+        [StockAgentParam(-2.0f, 0.0f, 0.25f)]
         public float DownWidth { get; set; }
 
         public override string Description => "Buy according to TrailATR with different up and down width";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TRAILATR({Period},{UpWidth},{-DownWidth},EMA)";
+        public override string DisplayIndicator => $"TRAILSTOP|TRAILATR({Period},14,{UpWidth},{DownWidth},EMA)";
 
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILATR({Period},{UpWidth},{-DownWidth},EMA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILATR({Period},14,{UpWidth},{DownWidth},EMA)");
             bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

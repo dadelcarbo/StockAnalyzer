@@ -24,10 +24,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.performText = "Perform";
             this.Selector = "ExpectedGainPerBar";
 
-            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
-            agent = Agents.FirstOrDefault();
-            entryStop = EntryStops.FirstOrDefault();
-            TrailStop = TrailStops.FirstOrDefault();
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+                return;
+
+            Agent = Agents.FirstOrDefault();
+            EntryStop = EntryStops.FirstOrDefault();
 
             this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.ViewModel.BarDuration);
             this.Group = StockAnalyzerForm.MainFrame.Group;
@@ -94,28 +95,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         private Type entryStopType => StockEntryStopBase.GetType(entryStop);
         public string EntryStopDescription => StockEntryStopBase.CreateInstance(entryStop)?.Description;
         public IEnumerable<ParameterRangeViewModel> EntryStopParameters => ParameterRangeViewModel.GetParameters(entryStopType);
-        #endregion
-        #region TrailStop
-        public List<string> TrailStops => StockTrailStopManager.GetTrailStopList();
-
-        private string trailStop;
-        public string TrailStop
-        {
-            get => trailStop;
-            set
-            {
-                if (trailStop != value)
-                {
-                    trailStop = value;
-                    OnPropertyChanged("TrailStopParameters");
-                    OnPropertyChanged("TrailStopDescription");
-                }
-            }
-        }
-
-        public string TrailStopDescription => StockTrailStopManager.CreateTrailStop(trailStop).Definition;
-
-        public IEnumerable<ParameterRangeViewModel> TrailStopParameters => ParameterRangeViewModel.GetTrailStopParameters(trailStop);
         #endregion
 
         string report;
@@ -278,7 +257,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                             // Update Simu Portfolio
                             StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
-                            StockPortfolio.SimulationPortfolio.InitFromTradeSummary(this.TradeSummary.Trades);
+                            StockPortfolio.SimulationPortfolio.InitPositionFromTradeSummary(this.TradeSummary.Trades);
                             StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
 
                             using (var sr = new StreamWriter(Path.Combine(Folders.PersonalFolder, "AgentReport.tsv"), true))
