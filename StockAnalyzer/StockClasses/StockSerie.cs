@@ -3270,29 +3270,38 @@ namespace StockAnalyzer.StockClasses
                         string[] timeSpanString = timeSpan.Duration.ToString().Split('_');
                         switch (timeSpanString[0].ToUpper())
                         {
-                            case "BAR":
-                                if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
-                                {
-                                    if (period == 1)
-                                    {
-                                        return dailyValueList;
-                                    }
-                                    else
-                                    {
-                                        newBarList = GenerateMultipleBar(dailyValueList, period);
-                                    }
-                                }
-                                break;
                             case "H":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    newBarList = GenerateHourBar(dailyValueList, period);
+                                    if (this.BelongsToGroup(Groups.EURO_A))
+                                    {
+                                        var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
+                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie))
+                                        {
+                                            newBarList = GenerateHourBar(intradaySerie.Values.ToList(), period);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        newBarList = GenerateHourBar(dailyValueList, period);
+                                    }
                                 }
                                 break;
                             case "M":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    newBarList = GenerateMinuteBar(dailyValueList, period);
+                                    if (this.BelongsToGroup(Groups.EURO_A))
+                                    {
+                                        var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
+                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie))
+                                        {
+                                            newBarList = GenerateMinuteBar(intradaySerie.Values.ToList(), period);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        newBarList = GenerateMinuteBar(dailyValueList, period);
+                                    }
                                 }
                                 break;
                             default:
