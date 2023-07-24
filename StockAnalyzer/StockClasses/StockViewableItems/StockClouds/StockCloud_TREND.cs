@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod" }; }
+            get { return new string[] { "Period" }; }
         }
         public override string Definition => "Paint cloud based on HL";
 

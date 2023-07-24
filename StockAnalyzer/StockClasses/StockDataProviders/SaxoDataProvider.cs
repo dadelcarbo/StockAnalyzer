@@ -80,7 +80,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var instrument = instrumentService.GetInstrumentById(long.Parse(row[0]));
                         if (instrument != null && !stockDictionary.ContainsKey(instrument.Description))
                         {
-                            var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, StockSerie.Groups.SAXO2, StockDataProvider.Saxo, BarDuration.Daily);
+                            var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, StockSerie.Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
                             stockSerie.ISIN = row[1];
                             stockDictionary.Add(instrument.Description, stockSerie);
                            

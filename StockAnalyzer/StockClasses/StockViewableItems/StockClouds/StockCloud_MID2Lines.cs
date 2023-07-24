@@ -4,25 +4,25 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
-    public class StockCloud_MA2Lines : StockCloudBase
+    public class StockCloud_MID2Lines : StockCloudBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Definition => "Paint a cloud base on two MA lines";
+        public override string Definition => "Paint a cloud base on two MID lines";
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod", "MAType" }; }
+            get { return new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 20, 50, 3, "EMA" }; }
+            get { return new Object[] { 20, 50, 3 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeMA() }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
         public override Pen[] SeriePens
         {
@@ -38,16 +38,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Signal" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie bullSerie = stockSerie.GetIndicator($"{this.parameters[3]}({(int)this.parameters[0]})").Series[0];
-            FloatSerie bearSerie = stockSerie.GetIndicator($"{this.parameters[3]}({(int)this.parameters[1]})").Series[0];
+            FloatSerie bullSerie = stockSerie.GetIndicator($"MID({(int)this.parameters[0]})").Series[0];
+            FloatSerie bearSerie = stockSerie.GetIndicator($"MID({(int)this.parameters[1]})").Series[0];
 
-            var signalName = $"MA({(int)this.parameters[2]})";
+            var signalName = $"EMA({(int)this.parameters[2]})";
             FloatSerie signalSerie = stockSerie.GetIndicator(signalName).Series[0];
 
             this.Series[0] = bullSerie;
             this.Series[1] = bearSerie;
             this.Series[2] = signalSerie;
-            this.Series[2].Name = $"MA({(int)this.parameters[2]})";
+            this.Series[2].Name = $"EMA({(int)this.parameters[2]})";
 
             // Detecting events
             base.GenerateEvents(stockSerie);

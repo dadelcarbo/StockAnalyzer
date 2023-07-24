@@ -325,6 +325,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
+            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SRD, false);
+            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SRD_LO, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
@@ -442,7 +444,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private void InitFromLibelleFile(string fileName)
         {
-            StockLog.Write(fileName);
             if (File.Exists(fileName))
             {
                 StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
@@ -461,7 +462,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             {
                                 StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
-                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0,2) switch
+                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0, 2) switch
                                 {
                                     null => string.Empty,
                                     "FR" => "p",
@@ -489,6 +490,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write("File does not exist");
             }
         }
+        private void InitSRDFromLibelleFile(string fileName, StockSerie.Groups group)
+        {
+            if (File.Exists(fileName))
+            {
+                using (StreamReader sr = new StreamReader(fileName, true))
+                {
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
+                    {
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                        {
+                            string[] row = line.Split(';');
+                            string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                            if (stockDictionary.ContainsKey(stockName))
+                            {
+                                if (group == StockSerie.Groups.SRD)
+                                {
+                                    stockDictionary[stockName].SRD = true;
+                                }
+                                if (group == StockSerie.Groups.SRD_LO)
+                                {
+                                    stockDictionary[stockName].SRD_LO = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                StockLog.Write("File does not exist");
+            }
+        }
+
 
         private bool IsinMatchGroup(StockSerie.Groups group, string line)
         {
@@ -498,6 +535,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.EURO_B:
                 case StockSerie.Groups.EURO_C:
                 case StockSerie.Groups.ALTERNEXT:
+                case StockSerie.Groups.SRD:
+                case StockSerie.Groups.SRD_LO:
                     return true;
                 case StockSerie.Groups.BELGIUM:
                     return line.StartsWith("BE");
@@ -706,6 +745,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.ITALIA:
                     abcGroup = "italiai";
                     break;
+                case StockSerie.Groups.SRD:
+                    abcGroup = "srdp";
+                    break;
+                case StockSerie.Groups.SRD_LO:
+                    abcGroup = "srdlop";
+                    break;
                 default:
                     StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
                     break;
@@ -716,8 +761,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             try
             {
-                StockLog.Write(fileName);
-
                 if (!File.Exists(fileName)) return false;
                 StockSerie stockSerie = null;
                 using (StreamReader sr = new StreamReader(fileName, true))
@@ -1175,6 +1218,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 InitFromLibelleFile(fileName);
             }
+            if (group == StockSerie.Groups.SRD || group == StockSerie.Groups.SRD_LO)
+            {
+                InitSRDFromLibelleFile(fileName, group);
+            }
         }
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, StockSerie.Groups stockGroup, bool loadData = true)
         {
@@ -1319,82 +1366,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             return sbf120List.Contains(stockSerie.StockName);
-        }
-        private static List<string> srdList = null;
-        public static bool BelongsToSRD(StockSerie stockSerie)
-        {
-            if (srdList == null)
-            {
-                srdList = new List<string>();
-
-                // parse SRD list
-                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD.txt";
-                if (File.Exists(fileName))
-                {
-                    using (StreamReader sr = new StreamReader(fileName, true))
-                    {
-                        string line = sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
-                        {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                            {
-                                string[] row = line.Split(';');
-                                srdList.Add(row[1].ToUpper());
-                            }
-                        }
-                    }
-                }
-                // Sanity Check
-                foreach (string name in srdList)
-                {
-                    if (!stockDictionary.ContainsKey(name))
-                    {
-                        StockLog.Write("CAC40 Stock not in dico: " + name);
-                    }
-                }
-            }
-
-            return srdList.Contains(stockSerie.StockName);
-        }
-        private static List<string> srdloList = null;
-        public static bool BelongsToSRD_LO(StockSerie stockSerie)
-        {
-            if (srdloList == null)
-            {
-                srdloList = new List<string>();
-
-                // parse SRD_LO list
-                string fileName = DataFolder + @"\" +
-                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\SRD_LO.txt";
-                if (File.Exists(fileName))
-                {
-                    using (StreamReader sr = new StreamReader(fileName, true))
-                    {
-                        string line;
-                        sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
-                        {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                            {
-                                string[] row = line.Split(';');
-                                srdloList.Add(row[1].ToUpper());
-                            }
-                        }
-                    }
-                }
-                // Sanity Check
-                foreach (string name in srdloList)
-                {
-                    if (!stockDictionary.ContainsKey(name))
-                    {
-                        StockLog.Write("CAC40 Stock not in dico: " + name);
-                    }
-                }
-            }
-
-            return srdloList.Contains(stockSerie.StockName);
         }
 
         public static void DownloadAgenda(StockSerie stockSerie)

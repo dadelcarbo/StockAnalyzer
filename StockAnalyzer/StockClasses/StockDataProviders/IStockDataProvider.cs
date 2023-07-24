@@ -12,6 +12,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Replay,
         Breadth,
         Investing,
+        BoursoIntraday,
         SaxoIntraday,
         VontobelIntraday,
         Saxo,

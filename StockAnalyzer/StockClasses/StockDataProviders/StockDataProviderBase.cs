@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
@@ -141,6 +142,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.YahooIntraday:
                         dataProvider = new YahooIntradayDataProvider();
                         break;
+                    case StockDataProvider.BoursoIntraday:
+                        dataProvider = new BoursoIntradayDataProvider();
+                        break;
                     default:
                         break;
                 }
@@ -227,7 +231,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 configDialogs.Add(new SaxoIntradayDataProvider());
                 configDialogs.Add(new CitifirstDataProvider());
                 configDialogs.Add(new YahooDataProvider());
-                configDialogs.Add(new YahooIntradayDataProvider());
+                configDialogs.Add(new BoursoIntradayDataProvider());
             }
             return configDialogs;
         }

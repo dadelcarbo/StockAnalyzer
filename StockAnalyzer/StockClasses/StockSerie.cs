@@ -39,6 +39,8 @@ namespace StockAnalyzer.StockClasses
             EURO_B,
             EURO_A_B_C,
             EURO_C,
+            SRD,
+            SRD_LO,
             ALTERNEXT,
             BELGIUM,
             HOLLAND,
@@ -48,7 +50,6 @@ namespace StockAnalyzer.StockClasses
             //SPAIN,
             USA,
             SAXO,
-            SAXO2,
             INDICES,
             INDICATOR,
             SECTORS,
@@ -63,6 +64,7 @@ namespace StockAnalyzer.StockClasses
             PTF,
             BOND,
             INTRADAY,
+            INT_EURO_A,
             Portfolio,
             Replay,
             ALL
@@ -85,6 +87,9 @@ namespace StockAnalyzer.StockClasses
         /// SAXO OpenAPI instrument ID
         /// </summary>
         public long Uic { get; set; }
+
+        public bool SRD { get; set; }
+        public bool SRD_LO { get; set; }
 
         public int SectorId { get; set; }
 
@@ -569,10 +574,10 @@ namespace StockAnalyzer.StockClasses
                 Duration = StockClasses.BarDuration.Daily
             };
         }
-        public StockSerie(string stockName, string shortName, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
+        public StockSerie(string stockName, string symbol, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
-            this.Symbol = shortName;
+            this.Symbol = symbol;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();
             this.IsPortfolioSerie = false;
@@ -847,7 +852,7 @@ namespace StockAnalyzer.StockClasses
                     return false;
                 }
 
-                if (index == -1) 
+                if (index == -1)
                     index = LastCompleteIndex;
 
                 int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, strategyEvent.Event);
@@ -2943,9 +2948,11 @@ namespace StockAnalyzer.StockClasses
                     return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL) || (this.StockGroup == Groups.ITALIA);
                 // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
-                    return this.SaxoId != 0;
-                case Groups.SAXO2:
-                    return this.StockGroup == Groups.SAXO2;
+                    return this.StockGroup == Groups.SAXO;
+                case Groups.SRD:
+                    return this.SRD;
+                case Groups.SRD_LO:
+                    return this.SRD_LO;
                 default:
                     return this.StockGroup == group;
             }
@@ -3352,7 +3359,7 @@ namespace StockAnalyzer.StockClasses
         }
         private List<StockDailyValue> GenerateMinuteBar(List<StockDailyValue> stockDailyValueList, int nbMinutes)
         {
-            if (nbMinutes <= 5)
+            if (nbMinutes <= 4)
                 return stockDailyValueList;
             List<StockDailyValue> newBarList = new List<StockDailyValue>();
             StockDailyValue newValue = null;

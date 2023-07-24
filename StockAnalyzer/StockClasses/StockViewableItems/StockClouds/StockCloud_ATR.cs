@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return IndicatorDisplayTarget.PriceIndicator; }
         }
-        public override string Definition => "Paint a cloud based on ATR Band";
+        public override string Definition => "Paint a cloud based on ATR Band (Keltner Band)";
 
         public override string[] ParameterNames
         {
