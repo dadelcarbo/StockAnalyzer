@@ -21,8 +21,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             }
 
             this.Orders = portfolio.SaxoOrders.Select(o => new OrderViewModel(o));
-            this.ActivityOrders = portfolio.ActivityOrders.Select(o => new ActivityOrderViewModel(o) { Name = portfolio.GetInstrument(o.Uic)?.Description });
-
         }
 
         [Property(null, "1-General")]
@@ -68,6 +66,5 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
         public bool IsDirty { get; set; }
         public IEnumerable<OrderViewModel> Orders { get; private set; }
-        public IEnumerable<ActivityOrderViewModel> ActivityOrders { get; private set; }
     }
 }

@@ -26,7 +26,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.Form = form;
             this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
-            this.operationGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.ordersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.mixedOpenedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedOrdersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
@@ -82,14 +81,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                             var item = row.Item as OrderViewModel;
                             if (string.IsNullOrEmpty(item.StockName)) return;
                             SelectionChanged(item.StockName, null);
-                        }
-                        break;
-                    case "ActivityOrderViewModel":
-                        {
-                            var item = row.Item as ActivityOrderViewModel;
-                            var stockSerie = StockAnalyzerForm.MainFrame.Portfolio.GetStockSerieFromUic(item.Uic);
-                            if (stockSerie != null)
-                                SelectionChanged(stockSerie.StockName, stockSerie.ISIN);
                         }
                         break;
                     default:

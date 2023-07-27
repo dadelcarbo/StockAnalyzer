@@ -27,7 +27,10 @@ namespace StockAnalyzer.StockPortfolio
             this.OrderType = o.OrderType;
             this.Qty = o.Qty;
             this.Status = o.Status;
+            this.SubStatus = o.SubStatus;
         }
+
+        public string SubStatus { get; set; }
 
         public float StopValue { get; set; }
 

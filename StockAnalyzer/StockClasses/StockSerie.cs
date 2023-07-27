@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses
             PTF,
             BOND,
             INTRADAY,
-            INT_EURO_A,
+            INT_EURONEXT,
             Portfolio,
             Replay,
             ALL

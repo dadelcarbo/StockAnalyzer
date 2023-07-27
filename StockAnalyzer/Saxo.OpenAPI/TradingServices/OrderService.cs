@@ -379,20 +379,40 @@ namespace Saxo.OpenAPI.TradingServices
         public string Isin { get; set; }
 
         [JsonIgnore]
-        public bool IsActive => (this.Status == "Working" || this.Status == "Placed" || this.Status == "DoneForDay") && this.SubStatus != "Rejected";
+        public bool IsActive => !IsExecuted && (this.Status == "Working" || this.Status == "Placed" || this.Status == "DoneForDay") && this.SubStatus != "Rejected";
 
         [JsonIgnore]
         public bool IsExecuted => (this.Status == "FinalFill") && this.SubStatus != "Rejected";
 
         public SaxoOrder()
         {
-            
+
         }
         public SaxoOrder(OrderActivity orderActivity)
         {
             this.CreationTime = orderActivity.ActivityTime;
             this.CopyFrom(orderActivity);
         }
+
+        public SaxoOrder(OpenedOrder o)
+        {
+            this.CreationTime = o.OrderTime;
+            this.ActivityTime = o.OrderTime;
+            this.Qty = (int)o.Amount;
+            this.AssetType = o.AssetType;
+            this.BuySell = o.BuySell;
+            this.Duration = o.Duration;
+            this.OrderId = o.OrderId;
+            this.OrderRelation = o.OrderRelation;
+            this.OrderType = o.OpenOrderType;
+            //this.RelatedOrders = o.RelatedOpenOrders;
+            this.Status = o.Status;
+            this.SubStatus = o.Status;
+            this.Uic = o.Uic;
+            this.Price = o.Price;
+            this.PositionId = o.RelatedPositionId;
+        }
+
         public void CopyFrom(OrderActivity orderActivity)
         {
             this.ActivityTime = orderActivity.ActivityTime;
@@ -454,12 +474,12 @@ namespace Saxo.OpenAPI.TradingServices
         public string NonTradableReason { get; set; }
         public string OpenOrderType { get; set; }
         public string OrderAmountType { get; set; }
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
         public string OrderRelation { get; set; }
         public DateTime OrderTime { get; set; }
         public float Price { get; set; }
         public RelatedOpenOrder[] RelatedOpenOrders { get; set; }
-        public string RelatedPositionId { get; set; }
+        public long? RelatedPositionId { get; set; }
         public string Status { get; set; }
         public string TradingStatus { get; set; }
         public long Uic { get; set; }

@@ -13,6 +13,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -92,7 +93,6 @@ namespace StockAnalyzer.StockPortfolio
 
         public long LastLogId { get; set; }
 
-        public List<OrderActivity> ActivityOrders { get; } = new List<OrderActivity>();
         public List<SaxoOrder> SaxoOrders { get; } = new List<SaxoOrder>();
 
         public IEnumerable<SaxoOrder> GetExecutedOrders(string stockName)
@@ -629,6 +629,21 @@ namespace StockAnalyzer.StockPortfolio
                 // 
                 this.Performance = null; //  accountService.GetPerformance(account);
 
+                // Get Opened Orders
+                this.SaxoOrders.Clear();
+                var saxoOpenedOrders = orderService.GetOpenedOrders(account);
+                if (saxoOpenedOrders != null && saxoOpenedOrders.__count > 0)
+                {
+                    foreach (var order in saxoOpenedOrders.Data)
+                    {
+                        var stockSerie = GetStockSerieFromUic(order.Uic);
+                        var saxoOrder = new SaxoOrder(order);
+                        saxoOrder.StockName = stockSerie == null ? order.Uic.ToString() : stockSerie.StockName;
+
+                        this.SaxoOrders.Add(saxoOrder);
+                    }
+                }
+
                 // Check activity Orders
                 var upToDate = DateTime.Today;
                 var fromDate = this.LastSyncDate;
@@ -658,7 +673,6 @@ namespace StockAnalyzer.StockPortfolio
                 return;
 
             activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
-            this.ActivityOrders.Add(activityOrder);
 
             // Check if order already treated
             var order = this.SaxoOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
@@ -709,21 +723,7 @@ namespace StockAnalyzer.StockPortfolio
                 case "Expired":
                 case "Cancelled": // Order cancelled remove if it's a stop order.
                     {
-                        if (activityOrder.OrderRelation == "IfDoneMaster")
-                        {
-                            if (activityOrder.RelatedOrders != null)
-                            {
-                                foreach (var orderId in activityOrder.RelatedOrders)
-                                {
-                                    var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
-                                    if (relatedOrder != null)
-                                    {
-                                        relatedOrder.Status = "Cancelled";
-                                    }
-                                }
-                            }
-                        }
-                        else if (activityOrder.OrderRelation == "StandAlone" && activityOrder.BuySell == "Sell")
+                        if (activityOrder.OrderRelation == "StandAlone" && activityOrder.BuySell == "Sell")
                         {
                             var position = this.Positions.FirstOrDefault(p => p.TrailStopId == activityOrder.OrderId);
                             if (position != null)
@@ -765,6 +765,7 @@ namespace StockAnalyzer.StockPortfolio
 
             this.LastLogId = Math.Max(this.LastLogId, activityOrder.LogId);
         }
+
         private void ProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order, StockSerie stockSerie)
         {
             var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
@@ -785,21 +786,6 @@ namespace StockAnalyzer.StockPortfolio
                         PortfolioValue = this.TotalValue
                     };
                     this.Positions.Add(position);
-
-                    if (activityOrder.OrderRelation == "IfDoneMaster" && activityOrder.RelatedOrders != null)
-                    {
-                        foreach (var orderId in activityOrder.RelatedOrders)
-                        {
-                            var relatedOrder = this.ActivityOrders.FirstOrDefault(o => o.OrderId == orderId);
-                            if (relatedOrder != null)
-                            {
-                                relatedOrder.Status = "Working";
-                                position.TrailStopId = orderId;
-                                position.Stop = relatedOrder.Price.Value;
-                                position.TrailStop = relatedOrder.Price.Value;
-                            }
-                        }
-                    }
                 }
                 else // Increase existing position
                 {
@@ -827,7 +813,6 @@ namespace StockAnalyzer.StockPortfolio
                 }
             }
         }
-
         private void SaxoProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order, StockSerie stockSerie)
         {
             var position = this.SaxoPositions.FirstOrDefault(p => p.Uic == order.Uic);

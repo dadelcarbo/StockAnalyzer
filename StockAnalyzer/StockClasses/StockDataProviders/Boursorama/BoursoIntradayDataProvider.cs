@@ -20,9 +20,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
         static private string FOLDER = @"\intraday\BoursoIntraday";
         static private string ARCHIVE_FOLDER = @"\archive\intraday\BoursoIntraday";
 
-        static private string CONFIG_FILE = "BoursoIntradayDownload.cfg";
-        static private string CONFIG_FILE_USER = "BoursoIntradayDownload.user.cfg";
-
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
             // Parse BoursoIntraday.cfg file// Create data folder if not existing
@@ -38,18 +35,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             this.needDownload = download;
 
             // Create serie from EURO_A
-            foreach (var stockSerie in stockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A)).ToArray())
+            foreach (var stockSerie in stockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A) || s.BelongsToGroup(StockSerie.Groups.EURO_B) || s.BelongsToGroup(StockSerie.Groups.EURO_C)).ToArray())
             {
-                stockDictionary.Add("INT_" + stockSerie.StockName, new StockSerie(
-                    "INT_" + stockSerie.StockName,
-                    stockSerie.Symbol,
-                    StockSerie.Groups.INT_EURO_A,
-                    StockDataProvider.BoursoIntraday,
-                    BarDuration.Daily // 1 Minute
-                )
-                {
-                    ISIN = stockSerie.ISIN
-                });
+                stockDictionary.Add("INT_" + stockSerie.StockName,
+                    new StockSerie("INT_" + stockSerie.StockName,
+                        stockSerie.Symbol,
+                        StockSerie.Groups.INT_EURONEXT,
+                        StockDataProvider.BoursoIntraday,
+                        BarDuration.Daily) // 1 Minute
+                    {
+                        ISIN = stockSerie.ISIN
+                    });
             }
         }
 

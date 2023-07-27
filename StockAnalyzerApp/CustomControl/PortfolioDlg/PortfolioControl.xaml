@@ -165,14 +165,6 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
-
-            <TabItem Header="Order Activities">
-                <telerik:RadGridView Name="operationGridView" ItemsSource="{Binding PortfolioViewModel.ActivityOrders}" 
-                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
-                                     FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" 
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False">
-                </telerik:RadGridView>
-            </TabItem>
             <TabItem Header="Portfolio">
                 <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}"
                                          AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"

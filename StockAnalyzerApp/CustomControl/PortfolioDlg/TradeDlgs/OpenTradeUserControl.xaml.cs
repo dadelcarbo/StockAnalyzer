@@ -62,12 +62,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             {
                 return;
             }
-            var activityOrder = this.TradeViewModel.Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
-            if (activityOrder != null)
+            var order = this.TradeViewModel.Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
+            if (order != null)
             {
-                activityOrder.BarDuration = this.TradeViewModel.BarDuration.Duration;
-                activityOrder.Theme = this.TradeViewModel.Theme;
-                activityOrder.EntryComment = this.TradeViewModel.EntryComment;
+                order.BarDuration = this.TradeViewModel.BarDuration.Duration;
+                order.Theme = this.TradeViewModel.Theme;
+                order.EntryComment = this.TradeViewModel.EntryComment;
             }
             this.TradeViewModel.Portfolio.Serialize();
 
