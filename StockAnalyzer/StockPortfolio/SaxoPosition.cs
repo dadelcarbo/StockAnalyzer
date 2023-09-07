@@ -1,4 +1,6 @@
 ﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +49,8 @@ namespace StockAnalyzer.StockPortfolio
             var qty = (int)orderActivity.Amount;
             if (this.EntryQty < qty)
             {
-                throw new InvalidOperationException("Closing more than position size");
+                StockLog.Write($"Selling not opened position: {this.StockName} qty:{qty}");
+                qty = this.EntryQty;
             }
             this.Exits.Add(new SaxoPositionChange { OrderId = orderActivity.OrderId, Date = orderActivity.ActivityTime, Value = orderActivity.AveragePrice.Value, Qty = qty });
             this.EntryQty -= qty;

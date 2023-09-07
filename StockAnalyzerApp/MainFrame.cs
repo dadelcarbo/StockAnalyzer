@@ -2610,14 +2610,14 @@ namespace StockAnalyzerApp
                     {
                         this.logScaleBtn_Click(null, null);
                     }
-                    this.ViewModel.BarDuration = StockBarDuration.M_15;
+                    this.ViewModel.BarDuration = StockBarDuration.H_1;
                     break;
                 case StockSerie.Groups.INT_EURONEXT:
                     if (this.logScaleBtn.CheckState == CheckState.Checked)
                     {
                         this.logScaleBtn_Click(null, null);
                     }
-                    this.ViewModel.BarDuration = StockBarDuration.H_1;
+                    this.ViewModel.BarDuration = StockBarDuration.M_15;
                     break;
                 default:
                     if (this.ViewModel.BarDuration.Duration > BarDuration.Monthly)
@@ -4823,7 +4823,7 @@ namespace StockAnalyzerApp
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
                 return;
-            string url = "https://www.zonebourse.com/recherche/?mots=%ISIN%";
+            string url = "https://www.zonebourse.com/recherche/?q=%ISIN%";
             url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
             Process.Start(url);
         }

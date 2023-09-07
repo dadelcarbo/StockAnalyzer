@@ -275,6 +275,7 @@
     <Compile Include="StockClasses\StockDataProviders\YahooJson.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXNEW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_NEARTOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXOLD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_HLBODY.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MID2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROCEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
@@ -303,6 +305,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILNUP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBARPERCENT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA .cs" />
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\IOpenedDrawing.cs" />

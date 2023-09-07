@@ -93,6 +93,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public long LastLogId { get; set; }
 
+        public List<SaxoOrder> SaxoOpenOrders { get; } = new List<SaxoOrder>();
         public List<SaxoOrder> SaxoOrders { get; } = new List<SaxoOrder>();
 
         public IEnumerable<SaxoOrder> GetExecutedOrders(string stockName)
@@ -630,7 +631,7 @@ namespace StockAnalyzer.StockPortfolio
                 this.Performance = null; //  accountService.GetPerformance(account);
 
                 // Get Opened Orders
-                this.SaxoOrders.Clear();
+                this.SaxoOpenOrders.Clear();
                 var saxoOpenedOrders = orderService.GetOpenedOrders(account);
                 if (saxoOpenedOrders != null && saxoOpenedOrders.__count > 0)
                 {
@@ -640,7 +641,7 @@ namespace StockAnalyzer.StockPortfolio
                         var saxoOrder = new SaxoOrder(order);
                         saxoOrder.StockName = stockSerie == null ? order.Uic.ToString() : stockSerie.StockName;
 
-                        this.SaxoOrders.Add(saxoOrder);
+                        this.SaxoOpenOrders.Add(saxoOrder);
                     }
                 }
 
@@ -651,7 +652,7 @@ namespace StockAnalyzer.StockPortfolio
                 var orders = orderService.GetOrderActivities(account, fromDate, toDate);
                 if (orders != null && orders.Count > 0)
                 {
-                    foreach (var op in orders.OrderBy(o => o.LogId).ToList())
+                    foreach (var op in orders.OrderBy(o => o.LogId).Where(o => o.LogId > this.LastLogId).ToList())
                     {
                         this.AddSaxoActivityOrder(op);
                     }
@@ -674,51 +675,38 @@ namespace StockAnalyzer.StockPortfolio
 
             activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
 
-            // Check if order already treated
-            var order = this.SaxoOrders.FirstOrDefault(o => o.OrderId == activityOrder.OrderId);
-            if (order != null)
-            {
-                if (activityOrder.LogId <= order.LogId) // Order activity already managed
-                    return;
-                order.CopyFrom(activityOrder);
-            }
-            else
-            {
-                order = new SaxoOrder(activityOrder);
-                this.SaxoOrders.Add(order);
-            }
-
-            var stockSerie = GetStockSerieFromUic(order.Uic);
-            if (stockSerie == null)
-            {
-                StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
-                return;
-            }
-            order.StockName = stockSerie.StockName;
-            order.Isin = stockSerie.ISIN;
-
             switch (activityOrder.Status)
             {
                 case "FinalFill": // Order fully executed
-                    ProcessFullyFilledOrder(activityOrder, order, stockSerie);
-                    SaxoProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                    {
+                        var order = new SaxoOrder(activityOrder);
+                        this.SaxoOrders.Add(order);
+                        var stockSerie = GetStockSerieFromUic(order.Uic);
+                        if (stockSerie == null)
+                        {
+                            StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
+                            return;
+                        }
+                        order.StockName = stockSerie.StockName;
+                        order.Isin = stockSerie.ISIN;
+                        ProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                        SaxoProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                    }
                     break;
                 case "Changed": // Update stop loss or buy order
                     {
                         if (activityOrder.BuySell != "Buy")
                         {
-                            var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
+                            var position = this.Positions.FirstOrDefault(p => p.Uic == activityOrder.Uic);
                             if (position != null)
                             {
                                 position.TrailStopId = activityOrder.OrderId;
-                                position.TrailStop = order.Price.Value;
+                                position.TrailStop = activityOrder.Price.Value;
                             }
                         }
-                        order.Status = "Working";
                     }
                     break;
                 case "Fill": // Order partially executed
-                    order.Status = "Working";
                     break;
                 case "Expired":
                 case "Cancelled": // Order cancelled remove if it's a stop order.
@@ -742,7 +730,7 @@ namespace StockAnalyzer.StockPortfolio
                     // Check if sell order on opened position.
                     if (activityOrder.BuySell == "Sell" && activityOrder.OrderRelation == "StandAlone" && !(activityOrder.OrderType == "Market" || activityOrder.OrderType == "Limit"))
                     {
-                        var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
+                        var position = this.Positions.FirstOrDefault(p => p.Uic == activityOrder.Uic);
                         if (position != null)
                         {
                             position.TrailStopId = activityOrder.OrderId;
@@ -752,7 +740,7 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else
                         {
-                            StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
+                            StockLog.Write($"Selling not opened position: {activityOrder.Uic} qty:{activityOrder.Amount}");
                         }
                     }
                     break;
