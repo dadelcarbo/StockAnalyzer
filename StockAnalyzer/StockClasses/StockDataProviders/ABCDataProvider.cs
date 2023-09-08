@@ -1411,20 +1411,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (row[0].StartsWith("du")) row[0] = row[0].Substring(row[0].IndexOf("au ") + 3);
                 DateTime date = DateTime.Parse(row[0]);
 
-                string comment = row[1];
-                if (row[2] != null) comment += Environment.NewLine + row[2];
-
                 if (!stockSerie.Agenda.ContainsKey(date))
                 {
-                    stockSerie.Agenda.Add(date, comment);
+                    stockSerie.Agenda.Add(date, row[1], row[2]);
                 }
-                //else
-                //{
-                //    if (!stockSerie.Agenda[date].Contains(comment))
-                //    {
-                //        stockSerie.Agenda[date] = stockSerie.Agenda[date] + Environment.NewLine + comment;
-                //    }
-                //}
             }
             stockSerie.Agenda.DownloadDate = DateTime.Today;
             stockSerie.Agenda.SortDescending();

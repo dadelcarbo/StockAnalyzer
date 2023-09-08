@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using StockAnalyzerSettings;
 using StockAnalyzer.StockPortfolio.StockStrategy;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -3149,6 +3150,48 @@ namespace StockAnalyzer.StockClasses
             stockSerie.Initialise();
             return stockSerie;
         }
+        public StockSerie GenerateDivStockSerie()
+        {
+            string stockName = this.StockName + "_DIV";
+            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated, this.DataSource.Duration);
+            stockSerie.IsPortfolioSerie = this.IsPortfolioSerie;
+
+            // Calculate ratio foreach values
+            float dividend = 0;
+            var previousDate = DateTime.MaxValue;
+            var previousAdjClose = this.Values.Last().CLOSE;
+            var previousClose = this.Values.Last().CLOSE;
+
+            var bars = new List<StockDailyValue>();
+            foreach (var value in this.Values.Reverse())
+            {
+                var entries = this?.Dividend?.Entries.Where(e => e.Date <= previousDate && e.Date > value.DATE.Date).ToList();
+                if (entries.Count > 0)
+                {
+                    dividend += entries.Sum(e => e.Dividend) * previousClose / previousAdjClose;
+                }
+
+                var newValue = new StockDailyValue(value.OPEN - dividend, value.HIGH - dividend, value.LOW - dividend, value.CLOSE - dividend, value.VOLUME, value.DATE);
+                bars.Add(newValue);
+
+                previousDate = value.DATE;
+                previousClose = value.CLOSE;
+                previousAdjClose = newValue.CLOSE;
+            }
+            bars.Reverse();
+            foreach (var bar in bars)
+            {
+                stockSerie.Add(bar.DATE, bar);
+            }
+            if (this.ValueArray.Length != stockSerie.Count)
+            {
+                Console.WriteLine(  "Here!");
+            }
+            // Initialise the serie
+            stockSerie.Initialise();
+            return stockSerie;
+        }
+
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, StockBarDuration timeSpan)
         {
             StockLog.Write("Name:" + this.StockName + " barDuration:" + timeSpan.ToString() + " CurrentBarDuration:" + this.BarDuration);

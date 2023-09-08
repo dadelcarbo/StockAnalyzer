@@ -1026,6 +1026,7 @@
     <None Include="Resources\Misc-Zoom-Out-icon.png" />
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
+    <Content Include="Resources\Div.png" />
     <Content Include="Resources\NewAnalysis.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -615,7 +615,7 @@ namespace StockAnalyzerApp
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
-           //  ProcessStrategies(new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly });
+            //  ProcessStrategies(new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly });
 
             AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
             allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
@@ -1187,6 +1187,18 @@ namespace StockAnalyzerApp
             ChangeZoom(this.startIndex, this.endIndex);
         }
 
+        private void divScaleBtn_Click(object sender, EventArgs e)
+        {
+            if (this.currentStockSerie == null) return;
+
+            if (!this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie, true) || this.CurrentStockSerie.Dividend.Entries.Count == 0)
+            {
+                return;
+            }
+
+            StockSerie newSerie = this.CurrentStockSerie.GenerateDivStockSerie();
+            AddNewSerie(newSerie);
+        }
         #endregion
 
         public void OnSelectedStockChanged(string stockName, bool activate)
@@ -1405,7 +1417,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY)|| currentStockSerie.BelongsToGroup(StockSerie.Groups.INT_EURONEXT)) && currentStockSerie.IsMarketOpened())
+                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.INT_EURONEXT)) && currentStockSerie.IsMarketOpened())
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();

@@ -11,7 +11,8 @@ namespace StockAnalyzer.StockClasses
         CA = 1,
         Result = 2,
         Meeting = 4,
-        Other = 8,
+        Dividend = 8,
+        Other = 16,
         All = 31
     }
     public class StockAgendaEntry
@@ -22,6 +23,8 @@ namespace StockAnalyzer.StockClasses
         }
         public DateTime Date { get; set; }
         public string Event { get; set; }
+
+        public string Comment { get; set; }
         [XmlIgnore]
         public AgendaEntryType EntryType
         {
@@ -36,9 +39,14 @@ namespace StockAnalyzer.StockClasses
                 if (Event.ToLower().Contains("assemblée"))
                     return AgendaEntryType.Meeting;
 
+                if (Event.ToLower().Contains("dividende"))
+                    return AgendaEntryType.Dividend;
+
                 return AgendaEntryType.Other;
             }
         }
+
+        public float? Value { get; set; }
 
         public bool IsOfType(AgendaEntryType entryType)
         {
@@ -56,25 +64,25 @@ namespace StockAnalyzer.StockClasses
         }
         public DateTime DownloadDate { get; set; }
         public List<StockAgendaEntry> Entries { get; set; }
-
         public bool ContainsKey(DateTime date)
         {
             return Entries.Any(e => e.Date == date);
         }
-        public void Add(DateTime date, string text)
+        public void Add(DateTime date, string text, string comment)
         {
-            Entries.Add(new StockAgendaEntry { Date = date, Event = text });
+            var entry = new StockAgendaEntry { Date = date, Event = text, Comment = comment };
+            Entries.Add(entry);
+            if (entry.EntryType == AgendaEntryType.Dividend)
+            {
+                var div = comment.Replace("Montant : ", "");
+                div = div.Substring(0, div.IndexOf("€"));
+                float.TryParse(div, out float value);
+                entry.Value = value;
+            }
         }
         public void SortDescending()
         {
             this.Entries = this.Entries.OrderByDescending(e => e.Date).ToList();
         }
-        //public StockAgendaEntry this[DateTime date]
-        //{
-        //    get
-        //    {
-        //        return this.Entries.FirstOrDefault(e => e.Date == date);
-        //    }
-        //}
     }
 }

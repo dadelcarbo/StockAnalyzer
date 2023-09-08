@@ -136,6 +136,7 @@ namespace StockAnalyzerApp
             this.zoomOutBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInBtn = new System.Windows.Forms.ToolStripButton();
             this.logScaleBtn = new System.Windows.Forms.ToolStripButton();
+            this.divScaleBtn = new System.Windows.Forms.ToolStripButton();
             this.showVariationBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
@@ -947,6 +948,7 @@ namespace StockAnalyzerApp
             this.zoomInBtn,
             this.showVariationBtn,
             this.logScaleBtn,
+            this.divScaleBtn,
             this.toolStripSeparator2,
             this.excludeButton,
             this.toolStripSeparator5});
@@ -1093,6 +1095,16 @@ namespace StockAnalyzerApp
             this.logScaleBtn.Size = new System.Drawing.Size(23, 20);
             this.logScaleBtn.ToolTipText = "Log scale CTRL+L";
             this.logScaleBtn.Click += new System.EventHandler(this.logScaleBtn_Click);
+            // 
+            // divScaleBtn
+            // 
+            this.divScaleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.divScaleBtn.Image = global::StockAnalyzerApp.Properties.Resources.Div;
+            this.divScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.divScaleBtn.Name = "divScaleBtn";
+            this.divScaleBtn.Size = new System.Drawing.Size(23, 20);
+            this.divScaleBtn.ToolTipText = "div scale CTRL+L";
+            this.divScaleBtn.Click += new System.EventHandler(this.divScaleBtn_Click);
             // 
             // showVariationBtn
             // 
@@ -1591,6 +1603,7 @@ namespace StockAnalyzerApp
         private ToolStripButton rewindBtn;
         private ToolStripButton showVariationBtn;
         private ToolStripButton logScaleBtn;
+        private ToolStripButton divScaleBtn;
         private ToolStripButton fastForwardBtn;
         private ToolStripButton copyIsinBtn;
         private ToolStripSeparator toolStripSeparator8;
