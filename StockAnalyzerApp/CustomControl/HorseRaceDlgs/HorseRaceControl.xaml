@@ -104,7 +104,7 @@
             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
                       Text="{Binding ViewModel.Indicator2Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
         </StackPanel>
-        <telerik:RadGridView Name="positionGridView" Grid.Row="1" AutoGenerateColumns="False" CanUserInsertRows="False" 
+        <telerik:RadGridView FontSize="9" Name="positionGridView" Grid.Row="1" AutoGenerateColumns="False" CanUserInsertRows="False" 
                              IsReadOnly="True" RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"
                              FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" 

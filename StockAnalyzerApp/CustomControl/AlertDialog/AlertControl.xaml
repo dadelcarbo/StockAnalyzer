@@ -37,7 +37,7 @@
                 <Label Content="{Binding AlertLog.ProgressName}" HorizontalAlignment="Right" Width="300" Margin="2" Visibility="{Binding AlertLog.ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
         </StackPanel>
-        <telerik:RadGridView Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" 
+        <telerik:RadGridView FontSize="9" Grid.Row="1" x:Name="grid" IsReadOnly="True" ItemsSource="{Binding AlertLog.Alerts}" 
 
                              AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">

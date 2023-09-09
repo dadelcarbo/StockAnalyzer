@@ -69,7 +69,7 @@
                 <TextBox Margin="2" Text="{Binding Log}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
             <TabItem Header="Trades">
-                <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
+                <telerik:RadGridView FontSize="9" ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}"/>

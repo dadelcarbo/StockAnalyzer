@@ -73,7 +73,7 @@
                 <Image Source="../../Resources/Excel.png" />
             </Button>
         </StackPanel>
-        <telerik:RadGridView Name="gridView" Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+        <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True"
                              SelectionChanged="RadGridView_SelectionChanged"
                              ElementExportingToDocument="gridView_ElementExportingToDocument">

@@ -58,7 +58,7 @@
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
             <TabItem Header="Opened Positions">
-                <telerik:RadGridView Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
+                <telerik:RadGridView FontSize="9" Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
                                      SelectionMode="Single" SelectionUnit="Mixed" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="False" LeftFrozenColumnCount="1">
@@ -91,7 +91,7 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Orders">
-                <telerik:RadGridView Name="ordersGridView" ItemsSource="{Binding PortfolioViewModel.Orders}"
+                <telerik:RadGridView FontSize="9" Name="ordersGridView" ItemsSource="{Binding PortfolioViewModel.Orders}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
@@ -112,7 +112,7 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Opened Orders">
-                <telerik:RadGridView Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
+                <telerik:RadGridView FontSize="9" Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
@@ -133,7 +133,7 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Closed Positions">
-                <telerik:RadGridView Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
+                <telerik:RadGridView FontSize="9" Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
@@ -166,7 +166,7 @@
                 </telerik:RadGridView>
             </TabItem>
             <TabItem Header="Portfolio">
-                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}"
+                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}" FontSize="9"
                                          AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
                                          DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" 
                                          SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>

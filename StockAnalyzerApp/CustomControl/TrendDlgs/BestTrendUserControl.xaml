@@ -26,7 +26,7 @@
             <Button Margin="20,2,2,2" Name="performBtn" Content="Perform" Click="performBtn_Click"/>
         </StackPanel>
 
-        <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding BestTrends}" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
+        <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding BestTrends}" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
                              AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
             <telerik:RadGridView.Columns>

@@ -24,7 +24,7 @@
             <Label>URL Prefix:</Label>
             <TextBox Text="{Binding Path=InvestingUrlRoot, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" Margin="5" Width="500"/>
         </StackPanel>
-        <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" AutoGenerateColumns="True" MaxHeight="160" MinHeight="100" Margin="4" IsReadOnly="True" ShowGroupPanel="False" VerticalAlignment="Top"/>
-        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" SelectionUnit="FullRow" SelectionMode="Single" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False" CanUserDeleteRows="True"/>
+        <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" AutoGenerateColumns="True" MaxHeight="160" MinHeight="100" Margin="4" IsReadOnly="True" ShowGroupPanel="False" VerticalAlignment="Top"/>
+        <telerik:RadGridView FontSize="9" Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" SelectionUnit="FullRow" SelectionMode="Single" VerticalAlignment="Stretch" Margin="4" ShowGroupPanel="False" CanUserDeleteRows="True"/>
     </Grid>
 </UserControl>

@@ -30,7 +30,7 @@
             <Button Command="{Binding AddCommand}" Margin="4" >Add</Button>
             <Button Command="{Binding SaveCommand}" Margin="4" >Save</Button>
         </StackPanel>
-        <telerik:RadGridView Grid.Row="1"  Margin="4" ShowGroupPanel="True" ItemsSource="{Binding Products}" IsReadOnly="True"
+        <telerik:RadGridView FontSize="9" Grid.Row="1"  Margin="4" ShowGroupPanel="True" ItemsSource="{Binding Products}" IsReadOnly="True"
                              AutoGenerateColumns="False" SelectedItem="{Binding SelectedProduct}" SelectionUnit="FullRow" SelectionMode="Single"
                              RowIndicatorVisibility="Collapsed">
             <telerik:RadGridView.Columns>
@@ -44,7 +44,7 @@
                 <telerik:GridViewDataColumn Header="Spread" DataMemberBinding="{Binding Spread, StringFormat=P2}"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
-        <telerik:RadGridView Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" 
+        <telerik:RadGridView FontSize="9" Grid.Row="2" ItemsSource="{Binding Entries}" AutoGenerateColumns="True" 
                              VerticalAlignment="Stretch" Margin="4" RowIndicatorVisibility="Collapsed"
                              SelectionUnit="FullRow" SelectionMode="Single" ShowGroupPanel="False" CanUserDeleteRows="True"/>
     </Grid>

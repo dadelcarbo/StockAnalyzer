@@ -12,7 +12,7 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <telerik:RadGridView CanUserDeleteRows="True" CanUserInsertRows="True" NewRowPosition="Top"
+        <telerik:RadGridView FontSize="9" CanUserDeleteRows="True" CanUserInsertRows="True" NewRowPosition="Top"
                              ItemsSource="{Binding NameMappings}" VerticalAlignment="Stretch"></telerik:RadGridView>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Name="saveAndCloseBtn" Margin="2" Click="saveAndCloseBtn_Click">Save and Close</Button>

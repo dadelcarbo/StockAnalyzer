@@ -11,7 +11,7 @@
         <local:ViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
     <Grid DataContext="{DynamicResource ViewModel}">
-        <telerik:RadGridView Name="drawingGridView" ItemsSource="{Binding Drawings}" 
+        <telerik:RadGridView FontSize="9" Name="drawingGridView" ItemsSource="{Binding Drawings}" 
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
                                      FilterOperatorsLoading="FilterOperatorsLoading" IsReadOnly="True" 
                                      RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"

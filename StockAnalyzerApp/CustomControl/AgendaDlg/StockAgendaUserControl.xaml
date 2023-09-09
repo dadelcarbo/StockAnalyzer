@@ -11,7 +11,7 @@
         <local:StockDateToStringConverter x:Key="StockDateConverter"/>
     </UserControl.Resources>
     <Grid>
-        <telerik:RadGridView ItemsSource="{Binding Entries}" FontSize="8" AutoGenerateColumns="False" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed">
+        <telerik:RadGridView FontSize="9" ItemsSource="{Binding Entries}" AutoGenerateColumns="False" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding Date, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding EntryType}" IsReadOnly="True"/>

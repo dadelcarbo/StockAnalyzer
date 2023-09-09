@@ -41,7 +41,7 @@
                         <Label>Agent</Label>
                         <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
                     </StackPanel>
-                    <telerik:RadGridView ItemsSource="{Binding AgentParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding AgentParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Entry Stop (Risk)"  Grid.Column="1" >
@@ -50,7 +50,7 @@
                         <Label>Entry Stop</Label>
                         <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding EntryStops}" SelectedItem="{Binding EntryStop}" ToolTip="{Binding EntryStopDescription}"/>
                     </StackPanel>
-                    <telerik:RadGridView ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
                 </StackPanel>
             </GroupBox>
         </Grid>
@@ -62,7 +62,7 @@
                 <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
             <TabItem Header="Trades">
-                <telerik:RadGridView ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
+                <telerik:RadGridView FontSize="9" ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All" ShowColumnFooters="True">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
