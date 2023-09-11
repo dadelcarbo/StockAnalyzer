@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog"
              xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
-             xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d"
              d:DesignWidth="900" d:DesignHeight="550" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=local:AddStockAlertViewModel, IsDesignTimeCreatable=False}">
@@ -38,8 +39,10 @@
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80" Content="Title "/>
                             <TextBox Text="{Binding Title}" Width="496"  VerticalAlignment="Center"/>
-                            <Label Content="Active"/>
-                            <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center"/>
+                            <Label Content="Report"/>
+                            <CheckBox IsChecked="{Binding InReport}" VerticalAlignment="Center"/>
+                            <Label Content="Alert"/>
+                            <CheckBox IsChecked="{Binding InAlert}" VerticalAlignment="Center"/>
                             <Label Content=" Id "/>
                             <TextBox Text="{Binding AlertId, Mode=TwoWay}" IsEnabled="False" Width="30" VerticalAlignment="Center"/>
                         </StackPanel>
@@ -75,7 +78,8 @@
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Rank" DataMemberBinding="{Binding Rank}" />
-                            <telerik:GridViewDataColumn Header="Active" DataMemberBinding="{Binding Active}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Report" DataMemberBinding="{Binding InReport}" IsReadOnly="True"/>
+                            <telerik:GridViewDataColumn Header="Alert" DataMemberBinding="{Binding InAlert}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration.Duration}" IsReadOnly="True"/>

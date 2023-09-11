@@ -76,7 +76,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             {
                 // This serie already registered is system configuration
                 MessageBox.Show(DataProviderString.DlgContent_SerieAlreadyRegistered, DataProviderString.DlgTitle_SerieAlreadyRegistered, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
 
             bool found = false;

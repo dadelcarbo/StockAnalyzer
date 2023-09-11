@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Xml.Serialization;
 using StockAnalyzerSettings;
@@ -145,6 +146,15 @@ namespace StockAnalyzer.StockClasses
         {
             if (allAlertDefs != null)
             {
+                foreach (var alertGroup in allAlertDefs.GroupBy(a => a.BarDuration))
+                {
+                    var rank = 10;
+                    foreach (var alertDef in alertGroup.OrderBy(a => a.Rank))
+                    {
+                        alertDef.Rank = rank;
+                        rank += 10;
+                    }
+                }
                 string alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.xml";
                 // Parse alert lists
                 using (var fs = new FileStream(alertFileName, FileMode.Create))
@@ -157,7 +167,7 @@ namespace StockAnalyzer.StockClasses
                     };
                     var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                     var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a=>a.Id).ToList());
+                    serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList());
                 }
             }
         }

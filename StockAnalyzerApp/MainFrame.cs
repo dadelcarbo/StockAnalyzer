@@ -792,7 +792,7 @@ namespace StockAnalyzerApp
                     isGeneratingAlerts = true;
 
                     var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-                    var alertDefs = alertConfig.AlertDefs.Where(a => a.Active && barDurations.Contains(a.BarDuration)).ToList();
+                    var alertDefs = alertConfig.AlertDefs.Where(a => a.InReport && barDurations.Contains(a.BarDuration)).ToList();
                     if (alertDefs.Count() == 0)
                         return;
 
@@ -915,7 +915,7 @@ namespace StockAnalyzerApp
                 {
                     isGeneratingAlerts = true;
 
-                    var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
+                    var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => a.InAlert && barDurations.Contains(a.BarDuration)).ToList();
                     if (alertDefs.Count() == 0)
                         return;
                     if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)
@@ -972,7 +972,7 @@ namespace StockAnalyzerApp
                                     }
                                     if (stockSerie.HasVolume) // Check if it has at least x.xx M€ average daily liquidity
                                     {
-                                        if (!stockSerie.HasLiquidity(0.2f))
+                                        if (!stockSerie.HasLiquidity(alertDef.MinLiquidity))
                                         {
                                             continue;
                                         }
@@ -2935,7 +2935,7 @@ namespace StockAnalyzerApp
 
             CleanReportFolder(folderName);
 
-            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.Active && a.Type == AlertType.Group) == 0)
+            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.InReport && a.Type == AlertType.Group) == 0)
                 return;
             var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
 
@@ -2959,7 +2959,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlAlerts = string.Empty;
-            foreach (var alertDef in alertDefs.Where(a => a.Active && a.Type == AlertType.Group).OrderBy(a => a.Rank))
+            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group).OrderBy(a => a.Rank))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
             }
