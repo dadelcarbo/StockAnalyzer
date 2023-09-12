@@ -792,7 +792,7 @@ namespace StockAnalyzerApp
                     isGeneratingAlerts = true;
 
                     var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-                    var alertDefs = alertConfig.AlertDefs.Where(a => a.InReport && barDurations.Contains(a.BarDuration)).ToList();
+                    var alertDefs = alertConfig.AlertDefs.Where(a => a.InAlert && barDurations.Contains(a.BarDuration)).ToList();
                     if (alertDefs.Count() == 0)
                         return;
 
@@ -901,7 +901,7 @@ namespace StockAnalyzerApp
             }
         }
         bool isGeneratingAlerts = false;
-        public void GenerateAlert(StockAlertConfig alertConfig, List<StockBarDuration> barDurations)
+        public void GenerateAlert(StockAlertConfig alertConfig)
         {
             using (new MethodLogger(this, showTimerDebug))
             {
@@ -915,7 +915,7 @@ namespace StockAnalyzerApp
                 {
                     isGeneratingAlerts = true;
 
-                    var alertDefs = barDurations == null ? alertConfig.AlertDefs : alertConfig.AlertDefs.Where(a => a.InAlert && barDurations.Contains(a.BarDuration)).ToList();
+                    var alertDefs = alertConfig.AlertDefs.Where(a => a.InAlert);
                     if (alertDefs.Count() == 0)
                         return;
                     if (alertConfig.TimeFrame == StockAlertTimeFrame.Intraday)

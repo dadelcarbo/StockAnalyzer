@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
         {
             try
             {
-                Task.Run(() => StockAnalyzerForm.MainFrame.GenerateAlert(this.SelectedTimeFrame, null));
+                Task.Run(() => StockAnalyzerForm.MainFrame.GenerateAlert(this.SelectedTimeFrame));
             }
             catch (Exception ex)
             {
