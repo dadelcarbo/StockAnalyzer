@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Controls.SpreadsheetUI</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Controls.RadSpreadsheetRibbon">
+            <summary>
+            The ribbon of the RadSpreadsheet.
+            </summary>
+        </member>
+        <member name="F:Telerik.Windows.Controls.RadSpreadsheetRibbon.BackstageClippingElementProperty">
+            <summary>
+            Gets or sets the area that will contain the backstage.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Controls.RadSpreadsheetRibbon.BackstageClippingElement">
+            <summary>
+            Gets or sets the area that will contain the backstage.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Controls.RadSpreadsheetRibbon.SelectedTabIndex">
+            <summary>
+            Gets or sets the index of the currently selected tab of the ribbon.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Controls.RadSpreadsheetRibbon.ResetTheme">
+            <inheritdoc />
+        </member>
+        <member name="M:Telerik.Windows.Controls.RadSpreadsheetRibbon.OnApplyTemplate">
+            <summary>
+            When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Controls.RadSpreadsheetRibbon.OnInitialized(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.FrameworkElement.Initialized" /> event. This method is invoked whenever <see cref="P:System.Windows.FrameworkElement.IsInitialized" /> is set to true internally.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.RoutedEventArgs" /> that contains the event data.</param>
+        </member>
+    </members>
+</doc>
