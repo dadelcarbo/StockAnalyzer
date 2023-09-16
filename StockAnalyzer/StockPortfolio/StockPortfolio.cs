@@ -93,7 +93,9 @@ namespace StockAnalyzer.StockPortfolio
 
         public long LastLogId { get; set; }
 
+        [JsonIgnore]
         public List<SaxoOrder> SaxoOpenOrders { get; } = new List<SaxoOrder>();
+
         public List<SaxoOrder> SaxoOrders { get; } = new List<SaxoOrder>();
 
         public IEnumerable<SaxoOrder> GetExecutedOrders(string stockName)
@@ -522,7 +524,7 @@ namespace StockAnalyzer.StockPortfolio
             // Find StockSerie by ISIN
             if (!string.IsNullOrEmpty(instrument.Isin))
             {
-                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin);
+                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin && s.StockGroup != StockSerie.Groups.INT_EURONEXT);
                 if (stockSerie != null)
                 {
                     UicToSerieCache.Add(uic, stockSerie);
@@ -695,7 +697,7 @@ namespace StockAnalyzer.StockPortfolio
                     break;
                 case "Changed": // Update stop loss or buy order
                     {
-                        if (activityOrder.BuySell != "Buy")
+                        if (activityOrder.BuySell != "Buy" && activityOrder.OrderType != "Market")
                         {
                             var position = this.Positions.FirstOrDefault(p => p.Uic == activityOrder.Uic);
                             if (position != null)

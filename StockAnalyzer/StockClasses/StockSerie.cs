@@ -48,6 +48,7 @@ namespace StockAnalyzer.StockClasses
             PORTUGAL,
             EUROPE,
             ITALIA,
+            GERMANY,
             //SPAIN,
             USA,
             SAXO,
@@ -2165,7 +2166,7 @@ namespace StockAnalyzer.StockClasses
                     if (previousSAR + accelerationFactor * (previousExtremum - previousSAR) >= closeSerie[i])
                     {
                         isUpTrend = false;
-                        accelerationFactor = accelerationFactorInit * (1f + (((previousExtremum - closeSerie[i]) / closeSerie[i]) * 100f));
+                        accelerationFactor = accelerationFactorInit * (1f + ((previousExtremum - closeSerie[i]) / closeSerie[i] * 100f));
                         previousSAR = previousExtremum * (1.0f + margin);
                         sarSerieResistance[i] = previousSAR;
                         sarSerieSupport[i] = float.NaN;
@@ -2188,7 +2189,7 @@ namespace StockAnalyzer.StockClasses
                     if (previousSAR + accelerationFactor * (previousExtremum - previousSAR) <= closeSerie[i])
                     {
                         isUpTrend = true;
-                        accelerationFactor = accelerationFactorInit * (1f + (((closeSerie[i] - previousExtremum) / closeSerie[i]) * 100f));
+                        accelerationFactor = accelerationFactorInit * (1f + ((closeSerie[i] - previousExtremum) / closeSerie[i] * 100f));
                         accelerationFactor = accelerationFactorInit;
                         previousSAR = previousExtremum * (1.0f - margin); ;
                         sarSerieSupport[i] = previousSAR;
@@ -2922,40 +2923,42 @@ namespace StockAnalyzer.StockClasses
 
         public bool BelongsToGroup(Groups group)
         {
-            if (this.StockAnalysis.Excluded) return false;
+            if (StockAnalysis.Excluded) return false;
             switch (group)
             {
                 case Groups.ALL:
                     return true;
                 case Groups.CAC40:
-                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
+                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SBF120:
-                    return this.DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSBF120(this);
+                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSBF120(this);
                 case Groups.EURO_A:
-                    return (this.StockGroup == Groups.EURO_A);
+                    return StockGroup == Groups.EURO_A;
                 case Groups.EURO_B:
-                    return (this.StockGroup == Groups.EURO_B);
+                    return StockGroup == Groups.EURO_B;
                 case Groups.EURO_A_B:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B);
+                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B;
                 case Groups.EURO_C:
-                    return (this.StockGroup == Groups.EURO_C);
+                    return StockGroup == Groups.EURO_C;
                 case Groups.EURO_A_B_C:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C);
+                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C;
                 case Groups.ALTERNEXT:
-                    return (this.StockGroup == Groups.ALTERNEXT);
+                    return StockGroup == Groups.ALTERNEXT;
                 case Groups.CACALL:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT);
+                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT;
                 case Groups.PEA:
-                    return (this.StockGroup == Groups.EURO_A) || (this.StockGroup == Groups.EURO_B) || (this.StockGroup == Groups.EURO_C) || (this.StockGroup == Groups.ALTERNEXT) || (this.StockGroup == Groups.BELGIUM) || (this.StockGroup == Groups.HOLLAND) || (this.StockGroup == Groups.PORTUGAL) || (this.StockGroup == Groups.ITALIA);
-                // (this.StockGroup == Groups.GERMANY) || (this.StockGroup == Groups.ITALIA) || (this.StockGroup == Groups.SPAIN) || 
+                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
+                        || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL
+                        || StockGroup == Groups.ITALIA || StockGroup == Groups.GERMANY;
+                //  ||  (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
-                    return this.StockGroup == Groups.SAXO;
+                    return StockGroup == Groups.SAXO;
                 case Groups.SRD:
-                    return this.SRD;
+                    return SRD;
                 case Groups.SRD_LO:
-                    return this.SRD_LO;
+                    return SRD_LO;
                 default:
-                    return this.StockGroup == group;
+                    return StockGroup == group;
             }
         }
         public bool BelongsToGroup(string groupName)
@@ -3185,7 +3188,7 @@ namespace StockAnalyzer.StockClasses
             }
             if (this.ValueArray.Length != stockSerie.Count)
             {
-                Console.WriteLine(  "Here!");
+                Console.WriteLine("Here!");
             }
             // Initialise the serie
             stockSerie.Initialise();
@@ -3421,7 +3424,7 @@ namespace StockAnalyzer.StockClasses
                 if (newValue == null)
                 {
                     // New bar
-                    int min = (dailyValue.DATE.Minute / nbMinutes) * nbMinutes;
+                    int min = dailyValue.DATE.Minute / nbMinutes * nbMinutes;
                     var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, min, 0);
                     closeDate = openDate.AddMinutes(nbMinutes);
                     newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
@@ -3434,7 +3437,7 @@ namespace StockAnalyzer.StockClasses
                     newBarList.Add(newValue);
 
                     // New bar
-                    int min = (dailyValue.DATE.Minute / nbMinutes) * nbMinutes;
+                    int min = dailyValue.DATE.Minute / nbMinutes * nbMinutes;
                     var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, min, 0);
                     closeDate = openDate.AddMinutes(nbMinutes);
                     newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
@@ -3532,7 +3535,7 @@ namespace StockAnalyzer.StockClasses
                     newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
                     newValue.CLOSE = dailyValue.CLOSE;
                     newValue.VOLUME += dailyValue.VOLUME;
-                    if ((++count == nbDay))
+                    if (++count == nbDay)
                     {
                         // Final bar set to comlete only is last bar is complete
                         newValue.IsComplete = dailyValue.IsComplete;
