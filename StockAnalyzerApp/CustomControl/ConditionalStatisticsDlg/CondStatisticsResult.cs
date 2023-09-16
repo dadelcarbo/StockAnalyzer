@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
         public float PE1 => event1Count / (float)totalCount;
         public float PE2 => event2Count / (float)totalCount;
 
-        public float PE1n2 => PE1*PE2;
+        public float PE1n2 => PE1 * PE2;
 
         public float PE1k2 => event1n2Count / (float)event2Count;
     }

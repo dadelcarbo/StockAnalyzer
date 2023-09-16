@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 using System.Linq;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             weeklySerie[0] = weeklySerie[1] = weeklySerie[2] = closeSerie[2];
             monthlySerie[0] = monthlySerie[1] = monthlySerie[2] = closeSerie[2];
 
-            float weekly0 ;
+            float weekly0;
             float weekly1 = closeSerie[2];
             float weekly2 = closeSerie[2];
             float monthly0;

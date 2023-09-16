@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -187,7 +187,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { 
+        static string[] eventNames = new string[] {
             "SupportDetected", "ResistanceDetected",
             "Pullback", "EndOfTrend",
             "HigherLow", "LowerHigh",

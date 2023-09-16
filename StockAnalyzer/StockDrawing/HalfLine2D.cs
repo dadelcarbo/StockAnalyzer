@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Drawing;
 using System.Linq;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockDrawing
 {

@@ -188,7 +188,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                             this.Events[0][i] = true;
 
                             flag = null;
-                            i += period/2;
+                            i += period / 2;
                         }
                         else if (flag.Support.IsAbovePoint(current))
                         {
@@ -199,7 +199,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                             this.Events[1][i] = true;
 
                             flag = null;
-                            i += period/2;
+                            i += period / 2;
                         }
                     }
                 }

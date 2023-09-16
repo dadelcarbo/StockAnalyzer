@@ -3,14 +3,14 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
-   public interface IStockDecorator : IStockViewableSeries, IStockEvent
-   {
-      FloatSerie[] Series { get; }
+    public interface IStockDecorator : IStockViewableSeries, IStockEvent
+    {
+        FloatSerie[] Series { get; }
 
-      string DecoratedItem { get; set; }
+        string DecoratedItem { get; set; }
 
-      bool[] EventVisibility { get; }
+        bool[] EventVisibility { get; }
 
-      Pen[] EventPens { get; }
-   }
+        Pen[] EventPens { get; }
+    }
 }

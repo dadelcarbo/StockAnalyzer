@@ -31,7 +31,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (highest[index]> Period)
+            if (highest[index] > Period)
             {
                 return TradeAction.Buy;
             }

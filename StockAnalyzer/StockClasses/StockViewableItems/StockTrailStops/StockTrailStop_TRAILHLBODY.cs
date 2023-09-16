@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Linq;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             if (stockSerie.ValueArray.Length < period)
             {
                 // Generate events
-                this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);   
+                this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
                 return;
             }
 

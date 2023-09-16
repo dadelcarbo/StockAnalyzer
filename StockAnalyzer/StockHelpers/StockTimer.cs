@@ -103,7 +103,7 @@ namespace StockAnalyzer.StockHelpers
             var time = DateTime.Now.TimeOfDay;
             if (TimerSuspended || time < startTime || time > endTime)
                 return;
-           
+
             var timeSeconds = time.TotalSeconds;
             var barDurations = new List<StockBarDuration>();
             foreach (var tickPeriod in periodTicks)

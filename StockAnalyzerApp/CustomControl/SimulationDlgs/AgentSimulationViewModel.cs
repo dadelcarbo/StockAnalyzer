@@ -1,19 +1,18 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockHelpers;
+using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzerSettings;
-using StockAnalyzer.StockHelpers;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {

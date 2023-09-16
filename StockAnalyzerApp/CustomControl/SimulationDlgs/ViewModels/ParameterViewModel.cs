@@ -11,8 +11,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels
         private StockAgentParamAttribute Attribute { get; set; }
         private PropertyInfo Property { get; set; }
         public string Name => Property.Name;
-        public float Min  => Attribute.Min;
-        public float Max => Attribute.Max; 
+        public float Min => Attribute.Min;
+        public float Max => Attribute.Max;
         public float Value { get; set; }
 
         public StockAgentParamAttribute GetAttribute() => Attribute;

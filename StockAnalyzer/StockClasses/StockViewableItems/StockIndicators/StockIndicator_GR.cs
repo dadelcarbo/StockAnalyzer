@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 using System.Linq;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     var entries = stockSerie?.Dividend?.Entries.Where(e => e.Date > previousBarDate && e.Date <= value.DATE.Date).ToList();
                     if (entries.Count > 0)
                     {
-                        dividend += entries.Sum(e => e.Dividend) * grSerie[i-1] / value.CLOSE;
+                        dividend += entries.Sum(e => e.Dividend) * grSerie[i - 1] / value.CLOSE;
                     }
                 }
                 grSerie[i++] = value.CLOSE + dividend;

@@ -1,17 +1,14 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerSettings;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Windows.Forms;
 using System.Net.Http;
 using System.Text.Json;
-using System.Windows.Controls.Primitives;
-using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 {

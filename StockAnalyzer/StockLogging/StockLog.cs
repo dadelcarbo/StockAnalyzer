@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzer.StockLogging
 {

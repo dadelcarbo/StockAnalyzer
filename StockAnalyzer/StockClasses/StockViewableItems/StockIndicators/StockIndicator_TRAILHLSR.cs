@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockMath;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

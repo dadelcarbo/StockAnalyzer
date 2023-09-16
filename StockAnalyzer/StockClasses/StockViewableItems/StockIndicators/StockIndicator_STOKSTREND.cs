@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -59,7 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = 1; i < slowK.Count; i++)
             {
-                this.eventSeries[0][i] = trendSerie[i-1] < 0 && trendSerie[i] >=0;
+                this.eventSeries[0][i] = trendSerie[i - 1] < 0 && trendSerie[i] >= 0;
                 this.eventSeries[1][i] = trendSerie[i - 1] > 0 && trendSerie[i] <= 0;
                 this.eventSeries[2][i] = trendSerie[i] >= 0;
                 this.eventSeries[3][i] = trendSerie[i] <= 0;

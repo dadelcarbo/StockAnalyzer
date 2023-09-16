@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -122,7 +122,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 bool above = closeSerie[i] > Math.Max(TenkanSenSerie[i], KijunSenSerie[i]);
                 bool below = closeSerie[i] < Math.Min(TenkanSenSerie[i], KijunSenSerie[i]);
                 this.Events[0][i] = above;
-                this.Events[1][i] = !(above||below);
+                this.Events[1][i] = !(above || below);
                 this.Events[2][i] = below;
             }
         }

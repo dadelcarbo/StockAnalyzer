@@ -95,8 +95,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            float highest = highSerie.GetMax(startIndex, endIndex-5);
-            float lowest = lowSerie.GetMin(startIndex, endIndex-5);
+            float highest = highSerie.GetMax(startIndex, endIndex - 5);
+            float lowest = lowSerie.GetMin(startIndex, endIndex - 5);
 
             PointF A, B, C, D;
             A = new PointF(startIndex, highest);
@@ -108,11 +108,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             drawingItems.Add(new Segment2D(C, D, Pens.DarkCyan));
         }
 
-        static public void GetConvexCull(bool convex, StockSerie stockSerie, int startIndex, int endIndex, out HalfLine2D resistance, out HalfLine2D support,Pen resistancePen, Pen supportPen)
+        static public void GetConvexCull(bool convex, StockSerie stockSerie, int startIndex, int endIndex, out HalfLine2D resistance, out HalfLine2D support, Pen resistancePen, Pen supportPen)
         {
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(d=>!d.IsPersistent);
+                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(d => !d.IsPersistent);
             }
             else
             {
@@ -166,7 +166,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
             List<PointF> lowCull = GetConvexCull(lowPoints, convex);
             lowCull.Reverse();
-            for (int i = 1; i < lowCull.Count-1; i++)
+            for (int i = 1; i < lowCull.Count - 1; i++)
             {
                 drawingItems.Add(new Segment2D(lowCull[i - 1], lowCull[i], supportPen));
             }
@@ -193,7 +193,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 {
                     p2 = p3;
                 }
-                else if (product < 0) 
+                else if (product < 0)
                 {
                     cullPoints.Add(p2);
                     p1 = p2;
@@ -202,7 +202,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
             cullPoints.Add(points.Last());
 
-            if (recursive && cullPoints.Count > 3 && (points.Count -cullPoints.Count)>0)
+            if (recursive && cullPoints.Count > 3 && (points.Count - cullPoints.Count) > 0)
             {
                 return GetConvexCull(cullPoints, recursive);
             }

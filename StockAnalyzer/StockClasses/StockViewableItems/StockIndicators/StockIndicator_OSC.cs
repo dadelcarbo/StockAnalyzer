@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else if (waitForFirstHighInBull)
                 {
-                    if (closeSerie[i]> previousHigh)
+                    if (closeSerie[i] > previousHigh)
                     {
                         this.eventSeries[6][i] = true;
                         waitForFirstHighInBull = false;

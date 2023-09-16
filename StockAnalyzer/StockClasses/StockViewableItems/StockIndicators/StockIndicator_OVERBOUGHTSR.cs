@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -197,12 +197,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { 
-            true, true, 
-            true, true, 
-            true, true, 
-            true, true, 
-            false, false, 
+        static readonly bool[] isEvent = new bool[] {
+            true, true,
+            true, true,
+            true, true,
+            true, true,
+            false, false,
             true, true };
         public override bool[] IsEvent
         {

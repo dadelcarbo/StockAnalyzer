@@ -7,7 +7,6 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockOpenedOrder()
         {
-            this.IsActive = true;
         }
 
         public StockOpenedOrder(SaxoOrder o)

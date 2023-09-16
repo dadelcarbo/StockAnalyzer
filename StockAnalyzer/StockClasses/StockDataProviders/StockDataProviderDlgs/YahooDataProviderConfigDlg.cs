@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
-using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {

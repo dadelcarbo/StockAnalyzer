@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using StockAnalyzer.StockMath;
-using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

@@ -1,9 +1,9 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.CustomControl.GraphControls;
 using System;
 using System.Collections.Generic;
-using StockAnalyzerApp.CustomControl.GraphControls;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 {

@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public int precisionMin { get; set; }
         public int precisionMax { get; set; }
         public bool pushable { get; set; }
-       // public PushableMetadata pushableMetadata { get; set; }
+        // public PushableMetadata pushableMetadata { get; set; }
     }
 
     public class Bid

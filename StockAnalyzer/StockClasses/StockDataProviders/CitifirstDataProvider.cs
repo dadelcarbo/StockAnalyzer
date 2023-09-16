@@ -1,5 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.CitiFirst;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.CitiFirst;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;

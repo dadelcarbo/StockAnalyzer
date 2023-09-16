@@ -3,10 +3,10 @@
 namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 {
     public partial class StatisticsDlg : Form
-   {
-      public StatisticsDlg()
-      {
-         InitializeComponent();
-      }
-   }
+    {
+        public StatisticsDlg()
+        {
+            InitializeComponent();
+        }
+    }
 }

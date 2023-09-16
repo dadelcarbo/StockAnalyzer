@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -30,9 +30,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 return new ParamRange[]
             {
-                new ParamRangeInt(1, 500), 
-                new ParamRangeInt(1, 500), 
-                new ParamRangeFloat(-5.0f, 20.0f), 
+                new ParamRangeInt(1, 500),
+                new ParamRangeInt(1, 500),
+                new ParamRangeFloat(-5.0f, 20.0f),
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
             };
@@ -75,13 +75,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     this.eventSeries[2][i] = lowSerie[i] > emaSlowSerie[i];
                     bbOSC[i] = emaFastSerie[i] * (oscSerie[i] * (float)this.parameters[2] + 1f);
-                    this.eventSeries[1][i] = highSerie[i-1] > bbOSC[i-1] && highSerie[i] < bbOSC[i];
+                    this.eventSeries[1][i] = highSerie[i - 1] > bbOSC[i - 1] && highSerie[i] < bbOSC[i];
                 }
                 else
                 {
                     this.eventSeries[3][i] = highSerie[i] < emaSlowSerie[i];
                     bbOSC[i] = emaFastSerie[i] / (oscSerie[i] * -(float)this.parameters[2] + 1f);
-                    this.eventSeries[0][i] = lowSerie[i - 1] < bbOSC[i - 1] && lowSerie[i]> bbOSC[i];
+                    this.eventSeries[0][i] = lowSerie[i - 1] < bbOSC[i - 1] && lowSerie[i] > bbOSC[i];
                 }
             }
 
@@ -101,7 +101,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             get { return eventNames; }
         }
 
-        private static readonly bool[] isEvent = new bool[] {true, true, false, false};
+        private static readonly bool[] isEvent = new bool[] { true, true, false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

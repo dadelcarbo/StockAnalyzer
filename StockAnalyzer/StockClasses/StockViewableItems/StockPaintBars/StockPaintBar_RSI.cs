@@ -2,18 +2,18 @@
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
-   public class StockPaintBar_RSI : StockPaintBarIndicatorEventBase
-   {
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+    public class StockPaintBar_RSI : StockPaintBarIndicatorEventBase
+    {
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.Red), new Pen(Color.Green) };
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
-   }
+        }
+    }
 }

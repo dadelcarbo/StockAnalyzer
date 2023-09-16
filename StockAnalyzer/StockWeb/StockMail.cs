@@ -1,6 +1,6 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
 using System.Net.Mail;
-using System;
+using System.Net.NetworkInformation;
 
 namespace StockAnalyzer.StockWeb
 {

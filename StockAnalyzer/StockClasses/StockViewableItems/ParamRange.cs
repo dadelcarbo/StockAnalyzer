@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
+using System;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {

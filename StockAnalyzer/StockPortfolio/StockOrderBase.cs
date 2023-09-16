@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 
 namespace StockAnalyzer.StockPortfolio
@@ -24,7 +23,5 @@ namespace StockAnalyzer.StockPortfolio
         public float Amount => Qty * Value;
 
         public DateTime CreationDate { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }

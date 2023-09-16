@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -30,9 +30,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var slowEma = closeSerie.CalculateEMA((int)this.parameters[1]);
             int period = (int)this.parameters[2];
             FloatSerie rocSerie = new FloatSerie(stockSerie.Count);
-            for(int i = period; i< stockSerie.Count;i++)
+            for (int i = period; i < stockSerie.Count; i++)
             {
-                rocSerie[i] = (fastEma[i] - slowEma[i-period]) / slowEma[i - period];
+                rocSerie[i] = (fastEma[i] - slowEma[i - period]) / slowEma[i - period];
             }
 
             this.series[0] = rocSerie;

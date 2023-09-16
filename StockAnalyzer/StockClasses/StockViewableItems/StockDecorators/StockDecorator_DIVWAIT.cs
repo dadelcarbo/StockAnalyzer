@@ -1,216 +1,216 @@
-﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
-   public class StockDecorator_DIVWAIT : StockDecoratorBase, IStockDecorator
-   {
-      public override string Definition
-      {
-         get { return "Plots exhaustion points and divergences after waiting for price confirmation"; }
-      }
+    public class StockDecorator_DIVWAIT : StockDecoratorBase, IStockDecorator
+    {
+        public override string Definition
+        {
+            get { return "Plots exhaustion points and divergences after waiting for price confirmation"; }
+        }
 
-      public StockDecorator_DIVWAIT()
-      {
-      }
+        public StockDecorator_DIVWAIT()
+        {
+        }
 
-      public override IndicatorDisplayTarget DisplayTarget
-      {
-         get { return IndicatorDisplayTarget.NonRangedIndicator; }
-      }
+        public override IndicatorDisplayTarget DisplayTarget
+        {
+            get { return IndicatorDisplayTarget.NonRangedIndicator; }
+        }
 
-      public override IndicatorDisplayStyle DisplayStyle
-      {
-         get { return IndicatorDisplayStyle.DecoratorPlot; }
-      }
+        public override IndicatorDisplayStyle DisplayStyle
+        {
+            get { return IndicatorDisplayStyle.DecoratorPlot; }
+        }
 
-      public override string[] ParameterNames
-      {
-         get { return new string[] { "FadeOut", "Smooting" }; }
-      }
-      public override Object[] ParameterDefaultValues
-      {
-         get { return new Object[] { 1.5f, 1 }; }
-      }
-      public override ParamRange[] ParameterRanges
-      {
-         get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
-      }
+        public override string[] ParameterNames
+        {
+            get { return new string[] { "FadeOut", "Smooting" }; }
+        }
+        public override Object[] ParameterDefaultValues
+        {
+            get { return new Object[] { 1.5f, 1 }; }
+        }
+        public override ParamRange[] ParameterRanges
+        {
+            get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f), new ParamRangeInt(1, 500) }; }
+        }
 
-      public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
+        public override string[] SerieNames { get { return new string[] { "Signal", "BuyExhaustion", "SellExhaustion" }; } }
 
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { new Pen(Color.DarkRed), new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] { new Pen(Color.DarkRed), new Pen(Color.DarkGray), new Pen(Color.DarkGray) };
 
-               seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-               seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
+        }
 
-      public override void ApplyTo(StockSerie stockSerie)
-      {
-         using (MethodLogger ml = new MethodLogger(this))
-         {
-            CreateEventSeries(stockSerie.Count);
-            
-            IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
-
-            this.Series[0] = originalDecorator.Series[0];
-            this.Series[1] = originalDecorator.Series[1];
-            this.Series[2] = originalDecorator.Series[2];
-
-            IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
-
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-
-            int exhaustionTopIndex =0;
-            int exhaustionBottomIndex = 1;
-            int bearishDivergenceIndex = 2;
-            int bullishDivergenceIndex = 3;
-
-            int upTrendIndex = 0;
-
-            bool waitExhaustionTop = false;
-            bool waitExhaustionBottom = false;
-            bool waitBearishDivergence = false;
-            bool waitBullishDivergence = false;
-
-            for (int i = 10; i < stockSerie.Count; i++)
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            using (MethodLogger ml = new MethodLogger(this))
             {
-               if (waitExhaustionTop)
-               {
-                  if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                  {
-                     waitExhaustionTop = false;
-                     this.eventSeries[exhaustionTopIndex][i] = true;
-                  }
-               }
-               else
-               {
-                  if (originalDecorator.Events[exhaustionTopIndex][i])
-                  {
-                     if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                     {
-                        this.eventSeries[exhaustionTopIndex][i] = true;
-                     }
-                     else
-                     {
-                        waitExhaustionTop = true;
-                     }
-                  }
-               }
+                CreateEventSeries(stockSerie.Count);
 
-               if (waitBearishDivergence)
-               {
-                  if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                  {
-                     waitBearishDivergence = false;
-                     this.eventSeries[bearishDivergenceIndex][i] = true;
-                  }
-               }
-               else
-               {
-                  if (originalDecorator.Events[bearishDivergenceIndex][i])
-                  {
-                     if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                     {
-                        this.eventSeries[bearishDivergenceIndex][i] = true;
-                     }
-                     else
-                     {
-                        waitBearishDivergence = true;
-                     }
-                  }
-               }
-               if (waitExhaustionBottom)
-               {
-                  if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                  {
-                     waitExhaustionBottom = false;
-                     this.eventSeries[exhaustionBottomIndex][i] = true;
-                  }
-               }
-               else
-               {
-                  if (originalDecorator.Events[exhaustionBottomIndex][i])
-                  {
-                     if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                     {
-                        this.eventSeries[exhaustionBottomIndex][i] = true;
-                     }
-                     else
-                     {
-                        waitExhaustionBottom = true;
-                     }
-                  }
-               }
+                IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
 
-               if (waitBullishDivergence)
-               {
-                  if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                  {
-                     waitBullishDivergence = false;
-                     this.eventSeries[bullishDivergenceIndex][i] = true;
-                  }
-               }
-               else
-               {
-                  if (originalDecorator.Events[bullishDivergenceIndex][i])
-                  {
-                     if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                     {
-                        this.eventSeries[bullishDivergenceIndex][i] = true;
-                     }
-                     else
-                     {
-                        waitBullishDivergence = true;
-                     }
-                  }
-               }
+                this.Series[0] = originalDecorator.Series[0];
+                this.Series[1] = originalDecorator.Series[1];
+                this.Series[2] = originalDecorator.Series[2];
+
+                IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
+
+                FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+                FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+                int exhaustionTopIndex = 0;
+                int exhaustionBottomIndex = 1;
+                int bearishDivergenceIndex = 2;
+                int bullishDivergenceIndex = 3;
+
+                int upTrendIndex = 0;
+
+                bool waitExhaustionTop = false;
+                bool waitExhaustionBottom = false;
+                bool waitBearishDivergence = false;
+                bool waitBullishDivergence = false;
+
+                for (int i = 10; i < stockSerie.Count; i++)
+                {
+                    if (waitExhaustionTop)
+                    {
+                        if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                        {
+                            waitExhaustionTop = false;
+                            this.eventSeries[exhaustionTopIndex][i] = true;
+                        }
+                    }
+                    else
+                    {
+                        if (originalDecorator.Events[exhaustionTopIndex][i])
+                        {
+                            if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                            {
+                                this.eventSeries[exhaustionTopIndex][i] = true;
+                            }
+                            else
+                            {
+                                waitExhaustionTop = true;
+                            }
+                        }
+                    }
+
+                    if (waitBearishDivergence)
+                    {
+                        if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                        {
+                            waitBearishDivergence = false;
+                            this.eventSeries[bearishDivergenceIndex][i] = true;
+                        }
+                    }
+                    else
+                    {
+                        if (originalDecorator.Events[bearishDivergenceIndex][i])
+                        {
+                            if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                            {
+                                this.eventSeries[bearishDivergenceIndex][i] = true;
+                            }
+                            else
+                            {
+                                waitBearishDivergence = true;
+                            }
+                        }
+                    }
+                    if (waitExhaustionBottom)
+                    {
+                        if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                        {
+                            waitExhaustionBottom = false;
+                            this.eventSeries[exhaustionBottomIndex][i] = true;
+                        }
+                    }
+                    else
+                    {
+                        if (originalDecorator.Events[exhaustionBottomIndex][i])
+                        {
+                            if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                            {
+                                this.eventSeries[exhaustionBottomIndex][i] = true;
+                            }
+                            else
+                            {
+                                waitExhaustionBottom = true;
+                            }
+                        }
+                    }
+
+                    if (waitBullishDivergence)
+                    {
+                        if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                        {
+                            waitBullishDivergence = false;
+                            this.eventSeries[bullishDivergenceIndex][i] = true;
+                        }
+                    }
+                    else
+                    {
+                        if (originalDecorator.Events[bullishDivergenceIndex][i])
+                        {
+                            if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                            {
+                                this.eventSeries[bullishDivergenceIndex][i] = true;
+                            }
+                            else
+                            {
+                                waitBullishDivergence = true;
+                            }
+                        }
+                    }
+                }
             }
-         }
-      }
+        }
 
-      public override System.Drawing.Pen[] EventPens
-      {
-         get
-         {
-            if (eventPens == null)
+        public override System.Drawing.Pen[] EventPens
+        {
+            get
             {
-               eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
-               eventPens[0].Width = 3;
-               eventPens[1].Width = 3;
-               eventPens[2].Width = 2;
-               eventPens[3].Width = 2;
+                if (eventPens == null)
+                {
+                    eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.Red) };
+                    eventPens[0].Width = 3;
+                    eventPens[1].Width = 3;
+                    eventPens[2].Width = 2;
+                    eventPens[3].Width = 2;
+                }
+                return eventPens;
             }
-            return eventPens;
-         }
-      }
+        }
 
-      static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
-      public override string[] EventNames
-      {
-         get { return eventNames; }
-      }
+        static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
+        public override string[] EventNames
+        {
+            get { return eventNames; }
+        }
 
-      static readonly bool[] isEvent = new bool[] { true, true, true, true };
-      public override bool[] IsEvent
-      {
-         get { return isEvent; }
-      }
+        static readonly bool[] isEvent = new bool[] { true, true, true, true };
+        public override bool[] IsEvent
+        {
+            get { return isEvent; }
+        }
 
-   }
+    }
 }
 /*
 {***** Copyright David Carbonel - All rights reserved *****}

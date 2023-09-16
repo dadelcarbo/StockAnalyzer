@@ -372,7 +372,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             this.AlertId = -1;
             this.InReport = true;
-            this.InAlert= true;
+            this.InAlert = true;
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();

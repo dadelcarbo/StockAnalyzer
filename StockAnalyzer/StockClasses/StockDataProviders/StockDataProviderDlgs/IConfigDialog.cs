@@ -2,9 +2,9 @@
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
-   public interface IConfigDialog
-   {
-      DialogResult ShowDialog(StockDictionary stockDico);
-      string DisplayName { get; }
-   }
+    public interface IConfigDialog
+    {
+        DialogResult ShowDialog(StockDictionary stockDico);
+        string DisplayName { get; }
+    }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
@@ -106,7 +106,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             {
                 if (eventPens == null)
                 {
-                    eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red)};
+                    eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
                     eventPens[0].Width = 2;
                     eventPens[1].Width = 2;
                 }

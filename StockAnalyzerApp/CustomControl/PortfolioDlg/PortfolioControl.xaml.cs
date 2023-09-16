@@ -1,12 +1,12 @@
-﻿using StockAnalyzer.StockPortfolio;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
-using System.Threading.Tasks;
 using Telerik.Windows.Controls.Data.PropertyGrid;
+using Telerik.Windows.Controls.GridView;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {

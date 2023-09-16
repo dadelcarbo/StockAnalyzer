@@ -1,10 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
@@ -263,13 +263,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             {
                 if (eventPens == null)
                 {
-                    eventPens = new Pen[] { 
-                        new Pen(Color.Green), new Pen(Color.Red), 
+                    eventPens = new Pen[] {
                         new Pen(Color.Green), new Pen(Color.Red),
                         new Pen(Color.Green), new Pen(Color.Red),
-                        new Pen(Color.Transparent), new Pen(Color.Transparent), 
-                        new Pen(Color.Transparent), new Pen(Color.Transparent), 
-                        new Pen(Color.Transparent), new Pen(Color.Transparent), 
+                        new Pen(Color.Green), new Pen(Color.Red),
+                        new Pen(Color.Transparent), new Pen(Color.Transparent),
+                        new Pen(Color.Transparent), new Pen(Color.Transparent),
+                        new Pen(Color.Transparent), new Pen(Color.Transparent),
                         new Pen(Color.Transparent), new Pen(Color.Transparent) };
                     eventPens[0].Width = 3;
                     eventPens[1].Width = 3;
@@ -297,11 +297,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
         static readonly bool[] isEvent = new bool[]
         {
-            true, true, 
             true, true,
-            true, true, 
-            false, false, 
-            false, false, 
+            true, true,
+            true, true,
+            false, false,
+            false, false,
             false, false
         };
         public override bool[] IsEvent

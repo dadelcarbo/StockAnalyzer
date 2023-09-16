@@ -4,7 +4,7 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
 {
     public class SaxoApiException : Exception
     {
-        public ErrorInfo ErrorInfo {get;set;}
+        public ErrorInfo ErrorInfo { get; set; }
 
         public override string Message => ErrorInfo == null ? base.Message : this.ErrorInfo.Message;
     }

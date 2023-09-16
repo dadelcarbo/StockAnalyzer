@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.StockWeb;
+using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using StockAnalyzer.StockWeb;
-using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -46,7 +46,7 @@ namespace StockAnalyzerApp.CustomControl
             Settings.Default.UserId = this.userIDTextBox.Text;
             Settings.Default.LoadStartYear = (int)this.startYearTextBox.Value;
             Settings.Default.SupportIntraday = this.supportIntradayCheckBox.Checked;
-            
+
             Settings.Default.UserSMTP = this.smtpTextBox.Text;
             Settings.Default.UserEMail = this.addressTextBox.Text;
 

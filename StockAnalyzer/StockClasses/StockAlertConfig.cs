@@ -1,11 +1,10 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Xml.Serialization;
-using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses
 {

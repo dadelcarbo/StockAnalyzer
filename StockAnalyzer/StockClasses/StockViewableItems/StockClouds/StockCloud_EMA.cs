@@ -30,12 +30,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1)};
+                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
                 }
                 return seriePens;
             }
         }
-        public override string[] SerieNames { get { return new string[] { "Bull", "Bear"}; } }
+        public override string[] SerieNames { get { return new string[] { "Bull", "Bear" }; } }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie bullSerie = stockSerie.GetIndicator($"EMA({(int)this.parameters[0]})").Series[0];

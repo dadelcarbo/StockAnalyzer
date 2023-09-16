@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period"}; }
+            get { return new string[] { "Period" }; }
         }
 
         public override string[] SerieNames { get { return new string[] { "ATR(" + this.Parameters[0].ToString() + ")" }; } }

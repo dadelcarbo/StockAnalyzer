@@ -1,5 +1,5 @@
-﻿using System;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockMath;
+using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override Object[] ParameterDefaultValues => new Object[] { 2 };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
-        
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

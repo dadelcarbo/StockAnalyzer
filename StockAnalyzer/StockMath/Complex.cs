@@ -13,8 +13,8 @@ namespace StockAnalyzer.StockMath
     // israel.lot@gmail.com
     //
 
-    using System.Text.RegularExpressions;
     using System.Runtime.Serialization;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Complex number wrapper class.

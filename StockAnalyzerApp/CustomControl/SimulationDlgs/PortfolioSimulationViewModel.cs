@@ -1,17 +1,17 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockAgent.Agents;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockAgent.Agents;
 using System.Windows;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockHelpers;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {

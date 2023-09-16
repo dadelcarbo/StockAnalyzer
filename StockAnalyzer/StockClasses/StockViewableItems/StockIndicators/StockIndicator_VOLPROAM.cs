@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     seriePens = new Pen[] {
                         new Pen(Color.DarkGreen, 2) { DashStyle = DashStyle.Custom },
-                        new Pen(Color.DarkBlue, 1), 
+                        new Pen(Color.DarkBlue, 1),
                         new Pen(Color.DarkBlue, 1),
                         new Pen(Color.DarkBlue, 1) };
                 }

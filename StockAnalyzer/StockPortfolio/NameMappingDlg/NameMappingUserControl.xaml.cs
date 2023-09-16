@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockPortfolio.NameMappingDlg
     /// </summary>
     public partial class NameMappingUserControl : UserControl
     {
-        public NameMappingDlg ParentDialog{ get; private set; }
+        public NameMappingDlg ParentDialog { get; private set; }
         public ObservableCollection<StockNameMapping> NameMappings { get; }
         public NameMappingUserControl(NameMappingDlg dlg)
         {

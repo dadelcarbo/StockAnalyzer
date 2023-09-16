@@ -1,5 +1,5 @@
-﻿using System;
-using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockMath;
+using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {

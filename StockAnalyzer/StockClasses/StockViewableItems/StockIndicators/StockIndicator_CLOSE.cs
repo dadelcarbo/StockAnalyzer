@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -20,11 +20,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] {  }; }
+            get { return new ParamRange[] { }; }
         }
         public override string[] ParameterNames
         {
-            get { return new string[] {}; }
+            get { return new string[] { }; }
         }
         public override string[] SerieNames { get { return new string[] { "ACTUALCLOSE()" }; } }
 

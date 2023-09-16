@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json;
-using StockAnalyzer.StockClasses;
-using System.Collections.Generic;
-
-namespace StockAnalyzer.StockPortfolio
+﻿namespace StockAnalyzer.StockPortfolio
 {
     public class StockPosition : StockPositionBase
     {

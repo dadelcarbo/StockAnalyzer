@@ -4,7 +4,6 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzerSettings;
 using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -83,7 +82,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, StockSerie.Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
                             stockSerie.ISIN = row[1];
                             stockDictionary.Add(instrument.Description, stockSerie);
-                           
+
                             stockSerie.Uic = instrument.Identifier;
                         }
                         else

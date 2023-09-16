@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 var longStopSerie = trailStop.Series[0];
                 var supportDetectedSerie = trailStop.Events[0];
-                var higherLowSerie = trailStop.Events[4]; 
+                var higherLowSerie = trailStop.Events[4];
                 var supportSerie = new FloatSerie(stockSerie.Count, "TRAILHL2.S"); supportSerie.Reset(float.NaN);
                 this.Series[0] = supportSerie;
 

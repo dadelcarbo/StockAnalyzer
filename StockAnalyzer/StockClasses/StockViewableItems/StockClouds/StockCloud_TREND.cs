@@ -132,7 +132,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                                 AbovePrice = false,
                                 Index = i - 1,
                                 Text = "Bot"
-                            }); 
+                            });
                             waitForText = false;
                         }
                         low = Math.Min(low, lowSerie[i]);

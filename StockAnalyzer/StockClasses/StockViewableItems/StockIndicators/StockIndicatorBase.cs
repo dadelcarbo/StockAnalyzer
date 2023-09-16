@@ -1,8 +1,8 @@
-﻿using System;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockMath;
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public abstract class StockIndicatorBase : Parameterizable, IStockIndicator, IStockText

@@ -3,14 +3,14 @@
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_OVERBOUGHTSR : StockPaintBarIndicatorEventBase
-   {
-      public override System.Drawing.Pen[] SeriePens
-      {
-         get
-         {
-            if (seriePens == null)
+    {
+        public override System.Drawing.Pen[] SeriePens
+        {
+            get
             {
-               seriePens = new Pen[] { 
+                if (seriePens == null)
+                {
+                    seriePens = new Pen[] {
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red),
@@ -18,9 +18,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                    new Pen(Color.Green), new Pen(Color.Red),
                    new Pen(Color.Green), new Pen(Color.Red)
                };
+                }
+                return seriePens;
             }
-            return seriePens;
-         }
-      }
-   }
+        }
+    }
 }

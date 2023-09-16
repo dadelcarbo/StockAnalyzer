@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Drawing;
 using System.Globalization;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
 {

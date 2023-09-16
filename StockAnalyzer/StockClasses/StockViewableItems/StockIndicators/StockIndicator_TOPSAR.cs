@@ -55,9 +55,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            float accelerationFactorStart = (float)this.parameters[0]/100f;
-            float accelerationFactorStep = (float)this.parameters[1]/100f;
-            float accelerationFactorMax = (float)this.parameters[2]/100f;
+            float accelerationFactorStart = (float)this.parameters[0] / 100f;
+            float accelerationFactorStep = (float)this.parameters[1] / 100f;
+            float accelerationFactorMax = (float)this.parameters[2] / 100f;
             int inputSmooting = (int)this.parameters[3];
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);

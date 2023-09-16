@@ -21,7 +21,7 @@ namespace StockAnalyzerSettings
         public static string DataFolder { get { return Settings.Default.DataFolder; } set { if (value != Settings.Default.DataFolder) Settings.Default.DataFolder = value; } }
         public static string PersonalFolder { get { return Settings.Default.PersonalFolder; } set { if (value != Settings.Default.PersonalFolder) Settings.Default.PersonalFolder = value; } }
 
-        public static string DividendFolder => Path.Combine (DataFolder, "dividend");
-        public static string AgendaFolder => Path.Combine (DataFolder, "agenda");
+        public static string DividendFolder => Path.Combine(DataFolder, "dividend");
+        public static string AgendaFolder => Path.Combine(DataFolder, "agenda");
     }
 }

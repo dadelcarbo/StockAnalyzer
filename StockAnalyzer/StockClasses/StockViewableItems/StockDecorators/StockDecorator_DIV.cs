@@ -1,8 +1,8 @@
-﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {

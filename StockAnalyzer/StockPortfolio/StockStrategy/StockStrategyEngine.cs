@@ -1,11 +1,10 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders;
+﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Saxo.OpenAPI.TradingServices;
 
 namespace StockAnalyzer.StockPortfolio.StockStrategy
 {

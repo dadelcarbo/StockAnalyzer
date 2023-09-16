@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockAgent
             BoolSerie regimeEvents = null;
             if (positionManagement.RegimePeriod > 0)
             {
-                regimeEvents = refSerie.GetIndicator($"EMA({positionManagement.RegimePeriod })").GetEvents("PriceAbove");
+                regimeEvents = refSerie.GetIndicator($"EMA({positionManagement.RegimePeriod})").GetEvents("PriceAbove");
             }
 
             var openTrades = new List<StockTrade>();

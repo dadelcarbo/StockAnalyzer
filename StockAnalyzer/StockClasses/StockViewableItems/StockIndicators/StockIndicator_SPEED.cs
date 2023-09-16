@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
+using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (int i = period; i < stockSerie.Count; i++)
             {
                 var diff = (indicatorSerie[i] - indicatorSerie[i - period]);
-                speedSerie[i] = 100.0f*(diff > 0 ? diff / indicatorSerie[i] : diff / indicatorSerie[i - period]);
+                speedSerie[i] = 100.0f * (diff > 0 ? diff / indicatorSerie[i] : diff / indicatorSerie[i - period]);
             }
 
             this.series[0] = speedSerie;

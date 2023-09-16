@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 {
                     if (closeSerie[i] < trailStop)
                     {
-                        upTrend = false; 
+                        upTrend = false;
                         previousTurnIndex = i;
                     }
                     else

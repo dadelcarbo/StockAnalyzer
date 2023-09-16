@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace StockAnalyzer.StockPortfolio
 {

@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockDrawing
         public static float CrossProduct(this PointF p1, PointF p2, PointF p3)
         {
             // (x2-x1)(y3-y1)-(y2-y1)(x3-x1)
-            return (p2.X - p1.X)*(p3.Y - p1.Y) - (p2.Y - p1.Y)*(p3.X - p1.X);
+            return (p2.X - p1.X) * (p3.Y - p1.Y) - (p2.Y - p1.Y) * (p3.X - p1.X);
         }
     }
     public abstract class Line2DBase : DrawingItem

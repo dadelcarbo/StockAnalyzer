@@ -183,7 +183,9 @@
     <Compile Include="Saxo.OpenAPI\TradingServices\ChartService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\ClientService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\InstrumentService.cs" />
-    <Compile Include="Saxo.OpenAPI\TradingServices\OrderService.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\OrderService\OrderRequest.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\OrderService\OrderResponse.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\OrderService\OrderService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\SaxoApiException.cs" />
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAAgent.cs" />
@@ -325,8 +327,8 @@
     <Compile Include="StockPortfolio\SaxoOperation.cs" />
     <Compile Include="StockPortfolio\SaxoPosition.cs" />
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
-    <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\SaxoPositionChange.cs" />
+    <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
     <Compile Include="StockPortfolio\StockStrategy\StockStrategy.cs" />

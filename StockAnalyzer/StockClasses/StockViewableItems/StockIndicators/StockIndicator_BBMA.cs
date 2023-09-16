@@ -65,7 +65,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var distHigh = highSerie - emaSerie;
             var distLow = emaSerie - lowSerie;
 
-            for (int i = period1; i< stockSerie.Count; i++)
+            for (int i = period1; i < stockSerie.Count; i++)
             {
                 var width = Math.Max(distHigh.GetMax(i - period1, i), distLow.GetMax(i - period1, i));
 
@@ -84,7 +84,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            
+
             // Detecting events
             bool bullish = false;
             bool bearish = false;

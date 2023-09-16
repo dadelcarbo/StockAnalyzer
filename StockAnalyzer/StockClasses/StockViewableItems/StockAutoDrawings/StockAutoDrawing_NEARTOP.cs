@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
                 var topPoint = bodyHighSerie.GetMaxPoint(stockSerie.LastIndex - maxPeriod, stockSerie.LastIndex);
-                while(topPoint.X == stockSerie.LastIndex - maxPeriod && !bodyHighSerie.IsTop(stockSerie.LastIndex - maxPeriod) && topPoint.X <= stockSerie.LastIndex - minPeriod)
+                while (topPoint.X == stockSerie.LastIndex - maxPeriod && !bodyHighSerie.IsTop(stockSerie.LastIndex - maxPeriod) && topPoint.X <= stockSerie.LastIndex - minPeriod)
                 {
                     maxPeriod--;
                     topPoint = bodyHighSerie.GetMaxPoint(stockSerie.LastIndex - maxPeriod, stockSerie.LastIndex);

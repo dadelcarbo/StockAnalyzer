@@ -5,12 +5,12 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Windows.Forms;
 using System.Net.Http;
-using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
 {

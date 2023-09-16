@@ -1,7 +1,7 @@
-﻿using System;
-using System.Drawing;
-using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 {
@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(2, 500) };
 
         public override string[] SerieNames => new string[] { "CUPHANDLEINV.LS", "CUPHANDLEINV.SS" };
- public override System.Drawing.Pen[] SeriePens
+        public override System.Drawing.Pen[] SeriePens
         {
             get
             {

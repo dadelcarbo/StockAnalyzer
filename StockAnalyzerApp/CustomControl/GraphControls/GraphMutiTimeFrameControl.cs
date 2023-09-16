@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.Properties;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.Properties;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {

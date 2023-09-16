@@ -46,7 +46,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             using (var sr = new StreamWriter(fileName, false))
             {
-                foreach(var entry in entries.OrderBy(e => e.Group).ThenBy(e=>e.StockName))
+                foreach (var entry in entries.OrderBy(e => e.Group).ThenBy(e => e.StockName))
                 {
                     sr.WriteLine(
                         entry.Ticker + "," +

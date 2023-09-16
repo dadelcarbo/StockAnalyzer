@@ -37,7 +37,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     // since most requests are quite small.
                     // We therefore strongly recommend against using the Expect:100 - Continue header, and expect you to make sure your client library does not rely on this mechanism.
                     httpClient.DefaultRequestHeaders.ExpectContinue = false;
-                    httpClient.Timeout = new TimeSpan(0,1,0);
+                    httpClient.Timeout = new TimeSpan(0, 1, 0);
                     var res = httpClient.SendAsync(request).Result;
                     content = res.Content.ReadAsStringAsync().Result;
                     res.EnsureSuccessStatusCode();

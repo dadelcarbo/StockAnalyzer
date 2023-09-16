@@ -3,10 +3,10 @@
 namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
 {
     public partial class ConditionalStatisticsDlg : Form
-   {
-      public ConditionalStatisticsDlg()
-      {
-         InitializeComponent();
-      }
-   }
+    {
+        public ConditionalStatisticsDlg()
+        {
+            InitializeComponent();
+        }
+    }
 }

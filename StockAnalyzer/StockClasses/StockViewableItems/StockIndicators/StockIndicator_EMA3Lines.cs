@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -26,8 +26,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                return new ParamRange[] { 
-             new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), 
+                return new ParamRange[] {
+             new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500),
              new ParamRangeInt(0, 500), new ParamRangeInt(0, 500), new ParamRangeInt(0, 500)   };
             }
         }
@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0].ShiftForward((int)this.parameters[3]);
             FloatSerie mediumSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0].ShiftForward((int)this.parameters[4]);
             FloatSerie slowSerie = stockSerie.GetIndicator(this.SerieNames[2]).Series[0].ShiftForward((int)this.parameters[5]);
-            
+
             this.Series[0] = fastSerie;
             this.Series[1] = mediumSerie;
             this.Series[2] = slowSerie;

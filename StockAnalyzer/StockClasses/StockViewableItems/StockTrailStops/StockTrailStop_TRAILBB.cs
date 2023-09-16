@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
+using System;
+using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {

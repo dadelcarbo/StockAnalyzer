@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
@@ -56,8 +56,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 if (seriePens == null)
                 {
                     seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red),
-                        new Pen(Color.MediumPurple), 
-                        new Pen(Color.Green), new Pen(Color.Red), 
+                        new Pen(Color.MediumPurple),
+                        new Pen(Color.Green), new Pen(Color.Red),
                         new Pen(Color.Green), new Pen(Color.Red)
                     };
                     foreach (Pen pen in seriePens)

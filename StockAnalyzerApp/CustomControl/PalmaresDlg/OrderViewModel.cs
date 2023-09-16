@@ -1,6 +1,5 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
-using StockAnalyzer.StockPortfolio;
 using System;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg

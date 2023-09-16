@@ -127,7 +127,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                             // Broken down
                             drawingItems.Add(new Rectangle2D(new PointF(range.startIndex, range.high), new PointF(i, range.low)));
                             range = null;
-                            i += period/2;
+                            i += period / 2;
                         }
                         else
                         {

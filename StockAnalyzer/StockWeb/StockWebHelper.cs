@@ -1,11 +1,11 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockLogging;
 
 namespace StockAnalyzer.StockWeb
 {

@@ -69,7 +69,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 
         public string[] Events { get; set; }
 
-        private string eventName; 
+        private string eventName;
         private int eventIndex = 2;
 
         public string Event
@@ -133,7 +133,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
             R2Count = 0;
             TotalReturn = 0;
 
-            float stopRatio = 1-this.s1Percent;
+            float stopRatio = 1 - this.s1Percent;
             float targetRatio = 1 + this.r1Percent;
             float stopPercent = -this.s1Percent;
             float targetPercent = this.r1Percent;

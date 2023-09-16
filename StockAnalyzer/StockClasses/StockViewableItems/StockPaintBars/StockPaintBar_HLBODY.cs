@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period"}; }
+            get { return new string[] { "Period" }; }
         }
         public override Object[] ParameterDefaultValues
         {
@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { false, false};
+        static readonly bool[] isEvent = new bool[] { false, false };
         public override bool[] IsEvent
         {
             get { return isEvent; }

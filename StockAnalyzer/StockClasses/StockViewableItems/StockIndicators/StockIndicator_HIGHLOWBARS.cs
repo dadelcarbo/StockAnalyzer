@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockMath;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -54,7 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // "BullStart", "BearStart", "BullEnd", "BearEnd", "Bull", "Bear"
             for (int i = Math.Max(trendPeriod, breakPeriod); i < closeSerie.Count; i++)
             {
-                if (bull) {
+                if (bull)
+                {
                     var lowest = lowSerie.GetMin(i - breakPeriod, i - 1);
                     if (closeSerie[i] < lowest)
                     {
@@ -68,7 +69,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else
                 {
-                    var highest = highSerie.GetMax(i - trendPeriod, i - 1); 
+                    var highest = highSerie.GetMax(i - trendPeriod, i - 1);
                     if (closeSerie[i] > highest)
                     {
                         bull = true;
@@ -92,7 +93,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 else
                 {
                     var lowest = lowSerie.GetMin(i - trendPeriod, i - 1);
-                    if (closeSerie[i] <lowest)
+                    if (closeSerie[i] < lowest)
                     {
                         bear = true;
                         this.eventSeries[1][i] = true; // BearStart

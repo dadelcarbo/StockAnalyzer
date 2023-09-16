@@ -489,7 +489,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                         treeNode1 = new TrailStopsNode(stockTrailStop.Name, this.indicatorMenuStrip, stockTrailStop);
                                         for (int i = 0; i < stockTrailStop.SeriesCount; i++)
                                         {
-                                            CurveNode curveNode = new CurveNode(stockTrailStop.SerieNames[i], null, stockTrailStop.SeriePens[i], i>=2, stockTrailStop.SerieVisibility[i]);
+                                            CurveNode curveNode = new CurveNode(stockTrailStop.SerieNames[i], null, stockTrailStop.SeriePens[i], i >= 2, stockTrailStop.SerieVisibility[i]);
                                             treeNode1.Nodes.Add(curveNode);
 
                                             curveNode.ImageKey = treeNode1.ImageKey;

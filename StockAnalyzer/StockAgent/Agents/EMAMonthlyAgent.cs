@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockAgent.Agents
 
         protected override TradeAction TryToOpenPosition(int index)
         {
-            if (dates[index-1].Month != dates[index].Month &&  bodyLowSerie[index] > emaSerie[index])
+            if (dates[index - 1].Month != dates[index].Month && bodyLowSerie[index] > emaSerie[index])
             {
                 return TradeAction.Buy;
             }

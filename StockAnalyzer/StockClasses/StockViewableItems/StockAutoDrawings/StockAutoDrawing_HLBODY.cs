@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StockAnalyzer.StockDrawing;
+using System;
 using System.Drawing;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 {

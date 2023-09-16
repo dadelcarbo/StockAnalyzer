@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockPortfolio.NameMappingDlg
         {
             InitializeComponent();
 
-            UserControl  = this.elementHost1.Child as NameMappingUserControl;
+            UserControl = this.elementHost1.Child as NameMappingUserControl;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockDrawing
                     g.FillPolygon(fillBrush, points);
                     var range = (this.Bottom - this.Top) / this.Bottom; // Top and Botton inversed
                     var left = points.Max(p => p.X);
-                    var text = $"Bars: {Right - Left }\r\nVar:{range.ToString("P2")}";
+                    var text = $"Bars: {Right - Left}\r\nVar:{range.ToString("P2")}";
                     this.DrawText(g, text, font, Brushes.Black, Brushes.White, new PointF(left - 40, points[0].Y + 2), false, Pens.Black);
                 }
             }

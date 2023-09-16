@@ -1,7 +1,7 @@
 ﻿namespace StockAnalyzer.StockClasses.StockViewableItems
 {
-   public interface IStockVisibility
-   {
-      bool[] SerieVisibility { get; }
-   }
+    public interface IStockVisibility
+    {
+        bool[] SerieVisibility { get; }
+    }
 }

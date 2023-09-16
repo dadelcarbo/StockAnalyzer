@@ -1,8 +1,8 @@
-﻿using System;
+﻿using StockAnalyzer.StockDrawing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using StockAnalyzer.StockDrawing;
 
 namespace StockAnalyzer.StockClasses
 {
