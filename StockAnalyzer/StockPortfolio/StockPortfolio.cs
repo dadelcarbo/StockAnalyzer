@@ -693,11 +693,18 @@ namespace StockAnalyzer.StockPortfolio
                         if (stockSerie == null)
                         {
                             StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
-                            return;
+                            var instrument = instrumentService.GetInstrumentById(order.Uic);
+                            if (instrument == null)
+                                return;
+                            order.StockName = instrument.Description;
+                            order.Isin = instrument.Isin;
                         }
-                        order.StockName = stockSerie.StockName;
-                        order.Isin = stockSerie.ISIN;
-                        ProcessFullyFilledOrder(activityOrder, order, stockSerie);
+                        else
+                        {
+                            order.StockName = stockSerie.StockName;
+                            order.Isin = stockSerie.ISIN;
+                        }
+                        ProcessFullyFilledOrder(activityOrder, order);
                     }
                     break;
                 case "Changed": // Update stop loss or buy order
@@ -763,7 +770,7 @@ namespace StockAnalyzer.StockPortfolio
             this.LastLogId = Math.Max(this.LastLogId, activityOrder.LogId);
         }
 
-        private void ProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order, StockSerie stockSerie)
+        private void ProcessFullyFilledOrder(OrderActivity activityOrder, SaxoOrder order)
         {
             var position = this.Positions.FirstOrDefault(p => p.Uic == order.Uic);
             if (activityOrder.BuySell == "Buy")
@@ -777,8 +784,8 @@ namespace StockAnalyzer.StockPortfolio
                         Uic = order.Uic,
                         EntryDate = order.ActivityTime,
                         EntryQty = order.Qty,
-                        StockName = stockSerie.StockName,
-                        ISIN = stockSerie.ISIN,
+                        StockName = order.StockName,
+                        ISIN = order.Isin,
                         EntryValue = order.AveragePrice.Value,
                         PortfolioValue = this.TotalValue
                     };
@@ -806,7 +813,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (position == null)
                 {
-                    StockLog.Write($"Selling not opened position: {stockSerie.StockName} qty:{order.Qty}");
+                    StockLog.Write($"Selling not opened position: {order.StockName} qty:{order.Qty}");
                     return;
                 }
                 if (position.EntryQty <= order.Qty)
