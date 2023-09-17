@@ -65,6 +65,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
+            return;
             string line;
             if (File.Exists(fileName))
             {

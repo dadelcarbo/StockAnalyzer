@@ -1,4 +1,5 @@
-﻿using StockAnalyzer;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer;
 using StockAnalyzer.StockPortfolio;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
 
+        public IEnumerable<OrderActivity> SaxoOrderActivity => Portfolio.SaxoOrderActivity.OrderByDescending(o=>o.ActivityTime);
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.GetActiveOrders().OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 

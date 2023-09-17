@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,6 @@ namespace Saxo.OpenAPI.TradingServices
             if (File.Exists(Folders.SaxoInstruments))
             {
                 InstrumentCache = JsonConvert.DeserializeObject<List<Instrument>>(File.ReadAllText(Folders.SaxoInstruments));
-                foreach (var instrumenent in InstrumentCache.Where(i => !String.IsNullOrEmpty(i.Isin)))
-                {
-                    InstrumentIsinCache.Add(instrumenent.Isin, instrumenent);
-                    InstrumentUicCache.Add(instrumenent.Identifier, instrumenent);
-                }
             }
             else
             {
@@ -30,56 +26,75 @@ namespace Saxo.OpenAPI.TradingServices
         private static List<Instrument> InstrumentCache;
 
         static string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
-
-        private static SortedDictionary<string, Instrument> InstrumentIsinCache = new SortedDictionary<string, Instrument>();
         public Instrument GetInstrumentByIsin(string isin)
         {
-            var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}";
             try
             {
-                if (!InstrumentIsinCache.ContainsKey(isin))
+                var instrument = InstrumentCache.FirstOrDefault(i => i.Isin == isin);
+                if (instrument != null)
                 {
-                    Instrument instrument = null;
+                    return instrument;
+                }
+                else
+                {
+                    var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}";
                     var instruments = Get<Instruments>(method);
                     if (instruments.Data.Length > 0)
                     {
                         instrument = instruments.Data.First();
-                        instrument.Isin = isin;
+
+                        var cacheInstrument = InstrumentCache.FirstOrDefault(i => i.Identifier == instrument.Identifier);
+                        if (cacheInstrument == null)
+                        {
+                            InstrumentCache.Add(instrument);
+                        }
+                        else
+                        {
+                            instrument = cacheInstrument;
+                            instrument.Isin = isin;
+                        }
                     }
 
-                    InstrumentIsinCache.Add(isin, instrument);
-
-                    if (instrument != null)
-                    {
-                        InstrumentCache.Add(instrument);
-                        // Save Cache
-                        File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
-                    }
+                    File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
                 }
-                return InstrumentIsinCache[isin];
+                return instrument;
             }
             catch (Exception ex)
             {
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        private static SortedDictionary<long, Instrument> InstrumentUicCache = new SortedDictionary<long, Instrument>();
         public Instrument GetInstrumentById(long uic)
         {
             var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes={ASSET_TYPES}";
             try
             {
-                if (!InstrumentUicCache.ContainsKey(uic))
+                var instrument = InstrumentCache.FirstOrDefault(i => i.Identifier == uic);
+                if (instrument != null)
                 {
-                    Instrument instrument = null;
+                    return instrument;
+                }
+                else
+                {
                     var instruments = Get<Instruments>(method);
                     if (instruments.Data.Length > 0)
                     {
                         instrument = instruments.Data.First();
                     }
-                    InstrumentUicCache.Add(uic, instrument);
+                    else
+                    {
+                        instrument = new Instrument
+                        {
+                            Identifier = uic,
+                            Symbol = uic.ToString(),
+                            Description = $"Not found: {uic}"
+                        };
+                    }
+                    InstrumentCache.Add(instrument);
+                    // Save Cache
+                    File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
                 }
-                return InstrumentUicCache[uic];
+                return instrument;
             }
             catch (Exception ex)
             {

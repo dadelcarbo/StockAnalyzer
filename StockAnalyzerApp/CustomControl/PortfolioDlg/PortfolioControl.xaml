@@ -132,6 +132,13 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
+            <TabItem Header="Activity">
+                <telerik:RadGridView FontSize="9" ItemsSource="{Binding PortfolioViewModel.SaxoOrderActivity}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="True"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                </telerik:RadGridView>
+            </TabItem>
             <TabItem Header="Closed Positions">
                 <telerik:RadGridView FontSize="9" Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
                                      SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
