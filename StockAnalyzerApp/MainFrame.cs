@@ -164,12 +164,23 @@ namespace StockAnalyzerApp
                     if (portfolioComboBox.SelectedItem != value)
                     {
                         portfolioComboBox.SelectedIndex = portfolioComboBox.Items.IndexOf(value);
-                        portfolio.SaxoSilentLogin();
                     }
                     else
                     {
                         portfolio = value;
                         this.graphCloseControl.ForceRefresh();
+                    }
+
+                    // Update Connectivity Status
+                    if (portfolio.SaxoSilentLogin())
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Connected";
+                    }
+                    else
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Not Connected";
                     }
                 }
                 else
@@ -577,7 +588,20 @@ namespace StockAnalyzerApp
 
             foreach (var portfolio in this.Portfolios)
             {
-                portfolio.SaxoSilentLogin();
+                var logingStatus = portfolio.SaxoSilentLogin();
+                if (this.portfolio == portfolio)
+                {
+                    if (logingStatus)
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Connected";
+                    }
+                    else
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                    }
+                }
             }
 
             if (Settings.Default.GenerateDailyReport)
@@ -4343,7 +4367,7 @@ namespace StockAnalyzerApp
         {
             if (this.portfolio != portfolioComboBox.SelectedItem)
             {
-                this.portfolio = portfolioComboBox.SelectedItem as StockPortfolio;
+                this.Portfolio = portfolioComboBox.SelectedItem as StockPortfolio;
                 this.graphCloseControl.ForceRefresh();
             }
         }
@@ -4352,6 +4376,16 @@ namespace StockAnalyzerApp
             if (this.portfolio != null)
             {
                 this.portfolio.Refresh();
+                if (portfolio.SaxoSilentLogin())
+                {
+                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                    this.portfolioStatusLbl.ToolTipText = "Connected";
+                }
+                else
+                {
+                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                    this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                }
                 this.graphCloseControl.ForceRefresh();
             }
         }

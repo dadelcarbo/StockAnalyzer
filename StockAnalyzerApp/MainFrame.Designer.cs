@@ -118,6 +118,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.portfolioComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.refreshPortfolioBtn = new System.Windows.Forms.ToolStripButton();
+            this.portfolioStatusLbl = new System.Windows.Forms.ToolStripStatusLabel();
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -816,6 +817,7 @@ namespace StockAnalyzerApp
             this.saveThemeStripButton,
             this.toolStripSeparator1,
             this.portfolioComboBox,
+            this.portfolioStatusLbl,
             this.refreshPortfolioBtn});
             this.themeToolStrip.Location = new System.Drawing.Point(3, 0);
             this.themeToolStrip.Name = "themeToolStrip";
@@ -924,7 +926,16 @@ namespace StockAnalyzerApp
             this.refreshPortfolioBtn.Text = "Refresh Portfolio";
             this.refreshPortfolioBtn.ToolTipText = "Refresh Portfolio";
             this.refreshPortfolioBtn.Click += new System.EventHandler(this.refreshPortfolioBtn_Click);
-
+            // 
+            // portfolioStatusLbl
+            // 
+            this.portfolioStatusLbl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+            this.portfolioStatusLbl.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.portfolioStatusLbl.Name = "portfolioStatusLbl";
+            this.portfolioStatusLbl.Size = new System.Drawing.Size(23, 20);
+            this.portfolioStatusLbl.Text = "Portfolio";
+            this.portfolioStatusLbl.ToolTipText = "Not Connected";
             // 
             // browseToolStrip
             // 
@@ -1642,6 +1653,7 @@ namespace StockAnalyzerApp
         private ToolStripComboBox themeComboBox;
         private ToolStripComboBox portfolioComboBox;
         private ToolStripButton refreshPortfolioBtn;
+        private ToolStripStatusLabel portfolioStatusLbl;
         private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;
         private ToolStripButton defaultThemeStripButton;

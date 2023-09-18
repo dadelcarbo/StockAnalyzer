@@ -241,6 +241,12 @@
   <data name="Reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="GreenIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GreenIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RedIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RedIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Paint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Paint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

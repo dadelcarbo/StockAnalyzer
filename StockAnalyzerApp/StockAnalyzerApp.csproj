@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>211</ApplicationRevision>
+    <ApplicationRevision>212</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -1027,6 +1027,9 @@
     <None Include="Resources\magnet_pencil.png" />
     <None Include="Resources\Line.png" />
     <Content Include="Resources\Div.png" />
+    <Content Include="Resources\GreenIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\NewAnalysis.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1057,6 +1060,9 @@
     <None Include="Resources\OpenAnalysis.png" />
     <None Include="Resources\Cloud.png" />
     <Content Include="Resources\PEAPerformanceTemplate.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\RedIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Reload.png">
