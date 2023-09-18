@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILEMABODY : StockTrailStopBase
     {
         public override string Definition => base.Definition + Environment.NewLine +
-            "Draw a trail stop based on first body above the or below the EMA.";
+            "Draw a trail stop based on first body above the or below the ATR Band.";
 
         public override IndicatorDisplayTarget DisplayTarget
         {
