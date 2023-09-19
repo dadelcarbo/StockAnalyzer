@@ -53,19 +53,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             grSerie[0] = closeSerie[0];
             float dividend = 0;
             int i = 1;
-            var previousBarDate = stockSerie.Keys.First();
+            var previousBar = stockSerie.Values.First();
             foreach (var value in stockSerie.Values.Skip(1))
             {
                 if (value.DATE.Date >= startDate)
                 {
-                    var entries = stockSerie?.Dividend?.Entries.Where(e => e.Date > previousBarDate && e.Date <= value.DATE.Date).ToList();
+                    var entries = stockSerie?.Dividend?.Entries.Where(e => e.Date > previousBar.DATE && e.Date <= value.DATE.Date).ToList();
                     if (entries.Count > 0)
                     {
-                        dividend += entries.Sum(e => e.Dividend) * grSerie[i - 1] / value.CLOSE;
+                        dividend = entries.Sum(e => e.Dividend) / previousBar.CLOSE;
+                    }
+                    else
+                    {
+                        dividend = 0;
                     }
                 }
-                grSerie[i++] = value.CLOSE + dividend;
-                previousBarDate = value.DATE;
+                var adjVar = 1 + value.VARIATION + dividend;
+                grSerie[i] = grSerie[i - 1] * adjVar;
+                previousBar = value;
+                i++;
             }
 
             // Detecting events

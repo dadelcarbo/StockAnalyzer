@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -3159,32 +3160,55 @@ namespace StockAnalyzer.StockClasses
             stockSerie.IsPortfolioSerie = this.IsPortfolioSerie;
 
             // Calculate ratio foreach values
-            float dividend = 0;
             var previousDate = DateTime.MaxValue;
-            var previousAdjClose = this.Values.Last().CLOSE;
-            var previousClose = this.Values.Last().CLOSE;
+            var adjClose = this.Values.First().CLOSE;
+            var previousClose = this.Values.First().CLOSE;
 
             var bars = new List<StockDailyValue>();
-            foreach (var value in this.Values.Reverse())
+            foreach (var bar in this.Values)
             {
-                var entries = this?.Dividend?.Entries.Where(e => e.Date <= previousDate && e.Date > value.DATE.Date).ToList();
+                float dividend = 0;
+                var entries = this?.Dividend?.Entries.Where(e => e.Date == bar.DATE).ToList();
                 if (entries.Count > 0)
                 {
-                    dividend += entries.Sum(e => e.Dividend) * previousClose / previousAdjClose;
+                    dividend = entries.Sum(e => e.Dividend) / previousClose;
                 }
 
-                var newValue = new StockDailyValue(value.OPEN - dividend, value.HIGH - dividend, value.LOW - dividend, value.CLOSE - dividend, value.VOLUME, value.DATE);
-                bars.Add(newValue);
+                var adjVar = 1 + bar.VARIATION + dividend;
+                adjClose *= adjVar;
+                var newBar = new StockDailyValue(bar.OPEN * adjClose / bar.CLOSE, bar.HIGH * adjClose / bar.CLOSE, bar.LOW * adjClose / bar.CLOSE, adjClose, bar.VOLUME, bar.DATE);
+                bars.Add(newBar);
 
-                previousDate = value.DATE;
-                previousClose = value.CLOSE;
-                previousAdjClose = newValue.CLOSE;
+                previousDate = bar.DATE;
+                previousClose = bar.CLOSE;
             }
-            bars.Reverse();
+            var ratio = previousClose / adjClose;
+
             foreach (var bar in bars)
             {
+                bar.OPEN *= ratio;
+                bar.HIGH *= ratio;
+                bar.LOW *= ratio;
+                bar.CLOSE *= ratio;
                 stockSerie.Add(bar.DATE, bar);
             }
+
+            //foreach (var value in this.Values.Reverse())
+            //{
+            //    var entries = this?.Dividend?.Entries.Where(e => e.Date <= previousDate && e.Date > value.DATE.Date).ToList();
+            //    if (entries.Count > 0)
+            //    {
+            //        dividend += entries.Sum(e => e.Dividend) * previousClose / previousAdjClose;
+            //    }
+
+            //    var newValue = new StockDailyValue(value.OPEN - dividend, value.HIGH - dividend, value.LOW - dividend, value.CLOSE - dividend, value.VOLUME, value.DATE);
+            //    bars.Add(newValue);
+
+            //    previousDate = value.DATE;
+            //    previousClose = value.CLOSE;
+            //    previousAdjClose = newValue.CLOSE;
+            //}
+            //bars.Reverse();
             if (this.ValueArray.Length != stockSerie.Count)
             {
                 Console.WriteLine("Here!");
