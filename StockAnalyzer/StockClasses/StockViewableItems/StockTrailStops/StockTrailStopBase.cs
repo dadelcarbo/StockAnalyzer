@@ -114,12 +114,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
              "HigherLow", "LowerHigh",           // 4,5
              "Bullish", "Bearish",               // 6,7
              "LH_HL", "HL_LH",                   // 8,9
-             "Long Reentry"
+             "Long Reentry", "Consolidation"     // 10,11
           };
 
         public string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true, true };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true, true, false };
         public bool[] IsEvent => isEvent;
 
         protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
@@ -303,6 +303,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             reentryRangeSerie[i] = (previousHigh - longReentryLow) / previousHigh;
                             distToReentrySerie[i] = (longReentry - closeSerie[i]) / longReentry;
                             barsInReentrySerie[i] = ++barsInReentry;
+                            this.Events[11][i] = true;
                         }
                     }
                 }
