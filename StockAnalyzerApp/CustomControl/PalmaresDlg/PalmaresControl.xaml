@@ -30,6 +30,8 @@
             <GroupBox Header="Stop" >
                 <StackPanel Orientation="Horizontal" Margin="2">
                     <TextBox Text="{Binding Stop}" Width="200" Margin="2" VerticalContentAlignment="Center"/>
+                    <Label Content="Theme"/>
+                    <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Settings">

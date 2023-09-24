@@ -12,6 +12,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Indicator2 { get; set; }
         public string Indicator3 { get; set; }
         public string Stop { get; set; }
+        public string Theme { get; set; }
     }
     public class FilterDescriptorProxy
     {

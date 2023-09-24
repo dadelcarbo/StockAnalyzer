@@ -272,7 +272,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var fields = row[1].Split('/');
 
                             var stockSerie = new StockSerie(row[0], row[0],
-                                StockSerie.Groups.INTRADAY,
+                                StockSerie.Groups.TURBO,
                                 StockDataProvider.Citifirst, BarDuration.M_10);
                             stockSerie.ProductType = fields[5];
                             stockSerie.Underlying = fields[6];

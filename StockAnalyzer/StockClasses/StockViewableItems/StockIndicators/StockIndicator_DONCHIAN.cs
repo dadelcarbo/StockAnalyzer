@@ -49,8 +49,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            var highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
-            var lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             upLine[0] = closeSerie[0];
             downLine[0] = closeSerie[0];
@@ -58,10 +58,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             midUpLine[0] = closeSerie[0];
             midDownLine[0] = closeSerie[0];
 
-            for (int i = 1; i < stockSerie.Count; i++)
+            for (int i = 0; i < stockSerie.Count; i++)
             {
-                upLine[i] = highSerie.GetMax(Math.Max(0, i - period - 1), i - 1);
-                downLine[i] = lowSerie.GetMin(Math.Max(0, i - period - 1), i - 1);
+                upLine[i] = highSerie.GetMax(Math.Max(0, i - period), i);
+                downLine[i] = lowSerie.GetMin(Math.Max(0, i - period), i);
                 midLine[i] = (upLine[i] + downLine[i]) / 2.0f;
                 midUpLine[i] = (upLine[i] + midLine[i]) / 2.0f;
                 midDownLine[i] = (midLine[i] + downLine[i]) / 2.0f;

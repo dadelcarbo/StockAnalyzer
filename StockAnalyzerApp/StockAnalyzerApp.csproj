@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>215</ApplicationRevision>
+    <ApplicationRevision>216</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -309,7 +309,7 @@
       <DependentUpon>BarDurationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\PalmaresDlg\FilterSettings.cs" />
-    <Compile Include="CustomControl\PalmaresDlg\OrderViewModel.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\OrderViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\PortfolioControl.xaml.cs">
       <DependentUpon>PortfolioControl.xaml</DependentUpon>
     </Compile>

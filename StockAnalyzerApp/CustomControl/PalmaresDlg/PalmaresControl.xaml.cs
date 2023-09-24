@@ -22,7 +22,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     public partial class PalmaresControl : UserControl
     {
         private System.Windows.Forms.Form Form { get; }
+
         public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndThemeChanged;
 
         public PalmaresViewModel ViewModel;
         public PalmaresControl(System.Windows.Forms.Form form)
@@ -148,17 +150,21 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             if (line == null) return;
 
-            if (SelectedStockChanged != null)
+            StockAnalyzerForm.MainFrame.Activate();
+            if (string.IsNullOrEmpty(this.ViewModel.Theme))
             {
-                StockAnalyzerForm.MainFrame.Activate();
                 this.SelectedStockChanged(line.Name, ViewModel.BarDuration, true);
                 if (!string.IsNullOrEmpty(this.ViewModel.Stop))
                 {
                     StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{this.ViewModel.Stop}");
                 }
-                this.Form.TopMost = true;
-                this.Form.TopMost = false;
             }
+            else
+            {
+                this.SelectedStockAndThemeChanged(line.Name, ViewModel.BarDuration, this.ViewModel.Theme, true);
+            }
+            this.Form.TopMost = true;
+            this.Form.TopMost = false;
         }
 
         private void exportToExcel_Click(object sender, RoutedEventArgs e)
@@ -362,7 +368,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator1 = this.ViewModel.Indicator1,
                     Indicator2 = this.ViewModel.Indicator2,
                     Indicator3 = this.ViewModel.Indicator3,
-                    Stop = this.ViewModel.Stop
+                    Stop = this.ViewModel.Stop,
+                    Theme = this.ViewModel.Theme
                 };
 
                 using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
@@ -403,6 +410,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                     this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
                     this.ViewModel.Stop = palmaresSettings.Stop;
+                    this.ViewModel.Theme = palmaresSettings.Theme;
                     this.GenerateColumns();
                     LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
                 }

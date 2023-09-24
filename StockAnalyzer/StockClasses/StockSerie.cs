@@ -32,6 +32,7 @@ namespace StockAnalyzer.StockClasses
             NONE = 0,
             COUNTRY,
             PEA,
+            PEA_EURONEXT,
             CAC40,
             SBF120,
             CACALL,
@@ -66,6 +67,7 @@ namespace StockAnalyzer.StockClasses
             PTF,
             BOND,
             INTRADAY,
+            TURBO,
             INT_EURONEXT,
             Portfolio,
             Replay,
@@ -2946,6 +2948,9 @@ namespace StockAnalyzer.StockClasses
                     return StockGroup == Groups.ALTERNEXT;
                 case Groups.CACALL:
                     return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT;
+                case Groups.PEA_EURONEXT:
+                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
+                        || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL;
                 case Groups.PEA:
                     return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
                         || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL

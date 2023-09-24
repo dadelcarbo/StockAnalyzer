@@ -206,7 +206,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                         var row = line.Split(',');
                         if (!stockDictionary.ContainsKey(row[1]))
                         {
-                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INTRADAY, StockDataProvider.VontobelIntraday, BarDuration.H_1);
+                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.VontobelIntraday, BarDuration.H_1);
                             stockSerie.ISIN = row[0];
                             stockDictionary.Add(row[1], stockSerie);
                             if (row.Length == 3)

@@ -502,15 +502,6 @@ namespace StockAnalyzerApp
                 LoadAnalysis(Settings.Default.AnalysisFile);
             }
 
-            // Download Intraday in background
-            //if (Settings.Default.SupportIntraday && Settings.Default.DownloadData)
-            //{
-            //    var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(StockSerie.Groups.INTRADAY)).ToList();
-            //    var task = new Task(() => { stockList.ForEach(s => StockDataProviderBase.DownloadSerieData(s)); });
-            //    task.Start();
-            //}
-
-
             var cac40 = this.StockDictionary["CAC40"];
             cac40.Initialise();
 
@@ -984,7 +975,7 @@ namespace StockAnalyzerApp
                                 if (!stockSerie.Initialise())
                                     continue;
                                 StockBarDuration previouBarDuration = stockSerie.BarDuration;
-                                if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY)
+                                if (stockSerie.StockGroup == StockSerie.Groups.INTRADAY || stockSerie.StockGroup == StockSerie.Groups.TURBO)
                                 {
                                     StockDataProviderBase.DownloadSerieData(stockSerie);
                                 }
@@ -1441,7 +1432,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.INT_EURONEXT)) && currentStockSerie.IsMarketOpened())
+                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) || currentStockSerie.BelongsToGroup(StockSerie.Groups.INT_EURONEXT)) && currentStockSerie.IsMarketOpened())
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -2596,6 +2587,7 @@ namespace StockAnalyzerApp
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
                 palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                palmaresDlg.palmaresControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
                 palmaresDlg.Show();
             }
             else
@@ -2642,6 +2634,7 @@ namespace StockAnalyzerApp
             switch (newGroup)
             {
                 case StockSerie.Groups.INTRADAY:
+                case StockSerie.Groups.TURBO:
                     if (this.logScaleBtn.CheckState == CheckState.Checked)
                     {
                         this.logScaleBtn_Click(null, null);

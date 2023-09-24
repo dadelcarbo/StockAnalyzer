@@ -103,6 +103,21 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        private string theme;
+        public string Theme
+        {
+            get { return theme; }
+            set
+            {
+                if (value != theme)
+                {
+                    theme = value;
+                    OnPropertyChanged("Theme");
+                }
+            }
+        }
+
+
         private DateTime fromDate;
         public DateTime FromDate
         {
@@ -152,6 +167,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public List<PalmaresLine> Lines { get; set; }
 
+        public IEnumerable<string> Themes { get; set; }
         public PalmaresViewModel()
         {
             this.Lines = new List<PalmaresLine>();
@@ -161,6 +177,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             string path = Folders.Palmares;
             this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
+
+            this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
+            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            if (this.Theme.Contains("*"))
+                this.Theme = this.Themes.FirstOrDefault();
 
             DownloadIntraday = false;
         }
@@ -207,7 +228,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             if (this.DownloadIntraday)
             {
-                if (this.group != StockSerie.Groups.INTRADAY)
+                if (this.group != StockSerie.Groups.INTRADAY && this.group != StockSerie.Groups.TURBO)
                 {
                     var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
                     dataProvider.DownloadAllGroupsIntraday();
@@ -217,7 +238,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             Lines = new List<PalmaresLine>();
             foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
-                if (this.DownloadIntraday && this.group == StockSerie.Groups.INTRADAY)
+                if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                 {
                     StockDataProviderBase.DownloadSerieData(stockSerie);
                 }

@@ -544,7 +544,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (instrument.ExchangeId == "CATS_SAXO" || instrument.AssetType == "WarrantOpenEndKnockOut")
                 {
-                    stockSerie = new StockSerie(instrument.Description, symbol, StockSerie.Groups.INTRADAY, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                    stockSerie = new StockSerie(instrument.Description, symbol, StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                     stockSerie.ISIN = symbol;
                 }
             }
@@ -565,6 +565,9 @@ namespace StockAnalyzer.StockPortfolio
 
         public bool SaxoLogin()
         {
+            if (this.IsSimu)
+                return false;
+
             if (string.IsNullOrEmpty(SaxoAccountId))
             {
                 MessageBox.Show("Missing Saxo Account Id, check portfolio file", "Saxo connection exception", MessageBoxButton.OK, MessageBoxImage.Error);

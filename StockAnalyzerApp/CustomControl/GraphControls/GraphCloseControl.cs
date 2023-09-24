@@ -1145,7 +1145,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-                DateTime orderDate = this.serie.StockGroup == StockSerie.Groups.INTRADAY ? operation.ActivityTime : operation.ActivityTime.Date;
+                DateTime orderDate = (this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)

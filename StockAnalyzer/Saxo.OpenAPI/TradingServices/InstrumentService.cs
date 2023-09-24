@@ -105,11 +105,11 @@ namespace Saxo.OpenAPI.TradingServices
         private static SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();
         public InstrumentDetails GetInstrumentDetailsById(long uic, string assetType, Account account)
         {
-            var method = $"ref/v1/instruments/details/{uic}/{assetType}/?AccountKey={account.AccountKey}";
             try
             {
                 if (!InstrumentDetailsCache.ContainsKey(uic))
                 {
+                    var method = $"ref/v1/instruments/details/{uic}/{assetType}/?AccountKey={account.AccountKey}";
                     InstrumentDetails instrumentDetail = Get<InstrumentDetails>(method);
 
                     InstrumentDetailsCache.Add(uic, instrumentDetail);
