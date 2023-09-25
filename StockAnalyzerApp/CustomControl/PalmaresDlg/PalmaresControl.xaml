@@ -66,6 +66,8 @@
                     <Label Content="To " VerticalAlignment="Center"/>
                     <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate, Mode=TwoWay}"/>
                     <Button Content="Apply" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                    <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}" Width="100" Height="10" Margin="2"
+                    Visibility="{Binding ProgressVisibility, Mode=OneWay}" ></telerik:RadProgressBar>
                     <CheckBox Content="Intraday" VerticalAlignment="Center" IsChecked="{Binding DownloadIntraday}" ToolTip="Download intraday data from ABC Bourse"/>
                 </StackPanel>
             </GroupBox>

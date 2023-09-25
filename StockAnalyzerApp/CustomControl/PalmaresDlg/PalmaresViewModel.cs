@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -161,6 +163,47 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        private int nbStocks;
+        public int NbStocks
+        {
+            get { return nbStocks; }
+            set
+            {
+                if (value != nbStocks)
+                {
+                    nbStocks = value;
+                    OnPropertyChanged("NbStocks");
+                }
+            }
+        }
+
+        private int progress;
+        public int Progress
+        {
+            get { return progress; }
+            set
+            {
+                if (value != progress)
+                {
+                    progress = value;
+                    OnPropertyChanged("Progress");
+                }
+            }
+        }
+        private Visibility progressVisibility;
+        public Visibility ProgressVisibility
+        {
+            get { return progressVisibility; }
+            set
+            {
+                if (value != progressVisibility)
+                {
+                    progressVisibility = value;
+                    OnPropertyChanged("ProgressVisibility");
+                }
+            }
+        }
+
         public bool ExportEnabled => this.Lines != null && this.Lines.Count > 0;
 
         public bool DownloadIntraday { get; set; }
@@ -184,9 +227,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.Theme = this.Themes.FirstOrDefault();
 
             DownloadIntraday = false;
+            ProgressVisibility = Visibility.Collapsed;
         }
-        public bool Calculate()
+        public async Task CalculateAsync()
         {
+            ProgressVisibility = Visibility.Visible;
             #region Sanity Check
             IStockIndicator viewableSeries1 = null;
             if (!string.IsNullOrEmpty(this.indicator1))
@@ -225,7 +270,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 catch { }
             }
             #endregion
-
             if (this.DownloadIntraday)
             {
                 if (this.group != StockSerie.Groups.INTRADAY && this.group != StockSerie.Groups.TURBO)
@@ -236,7 +280,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
 
             Lines = new List<PalmaresLine>();
-            foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
+            var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
+            this.Progress = 0;
+            this.NbStocks = stockList.Count;
+            int count = 0;
+            foreach (var stockSerie in stockList)
             {
                 if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                 {
@@ -244,6 +292,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 if (!stockSerie.Initialise() || stockSerie.Count < 50)
                     continue;
+
+                count++;
+                if (count % 10 == 0)
+                    this.Progress = count;
 
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
@@ -342,7 +394,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             OnPropertyChanged("Lines");
             OnPropertyChanged("ExportEnabled");
-            return true;
+            await Task.Delay(0);
+
+            ProgressVisibility = Visibility.Collapsed;
         }
     }
 }

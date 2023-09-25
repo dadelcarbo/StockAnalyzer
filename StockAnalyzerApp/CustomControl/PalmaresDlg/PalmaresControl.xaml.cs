@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -133,13 +134,13 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             column.DataFormatString = "P2";
         }
 
-        private void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
+        private async void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
 
             GenerateColumns();
 
-            this.ViewModel.Calculate();
+            await Task.Run(async() => await this.ViewModel.CalculateAsync());
 
             this.Cursor = Cursors.Arrow;
         }
