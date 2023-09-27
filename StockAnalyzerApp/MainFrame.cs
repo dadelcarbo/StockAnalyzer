@@ -1495,7 +1495,7 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.Deactivate(msg, false);
             this.graphIndicator3Control.Deactivate(msg, false);
             this.graphVolumeControl.Deactivate(msg, false);
-            this.Cursor = Cursors.Arrow;
+            this.Invoke(new Action(() => this.Cursor = Cursors.Arrow));
             this.statusLabel.Text = ("Loading data...");
         }
 
