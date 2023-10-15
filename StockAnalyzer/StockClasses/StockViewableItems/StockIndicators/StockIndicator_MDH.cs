@@ -53,7 +53,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
             FloatSerie bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
             FloatSerie bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);

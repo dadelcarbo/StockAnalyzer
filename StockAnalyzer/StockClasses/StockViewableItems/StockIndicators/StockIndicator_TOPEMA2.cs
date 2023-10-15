@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TOPEMA : StockIndicatorBase
+    public class StockIndicator_TOPEMA2 : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -18,22 +18,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames
         {
-            get { return new string[] { "Period" }; }
+            get { return new string[] { "UpPeriod", "DownPeriod" }; }
         }
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 30 }; }
+            get { return new Object[] { 175, 35 }; }
         }
 
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
         }
 
         public override string[] SerieNames
         {
-            get { return new string[] { "TOPEMA.Sup", "TOPEMA.Res" }; }
+            get { return new string[] { "TOPEMA2.Sup", "TOPEMA2.Res" }; }
         }
 
         public override System.Drawing.Pen[] SeriePens
@@ -51,7 +51,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
-            int period = (int)this.parameters[0];
 
             FloatSerie supportSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
@@ -61,18 +60,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[1] = resistanceSerie;
             this.Series[1].Name = this.SerieNames[1];
 
-            if (period >= stockSerie.Count)
-                return;
 
-            float alpha = 2.0f / (float)(period + 1);
+            int periodUp = (int)this.parameters[0];
+            int periodDown = (int)this.parameters[1];
+            float alphaUp = 2.0f / (float)(periodUp + 1);
+            float alphaDown = 2.0f / (float)(periodDown + 1);
+
+            if (periodUp >= stockSerie.Count || periodDown >= stockSerie.Count)
+                return;
 
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             float resistanceEMA = highSerie[0];
             float supportEMA = lowSerie[0];
-            supportSerie[period - 1] = supportEMA;
-            resistanceSerie[period - 1] = resistanceEMA;
+            supportSerie[periodUp - 1] = supportEMA;
+            resistanceSerie[periodUp - 1] = resistanceEMA;
             bool isBullish = false;
             bool isBearish = false;
             float previousLow = supportEMA;
@@ -85,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 // Resistance Management
                 if (!float.IsNaN(resistanceEMA))
                 {
-                    resistanceEMA = Math.Min(resistanceEMA, resistanceEMA + alpha * (highSerie[i] - resistanceEMA));
+                    resistanceEMA = Math.Min(resistanceEMA, resistanceEMA + alphaDown * (highSerie[i] - resistanceEMA));
                     if (closeSerie[i] > resistanceEMA) // Broken up
                     {
                         resistanceEMA = float.NaN;
@@ -105,7 +108,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         resistanceEMA = Math.Max(highSerie[i - 2], highSerie[i - 1]);
                         resistanceSerie[i - 1] = resistanceEMA;
-                        resistanceEMA = resistanceEMA + alpha * (highSerie[i] - resistanceEMA);
+                        resistanceEMA = resistanceEMA + alphaDown * (highSerie[i] - resistanceEMA);
                         this.Events[1][i] = true; // ResistanceDetected
                         if (resistanceEMA < previousHigh)
                         {
@@ -119,7 +122,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 // Support Management
                 if (!float.IsNaN(supportEMA))
                 {
-                    supportEMA = Math.Max(supportEMA, supportEMA + alpha * (lowSerie[i] - supportEMA));
+                    supportEMA = Math.Max(supportEMA, supportEMA + alphaUp * (lowSerie[i] - supportEMA));
                     if (closeSerie[i] < supportEMA) // Broken down
                     {
                         supportEMA = float.NaN;
@@ -138,7 +141,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         supportEMA = Math.Min(lowSerie[i - 2], lowSerie[i - 1]);
                         supportSerie[i - 1] = supportEMA;
-                        supportEMA = supportEMA + alpha * (lowSerie[i] - supportEMA);
+                        supportEMA = supportEMA + alphaUp * (lowSerie[i] - supportEMA);
                         this.Events[0][i] = true; // SupportDetected
                         if (supportEMA > previousLow)
                         {

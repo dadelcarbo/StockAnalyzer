@@ -3,10 +3,10 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILTOPEMAHL : StockTrailStopBase
+    public class StockTrailStop_TRAILTOPEMA : StockTrailStopBase
     {
         public override string Definition => base.Definition + Environment.NewLine +
-            "Draw a trail stop that is starting at first TOPEMA HigherLow and trailed.";
+            "Draw a trail stop that is calculated as a EMA starting from the previous extremum.";
 
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -29,42 +29,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.LS", float.NaN);
-            FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.SS", float.NaN);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-
             var topEMA = stockSerie.GetIndicator($"TOPEMA({(int)this.Parameters[0]})");
             FloatSerie supportSerie = topEMA.Series[0];
             FloatSerie resistanceSerie = topEMA.Series[1];
-            BoolSerie hlEvents = topEMA.GetEvents("HigherLow");
-            bool bull = false;
-            for (int i = 1; i < stockSerie.Count; i++)
+            FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.LS", float.NaN);
+            FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILTOPEMA.SS", float.NaN);
+            int i = 0;
+            while (++i < stockSerie.Count && !topEMA.Events[8][i] && !topEMA.Events[8][i]) ;
+            for (; i < stockSerie.Count; i++)
             {
-                if (bull)
+                if (topEMA.Events[9][i]) // Bearish
                 {
-                    if (closeSerie[i] < longStopSerie[i - 1]) // Up trend boken
-                    {
-                        bull = false;
-                    }
-                    else
-                    {
-                        if (hlEvents[i]) // Trail up
-                        {
-                            longStopSerie[i] = supportSerie[i];
-                        }
-                        else
-                        {
-                            longStopSerie[i] = longStopSerie[i - 1];
-                        }
-                    }
+                    shortStopSerie[i] = resistanceSerie[i];
                 }
                 else
                 {
-                    if (hlEvents[i]) // Start up trand
-                    {
-                        bull = true;
-                        longStopSerie[i] = supportSerie[i];
-                    }
+                    longStopSerie[i] = supportSerie[i];
                 }
             }
 

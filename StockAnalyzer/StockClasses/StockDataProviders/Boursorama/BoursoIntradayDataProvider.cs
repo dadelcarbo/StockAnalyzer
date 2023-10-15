@@ -65,7 +65,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 if (ParseBoursoData(stockSerie, fileName))
                 {
-                    var lastDate = stockSerie.Keys.Last();
+                    var lastDate = stockSerie.Keys.Last().Date.AddDays(-1);
 
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
                     File.Delete(fileName);

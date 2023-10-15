@@ -1,0 +1,55 @@
+name_trans,Name
+viewData.symbol,Symbol
+exchange_trans,Exchange
+sector_trans,Sector
+industry_trans,Industry
+last,Last
+pair_change_percent,Chg. %
+eq_market_cap Market,Cap
+turnover_volume,Vol.
+eq_pe_ratio,P/E Ratio
+eq_revenue,Revenue
+avg_volume,Average Vol. (3m)
+eq_eps,EPS
+eq_beta,Beta
+eq_dividend,Dividend
+eq_yield,Yield
+yield_us,Dividend Yield (%)
+peexclxor_us,P/E Ratio (TTM)
+ttmpr2rev_us,Price to Sales (TTM)
+aprfcfps_us,Price to Cash Flow (MRQ)
+ttmprfcfps_us,Price to Free Cash Flow (TTM)
+price2bk_us,Price to Book (MRQ)
+pr2tanbk_us,Price to Tangible Book (MRQ)
+epschngyr_us,EPS(MRQ) vs Qtr. 1 Yr. Ago
+ttmepschg_us,EPS(TTM) vs TTM 1 Yr. Ago
+epstrendgr_us,5 Year EPS Growth
+revchngyr_us,Sales (MRQ) vs Qtr. 1 Yr. Ago
+ttmrevchg_us,Sales (TTM) vs TTM 1 Yr. Ago (TTM)
+revtrendgr_us,5 Year Sales Growth
+csptrendgr_us,5 Year Capital Spending Growth
+ttmastturn_us,Asset Turnover (TTM)
+ttminvturn_us,Inventory Turnover (TTM)
+ttmrevpere_us,Revenue/Employee (TTM)
+ttmniperem_us,Net Income/Employee (TTM)
+ttmrecturn_us,Receivable Turnover (TTM)
+a52_week_high,52 wk Range - High
+a52_week_low,52 wk Range - Low
+a52_week_high_diff,% Change from 52 wk High
+a52_week_low_diff,% Change from 52 wk Low
+month_change,Previous Month % Change
+ttmgrosmgn_us,Gross margin (TTM)
+grosmgn5yr_us,Gross Margin (5YA)
+ttmopmgn_us,Operating margin (TTM)
+opmgn5yr_us,Operating margin (5YA)
+ttmptmgn_us,Pretax margin (TTM)
+ptmgn5yr_us,Pretax margin (5YA)
+ttmnpmgn_us,Net Profit margin (TTM)
+margin5yr_us,Net Profit margin (5YA)
+qquickrati_us,Quick Ratio (MRQ)
+qcurratio_us,Current Ratio (MRQ)
+qltd2eq_us,LT Debt to Equity (MRQ)
+qtotd2eq_us,Total Debt to Equity
+yld5yavg_us,Dividend Yield 5 Year Avg. (5YA)
+divgrpct_us,Dividend Growth Rate (ANN)
+ttmpayrat_us,Payout Ratio (TTM)

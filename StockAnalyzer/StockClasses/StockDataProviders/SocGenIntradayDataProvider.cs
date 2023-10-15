@@ -5,6 +5,7 @@ using StockAnalyzerApp;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -247,5 +248,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public override string DisplayName => "SocGen Intraday";
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            var url = $"https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol}";
+            Process.Start(url);
+        }
     }
 }
+

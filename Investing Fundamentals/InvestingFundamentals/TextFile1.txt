@@ -1,0 +1,17 @@
+﻿curl "https://www.investing.com/stock-screener/Service/SearchStocks" ^
+  -H "authority: www.investing.com" ^
+  -H "accept: application/json, text/javascript, */*; q=0.01" ^
+  -H "accept-language: fr-FR,fr;q=0.9,en-GB;q=0.8,en;q=0.7,en-US;q=0.6" ^
+  -H "content-type: application/x-www-form-urlencoded" ^
+  -H "origin: https://www.investing.com" ^
+  -H "referer: https://www.investing.com/stock-screener/?sp=country::34^|sector::a^|industry::a^|equityType::ORD^%^3Ceq_market_cap;1" ^
+  -H "sec-ch-ua: ^\^"Google Chrome^\^";v=^\^"117^\^", ^\^"Not;A=Brand^\^";v=^\^"8^\^", ^\^"Chromium^\^";v=^\^"117^\^"" ^
+  -H "sec-ch-ua-mobile: ?0" ^
+  -H "sec-ch-ua-platform: ^\^"Windows^\^"" ^
+  -H "sec-fetch-dest: empty" ^
+  -H "sec-fetch-mode: cors" ^
+  -H "sec-fetch-site: same-origin" ^
+  -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" ^
+  -H "x-requested-with: XMLHttpRequest" ^
+  --data-raw "country^%^5B^%^5D=22&sector=36^%^2C25^%^2C27^%^2C28^%^2C24^%^2C29^%^2C35^%^2C30^%^2C26^%^2C34^%^2C33^%^2C31^%^2C32&industry=182^%^2C190^%^2C204^%^2C199^%^2C212^%^2C177^%^2C172^%^2C207^%^2C214^%^2C217^%^2C179^%^2C184^%^2C203^%^2C181^%^2C185^%^2C197^%^2C222^%^2C215^%^2C220^%^2C202^%^2C200^%^2C187^%^2C229^%^2C209^%^2C210^%^2C192^%^2C195^%^2C193^%^2C228^%^2C206^%^2C218^%^2C205^%^2C208^%^2C194^%^2C183^%^2C196^%^2C178^%^2C230^%^2C225^%^2C223^%^2C216^%^2C173^%^2C174^%^2C180^%^2C188^%^2C201^%^2C211^%^2C232^%^2C186^%^2C226^%^2C175^%^2C227^%^2C231^%^2C213^%^2C219^%^2C198^%^2C221^%^2C191^%^2C189^%^2C176^%^2C224&equityType=ORD&pn=1&order^%^5Bcol^%^5D=eq_market_cap&order^%^5Bdir^%^5D=d" ^
+  --compressed
