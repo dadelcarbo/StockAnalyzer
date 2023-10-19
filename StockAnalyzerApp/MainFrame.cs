@@ -2582,7 +2582,7 @@ namespace StockAnalyzerApp
             if (palmaresDlg == null)
             {
                 palmaresDlg = new PalmaresDlg();
-                palmaresDlg.palmaresControl1.ViewModel.BarDuration = this.ViewModel.BarDuration;
+                palmaresDlg.palmaresControl1.ViewModel.BarDuration = BarDuration.Daily;
                 palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);

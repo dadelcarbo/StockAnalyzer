@@ -2957,7 +2957,7 @@ namespace StockAnalyzer.StockClasses
                         || StockGroup == Groups.ITALIA || StockGroup == Groups.GERMANY;
                 //  ||  (this.StockGroup == Groups.SPAIN) || 
                 case Groups.SAXO:
-                    return StockGroup == Groups.SAXO;
+                    return this.SaxoId > 0;
                 case Groups.SRD:
                     return SRD;
                 case Groups.SRD_LO:
